@@ -45,7 +45,8 @@ public class SqlPeriodInterpolationTest {
         Entity testEntity = new Entity(TEST_PREFIX + "-entity");
         testEntity.addTag("type", "test");
         EntityMethod testEntityMethod = new EntityMethod();
-        testEntityMethod.createOrUpdate(testEntity);
+        EntityMethod.prepare();
+        testEntityMethod.createOrUpdateCheck(testEntity);
         Metric testMetric = new Metric(TEST_PREFIX + "-metric");
         MetricMethod testMetricMethod = new MetricMethod();
         testMetricMethod.createOrReplaceMetric(testMetric);
@@ -55,7 +56,7 @@ public class SqlPeriodInterpolationTest {
         for (int i = 0; i < valuesDistribution.length; i++) {
             for (int j = 0; j < valuesDistribution[i]; j++) {
                 long t = startDate.getTime() + PERIOD_LENGTH * i + random.nextInt(PERIOD_LENGTH.intValue());
-                int v = random.nextInt(10);
+                String v = Integer.toString(random.nextInt(10));
                 series.addData(new Sample(t, v));
             }
         }

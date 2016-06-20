@@ -54,7 +54,7 @@ public class SeriesMethod extends Method {
         return 200 == response.getCode();
     }
 
-    protected Boolean insertSeries(final Series series) throws IOException, InterruptedException {
+    public Boolean insertSeries(final Series series) throws IOException, InterruptedException {
         return insertSeries(series, 0);
     }
 
