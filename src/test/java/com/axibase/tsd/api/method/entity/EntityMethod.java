@@ -25,6 +25,10 @@ public class EntityMethod extends Method {
     static final String METHOD_ENTITIES = "/entities/";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    public EntityMethod() {
+        prepare();
+    }
+
     public void createOrUpdate(final Entity... entities) throws IOException {
         for(Entity e: entities) {
             createOrUpdate(e);
@@ -45,6 +49,15 @@ public class EntityMethod extends Method {
         }
     }
 
+    public void deleteEntity(String entityName) throws IOException {
+        final String path = METHOD_ENTITIES + entityName;
+        Map<String, Object> payload = new HashMap<>();
+        AtsdHttpResponse response = httpSender.send(HTTPMethod.DELETE, path, (new JSONObject(payload).toJSONString()));
+        if (response.getCode() != 200) {
+            throw new IOException("Failed to delete entity");
+        }
+
+    }
 
     Boolean entityExist(final Entity entity) throws IOException {
         return entityExist(entity, true);

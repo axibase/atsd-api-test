@@ -25,7 +25,7 @@ public class SeriesMethod extends Method {
     private JSONArray returnedSeries;
     private JSONParser jsonParser = new JSONParser();
 
-    protected Boolean insertSeries(final Series series) throws IOException {
+    public Boolean insertSeries(final Series series) throws IOException {
 
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
