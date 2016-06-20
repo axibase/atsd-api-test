@@ -32,7 +32,7 @@ public class TCPSender {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        requestStream.writeBytes(command.insert(0,"debug ").append('\n').toString());
+        requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
         String response = responseStream.readLine();
         return response.equals("ok");
     }
@@ -43,11 +43,16 @@ public class TCPSender {
         requestStream.writeBytes(command.append('\n').toString());
         requestStream.close();
     }
-    public void send(String command) throws IOException {
+
+    public void send(String command, long sleepDuration) throws IOException, InterruptedException {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         requestStream.writeBytes(command + '\n');
         requestStream.close();
+        Thread.sleep(sleepDuration);
     }
 
+    public void send(String command) throws IOException, InterruptedException {
+        send(command, 0);
+    }
 }

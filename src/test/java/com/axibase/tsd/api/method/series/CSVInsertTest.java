@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CSVInsertTest extends CSVInsertMethod {
-    /*
-    * #2009
-    * */
+    /* #2009 */
     @Test
     public void testISOFormatZNoMS() throws Exception {
         String entity = "e-iso-5";
@@ -22,7 +20,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = "date,m-iso-5\n" +
                 "2016-05-21T00:00:00Z, 12.45\n" +
                 "2016-05-21T00:00:15Z, 10.8";
-        csvInsert(entity, csvPayload, tags);
+        csvInsert(entity, csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity, metric, "2016-05-21T00:00:00Z", "2016-05-21T00:00:01Z", tags);
         executeQuery(seriesQuery);
@@ -35,9 +33,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
     }
 
-    /*
-    * #2009
-    * */
+    /* #2009 */
     @Test
     public void testISOFormatZMS() throws Exception {
         String entity = "e-iso-6";
@@ -49,7 +45,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = "date,m-iso-6\n" +
                 "2016-05-21T00:00:00.001Z, 12.45\n" +
                 "2016-05-21T00:00:15.001Z, 10.8";
-        csvInsert(entity, csvPayload, tags);
+        csvInsert(entity, csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity, metric, "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
         executeQuery(seriesQuery);
@@ -62,9 +58,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
     }
 
-    /*
-    * #2009
-    * */
+    /* #2009 */
     @Test
     public void testISOFormatPlusHourNoMS() throws Exception {
         String entity = "e-iso-7";
@@ -76,7 +70,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = "date,m-iso-7\n" +
                 "2016-05-21T00:00:00+00:00, 12.45\n" +
                 "2016-05-21T00:00:15+00:00, 10.8";
-        csvInsert(entity, csvPayload, tags);
+        csvInsert(entity, csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity, metric, "2016-05-21T00:00:00Z", "2016-05-21T00:00:10Z", tags);
         executeQuery(seriesQuery);
@@ -89,9 +83,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
     }
 
-    /*
-    * #2009
-    * */
+    /* #2009 */
     @Test
     public void testISOFormatPlusHourMS() throws Exception {
         String entity = "e-iso-8";
@@ -103,7 +95,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = "date,m-iso-8\n" +
                 "2016-05-21T00:00:00.001+00:00, 12.45\n" +
                 "2016-05-21T00:00:15.001+00:00, 10.8";
-        csvInsert(entity, csvPayload, tags);
+        csvInsert(entity, csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity, metric, "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
         executeQuery(seriesQuery);
@@ -114,12 +106,9 @@ public class CSVInsertTest extends CSVInsertMethod {
         executeQuery(seriesQuery);
         Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d"));
         Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
-
     }
 
-    /*
-    * #2009
-    * */
+    /* #2009 */
     @Test
     public void testMultipleISOFormat() throws Exception {
         String entity = "e-iso-9";
@@ -133,7 +122,7 @@ public class CSVInsertTest extends CSVInsertMethod {
                 "2016-05-21T00:00:00.001Z,      12\n" +
                 "2016-05-21T00:00:15+00:00, 10.8\n" +
                 "2016-05-21T00:00:15.001+00:00, 10";
-        csvInsert(entity, csvPayload, tags);
+        csvInsert(entity, csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity, metric, "2016-05-21T00:00:00Z", "2016-05-21T00:00:10Z", tags);
         executeQuery(seriesQuery);
@@ -155,6 +144,5 @@ public class CSVInsertTest extends CSVInsertMethod {
         executeQuery(seriesQuery);
         Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d"));
         Assert.assertEquals("Stored value incorrect", "10", getDataField(0, "v"));
-
     }
 }

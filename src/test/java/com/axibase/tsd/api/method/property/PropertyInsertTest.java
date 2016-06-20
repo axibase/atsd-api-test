@@ -169,7 +169,7 @@ public class PropertyInsertTest extends PropertyMethod {
             insertArray.add(new JSONObject(obj));
         }
         AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_INSERT, insertArray.toJSONString());
-        assertEquals("Fail to execute delete query", 200, response.getCode());
+        assertEquals("Fail to execute insert query", 200, response.getCode());
     }
 
 

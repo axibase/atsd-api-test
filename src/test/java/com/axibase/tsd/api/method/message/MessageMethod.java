@@ -20,16 +20,15 @@ public class MessageMethod extends Method {
 
     static final String METHOD_MESSAGE_INSERT = "/messages/insert";
     static final String METHOD_MESSAGE_QUERY = "/messages/query";
-    private JSONArray returnedMessages;
     private JSONParser jsonParser = new JSONParser();
 
-    protected Boolean insertMessages(final Message message) throws IOException, ParseException {
-
+    protected Boolean insertMessages(final Message message, long sleepDuration) throws IOException, ParseException, InterruptedException  {
         JSONArray request = new JSONArray() {{
             add(jsonParser.parse(jacksonMapper.writeValueAsString(message)));
         }};
 
         AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_MESSAGE_INSERT, request.toJSONString());
+        Thread.sleep(sleepDuration);
         if (200 == response.getCode()) {
             logger.debug("Message looks inserted");
         } else {
@@ -38,9 +37,11 @@ public class MessageMethod extends Method {
         return 200 == response.getCode();
     }
 
-    protected void executeQuery(final MessageQuery messageQuery) throws IOException, ParseException, InterruptedException {
-        Thread.sleep(500);
+    protected Boolean insertMessages(final Message message) throws IOException, ParseException, InterruptedException  {
+        return insertMessages(message,0);
+    }
 
+    protected String executeQuery(final MessageQuery messageQuery) throws IOException, ParseException{
         JSONObject request = (JSONObject) jsonParser.parse(jacksonMapper.writeValueAsString(messageQuery));
 
         final AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_MESSAGE_QUERY, request.toJSONString());
@@ -49,17 +50,13 @@ public class MessageMethod extends Method {
         } else {
             logger.error("Failed to execute message query");
         }
-        returnedMessages = (JSONArray) jsonParser.parse(response.getBody());
+        return response.getBody();
     }
 
-    protected String getField(int index, String field) {
-        if (returnedMessages == null) {
-            return "returnedMessages is null";
+    protected String getField(String message, int index, String field) throws ParseException {
+        if (message == null) {
+            return "message is null";
         }
-        return (((JSONObject) returnedMessages.get(index)).get(field)).toString();
-    }
-
-    public String getReturnedMessages() {
-        return returnedMessages.toString();
+        return (((JSONObject) ((JSONArray) jsonParser.parse(message)).get(index)).get(field)).toString();
     }
 }

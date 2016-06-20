@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MessageInsertTest extends MessageMethod {
-
     /* #2903 */
     @Test
     public void testTrimmedMessages() throws Exception {
@@ -20,13 +19,13 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate(date);
         message.setType(type);
 
-        Assert.assertTrue("Fail to insert message", insertMessages(message));
+        Assert.assertTrue("Fail to insert message", insertMessages(message, 1000));
 
         MessageQuery messageQuery = new MessageQuery("nurswgvml022", date, endDate);
-        executeQuery(messageQuery);
+        String storedMessage = executeQuery(messageQuery);
 
-        Assert.assertEquals("nurswgvml022", getField(0, "entity"));
-        Assert.assertEquals("NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.", getField(0, "message"));
-        Assert.assertEquals("application", getField(0, "type"));
+        Assert.assertEquals("nurswgvml022", getField(storedMessage, 0, "entity"));
+        Assert.assertEquals("NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.", getField(storedMessage, 0, "message"));
+        Assert.assertEquals("application", getField(storedMessage, 0, "type"));
     }
 }

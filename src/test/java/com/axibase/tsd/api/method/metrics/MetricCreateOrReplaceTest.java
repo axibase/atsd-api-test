@@ -9,7 +9,6 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
 
     @Test
     public void testCreateOrReplaceMetric() throws Exception {
-
         Metric metric = new Metric("m-create-or-replace");
         metric.setDataType(DataType.DECIMAL);
 

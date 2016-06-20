@@ -22,16 +22,11 @@ public class Series extends Model {
     }
 
     public Series(String entity, String metric) {
-        if (entity != null) {
-            SeriesRegistry.getInstance().registerEntity(entity);
-        }
-        if (metric != null) {
-            SeriesRegistry.getInstance().registerMetric(metric);
-        }
         this.entity = entity;
         this.metric = metric;
         this.data = new ArrayList<>();
         this.tags = new HashMap<>();
+        SeriesRegistry.getInstance().registerSeries(this);
     }
 
     public void setEntity(String entity) {

@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.registry;
 
+import com.axibase.tsd.api.model.series.Series;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -17,17 +18,13 @@ public class SeriesRegistry {
         return instance;
     }
 
-    public void registerEntity(String value) {
-        if (entitySet.contains(value)) {
-            throw new IllegalArgumentException("Entity already registered: " + value);
+    public void registerSeries(Series series) {
+        String entity = series.getEntity();
+        String metric = series.getMetric();
+        if (entitySet.contains(entity) && metricSet.contains(metric)) {
+            throw new IllegalArgumentException("Series already registered: " + series);
         }
-        entitySet.add(value);
-    }
-
-    public void registerMetric(String value) {
-        if (metricSet.contains(value)) {
-            throw new IllegalArgumentException("Metric already registered: " + value);
-        }
-        metricSet.add(value);
+        entitySet.add(entity);
+        metricSet.add(metric);
     }
 }

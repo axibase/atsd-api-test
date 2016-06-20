@@ -31,4 +31,5 @@ public abstract class Method {
         jacksonMapper = new ObjectMapper();
         jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
     }
+
 }
