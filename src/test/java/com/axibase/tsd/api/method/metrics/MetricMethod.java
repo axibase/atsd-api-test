@@ -2,16 +2,16 @@ package com.axibase.tsd.api.method.metrics;
 
 import com.axibase.tsd.api.method.Method;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
-import com.axibase.tsd.api.transport.http.HTTPMethod;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.net.URLEncoder;
 
 public class MetricMethod extends Method {
     protected static final String METHOD_METRICS = "/metrics/";
@@ -21,27 +21,26 @@ public class MetricMethod extends Method {
 
     public Boolean createOrReplaceMetric(Metric metric) throws Exception {
         JSONObject request = (JSONObject) jsonParser.parse(jacksonMapper.writeValueAsString(metric));
-
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.PUT, METHOD_METRICS + URLEncoder.encode(metric.getName(), "UTF-8"), request.toJSONString());
-        if (200 == response.getCode()) {
+        Response response = httpResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric.getName()).request().put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        if (200 == response.getStatus()) {
             logger.debug("Metric looks created or replaced");
         } else {
             logger.error("Fail to create or replace metric");
         }
-        return 200 == response.getCode();
+        return 200 == response.getStatus();
 
     }
 
     protected Boolean getMetric(String metric) throws Exception {
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.GET, METHOD_METRICS + URLEncoder.encode(metric, "UTF-8"), null);
-        if (200 == response.getCode()) {
+        Response response = httpResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric).request().get();
+        if (200 == response.getStatus()) {
             logger.debug("Metric looks deleted");
         } else {
             logger.error("Fail to delete metric");
         }
-        returnedMetric = (JSONObject) jsonParser.parse(response.getBody());
+        returnedMetric = (JSONObject) jsonParser.parse(response.readEntity(String.class));
 
-        return 200 == response.getCode();
+        return 200 == response.getStatus();
     }
 
     protected Boolean getMetric(Metric metric) throws Exception {
@@ -49,13 +48,13 @@ public class MetricMethod extends Method {
     }
 
     protected Boolean deleteMetric(String metric) throws IOException {
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.DELETE, METHOD_METRICS + URLEncoder.encode(metric, "UTF-8"), null);
-        if (200 == response.getCode()) {
+        Response response = httpResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric).request().delete();
+        if (200 == response.getStatus()) {
             logger.debug("Metric looks deleted");
         } else {
             logger.error("Fail to delete metric");
         }
-        return 200 == response.getCode();
+        return 200 == response.getStatus();
     }
 
     protected Boolean deleteMetric(Metric metric) throws IOException {

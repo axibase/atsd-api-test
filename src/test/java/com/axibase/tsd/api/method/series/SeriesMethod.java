@@ -4,8 +4,6 @@ import com.axibase.tsd.api.method.Method;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
-import com.axibase.tsd.api.transport.http.HTTPMethod;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,6 +11,9 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -44,14 +45,14 @@ public class SeriesMethod extends Method {
         }};
 
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_SERIES_INSERT, request.toJSONString());
+        Response response = httpResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         Thread.sleep(sleepDuration);
-        if (200 == response.getCode()) {
+        if (200 == response.getStatus()) {
             logger.debug("Series looks inserted");
         } else {
             logger.error("Fail to insert series");
         }
-        return 200 == response.getCode();
+        return 200 == response.getStatus();
     }
 
     protected Boolean insertSeries(final Series series) throws IOException, InterruptedException {
@@ -63,15 +64,14 @@ public class SeriesMethod extends Method {
             add(queryToJSONObject(seriesQuery));
         }};
 
-        String body = request.toJSONString();
-        final AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_SERIES_QUERY, body);
-        if (200 == response.getCode()) {
+        Response response = httpResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        if (200 == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
             logger.error("Failed to execute series query");
         }
-        returnedSeries = (JSONArray) jsonParser.parse(response.getBody());
-        return 200 == response.getCode();
+        returnedSeries = (JSONArray) jsonParser.parse(response.readEntity(String.class));
+        return 200 == response.getStatus();
     }
 
     protected Boolean executeQuery(final ArrayList<SeriesQuery> seriesQueries) throws IOException, ParseException {
@@ -79,15 +79,14 @@ public class SeriesMethod extends Method {
         for (SeriesQuery seriesQuery : seriesQueries) {
             request.add(queryToJSONObject(seriesQuery));
         }
-        final AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_SERIES_QUERY, request.toJSONString());
-        if (200 == response.getCode()) {
+        Response response = httpResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        if (200 == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
             logger.error("Failed to execute series query");
         }
-        returnedSeries = (JSONArray) jsonParser.parse(response.getBody());
-        return 200 == response.getCode();
-
+        returnedSeries = (JSONArray) jsonParser.parse(response.readEntity(String.class));
+        return 200 == response.getStatus();
     }
 
     private JSONObject queryToJSONObject(final SeriesQuery seriesQuery) {

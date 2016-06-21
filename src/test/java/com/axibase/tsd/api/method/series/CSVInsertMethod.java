@@ -1,13 +1,14 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
-import com.axibase.tsd.api.transport.http.HTTPMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.net.URLEncoder;
 import java.util.Map;
 
 public class CSVInsertMethod extends SeriesMethod {
@@ -15,23 +16,21 @@ public class CSVInsertMethod extends SeriesMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     protected Boolean csvInsert(String entity, String csv, Map<String, String> tags, long sleepDuration) throws IOException, InterruptedException {
-        StringBuilder uri = new StringBuilder(METHOD_CSV_INSERT);
-        uri.append(URLEncoder.encode(entity, "UTF-8"));
+        WebTarget csvInsert = httpResource.path(METHOD_CSV_INSERT).path("{entity}");
         if (tags != null && tags.size() > 0) {
-            uri.append("?");
-            for (String key : tags.keySet()) {
-                uri.append("&").append(key).append("=").append(tags.get(key));
+            for (Map.Entry<String, String> entry : tags.entrySet()) {
+                csvInsert = csvInsert.queryParam(entry.getKey(), entry.getValue());
             }
         }
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, uri.toString(), csv);
+        Response response = csvInsert.resolveTemplate("entity", entity).request().post(Entity.entity(csv, new MediaType("text", "csv")));
         Thread.sleep(sleepDuration);
-        if (200 == response.getCode()) {
+        if (200 == response.getStatus()) {
             logger.debug("CSV looks inserted");
         } else {
             logger.error("Fail to insert csv");
         }
-        return 200 == response.getCode();
+        return 200 == response.getStatus();
     }
 
     protected Boolean csvInsert(String entity, String csv, Map<String, String> tags) throws IOException, InterruptedException {

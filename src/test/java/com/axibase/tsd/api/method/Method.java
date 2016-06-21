@@ -1,16 +1,23 @@
 package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.Config;
-import com.axibase.tsd.api.transport.http.HTTPClientPure;
-import com.axibase.tsd.api.transport.http.HTTPSender;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.UriBuilder;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 
 /**
  * @author Dmitry Korchagin.
@@ -18,15 +25,31 @@ import java.text.SimpleDateFormat;
 public abstract class Method {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    protected static HTTPSender httpSender;
     protected static TCPSender tcpSender;
     protected static ObjectMapper jacksonMapper;
+    protected static WebTarget httpResource;
+
+    static {
+        java.util.logging.LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        java.util.logging.Logger.getLogger("").setLevel(Level.FINEST);
+
+    }
 
     @BeforeClass
     public static void prepare() {
         Config config = Config.getInstance();
-        HTTPClientPure driver = new HTTPClientPure(config.getProtocol(), config.getServerName(), config.getHttpPort(), config.getLogin(), config.getPassword());
-        httpSender = new HTTPSender(driver, config.getDataPath(), config.getMetadataPath());
+        ClientConfig clientConfig = new ClientConfig();
+        HttpAuthenticationFeature httpAuthenticationFeature = HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword());
+        clientConfig.register(httpAuthenticationFeature);
+        clientConfig.register(MultiPartFeature.class);
+        clientConfig.register(new LoggingFeature());
+        httpResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
+                .scheme(config.getProtocol())
+                .host(config.getServerName())
+                .port(config.getHttpPort())
+                .path(config.getDataPath()).build());
         tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
         jacksonMapper = new ObjectMapper();
         jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));

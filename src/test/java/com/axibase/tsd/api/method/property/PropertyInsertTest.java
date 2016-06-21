@@ -1,14 +1,15 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
-import com.axibase.tsd.api.transport.http.HTTPMethod;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
@@ -155,9 +156,9 @@ public class PropertyInsertTest extends PropertyMethod {
         JSONArray request = new JSONArray() {{
             add(new JSONObject(insertObj));
         }};
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_INSERT, request.toJSONString());
-        assertEquals(500, response.getCode());
-        assertTrue(response.getBody().contains("UnrecognizedPropertyException"));
+        Response response = httpResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(500, response.getStatus());
+        assertTrue(response.readEntity(String.class).contains("UnrecognizedPropertyException"));
 
         assertFalse(propertyExist(property));
 
@@ -168,8 +169,8 @@ public class PropertyInsertTest extends PropertyMethod {
         for (Map obj : insertObjects) {
             insertArray.add(new JSONObject(obj));
         }
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_INSERT, insertArray.toJSONString());
-        assertEquals("Fail to execute insert query", 200, response.getCode());
+        Response response = httpResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(insertArray, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals("Fail to execute delete query", 200, response.getStatus());
     }
 
 

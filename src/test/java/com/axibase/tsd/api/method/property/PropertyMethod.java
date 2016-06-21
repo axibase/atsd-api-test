@@ -3,8 +3,6 @@ package com.axibase.tsd.api.method.property;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.Method;
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
-import com.axibase.tsd.api.transport.http.HTTPMethod;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,6 +11,9 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -44,8 +45,9 @@ class PropertyMethod extends Method {
                 }
             }});
         }};
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_INSERT, request.toJSONString());
-        if (response.getCode() != 200) {
+        Response response = httpResource.path(METHOD_PROPERTY_INSERT)
+                .request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() != 200) {
             throw new IOException("Fail to insert property");
         }
         if (!propertyExist(property)) {
@@ -82,12 +84,13 @@ class PropertyMethod extends Method {
             add(property);
         }});
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, request.toJSONString());
-        assertEquals(200, response.getCode());
-        logger.debug("check: {}\nresponse: {}", propertyJson, response.getBody());
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.json(request));
+        assertEquals(200, response.getStatus());
+        String responseJson = response.readEntity(String.class);
+        logger.debug("check: {}\nresponse: {}", propertyJson, responseJson);
 
         try {
-            JSONAssert.assertEquals(propertyJson, response.getBody(), allowExtraFields ? JSONCompareMode.LENIENT : JSONCompareMode.NON_EXTENSIBLE);
+            JSONAssert.assertEquals(propertyJson, responseJson, allowExtraFields ? JSONCompareMode.LENIENT : JSONCompareMode.NON_EXTENSIBLE);
         } catch (JSONException e) {
             throw new IOException("Can not deserialize response");
         } catch (AssertionError e) {
@@ -101,11 +104,10 @@ class PropertyMethod extends Method {
         JSONArray query = new JSONArray() {{
             add(new JSONObject(request));
         }};
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.entity(query.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(200, response.getStatus());
 
-        AtsdHttpResponse atsdResponse = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, query.toJSONString());
-        assertEquals(200, atsdResponse.getCode());
-
-        return atsdResponse.getBody();
+        return response.readEntity(String.class);
     }
 
     private JSONArray buildJsonArray(final Property... properties) {
@@ -142,16 +144,15 @@ class PropertyMethod extends Method {
 
             }});
         }
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_DELETE, jsonArray.toJSONString());
-        assertEquals("Fail to delete properties", 200, response.getCode());
+        Response response = httpResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        assertEquals("Fail to delete properties", 200, response.getStatus());
     }
 
-    protected AtsdHttpResponse deleteProperty(final Map deleteObj) throws IOException {
+    protected Response deleteProperty(final Map deleteObj) throws IOException {
         JSONArray jsonArray = new JSONArray() {{
             add(new JSONObject(deleteObj));
         }};
-        return httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_DELETE, jsonArray.toJSONString());
-
+        return httpResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
     }
 
 

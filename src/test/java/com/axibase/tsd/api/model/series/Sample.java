@@ -3,6 +3,7 @@ package com.axibase.tsd.api.model.series;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.Model;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

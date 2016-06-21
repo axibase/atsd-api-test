@@ -5,8 +5,6 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
-import com.axibase.tsd.api.transport.http.HTTPMethod;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Test;
@@ -14,6 +12,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
@@ -564,9 +564,9 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, request.toJSONString());
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.getBody());
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -578,9 +578,9 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, request.toJSONString());
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.getBody());
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -591,9 +591,9 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, request.toJSONString());
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.getBody());
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
 
 
@@ -606,9 +606,9 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, request.toJSONString());
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.getBody());
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -621,9 +621,9 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_PROPERTY_QUERY, request.toJSONString());
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty\"}", response.getBody());
+        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty\"}", response.readEntity(String.class));
     }
 
     @Test

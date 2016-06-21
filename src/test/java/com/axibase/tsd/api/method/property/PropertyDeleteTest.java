@@ -4,11 +4,11 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
@@ -228,9 +228,9 @@ public class PropertyDeleteTest extends PropertyMethod {
         request.put("endDate", "2016-06-01T12:04:59.191Z");
 
 
-        AtsdHttpResponse response = deleteProperty(request);
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.getBody());
+        Response response = deleteProperty(request);
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -239,9 +239,9 @@ public class PropertyDeleteTest extends PropertyMethod {
         request.put("type", "testtype");
         request.put("endDate", "2016-06-01T12:04:59.191Z");
 
-        AtsdHttpResponse response = deleteProperty(request);
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.getBody());
+        Response response = deleteProperty(request);
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -250,9 +250,9 @@ public class PropertyDeleteTest extends PropertyMethod {
         request.put("type", "testtype");
         request.put("startDate", "2016-06-01T12:04:59.191Z");
 
-        AtsdHttpResponse response = deleteProperty(request);
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.getBody());
+        Response response = deleteProperty(request);
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -261,9 +261,9 @@ public class PropertyDeleteTest extends PropertyMethod {
         request.put("type", "testtype");
 
 
-        AtsdHttpResponse response = deleteProperty(request);
-        assertEquals(400, response.getCode());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.getBody());
+        Response response = deleteProperty(request);
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
 
@@ -445,8 +445,8 @@ public class PropertyDeleteTest extends PropertyMethod {
 
 
     private void deletePropertyCorrect(final Map deleteObj) throws IOException {
-        AtsdHttpResponse response = super.deleteProperty(deleteObj);
-        assertEquals("Fail to execute delete query", 200, response.getCode());
+        Response response = super.deleteProperty(deleteObj);
+        assertEquals("Fail to execute delete query", 200, response.getStatus());
     }
 
 
