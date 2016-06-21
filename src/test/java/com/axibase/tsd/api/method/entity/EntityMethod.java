@@ -46,7 +46,7 @@ public class EntityMethod extends Method {
     }
 
 
-    Boolean entityExist(final Entity entity) throws IOException {
+    public Boolean entityExist(final Entity entity) throws IOException {
         return entityExist(entity, true);
     }
 
@@ -54,7 +54,6 @@ public class EntityMethod extends Method {
         String entityJson = jacksonMapper.writeValueAsString(entity);
 
         AtsdHttpResponse response = httpSender.sendGet(METHOD_ENTITIES + entity.getName());
-        assertEquals(200, response.getCode());
         logger.debug("check: {}\nresponse: {}", entityJson, response.getBody());
 
         try {
@@ -64,7 +63,7 @@ public class EntityMethod extends Method {
         } catch (AssertionError e) {
             return false;
         }
-        return true;
+        return response.getCode() == 200;
     }
 
     public void deleteEntity(String entityName) throws IOException {

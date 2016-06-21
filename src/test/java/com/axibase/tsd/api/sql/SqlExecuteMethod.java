@@ -26,6 +26,12 @@ import java.util.List;
 
 /**
  * Class that execute sql query on ATSD
+ * Result of execute can be present in following formats
+ * <ul>
+ *     <li> {@link String} see method {@link SqlExecuteMethod:queryAsString}</li>
+ *     <li> {@link HttpResponse} see method {@link SqlExecuteMethod:query}</li>
+ *     <li> {@link JSONObject} see method {@link SqlExecuteMethod:queryAsJson}</li>
+ * </ul>
  *
  * @author Igor Shmagrinskiy
  */
@@ -80,11 +86,6 @@ public class SqlExecuteMethod extends Method {
         logIn();
     }
 
-    /**
-     * Build base url for sql queries execution
-     *
-     * @return full URL
-     */
     private String buildURL() {
         Config config = Config.getInstance();
         return config.getProtocol() +
@@ -110,6 +111,12 @@ public class SqlExecuteMethod extends Method {
         return httpClient.execute(sqlHttpPost);
     }
 
+    /**
+     * Execute sql query and return data in {@link String} format
+     *
+     * @param sqlQuery SQL query as a string
+     * @return  data in {@link String} form
+     */
     public String queryAsString(String sqlQuery){
         try {
             return Util.HttpResponseTranslator.asString(query(sqlQuery));
@@ -119,6 +126,13 @@ public class SqlExecuteMethod extends Method {
         return null;
     }
 
+
+    /**
+     * Execute sql query and return data in {@link JSONObject} format
+     *
+     * @param sqlQuery SQL query as a string
+     * @return  data in {@link JSONObject} form
+     */
     public JSONObject queryAsJson(String sqlQuery){
         try {
             return  Util.HttpResponseTranslator.asJsonObject(query(sqlQuery));

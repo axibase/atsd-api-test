@@ -14,9 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,7 +36,6 @@ public class SqlPeriodTest {
     private static final Double[] valuesDistribution = {18.0, 8.0, 0.0, 6.0, 19.0, 19.0};
     private static final Long PERIOD_LENGTH = 300000L;
     private static final Double EPS = 10e-3;
-    private static final Logger logger = LoggerFactory.getLogger(SqlPeriodTest.class);
     private static final Date startDate = Util.parseISODate("2016-06-03T09:20:00.000Z");
     private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH * 2);
 
@@ -60,6 +60,10 @@ public class SqlPeriodTest {
         testEntityMethod.createOrUpdateCheck(testEntity);
         MetricMethod testMetricMethod = new MetricMethod();
         testMetricMethod.createOrReplaceMetric(testMetric);
+        boolean created;
+        do {
+            created = testEntityMethod.entityExist(testEntity) && testMetricMethod.metricExists(testMetric);
+        }while (!created);
         Series series = new Series();
         series.setEntity(testEntity.getName());
         series.setMetric(testMetric.getName());
@@ -75,13 +79,19 @@ public class SqlPeriodTest {
         Date endDate = new Date(startDate.getTime() + periodLength * valuesDistribution.length);
         SeriesMethod seriesMethod = new SeriesMethod();
         seriesMethod.insertSeries(series);
-        waitForData(startDate, endDate, samplesCount);
+        waitForSeriesData(startDate, endDate, samplesCount);
     }
 
     @AfterClass
-    public static void clearTestData() throws IOException {
-        new EntityMethod().deleteEntity(TEST_PREFIX + "-entity");
+    public static void clearTestData() throws Exception {
+        EntityMethod testEntityMethod = new EntityMethod();
+        MetricMethod testMetricMethod = new MetricMethod();
+        testEntityMethod.deleteEntity(TEST_PREFIX + "-entity");
         new MetricMethod().deleteMetric(TEST_PREFIX + "-metric");
+        boolean deleted;
+        do {
+            deleted = !testEntityMethod.entityExist(testEntity) && !testMetricMethod.metricExists(testMetric);
+        }while (!deleted);
     }
 
     private Map<Date, Double> resultAsMap(JSONObject resultJSON) throws JSONException {
@@ -107,20 +117,23 @@ public class SqlPeriodTest {
     }
 
     private double[] getValuesSortByKeys(Map<Date, Double> result)  {
-        Object[] keys = result.keySet().toArray();
-        Arrays.sort(keys);
-        double[] resultValues = new double[keys.length];
+        List<Date> keys = new ArrayList<>();
+        keys.addAll(result.keySet());
+        Collections.sort(keys);
+        double[] resultValues = new double[keys.size()];
         int count = 0;
-        for (Object key: keys) {
-            resultValues[count] = result.get(key);
-            count++;
+        for (Date key: keys) {
+            if (result.containsKey(key)) {
+                resultValues[count] = result.get(key);
+                count++;
+            }
         }
         return resultValues;
     }
 
-    private static void waitForData(Date startDate, Date endDate, Integer samplesCount) throws ParseException, JSONException, IOException {
+    private static void waitForSeriesData(Date startDate, Date endDate, Integer samplesCount) throws ParseException, JSONException, IOException {
         SeriesQuery seriesQuery = new SeriesQuery(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric", startDate.getTime(), endDate.getTime());
-        ArrayList<SeriesQuery> queryList = new ArrayList<SeriesQuery>();
+        ArrayList<SeriesQuery> queryList = new ArrayList<>();
         SeriesMethod seriesMethod = new SeriesMethod();
         queryList.add(seriesQuery);
         Integer resultLength;

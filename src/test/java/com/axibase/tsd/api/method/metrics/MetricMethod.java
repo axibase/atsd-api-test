@@ -44,6 +44,10 @@ public class MetricMethod extends Method {
         return 200 == response.getCode();
     }
 
+    public Boolean metricExists(Metric metric) throws Exception {
+        return getMetric(metric);
+    }
+
     protected Boolean getMetric(Metric metric) throws Exception {
         return getMetric(metric.getName());
     }
