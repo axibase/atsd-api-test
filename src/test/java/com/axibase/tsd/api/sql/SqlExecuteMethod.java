@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class that execute sql query on ATSD
+ *
  * @author Igor Shmagrinskiy
  */
 public class SqlExecuteMethod extends Method {
@@ -72,9 +74,6 @@ public class SqlExecuteMethod extends Method {
                 .setDefaultCredentialsProvider(credsProvider).build();
     }
 
-    /**
-     *
-     */
     public SqlExecuteMethod() throws IOException {
         config = Config.getInstance();
         setUpHttpClient();

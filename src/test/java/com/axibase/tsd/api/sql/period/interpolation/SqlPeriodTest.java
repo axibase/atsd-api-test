@@ -23,22 +23,27 @@ import java.util.*;
 
 
 /**
+ * Test cases for testing SQL PERIOD function
+ *
  * @author Igor Shmagrinsky
+ * @see <a href="https://nur.axibase.com:41791/redmine/issues/1475">#1475</a>
  */
-public class SqlPeriodInterpolationTest {
+public class SqlPeriodTest {
     private static final String TEST_PREFIX = "sql-period-interpolation";
+    private static Entity testEntity = new Entity(TEST_PREFIX + "-entity");
+    private static Metric testMetric = new Metric(TEST_PREFIX + "-metric");
     private static final Double[] valuesDistribution = {18.0, 8.0, 0.0, 6.0, 19.0, 19.0};
     private static final Long PERIOD_LENGTH = 300000L;
     private static final Double EPS = 10e-3;
-    private static final Logger logger = LoggerFactory.getLogger(SqlPeriodInterpolationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqlPeriodTest.class);
     private static final Date startDate = Util.parseISODate("2016-06-03T09:20:00.000Z");
-    private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH*2);
+    private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH * 2);
 
 
-    private Map<Date,Double> loadQueryResult(String queryFileName) throws IOException, JSONException {
+    private Map<Date, Double> loadQueryResult(String queryFileName) throws IOException, JSONException {
         String workDir = System.getProperty("user.dir");
         String testDataDirectory = workDir + "/src/test/java/com/axibase/tsd/api/sql/data/period/interpolation/";
-        String path  = testDataDirectory + queryFileName;
+        String path = testDataDirectory + queryFileName;
         return resultAsMap(new SqlExecuteMethod().queryAsJson(Util.readFile(path)));
     }
 
@@ -49,12 +54,10 @@ public class SqlPeriodInterpolationTest {
 
     private static void createTestData(Double[] valuesDistribution, Long periodLength, Date startDate) throws Exception {
         Random random = new Random();
-        Entity testEntity = new Entity(TEST_PREFIX + "-entity");
         testEntity.addTag("type", "test");
         EntityMethod testEntityMethod = new EntityMethod();
         EntityMethod.prepare();
         testEntityMethod.createOrUpdateCheck(testEntity);
-        Metric testMetric = new Metric(TEST_PREFIX + "-metric");
         MetricMethod testMetricMethod = new MetricMethod();
         testMetricMethod.createOrReplaceMetric(testMetric);
         Series series = new Series();
@@ -69,7 +72,7 @@ public class SqlPeriodInterpolationTest {
                 samplesCount++;
             }
         }
-        Date endDate = new Date(startDate.getTime() + PERIOD_LENGTH*valuesDistribution.length);
+        Date endDate = new Date(startDate.getTime() + periodLength * valuesDistribution.length);
         SeriesMethod seriesMethod = new SeriesMethod();
         seriesMethod.insertSeries(series);
         waitForData(startDate, endDate, samplesCount);
@@ -94,7 +97,7 @@ public class SqlPeriodInterpolationTest {
         String valueColumnName = columns
                 .getJSONObject(2)
                 .getString("name");
-        for (int i = 0; i<data.length(); i++) {
+        for (int i = 0; i < data.length(); i++) {
             JSONObject row = data.getJSONObject(i);
             Date periodDate = Util.parseISODate((String) row.get(keyColumnName));
             Double periodValue = Double.parseDouble((String) row.get(valueColumnName));
@@ -103,7 +106,19 @@ public class SqlPeriodInterpolationTest {
         return results;
     }
 
-    private static void waitForData(Date startDate,Date endDate,Integer samplesCount) throws ParseException, JSONException, IOException {
+    private double[] getValuesSortByKeys(Map<Date, Double> result)  {
+        Object[] keys = result.keySet().toArray();
+        Arrays.sort(keys);
+        double[] resultValues = new double[keys.length];
+        int count = 0;
+        for (Object key: keys) {
+            resultValues[count] = result.get(key);
+            count++;
+        }
+        return resultValues;
+    }
+
+    private static void waitForData(Date startDate, Date endDate, Integer samplesCount) throws ParseException, JSONException, IOException {
         SeriesQuery seriesQuery = new SeriesQuery(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric", startDate.getTime(), endDate.getTime());
         ArrayList<SeriesQuery> queryList = new ArrayList<SeriesQuery>();
         SeriesMethod seriesMethod = new SeriesMethod();
@@ -112,10 +127,12 @@ public class SqlPeriodInterpolationTest {
         do {
             JSONArray result = seriesMethod.queryAsJson(queryList);
             resultLength = result.getJSONObject(0).getJSONArray("data").length();
-            System.out.println(resultLength + " " +  samplesCount);
+            System.out.println(resultLength + " " + samplesCount);
         }
         while (!samplesCount.equals(resultLength));
     }
+
+
     /**
      * Test that PERIOD(TIME) does not contain missing period
      *
@@ -124,7 +141,7 @@ public class SqlPeriodInterpolationTest {
      */
     @Test
     public void testContainsOfMissingValue() throws IOException, JSONException {
-        Map<Date, Double>result = loadQueryResult("no-interpolation.sql");
+        Map<Date, Double> result = loadQueryResult("no-interpolation.sql");
         Boolean containsMissingValue = result.containsKey(missingPeriodDate);
         Assert.assertEquals(containsMissingValue, false);
     }
@@ -138,7 +155,7 @@ public class SqlPeriodInterpolationTest {
      */
     @Test
     public void testFillingTheGaps() throws IOException, JSONException {
-        Map<Date, Double>result = loadQueryResult("fill-the-gaps.sql");
+        Map<Date, Double> result = loadQueryResult("fill-the-gaps.sql");
         Double missingPeriodValue = result.get(missingPeriodDate);
         Assert.assertEquals(missingPeriodValue, 0L, EPS);
     }
@@ -152,7 +169,7 @@ public class SqlPeriodInterpolationTest {
      */
     @Test
     public void testNegativeFillingTheGaps() throws IOException, JSONException {
-        Map<Date, Double>result = loadQueryResult("negative-fill-the-gaps.sql");
+        Map<Date, Double> result = loadQueryResult("negative-fill-the-gaps.sql");
         Double missingPeriodValue = result.get(missingPeriodDate);
         Assert.assertEquals(missingPeriodValue, -1L, EPS);
     }
@@ -166,7 +183,7 @@ public class SqlPeriodInterpolationTest {
      */
     @Test
     public void testPreviousFillingTheGaps() throws IOException, JSONException {
-        Map<Date, Double>result = loadQueryResult("set-previous.sql");
+        Map<Date, Double> result = loadQueryResult("set-previous.sql");
         Double missingPeriodValue = result.get(missingPeriodDate);
         Assert.assertEquals(missingPeriodValue, valuesDistribution[1], EPS);
     }
@@ -181,10 +198,44 @@ public class SqlPeriodInterpolationTest {
      */
     @Test
     public void testLinearInterpolation() throws IOException, JSONException {
-        Map<Date, Double>result = loadQueryResult("linear-interpolation.sql");
+        Map<Date, Double> result = loadQueryResult("linear-interpolation.sql");
         Double missingPeriodValue = result.get(missingPeriodDate);
-        Double interpolatedValue =valuesDistribution[3] + (valuesDistribution[1] - valuesDistribution[3])/2;
+        Double interpolatedValue = valuesDistribution[3] + (valuesDistribution[1] - valuesDistribution[3]) / 2;
         System.out.println(interpolatedValue);
         Assert.assertEquals(missingPeriodValue, interpolatedValue, EPS);
+    }
+
+
+    /**
+     * Test that PERIOD(TIME, LINEAR) filling missing multiple period with
+     * linear interpolated value
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
+    @Test
+    public void testMultiplePeriodLinearInterpolation() throws Exception {
+        Double[] valueDistributions = {4.0, 0.0, 0.0, 0.0, 0.0, 3.0};
+        double[] expectedValues = {4.0, 3.8, 3.6, 3.4, 3.2, 3.0};
+        createTestData(valueDistributions, 60000L, Util.parseISODate("2016-06-03T09:00:00.000Z"));
+        Map<Date, Double> result = loadQueryResult("multiple-period-interpolation.sql");
+        double[] resultValues = getValuesSortByKeys(result);
+        Assert.assertArrayEquals(resultValues, expectedValues, EPS);
+    }
+
+    /**
+     * Test that PERIOD (TIME, VALUE) HAVING CONDITION filters values by
+     * condition
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHavingClause() throws Exception {
+        Double[] valueDistributions = {4.0, 0.0, 1.0, 1.0, 1.0, 3.0};
+        double[] expectedValues = {4.0, 0.0, 0.0, 0.0, 0.0, 3.0};
+        createTestData(valueDistributions, 60000L, Util.parseISODate("2016-06-03T09:10:00.000Z"));
+        Map<Date, Double> result = loadQueryResult("having-clause.sql");
+        double[] resultValues = getValuesSortByKeys(result);
+        Assert.assertArrayEquals(resultValues, expectedValues, EPS);
     }
 }
