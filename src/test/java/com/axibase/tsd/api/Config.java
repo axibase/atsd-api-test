@@ -13,8 +13,8 @@ import java.util.Properties;
  */
 public class Config {
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
-    private static final String DEFAULT_CONFIG_FILE = "src/test/resources/client.properties";
-    private static final String DEV_CONFIG_FILE = "src/test/resources/dev.client.properties";
+    private static final String DEFAULT_CONFIG_FILE = "client.properties";
+    private static final String DEV_CONFIG_FILE = "dev.client.properties";
     private static Config instance = null;
     private String login;
     private String password;
@@ -50,18 +50,14 @@ public class Config {
         return logger;
     }
 
-    public static String getDefaultConfigFile() {
-        return DEFAULT_CONFIG_FILE;
-    }
-
-    public static Config getInstance() {
+    public static Config getInstance() throws NullPointerException {
         if (null == instance) {
-            if (new File(DEV_CONFIG_FILE).exists()) {
+            if (new File(Config.class.getClassLoader().getResource(DEV_CONFIG_FILE).getFile()).exists()) {
                 logger.debug("Using dev.client.properties for config");
-                instance = new Config(DEV_CONFIG_FILE);
+                instance = new Config(Config.class.getClassLoader().getResource(DEV_CONFIG_FILE).getFile());
             } else {
                 logger.debug("Using client.properties for config");
-                instance = new Config(DEFAULT_CONFIG_FILE);
+                instance = new Config(Config.class.getClassLoader().getResource(DEFAULT_CONFIG_FILE).getFile());
             }
         }
         return instance;
