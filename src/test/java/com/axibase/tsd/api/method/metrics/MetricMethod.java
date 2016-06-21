@@ -44,11 +44,15 @@ public class MetricMethod extends Method {
         return 200 == response.getCode();
     }
 
+    public Boolean metricExists(Metric metric) throws Exception {
+        return getMetric(metric);
+    }
+
     protected Boolean getMetric(Metric metric) throws Exception {
         return getMetric(metric.getName());
     }
 
-    protected Boolean deleteMetric(String metric) throws IOException {
+    public Boolean deleteMetric(String metric) throws IOException {
         AtsdHttpResponse response = httpSender.send(HTTPMethod.DELETE, METHOD_METRICS + URLEncoder.encode(metric, "UTF-8"), null);
         if (200 == response.getCode()) {
             logger.debug("Metric looks deleted");
@@ -58,9 +62,11 @@ public class MetricMethod extends Method {
         return 200 == response.getCode();
     }
 
-    protected Boolean deleteMetric(Metric metric) throws IOException {
+    public Boolean deleteMetric(Metric metric) throws IOException {
         return deleteMetric(metric.getName());
     }
+
+
 
     protected String getMetricField(String field) {
         if (returnedMetric == null) {

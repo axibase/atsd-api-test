@@ -1,8 +1,14 @@
 package com.axibase.tsd.api;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.lang.invoke.MethodHandles;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -140,5 +146,56 @@ public class Util {
             sb.append(c);
         }
         return sb.toString();
+    }
+
+    /**
+     * Translate HttpResponse to different classes
+     * <ul>
+     *     <li>{@link String}</li>
+     *     <li>{@link JSONObject}</li>
+     *     <li>{@link JSONArray}</li>
+     * </ul>
+     */
+    public static class HttpResponseTranslator {
+        public static String asString(HttpResponse response) throws IOException {
+            InputStream is = response.getEntity().getContent();
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(is, writer, "utf8");
+            return writer.toString();
+        }
+
+        public static JSONObject asJsonObject(HttpResponse response) throws IOException, JSONException {
+            String jsonString = asString(response);
+            return new JSONObject(jsonString);
+        }
+
+        public static JSONArray asJsonArray(HttpResponse response) throws IOException, JSONException {
+            String jsonString = asString(response);
+            return new JSONArray(jsonString);
+        }
+    }
+
+
+    /**
+     * Read file content as srting
+     * @param fileName  path to file
+     * @return String  content of file
+     * @throws IOException
+     */
+    public static String readFile(String fileName) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\r\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        } finally {
+            br.close();
+        }
     }
 }

@@ -46,7 +46,7 @@ public class EntityMethod extends Method {
     }
 
 
-    Boolean entityExist(final Entity entity) throws IOException {
+    public Boolean entityExist(final Entity entity) throws IOException {
         return entityExist(entity, true);
     }
 
@@ -64,6 +64,16 @@ public class EntityMethod extends Method {
         } catch (AssertionError e) {
             return false;
         }
-        return true;
+        return response.getCode() == 200;
+    }
+
+    public void deleteEntity(String entityName) throws IOException {
+        final String path = METHOD_ENTITIES + entityName;
+        Map<String, Object> payload = new HashMap<>();
+        AtsdHttpResponse response = httpSender.send(HTTPMethod.DELETE, path, (new JSONObject(payload).toJSONString()));
+        if (response.getCode() != 200) {
+            throw new IOException("Failed to delete entity");
+        }
+
     }
 }
