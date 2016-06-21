@@ -16,6 +16,9 @@ public class Series extends Model {
     private Map<String, String> tags;
 
     public Series() {
+        //threw NPE when i try addData
+        data = new ArrayList<>();
+        tags = new HashMap<>();
     }
 
     public Series(String entity, String metric) {
