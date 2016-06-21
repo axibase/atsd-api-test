@@ -38,6 +38,7 @@ public class SqlPeriodInterpolationTest {
     private static final Double[] valuesDistribution = {18.0, 8.0, 0.0, 6.0, 19.0, 19.0};
     private static final Long PERIOD_LENGTH = 300000L;
     private static final Double EPS = 10e-3;
+    private static Series series = new Series(testEntity.getName(),testMetric.getName());
     private static final Long QUERY_EXECUTION_TIMEOUT = 2000L;
     private static final Date startDate = Util.parseISODate("2016-06-03T09:20:00.000Z");
     private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH * 2);
@@ -65,9 +66,8 @@ public class SqlPeriodInterpolationTest {
         testMetricMethod.createOrReplaceMetric(testMetric);
         boolean created;
         do {
-            created = testEntityMethod.entityExist(testEntity) && testMetricMethod.metricExists(testMetric);
+            created = entityExists(testEntity) && metricExists(testMetric);
         } while (!created);
-        Series series = new Series(testEntity.getName(), testMetric.getName());
         Integer samplesCount = 0;
         for (int i = 0; i < valuesDistribution.length; i++) {
             for (int j = 0; j < valuesDistribution[i]; j++) {
@@ -92,7 +92,7 @@ public class SqlPeriodInterpolationTest {
         Long deleteStartTime = System.currentTimeMillis();
         boolean deleted;
         do {
-            deleted = !testEntityMethod.entityExist(testEntity) && !testMetricMethod.metricExists(testMetric);
+            deleted = !entityExists(testEntity) && !metricExists(testMetric);
             if ((System.currentTimeMillis() - deleteStartTime) > QUERY_EXECUTION_TIMEOUT) {
                 throw new TimeoutException("Entity and metric are deleted too long!");
             }
@@ -119,6 +119,23 @@ public class SqlPeriodInterpolationTest {
             results.put(periodDate, periodValue);
         }
         return results;
+    }
+
+    private static Boolean entityExists(Entity entity) throws IOException {
+        EntityMethod entityMethod = new EntityMethod();
+        try {
+            return entityMethod.entityExist(entity);
+        } catch (AssertionError e) {
+            return false;
+        }
+    }
+
+    private static Boolean metricExists(Metric metric) throws IOException {
+        try {
+            return new MetricMethod().metricExists(metric);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private double[] getValuesSortByKeys(Map<Date, Double> result) {
