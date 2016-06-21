@@ -29,7 +29,7 @@ import java.util.*;
  * @author Igor Shmagrinsky
  * @see <a href="https://nur.axibase.com:41791/redmine/issues/1475">#1475</a>
  */
-public class SqlPeriodTest {
+public class SqlPeriodInterpolationTest {
     private static final String TEST_PREFIX = "sql-period-interpolation";
     private static Entity testEntity = new Entity(TEST_PREFIX + "-entity");
     private static Metric testMetric = new Metric(TEST_PREFIX + "-metric");
@@ -42,7 +42,7 @@ public class SqlPeriodTest {
 
     private Map<Date, Double> loadQueryResult(String queryFileName) throws IOException, JSONException {
         String workDir = System.getProperty("user.dir");
-        String testDataDirectory = workDir + "/src/test/java/com/axibase/tsd/api/sql/data/period/interpolation/";
+        String testDataDirectory = workDir + "/src/test/resources/sql/period/interpolation/";
         String path = testDataDirectory + queryFileName;
         return resultAsMap(new SqlExecuteMethod().queryAsJson(Util.readFile(path)));
     }
