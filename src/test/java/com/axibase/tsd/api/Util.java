@@ -147,17 +147,6 @@ public class Util {
         }
         return sb.toString();
     }
-    /**
-     * Parse date from ISO8601 format string
-     *
-     * @param dateString sting in ISO8601 format
-     *                   @see <a href ="https://en.wikipedia.org/wiki/ISO_8601">ISO8601</>
-     * @return Date Date class' object
-     */
-    public static Date parseISODate(String dateString) {
-        return javax.xml.bind.DatatypeConverter.parseDateTime(dateString).getTime();
-    }
-
 
     /**
      * Translate HttpResponse to different classes

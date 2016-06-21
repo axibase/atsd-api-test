@@ -40,7 +40,7 @@ public class SqlPeriodInterpolationTest {
     private static final Double EPS = 10e-3;
     private static Series series = new Series(testEntity.getName(),testMetric.getName());
     private static final Long QUERY_EXECUTION_TIMEOUT = 2000L;
-    private static final Date startDate = Util.parseISODate("2016-06-03T09:20:00.000Z");
+    private static final Date startDate = parseISODate("2016-06-03T09:20:00.000Z");
     private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH * 2);
 
 
@@ -54,6 +54,15 @@ public class SqlPeriodInterpolationTest {
     @BeforeClass
     public static void initialize() throws Exception {
         createTestData(valuesDistribution, PERIOD_LENGTH, startDate);
+    }
+
+
+    private static Date parseISODate(String date) {
+        try {
+            return Util.getDate(date);
+        }catch (java.text.ParseException pe) {
+            return null;
+        }
     }
 
     private static void createTestData(Double[] valuesDistribution, Long periodLength, Date startDate) throws Exception {
@@ -114,7 +123,7 @@ public class SqlPeriodInterpolationTest {
                 .getString("name");
         for (int i = 0; i < data.length(); i++) {
             JSONObject row = data.getJSONObject(i);
-            Date periodDate = Util.parseISODate((String) row.get(keyColumnName));
+            Date periodDate = parseISODate((String) row.get(keyColumnName));
             Double periodValue = Double.parseDouble((String) row.get(valueColumnName));
             results.put(periodDate, periodValue);
         }
@@ -256,7 +265,7 @@ public class SqlPeriodInterpolationTest {
     public void testMultiplePeriodLinearInterpolation() throws Exception {
         Double[] valueDistributions = {4.0, 0.0, 0.0, 0.0, 0.0, 3.0};
         double[] expectedValues = {4.0, 3.8, 3.6, 3.4, 3.2, 3.0};
-        createTestData(valueDistributions, 60000L, Util.parseISODate("2016-06-03T09:00:00.000Z"));
+        createTestData(valueDistributions, 60000L, parseISODate("2016-06-03T09:00:00.000Z"));
         Map<Date, Double> result = loadQueryResult("multiple-period-interpolation.sql");
         double[] resultValues = getValuesSortByKeys(result);
         Assert.assertArrayEquals(resultValues, expectedValues, EPS);
@@ -272,7 +281,7 @@ public class SqlPeriodInterpolationTest {
     public void testHavingClause() throws Exception {
         Double[] valueDistributions = {4.0, 0.0, 1.0, 1.0, 1.0, 3.0};
         double[] expectedValues = {4.0, 0.0, 0.0, 0.0, 0.0, 3.0};
-        createTestData(valueDistributions, 60000L, Util.parseISODate("2016-06-03T09:10:00.000Z"));
+        createTestData(valueDistributions, 60000L, parseISODate("2016-06-03T09:10:00.000Z"));
         Map<Date, Double> result = loadQueryResult("having-clause.sql");
         double[] resultValues = getValuesSortByKeys(result);
         Assert.assertArrayEquals(resultValues, expectedValues, EPS);
