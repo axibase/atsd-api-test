@@ -122,7 +122,7 @@ public class SqlExecuteMethod extends Method {
 
     public JSONObject queryAsJson(String sqlQuery){
         try {
-            return  Util.HttpResponseTranslator.asJson(query(sqlQuery));
+            return  Util.HttpResponseTranslator.asJsonObject(query(sqlQuery));
         } catch (IOException e) {
             logger.error("Failed to execute following sql query: {} \n. {}",sqlQuery, e.getMessage());
         } catch (JSONException e) {

@@ -1,11 +1,14 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.Method;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.transport.http.AtsdHttpResponse;
 import com.axibase.tsd.api.transport.http.HTTPMethod;
+import org.apache.http.HttpResponse;
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -87,6 +90,22 @@ public class SeriesMethod extends Method {
         }
         returnedSeries = (JSONArray) jsonParser.parse(response.getBody());
         return 200 == response.getCode();
+
+    }
+
+    public org.json.JSONArray queryAsJson(final ArrayList<SeriesQuery> seriesQueries) throws IOException, ParseException, JSONException {
+        JSONArray request = new JSONArray();
+        for (SeriesQuery seriesQuery : seriesQueries) {
+            request.add(queryToJSONObject(seriesQuery));
+        }
+        final AtsdHttpResponse response = httpSender.send(HTTPMethod.POST, METHOD_SERIES_QUERY, request.toJSONString());
+        if (200 == response.getCode()) {
+            logger.debug("Query looks succeeded");
+        } else {
+            logger.error("Failed to execute series query");
+        }
+        logger.debug(response.getBody());
+        return  new org.json.JSONArray(response.getBody());
 
     }
 

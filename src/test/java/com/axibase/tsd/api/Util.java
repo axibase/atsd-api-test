@@ -2,6 +2,7 @@ package com.axibase.tsd.api;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -153,7 +154,7 @@ public class Util {
      *                   @see <a href ="https://en.wikipedia.org/wiki/ISO_8601">ISO8601</>
      * @return Date Date class' object
      */
-    public static Date parseDate(String dateString) {
+    public static Date parseISODate(String dateString) {
         return javax.xml.bind.DatatypeConverter.parseDateTime(dateString).getTime();
     }
 
@@ -163,6 +164,7 @@ public class Util {
      * <ul>
      *     <li>{@link String}</li>
      *     <li>{@link JSONObject}</li>
+     *     <li>{@link JSONArray}</li>
      * </ul>
      */
     public static class HttpResponseTranslator {
@@ -173,9 +175,14 @@ public class Util {
             return writer.toString();
         }
 
-        public static JSONObject asJson(HttpResponse response) throws IOException, JSONException {
+        public static JSONObject asJsonObject(HttpResponse response) throws IOException, JSONException {
             String jsonString = asString(response);
             return new JSONObject(jsonString);
+        }
+
+        public static JSONArray asJsonArray(HttpResponse response) throws IOException, JSONException {
+            String jsonString = asString(response);
+            return new JSONArray(jsonString);
         }
     }
 
@@ -194,7 +201,7 @@ public class Util {
 
             while (line != null) {
                 sb.append(line);
-                sb.append("\n");
+                sb.append("\r\n");
                 line = br.readLine();
             }
             return sb.toString();
