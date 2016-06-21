@@ -37,12 +37,9 @@ public class SqlPeriodAlignTest {
     private static Metric testMetric = new Metric(TEST_PREFIX + "-metric");
     private static final Double[] valuesDistribution = {18.0, 8.0, 0.0, 6.0, 19.0, 19.0};
     private static final Long PERIOD_LENGTH = 300000L;
-    private static final Double EPS = 10e-3;
     private static Series series = new Series(testEntity.getName(),testMetric.getName());
     private static final Long QUERY_EXECUTION_TIMEOUT = 2000L;
     private static final Date startDate = parseISODate("2016-06-03T09:20:00.123Z");
-    private static final Date endDate = parseISODate("2016-06-03T09:50:00.321Z");
-    private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH * 2);
 
 
     private Map<Date, Double> loadQueryResult(String queryFileName) throws IOException, JSONException {
@@ -168,7 +165,12 @@ public class SqlPeriodAlignTest {
     }
 
 
-
+    /**
+     * Test that PERIOD(TIME, NONE, END_TIME) contains right first period
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
     @Test
     public void endTimeAlignmentFirstPeriod() throws IOException, JSONException {
         Map<Date, Double> result = loadQueryResult("end-time-alignment.sql");
@@ -177,7 +179,12 @@ public class SqlPeriodAlignTest {
         Assert.assertEquals(expectedFirstPeriodDate.getTime(), resultFirstPeriodDate.getTime());
     }
 
-
+    /**
+     * Test that PERIOD(TIME, NONE, END_TIME) contains right last period
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
     @Test
     public void endTimeAlignmentLastPeriod() throws IOException, JSONException {
         Map<Date, Double> result = loadQueryResult("end-time-alignment.sql");
@@ -186,6 +193,13 @@ public class SqlPeriodAlignTest {
         Assert.assertEquals(expectedLastPeriodDate.getTime(), resultLastPeriodDate.getTime());
     }
 
+
+    /**
+     * Test that PERIOD(TIME, NONE, START_TIME) contains right first period
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
     @Test
     public void startTimeAlignmentFirstPeriod() throws IOException, JSONException {
         Map<Date, Double> result = loadQueryResult("start-time-alignment.sql");
@@ -194,7 +208,12 @@ public class SqlPeriodAlignTest {
         Assert.assertEquals(expectedFirstPeriodDate.getTime(), resultFirstPeriodDate.getTime());
     }
 
-
+    /**
+     * Test that PERIOD(TIME, NONE, START_TIME) contains right last period
+     *
+     * @throws IOException
+     * @throws JSONException
+     */
     @Test
     public void startTimeAlignmentLastPeriod() throws IOException, JSONException {
         Map<Date, Double> result = loadQueryResult("start-time-alignment.sql");
