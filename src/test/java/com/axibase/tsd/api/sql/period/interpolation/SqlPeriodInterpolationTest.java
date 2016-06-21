@@ -21,21 +21,24 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 
 /**
  * Test cases for testing SQL PERIOD function
  *
  * @author Igor Shmagrinsky
- * @see <a href="https://nur.axibase.com:41791/redmine/issues/1475">#1475</a>
+ * @see <a href="redmine/issues/1475">#1475</a>
  */
 public class SqlPeriodInterpolationTest {
+
     private static final String TEST_PREFIX = "sql-period-interpolation";
     private static Entity testEntity = new Entity(TEST_PREFIX + "-entity");
     private static Metric testMetric = new Metric(TEST_PREFIX + "-metric");
     private static final Double[] valuesDistribution = {18.0, 8.0, 0.0, 6.0, 19.0, 19.0};
     private static final Long PERIOD_LENGTH = 300000L;
     private static final Double EPS = 10e-3;
+    private static final Long QUERY_EXECUTION_TIMEOUT = 2000L;
     private static final Date startDate = Util.parseISODate("2016-06-03T09:20:00.000Z");
     private final Date missingPeriodDate = new Date(startDate.getTime() + PERIOD_LENGTH * 2);
 
@@ -63,10 +66,8 @@ public class SqlPeriodInterpolationTest {
         boolean created;
         do {
             created = testEntityMethod.entityExist(testEntity) && testMetricMethod.metricExists(testMetric);
-        }while (!created);
-        Series series = new Series();
-        series.setEntity(testEntity.getName());
-        series.setMetric(testMetric.getName());
+        } while (!created);
+        Series series = new Series(testEntity.getName(), testMetric.getName());
         Integer samplesCount = 0;
         for (int i = 0; i < valuesDistribution.length; i++) {
             for (int j = 0; j < valuesDistribution[i]; j++) {
@@ -86,12 +87,16 @@ public class SqlPeriodInterpolationTest {
     public static void clearTestData() throws Exception {
         EntityMethod testEntityMethod = new EntityMethod();
         MetricMethod testMetricMethod = new MetricMethod();
-        testEntityMethod.deleteEntity(TEST_PREFIX + "-entity");
-        new MetricMethod().deleteMetric(TEST_PREFIX + "-metric");
+        testEntityMethod.deleteEntity(testEntity.getName());
+        testMetricMethod.deleteMetric(testMetric.getName());
+        Long deleteStartTime = System.currentTimeMillis();
         boolean deleted;
         do {
             deleted = !testEntityMethod.entityExist(testEntity) && !testMetricMethod.metricExists(testMetric);
-        }while (!deleted);
+            if ((System.currentTimeMillis() - deleteStartTime) > QUERY_EXECUTION_TIMEOUT) {
+                throw new TimeoutException("Entity and metric are deleted too long!");
+            }
+        } while (!deleted);
     }
 
     private Map<Date, Double> resultAsMap(JSONObject resultJSON) throws JSONException {
@@ -116,13 +121,13 @@ public class SqlPeriodInterpolationTest {
         return results;
     }
 
-    private double[] getValuesSortByKeys(Map<Date, Double> result)  {
+    private double[] getValuesSortByKeys(Map<Date, Double> result) {
         List<Date> keys = new ArrayList<>();
         keys.addAll(result.keySet());
         Collections.sort(keys);
         double[] resultValues = new double[keys.size()];
         int count = 0;
-        for (Date key: keys) {
+        for (Date key : keys) {
             if (result.containsKey(key)) {
                 resultValues[count] = result.get(key);
                 count++;
@@ -131,16 +136,20 @@ public class SqlPeriodInterpolationTest {
         return resultValues;
     }
 
-    private static void waitForSeriesData(Date startDate, Date endDate, Integer samplesCount) throws ParseException, JSONException, IOException {
+    private static void waitForSeriesData(Date startDate, Date endDate, Integer samplesCount) throws ParseException, JSONException, IOException, TimeoutException {
         SeriesQuery seriesQuery = new SeriesQuery(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric", startDate.getTime(), endDate.getTime());
         ArrayList<SeriesQuery> queryList = new ArrayList<>();
         SeriesMethod seriesMethod = new SeriesMethod();
         queryList.add(seriesQuery);
+        Long createStartTime = System.currentTimeMillis();
         Integer resultLength;
         do {
             JSONArray result = seriesMethod.queryAsJson(queryList);
             resultLength = result.getJSONObject(0).getJSONArray("data").length();
             System.out.println(resultLength + " " + samplesCount);
+            if ((System.currentTimeMillis() - createStartTime) > QUERY_EXECUTION_TIMEOUT) {
+                throw new TimeoutException("Series data is created too long!");
+            }
         }
         while (!samplesCount.equals(resultLength));
     }

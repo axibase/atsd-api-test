@@ -54,6 +54,7 @@ public class EntityMethod extends Method {
         String entityJson = jacksonMapper.writeValueAsString(entity);
 
         AtsdHttpResponse response = httpSender.sendGet(METHOD_ENTITIES + entity.getName());
+        assertEquals(200, response.getCode());
         logger.debug("check: {}\nresponse: {}", entityJson, response.getBody());
 
         try {
