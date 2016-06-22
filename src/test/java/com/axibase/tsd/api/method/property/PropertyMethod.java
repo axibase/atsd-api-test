@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.method.BaseMethod;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
  * @author Dmitry Korchagin.
  */
 @SuppressWarnings("unchecked")
-class PropertyMethod extends ApiMethod {
+class PropertyMethod extends BaseMethod {
     static final String METHOD_PROPERTY_INSERT = "/properties/insert";
     static final String METHOD_PROPERTY_QUERY = "/properties/query";
     static final String METHOD_PROPERTY_DELETE = "/properties/delete";
@@ -46,7 +46,7 @@ class PropertyMethod extends ApiMethod {
                 }
             }});
         }};
-        Response response = httpResource.path(METHOD_PROPERTY_INSERT)
+        Response response = httpApiResource.path(METHOD_PROPERTY_INSERT)
                 .request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() != 200) {
             throw new IOException("Fail to insert property");
@@ -84,7 +84,7 @@ class PropertyMethod extends ApiMethod {
 
         String propertyJson = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.json(request));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.json(request));
         if (response.getStatus() != 200) {
             throw new IOException("Fail to execute property query");
         }
@@ -106,7 +106,7 @@ class PropertyMethod extends ApiMethod {
         JSONArray query = new JSONArray() {{
             add(new JSONObject(request));
         }};
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.entity(query.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.entity(query.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         assertEquals(200, response.getStatus());
 
         return response.readEntity(String.class);
@@ -146,7 +146,7 @@ class PropertyMethod extends ApiMethod {
 
             }});
         }
-        Response response = httpResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         assertEquals("Fail to delete properties", 200, response.getStatus());
     }
 
@@ -154,6 +154,6 @@ class PropertyMethod extends ApiMethod {
         JSONArray jsonArray = new JSONArray() {{
             add(new JSONObject(deleteObj));
         }};
-        return httpResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        return httpApiResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
     }
 }

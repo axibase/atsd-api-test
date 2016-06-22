@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import com.axibase.tsd.api.method.BaseMethod;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-public class MessageMethod extends ApiMethod {
+public class MessageMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     static final String METHOD_MESSAGE_INSERT = "/messages/insert";
@@ -28,7 +28,7 @@ public class MessageMethod extends ApiMethod {
             add(jsonParser.parse(jacksonMapper.writeValueAsString(message)));
         }};
 
-        Response response = httpResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         Thread.sleep(sleepDuration);
         if (200 == response.getStatus()) {
             logger.debug("Message looks inserted");
@@ -45,7 +45,7 @@ public class MessageMethod extends ApiMethod {
     protected String executeQuery(final MessageQuery messageQuery) throws IOException, ParseException{
         JSONObject request = (JSONObject) jsonParser.parse(jacksonMapper.writeValueAsString(messageQuery));
 
-        Response response = httpResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         if (200 == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {

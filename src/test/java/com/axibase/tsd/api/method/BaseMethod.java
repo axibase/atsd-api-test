@@ -1,4 +1,4 @@
-package com.axibase.tsd.base;
+package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
@@ -19,17 +19,14 @@ import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
-/**
- * Base method for non api queries like sql or csv
- *
- * @author Igor Shmagrinskiy
- */
+
 public abstract class BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     protected static TCPSender tcpSender;
     protected static ObjectMapper jacksonMapper;
-    protected static WebTarget httpResource;
+    protected static WebTarget httpApiResource;
+    protected static WebTarget httpRootResource;
     protected static Config config;
 
     static {
@@ -48,11 +45,12 @@ public abstract class BaseMethod {
             clientConfig.register(httpAuthenticationFeature);
             clientConfig.register(MultiPartFeature.class);
             clientConfig.register(new LoggingFeature());
-            httpResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
+            httpRootResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
                     .scheme(config.getProtocol())
                     .host(config.getServerName())
                     .port(config.getHttpPort())
                     .build());
+            httpApiResource = httpRootResource.path(config.getDataPath());
             tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));

@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.method.BaseMethod;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmitry Korchagin.
  */
-public class EntityMethod extends ApiMethod {
+public class EntityMethod extends BaseMethod {
     static final String METHOD_ENTITIES = "/entities/";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -35,7 +35,7 @@ public class EntityMethod extends ApiMethod {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("tags", entity.getTags());
-        Response response = httpResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().put(javax.ws.rs.client.Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().put(javax.ws.rs.client.Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() != 200) {
             throw new IOException("Fail to insert entity");
         }
@@ -51,7 +51,7 @@ public class EntityMethod extends ApiMethod {
 
     Boolean entityExist(final Entity entity, Boolean allowExtraFields) throws IOException {
         String entityJson = jacksonMapper.writeValueAsString(entity);
-        Response response = httpResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().get();
+        Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().get();
         assertEquals(200, response.getStatus());
         String responseJson = response.readEntity(String.class);
         logger.debug("check: {}\nresponse: {}", entityJson, responseJson);

@@ -520,7 +520,7 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(400, response.getStatus());
         assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
@@ -534,7 +534,7 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(400, response.getStatus());
         assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
@@ -547,7 +547,7 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(400, response.getStatus());
         assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
@@ -562,7 +562,7 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(400, response.getStatus());
         assertEquals("{\"error\":\"IllegalArgumentException: Missing parameters. One of the following combinations is required: interval, interval + startTime/startDate, interval + endTime/endDate, startTime/startDate + endTime/endDate\"}", response.readEntity(String.class));
     }
@@ -577,7 +577,7 @@ public class PropertyQueryTest extends PropertyMethod {
             }});
         }};
 
-        Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_QUERY).request().post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(400, response.getStatus());
         assertEquals("{\"error\":\"IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty\"}", response.readEntity(String.class));
     }

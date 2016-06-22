@@ -157,7 +157,7 @@ public class PropertyInsertTest extends PropertyMethod {
         JSONArray request = new JSONArray() {{
             add(new JSONObject(insertObj));
         }};
-        Response response = httpResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(500, response.getStatus());
         assertTrue(response.readEntity(String.class).contains("UnrecognizedPropertyException"));
 
@@ -187,7 +187,7 @@ public class PropertyInsertTest extends PropertyMethod {
         for (Map obj : insertObjects) {
             insertArray.add(new JSONObject(obj));
         }
-        Response response = httpResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(insertArray, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(insertArray, MediaType.APPLICATION_JSON_TYPE));
         assertEquals("Fail to execute delete query", 200, response.getStatus());
     }
 

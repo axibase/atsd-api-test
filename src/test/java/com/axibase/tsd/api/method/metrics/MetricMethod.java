@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.metrics;
 
-import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.method.BaseMethod;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-public class MetricMethod extends ApiMethod {
+public class MetricMethod extends BaseMethod {
     protected static final String METHOD_METRICS = "/metrics/";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private JSONObject returnedMetric;
@@ -21,7 +21,7 @@ public class MetricMethod extends ApiMethod {
 
     public Boolean createOrReplaceMetric(Metric metric) throws Exception {
         JSONObject request = (JSONObject) jsonParser.parse(jacksonMapper.writeValueAsString(metric));
-        Response response = httpResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric.getName()).request().put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric.getName()).request().put(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
         if (200 == response.getStatus()) {
             logger.debug("Metric looks created or replaced");
         } else {
@@ -32,7 +32,7 @@ public class MetricMethod extends ApiMethod {
     }
 
     protected Boolean getMetric(String metric) throws Exception {
-        Response response = httpResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric).request().get();
+        Response response = httpApiResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric).request().get();
         if (200 == response.getStatus()) {
             logger.debug("Metric looks deleted");
         } else {
@@ -48,7 +48,7 @@ public class MetricMethod extends ApiMethod {
     }
 
     protected Boolean deleteMetric(String metric) throws IOException {
-        Response response = httpResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric).request().delete();
+        Response response = httpApiResource.path(METHOD_METRICS).path("{metric}").resolveTemplate("metric", metric).request().delete();
         if (200 == response.getStatus()) {
             logger.debug("Metric looks deleted");
         } else {

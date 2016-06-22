@@ -16,7 +16,7 @@ public class CSVInsertMethod extends SeriesMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     protected Boolean csvInsert(String entity, String csv, Map<String, String> tags, long sleepDuration) throws IOException, InterruptedException {
-        WebTarget csvInsert = httpResource.path(METHOD_CSV_INSERT).path("{entity}");
+        WebTarget csvInsert = httpApiResource.path(METHOD_CSV_INSERT).path("{entity}");
         if (tags != null && tags.size() > 0) {
             for (Map.Entry<String, String> entry : tags.entrySet()) {
                 csvInsert = csvInsert.queryParam(entry.getKey(), entry.getValue());
