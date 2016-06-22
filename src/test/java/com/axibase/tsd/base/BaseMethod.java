@@ -37,28 +37,29 @@ public abstract class BaseMethod {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
         java.util.logging.Logger.getLogger("").setLevel(Level.FINEST);
-        try {
-            prepare();
-        } catch (FileNotFoundException e) {
-            logger.error("Failed prepare BaseMethod class. Reason: {}", e.getMessage());
-            e.printStackTrace();
-        }
+        prepare();
     }
 
-    private static void prepare() throws FileNotFoundException {
-        config = Config.getInstance();
-        ClientConfig clientConfig = new ClientConfig();
-        HttpAuthenticationFeature httpAuthenticationFeature = HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword());
-        clientConfig.register(httpAuthenticationFeature);
-        clientConfig.register(MultiPartFeature.class);
-        clientConfig.register(new LoggingFeature());
-        httpResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
-                .scheme(config.getProtocol())
-                .host(config.getServerName())
-                .port(config.getHttpPort())
-                .build());
-        tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
-        jacksonMapper = new ObjectMapper();
-        jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
+    private static void prepare(){
+        try {
+            config = Config.getInstance();
+            ClientConfig clientConfig = new ClientConfig();
+            HttpAuthenticationFeature httpAuthenticationFeature = HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword());
+            clientConfig.register(httpAuthenticationFeature);
+            clientConfig.register(MultiPartFeature.class);
+            clientConfig.register(new LoggingFeature());
+            httpResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
+                    .scheme(config.getProtocol())
+                    .host(config.getServerName())
+                    .port(config.getHttpPort())
+                    .build());
+            tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
+            jacksonMapper = new ObjectMapper();
+            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
+        } catch (FileNotFoundException fne){
+            logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
+            throw new RuntimeException("Config file is not found!");
+        }
+
     }
 }
