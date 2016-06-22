@@ -3,9 +3,10 @@ package com.axibase.tsd.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -50,17 +51,23 @@ public class Config {
         return logger;
     }
 
-    public static Config getInstance() throws NullPointerException {
+    public static Config getInstance() throws FileNotFoundException {
         if (null == instance) {
-            if (new File(Config.class.getClassLoader().getResource(DEV_CONFIG_FILE).getFile()).exists()) {
-                logger.debug("Using dev.client.properties for config");
-                instance = new Config(Config.class.getClassLoader().getResource(DEV_CONFIG_FILE).getFile());
-            } else {
-                logger.debug("Using client.properties for config");
-                instance = new Config(Config.class.getClassLoader().getResource(DEFAULT_CONFIG_FILE).getFile());
-            }
+            if (tryInitConfig(DEV_CONFIG_FILE)) return instance;
+            if (tryInitConfig(DEFAULT_CONFIG_FILE)) return instance;
+            throw new FileNotFoundException("*client.properties not found");
         }
         return instance;
+    }
+
+    private static boolean tryInitConfig(String config) {
+        URL configUrl = Config.class.getClassLoader().getResource(config);
+        if (configUrl != null) {
+            logger.debug("Trying to use {} for config", config);
+            instance = new Config(configUrl.getFile());
+            return true;
+        }
+        return false;
     }
 
     private static String load(String name, Properties clientProperties, String defaultValue) {

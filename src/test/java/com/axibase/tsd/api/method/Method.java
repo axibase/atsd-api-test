@@ -15,6 +15,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.UriBuilder;
+import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -38,7 +39,7 @@ public abstract class Method {
     }
 
     @BeforeClass
-    public static void prepare() {
+    public static void prepare() throws FileNotFoundException {
         Config config = Config.getInstance();
         ClientConfig clientConfig = new ClientConfig();
         HttpAuthenticationFeature httpAuthenticationFeature = HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword());
