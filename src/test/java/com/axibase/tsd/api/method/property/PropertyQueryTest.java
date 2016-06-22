@@ -384,6 +384,40 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
+    public void testLastTrueMultiplePropertyInResponse() throws Exception {
+        final Property property = new Property("query-type6.1", "query-entity6.1");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "kv1");
+        property.setDate(Util.getPreviousDay());
+        insertPropertyCheck(property);
+
+        final Property lastProperty = new Property();
+        lastProperty.setType(property.getType());
+        lastProperty.setEntity(property.getEntity());
+        lastProperty.addTag("t1l", "tv1l");
+        lastProperty.setDate(Util.getCurrentDate());
+        insertPropertyCheck(lastProperty);
+
+        final Property lastPropertySecond = new Property();
+        lastPropertySecond.setType(property.getType());
+        lastPropertySecond.setEntity(property.getEntity());
+        lastPropertySecond.addTag("t1l", "tv1l");
+        lastPropertySecond.addKey("k2", "kv2");
+        lastPropertySecond.setDate(lastProperty.getDate());
+        insertPropertyCheck(lastPropertySecond);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("last", true);
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(lastProperty, lastPropertySecond));
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    @Test
     public void testStartPastIntervalGiveFuture() throws Exception {
         final Property property = new Property("query-type5", "query-entity5");
         property.addTag("t1", "tv1");
