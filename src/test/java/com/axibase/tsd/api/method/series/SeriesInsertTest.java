@@ -23,7 +23,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(t, largeNumber));
 
-        Metric metric = new Metric(metricName);
+        Metric metric = new Metric();
+        metric.setName(metricName);
         metric.setDataType(DataType.FLOAT);
 
         Assert.assertTrue("Failed to create metric", metricMethod.createOrReplaceMetric(metric));
@@ -47,7 +48,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(t, largeNumber));
 
-        Metric metric = new Metric(metricName);
+        Metric metric = new Metric();
+        metric.setName(metricName);
         metric.setDataType(DataType.DECIMAL);
 
         Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
@@ -69,7 +71,8 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
 
-        Series series = new Series(entityName, metricName);
+        Series series = new Series(entityName, null);
+        series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
             series.addData(new Sample(t + i * 5000, number));
         }
@@ -97,7 +100,8 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
 
-        Series series = new Series(entityName, metricName);
+        Series series = new Series(entityName, null);
+        series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
             series.addData(new Sample(t + i * 5000, number));
         }
@@ -126,7 +130,8 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
 
-        Series series = new Series(entityName, metricName);
+        Series series = new Series(entityName, null);
+        series.setMetric(metricName);
         series.addData(new Sample(t, number));
         Assert.assertTrue("Failed to insert small decimal series", insertSeries(series, 1000));
 

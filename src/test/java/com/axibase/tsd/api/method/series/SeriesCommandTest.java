@@ -38,7 +38,8 @@ public class SeriesCommandTest extends SeriesMethod {
         ArrayList<SeriesQuery> seriesQueries = new ArrayList<>();
         final ArrayList<Series> seriesList = new ArrayList<>();
         for (int i = 0; i < METRICS_COUNT; i++) {
-            Series series = new Series(entityName, metricPrefix + i);
+            Series series = new Series(null, metricPrefix + i);
+            series.setEntity(entityName);
             series.setData(new Sample(date, i));
             seriesList.add(series);
             seriesQueries.add(new SeriesQuery(entityName, metricPrefix + i, date, endDate));

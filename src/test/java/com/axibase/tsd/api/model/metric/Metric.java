@@ -14,6 +14,8 @@ public class Metric extends Model {
     private String timePrecision;
     private String retentionInterval;
 
+    public Metric() {}
+
     public Metric(String name) {
         if (name != null) {
             Registry.Metric.register(name);
@@ -21,8 +23,14 @@ public class Metric extends Model {
         this.name = name;
     }
 
+
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEnabled() {
