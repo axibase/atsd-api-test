@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.property.Property;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -161,6 +162,23 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(response.readEntity(String.class).contains("UnrecognizedPropertyException"));
 
         assertFalse(propertyExist(property));
+
+    }
+
+    @Test
+    public void testNoKeySamePropertyOverrite() throws Exception {
+        final Property property = new Property("insert-type7", "insert-entity7");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        insertPropertyCheck(property2);
+
+        assertFalse(propertyExist(property));
+        assertTrue(propertyExist(property2));
 
     }
 

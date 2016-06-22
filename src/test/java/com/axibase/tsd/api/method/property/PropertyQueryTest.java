@@ -17,11 +17,10 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -33,7 +32,7 @@ public class PropertyQueryTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Test
-    public void testStartInFuture() throws Exception {
+    public void testStartDateInFuture() throws Exception {
         final Property property = new Property("query-type19", "query-entity19");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
@@ -50,9 +49,7 @@ public class PropertyQueryTest extends PropertyMethod {
             put("count", 2);
         }});
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -78,10 +75,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("exactMatch", false);
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-            add(secondProperty);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, secondProperty));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -107,9 +101,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("exactMatch", true);
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -138,10 +130,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("exactMatch", false);
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-            add(secondProperty);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, secondProperty));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -169,9 +158,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("exactMatch", true);
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -257,9 +244,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("key", property.getKey());
         queryObj.put("exactMatch", false);
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -279,9 +264,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("key", property.getKey());
         queryObj.put("exactMatch", true);
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -314,10 +297,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", Util.getMinDate());
         queryObj.put("endDate", Util.getMaxDate());
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-            add(lastProperty);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -343,10 +323,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", Util.getMinDate());
         queryObj.put("endDate", Util.getMaxDate());
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-            add(lastProperty);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -373,10 +350,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.getMaxDate());
         queryObj.put("last", false);
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-            add(lastProperty);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
         logger.debug("expected: {}", expected);
@@ -405,14 +379,8 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.getMaxDate());
         queryObj.put("last", true);
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(lastProperty);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(lastProperty));
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
-        expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
-        JSONAssert.assertNotEquals(expected, queryProperty(queryObj), false);
     }
 
     @Test
@@ -433,9 +401,7 @@ public class PropertyQueryTest extends PropertyMethod {
             put("unit", "YEAR");
         }});
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
         logger.debug("Expected json: {}", expected);
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -455,9 +421,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", property.getDate());
         queryObj.put("endDate", Util.getMaxDate());
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -478,9 +442,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", Util.ISOFormat(Util.getPreviousDay()));
         queryObj.put("endDate", Util.ISOFormat(Util.getNextDay()));
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -500,9 +462,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", property.getDate());
         queryObj.put("endDate", Util.ISOFormat(Util.getNextDay()));
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -522,15 +482,13 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", property.getDate());
         queryObj.put("endDate", Util.ISOFormat(Util.getNextDay()));
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
 
     @Test
-    public void testTypeEntityStartEndPartkey() throws Exception {
+    public void testPartKey() throws Exception {
         final Property property = new Property("query-type41.5", "query-entity41.5");
         property.addTag("fs_type", "ext4");
         property.addKey("file_system", "/");
@@ -547,15 +505,13 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", "2016-05-25T04:00:00Z");
         queryObj.put("endDate", "2016-05-25T05:00:00Z");
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
 
     @Test
-    public void testTypeEntityStart() throws IOException {
+    public void testEndDateAbsent() throws IOException {
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
                 put("type", "testtype");
@@ -570,7 +526,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeEntity() throws IOException {
+    public void testStartDateAbsent() throws IOException {
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
                 put("type", "testtype");
@@ -584,7 +540,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
-    public void testType() throws IOException {
+    public void testOnlyTypeSpecified() throws IOException {
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
                 put("type", "testtype");
@@ -598,7 +554,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
 
     @Test
-    public void testTypeStart() throws IOException {
+    public void testEntityFilterEndDateAbsent() throws IOException {
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
                 put("type", "testtype");
@@ -612,7 +568,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeStartEnd() throws IOException {
+    public void testEntityFilterAbsent() throws IOException {
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
                 put("type", "testtype");
@@ -727,9 +683,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("exactMatch", false);
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -759,9 +713,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -792,9 +744,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.getMaxDate());
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
@@ -846,7 +796,6 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", entityTagType);
         queryObj.put("entity", "wck-*");
         queryObj.put("key", entity1.getTags());
-
         queryObj.put("startDate", Util.getMinDate());
         queryObj.put("endDate", Util.getMaxDate());
 
@@ -881,9 +830,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("startDate", Util.getMinDate());
         queryObj.put("endDate", Util.getMaxDate());
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property3);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property3));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
 
@@ -915,7 +862,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
-    public void testEntityTagsExpressionCaseInsensitiveName() throws Exception {
+    public void testEntityTagsKeyTagExpressionCaseInsensitiveName() throws Exception {
         final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity42");
         entity.addTag("t1", "tv1");
@@ -935,9 +882,371 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.getMaxDate());
 
 
-        String expected = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionOR() throws Exception {
+        final Property property = new Property("query-type43", "query-entity43");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "kv1");
+        insertPropertyCheck(property);
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t1", "tv1");
+        insertPropertyCheck(property2);
+
+        final Property property3 = new Property();
+        property3.setType(property.getType());
+        property3.setEntity(property.getEntity());
+        property3.addTag("t3", "tv3");
+        property3.addKey("k3", "kv3");
+        insertPropertyCheck(property3);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t1 == 'tv1' OR keys.k3 == 'kv3'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, property2, property3));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionAND() throws Exception {
+        final Property property = new Property("query-type44", "query-entity44");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "kv1");
+        insertPropertyCheck(property);
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t1", "tv1");
+        property2.addKey("k2", "kv2");
+
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t1 == 'tv1' AND keys.k2 == 'kv2'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property2));
+        Collections.singletonList(property);
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionTagsLIKE() throws Exception {
+        final Property property = new Property("query-type45", "query-entity45");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "kv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t1", "tg1");
+        property2.addKey("k2", "kv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t1 LIKE 'tv*'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionKeysLIKE() throws Exception {
+        final Property property = new Property("query-type45.5", "query-entity45.5");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "kv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t1", "tg1");
+        property2.addKey("k1", "kg2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "keys.k1 LIKE 'kv*'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionKeyTagCompareEQ() throws Exception {
+        final Property property = new Property("query-type46", "query-entity46");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t1", "tv1");
+        property2.addKey("k1", "tv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t1 == keys.k1");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionKeyTagCompareNotEQ() throws Exception {
+        final Property property = new Property("query-type47", "query-entity47");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t1", "tv1");
+        property2.addKey("k1", "tv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t1 != keys.k1");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property2));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionKeyEmpty() throws Exception {
+        final Property property = new Property("query-type48", "query-entity48");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "tv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "keys.k2 == ''");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionKeyNotEmpty() throws Exception {
+        final Property property = new Property("query-type49", "query-entity49");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "tv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "keys.k2 != ''");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property2));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionTagEmpty() throws Exception {
+        final Property property = new Property("query-type49.1", "query-entity49.1");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "tv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t2 == ''");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionTagNotEmpty() throws Exception {
+        final Property property = new Property("query-type50", "query-entity50");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "tv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "tags.t2 != ''");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property2));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionLowerTag() throws Exception {
+        final Property property = new Property("query-type51", "query-entity51");
+        property.addTag("t1", "TV1");
+        insertPropertyCheck(property);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "lower(tags.t1) == 'tv1'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionLowerKey() throws Exception {
+        final Property property = new Property("query-type52", "query-entity52");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "KV1");
+        insertPropertyCheck(property);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "lower(keys.k1) == 'kv1'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionUpperTag() throws Exception {
+        final Property property = new Property("query-type53", "query-entity53");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "upper(tags.t1) == 'TV1'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+
+        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+    }
+
+    //#2908
+    @Test
+    public void testKeyTagExpressionUpperKey() throws Exception {
+        final Property property = new Property("query-type54", "query-entity54");
+        property.addTag("t1", "tv1");
+        property.addKey("k1", "KV1");
+        insertPropertyCheck(property);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("keyTagExpression", "upper(keys.k1) == 'KV1'");
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }

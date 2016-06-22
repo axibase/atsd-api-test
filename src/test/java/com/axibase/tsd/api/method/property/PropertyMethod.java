@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -77,15 +78,16 @@ class PropertyMethod extends Method {
                         put("count", "1");
                     }});
                 }
+                put("exactMatch", true);
             }});
         }};
 
-        String propertyJson = jacksonMapper.writeValueAsString(new ArrayList<Property>() {{
-            add(property);
-        }});
+        String propertyJson = jacksonMapper.writeValueAsString(Arrays.asList(property));
 
         Response response = httpResource.path(METHOD_PROPERTY_QUERY).request().post(Entity.json(request));
-        assertEquals(200, response.getStatus());
+        if (response.getStatus() != 200) {
+            throw new IOException("Fail to execute property query");
+        }
         String responseJson = response.readEntity(String.class);
         logger.debug("check: {}\nresponse: {}", propertyJson, responseJson);
 

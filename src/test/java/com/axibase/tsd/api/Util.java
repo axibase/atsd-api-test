@@ -13,17 +13,19 @@ import java.util.*;
  */
 public class Util {
 
+    private static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
+
     public static Date getCurrentDate() {
         return new Date();
     }
 
     public static Date getPreviousDay() {
-        return new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24); //two day before
+        return new Date(System.currentTimeMillis() - MILLIS_IN_DAY);
 
     }
 
     public static Date getNextDay() {
-        return new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24); //two day after
+        return new Date(System.currentTimeMillis() + MILLIS_IN_DAY);
     }
 
     public static String ISOFormat(Date date) {
