@@ -58,7 +58,7 @@ public abstract class BaseMethod {
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
         } catch (FileNotFoundException fne){
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
-            throw new RuntimeException("Config file is not found!");
+            throw new RuntimeException(fne);
         }
 
     }
