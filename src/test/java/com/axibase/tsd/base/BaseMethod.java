@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method;
+package com.axibase.tsd.base;
 
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
@@ -7,7 +7,6 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -21,26 +20,33 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 /**
- * @author Dmitry Korchagin.
+ * Base method for non api queries like sql or csv
+ *
+ * @author Igor Shmagrinskiy
  */
-public abstract class Method {
+public abstract class BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     protected static TCPSender tcpSender;
     protected static ObjectMapper jacksonMapper;
     protected static WebTarget httpResource;
+    protected static Config config;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
         java.util.logging.Logger.getLogger("").setLevel(Level.FINEST);
-
+        try {
+            prepare();
+        } catch (FileNotFoundException e) {
+            logger.error("Failed prepare BaseMethod class. Reason: {}", e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    @BeforeClass
-    public static void prepare() throws FileNotFoundException {
-        Config config = Config.getInstance();
+    private static void prepare() throws FileNotFoundException {
+        config = Config.getInstance();
         ClientConfig clientConfig = new ClientConfig();
         HttpAuthenticationFeature httpAuthenticationFeature = HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword());
         clientConfig.register(httpAuthenticationFeature);
@@ -50,10 +56,9 @@ public abstract class Method {
                 .scheme(config.getProtocol())
                 .host(config.getServerName())
                 .port(config.getHttpPort())
-                .path(config.getDataPath()).build());
+                .build());
         tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
         jacksonMapper = new ObjectMapper();
         jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
     }
-
 }

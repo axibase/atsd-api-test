@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.method.Method;
+import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.json.simple.JSONArray;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-public class MessageMethod extends Method {
+public class MessageMethod extends ApiMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     static final String METHOD_MESSAGE_INSERT = "/messages/insert";

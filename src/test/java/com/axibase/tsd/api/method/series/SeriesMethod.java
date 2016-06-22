@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.Method;
+import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
@@ -19,7 +19,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class SeriesMethod extends Method {
+public class SeriesMethod extends ApiMethod {
     protected static final String METHOD_SERIES_INSERT = "/series/insert";
     protected static final String METHOD_SERIES_QUERY = "/series/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -55,11 +55,11 @@ public class SeriesMethod extends Method {
         return 200 == response.getStatus();
     }
 
-    protected Boolean insertSeries(final Series series) throws IOException, InterruptedException {
+    public Boolean insertSeries(final Series series) throws IOException, InterruptedException {
         return insertSeries(series, 0);
     }
 
-    protected Boolean executeQuery(final SeriesQuery seriesQuery) throws Exception {
+    public Boolean executeQuery(final SeriesQuery seriesQuery) throws Exception {
         JSONArray request = new JSONArray() {{
             add(queryToJSONObject(seriesQuery));
         }};

@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.method.Method;
+import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmitry Korchagin.
  */
-public class EntityMethod extends Method {
+public class EntityMethod extends ApiMethod {
     static final String METHOD_ENTITIES = "/entities/";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.Method;
+import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.property.Property;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
  * @author Dmitry Korchagin.
  */
 @SuppressWarnings("unchecked")
-class PropertyMethod extends Method {
+class PropertyMethod extends ApiMethod {
     static final String METHOD_PROPERTY_INSERT = "/properties/insert";
     static final String METHOD_PROPERTY_QUERY = "/properties/query";
     static final String METHOD_PROPERTY_DELETE = "/properties/delete";
@@ -156,6 +156,4 @@ class PropertyMethod extends Method {
         }};
         return httpResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
     }
-
-
 }

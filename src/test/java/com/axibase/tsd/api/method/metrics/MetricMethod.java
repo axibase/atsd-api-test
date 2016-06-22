@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.metrics;
 
-import com.axibase.tsd.api.method.Method;
+import com.axibase.tsd.api.method.ApiMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-public class MetricMethod extends Method {
+public class MetricMethod extends ApiMethod {
     protected static final String METHOD_METRICS = "/metrics/";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private JSONObject returnedMetric;
