@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.model.entity;
 
 import com.axibase.tsd.api.model.Model;
-import com.axibase.tsd.api.registry.EntityRegistry;
+import com.axibase.tsd.api.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
@@ -23,7 +23,7 @@ public class Entity extends Model {
 
     public Entity(String name) {
         if (null != name) {
-            EntityRegistry.getInstance().registerEntity(name);
+            Registry.Entity.register(name);
         }
         this.name = name;
     }

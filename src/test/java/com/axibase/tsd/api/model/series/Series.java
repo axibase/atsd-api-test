@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.model.Model;
-import com.axibase.tsd.api.registry.SeriesRegistry;
+import com.axibase.tsd.api.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
@@ -19,11 +19,16 @@ public class Series extends Model {
     }
 
     public Series(String entity, String metric) {
+        if(null != entity) {
+            Registry.Entity.register(entity);
+        }
+        if(null != metric) {
+            Registry.Metric.register(metric);
+        }
         this.entity = entity;
         this.metric = metric;
         this.data = new ArrayList<>();
         this.tags = new HashMap<>();
-        SeriesRegistry.getInstance().registerSeries(this);
     }
 
     public void setEntity(String entity) {

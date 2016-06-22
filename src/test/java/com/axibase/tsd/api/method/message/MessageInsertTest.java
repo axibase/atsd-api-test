@@ -15,9 +15,9 @@ public class MessageInsertTest extends MessageMethod {
         String date = "2016-05-21T00:00:00Z";
         String endDate = "2016-05-21T00:00:01Z";
 
-        Message message = new Message(entityName, messageText);
+        Message message = new Message(entityName, type);
+        message.setMessage(messageText);
         message.setDate(date);
-        message.setType(type);
 
         Assert.assertTrue("Fail to insert message", insertMessages(message, 1000));
 

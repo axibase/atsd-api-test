@@ -941,4 +941,5 @@ public class PropertyQueryTest extends PropertyMethod {
 
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
+
 }

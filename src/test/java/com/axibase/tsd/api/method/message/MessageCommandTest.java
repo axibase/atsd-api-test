@@ -11,6 +11,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MessageCommandTest extends MessageMethod {
     /* #2412 */
@@ -21,8 +22,7 @@ public class MessageCommandTest extends MessageMethod {
         String startDate = "2016-05-21T00:00:00.000Z";
         String endDate = "2016-05-21T00:00:01.000Z";
 
-        final Message message = new Message("e-message-max-cmd-length");
-        message.setType("t-message-max-cmd-length");
+        final Message message = new Message("e-message-max-cmd-length", "t-message-max-cmd-length");
         message.setDate(startDate);
         message.setSeverity("MAJOR");
         message.setSource("atsd");
@@ -52,9 +52,7 @@ public class MessageCommandTest extends MessageMethod {
         messageQuery.setSeverity(message.getSeverity());
         String storedMessage = executeQuery(messageQuery);
 
-        String sentMessage = jacksonMapper.writeValueAsString(new ArrayList<Message>() {{
-            add(message);
-        }});
+        String sentMessage = jacksonMapper.writeValueAsString(Arrays.asList(message));
 
         JSONAssert.assertEquals(sentMessage, storedMessage, JSONCompareMode.NON_EXTENSIBLE);
     }
@@ -67,8 +65,7 @@ public class MessageCommandTest extends MessageMethod {
         String startDate = "2016-05-21T00:00:00.000Z";
         String endDate = "2016-05-21T00:00:01.000Z";
 
-        final Message message = new Message("e-message-max-len-overflow");
-        message.setType("t-message-max-len-overflow");
+        final Message message = new Message("e-message-max-len-overflow", "t-message-max-len-overflow");
         message.setDate(startDate);
         message.setSeverity("MAJOR");
         message.setSource("atsd");

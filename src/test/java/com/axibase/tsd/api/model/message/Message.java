@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.model.message;
 
 import com.axibase.tsd.api.model.Model;
-import com.axibase.tsd.api.registry.MessageRegistry;
+import com.axibase.tsd.api.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,15 +15,21 @@ public class Message extends Model {
     private Boolean persist;
 
     public Message(String entity) {
-        if (entity != null)
-            MessageRegistry.getInstance().registerEntity(entity);
+        if (entity != null) {
+            Registry.Entity.register(entity);
+        }
         this.entity = entity;
     }
-    public Message(String entity, String message) {
-        if (entity != null)
-            MessageRegistry.getInstance().registerEntity(entity);
+
+    public Message(String entity, String type) {
+        if (entity != null) {
+            Registry.Entity.register(entity);
+        }
+        if (type != null) {
+            Registry.Type.register(type);
+        }
         this.entity = entity;
-        this.message = message;
+        this.type = type;
     }
 
     public String getEntity() {
@@ -39,9 +45,6 @@ public class Message extends Model {
     }
 
     public void setType(String type) {
-        if (type != null) {
-            MessageRegistry.getInstance().registerType(type);
-        }
         this.type = type;
     }
 
