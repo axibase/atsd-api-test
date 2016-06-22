@@ -5,7 +5,7 @@ import com.axibase.tsd.api.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Message extends Model {
+public class Message {
     private String entity;
     private String type;
     private String source;

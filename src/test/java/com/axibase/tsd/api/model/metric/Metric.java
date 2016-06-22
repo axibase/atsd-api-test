@@ -6,7 +6,7 @@ import com.axibase.tsd.api.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Metric extends Model {
+public class Metric {
     private String name;
     private String enabled;
     private String persistent;

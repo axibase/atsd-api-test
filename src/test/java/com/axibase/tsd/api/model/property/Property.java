@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Dmitry Korchagin.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Property extends Model {
+public class Property {
     private String type;
     private String entity;
     private Map<String, String> key;

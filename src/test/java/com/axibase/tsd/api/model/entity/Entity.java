@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Dmitry Korchagin.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Entity extends Model {
+public class Entity {
     private String name;
     private Date lastInsertDate;
     private Map<String, String> tags;

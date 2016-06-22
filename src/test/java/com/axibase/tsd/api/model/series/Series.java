@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Series extends Model {
+public class Series {
     private String entity;
     private String metric;
     private ArrayList<Sample> data;
