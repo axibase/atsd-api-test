@@ -10,8 +10,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class MessageCommandTest extends MessageMethod {
     /* #2412 */
@@ -44,7 +43,7 @@ public class MessageCommandTest extends MessageMethod {
         sb.append(message.getMessage());
 
         Assert.assertEquals("Command length is not maximal", MAX_LENGTH, sb.length());
-        tcpSender.send(sb.toString(), 2000);
+        tcpSender.send(sb.toString(), 1000);
 
         MessageQuery messageQuery = new MessageQuery(message.getEntity(), startDate, endDate);
         messageQuery.setType(message.getType());
@@ -52,7 +51,7 @@ public class MessageCommandTest extends MessageMethod {
         messageQuery.setSeverity(message.getSeverity());
         String storedMessage = executeQuery(messageQuery);
 
-        String sentMessage = jacksonMapper.writeValueAsString(Arrays.asList(message));
+        String sentMessage = jacksonMapper.writeValueAsString(Collections.singletonList(message));
 
         JSONAssert.assertEquals(sentMessage, storedMessage, JSONCompareMode.NON_EXTENSIBLE);
     }
@@ -89,7 +88,7 @@ public class MessageCommandTest extends MessageMethod {
         if (MAX_LENGTH + 1 != sb.length()) {
             Assert.fail("Command length is not maximal");
         }
-        tcpSender.send(sb.toString(), 2000);
+        tcpSender.send(sb.toString(), 1000);
 
         MessageQuery messageQuery = new MessageQuery(message.getEntity(), startDate, endDate);
         messageQuery.setType(message.getType());

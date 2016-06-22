@@ -9,8 +9,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +52,7 @@ public class PropertyCommandTest extends PropertyMethod {
         PropertyMethod propertyMethod = new PropertyMethod();
         Thread.sleep(1000);
 
-        String sentProperty = jacksonMapper.writeValueAsString(Arrays.asList(property));
+        String sentProperty = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         String storedProperty = propertyMethod.queryProperty(queryObj);
 
         JSONAssert.assertEquals(sentProperty, storedProperty, JSONCompareMode.LENIENT);

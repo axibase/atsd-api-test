@@ -1,8 +1,9 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.model.Model;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 
@@ -10,6 +11,9 @@ import java.math.BigDecimal;
 public class Sample {
     private String d;
     private BigDecimal v;
+
+    public Sample() {
+    }
 
     public Sample(long t, String v) {
         this.d = Util.ISOFormat(t);
@@ -21,10 +25,12 @@ public class Sample {
         this.v = new BigDecimal(String.valueOf(v));
     }
 
-    public Sample(String d, String v) {
+    @JsonCreator
+    public Sample(@JsonProperty("d") String d, @JsonProperty("v") String v) {
         this.d = d;
         this.v = new BigDecimal(String.valueOf(v));
     }
+
 
     public String getD() {
         return d;
@@ -34,11 +40,37 @@ public class Sample {
         return v;
     }
 
+    public void setD(String d) {
+        this.d = d;
+    }
+
+    public void setV(BigDecimal v) {
+        this.v = v;
+    }
+
     @Override
     public String toString() {
         return "Sample{" +
                 "d='" + d + '\'' +
                 ", v='" + v + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Sample)) return false;
+
+        Sample sample = (Sample) o;
+
+        return getD().equals(sample.getD()) && getV().equals(sample.getV());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getD().hashCode();
+        result = 31 * result + getV().hashCode();
+        return result;
     }
 }

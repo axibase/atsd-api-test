@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -19,11 +20,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class SeriesMethod extends BaseMethod {
-    protected static final String METHOD_SERIES_INSERT = "/series/insert";
-    protected static final String METHOD_SERIES_QUERY = "/series/query";
+    private static final String METHOD_SERIES_INSERT = "/series/insert";
+    private static final String METHOD_SERIES_QUERY = "/series/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static Boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
@@ -44,7 +44,6 @@ public class SeriesMethod extends BaseMethod {
             }});
         }};
 
-
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(request.toString(), MediaType.APPLICATION_JSON_TYPE));
         Thread.sleep(sleepDuration);
         if (200 == response.getStatus()) {
@@ -54,6 +53,18 @@ public class SeriesMethod extends BaseMethod {
         }
         return 200 == response.getStatus();
     }
+
+    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(Collections.singletonList(seriesQuery), MediaType.APPLICATION_JSON_TYPE));
+        if (200 == response.getStatus()) {
+            logger.debug("Query looks succeeded");
+        } else {
+            logger.error("Failed to execute series query");
+        }
+        return response.readEntity(new GenericType<List<Series>>() {
+        });
+    }
+
 
     public static Boolean insertSeries(final Series series) throws IOException, InterruptedException, JSONException {
         return insertSeries(series, 0);
@@ -72,32 +83,6 @@ public class SeriesMethod extends BaseMethod {
             throw new IOException("Failed to execute series query");
         }
         return new JSONArray(response.readEntity(String.class));
-    }
-
-    private static JSONObject queryToJSONObject(final SeriesQuery seriesQuery) throws JSONException {
-        return new JSONObject() {
-            {
-                put("entity", seriesQuery.getEntity());
-                put("metric", seriesQuery.getMetric());
-                put("startDate", seriesQuery.getStartDate());
-                put("endDate", seriesQuery.getEndDate());
-                put("tags", seriesQuery.getTags());
-                final Map aggregatePeriod = ((Map) seriesQuery.getAggregate().get("period"));
-                final ArrayList<String> aggregateTypes = ((ArrayList<String>) seriesQuery.getAggregate().get("type"));
-                if (aggregatePeriod != null && aggregateTypes != null) {
-                    put("aggregate", new JSONObject() {{
-                        {
-                            put("types", new JSONArray() {{
-                                for (String aggregateType : aggregateTypes) {
-                                    put(aggregateType);
-                                }
-                            }});
-                            put("period", new JSONObject(aggregatePeriod));
-                        }
-                    }});
-                }
-            }
-        };
     }
 
     public static String getDataField(int index, String field, JSONArray array) throws JSONException {
