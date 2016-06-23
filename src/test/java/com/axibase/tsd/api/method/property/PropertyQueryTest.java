@@ -1281,8 +1281,134 @@ public class PropertyQueryTest extends PropertyMethod {
 
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
-
         JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
     }
+
+    //#2946
+    @Test
+    public void testLimit1() throws Exception {
+        final Property property = new Property("query-type55", "query-entity55");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "kv2");
+        insertPropertyCheck(property2);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("limit", 1);
+
+        assertEquals(1, calculateJsonArraySize(queryProperty(queryObj)));
+    }
+
+
+    //#2946
+    @Test
+    public void testLimit2() throws Exception {
+        final Property property = new Property("query-type56", "query-entity56");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "kv2");
+        insertPropertyCheck(property2);
+
+        final Property property3 = new Property();
+        property3.setType(property.getType());
+        property3.setEntity(property.getEntity());
+        property3.addTag("t3", "tv3");
+        property3.addKey("k3", "kv3");
+        insertPropertyCheck(property3);
+
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("limit", 2);
+
+        assertEquals(2, calculateJsonArraySize(queryProperty(queryObj)));
+    }
+
+    //#2946
+    @Test
+    public void testLimit0() throws Exception {
+        final Property property = new Property("query-type57", "query-entity57");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "kv2");
+        insertPropertyCheck(property2);
+
+        final Property property3 = new Property();
+        property3.setType(property.getType());
+        property3.setEntity(property.getEntity());
+        property3.addTag("t3", "tv3");
+        property3.addKey("k3", "kv3");
+        insertPropertyCheck(property3);
+
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("limit", 0);
+
+        assertEquals(3, calculateJsonArraySize(queryProperty(queryObj)));
+    }
+
+    //#2946
+    @Test
+    public void testLimitNegative() throws Exception {
+        final Property property = new Property("query-type58", "query-entity58");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.addTag("t2", "tv2");
+        property2.addKey("k2", "kv2");
+        insertPropertyCheck(property2);
+
+        final Property property3 = new Property();
+        property3.setType(property.getType());
+        property3.setEntity(property.getEntity());
+        property3.addTag("t3", "tv3");
+        property3.addKey("k3", "kv3");
+        insertPropertyCheck(property3);
+
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entity", property.getEntity());
+        queryObj.put("startDate", Util.getMinDate());
+        queryObj.put("endDate", Util.getMaxDate());
+
+        queryObj.put("limit", -1);
+        assertEquals(3, calculateJsonArraySize(queryProperty(queryObj)));
+
+        queryObj.put("limit", -5);
+        assertEquals(3, calculateJsonArraySize(queryProperty(queryObj)));
+
+    }
+
+
 
 }

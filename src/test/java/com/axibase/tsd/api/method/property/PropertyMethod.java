@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -31,6 +30,7 @@ class PropertyMethod extends BaseMethod {
     static final String METHOD_PROPERTY_QUERY = "/properties/query";
     static final String METHOD_PROPERTY_DELETE = "/properties/delete";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
 
     void insertPropertyCheck(final Property property) throws IOException {
         JSONArray request = new JSONArray() {{
@@ -155,5 +155,9 @@ class PropertyMethod extends BaseMethod {
             add(new JSONObject(deleteObj));
         }};
         return httpApiResource.path(METHOD_PROPERTY_DELETE).request().post(Entity.entity(jsonArray.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+    }
+
+    protected int calculateJsonArraySize(String jsonArrayString) throws JSONException {
+        return new org.json.JSONArray(jsonArrayString).length();
     }
 }
