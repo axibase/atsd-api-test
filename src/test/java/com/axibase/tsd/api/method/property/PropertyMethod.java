@@ -32,7 +32,7 @@ class PropertyMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
-    void insertPropertyCheck(final Property property) throws IOException {
+    public static void insertPropertyCheck(final Property property) throws IOException {
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{
                 put("entity", property.getEntity());
@@ -57,11 +57,11 @@ class PropertyMethod extends BaseMethod {
     }
 
 
-    Boolean propertyExist(final Property property) throws IOException {
+    public static Boolean propertyExist(final Property property) throws IOException {
         return propertyExist(property, true);
     }
 
-    Boolean propertyExist(final Property property, Boolean allowExtraFields) throws IOException {
+    public static Boolean propertyExist(final Property property, Boolean allowExtraFields) throws IOException {
 
         JSONArray request = new JSONArray() {{
             add(new JSONObject() {{

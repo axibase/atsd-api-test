@@ -1410,5 +1410,4 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-
 }
