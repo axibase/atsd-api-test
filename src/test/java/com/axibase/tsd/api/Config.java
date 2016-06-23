@@ -23,8 +23,8 @@ public class Config {
     private String serverName;
     private int httpPort;
     private int tcpPort;
-    private String dataPath;
-    private String metadataPath;
+    private String apiPath;
+    private String loggerLevel;
 
     private Config(String configPath) {
         logger.debug("Load client properties from file: {}", configPath);
@@ -42,13 +42,9 @@ public class Config {
         serverName = load("serverName", clientProperties, null);
         httpPort = Integer.parseInt(load("httpPort", clientProperties, null));
         tcpPort = Integer.parseInt(load("tcpPort", clientProperties, null));
-        dataPath = load("dataPath", clientProperties, null);
-        metadataPath = load("metadataPath", clientProperties, null);
-        logger.debug(this.toString());
-    }
-
-    public static Logger getLogger() {
-        return logger;
+        apiPath = load("apiPath", clientProperties, null);
+        loggerLevel = load("loggerLevel", clientProperties, "debug");
+        System.setProperty("loggerLevel", loggerLevel);
     }
 
     public static Config getInstance() throws FileNotFoundException {
@@ -110,12 +106,12 @@ public class Config {
         return tcpPort;
     }
 
-    public String getDataPath() {
-        return dataPath;
+    public String getApiPath() {
+        return apiPath;
     }
 
-    public String getMetadataPath() {
-        return metadataPath;
+    public String getLoggerLevel() {
+        return loggerLevel;
     }
 
     @Override
@@ -127,8 +123,8 @@ public class Config {
                 ", serverName='" + serverName + '\'' +
                 ", httpPort=" + httpPort +
                 ", tcpPort=" + tcpPort +
-                ", dataPath='" + dataPath + '\'' +
-                ", metadataPath='" + metadataPath + '\'' +
+                ", apiPath='" + apiPath + '\'' +
+                ", loggerLevel='" + loggerLevel + '\'' +
                 '}';
     }
 }

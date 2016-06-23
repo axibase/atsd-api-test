@@ -30,7 +30,7 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="${loggerLevel}">
         <!--<root level="info">-->
         <appender-ref ref="STDOUT"/>
     </root>

@@ -50,7 +50,7 @@ public abstract class BaseMethod {
                     .host(config.getServerName())
                     .port(config.getHttpPort())
                     .build());
-            httpApiResource = httpRootResource.path(config.getDataPath());
+            httpApiResource = httpRootResource.path(config.getApiPath());
             tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
