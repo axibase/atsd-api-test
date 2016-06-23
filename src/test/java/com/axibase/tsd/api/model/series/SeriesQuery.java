@@ -1,20 +1,25 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.Util;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SeriesQuery {
     private String entity;
     private String metric;
     private String startDate;
     private String endDate;
     private Map<String, String> tags = new HashMap<>();
-    private Map<String, Object> aggregate = new HashMap();
+    private Map<String, Object> aggregate;
 
     public void addAggregateType(String type) {
+        if (aggregate == null) {
+            aggregate = new HashMap<>();
+        }
         Object o = aggregate.get("types");
         if (o == null) {
             o = new ArrayList<>();
@@ -24,11 +29,14 @@ public class SeriesQuery {
         aggregate.put("types", types);
     }
 
-    public Object getAggregateTypes() {
-        return aggregate.get("types");
+    public Map<String, Object> getAggregate() {
+        return aggregate;
     }
 
     public void setAggregatePeriod(int count, String unit) {
+        if (aggregate == null) {
+            aggregate = new HashMap<>();
+        }
         Object o = aggregate.get("period");
         if (o == null) {
             o = new HashMap<>();
@@ -37,10 +45,6 @@ public class SeriesQuery {
         period.put("count", count);
         period.put("unit", unit);
         aggregate.put("period", period);
-    }
-
-    public Object getAggregatePeriod(){
-        return aggregate.get("period");
     }
 
     public SeriesQuery(String entity, String metric, long startTime, long endTime) {
