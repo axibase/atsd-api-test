@@ -384,7 +384,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
-    public void testLastTrueMultiplePropertyInResponse() throws Exception {
+    public void testLastTrueReturnMultipleProperty() throws Exception {
         final Property property = new Property("query-type6.1", "query-entity6.1");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
