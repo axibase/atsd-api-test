@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import junit.framework.Assert;
+import org.json.JSONArray;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -44,11 +45,10 @@ public class SeriesCommandTest extends SeriesMethod {
             seriesList.add(series);
             seriesQueries.add(new SeriesQuery(entityName, metricPrefix + i, date, endDate));
         }
-        if (!executeQuery(seriesQueries)) {
-            Assert.fail("Failed query series");
-        }
 
-        String storedSeries = getReturnedSeries().toString();
+        JSONArray storedSeriesList = executeQuery(seriesQueries);
+
+        String storedSeries = storedSeriesList.toString();
         String sentSeries = jacksonMapper.writeValueAsString(seriesList);
 
         JSONAssert.assertEquals(sentSeries, storedSeries, JSONCompareMode.LENIENT);
@@ -81,12 +81,10 @@ public class SeriesCommandTest extends SeriesMethod {
         for (int i = 0; i < METRICS_COUNT; i++) {
             seriesQueries.add(new SeriesQuery(entityName, metricPrefix + i, date, endDate));
         }
-        if (!executeQuery(seriesQueries)) {
-            Assert.fail("Failed to query series");
-        }
+        JSONArray storedSeriesList = executeQuery(seriesQueries);
 
         for (int i = 0; i < METRICS_COUNT; i++) {
-            Assert.assertEquals("Managed to insert command that length is max + 1", "[]", getField(i, "data"));
+            Assert.assertEquals("Managed to insert command that length is max + 1", "[]", getField(i, "data", storedSeriesList));
         }
     }
 }

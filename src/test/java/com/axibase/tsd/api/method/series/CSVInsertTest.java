@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import junit.framework.Assert;
+import org.json.JSONArray;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -26,14 +27,14 @@ public class CSVInsertTest extends CSVInsertMethod {
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
                 "2016-05-21T00:00:00Z", "2016-05-21T00:00:01Z", tags);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v"));
+        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d", storedSeriesList1));
+        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15Z", "2016-05-21T00:00:16Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
+        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d", storedSeriesList2));
+        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
     }
 
     /* #2009 */
@@ -52,15 +53,15 @@ public class CSVInsertTest extends CSVInsertMethod {
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
                 "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v"));
+        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d", storedSeriesList1));
+        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
                 "2016-05-21T00:00:15.001Z", "2016-05-21T00:00:15.002Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
+        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d", storedSeriesList2));
+        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
     }
 
     /* #2009 */
@@ -78,14 +79,14 @@ public class CSVInsertTest extends CSVInsertMethod {
         csvInsert(entity.getName(), csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00Z", "2016-05-21T00:00:10Z", tags);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v"));
+        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d", storedSeriesList1));
+        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15Z", "2016-05-21T00:00:20Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
+        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d", storedSeriesList2));
+        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
     }
 
     /* #2009 */
@@ -103,15 +104,15 @@ public class CSVInsertTest extends CSVInsertMethod {
         csvInsert(entity.getName(), csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v"));
+        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d", storedSeriesList1));
+        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
                 "2016-05-21T00:00:15.001Z", "2016-05-21T00:00:15.002Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
+        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d", storedSeriesList2));
+        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
     }
 
     /* #2009 */
@@ -131,24 +132,24 @@ public class CSVInsertTest extends CSVInsertMethod {
         csvInsert(entity.getName(), csvPayload, tags, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00Z", "2016-05-21T00:00:10Z", tags);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v"));
+        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d", storedSeriesList1));
+        Assert.assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "12", getDataField(0, "v"));
+        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d", storedSeriesList2));
+        Assert.assertEquals("Stored value incorrect", "12", getDataField(0, "v", storedSeriesList2));
 
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15Z", "2016-05-21T00:00:20Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v"));
+        JSONArray storedSeriesList3 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d", storedSeriesList3));
+        Assert.assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList3));
 
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15.001Z", "2016-05-21T00:00:15.002Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", "10", getDataField(0, "v"));
+        JSONArray storedSeriesList4 = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d", storedSeriesList4));
+        Assert.assertEquals("Stored value incorrect", "10", getDataField(0, "v", storedSeriesList4));
     }
 }

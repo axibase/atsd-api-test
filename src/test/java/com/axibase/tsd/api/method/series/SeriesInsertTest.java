@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import junit.framework.Assert;
+import org.json.JSONArray;
 import org.junit.Test;
 
 
@@ -31,8 +32,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored big float value rounded incorrect", "10.121212121212121", getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored big float value rounded incorrect", "10.121212121212121", getDataField(0, "v", storedSeriesList));
     }
 
     /* #2871 */
@@ -81,8 +82,8 @@ public class SeriesInsertTest extends SeriesMethod {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
         seriesQuery.addAggregateType("SUM");
         seriesQuery.setAggregatePeriod(1, "MINUTE");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored small decimal value incorrect", "7.2999999984", getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored small decimal value incorrect", "7.2999999984", getDataField(0, "v", storedSeriesList));
     }
 
     /* #2871 */
@@ -111,8 +112,8 @@ public class SeriesInsertTest extends SeriesMethod {
         seriesQuery.addAggregateType("SUM");
         seriesQuery.setAggregatePeriod(1, "MINUTE");
 
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored small double value incorrect", "7.299999998400001", getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored small double value incorrect", "7.299999998400001", getDataField(0, "v", storedSeriesList));
     }
 
     /* #2871 */
@@ -139,8 +140,8 @@ public class SeriesInsertTest extends SeriesMethod {
         seriesQuery.addAggregateType("SUM");
         seriesQuery.setAggregatePeriod(1, "MINUTE");
 
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored small double value incorrect", number, getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored small double value incorrect", number, getDataField(0, "v", storedSeriesList));
     }
 
     /* #2009 */
@@ -158,9 +159,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", storedDate, getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", storedDate, getDataField(0, "d", storedSeriesList));
+        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
     }
 
     /* #2009 */
@@ -178,9 +179,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", storedDate, getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", storedDate, getDataField(0, "d", storedSeriesList));
+        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
     }
 
     /* #2009 */
@@ -197,9 +198,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", d, getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", d, getDataField(0, "d",storedSeriesList));
+        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
     }
 
     /* #2009 */
@@ -216,9 +217,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", d, getDataField(0, "d"));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", d, getDataField(0, "d", storedSeriesList));
+        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
     }
 
 
@@ -233,9 +234,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
-        executeQuery(seriesQuery);
-        Assert.assertEquals("Stored big float value rounded incorrect", "0", getDataField(0, "v"));
-        Assert.assertEquals("Returned incorrect entity", series.getEntity(), getField(0, "entity"));
-        Assert.assertEquals("Returned incorrect metric", series.getMetric(), getField(0, "metric"));
+        JSONArray storedSeriesList = executeQuery(seriesQuery);
+        Assert.assertEquals("Stored big float value rounded incorrect", "0", getDataField(0, "v", storedSeriesList));
+        Assert.assertEquals("Returned incorrect entity", series.getEntity(), getField(0, "entity", storedSeriesList));
+        Assert.assertEquals("Returned incorrect metric", series.getMetric(), getField(0, "metric", storedSeriesList));
     }
 }
