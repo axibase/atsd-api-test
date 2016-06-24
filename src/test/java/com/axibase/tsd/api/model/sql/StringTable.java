@@ -6,14 +6,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Igor Shmagrinskiy
  */
-public class StringTable implements Table<String, ArrayList<String>> {
+public class StringTable{
 
-    private ArrayList<String> columns;
-    private ArrayList<ArrayList<String>> rows;
+    private List<String> columns;
+    private List<ArrayList<String>> rows;
 
     public static StringTable parseTable(JSONObject tableJson) throws JSONException {
         StringTable tableModel = new StringTable();
@@ -59,23 +60,19 @@ public class StringTable implements Table<String, ArrayList<String>> {
         rows = new ArrayList<>();
     }
 
-    @Override
     public void addColumn(String columnName) {
         columns.add(columnName);
     }
 
-    @Override
     public void addRow(ArrayList<String> row) {
         rows.add(row);
     }
 
-    @Override
     public String getColumnName(int index) {
         return columns.get(index);
     }
 
-    @Override
-    public ArrayList<String> getRow(int index) {
+    public List<String> getRow(int index) {
         return rows.get(index);
     }
 
@@ -83,12 +80,12 @@ public class StringTable implements Table<String, ArrayList<String>> {
         return rows.get(i).get(j);
     }
 
-    public ArrayList<ArrayList<String>> getRows() {
+    public List<ArrayList<String>> getRows() {
         return rows;
     }
 
 
-    public ArrayList<String> getColumns() {
+    public List<String> getColumns() {
         return columns;
     }
 }
