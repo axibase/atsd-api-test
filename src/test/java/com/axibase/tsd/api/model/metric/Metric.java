@@ -1,8 +1,7 @@
 package com.axibase.tsd.api.model.metric;
 
-import com.axibase.tsd.api.model.Model;
-import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.model.series.DataType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,7 +13,8 @@ public class Metric {
     private String timePrecision;
     private String retentionInterval;
 
-    public Metric() {}
+    public Metric() {
+    }
 
     public Metric(String name) {
         if (name != null) {
@@ -22,7 +22,6 @@ public class Metric {
         }
         this.name = name;
     }
-
 
 
     public String getName() {

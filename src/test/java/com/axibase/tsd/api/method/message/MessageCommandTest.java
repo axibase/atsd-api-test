@@ -3,19 +3,19 @@ package com.axibase.tsd.api.method.message;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collections;
 
 public class MessageCommandTest extends MessageMethod {
     /* #2412 */
     @Test
-    public void testMaxLength() throws IOException, ParseException, JSONException, InterruptedException {
+    public void testMaxLength() throws IOException, JSONException, InterruptedException, ParseException {
         final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";
@@ -58,7 +58,7 @@ public class MessageCommandTest extends MessageMethod {
 
     /* #2412 */
     @Test
-    public void testMaxLengthOverflow() throws IOException, ParseException, JSONException, InterruptedException {
+    public void testMaxLengthOverflow() throws IOException, JSONException, InterruptedException, ParseException {
         final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";

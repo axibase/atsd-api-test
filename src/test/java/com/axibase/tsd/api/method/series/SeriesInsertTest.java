@@ -22,7 +22,6 @@ public class SeriesInsertTest extends SeriesMethod {
         String metricName = "m-float-1";
         String largeNumber = "10.121212121212121212212121212121212121212121";
         final long t = 1465485524888L;
-        MetricMethod metricMethod = new MetricMethod();
 
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(t, largeNumber));
@@ -31,7 +30,7 @@ public class SeriesInsertTest extends SeriesMethod {
         metric.setName(metricName);
         metric.setDataType(DataType.FLOAT);
 
-        Assert.assertTrue("Failed to create metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetric(metric);
         Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
@@ -46,8 +45,6 @@ public class SeriesInsertTest extends SeriesMethod {
         String metricName = "m-decimal-1";
         String largeNumber = "10.121212121212121212212121212121212121212121";
         final long t = 1465485524888L;
-        MetricMethod metricMethod = new MetricMethod();
-
 
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(t, largeNumber));
@@ -56,7 +53,7 @@ public class SeriesInsertTest extends SeriesMethod {
         metric.setName(metricName);
         metric.setDataType(DataType.DECIMAL);
 
-        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetric(metric);
         Assert.assertFalse("Managed to insert large decimal series", insertSeries(series, 1000));
     }
 
@@ -68,12 +65,11 @@ public class SeriesInsertTest extends SeriesMethod {
         String number = "0.6083333332";
         final long t = 1465984800000L;
 
-        MetricMethod metricMethod = new MetricMethod();
-
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DECIMAL);
 
-        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetric(metric);
+
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -97,12 +93,11 @@ public class SeriesInsertTest extends SeriesMethod {
         String number = "0.6083333332";
         final long t = 1465984800000L;
 
-        MetricMethod metricMethod = new MetricMethod();
-
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DOUBLE);
 
-        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetric(metric);
+
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -128,12 +123,11 @@ public class SeriesInsertTest extends SeriesMethod {
         String number = "90000000000000003.9";
         final long t = 1465984800000L;
 
-        MetricMethod metricMethod = new MetricMethod();
-
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DOUBLE);
 
-        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetric(metric);
+
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -155,12 +149,10 @@ public class SeriesInsertTest extends SeriesMethod {
         String number = "900000003.9";
         final long t = 1465984800000L;
 
-        MetricMethod metricMethod = new MetricMethod();
-
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.FLOAT);
 
-        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -182,12 +174,10 @@ public class SeriesInsertTest extends SeriesMethod {
         String number = "90000000000000003.93";
         final long t = 1465984800000L;
 
-        MetricMethod metricMethod = new MetricMethod();
-
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DECIMAL);
 
-        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+        MetricMethod.createOrReplaceMetric(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);

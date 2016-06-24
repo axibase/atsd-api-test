@@ -7,17 +7,25 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
+import java.util.logging.Filter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 
 public abstract class BaseMethod {
@@ -33,11 +41,13 @@ public abstract class BaseMethod {
         java.util.logging.LogManager.getLogManager().reset();
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-        java.util.logging.Logger.getLogger("").setLevel(Level.FINEST);
+        java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
+        julLogger.setLevel(Level.FINE);
+
         prepare();
     }
 
-    private static void prepare(){
+    private static void prepare() {
         try {
             config = Config.getInstance();
             ClientConfig clientConfig = new ClientConfig();
@@ -54,10 +64,34 @@ public abstract class BaseMethod {
             tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
-        } catch (FileNotFoundException fne){
+        } catch (FileNotFoundException fne) {
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
             throw new RuntimeException(fne);
         }
 
+    }
+
+    public static boolean compareJsonString(String expected, String given) throws IOException {
+        return compareJsonString(expected, given, false);
+    }
+
+    public static boolean compareJsonString(String expected, String given, boolean strict) throws IOException {
+        try {
+            JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
+            return true;
+        } catch (JSONException e) {
+            throw new IOException("Can not deserialize response");
+        } catch (AssertionError e) {
+            return false;
+        }
+
+    }
+
+    public static String formatToJson(Response response) {
+        return response.readEntity(String.class);
+    }
+
+    public static int calculateJsonArraySize(String jsonArrayString) throws JSONException {
+        return new JSONArray(jsonArrayString).length();
     }
 }

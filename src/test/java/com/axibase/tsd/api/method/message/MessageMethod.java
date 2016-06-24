@@ -1,12 +1,11 @@
 package com.axibase.tsd.api.method.message;
 
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import com.axibase.tsd.api.method.BaseMethod;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,20 +14,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.text.ParseException;
+import java.util.Collections;
 
+
+@SuppressWarnings("unchecked")
 public class MessageMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    static final String METHOD_MESSAGE_INSERT = "/messages/insert";
-    static final String METHOD_MESSAGE_QUERY = "/messages/query";
-    private JSONParser jsonParser = new JSONParser();
+    private static final String METHOD_MESSAGE_INSERT = "/messages/insert";
+    private static final String METHOD_MESSAGE_QUERY = "/messages/query";
 
-    protected Boolean insertMessages(final Message message, long sleepDuration) throws IOException, ParseException, InterruptedException  {
-        JSONArray request = new JSONArray() {{
-            add(jsonParser.parse(jacksonMapper.writeValueAsString(message)));
-        }};
+    public static boolean insertMessages(final Message message, long sleepDuration) throws IOException, InterruptedException {
 
-        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.entity(Collections.singletonList(message), MediaType.APPLICATION_JSON_TYPE));
         Thread.sleep(sleepDuration);
         if (200 == response.getStatus()) {
             logger.debug("Message looks inserted");
@@ -38,14 +37,12 @@ public class MessageMethod extends BaseMethod {
         return 200 == response.getStatus();
     }
 
-    protected Boolean insertMessages(final Message message) throws IOException, ParseException, InterruptedException  {
-        return insertMessages(message,0);
+    protected boolean insertMessages(final Message message) throws IOException, ParseException, InterruptedException {
+        return insertMessages(message, 0);
     }
 
-    protected String executeQuery(final MessageQuery messageQuery) throws IOException, ParseException{
-        JSONObject request = (JSONObject) jsonParser.parse(jacksonMapper.writeValueAsString(messageQuery));
-
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.entity(request.toJSONString(), MediaType.APPLICATION_JSON_TYPE));
+    public static String executeQuery(final MessageQuery messageQuery) throws IOException, ParseException {
+        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.entity(Collections.singletonList(messageQuery), MediaType.APPLICATION_JSON_TYPE));
         if (200 == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
@@ -54,10 +51,11 @@ public class MessageMethod extends BaseMethod {
         return response.readEntity(String.class);
     }
 
-    protected String getField(String message, int index, String field) throws ParseException {
+    public static String getField(String message, int index, String field) throws JSONException, IOException {
         if (message == null) {
             return "message is null";
         }
-        return (((JSONObject) ((JSONArray) jsonParser.parse(message)).get(index)).get(field)).toString();
+        logger.debug("Lookign for field: {} in block num: {}\nIn message: {}", field, index, message);
+        return (((JSONObject) (new JSONArray(message)).get(index)).get(field)).toString();
     }
 }

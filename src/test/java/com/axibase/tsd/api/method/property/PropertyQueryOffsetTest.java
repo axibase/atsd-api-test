@@ -76,7 +76,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyCurrent1, propertyCurrent2));
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+        JSONAssert.assertEquals(expected, getProperty(queryObj).readEntity(String.class), false);
     }
 
     //#2947
@@ -91,13 +91,13 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyPast, propertyMiddle, propertyCurrent1, propertyCurrent2));
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+        JSONAssert.assertEquals(expected, getProperty(queryObj).readEntity(String.class), false);
 
         queryObj.put("offset", -5);
-        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+        JSONAssert.assertEquals(expected, getProperty(queryObj).readEntity(String.class), false);
 
         queryObj.put("offset", -50);
-        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+        JSONAssert.assertEquals(expected, getProperty(queryObj).readEntity(String.class), false);
     }
 
     //#2947
@@ -116,7 +116,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyMiddle, propertyCurrent1, propertyCurrent2));
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj), false);
+        JSONAssert.assertEquals(expected, getProperty(queryObj).readEntity(String.class), false);
     }
 
 }

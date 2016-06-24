@@ -7,7 +7,6 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,7 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_QUERY = "/series/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static Boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
+    public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
         JSONArray request = new JSONArray() {{
             put(new JSONObject() {{
                 put("entity", series.getEntity());
@@ -67,7 +66,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
 
-    public static Boolean insertSeries(final Series series) throws IOException, InterruptedException, JSONException {
+    public static boolean insertSeries(final Series series) throws IOException, InterruptedException, JSONException {
         return insertSeries(series, 0);
     }
 
@@ -75,7 +74,7 @@ public class SeriesMethod extends BaseMethod {
         return executeQuery(Collections.singletonList(seriesQuery));
     }
 
-    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws IOException, ParseException, JSONException {
+    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws IOException, JSONException {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(seriesQueries, MediaType.APPLICATION_JSON_TYPE));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");

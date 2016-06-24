@@ -4,14 +4,13 @@ import com.axibase.tsd.api.model.property.Property;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class PropertyCommandTest extends PropertyMethod {
     /* #2412 */
@@ -43,19 +42,9 @@ public class PropertyCommandTest extends PropertyMethod {
         Assert.assertEquals("Command length is not maximal", MAX_LENGTH, sb.length());
         tcpSender.send(sb.toString(), 1000);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", property.getDate());
-        queryObj.put("endDate", endDate);
-
-        PropertyMethod propertyMethod = new PropertyMethod();
         Thread.sleep(1000);
 
-        String sentProperty = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String storedProperty = propertyMethod.queryProperty(queryObj);
-
-        JSONAssert.assertEquals(sentProperty, storedProperty, JSONCompareMode.LENIENT);
+        assertTrue(propertyExist(property));
     }
 
     /* #2412 */
@@ -89,16 +78,8 @@ public class PropertyCommandTest extends PropertyMethod {
         }
         tcpSender.send(sb.toString(), 1000);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", property.getDate());
-        queryObj.put("endDate", endDate);
-
-        PropertyMethod propertyMethod = new PropertyMethod();
         Thread.sleep(1000);
 
-        String storedProperty = propertyMethod.queryProperty(queryObj);
-        Assert.assertEquals("Managed to insert command that length is max + 1", "[]", storedProperty);
+        assertFalse("Managed to insert command that length is max + 1", propertyExist(property));
     }
 }

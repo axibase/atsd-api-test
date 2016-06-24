@@ -1,9 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.property.Property;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +10,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.*;
 
 /**
@@ -55,7 +54,7 @@ public class PropertyInsertTest extends PropertyMethod {
         insertThirdObj.put("key", thirdProperty.getKey());
         insertThirdObj.put("tags", thirdProperty.getTags());
 
-        insertProperties(insertFirstObj, insertSecondObj, insertThirdObj);
+        assertEquals(OK.getStatusCode(), insertProperty(insertFirstObj, insertSecondObj, insertThirdObj).getStatus());
         assertTrue(propertyExist(firstProperty));
         assertTrue(propertyExist(secondProperty));
         assertTrue(propertyExist(thirdProperty));
@@ -81,8 +80,6 @@ public class PropertyInsertTest extends PropertyMethod {
         }});
         updatedProperty.setDate(secondTime);
 
-        deleteProperties(property, updatedProperty);
-
         Map<String, Object> insertFirstObj = new HashMap<>();
         insertFirstObj.put("type", property.getType());
         insertFirstObj.put("entity", property.getEntity());
@@ -96,10 +93,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertUpdatedObj.put("key", updatedProperty.getKey());
         insertUpdatedObj.put("tags", updatedProperty.getTags());
         insertUpdatedObj.put("date", updatedProperty.getDate());
-        insertProperties(insertFirstObj, insertUpdatedObj);
+        assertEquals(OK.getStatusCode(), insertProperty(insertFirstObj, insertUpdatedObj).getStatus());
 
-        assertTrue(propertyExist(updatedProperty, false));
-        assertFalse(propertyExist(property, false));
+        assertTrue(propertyExist(updatedProperty, true));
+        assertFalse(propertyExist(property, true));
     }
 
     @Test
@@ -120,16 +117,14 @@ public class PropertyInsertTest extends PropertyMethod {
         }});
         updatedProperty.setDate(secondTime);
 
-        deleteProperties(property, updatedProperty);
-
         Map<String, Object> insertFirstObj = new HashMap<>();
         insertFirstObj.put("type", property.getType());
         insertFirstObj.put("entity", property.getEntity());
         insertFirstObj.put("key", property.getKey());
         insertFirstObj.put("tags", property.getTags());
         insertFirstObj.put("date", property.getDate());
-        insertProperties(insertFirstObj);
-        assertTrue(propertyExist(property, false));
+        insertProperty(insertFirstObj);
+        assertTrue(propertyExist(property, true));
 
         Map<String, Object> insertUpdatedObj = new HashMap<>();
         insertUpdatedObj.put("type", updatedProperty.getType());
@@ -137,9 +132,9 @@ public class PropertyInsertTest extends PropertyMethod {
         insertUpdatedObj.put("key", updatedProperty.getKey());
         insertUpdatedObj.put("tags", updatedProperty.getTags());
         insertUpdatedObj.put("date", updatedProperty.getDate());
-        insertProperties(insertUpdatedObj);
-        assertTrue(propertyExist(updatedProperty, false));
-        assertFalse(propertyExist(property, false));
+        insertProperty(insertUpdatedObj);
+        assertTrue(propertyExist(updatedProperty, true));
+        assertFalse(propertyExist(property, true));
     }
 
     @Test
@@ -154,10 +149,7 @@ public class PropertyInsertTest extends PropertyMethod {
         insertObj.put("date", property.getDate());
         insertObj.put("extraField", "extraValue");
 
-        JSONArray request = new JSONArray() {{
-            add(new JSONObject(insertObj));
-        }};
-        Response response = httpApiResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+        Response response = insertProperty(insertObj);
         assertEquals(500, response.getStatus());
         assertTrue(response.readEntity(String.class).contains("UnrecognizedPropertyException"));
 
@@ -179,16 +171,6 @@ public class PropertyInsertTest extends PropertyMethod {
 
         assertFalse(propertyExist(property));
         assertTrue(propertyExist(property2));
-
-    }
-
-    private void insertProperties(final Map... insertObjects) throws IOException {
-        JSONArray insertArray = new JSONArray();
-        for (Map obj : insertObjects) {
-            insertArray.add(new JSONObject(obj));
-        }
-        Response response = httpApiResource.path(METHOD_PROPERTY_INSERT).request().post(Entity.entity(insertArray, MediaType.APPLICATION_JSON_TYPE));
-        assertEquals("Fail to execute delete query", 200, response.getStatus());
     }
 
 

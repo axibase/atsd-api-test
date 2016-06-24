@@ -45,11 +45,11 @@ public class EntityMethod extends BaseMethod {
     }
 
 
-    Boolean entityExist(final Entity entity) throws IOException {
+    boolean entityExist(final Entity entity) throws IOException {
         return entityExist(entity, true);
     }
 
-    Boolean entityExist(final Entity entity, Boolean allowExtraFields) throws IOException {
+    boolean entityExist(final Entity entity, boolean allowExtraFields) throws IOException {
         String entityJson = jacksonMapper.writeValueAsString(entity);
         Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().get();
         assertEquals(200, response.getStatus());

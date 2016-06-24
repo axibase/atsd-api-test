@@ -2,18 +2,23 @@ package com.axibase.tsd.api.method.metrics;
 
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
-import junit.framework.Assert;
 import org.junit.Test;
+
+import javax.ws.rs.core.Response;
+
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MetricCreateOrReplaceTest extends MetricMethod {
 
     @Test
-    public void testCreateOrReplaceMetric() throws Exception {
+    public void testCreateOrReplace() throws Exception {
         Metric metric = new Metric("m-create-or-replace");
         metric.setDataType(DataType.DECIMAL);
 
-        Assert.assertTrue("Failed to insert create or replace metric", createOrReplaceMetric(metric));
-        Assert.assertTrue(getMetric(metric));
-        Assert.assertEquals(metric.getDataType().toString(), getMetricField("dataType"));
+        Response response = createOrReplaceMetric(metric);
+        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertTrue(metricExist(metric));
     }
 }
