@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
  * * <pre>
  * {@code
  *      SqlExecuteMethod sqlMethod = new SqlExecuteMethod();
- *      String s = sqlMetod
+ *      String s = sqlMethod
  *                  .executeQuery("SELECT 1")
  *                  .result(String.class);
  * }
@@ -37,7 +37,7 @@ public class SqlExecuteMethod extends BaseMethod {
      *
      * @param sqlQuery     SQL executeQuery in a String format
      * @param outputFormat some field from {@link OutputFormat}
-     * @return HTTP Response
+     * @return instance of class with returned Response
      */
     public SqlExecuteMethod executeQuery(String sqlQuery, OutputFormat outputFormat) {
         queryResponse = httpSqlApiResource
@@ -52,7 +52,7 @@ public class SqlExecuteMethod extends BaseMethod {
      * Execute SQL executeQuery and retrieve result in specified format
      *
      * @param sqlQuery     SQL executeQuery in a String format
-     * @return SqlExecuteMethod
+     * @return instance of class with returned Response
      */
     public SqlExecuteMethod executeQuery(String sqlQuery) {
         return executeQuery(sqlQuery, OutputFormat.JSON);
@@ -61,7 +61,7 @@ public class SqlExecuteMethod extends BaseMethod {
      * Map response to specified classs
      *
      * @param type Class type that we want get as result
-     * @return   Object of specified class
+     * @return Object of specified class
      */
     public <T> T result(Class<T> type) {
         try {

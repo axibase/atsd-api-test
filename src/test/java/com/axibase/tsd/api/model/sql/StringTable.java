@@ -34,6 +34,7 @@ public class StringTable implements Table<String, ArrayList<String>> {
         JSONArray rowJsonArray;
         for (int i = 0; i < data.length(); i++) {
             rowJSON = data.get(i);
+
             if (rowJSON instanceof JSONObject) {
                 rowJsonObject = (JSONObject) rowJSON;
                 for (int j = 0; j < columnCount; j++) {
