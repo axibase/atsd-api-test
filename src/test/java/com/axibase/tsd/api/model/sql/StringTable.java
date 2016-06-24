@@ -14,7 +14,7 @@ import java.util.List;
 public class StringTable{
 
     private List<String> columns;
-    private List<ArrayList<String>> rows;
+    private List<List<String>> rows;
 
     public static StringTable parseTable(JSONObject tableJson) throws JSONException {
         StringTable tableModel = new StringTable();
@@ -80,7 +80,7 @@ public class StringTable{
         return rows.get(i).get(j);
     }
 
-    public List<ArrayList<String>> getRows() {
+    public List<List<String>> getRows() {
         return rows;
     }
 
