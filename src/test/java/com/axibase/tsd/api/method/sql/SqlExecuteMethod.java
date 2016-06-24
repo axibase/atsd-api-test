@@ -35,7 +35,7 @@ public class SqlExecuteMethod extends BaseMethod {
     /**
      * Execute SQL executeQuery and retrieve result in specified format
      *
-     * @param sqlQuery     SQL executeQuery in a String format
+     * @param sqlQuery SQL query in a String format
      * @param outputFormat some field from {@link OutputFormat}
      * @return instance of class with returned Response
      */
