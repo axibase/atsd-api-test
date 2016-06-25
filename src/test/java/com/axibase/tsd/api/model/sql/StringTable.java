@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.model.sql;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,8 +11,13 @@ import java.util.List;
 
 /**
  * @author Igor Shmagrinskiy
+ *
+ * Class for storing SQL result table in {@link String}
+ * objects.
+ * It is using custom deserializer
  */
-public class StringTable{
+@JsonDeserialize(using = StringTableDeserializer.class)
+public class StringTable {
 
     private List<String> columns;
     private List<List<String>> rows;
