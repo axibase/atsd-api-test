@@ -11,10 +11,10 @@ import java.util.List;
 
 /**
  * @author Igor Shmagrinskiy
- *
- * Class for storing SQL result table in {@link String}
- * objects.
- * It is using custom deserializer
+ *         <p>
+ *         Class for storing SQL result table in {@link String}
+ *         objects.
+ *         It is using custom deserializer
  */
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
@@ -22,46 +22,8 @@ public class StringTable {
     private List<String> columns;
     private List<List<String>> rows;
 
-    public static StringTable parseTable(JSONObject tableJson) throws JSONException {
-        StringTable tableModel = new StringTable();
-        JSONArray columns = tableJson
-                .getJSONObject("metadata")
-                .getJSONObject("tableSchema")
-                .getJSONArray("columns");
-        JSONArray data = tableJson.getJSONArray("data");
-        Integer columnCount = columns.length();
-        for (int i = 0; i < columnCount; i++) {
-            tableModel.addColumn(columns
-                    .getJSONObject(i)
-                    .getString("name"));
-        }
-        String[] row = new String[columnCount];
-        Object rowJSON;
-        JSONObject rowJsonObject;
-        JSONArray rowJsonArray;
-        for (int i = 0; i < data.length(); i++) {
-            rowJSON = data.get(i);
 
-            if (rowJSON instanceof JSONObject) {
-                rowJsonObject = (JSONObject) rowJSON;
-                for (int j = 0; j < columnCount; j++) {
-                    row[j] = rowJsonObject.getString(tableModel.getColumnName(j));
-                }
-            } else if (rowJSON instanceof JSONArray) {
-                rowJsonArray = data.getJSONArray(i);
-                for (int j = 0; j < columnCount; j++) {
-                    row[j] = rowJsonArray.getString(j);
-                }
-            } else {
-                throw new IllegalStateException("It's not JSON structure " + rowJSON);
-            }
-            tableModel.addRow(new ArrayList<>(Arrays.asList(row)));
-        }
-        return tableModel;
-    }
-
-
-    private StringTable() {
+    public StringTable() {
         columns = new ArrayList<>();
         rows = new ArrayList<>();
     }
