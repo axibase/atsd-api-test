@@ -42,7 +42,7 @@ public class SeriesCommandTest extends SeriesMethod {
         for (int i = 0; i < METRICS_COUNT; i++) {
             Series series = new Series(null, metricPrefix + i);
             series.setEntity(entityName);
-            series.setData(new ArrayList<>(Collections.singletonList(new Sample(date, i))));
+            series.setData(Collections.singletonList(new Sample(date, i)));
             seriesList.add(series);
             seriesQueries.add(new SeriesQuery(entityName, metricPrefix + i, date, endDate));
         }

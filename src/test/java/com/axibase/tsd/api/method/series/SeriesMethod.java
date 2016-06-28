@@ -17,9 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import static javax.ws.rs.core.Response.Status.OK;
 
 public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_INSERT = "/series/insert";
@@ -32,7 +32,7 @@ public class SeriesMethod extends BaseMethod {
                 put("entity", series.getEntity());
                 put("metric", series.getMetric());
                 put("data", new JSONArray() {{
-                    ArrayList<Sample> data = series.getData();
+                    List<Sample> data = series.getData();
                     for (final Sample sample : data) {
                         put(new JSONObject() {{
                             put("d", sample.getD());
@@ -47,17 +47,17 @@ public class SeriesMethod extends BaseMethod {
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(request.toString(), MediaType.APPLICATION_JSON_TYPE));
         response.close();
         Thread.sleep(sleepDuration);
-        if (200 == response.getStatus()) {
+        if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Series looks inserted");
         } else {
             logger.error("Fail to insert series");
         }
-        return 200 == response.getStatus();
+        return OK.getStatusCode() == response.getStatus();
     }
 
     public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(Collections.singletonList(seriesQuery), MediaType.APPLICATION_JSON_TYPE));
-        if (200 == response.getStatus()) {
+        if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
             logger.error("Failed to execute series query");
@@ -77,7 +77,7 @@ public class SeriesMethod extends BaseMethod {
 
     public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws IOException, ParseException, JSONException {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(seriesQueries, MediaType.APPLICATION_JSON_TYPE));
-        if (200 == response.getStatus()) {
+        if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
             response.close();

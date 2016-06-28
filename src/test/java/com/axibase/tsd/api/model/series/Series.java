@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -13,7 +14,7 @@ import java.util.Map;
 public class Series {
     private String entity;
     private String metric;
-    private ArrayList<Sample> data;
+    private List<Sample> data;
     private Map<String, String> tags;
 
     public Series() {
@@ -52,11 +53,11 @@ public class Series {
         return tags;
     }
 
-    public ArrayList<Sample> getData() {
+    public List<Sample> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Sample> data) {
+    public void setData(List<Sample> data) {
         this.data = data;
     }
 
