@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metrics.MetricMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
@@ -7,8 +8,10 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import junit.framework.Assert;
-import org.json.JSONArray;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -18,7 +21,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String entityName = "e-float-1";
         String metricName = "m-float-1";
         String largeNumber = "10.121212121212121212212121212121212121212121";
-        final long t = 1465485524888l;
+        final long t = 1465485524888L;
         MetricMethod metricMethod = new MetricMethod();
 
         Series series = new Series(entityName, metricName);
@@ -32,8 +35,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored big float value rounded incorrect", "10.121212121212121", getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2871 */
@@ -42,7 +45,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String entityName = "e-decimal-1";
         String metricName = "m-decimal-1";
         String largeNumber = "10.121212121212121212212121212121212121212121";
-        final long t = 1465485524888l;
+        final long t = 1465485524888L;
         MetricMethod metricMethod = new MetricMethod();
 
 
@@ -59,11 +62,11 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /* #2871 */
     @Test
-    public void testBigDecimalPrecision() throws Exception {
+    public void testBigDecimalAggregatePrecision() throws Exception {
         String entityName = "e-decimal-2";
         String metricName = "m-decimal-2";
         String number = "0.6083333332";
-        final long t = 1465984800000l;
+        final long t = 1465984800000L;
 
         MetricMethod metricMethod = new MetricMethod();
 
@@ -82,17 +85,17 @@ public class SeriesInsertTest extends SeriesMethod {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
         seriesQuery.addAggregateType("SUM");
         seriesQuery.setAggregatePeriod(1, "MINUTE");
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored small decimal value incorrect", "7.2999999984", getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2871 */
     @Test
-    public void testDoublePrecision() throws Exception {
+    public void testDoubleAggregatePrecision() throws Exception {
         String entityName = "e-double-3";
         String metricName = "m-double-3";
         String number = "0.6083333332";
-        final long t = 1465984800000l;
+        final long t = 1465984800000L;
 
         MetricMethod metricMethod = new MetricMethod();
 
@@ -112,17 +115,18 @@ public class SeriesInsertTest extends SeriesMethod {
         seriesQuery.addAggregateType("SUM");
         seriesQuery.setAggregatePeriod(1, "MINUTE");
 
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored small double value incorrect", "7.299999998400001", getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored small double value incorrect", new BigDecimal("7.299999998400001"), seriesList.get(0).getData().get(0).getV());
     }
+
 
     /* #2871 */
     @Test
-    public void testDoublePrecisionSingle() throws Exception {
+    public void testDoublePrecisionAfterCompaction() throws Exception {
         String entityName = "e-double-4";
         String metricName = "m-double-4";
-        String number = "0.6083333332";
-        final long t = 1465984800000l;
+        String number = "90000000000000003.9";
+        final long t = 1465984800000L;
 
         MetricMethod metricMethod = new MetricMethod();
 
@@ -134,14 +138,67 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         series.addData(new Sample(t, number));
-        Assert.assertTrue("Failed to insert small decimal series", insertSeries(series, 1000));
+        Assert.assertTrue("Failed to insert double series", insertSeries(series, 1000));
 
+        CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
-        seriesQuery.addAggregateType("SUM");
-        seriesQuery.setAggregatePeriod(1, "MINUTE");
 
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored small double value incorrect", number, getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored float value precision incorrect", new BigDecimal("9.0E16"), seriesList.get(0).getData().get(0).getV());
+    }
+
+    /* #2871 */
+    @Test
+    public void testFloatPrecisionAfterCompaction() throws Exception {
+        String entityName = "e-float-4";
+        String metricName = "m-float-4";
+        String number = "900000003.9";
+        final long t = 1465984800000L;
+
+        MetricMethod metricMethod = new MetricMethod();
+
+        Metric metric = new Metric(metricName);
+        metric.setDataType(DataType.FLOAT);
+
+        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+
+        Series series = new Series(entityName, null);
+        series.setMetric(metricName);
+        series.addData(new Sample(t, number));
+        Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
+
+        CompactionMethod.performCompaction("2016-06-15", true);
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
+
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored float value precision incorrect", new BigDecimal("9.0E8"), seriesList.get(0).getData().get(0).getV());
+    }
+
+    /* #2871 */
+    @Test
+    public void testDecimalPrecisionAfterCompaction() throws Exception {
+        String entityName = "e-decimal-4";
+        String metricName = "m-decimal-4";
+        String number = "90000000000000003.93";
+        final long t = 1465984800000L;
+
+        MetricMethod metricMethod = new MetricMethod();
+
+        Metric metric = new Metric(metricName);
+        metric.setDataType(DataType.DECIMAL);
+
+        Assert.assertTrue("Failed to insert create or replace metric", metricMethod.createOrReplaceMetric(metric));
+
+        Series series = new Series(entityName, null);
+        series.setMetric(metricName);
+        series.addData(new Sample(t, number));
+        Assert.assertTrue("Failed to insert decimal series", insertSeries(series, 1000));
+
+        CompactionMethod.performCompaction("2016-06-15", true);
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
+
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored float value precision incorrect", new BigDecimal("90000000000000003.93"), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2009 */
@@ -159,9 +216,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", storedDate, getDataField(0, "d", storedSeriesList));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getD());
+        Assert.assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2009 */
@@ -179,9 +236,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", storedDate, getDataField(0, "d", storedSeriesList));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getD());
+        Assert.assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2009 */
@@ -198,9 +255,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", d, getDataField(0, "d",storedSeriesList));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
+        Assert.assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2009 */
@@ -217,16 +274,16 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored date incorrect", d, getDataField(0, "d", storedSeriesList));
-        Assert.assertEquals("Stored value incorrect", value, getDataField(0, "v", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
+        Assert.assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
 
     /* #2913 */
     @Test
     public void testUnderscoreSequence() throws Exception {
-        final long t = 1465485524888l;
+        final long t = 1465485524888L;
 
         Series series = new Series("e___underscore", "m___underscore");
         series.addData(new Sample(t, "0"));
@@ -234,9 +291,9 @@ public class SeriesInsertTest extends SeriesMethod {
         Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
-        JSONArray storedSeriesList = executeQuery(seriesQuery);
-        Assert.assertEquals("Stored big float value rounded incorrect", "0", getDataField(0, "v", storedSeriesList));
-        Assert.assertEquals("Returned incorrect entity", series.getEntity(), getField(0, "entity", storedSeriesList));
-        Assert.assertEquals("Returned incorrect metric", series.getMetric(), getField(0, "metric", storedSeriesList));
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        Assert.assertEquals("Stored big float value rounded incorrect", new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
+        Assert.assertEquals("Returned incorrect entity", series.getEntity(), seriesList.get(0).getEntity());
+        Assert.assertEquals("Returned incorrect metric", series.getMetric(), seriesList.get(0).getMetric());
     }
 }

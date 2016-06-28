@@ -1,28 +1,30 @@
 package com.axibase.tsd.api.model.series;
 
-import com.axibase.tsd.api.model.Model;
 import com.axibase.tsd.api.Registry;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Series {
     private String entity;
     private String metric;
-    private ArrayList<Sample> data;
+    private List<Sample> data;
     private Map<String, String> tags;
 
     public Series() {
     }
 
     public Series(String entity, String metric) {
-        if(null != entity) {
+        if (null != entity) {
             Registry.Entity.register(entity);
         }
-        if(null != metric) {
+        if (null != metric) {
             Registry.Metric.register(metric);
         }
         this.entity = entity;
@@ -51,16 +53,11 @@ public class Series {
         return tags;
     }
 
-    public ArrayList<Sample> getData() {
+    public List<Sample> getData() {
         return data;
     }
 
-    public void setData(Sample sample) {
-        data = new ArrayList<>();
-        addData(sample);
-    }
-
-    public void setData(ArrayList<Sample> data) {
+    public void setData(List<Sample> data) {
         this.data = data;
     }
 
@@ -70,6 +67,28 @@ public class Series {
 
     public void addData(Sample sample) {
         data.add(sample);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Series series = (Series) o;
+
+        if (entity != null ? !entity.equals(series.entity) : series.entity != null) return false;
+        if (metric != null ? !metric.equals(series.metric) : series.metric != null) return false;
+        if (data != null ? !data.equals(series.data) : series.data != null) return false;
+        return tags != null ? tags.equals(series.tags) : series.tags == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = entity != null ? entity.hashCode() : 0;
+        result = 31 * result + (metric != null ? metric.hashCode() : 0);
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
     }
 
     @Override
