@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metrics.MetricMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
@@ -61,7 +62,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /* #2871 */
     @Test
-    public void testBigDecimalPrecision() throws Exception {
+    public void testBigDecimalAggregatePrecision() throws Exception {
         String entityName = "e-decimal-2";
         String metricName = "m-decimal-2";
         String number = "0.6083333332";
@@ -90,7 +91,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /* #2871 */
     @Test
-    public void testDoublePrecision() throws Exception {
+    public void testDoubleAggregatePrecision() throws Exception {
         String entityName = "e-double-3";
         String metricName = "m-double-3";
         String number = "0.6083333332";
@@ -121,7 +122,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /* #2871 */
     @Test
-    public void testDoublePrecisionSingle() throws Exception {
+    public void testDoublePrecisionAfterCompaction() throws Exception {
         String entityName = "e-double-4";
         String metricName = "m-double-4";
         String number = "90000000000000003.9";
@@ -139,9 +140,7 @@ public class SeriesInsertTest extends SeriesMethod {
         series.addData(new Sample(t, number));
         Assert.assertTrue("Failed to insert double series", insertSeries(series, 1000));
 
-        httpRootResource.path("/compaction")
-                .queryParam("day", "2016-06-15")
-                .queryParam("historical", "true").request().get();
+        CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -150,7 +149,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /* #2871 */
     @Test
-    public void testFloatPrecisionSingle() throws Exception {
+    public void testFloatPrecisionAfterCompaction() throws Exception {
         String entityName = "e-float-4";
         String metricName = "m-float-4";
         String number = "900000003.9";
@@ -168,9 +167,7 @@ public class SeriesInsertTest extends SeriesMethod {
         series.addData(new Sample(t, number));
         Assert.assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
-        httpRootResource.path("/compaction")
-                .queryParam("day", "2016-06-15")
-                .queryParam("historical", "true").request().get();
+        CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -179,7 +176,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /* #2871 */
     @Test
-    public void testDecimalPrecisionSingle() throws Exception {
+    public void testDecimalPrecisionAfterCompaction() throws Exception {
         String entityName = "e-decimal-4";
         String metricName = "m-decimal-4";
         String number = "90000000000000003.93";
@@ -197,9 +194,7 @@ public class SeriesInsertTest extends SeriesMethod {
         series.addData(new Sample(t, number));
         Assert.assertTrue("Failed to insert decimal series", insertSeries(series, 1000));
 
-        httpRootResource.path("/compaction")
-                .queryParam("day", "2016-06-15")
-                .queryParam("historical", "true").request().get();
+        CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);

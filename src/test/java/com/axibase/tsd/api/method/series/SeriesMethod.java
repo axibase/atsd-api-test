@@ -45,6 +45,7 @@ public class SeriesMethod extends BaseMethod {
         }};
 
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(request.toString(), MediaType.APPLICATION_JSON_TYPE));
+        response.close();
         Thread.sleep(sleepDuration);
         if (200 == response.getStatus()) {
             logger.debug("Series looks inserted");
