@@ -49,7 +49,7 @@ public class MessageCommandTest extends MessageMethod {
         messageQuery.setType(message.getType());
         messageQuery.setSource(message.getSource());
         messageQuery.setSeverity(message.getSeverity());
-        String storedMessage = executeQuery(messageQuery);
+        String storedMessage = executeQuery(messageQuery).readEntity(String.class);
 
         String sentMessage = jacksonMapper.writeValueAsString(Collections.singletonList(message));
 
@@ -94,7 +94,7 @@ public class MessageCommandTest extends MessageMethod {
         messageQuery.setType(message.getType());
         messageQuery.setSource(message.getSource());
         messageQuery.setSeverity(message.getSeverity());
-        String storedMessage = executeQuery(messageQuery);
+        String storedMessage = executeQuery(messageQuery).readEntity(String.class);
 
         JSONAssert.assertEquals("{\"error\":\"com.axibase.tsd.service.DictionaryNotFoundException: " +
                 "ENTITY not found for name: 'e-message-max-len-overflow'\"}",

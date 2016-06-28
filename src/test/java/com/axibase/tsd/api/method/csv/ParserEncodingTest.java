@@ -1,0 +1,78 @@
+package com.axibase.tsd.api.method.csv;
+
+import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.message.MessageMethod;
+import com.axibase.tsd.api.model.message.Message;
+import com.axibase.tsd.api.model.message.MessageQuery;
+import org.json.simple.parser.ParseException;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class ParserEncodingTest extends CSVUploadMethod {
+    private static final String RESOURCE_DIR = "parser_encoding";
+    private static final String ENTITY_PREFIX = "e-csv-test-encoding-parser";
+    public static final String PARSER_NAME = "test-encoding-parser";
+
+    @Rule
+    public TestName name = new TestName();
+
+    @BeforeClass
+    public static void installParser() throws URISyntaxException {
+        File configPath = resolvePath(RESOURCE_DIR + File.separator + PARSER_NAME+".xml");
+        boolean success = importParser(configPath);
+        assertTrue(success);
+    }
+
+    /*
+    * #2916
+    * */
+    @Test
+    public void testCsvCorrectTextEncodingISO8859_1() throws Exception {
+        String controlSequence = "¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+        String entityName = ENTITY_PREFIX+"-1";
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+
+        checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, "ISO-8859-1");
+    }
+    /*
+    * #2916
+    * */
+    @Test
+    public void testCsvCorrectTextEncodingWindows1251() throws Exception {
+        String controlSequence = "йцукенгшщзхъфывапролджэёячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЁЯЧСМИТЬБЮ";
+        String entityName = ENTITY_PREFIX+"-2";
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+
+        checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, "Windows-1251");
+    }
+
+    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws InterruptedException, IOException, ParseException {
+        Registry.Entity.registerPrefix(entityName);
+
+        Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding);
+
+        assertEquals(response.getStatus(), OK.getStatusCode());
+
+        Thread.sleep(1000l);
+
+        MessageQuery messageQuery = new MessageQuery(entityName, Util.getMinDate(), Util.getMaxDate());
+        List<Message> storedMessageList = MessageMethod.executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
+
+        assertEquals("Unexpected message body", controlSequence, storedMessageList.get(0).getMessage());
+    }
+
+}
