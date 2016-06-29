@@ -29,16 +29,17 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
 
     @BeforeClass
     public static void createTestData() throws InterruptedException, JSONException, IOException {
-        final Sample[] testSamples = {
+        testSeries.setData(Arrays.asList(
                 new Sample("2016-06-03T09:23:00.000Z", "16.0"),
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
-        };
-        testSeries.setData(Arrays.asList(testSamples));
+                )
+        );
+
         boolean isSuccessInsert = SeriesMethod.insertSeries(testSeries, 1000);
         if (!isSuccessInsert) {
-            throw new IllegalStateException("Failed to insert series:" + testSeries);
+            throw new IllegalStateException("Failed to insert series: " + testSeries);
         }
     }
 
