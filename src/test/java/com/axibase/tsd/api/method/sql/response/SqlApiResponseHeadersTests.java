@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlExecuteMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import org.glassfish.jersey.message.internal.HttpHeaderReader;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -52,7 +51,11 @@ public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
                 .request()
                 .head()
                 .getHeaderString(ALLOW_METHODS);
-        Set<String> responseAllowedMethods = new HashSet<>(HttpHeaderReader.readStringList(responseAllowMethodsString.toUpperCase()));
+        Set<String> responseAllowedMethods = new HashSet<>(Arrays.asList(
+                responseAllowMethodsString
+                        .replace(" ", "")
+                        .split(",")
+        ));
         Assert.assertEquals(expectedAllowedMethods, responseAllowedMethods);
     }
 
