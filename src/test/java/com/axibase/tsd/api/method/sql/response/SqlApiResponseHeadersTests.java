@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlExecuteMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import org.glassfish.jersey.message.internal.HttpHeaderReader;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -14,7 +15,10 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Igor Shmagrinslkiy
@@ -42,13 +46,14 @@ public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
 
 
     @Test
-    public void testAllowMethods() {
-        final String expectedAllowMethods = "HEAD, GET, POST, PUT, PATCH, DELETE";
-        Response response = httpSqlApiResource
+    public void testAllowMethods() throws ParseException {
+        Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"));
+        final String responseAllowMethodsString = httpSqlApiResource
                 .request()
-                .head();
-        final String responseAllowMethods = response.getHeaderString(ALLOW_METHODS);
-        Assert.assertEquals(expectedAllowMethods, responseAllowMethods);
+                .head()
+                .getHeaderString(ALLOW_METHODS);
+        Set<String> responseAllowedMethods = new HashSet<>(HttpHeaderReader.readStringList(responseAllowMethodsString.toUpperCase()));
+        Assert.assertEquals(expectedAllowedMethods, responseAllowedMethods);
     }
 
     @Test
