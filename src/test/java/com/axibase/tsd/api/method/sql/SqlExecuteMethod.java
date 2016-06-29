@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,16 +15,19 @@ import javax.ws.rs.core.Response;
  *         and retrive result in specifed format.
  *         Usage:
  *         * <pre>
- *         {@code
- *              SqlExecuteMethod
- *                          .executeQuery("SELECT 1")
- *                          .readEntity(String.class);
- *         }
- *         </pre>
+ *                 {@code
+ *                      SqlExecuteMethod
+ *                                  .executeQuery("SELECT 1")
+ *                                  .readEntity(String.class);
+ *                 }
+ *                 </pre>
  */
 public class SqlExecuteMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
-    private static WebTarget httpSqlApiResource = httpRootResource.path(METHOD_SQL_API);
+    protected static WebTarget httpSqlApiResource = httpRootResource
+            .property(ClientProperties.CONNECT_TIMEOUT, 1000)
+            .property(ClientProperties.READ_TIMEOUT, 1000)
+            .path(METHOD_SQL_API);
     private static final Logger logger = LoggerFactory.getLogger(SqlExecuteMethod.class);
 
 
@@ -35,6 +39,7 @@ public class SqlExecuteMethod extends BaseMethod {
      * @return instance of Response
      */
     public static Response executeQuery(String sqlQuery, OutputFormat outputFormat) {
+        logger.debug("SQL query : {}", sqlQuery);
         return httpSqlApiResource
                 .queryParam("q", sqlQuery)
                 .queryParam("outputFormat", outputFormat.toString())
