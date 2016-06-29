@@ -24,7 +24,6 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
     @BeforeClass
     public static void createTestData() throws InterruptedException, JSONException, IOException {
         testSeries.setData(Arrays.asList(
-                new Sample("2016-06-03T09:23:00.000Z", "16.0"),
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
@@ -47,7 +46,6 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
 
         List<List<String>> expectedRows = new ArrayList<>(Arrays.asList
                 (
-                        Arrays.asList("2016-06-03T09:20:00.000Z", "16.0"),
                         Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                         //<-missing period
                         Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
@@ -72,7 +70,6 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
 
         List<List<String>> expectedRows = new ArrayList<>(Arrays.asList
                 (
-                        Arrays.asList("2016-06-03T09:20:00.000Z", "16.0"),
                         Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                         Arrays.asList("2016-06-03T09:30:00.000Z", "0.0"),//<-constant
                         Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
@@ -97,7 +94,6 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
 
         List<List<String>> expectedRows = new ArrayList<>(Arrays.asList
                 (
-                        Arrays.asList("2016-06-03T09:20:00.000Z", "16.0"),
                         Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                         Arrays.asList("2016-06-03T09:30:00.000Z", "-1.0"),//<-constant
                         Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
@@ -122,7 +118,6 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
 
         List<List<String>> expectedRows = new ArrayList<>(Arrays.asList
                 (
-                        Arrays.asList("2016-06-03T09:20:00.000Z", "16.0"),
                         Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                         Arrays.asList("2016-06-03T09:30:00.000Z", "8.1"),//<-previous value
                         Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
@@ -146,7 +141,6 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
 
         List<List<String>> expectedRows = new ArrayList<>(Arrays.asList
                 (
-                        Arrays.asList("2016-06-03T09:20:00.000Z", "16.0"),
                         Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                         Arrays.asList("2016-06-03T09:30:00.000Z", "7.05"),//<-interpolated
                         Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
