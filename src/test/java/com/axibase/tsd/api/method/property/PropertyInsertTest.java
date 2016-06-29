@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.*;
 
@@ -150,7 +151,7 @@ public class PropertyInsertTest extends PropertyMethod {
         insertObj.put("extraField", "extraValue");
 
         Response response = insertProperty(insertObj);
-        assertEquals(500, response.getStatus());
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue(response.readEntity(String.class).contains("UnrecognizedPropertyException"));
 
         assertFalse(propertyExist(property));

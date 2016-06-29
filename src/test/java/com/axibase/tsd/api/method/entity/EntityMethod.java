@@ -15,6 +15,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,7 +37,7 @@ public class EntityMethod extends BaseMethod {
         Map<String, Object> payload = new HashMap<>();
         payload.put("tags", entity.getTags());
         Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().put(javax.ws.rs.client.Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE));
-        if (response.getStatus() != 200) {
+        if (response.getStatus() != OK.getStatusCode()) {
             throw new IOException("Fail to insert entity");
         }
         if (!entityExist(entity)) {
@@ -52,7 +53,7 @@ public class EntityMethod extends BaseMethod {
     boolean entityExist(final Entity entity, boolean allowExtraFields) throws IOException {
         String entityJson = jacksonMapper.writeValueAsString(entity);
         Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().get();
-        assertEquals(200, response.getStatus());
+        assertEquals(OK.getStatusCode(), response.getStatus());
         String responseJson = response.readEntity(String.class);
         logger.debug("check: {}\nresponse: {}", entityJson, responseJson);
 

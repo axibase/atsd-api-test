@@ -32,7 +32,6 @@ class PropertyMethod extends BaseMethod {
                 .post(Entity.entity(queryList, MediaType.APPLICATION_JSON_TYPE));
     }
 
-    @SafeVarargs
     public static <T> Response insertProperty(T... queries) {
         return insertProperty(Arrays.asList(queries));
     }
@@ -44,7 +43,6 @@ class PropertyMethod extends BaseMethod {
                 .post(Entity.entity(queryList, MediaType.APPLICATION_JSON_TYPE));
     }
 
-    @SafeVarargs
     public static <T> Response getProperty(T... queries) {
         return getProperty(Arrays.asList(queries));
     }
@@ -56,7 +54,6 @@ class PropertyMethod extends BaseMethod {
                 .post(Entity.entity(queryList, MediaType.APPLICATION_JSON_TYPE));
     }
 
-    @SafeVarargs
     public static <T> Response deleteProperty(T... queries) {
         return deleteProperty(Arrays.asList(queries));
     }
@@ -78,7 +75,7 @@ class PropertyMethod extends BaseMethod {
 
     public static boolean propertyExist(final Property property, boolean strict) throws IOException {
         Response response = getProperty(prepareStrictPropertyQuery(property));
-        if (response.getStatus() != 200) {
+        if (response.getStatus() != OK.getStatusCode()) {
             throw new IOException("Fail to execute getProperty");
         }
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
@@ -87,7 +84,7 @@ class PropertyMethod extends BaseMethod {
         return compareJsonString(expected, given, strict);
     }
 
-    public static List prepareStrictPropertyQuery(final Property property) {
+    private static List prepareStrictPropertyQuery(final Property property) {
         Map<String, Object> query = new HashMap<>();
         query.put("entity", property.getEntity());
         query.put("type", property.getType());

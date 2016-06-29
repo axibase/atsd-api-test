@@ -18,7 +18,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertTrue(metricExist(metric));
+        assertEquals("Fail to execute createOrReplace metric query", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 }

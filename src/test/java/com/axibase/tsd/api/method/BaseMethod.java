@@ -42,7 +42,7 @@ public abstract class BaseMethod {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
-        julLogger.setLevel(Level.FINE);
+        julLogger.setLevel(Level.FINEST);
 
         prepare();
     }
@@ -87,7 +87,7 @@ public abstract class BaseMethod {
 
     }
 
-    public static String formatToJson(Response response) {
+    public static String formatToJsonString(Response response) {
         return response.readEntity(String.class);
     }
 

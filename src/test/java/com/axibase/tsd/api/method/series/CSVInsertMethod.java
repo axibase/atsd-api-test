@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.OK;
+
 public class CSVInsertMethod extends SeriesMethod {
     protected static final String METHOD_CSV_INSERT = "/series/csv/";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -25,12 +27,12 @@ public class CSVInsertMethod extends SeriesMethod {
 
         Response response = csvInsert.resolveTemplate("entity", entity).request().post(Entity.entity(csv, new MediaType("text", "csv")));
         Thread.sleep(sleepDuration);
-        if (200 == response.getStatus()) {
+        if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("CSV looks inserted");
         } else {
             logger.error("Fail to insert csv");
         }
-        return 200 == response.getStatus();
+        return OK.getStatusCode() == response.getStatus();
     }
 
     protected boolean csvInsert(String entity, String csv, Map<String, String> tags) throws IOException, InterruptedException {
