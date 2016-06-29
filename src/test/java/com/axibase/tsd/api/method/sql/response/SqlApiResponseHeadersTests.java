@@ -45,7 +45,7 @@ public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
 
 
     @Test
-    public void testAllowMethods() throws ParseException {
+    public void testAllowMethods() {
         Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"));
         final String responseAllowMethodsString = httpSqlApiResource
                 .request()
