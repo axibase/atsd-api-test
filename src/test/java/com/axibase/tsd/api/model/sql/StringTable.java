@@ -91,6 +91,7 @@ public class StringTable {
                 if (indexesOfRequestedColumns.contains(index)) {
                     filteredRow.add(cell);
                 }
+                index++;
             }
             filteredRows.add(filteredRow);
         }
