@@ -1,13 +1,10 @@
 package com.axibase.tsd.api.model.sql;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Igor Shmagrinskiy
@@ -19,25 +16,38 @@ import java.util.List;
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
 
-    private List<String> columns;
-    private List<List<String>> rows;
+    private final List<String> columnNames;
+    private final List<List<String>> rows;
+    private final List<List<String>> columns;
 
 
     public StringTable() {
-        columns = new ArrayList<>();
+        columnNames = new ArrayList<>();
         rows = new ArrayList<>();
+        columns = new ArrayList<>();
     }
 
-    public void addColumn(String columnName) {
-        columns.add(columnName);
+
+    public void addColumnName(String columnName) {
+        columnNames.add(columnName);
     }
 
     public void addRow(ArrayList<String> row) {
         rows.add(row);
+        while (columns.size() < row.size()) {
+            columns.add(new ArrayList<String>());
+        }
+        int index = 0;
+        for (String cell : row) {
+            columns
+                    .get(index)
+                    .add(cell);
+            index++;
+        }
     }
 
     public String getColumnName(int index) {
-        return columns.get(index);
+        return columnNames.get(index);
     }
 
     public List<String> getRow(int index) {
@@ -52,8 +62,42 @@ public class StringTable {
         return rows;
     }
 
-
-    public List<String> getColumns() {
+    public List<List<String>> getColumns() {
         return columns;
+    }
+
+
+    /**
+     * Filter row values by column names. Leaves those values, that indexes corresponded
+     * with columnNames contained in the set of requested column names
+     *
+     * @param requestedColumnNames - set of requested column names
+     * @return filtered rows
+     */
+    public List<List<String>> filterRows(Set<String> requestedColumnNames) {
+        List<Integer> indexesOfRequestedColumns = new ArrayList<>();
+        List<List<String>> filteredRows = new ArrayList<>(rows.size());
+        int index = 0;
+        for (String columnName : columnNames) {
+            if (requestedColumnNames.contains(columnName)) {
+                indexesOfRequestedColumns.add(index);
+            }
+            index++;
+        }
+        for (List<String> row : rows) {
+            List<String> filteredRow = new ArrayList<>();
+            index = 0;
+            for (String cell: row) {
+                if (indexesOfRequestedColumns.contains(index)) {
+                    filteredRow.add(cell);
+                }
+            }
+            filteredRows.add(filteredRow);
+        }
+        return filteredRows;
+    }
+
+    public List<String> getColumnNames() {
+        return columnNames;
     }
 }
