@@ -15,6 +15,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static javax.ws.rs.core.Response.Status.*;
 
@@ -34,9 +35,7 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
         };
-        for (Sample s : testSamples) {
-            testSeries.addData(s);
-        }
+        testSeries.setData(Arrays.asList(testSamples));
         boolean isSuccessInsert = SeriesMethod.insertSeries(testSeries, 1000);
         if (!isSuccessInsert) {
             throw new IllegalStateException("Failed to insert series:" + testSeries);
