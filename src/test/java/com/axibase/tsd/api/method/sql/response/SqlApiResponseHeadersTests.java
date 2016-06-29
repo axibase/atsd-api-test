@@ -24,7 +24,7 @@ import java.util.Set;
 public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
     private static final String TEST_PREFIX = "sql-response-headers";
     private static Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-    private static final String ALLOW_METHODS = "Access-Control-Allow-Methods";
+    private static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
     private static final String CONTENT_TYPE = "Content-type";
 
     @BeforeClass
@@ -34,7 +34,7 @@ public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
-            )
+                )
         );
 
         boolean isSuccessInsert = SeriesMethod.insertSeries(testSeries, 1000);
@@ -47,17 +47,14 @@ public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
     @Test
     public void testAllowMethods() {
         Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"));
-        final String responseAllowMethodsString = httpSqlApiResource
+        final Response response = httpSqlApiResource
                 .request()
-                .head()
-                .getHeaderString(ALLOW_METHODS);
-        Set<String> responseAllowedMethods = new HashSet<>(Arrays.asList(
-                responseAllowMethodsString
-                        .replace(" ", "")
-                        .split(",")
-        ));
+                .head();
+        Set<String> responseAllowedMethods = parseResponseAllowedMethods(response);
+
         Assert.assertEquals(expectedAllowedMethods, responseAllowedMethods);
     }
+
 
     @Test
     public void testContentTypeJsonGet() {
@@ -88,5 +85,13 @@ public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
                 .post(Entity.entity(form,
                         MediaType.APPLICATION_FORM_URLENCODED));
         Assert.assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+    }
+
+    private Set<String> parseResponseAllowedMethods(Response response) {
+        return new HashSet<>(Arrays.asList(
+                response.getHeaderString(ACCESS_CONTROL_ALLOW_METHODS)
+                        .replace(" ", "")
+                        .split(",")
+        ));
     }
 }
