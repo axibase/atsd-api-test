@@ -2,7 +2,6 @@ package com.axibase.tsd.api.model.sql;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.json.JSONArray;
@@ -15,14 +14,14 @@ import java.util.Arrays;
 
 /**
  * @author Igor Shmagrinskiy
- *
- * Deserialize class for Object mapper that
- * used in {@link javax.ws.rs.core.Response} class
- * for deserialization of JSON objects
+ *         <p>
+ *         Deserialize class for Object mapper that
+ *         used in {@link javax.ws.rs.core.Response} class
+ *         for deserialization of JSON objects
  */
 class StringTableDeserializer extends JsonDeserializer<StringTable> {
     @Override
-    public StringTable deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public StringTable deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         String jsonText = jsonParser
                 .readValueAsTree()
                 .toString();
@@ -45,7 +44,7 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
         JSONArray data = tableJson.getJSONArray("data");
         Integer columnCount = columns.length();
         for (int i = 0; i < columnCount; i++) {
-            tableModel.addColumn(columns
+            tableModel.addColumnName(columns
                     .getJSONObject(i)
                     .getString("name"));
         }
