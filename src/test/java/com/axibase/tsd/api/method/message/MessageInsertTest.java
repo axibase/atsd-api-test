@@ -5,6 +5,9 @@ import com.axibase.tsd.api.model.message.MessageQuery;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.ws.rs.core.GenericType;
+import java.util.List;
+
 public class MessageInsertTest extends MessageMethod {
     /* #2903 */
     @Test
@@ -19,13 +22,14 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage(messageText);
         message.setDate(date);
 
-        Assert.assertTrue("Fail to insert message", insertMessages(message, 1000));
+        Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
 
         MessageQuery messageQuery = new MessageQuery("nurswgvml022", date, endDate);
-        String storedMessage = executeQuery(messageQuery);
+        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
+        Message storedMessage = storedMessageList.get(0);
 
-        Assert.assertEquals("nurswgvml022", getField(storedMessage, 0, "entity"));
-        Assert.assertEquals("NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.", getField(storedMessage, 0, "message"));
-        Assert.assertEquals("application", getField(storedMessage, 0, "type"));
+        Assert.assertEquals("nurswgvml022", storedMessage.getEntity());
+        Assert.assertEquals("NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.", storedMessage.getMessage());
+        Assert.assertEquals("application", storedMessage.getType());
     }
 }

@@ -1,0 +1,34 @@
+<list>
+  <com.axibase.tsd.model.csv.CsvConfiguration>
+    <name>test-encoding-parser</name>
+    <putType>METRIC</putType>
+    <delimiter>,</delimiter>
+    <recordDelimiter>
+</recordDelimiter>
+    <padding>�</padding>
+    <comment></comment>
+    <textQualifier>&quot;</textQualifier>
+    <entityColumn/>
+    <timestampFormat>yyyy-MM-dd&apos;T&apos;HH:mm:ss.SSSXXX</timestampFormat>
+    <timestampType>PATTERN</timestampType>
+    <processEvents>false</processEvents>
+    <writeProperty>false</writeProperty>
+    <enabled>true</enabled>
+    <discardNan>true</discardNan>
+    <ignoreParseErrors>false</ignoreParseErrors>
+    <tagColumns class="linked-hash-set"/>
+    <excludedColumns class="linked-hash-set"/>
+    <propertyColumns class="linked-hash-set"/>
+    <propertyKeyColumns class="linked-hash-set"/>
+    <defaultTags class="linked-hash-map"/>
+    <renamedColumns class="linked-hash-map"/>
+    <header/>
+    <decimalSeparator>.</decimalSeparator>
+    <groupingSeparator>�</groupingSeparator>
+    <schema>select(&quot;#row=2-*&quot;).select(&quot;#col=1-*&quot;).&#xd;
+addMessage().&#xd;
+timestamp(cell(row,1)).&#xd;
+entity(cell(row,2)).&#xd;
+messageText(cell(row,3));</schema>
+  </com.axibase.tsd.model.csv.CsvConfiguration>
+</list>

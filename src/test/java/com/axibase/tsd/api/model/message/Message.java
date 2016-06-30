@@ -1,10 +1,11 @@
 package com.axibase.tsd.api.model.message;
 
-import com.axibase.tsd.api.model.Model;
 import com.axibase.tsd.api.Registry;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {
     private String entity;
     private String type;
@@ -13,6 +14,8 @@ public class Message {
     private String severity;
     private String message;
     private Boolean persist;
+
+    public Message() {}
 
     public Message(String entity) {
         if (entity != null) {
