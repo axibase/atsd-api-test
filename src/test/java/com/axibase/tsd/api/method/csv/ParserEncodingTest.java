@@ -13,6 +13,7 @@ import org.junit.rules.TestName;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
     public TestName name = new TestName();
 
     @BeforeClass
-    public static void installParser() throws URISyntaxException {
+    public static void installParser() throws URISyntaxException, FileNotFoundException {
         File configPath = resolvePath(RESOURCE_DIR + File.separator + PARSER_NAME+".xml");
         boolean success = importParser(configPath);
         assertTrue(success);
@@ -55,7 +56,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
     * */
     @Test
     public void testCsvCorrectTextEncodingWindows1251() throws Exception {
-        String controlSequence = "йцукенгшщзхъфывапролджэёячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЁЯЧСМИТЬБЮ";
+        String controlSequence = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
         String entityName = ENTITY_PREFIX+"-2";
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 

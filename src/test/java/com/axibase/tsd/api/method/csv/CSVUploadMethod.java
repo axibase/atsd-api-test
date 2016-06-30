@@ -9,6 +9,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -16,9 +17,12 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.glassfish.jersey.media.multipart.file.DefaultMediaTypePredictor.CommonMediaTypes.getMediaTypeFromFile;
 
 public class CSVUploadMethod extends BaseMethod {
-    public static File resolvePath(String path) throws URISyntaxException {
+    public static File resolvePath(String path) throws URISyntaxException, FileNotFoundException {
         URL url = CSVUploadTest.class.getResource(path);
-        return (url == null) ? null : new File(url.toURI());
+        if (url == null) {
+            throw new FileNotFoundException("File "+path+" not found");
+        }
+        return new File(url.toURI());
     }
 
     public static boolean importParser(File configPath) {

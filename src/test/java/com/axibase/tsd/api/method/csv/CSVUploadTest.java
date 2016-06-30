@@ -13,6 +13,7 @@ import org.junit.rules.TestName;
 
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 
 import static javax.ws.rs.core.Response.Status.OK;
@@ -29,7 +30,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     public TestName name = new TestName();
 
     @BeforeClass
-    public static void installParser() throws URISyntaxException {
+    public static void installParser() throws URISyntaxException, FileNotFoundException {
         File configPath = resolvePath(RESOURCE_DIR + File.separator+PARSER_NAME+".xml");
         boolean success = importParser(configPath);
         assertTrue(success);
