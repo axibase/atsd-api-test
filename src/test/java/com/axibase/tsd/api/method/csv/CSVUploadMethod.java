@@ -28,6 +28,7 @@ public class CSVUploadMethod extends BaseMethod {
                 = new FileDataBodyPart("file", configPath, getMediaTypeFromFile(configPath));
         multiPart.bodyPart(fileDataBodyPart);
         Response response = builder.post(Entity.entity(multiPart, multiPart.getMediaType()));
+        response.close();
         return response.getStatus() == OK.getStatusCode();
     }
 

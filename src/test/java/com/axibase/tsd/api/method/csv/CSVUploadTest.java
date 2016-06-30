@@ -154,7 +154,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 
-        Thread.sleep(1000l);
+        Thread.sleep(1000L);
 
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.getMinDate(), Util.getMaxDate());
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
@@ -169,7 +169,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 
-        Thread.sleep(1000l);
+        Thread.sleep(1000L);
 
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.getMinDate(), Util.getMaxDate());
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);

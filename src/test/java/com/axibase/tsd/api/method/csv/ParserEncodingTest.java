@@ -5,7 +5,6 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.json.simple.parser.ParseException;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +26,9 @@ public class ParserEncodingTest extends CSVUploadMethod {
     private static final String ENTITY_PREFIX = "e-csv-test-encoding-parser";
     public static final String PARSER_NAME = "test-encoding-parser";
 
+    public static final String ISO_8859_1 = "ISO-8859-1";
+    public static final String WINDOWS_1251 = "Windows-1251";
+
     @Rule
     public TestName name = new TestName();
 
@@ -46,7 +48,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX+"-1";
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, "ISO-8859-1");
+        checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, ISO_8859_1);
     }
     /*
     * #2916
@@ -57,17 +59,17 @@ public class ParserEncodingTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX+"-2";
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, "Windows-1251");
+        checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, WINDOWS_1251);
     }
 
-    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws InterruptedException, IOException, ParseException {
+    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws InterruptedException, IOException {
         Registry.Entity.registerPrefix(entityName);
 
         Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding);
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 
-        Thread.sleep(1000l);
+        Thread.sleep(1000L);
 
         MessageQuery messageQuery = new MessageQuery(entityName, Util.getMinDate(), Util.getMaxDate());
         List<Message> storedMessageList = MessageMethod.executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
