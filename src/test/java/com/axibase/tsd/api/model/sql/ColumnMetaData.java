@@ -63,9 +63,6 @@ public class ColumnMetaData implements Comparable<ColumnMetaData> {
 
     @Override
     public int compareTo(ColumnMetaData o) {
-        if (o == null) {
-            throw new NullPointerException();
-        }
         return this.columnIndex.compareTo(o.getColumnIndex());
     }
 }
