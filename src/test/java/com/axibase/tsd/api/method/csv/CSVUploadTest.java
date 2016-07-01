@@ -36,9 +36,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertTrue(success);
     }
 
-    /*
-    * #2916
-    * */
+    /* #2916 */
     @Test
     public void testPlainCsvMultipartUpload() throws Exception {
         String entityName = ENTITY_PREFIX+"-1";
@@ -49,9 +47,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2916
-    * */
+    /* #2916 */
     @Test
     public void testPlainCsvBinaryUpload() throws Exception {
         String entityName = ENTITY_PREFIX+"-2";
@@ -62,9 +58,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2919
-    * */
+    /* #2919 */
     @Test
     public void testTarGzCsvMultipartUpload() throws Exception {
         String entityName = ENTITY_PREFIX + "-3";
@@ -75,9 +69,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2919
-    * */
+    /* #2919 */
     @Test
     public void testTarGzCsvBinaryUpload() throws Exception {
         String entityName = ENTITY_PREFIX + "-4";
@@ -88,9 +80,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2919
-    * */
+    /* #2919 */
     @Test
     public void testZipCsvMultipartUpload() throws Exception {
         String entityName = ENTITY_PREFIX + "-5";
@@ -101,9 +91,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2919
-    * */
+    /* #2919 */
     @Test
     public void testZipCsvBinaryUpload() throws Exception {
         String entityName = ENTITY_PREFIX + "-6";
@@ -114,9 +102,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2919
-    * */
+    /* #2919 */
     @Test
     public void testGzCsvMultipartUpload() throws Exception {
         String entityName = ENTITY_PREFIX + "-7";
@@ -127,15 +113,57 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /*
-    * #2919
-    * */
+    /* #2919 */
     @Test
     public void testGzCsvBinaryUpload() throws Exception {
         String entityName = ENTITY_PREFIX + "-8";
         String metricName = METRIC_PREFIX + "-8";
 
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".gz");
+
+        checkBinaryFileUpload(entityName, metricName, csvPath);
+    }
+
+    /* #2966 */
+    @Test
+    public void testDSStoreFileInTarGz() throws Exception {
+        String entityName = ENTITY_PREFIX + "-9";
+        String metricName = METRIC_PREFIX + "-9";
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".tar.gz");
+
+        checkBinaryFileUpload(entityName, metricName, csvPath);
+    }
+
+    /* #2966 */
+    @Test
+    public void testMetaFileInTarGz() throws Exception {
+        String entityName = ENTITY_PREFIX + "-10";
+        String metricName = METRIC_PREFIX + "-10";
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".tar.gz");
+
+        checkBinaryFileUpload(entityName, metricName, csvPath);
+    }
+
+    /* #2966 */
+    @Test
+    public void testDSStoreFileInZip() throws Exception {
+        String entityName = ENTITY_PREFIX + "-11";
+        String metricName = METRIC_PREFIX + "-11";
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".zip");
+
+        checkBinaryFileUpload(entityName, metricName, csvPath);
+    }
+
+    /* #2966 */
+    @Test
+    public void testMetaFileInZip() throws Exception {
+        String entityName = ENTITY_PREFIX + "-12";
+        String metricName = METRIC_PREFIX + "-12";
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".zip");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }

@@ -40,9 +40,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
         assertTrue(success);
     }
 
-    /*
-    * #2916
-    * */
+    /* #2916 */
     @Test
     public void testCsvCorrectTextEncodingISO8859_1() throws Exception {
         String controlSequence = "¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
@@ -51,9 +49,8 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
         checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, ISO_8859_1);
     }
-    /*
-    * #2916
-    * */
+
+    /* #2916 */
     @Test
     public void testCsvCorrectTextEncodingWindows1251() throws Exception {
         String controlSequence = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
