@@ -1,59 +1,119 @@
 package com.axibase.tsd.api.model.sql;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Igor Shmagrinskiy
- *         <p>
- *         Class for storing SQL result table in {@link String}
- *         objects.
- *         It is using custom deserializer
+ *
+ * Class for storing SQL result table in {@link String}
+ * objects. It is using custom deserializer
  */
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
-
-    private List<String> columns;
-    private List<List<String>> rows;
+    private Map<ColumnMetaData, List<String>> tableStructure;
+    private int rowsCount = 0;
 
 
     public StringTable() {
-        columns = new ArrayList<>();
-        rows = new ArrayList<>();
+        tableStructure = new TreeMap<>();
     }
 
-    public void addColumn(String columnName) {
-        columns.add(columnName);
+
+    public void addColumnMetaData(ColumnMetaData columnMetaData) {
+        if (tableStructure.containsKey(columnMetaData)) {
+            throw new IllegalStateException("Table already contains this columnMetaData");
+        }
+        tableStructure.put(columnMetaData, new ArrayList<String>());
     }
 
     public void addRow(ArrayList<String> row) {
-        rows.add(row);
+        int index = 0;
+        for (String cell : row) {
+            tableStructure
+                    .get(getColumnMetaData(index))
+                    .add(cell);
+            index++;
+        }
+        rowsCount++;
     }
 
-    public String getColumnName(int index) {
-        return columns.get(index);
+    public ColumnMetaData getColumnMetaData(int index) {
+        for (ColumnMetaData columnMetaData : tableStructure.keySet()) {
+            if (columnMetaData.getColumnIndex() == (index + 1)) {
+                return columnMetaData;
+            }
+        }
+        throw new IllegalStateException("Table doesn't contains column with index " + index);
     }
 
     public List<String> getRow(int index) {
-        return rows.get(index);
+        List<String> row = new ArrayList<>();
+        for (ColumnMetaData columnMetaData : tableStructure.keySet()) {
+            List<String> columnCells = tableStructure.get(columnMetaData);
+            row.add(columnCells.get(index));
+        }
+        return row;
+
     }
 
     public String getValueAt(int i, int j) {
-        return rows.get(i).get(j);
+        return tableStructure.get(getColumnMetaData(i)).get(j);
     }
 
     public List<List<String>> getRows() {
+        List<List<String>> rows = new ArrayList<>();
+        for (int i = 0; i < rowsCount; i++) {
+            rows.add(getRow(i));
+        }
         return rows;
     }
 
-
-    public List<String> getColumns() {
+    public List<List<String>> getColumns() {
+        List<List<String>> columns = new ArrayList<>();
+        for (ColumnMetaData columnMetaData : tableStructure.keySet()) {
+            columns.add(tableStructure.get(columnMetaData));
+        }
         return columns;
+    }
+
+
+    public Set<ColumnMetaData> getColumnsMetaData() {
+        return tableStructure.keySet();
+    }
+
+
+    /**
+     * Filter row values by column names. Leaves those values, that indexes corresponded
+     * with columnNames contained in the set of requested column names
+     *
+     * @param requestedColumnNames - set of requested column names
+     * @return filtered rows
+     */
+    public List<List<String>> filterRows(Set<String> requestedColumnNames) {
+        Set<ColumnMetaData> columnsMetaData = tableStructure.keySet();
+        List<Integer> indexesOfRequestedColumns = new ArrayList<>();
+        List<List<String>> filteredRows = new ArrayList<>();
+        int index = 0;
+        for (ColumnMetaData columnMetaData : columnsMetaData) {
+            if (requestedColumnNames.contains(columnMetaData.getName())) {
+                indexesOfRequestedColumns.add(index);
+            }
+            index++;
+        }
+        List<List<String>> rows = getRows();
+        for (List<String> row : rows) {
+            List<String> filteredRow = new ArrayList<>();
+            index = 0;
+            for (String cell : row) {
+                if (indexesOfRequestedColumns.contains(index)) {
+                    filteredRow.add(cell);
+                }
+                index++;
+            }
+            filteredRows.add(filteredRow);
+        }
+        return filteredRows;
     }
 }

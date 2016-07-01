@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.message;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

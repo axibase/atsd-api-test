@@ -2,7 +2,6 @@ package com.axibase.tsd.api.model.sql;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.json.JSONArray;
@@ -15,14 +14,11 @@ import java.util.Arrays;
 
 /**
  * @author Igor Shmagrinskiy
- *
- * Deserialize class for Object mapper that
- * used in {@link javax.ws.rs.core.Response} class
- * for deserialization of JSON objects
+ * Deserialize class for Object mapper that used in {@link javax.ws.rs.core.Response} class for deserialization of JSON objects
  */
 class StringTableDeserializer extends JsonDeserializer<StringTable> {
     @Override
-    public StringTable deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public StringTable deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         String jsonText = jsonParser
                 .readValueAsTree()
                 .toString();
@@ -45,9 +41,7 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
         JSONArray data = tableJson.getJSONArray("data");
         Integer columnCount = columns.length();
         for (int i = 0; i < columnCount; i++) {
-            tableModel.addColumn(columns
-                    .getJSONObject(i)
-                    .getString("name"));
+            tableModel.addColumnMetaData(parseColumn(columns.getJSONObject(i)));
         }
         String[] row = new String[columnCount];
         Object rowJSON;
@@ -59,7 +53,7 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
             if (rowJSON instanceof JSONObject) {
                 rowJsonObject = (JSONObject) rowJSON;
                 for (int j = 0; j < columnCount; j++) {
-                    row[j] = rowJsonObject.getString(tableModel.getColumnName(j));
+                    row[j] = rowJsonObject.getString(tableModel.getColumnMetaData(j).getName());
                 }
             } else if (rowJSON instanceof JSONArray) {
                 rowJsonArray = data.getJSONArray(i);
@@ -72,5 +66,22 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
             tableModel.addRow(new ArrayList<>(Arrays.asList(row)));
         }
         return tableModel;
+    }
+
+    private ColumnMetaData parseColumn(JSONObject jsonColumn) throws JSONException {
+        ColumnMetaData columnMetaData = new ColumnMetaData(jsonColumn.getString("name"), jsonColumn.getInt("columnIndex"));
+        if (jsonColumn.has("datatype")) {
+            columnMetaData.setDataType(jsonColumn.getString("datatype"));
+        }
+        if (jsonColumn.has("table")) {
+            columnMetaData.setTable(jsonColumn.getString("table"));
+        }
+        if (jsonColumn.has("propertyUrl")) {
+            columnMetaData.setPropertyUrl(jsonColumn.getString("propertyUrl"));
+        }
+        if (jsonColumn.has("titles")) {
+            columnMetaData.setTitles(jsonColumn.getString("titles"));
+        }
+        return columnMetaData;
     }
 }

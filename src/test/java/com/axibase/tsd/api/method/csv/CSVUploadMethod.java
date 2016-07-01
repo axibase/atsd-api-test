@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.csv;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
@@ -9,6 +10,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -16,9 +18,12 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.glassfish.jersey.media.multipart.file.DefaultMediaTypePredictor.CommonMediaTypes.getMediaTypeFromFile;
 
 public class CSVUploadMethod extends BaseMethod {
-    public static File resolvePath(String path) throws URISyntaxException {
+    public static File resolvePath(String path) throws URISyntaxException, FileNotFoundException {
         URL url = CSVUploadTest.class.getResource(path);
-        return (url == null) ? null : new File(url.toURI());
+        if (url == null) {
+            throw new FileNotFoundException("File "+path+" not found");
+        }
+        return new File(url.toURI());
     }
 
     public static boolean importParser(File configPath) {
@@ -27,7 +32,8 @@ public class CSVUploadMethod extends BaseMethod {
         FileDataBodyPart fileDataBodyPart
                 = new FileDataBodyPart("file", configPath, getMediaTypeFromFile(configPath));
         multiPart.bodyPart(fileDataBodyPart);
-        Response response = builder.post(Entity.entity(multiPart, multiPart.getMediaType()));
+        Response response = builder.post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
+        response.close();
         return response.getStatus() == OK.getStatusCode();
     }
 
@@ -43,7 +49,7 @@ public class CSVUploadMethod extends BaseMethod {
         Response response = httpApiResource.path("csv")
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
-                .request().post(Entity.entity(multiPart, multiPart.getMediaType()));
+                .request().post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
         response.close();
         return response;
     }

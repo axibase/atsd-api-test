@@ -6,6 +6,6 @@ public class CompactionMethod extends BaseMethod {
     public static void performCompaction(String day, boolean historical) {
         httpRootResource.path("/compaction")
                 .queryParam("day", day)
-                .queryParam("historical", historical).request().get();
+                .queryParam("historical", historical).request().get().close();
     }
 }
