@@ -33,20 +33,20 @@ public class Series {
         this.tags = new HashMap<>();
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
-    }
-
-    public void setMetric(String metric) {
-        this.metric = metric;
-    }
-
     public String getEntity() {
         return entity;
     }
 
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
+
     public String getMetric() {
         return metric;
+    }
+
+    public void setMetric(String metric) {
+        this.metric = metric;
     }
 
     public Map<String, String> getTags() {
