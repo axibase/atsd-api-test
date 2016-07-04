@@ -1,12 +1,16 @@
 package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 
 /**
  * @author Igor Shmagrinskiy
@@ -54,5 +58,19 @@ public class SqlMethod extends BaseMethod {
      */
     public static Response executeQuery(String sqlQuery) {
         return executeQuery(sqlQuery, OutputFormat.JSON);
+    }
+
+
+    protected static void sendSamplesToSeries(Series series, Sample... samples) {
+        boolean isSuccessInsert;
+        series.setData(Arrays.asList(samples));
+        try {
+            isSuccessInsert = SeriesMethod.insertSeries(series, 1000);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to insert series: " + series);
+        }
+        if (!isSuccessInsert) {
+            throw new IllegalStateException("Failed to insert series: " + series);
+        }
     }
 }

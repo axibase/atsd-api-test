@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.method.sql.OutputFormat;
-import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.junit.Assert;
@@ -18,7 +18,7 @@ import static javax.ws.rs.core.Response.Status.*;
 /**
  * @author Igor Shmagrinskiy
  */
-public class SqlApiResponseCodesTests extends SqlTest {
+public class SqlApiResponseCodesTests extends SqlMethod {
     private static final String TEST_PREFIX = "sql-response-codes";
 
     @BeforeClass

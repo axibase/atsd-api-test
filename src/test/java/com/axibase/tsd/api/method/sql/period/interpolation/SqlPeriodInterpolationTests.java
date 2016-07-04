@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.period.interpolation;
 
-import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * @author Igor Shmagrinskiy
  */
-public class SqlPeriodInterpolationTests extends SqlTest {
+public class SqlPeriodInterpolationTests extends SqlMethod {
     private static final String TEST_PREFIX = "sql-period-interpolation";
     private static final Set<String> DEFAULT_ROW_FILTER = new HashSet<>(Arrays.asList("datetime", "AVG(value)"));
 
