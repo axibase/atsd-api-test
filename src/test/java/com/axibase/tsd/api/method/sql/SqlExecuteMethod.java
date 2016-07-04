@@ -15,21 +15,20 @@ import javax.ws.rs.core.Response;
  *         and retrive result in specifed format.
  *         Usage:
  *         * <pre>
- *                 {@code
- *                      SqlExecuteMethod
- *                                  .executeQuery("SELECT 1")
- *                                  .readEntity(String.class);
- *                 }
- *                 </pre>
+ *                         {@code
+ *                              SqlExecuteMethod
+ *                                          .executeQuery("SELECT 1")
+ *                                          .readEntity(String.class);
+ *                         }
+ *                         </pre>
  */
 public class SqlExecuteMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
+    private static final Logger logger = LoggerFactory.getLogger(SqlExecuteMethod.class);
     protected static WebTarget httpSqlApiResource = httpRootResource
             .property(ClientProperties.CONNECT_TIMEOUT, 1000)
             .property(ClientProperties.READ_TIMEOUT, 1000)
             .path(METHOD_SQL_API);
-    private static final Logger logger = LoggerFactory.getLogger(SqlExecuteMethod.class);
-
 
     /**
      * Execute SQL executeQuery and retrieve result in specified format
@@ -40,11 +39,14 @@ public class SqlExecuteMethod extends BaseMethod {
      */
     public static Response executeQuery(String sqlQuery, OutputFormat outputFormat) {
         logger.debug("SQL query : {}", sqlQuery);
-        return httpSqlApiResource
+        Response response = httpSqlApiResource
                 .queryParam("q", sqlQuery)
                 .queryParam("outputFormat", outputFormat.toString())
                 .request()
                 .get();
+        response.close();
+        logger.debug(response.readEntity(String.class));
+        return response;
     }
 
     /**
