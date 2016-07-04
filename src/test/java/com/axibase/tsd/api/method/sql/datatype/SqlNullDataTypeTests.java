@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.sql.datatype;
 
-import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -9,37 +8,22 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 /**
  * @author Igor Shmagrinskiy
  */
 public class SqlNullDataTypeTests extends SqlMethod {
     private static final String TEST_PREFIX = "sql-data-type-null";
 
-    private static void addTestSamplesToSeries(Series series, Sample... samples) {
-        boolean isSuccessInsert;
-        series.setData(Arrays.asList(samples));
-        try {
-            isSuccessInsert = SeriesMethod.insertSeries(series, 1000);
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to insert series: " + series);
-        }
-        if (!isSuccessInsert) {
-            throw new IllegalStateException("Failed to insert series: " + series);
-        }
-    }
-
 
     @BeforeClass
     public static void initialize() {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric-1");
 
-        addTestSamplesToSeries(testSeries,
+        sendSamplesToSeries(testSeries,
                 new Sample("2016-06-29T08:00:00.000Z", "0.00")
         );
         testSeries.setMetric(TEST_PREFIX + "-metric-2");
-        addTestSamplesToSeries(testSeries,
+        sendSamplesToSeries(testSeries,
                 new Sample("2016-06-30T08:05:00.000Z", "0.00")
         );
     }
