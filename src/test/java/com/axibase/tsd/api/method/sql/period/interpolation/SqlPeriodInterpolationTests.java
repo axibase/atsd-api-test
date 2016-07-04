@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.sql.period.interpolation;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlExecuteMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -17,12 +17,12 @@ import java.util.Set;
 /**
  * @author Igor Shmagrinskiy
  */
-public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
+public class SqlPeriodInterpolationTests extends SqlMethod {
     private static final String TEST_PREFIX = "sql-period-interpolation";
     private static final Set<String> DEFAULT_ROW_FILTER = new HashSet<>(Arrays.asList("datetime", "AVG(value)"));
 
 
-    private static void addTestSamplesToSeries(Series series, Sample... samples) {
+    private static void sendSamplesToSeries(Series series, Sample... samples) {
         boolean isSuccessInsert;
         series.setData(Arrays.asList(samples));
         try {
@@ -37,9 +37,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
 
 
     @BeforeClass
-    public static void initialize() {
+    public static void prepareDataSet() {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        addTestSamplesToSeries(testSeries,
+        sendSamplesToSeries(testSeries,
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
@@ -47,9 +47,14 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
     }
 
 
-    /**
+    /*
      * Following tests related to #1475 task
      * SQL: period() interpolation
+     */
+
+
+    /**
+     * redmine: #1475
      */
     @Test
     public void testNoInterpolation() {
@@ -73,7 +78,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
         Assert.assertEquals(expectedRows, resultRows);
     }
 
-
+    /**
+     * redmine: #1475
+     */
     @Test
     public void testConstantValue0FillTheGaps() {
         final String sqlQuery = "SELECT entity, datetime, AVG(value)\n" +
@@ -96,7 +103,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
         Assert.assertEquals(expectedRows, resultRows);
     }
 
-
+    /**
+     * redmine: #1475
+     */
     @Test
     public void testNegativeConstantValueFillTheGaps() {
         final String sqlQuery = "SELECT entity, datetime, AVG(value)\n" +
@@ -119,7 +128,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
         Assert.assertEquals(expectedRows, resultRows);
     }
 
-
+    /**
+     * redmine: #1475
+     */
     @Test
     public void testPreviousValueFillTheGaps() {
         final String sqlQuery = "SELECT entity, datetime, AVG(value)\n" +
@@ -142,6 +153,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
         Assert.assertEquals(expectedRows, resultRows);
     }
 
+    /**
+     * redmine: #1475
+     */
     @Test
     public void testLinearInterpolatedValueFillTheGaps() {
         final String sqlQuery = "SELECT entity, datetime, AVG(value)\n" +
@@ -164,6 +178,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
         Assert.assertEquals(expectedRows, resultRows);
     }
 
+    /**
+     * redmine: #1475
+     */
     @Test
     public void testLinearInterpolatedValueFillTheMultipleGaps() {
         final String sqlQuery = "SELECT entity, datetime, AVG(value)\n" +
@@ -188,6 +205,9 @@ public class SqlPeriodInterpolationTests extends SqlExecuteMethod {
         Assert.assertEquals(expectedRows, resultRows);
     }
 
+    /**
+     * redmine: #1475
+     */
     @Test
     public void testHavingClauseWithPeriodFunction() {
         final String sqlQuery = "SELECT entity, datetime, AVG(value)\n" +

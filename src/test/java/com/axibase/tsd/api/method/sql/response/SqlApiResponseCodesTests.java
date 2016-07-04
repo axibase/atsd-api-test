@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
-import com.axibase.tsd.api.method.sql.SqlExecuteMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.json.JSONException;
@@ -22,7 +22,7 @@ import static javax.ws.rs.core.Response.Status.*;
 /**
  * @author Igor Shmagrinskiy
  */
-public class SqlApiResponseCodesTests extends SqlExecuteMethod {
+public class SqlApiResponseCodesTests extends SqlMethod {
     private static final String TEST_PREFIX = "sql-response-codes";
     private static Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
 

@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlExecuteMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.json.JSONException;
@@ -21,11 +21,11 @@ import java.util.Set;
 /**
  * @author Igor Shmagrinslkiy
  */
-public class SqlApiResponseHeadersTests extends SqlExecuteMethod {
+public class SqlApiResponseHeadersTests extends SqlMethod {
     private static final String TEST_PREFIX = "sql-response-headers";
-    private static Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
     private static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
     private static final String CONTENT_TYPE = "Content-type";
+    private static Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
 
     @BeforeClass
     public static void createTestData() throws InterruptedException, JSONException, IOException {

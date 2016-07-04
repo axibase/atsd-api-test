@@ -16,20 +16,19 @@ import javax.ws.rs.core.Response;
  *         Usage:
  *         * <pre>
  *                 {@code
- *                      SqlExecuteMethod
+ *                      SqlMethod
  *                                  .executeQuery("SELECT 1")
  *                                  .readEntity(String.class);
  *                 }
  *                 </pre>
  */
-public class SqlExecuteMethod extends BaseMethod {
+public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
+    private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
     protected static WebTarget httpSqlApiResource = httpRootResource
             .property(ClientProperties.CONNECT_TIMEOUT, 1000)
             .property(ClientProperties.READ_TIMEOUT, 1000)
             .path(METHOD_SQL_API);
-    private static final Logger logger = LoggerFactory.getLogger(SqlExecuteMethod.class);
-
 
     /**
      * Execute SQL executeQuery and retrieve result in specified format
