@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.sql.period.interpolation;
 
-import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -17,24 +16,9 @@ import java.util.Set;
 /**
  * @author Igor Shmagrinskiy
  */
-public class SqlPeriodInterpolationTests extends SqlMethod {
+public class SqlPeriodInterpolationTests extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-interpolation";
     private static final Set<String> DEFAULT_ROW_FILTER = new HashSet<>(Arrays.asList("datetime", "AVG(value)"));
-
-
-    private static void sendSamplesToSeries(Series series, Sample... samples) {
-        boolean isSuccessInsert;
-        series.setData(Arrays.asList(samples));
-        try {
-            isSuccessInsert = SeriesMethod.insertSeries(series, 1000);
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to insert series: " + series);
-        }
-        if (!isSuccessInsert) {
-            throw new IllegalStateException("Failed to insert series: " + series);
-        }
-    }
-
 
     @BeforeClass
     public static void prepareDataSet() {

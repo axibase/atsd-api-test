@@ -1,10 +1,8 @@
 package com.axibase.tsd.api.method.sql.response;
 
-import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +11,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,26 +18,20 @@ import java.util.Set;
 /**
  * @author Igor Shmagrinslkiy
  */
-public class SqlApiResponseHeadersTests extends SqlMethod {
+public class SqlApiResponseHeadersTests extends SqlTest {
     private static final String TEST_PREFIX = "sql-response-headers";
     private static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
     private static final String CONTENT_TYPE = "Content-type";
-    private static Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
 
     @BeforeClass
-    public static void createTestData() throws InterruptedException, JSONException, IOException {
-        testSeries.setData(Arrays.asList(
+    public static void prepareDataSet() {
+        Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
+        sendSamplesToSeries(testSeries,
                 new Sample("2016-06-03T09:23:00.000Z", "16.0"),
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
-                )
         );
-
-        boolean isSuccessInsert = SeriesMethod.insertSeries(testSeries, 1000);
-        if (!isSuccessInsert) {
-            throw new IllegalStateException("Failed to insert series: " + testSeries);
-        }
     }
 
 
