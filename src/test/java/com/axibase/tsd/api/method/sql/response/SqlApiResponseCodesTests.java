@@ -49,6 +49,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .request()
                 .get();
         Assert.assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
 
@@ -58,6 +60,7 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .request()
                 .post(Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED));
         Assert.assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        response.close();
     }
 
 
@@ -69,6 +72,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .get();
 
         Assert.assertEquals(OK.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
     @Test
@@ -81,6 +86,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                         form,
                         MediaType.APPLICATION_FORM_URLENCODED));
         Assert.assertEquals(OK.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
 
@@ -95,6 +102,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                         form,
                         MediaType.APPLICATION_FORM_URLENCODED));
         Assert.assertEquals(OK.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
     @Test
@@ -109,6 +118,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                         MediaType.APPLICATION_FORM_URLENCODED));
 
         Assert.assertEquals(OK.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
     @Test
@@ -119,6 +130,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .request()
                 .get();
         Assert.assertEquals(OK.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
     @Test
@@ -130,6 +143,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .get();
 
         Assert.assertEquals(OK.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
     @Test
@@ -140,6 +155,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .request()
                 .get();
         Assert.assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
 
@@ -149,6 +166,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .request()
                 .put(Entity.entity("", MediaType.APPLICATION_JSON));
         Assert.assertEquals(NOT_FOUND.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
     @Test
@@ -157,6 +176,8 @@ public class SqlApiResponseCodesTests extends SqlExecuteMethod {
                 .request()
                 .delete();
         Assert.assertEquals(NOT_FOUND.getStatusCode(), response.getStatus());
+        response.close();
+
     }
 
 }

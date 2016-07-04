@@ -60,7 +60,9 @@ class PropertyMethod extends BaseMethod {
 
 
     public static void insertPropertyCheck(final Property property) throws IOException {
-        if (insertProperty(Collections.singletonList(property)).getStatus() != OK.getStatusCode()) {
+        Response response = insertProperty(Collections.singletonList(property));
+        response.close();
+        if (response.getStatus() != OK.getStatusCode()) {
             throw new IOException("Can not execute insert property query");
         }
 
@@ -76,6 +78,7 @@ class PropertyMethod extends BaseMethod {
     public static boolean propertyExist(final Property property, boolean strict) throws IOException {
         Response response = getProperty(prepareStrictPropertyQuery(property));
         if (response.getStatus() != OK.getStatusCode()) {
+            response.close();
             throw new IOException("Fail to execute getProperty");
         }
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
