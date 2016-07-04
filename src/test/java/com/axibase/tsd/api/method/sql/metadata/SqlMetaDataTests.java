@@ -33,7 +33,7 @@ public class SqlMetaDataTests extends SqlMethod {
      */
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testEntityDataType() {
@@ -45,7 +45,7 @@ public class SqlMetaDataTests extends SqlMethod {
 
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testEntityPropertyUrl() {
@@ -57,7 +57,7 @@ public class SqlMetaDataTests extends SqlMethod {
 
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testMetricDataType() {
@@ -69,7 +69,7 @@ public class SqlMetaDataTests extends SqlMethod {
 
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testMetricPropertyUrl() {
@@ -81,7 +81,7 @@ public class SqlMetaDataTests extends SqlMethod {
 
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testValueDataType() {
@@ -92,7 +92,7 @@ public class SqlMetaDataTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testValuePropertyUrl() {
@@ -103,7 +103,7 @@ public class SqlMetaDataTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testValueWithExpressionDataType() {
@@ -119,7 +119,7 @@ public class SqlMetaDataTests extends SqlMethod {
      */
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testValueWithExpressionPropertyUrl() {
@@ -130,7 +130,7 @@ public class SqlMetaDataTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testDateTimeDataType() {
@@ -141,7 +141,7 @@ public class SqlMetaDataTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2973
+     * issue: #2973
      */
     @Test
     public void testDateTimePropertyUrl() {
