@@ -38,7 +38,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
      */
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testDivisionExpressionWithNullValueDataType() {
@@ -53,7 +53,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testExpressionNaNDataType() {
@@ -69,7 +69,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testMinusExpressionWithNullValueDataType() {
@@ -84,7 +84,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testPlusExpressionWithNullValueDataType() {
@@ -100,7 +100,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testMultiplicationExpressionWithNullValueDataType() {
@@ -120,7 +120,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
      */
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testCountExpressionWithNullValueDataType() {
@@ -136,7 +136,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testSumExpressionWithNullValueDataType() {
@@ -152,7 +152,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testAvgExpressionWithNullValueDataType() {
@@ -167,7 +167,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testMinExpressionWithNullValueDataType() {
@@ -182,7 +182,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testMaxExpressionWithNullValueDataType() {
@@ -198,7 +198,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testFirstExpressionWithNullValueDataType() {
@@ -214,7 +214,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testCounterExpressionWithNullValueDataType() {
@@ -230,7 +230,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
 
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testDeltaExpressionWithNullValueDataType() {
@@ -245,7 +245,7 @@ public class SqlNullDataTypeTests extends SqlMethod {
     }
 
     /**
-     * redmine: #2934
+     * issue: #2934
      */
     @Test
     public void testLastExpressionWithNullValueDataType() {
