@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.model.series;
 
-import com.axibase.tsd.api.Util;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,19 +9,30 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
     private String d;
+    private Long t;
     private BigDecimal v;
 
     public Sample() {
     }
 
     public Sample(long t, String v) {
-        this.d = Util.ISOFormat(t);
-        this.v = new BigDecimal(v);
+        this.t = t;
+        this.v = new BigDecimal(String.valueOf(v));
     }
 
     public Sample(String d, int v) {
         this.d = d;
         this.v = new BigDecimal(String.valueOf(v));
+    }
+
+    public Sample(Long t, BigDecimal v) {
+        this.t = t;
+        this.v = v;
+    }
+
+    public Sample(String d, BigDecimal v) {
+        this.d = d;
+        this.v = v;
     }
 
     @JsonCreator
@@ -31,6 +41,10 @@ public class Sample {
         this.v = new BigDecimal(String.valueOf(v));
     }
 
+
+    public Long getT() {
+        return t;
+    }
 
     public String getD() {
         return d;
@@ -52,7 +66,8 @@ public class Sample {
     public String toString() {
         return "Sample{" +
                 "d='" + d + '\'' +
-                ", v='" + v + '\'' +
+                ", t=" + t +
+                ", v=" + v +
                 '}';
     }
 
@@ -63,13 +78,16 @@ public class Sample {
 
         Sample sample = (Sample) o;
 
-        return getD().equals(sample.getD()) && getV().equals(sample.getV());
+        if (t != sample.t) return false;
+        if (getD() != null ? !getD().equals(sample.getD()) : sample.getD() != null) return false;
+        return getV().equals(sample.getV());
 
     }
 
     @Override
     public int hashCode() {
-        int result = getD().hashCode();
+        int result = getD() != null ? getD().hashCode() : 0;
+        result = 31 * result + (int) (t ^ (t >>> 32));
         result = 31 * result + getV().hashCode();
         return result;
     }

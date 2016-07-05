@@ -22,8 +22,6 @@ public class Message {
 
     public Message() {}
 
-    public Message() {}
-
     public Message(String entity) {
         if (entity != null) {
             Registry.Entity.register(entity);
@@ -105,5 +103,19 @@ public class Message {
 
     public void setTags(Map<String, String> tags) {
         this.tags = new HashMap<>(tags);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "entity='" + entity + '\'' +
+                ", type='" + type + '\'' +
+                ", source='" + source + '\'' +
+                ", date='" + date + '\'' +
+                ", severity='" + severity + '\'' +
+                ", message='" + message + '\'' +
+                ", persist=" + persist +
+                ", tags=" + tags +
+                '}';
     }
 }
