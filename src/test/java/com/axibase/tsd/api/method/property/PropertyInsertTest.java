@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.property.Property;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -175,6 +176,59 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(property2));
     }
 
+    /* #2957 */
+    @Test
+    public void testTimeRangeMinSaved() throws Exception {
+        Property property = new Property("t-time-range-p-1", "e-time-range--1");
+        property.addTag("ttr-t", "ttr-v");
+        property.setDate(Util.MIN_STORABLE_DATE);
+
+        Response response = insertProperty(property);
+        Thread.sleep(1000L);
+        assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
+
+        assertTrue(propertyExist(property));
+    }
+
+    /* #2957 */
+    @Test
+    public void testTimeRangeTimeSaved() throws Exception {
+        Property property = new Property("t-time-range-p-2", "e-time-range-p-2");
+        property.addTag("ttr-t", "ttr-v");
+        property.setDate("1970-01-01T00:00:00.001Z");
+
+        Response response = insertProperty(property);
+        assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
+
+        assertTrue(propertyExist(property));
+    }
+
+    /* #2957 */
+    @Test
+    public void testTimeRangeMaxTimeSaved() throws Exception {
+        Property property = new Property("t-time-range-p-3", "e-time-range-p-3");
+        property.addTag("ttr-t", "ttr-v");
+        property.setDate(Util.MAX_STORABLE_DATE);
+
+        Response response = insertProperty(property);
+        assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
+
+        assertTrue(propertyExist(property));
+    }
+
+    /* #2957 */
+    @Test
+    public void testTimeRangeMaxTimeOverflow() throws Exception {
+        Property property = new Property("t-time-range-p-4", "e-time-range-p-4");
+        property.addTag("ttr-t", "ttr-v");
+        property.setDate("2106-02-07T07:28:15.000Z");
+
+        Response response = insertProperty(property);
+        assertNotEquals("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());
+
+        assertFalse(propertyExist(property));
+    }
+
     @Ignore //behaviour is not defined
     @Test
     public void testSameTimeSamePropertyConjunction() throws Exception {
@@ -201,6 +255,4 @@ public class PropertyInsertTest extends PropertyMethod {
 
         assertTrue(propertyExist(resultProperty));
     }
-
-
 }

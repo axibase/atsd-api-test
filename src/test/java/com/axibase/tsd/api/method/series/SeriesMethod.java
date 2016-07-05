@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.method.BaseMethod;
-import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
+
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class SeriesMethod extends BaseMethod {
@@ -26,24 +26,7 @@ public class SeriesMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
-        JSONArray request = new JSONArray() {{
-            put(new JSONObject() {{
-                put("entity", series.getEntity());
-                put("metric", series.getMetric());
-                put("data", new JSONArray() {{
-                    List<Sample> data = series.getData();
-                    for (final Sample sample : data) {
-                        put(new JSONObject() {{
-                            put("d", sample.getD());
-                            put("v", sample.getV());
-                        }});
-                    }
-                }});
-                put("tags", new JSONObject(series.getTags()));
-            }});
-        }};
-
-        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(request.toString(), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(Collections.singletonList(series), MediaType.APPLICATION_JSON_TYPE));
         response.close();
         Thread.sleep(sleepDuration);
         if (OK.getStatusCode() == response.getStatus()) {
@@ -82,7 +65,7 @@ public class SeriesMethod extends BaseMethod {
             response.close();
             throw new IOException("Failed to execute series query");
         }
-        return new JSONArray(response.readEntity(String.class));
+        return  new JSONArray(response.readEntity(String.class));
     }
 
     public static String getDataField(int index, String field, JSONArray array) throws JSONException {

@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.model.property;
 
-import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.model.Model;
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.Util;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.text.ParseException;
@@ -10,10 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Dmitry Korchagin.
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Property {
     private String type;
     private String entity;
