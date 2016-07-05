@@ -12,7 +12,6 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static javax.ws.rs.core.Response.Status.OK;
 import static junit.framework.Assert.*;
 
 
@@ -32,7 +31,7 @@ public class SeriesInsertTest extends SeriesMethod {
         metric.setName(metricName);
         metric.setDataType(DataType.FLOAT);
 
-        assertEquals("Failed to create metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
         assertTrue("Failed to insert float series", insertSeries(series, 1000));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
@@ -55,7 +54,7 @@ public class SeriesInsertTest extends SeriesMethod {
         metric.setName(metricName);
         metric.setDataType(DataType.DECIMAL);
 
-        assertEquals("Failed to create metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
         assertFalse("Managed to insert large decimal series", insertSeries(series, 1000));
     }
 
@@ -70,7 +69,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DECIMAL);
 
-        assertEquals("Failed to icreate metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -97,7 +96,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DOUBLE);
 
-        assertEquals("Failed to create metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -125,7 +124,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DOUBLE);
 
-        assertEquals("Failed to create metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -150,7 +149,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.FLOAT);
 
-        assertEquals("Failed to create metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
@@ -175,7 +174,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DECIMAL);
 
-        assertEquals("Failed to create metric", OK.getStatusCode(), MetricMethod.createOrReplaceMetric(metric).getStatus());
+        MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
