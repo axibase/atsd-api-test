@@ -325,7 +325,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series("e-time-range-3", "m-time-range-3");
         series.addData(new Sample(time, "1"));
 
-        Boolean success = insertSeries(series, 700);
+        boolean success = insertSeries(series, 700);
         if (!success)
             fail("Failed to insert series");
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);

@@ -26,7 +26,7 @@ public class SeriesMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
-        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(Collections.singletonList(series), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.close();
         Thread.sleep(sleepDuration);
         if (OK.getStatusCode() == response.getStatus()) {
@@ -38,7 +38,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(Collections.singletonList(seriesQuery), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(Collections.singletonList(seriesQuery)));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {

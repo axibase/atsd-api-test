@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,23 +23,26 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    public static final String[] PARSER_NAMES = {"simple-parser", "simple-parser-iso", "simple-parser-ms"};
+    public static final String SIMPLE_PARSER = "simple-parser";
+    public static final String SIMPLE_PARSER_ISO = "simple-parser-iso";
+    public static final String SIMPLE_PARSER_MS = "simple-parser-ms";
 
     @Rule
     public TestName name = new TestName();
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException {
-        for (String parserName : PARSER_NAMES) {
+        String[] parsers = {SIMPLE_PARSER, SIMPLE_PARSER_ISO, SIMPLE_PARSER_MS};
+        for (String parserName : parsers) {
             File configPath = resolvePath(RESOURCE_DIR + File.separator + parserName + ".xml");
             boolean success = importParser(configPath);
-            assertTrue(success);
+            if (!success)
+                 Assert.fail("Failed to import parser");
         }
     }
 
@@ -181,7 +185,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        Response response = binaryCsvUpload(csvPath, PARSER_NAMES[1]);
+        Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_ISO);
         assertEquals(response.getStatus(), OK.getStatusCode());
         Thread.sleep(1000L);
 
@@ -206,7 +210,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        Response response = binaryCsvUpload(csvPath, PARSER_NAMES[2]);
+        Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_MS);
         assertEquals(response.getStatus(), OK.getStatusCode());
         Thread.sleep(1000L);
 
@@ -236,7 +240,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Registry.Entity.registerPrefix(entityName);
         Registry.Metric.registerPrefix(metricName);
 
-        Response response = binaryCsvUpload(csvPath, PARSER_NAMES[0]);
+        Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER);
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 
@@ -251,7 +255,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Registry.Entity.registerPrefix(entityName);
         Registry.Metric.registerPrefix(metricName);
 
-        Response response = multipartCsvUpload(csvPath, PARSER_NAMES[0]);
+        Response response = multipartCsvUpload(csvPath, SIMPLE_PARSER);
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 

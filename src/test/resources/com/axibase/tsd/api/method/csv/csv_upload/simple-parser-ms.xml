@@ -1,0 +1,37 @@
+<list>
+  <com.axibase.tsd.model.csv.CsvConfiguration>
+    <name>simple-parser-ms</name>
+    <putType>METRIC</putType>
+    <delimiter>,</delimiter>
+    <recordDelimiter>
+</recordDelimiter>
+    <padding>?</padding>
+    <comment></comment>
+    <textQualifier>&quot;</textQualifier>
+    <entityColumn class="java.util.Arrays$ArrayList">
+      <a class="string-array">
+        <string>entity</string>
+      </a>
+    </entityColumn>
+    <timestampColumn class="java.util.Arrays$ArrayList">
+      <a class="string-array">
+        <string>time</string>
+      </a>
+    </timestampColumn>
+    <timestampType>MILLISECONDS</timestampType>
+    <processEvents>false</processEvents>
+    <writeProperty>false</writeProperty>
+    <enabled>true</enabled>
+    <discardNan>true</discardNan>
+    <ignoreParseErrors>true</ignoreParseErrors>
+    <tagColumns class="linked-hash-set"/>
+    <excludedColumns class="linked-hash-set"/>
+    <propertyColumns class="linked-hash-set"/>
+    <propertyKeyColumns class="linked-hash-set"/>
+    <defaultTags class="linked-hash-map"/>
+    <renamedColumns class="linked-hash-map"/>
+    <header/>
+    <decimalSeparator>.</decimalSeparator>
+    <groupingSeparator>?</groupingSeparator>
+  </com.axibase.tsd.model.csv.CsvConfiguration>
+</list>

@@ -92,19 +92,3 @@ public class Sample {
         return result;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

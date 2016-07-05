@@ -43,6 +43,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("1970-01-01T00:00:00.000Z");
 
         Boolean success = insertMessage(message);
+        // wait for message availability
         Thread.sleep(1000L);
 
         if (!success)
@@ -64,6 +65,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("1970-01-01T00:00:00.001Z");
 
         Boolean success = insertMessage(message);
+        // wait for message availability
         Thread.sleep(1000L);
 
         if (!success)
@@ -85,6 +87,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("2106-02-07T07:28:14.999Z");
 
         Boolean success = insertMessage(message);
+        // wait for message availability
         Thread.sleep(1000L);
 
         if (!success)
@@ -106,6 +109,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("2106-02-07T07:28:15.000Z");
 
         Boolean success = insertMessage(message);
+        // wait for message availability
         Thread.sleep(1000L);
 
         if (success)
