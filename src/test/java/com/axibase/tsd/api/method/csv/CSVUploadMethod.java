@@ -33,7 +33,7 @@ public class CSVUploadMethod extends BaseMethod {
                 = new FileDataBodyPart("file", configPath, getMediaTypeFromFile(configPath));
         multiPart.bodyPart(fileDataBodyPart);
         Response response = builder.post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
-        response.close();
+        response.bufferEntity();
         return response.getStatus() == OK.getStatusCode();
     }
 
@@ -50,7 +50,7 @@ public class CSVUploadMethod extends BaseMethod {
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
                 .request().post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
-        response.close();
+        response.bufferEntity();
         return response;
     }
 
@@ -64,7 +64,7 @@ public class CSVUploadMethod extends BaseMethod {
                 .queryParam("filename", file.getName())
                 .queryParam("encoding", encoding)
                 .request().post(Entity.entity(file, new MediaType("text", "csv")));
-        response.close();
+        response.bufferEntity();
         return response;
     }
 

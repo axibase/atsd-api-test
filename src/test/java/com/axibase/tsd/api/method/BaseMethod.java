@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+//import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.json.JSONArray;
@@ -51,11 +53,10 @@ public abstract class BaseMethod {
         try {
             config = Config.getInstance();
             ClientConfig clientConfig = new ClientConfig();
-            HttpAuthenticationFeature httpAuthenticationFeature = HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword());
-            clientConfig.register(httpAuthenticationFeature);
+            clientConfig.connectorProvider(new ApacheConnectorProvider());
             clientConfig.register(MultiPartFeature.class);
             clientConfig.register(new LoggingFeature());
-            clientConfig.connectorProvider(new ApacheConnectorProvider());
+            clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
             httpRootResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
                     .scheme(config.getProtocol())
                     .host(config.getServerName())
@@ -63,6 +64,7 @@ public abstract class BaseMethod {
                     .build());
             httpApiResource = httpRootResource.path(config.getApiPath());
             tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
+
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
         } catch (FileNotFoundException fne) {
@@ -95,4 +97,5 @@ public abstract class BaseMethod {
     public static int calculateJsonArraySize(String jsonArrayString) throws JSONException {
         return new JSONArray(jsonArrayString).length();
     }
+
 }

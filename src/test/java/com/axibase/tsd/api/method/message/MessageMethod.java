@@ -27,14 +27,14 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static Boolean insertMessage(List<Message> messageList, long sleepDuration) throws IOException, InterruptedException {
-        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.entity(messageList, MediaType.APPLICATION_JSON_TYPE));
-        response.close();
-        Thread.sleep(sleepDuration);
+        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
+        response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Message looks inserted");
         } else {
             logger.error("Fail to insert message");
         }
+        Thread.sleep(sleepDuration); //give ATSD a few time to handle message
         return OK.getStatusCode() == response.getStatus();
     }
 
@@ -43,7 +43,8 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static Response executeQuery(final MessageQuery messageQuery) throws IOException {
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.entity(Collections.singletonList(messageQuery), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(Collections.singletonList(messageQuery)));
+        response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {

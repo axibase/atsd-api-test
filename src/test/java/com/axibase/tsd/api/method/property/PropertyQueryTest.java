@@ -600,9 +600,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
     @Test
-    public void testEntityTags() throws IOException {
+    public void testEntityTags() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("query-entity20");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -613,7 +612,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
         assertTrue(propertyExist(property));
     }
@@ -621,7 +620,6 @@ public class PropertyQueryTest extends PropertyMethod {
     @Test
     public void testEntityTagsTagsAsKeyExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("query-entity21");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -632,7 +630,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", "$entity_tags");
@@ -649,7 +647,6 @@ public class PropertyQueryTest extends PropertyMethod {
     @Test
     public void testEntityTagsTagsAsPartKeyExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("query-entity22");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -660,7 +657,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", "$entity_tags");
@@ -679,7 +676,6 @@ public class PropertyQueryTest extends PropertyMethod {
     @Test
     public void testEntityTagsEmptyKeyExactFalse() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("query-entity23");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -690,7 +686,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", "$entity_tags");
@@ -708,7 +704,6 @@ public class PropertyQueryTest extends PropertyMethod {
     @Test
     public void testEntityTagsEmptyKeyExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("query-entity24");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -719,7 +714,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", "$entity_tags");
@@ -738,7 +733,6 @@ public class PropertyQueryTest extends PropertyMethod {
     @Test
     public void testEntityTagsKeyExpression() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("query-entity25");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -749,7 +743,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
         assertTrue(propertyExist(property));
 
 
@@ -780,7 +774,7 @@ public class PropertyQueryTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
         assertTrue(propertyExist(property));
 
         Map<String, Object> queryObj = new HashMap<>();
@@ -806,7 +800,10 @@ public class PropertyQueryTest extends PropertyMethod {
         entity3.addTag("wct2", "wcv2");
         Entity entity4 = new Entity("wck-query-entity36");
         entity4.addTag("wct2", "wcV2");
-        new EntityMethod().createOrUpdateCheck(entity1, entity2, entity3, entity4);
+        EntityMethod.createOrReplaceEntityCheck(entity1);
+        EntityMethod.createOrReplaceEntityCheck(entity2);
+        EntityMethod.createOrReplaceEntityCheck(entity3);
+        EntityMethod.createOrReplaceEntityCheck(entity4);
 
 
         Map<String, Object> queryObj = new HashMap<>();
@@ -832,7 +829,10 @@ public class PropertyQueryTest extends PropertyMethod {
         entity3.addTag("wc2t2", "wc2v2");
         Entity entity4 = new Entity("wcke-query-entity40");
         entity4.addTag("wc2t2", "wc2V2");
-        new EntityMethod().createOrUpdateCheck(entity1, entity2, entity3, entity4);
+        EntityMethod.createOrReplaceEntityCheck(entity1);
+        EntityMethod.createOrReplaceEntityCheck(entity2);
+        EntityMethod.createOrReplaceEntityCheck(entity3);
+        EntityMethod.createOrReplaceEntityCheck(entity4);
 
         final Property property3 = new Property();
         property3.setType(entityTagType);
@@ -859,7 +859,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity41");
         entity.addTag("t1", "tv1");
-        new EntityMethod().createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
 
         final Property property = new Property();
@@ -883,7 +883,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity42");
         entity.addTag("t1", "tv1");
-        new EntityMethod().createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
 
         final Property property = new Property();

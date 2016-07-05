@@ -25,43 +25,36 @@ class PropertyMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
-    public static <T> Response insertProperty(List<T> queryList) {
-        return httpApiResource
+    public static <T> Response insertProperty(T... queries) {
+        Response response = httpApiResource
                 .path(METHOD_PROPERTY_INSERT)
                 .request()
-                .post(Entity.entity(queryList, MediaType.APPLICATION_JSON_TYPE));
-    }
-
-    public static <T> Response insertProperty(T... queries) {
-        return insertProperty(Arrays.asList(queries));
-    }
-
-    public static <T> Response getProperty(List<T> queryList) {
-        return httpApiResource
-                .path(METHOD_PROPERTY_QUERY)
-                .request()
-                .post(Entity.entity(queryList, MediaType.APPLICATION_JSON_TYPE));
+                .post(Entity.json(Arrays.asList(queries)));
+        response.bufferEntity();
+        return response;
     }
 
     public static <T> Response getProperty(T... queries) {
-        return getProperty(Arrays.asList(queries));
-    }
-
-    public static <T> Response deleteProperty(List<T> queryList) {
-        return httpApiResource
-                .path(METHOD_PROPERTY_DELETE)
+        Response response = httpApiResource
+                .path(METHOD_PROPERTY_QUERY)
                 .request()
-                .post(Entity.entity(queryList, MediaType.APPLICATION_JSON_TYPE));
+                .post(Entity.json(Arrays.asList(queries)));
+        response.bufferEntity();
+        return response;
     }
 
     public static <T> Response deleteProperty(T... queries) {
-        return deleteProperty(Arrays.asList(queries));
+        Response response = httpApiResource
+                .path(METHOD_PROPERTY_DELETE)
+                .request()
+                .post(Entity.json(Arrays.asList(queries)));
+        response.bufferEntity();
+        return response;
     }
 
 
     public static void insertPropertyCheck(final Property property) throws IOException {
-        Response response = insertProperty(Collections.singletonList(property));
-        response.close();
+        Response response = insertProperty(property);
         if (response.getStatus() != OK.getStatusCode()) {
             throw new IOException("Can not execute insert property query");
         }
@@ -87,7 +80,7 @@ class PropertyMethod extends BaseMethod {
         return compareJsonString(expected, given, strict);
     }
 
-    private static List prepareStrictPropertyQuery(final Property property) {
+    private static Map prepareStrictPropertyQuery(final Property property) {
         Map<String, Object> query = new HashMap<>();
         query.put("entity", property.getEntity());
         query.put("type", property.getType());
@@ -104,7 +97,7 @@ class PropertyMethod extends BaseMethod {
         }
         query.put("exactMatch", true);
 
-        return Collections.singletonList(query);
+        return query;
     }
 
 }

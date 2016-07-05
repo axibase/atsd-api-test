@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.model.property.Property;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +160,7 @@ public class PropertyInsertTest extends PropertyMethod {
     }
 
     @Test
-    public void testNoKeySamePropertyOverrite() throws Exception {
+    public void testNoKeySamePropertyOverwrite() throws Exception {
         final Property property = new Property("insert-type7", "insert-entity7");
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
@@ -172,6 +173,33 @@ public class PropertyInsertTest extends PropertyMethod {
 
         assertFalse(propertyExist(property));
         assertTrue(propertyExist(property2));
+    }
+
+    @Ignore //behaviour is not defined
+    @Test
+    public void testSameTimeSamePropertyConjunction() throws Exception {
+        final long timeMillis = System.currentTimeMillis();
+        final Property property = new Property("insert-type8", "insert-entity8");
+        property.addTag("t1", "tv1");
+        property.setDate(timeMillis);
+        insertPropertyCheck(property);
+
+        final Property property2 = new Property();
+        property2.setType(property.getType());
+        property2.setEntity(property.getEntity());
+        property2.setDate(timeMillis);
+        property2.addTag("t2", "tv2");
+        insertPropertyCheck(property2);
+
+        final Property resultProperty = new Property();
+        resultProperty.setType(property.getType());
+        resultProperty.setEntity(property.getEntity());
+        resultProperty.setDate(timeMillis);
+        resultProperty.addTag("t1", "tv1");
+        resultProperty.addTag("t2", "tv2");
+
+
+        assertTrue(propertyExist(resultProperty));
     }
 
 

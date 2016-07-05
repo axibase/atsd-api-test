@@ -1,19 +1,19 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.model.metric.Metric;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
+import javax.ws.rs.client.Entity;
 
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.assertEquals;
@@ -22,48 +22,54 @@ import static org.junit.Assert.assertEquals;
  * @author Dmitry Korchagin.
  */
 public class EntityMethod extends BaseMethod {
-    static final String METHOD_ENTITIES = "/entities/";
+    static final String METHOD_ENTITY_LIST = "/entities/";
+    static final String METHOD_ENTITY= "/entities/{entity}";
+    static final String METHOD_ENTITY_METRICS= "/entities/{entity}/metrics";
+    static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
+    static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public void createOrUpdateCheck(final Entity... entities) throws IOException {
-        for(Entity e: entities) {
-            createOrUpdateCheck(e);
-        }
+
+    public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
+        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(Entity.json(query));
+        response.bufferEntity();
+        return response;
     }
 
-    public void createOrUpdateCheck(final Entity entity) throws IOException {
-        final String path = METHOD_ENTITIES + entity.getName();
+    public static Response createOrReplaceEntity(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
+        return createOrReplaceEntity(entity.getName(), entity);
+    }
 
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("tags", entity.getTags());
-        Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().put(javax.ws.rs.client.Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE));
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new IOException("Fail to insert entity");
+    public static Response getEntity(String entityName) {
+        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().get();
+        response.bufferEntity();
+        return response;
+    }
+
+
+    public static void createOrReplaceEntityCheck(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
+        if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
+            throw new IOException("Can not execute createOrReplace query");
         }
         if (!entityExist(entity)) {
-            throw new IOException("Fail to check entity property");
+            throw new IOException("Fail to check metric createOrReplace");
         }
     }
 
 
-    boolean entityExist(final Entity entity) throws IOException {
-        return entityExist(entity, true);
+    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity) throws IOException {
+        return entityExist(entity, false);
     }
 
-    boolean entityExist(final Entity entity, boolean allowExtraFields) throws IOException {
-        String entityJson = jacksonMapper.writeValueAsString(entity);
-        Response response = httpApiResource.path(METHOD_ENTITIES).path("{entity}").resolveTemplate("entity", entity.getName()).request().get();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity, boolean strict) throws IOException {
+        Response response = getEntity(entity.getName());
+        if(response.getStatus() != OK.getStatusCode()) {
+            throw new IOException("Fail to execute getEntity query");
+        }
         String responseJson = response.readEntity(String.class);
-        logger.debug("check: {}\nresponse: {}", entityJson, responseJson);
+        String expected = jacksonMapper.writeValueAsString(entity);
+        logger.debug("check: {}\nresponse: {}", expected, responseJson);
 
-        try {
-            JSONAssert.assertEquals(entityJson, responseJson, allowExtraFields ? JSONCompareMode.LENIENT : JSONCompareMode.NON_EXTENSIBLE);
-        } catch (JSONException e) {
-            throw new IOException("Can not deserialize response");
-        } catch (AssertionError e) {
-            return false;
-        }
-        return true;
+        return compareJsonString(expected, responseJson, strict);
     }
 }

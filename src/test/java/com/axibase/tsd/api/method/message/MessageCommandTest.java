@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collections;
 
+import static org.junit.Assert.assertTrue;
+
 public class MessageCommandTest extends MessageMethod {
     /* #2412 */
     @Test
@@ -53,7 +55,7 @@ public class MessageCommandTest extends MessageMethod {
 
         String sentMessage = jacksonMapper.writeValueAsString(Collections.singletonList(message));
 
-        JSONAssert.assertEquals(sentMessage, storedMessage, JSONCompareMode.NON_EXTENSIBLE);
+        assertTrue(compareJsonString(sentMessage, storedMessage, true));
     }
 
     /* #2412 */
@@ -94,10 +96,11 @@ public class MessageCommandTest extends MessageMethod {
         messageQuery.setType(message.getType());
         messageQuery.setSource(message.getSource());
         messageQuery.setSeverity(message.getSeverity());
-        String storedMessage = executeQuery(messageQuery).readEntity(String.class);
 
-        JSONAssert.assertEquals("{\"error\":\"com.axibase.tsd.service.DictionaryNotFoundException: " +
-                "ENTITY not found for name: 'e-message-max-len-overflow'\"}",
-                storedMessage, JSONCompareMode.NON_EXTENSIBLE);
+        String response = executeQuery(messageQuery).readEntity(String.class);
+        String expected = "{\"error\":\"com.axibase.tsd.service.DictionaryNotFoundException: " +
+                "ENTITY not found for name: 'e-message-max-len-overflow'\"}";
+
+        assertTrue(compareJsonString(expected, response, true));
     }
 }

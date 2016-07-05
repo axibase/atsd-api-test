@@ -264,7 +264,6 @@ public class PropertyDeleteTest extends PropertyMethod {
     @Test
     public void testEntityTagsExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("delete-entity10");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -275,7 +274,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
         assertTrue(propertyExist(property));
 
         Map<String, Object> queryObj = new HashMap<>();
@@ -290,7 +289,6 @@ public class PropertyDeleteTest extends PropertyMethod {
     @Test
     public void testEntityTagsExactFalse() throws Exception {
         final String entityTagsType = "$entity_tags";
-        EntityMethod entityMethod = new EntityMethod();
         final Entity entity = new Entity("delete-entity11");
         final Property property = new Property();
         property.setType(entityTagsType);
@@ -301,7 +299,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         }};
         entity.setTags(tags);
         property.setTags(tags);
-        entityMethod.createOrUpdateCheck(entity);
+        EntityMethod.createOrReplaceEntityCheck(entity);
         assertTrue(propertyExist(property));
 
         Map<String, Object> queryObj = new HashMap<>();

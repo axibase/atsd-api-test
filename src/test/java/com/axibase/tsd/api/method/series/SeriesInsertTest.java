@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
-import com.axibase.tsd.api.method.metrics.MetricMethod;
+import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Sample;
