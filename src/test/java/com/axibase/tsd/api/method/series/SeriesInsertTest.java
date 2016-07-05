@@ -9,10 +9,13 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.junit.Assert.*;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -416,5 +419,49 @@ public class SeriesInsertTest extends SeriesMethod {
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
         assertEquals(0, seriesList.get(0).getData().size());
+    }
+
+    /* #2927 */
+    @Test
+    public void testUrlNotFoundGetRequest() throws Exception {
+        Response response = httpRootResource.path("api").path("404").request().get();
+        assertEquals("Nonexistent url doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("query").request().get();
+        assertEquals("Nonexistent url get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("404").request().get();
+        assertEquals("Nonexistent url get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("404").queryParam("not", "exist").request().get();
+        assertEquals("Nonexistent url get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+    }
+
+    /* #2927 */
+    @Test
+    public void testUrlNotFoundOptionsRequest() throws Exception {
+        Response response = httpRootResource.path("api").path("404").request().options();
+        assertEquals("Nonexistent url options doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("*").request().options();
+        assertEquals("Nonexistent url options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("query").request().options();
+        assertEquals("Nonexistent url options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("404").request().options();
+        assertEquals("Nonexistent url options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        response.bufferEntity();
+
+        response = httpApiResource.path("404").queryParam("not", "exist").request().options();
+        assertEquals("Nonexistent url options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        response.bufferEntity();
     }
 }
