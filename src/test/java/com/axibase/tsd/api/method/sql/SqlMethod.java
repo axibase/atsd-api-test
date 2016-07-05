@@ -8,7 +8,9 @@ import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
@@ -43,11 +45,12 @@ public class SqlMethod extends BaseMethod {
      */
     public static Response executeQuery(String sqlQuery, OutputFormat outputFormat) {
         logger.debug("SQL query : {}", sqlQuery);
+        Form form = new Form();
+        form.param("q", sqlQuery);
+        form.param("outputFormat", outputFormat.toString());
         return httpSqlApiResource
-                .queryParam("q", sqlQuery)
-                .queryParam("outputFormat", outputFormat.toString())
                 .request()
-                .get();
+                .post(Entity.form(form));
     }
 
     /**
