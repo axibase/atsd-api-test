@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.message;
 
 import com.axibase.tsd.api.Registry;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {
     private String entity;
     private String type;
@@ -101,5 +103,19 @@ public class Message {
 
     public void setTags(Map<String, String> tags) {
         this.tags = new HashMap<>(tags);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "entity='" + entity + '\'' +
+                ", type='" + type + '\'' +
+                ", source='" + source + '\'' +
+                ", date='" + date + '\'' +
+                ", severity='" + severity + '\'' +
+                ", message='" + message + '\'' +
+                ", persist=" + persist +
+                ", tags=" + tags +
+                '}';
     }
 }

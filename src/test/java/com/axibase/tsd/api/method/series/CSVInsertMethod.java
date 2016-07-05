@@ -32,6 +32,7 @@ public class CSVInsertMethod extends SeriesMethod {
         } else {
             logger.error("Fail to insert csv");
         }
+        response.close();
         return OK.getStatusCode() == response.getStatus();
     }
 
