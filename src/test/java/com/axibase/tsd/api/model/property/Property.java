@@ -3,8 +3,8 @@ package com.axibase.tsd.api.model.property;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ public class Property {
     private String entity;
     private Map<String, String> key;
     private Map<String, String> tags;
-    private Date date;
+    private String date;
 
     public Property() {
     }
@@ -82,22 +82,20 @@ public class Property {
     }
 
     public String getDate() {
-        if (date == null) {
-            return null;
-        }
-        return Util.ISOFormat(date);
+        return date;
     }
 
     public void setDate(Long millis) {
-        this.date = new Date(millis);
+        this.date = Util.ISOFormat(new Date(millis));
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.date = Util.ISOFormat(date);
     }
 
-    public void setDate(String date) throws ParseException {
-        this.date = Util.parseDate(date);
+    @JsonProperty
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override

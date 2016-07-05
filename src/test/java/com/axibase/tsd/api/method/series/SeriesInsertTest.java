@@ -8,15 +8,17 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static org.junit.Assert.*;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.junit.Assert.*;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -270,6 +272,24 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
         assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
+    /* #2850 */
+    @Test
+    public void testISOFormatsMinusHoursNoMS() throws Exception {
+        String entityName = "e-iso-10";
+        String metricName = "m-iso-10";
+        String value = "0";
+
+        Series series = new Series(entityName, metricName);
+        String d = "2016-06-09T20:00:00.000Z";
+        series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
+
+        assertTrue("Failed to insert series", insertSeries(series, 1000));
+
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
+        assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
+    }
 
 
     /* #2913 */
@@ -481,4 +501,49 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
         response.close();
     }
+
+    @Test
+    public void testLocalTimeUnsupported() throws Exception {
+        String entityName = "e-iso-11";
+        String metricName = "m-iso-11";
+        String value = "0";
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample("2016-06-09 20:00:00", value));
+
+        Response response = insertSeriesReturnResponse(series);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected 'T' character but found ' ' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
+
+    }
+    @Test
+    public void testXXTimezoneUnsupported() throws Exception {
+        String entityName = "e-iso-12";
+        String metricName = "m-iso-12";
+        String value = "0";
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample("2016-06-09T09:50:00-1010", value));
+
+        Response response = insertSeriesReturnResponse(series);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
+    }
+    @Test
+    public void testMillisecondsUnsupported() throws Exception {
+        String entityName = "e-iso-13";
+        String metricName = "m-iso-13";
+        String value = "0";
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample("1465502400000", value));
+
+        Response response = insertSeriesReturnResponse(series);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
+    }
+
 }

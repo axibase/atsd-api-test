@@ -5,8 +5,6 @@ import com.axibase.tsd.api.model.message.MessageQuery;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -47,7 +45,10 @@ public class MessageCommandTest extends MessageMethod {
         Assert.assertEquals("Command length is not maximal", MAX_LENGTH, sb.length());
         tcpSender.send(sb.toString(), 1000);
 
-        MessageQuery messageQuery = new MessageQuery(message.getEntity(), startDate, endDate);
+        MessageQuery messageQuery = new MessageQuery();
+        messageQuery.setEntity(message.getEntity());
+        messageQuery.setStartDate(startDate);
+        messageQuery.setEndDate(endDate);
         messageQuery.setType(message.getType());
         messageQuery.setSource(message.getSource());
         messageQuery.setSeverity(message.getSeverity());
@@ -92,7 +93,10 @@ public class MessageCommandTest extends MessageMethod {
         }
         tcpSender.send(sb.toString(), 1000);
 
-        MessageQuery messageQuery = new MessageQuery(message.getEntity(), startDate, endDate);
+        MessageQuery messageQuery = new MessageQuery();
+        messageQuery.setEntity(message.getEntity());
+        messageQuery.setStartDate(startDate);
+        messageQuery.setEndDate(endDate);
         messageQuery.setType(message.getType());
         messageQuery.setSource(message.getSource());
         messageQuery.setSeverity(message.getSeverity());

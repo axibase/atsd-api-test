@@ -1,16 +1,25 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.model.DateFilter;
+import com.axibase.tsd.api.model.EntityFilter;
+import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.IntervalUnit;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.model.property.PropertyQuery;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.Util.MAX_STORABLE_DATE;
@@ -241,4 +250,93 @@ public class PropertyInsertTest extends PropertyMethod {
 
         assertTrue(propertyExist(resultProperty));
     }
+
+    @Test
+    public void testISOTimezoneZ() throws Exception {
+        insertWithTimezoneAndCheck("property-insert-test-isoz", "test1", "UTC");
+    }
+
+    @Test
+    public void testISOTimezonePlusHourMinute() throws Exception {
+        insertWithTimezoneAndCheck("property-insert-test-iso+hm", "test2", "GMT+01:23");
+    }
+
+    @Test
+    public void testISOTimezoneMinusHourMinute() throws Exception {
+        insertWithTimezoneAndCheck("property-insert-test-iso-hm", "test3", "GMT-01:23");
+    }
+
+    private void insertWithTimezoneAndCheck(String entityName, String type, String timezone) {
+        long startMillis = 1463788800000L;
+
+        Property property = new Property(type, entityName);
+        property.addTag("test", "test");
+        property.setDate(Util.ISOFormat(startMillis, false, timezone));
+        property.setKey(new HashMap<String, String>());
+
+        insertProperty(property);
+
+        PropertyQuery propertyQuery = new PropertyQuery();
+        EntityFilter entityFilter = new EntityFilter();
+        entityFilter.setEntity(entityName);
+
+        DateFilter dateFilter = new DateFilter();
+        dateFilter.setStartDate(Util.ISOFormat(startMillis, false, "UTC"));
+        dateFilter.setInterval(new Interval(1, IntervalUnit.SECOND));
+
+        propertyQuery.setEntityFilter(entityFilter);
+        propertyQuery.setDateFilter(dateFilter);
+        propertyQuery.setType(property.getType());
+
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        Property storedProperty = storedPropertyList.get(0);
+
+        Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
+        Assert.assertEquals(property.getTags(), storedProperty.getTags());
+        Assert.assertEquals(Util.ISOFormat(startMillis, true, "UTC"), storedProperty.getDate());
+    }
+    @Test
+    public void testLocalTimeUnsupported() throws Exception {
+        String entityName = "property-insert-test-localtime";
+        String type = "test4";
+
+        Property property = new Property(type, entityName);
+        property.addTag("test", "test");
+        property.setDate("2016-06-09 20:00:00");
+
+        Response response = insertProperty(property);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
+
+    }
+    @Test
+    public void testXXTimezoneUnsupported() throws Exception {
+        String entityName = "property-insert-test-xx-timezone";
+        String type = "test5";
+
+        Property property = new Property(type, entityName);
+        property.addTag("test", "test");
+        property.setDate("2016-06-09T09:50:00-1010");
+
+        Response response = insertProperty(property);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
+    }
+    @Test
+    public void testMillisecondsUnsupported() throws Exception {
+        String entityName = "property-insert-test-milliseconds";
+        String type = "test6";
+
+        Property property = new Property(type, entityName);
+        property.addTag("test", "test");
+        property.setDate("1465502400000");
+
+        Response response = insertProperty(property);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
+    }
+
 }

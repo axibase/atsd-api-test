@@ -35,15 +35,20 @@ public class Util {
     }
 
     public static String ISOFormat(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.format(date);
+        return ISOFormat(date, true, "UTC");
     }
 
     public static String ISOFormat(long t) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(t);
-        return ISOFormat(calendar.getTime());
+        return ISOFormat(new Date(t));
+    }
+    public static String ISOFormat(long t, boolean withMillis, String timeZoneName) {
+        return ISOFormat(new Date(t), withMillis, timeZoneName);
+    }
+    public static String ISOFormat(Date date, boolean withMillis, String timeZoneName) {
+        String pattern = (withMillis) ? "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" : "yyyy-MM-dd'T'HH:mm:ssXXX";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneName));
+        return dateFormat.format(date);
     }
 
     public static Date parseDate(String date) {

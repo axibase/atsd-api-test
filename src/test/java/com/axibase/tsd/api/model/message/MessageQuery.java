@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.model.message;
 
+import com.axibase.tsd.api.model.Interval;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Map;
@@ -14,12 +15,7 @@ public class MessageQuery {
     private String severity;
     private String source;
     private Map<String, String> tags;
-
-    public MessageQuery(String entity, String startDate, String endDate) {
-        this.entity = entity;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+    private Interval interval;
 
     public String getEntity() {
         return entity;
@@ -75,5 +71,13 @@ public class MessageQuery {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public Interval getInterval() {
+        return interval;
+    }
+
+    public void setInterval(Interval interval) {
+        this.interval = interval;
     }
 }

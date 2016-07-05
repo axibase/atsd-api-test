@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -21,6 +20,15 @@ public class MessageMethod extends BaseMethod {
 
     static final String METHOD_MESSAGE_INSERT = "/messages/insert";
     static final String METHOD_MESSAGE_QUERY = "/messages/query";
+
+    public static Response insertMessageReturnResponse(final Message message) {
+        return insertMessageReturnResponse(Collections.singletonList(message));
+    }
+    public static Response insertMessageReturnResponse(List<Message> messageList) {
+        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
+        response.bufferEntity();
+        return response;
+    }
 
     public static Boolean insertMessage(final Message message, long sleepDuration) throws IOException, InterruptedException {
         return insertMessage(Collections.singletonList(message), sleepDuration);

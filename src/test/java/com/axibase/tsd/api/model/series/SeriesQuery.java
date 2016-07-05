@@ -15,6 +15,7 @@ public class SeriesQuery {
     private String endDate;
     private Map<String, String> tags = new HashMap<>();
     private Map<String, Object> aggregate;
+    private String timeFormat;
 
     public void addAggregateType(String type) {
         if (aggregate == null) {
@@ -118,5 +119,13 @@ public class SeriesQuery {
                 ", startDate='" + startDate + '\'' +
                 ", endDate='" + endDate + '\'' +
                 '}';
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
     }
 }
