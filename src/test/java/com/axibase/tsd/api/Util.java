@@ -44,10 +44,8 @@ public class Util {
         return ISOFormat(calendar.getTime());
     }
 
-    public static Date getDate(String date) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.parse(date);
+    public static Date parseDate(String date){
+        return javax.xml.bind.DatatypeConverter.parseDateTime(date).getTime();
     }
 
     public static String getMinDate() {
@@ -148,11 +146,11 @@ public class Util {
         return sb.toString();
     }
 
-    public static String addOneMS(String date) throws ParseException {
-        return ISOFormat(getDate(date).getTime() + 1);
+    public static String addOneMS(String date) {
+        return ISOFormat(parseDate(date).getTime() + 1);
     }
 
     public static Long getMillis(String date) throws ParseException {
-        return getDate(date).getTime();
+        return parseDate(date).getTime();
     }
 }

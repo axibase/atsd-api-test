@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 
 public class SeriesInsertTest extends SeriesMethod {
+    final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
     /* #2871 */
     @Test
     public void testBigFloatOverflow() throws Exception {
@@ -365,7 +366,6 @@ public class SeriesInsertTest extends SeriesMethod {
         Boolean success = insertSeries(series, 700);
         if (!success)
             fail("Failed to insert series");
-        final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(),
                 MAX_STORABLE_DATE, NEXT_AFTER_MAX_STORABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -394,8 +394,6 @@ public class SeriesInsertTest extends SeriesMethod {
     /* #2957 */
     @Test
     public void testTimeRangeMaxInISOOverflow() throws Exception {
-        final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
-
         final BigDecimal v = new BigDecimal("" + getMillis(NEXT_AFTER_MAX_STORABLE_DATE));
         Series series = new Series("e-time-range-8", "m-time-range-8");
         series.addData(new Sample(NEXT_AFTER_MAX_STORABLE_DATE, v));

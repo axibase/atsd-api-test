@@ -173,22 +173,18 @@ public class CSVInsertTest extends CSVInsertMethod {
         csvInsert(entity.getName(), csvPayload, null, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertNotEquals("Empty data in returned series", "[]", getField(0, "data", storedSeriesList1));
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
+        List<Series> series = executeQueryReturnSeries(seriesQuery);
+        List<Sample> data = series.get(0).getData();
 
+        assertNotEquals("Empty data in returned series", 0, data.size());
 
-        final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MAX_STORABLE_DATE, NEXT_AFTER_MAX_STORABLE_DATE);
-        JSONArray storedSeriesList3 = executeQuery(seriesQuery);
-        assertNotEquals("Empty data in returned series", "[]", getField(0, "data", storedSeriesList3));
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, getDataField(0, "d", storedSeriesList3));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList3));
+        assertEquals("Out of range data were inserted", 2, data.size());
 
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), NEXT_AFTER_MAX_STORABLE_DATE, addOneMS(NEXT_AFTER_MAX_STORABLE_DATE));
-        JSONArray storedSeriesList4 = executeQuery(seriesQuery);
-        assertEquals("Stored data is not empty", "[]", getField(0, "data", storedSeriesList4));
+        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, data.get(0).getD());
+        assertEquals("Stored value incorrect", new BigDecimal("12.45"), data.get(0).getV());
+
+        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, data.get(1).getD());
+        assertEquals("Stored value incorrect", new BigDecimal("10.8"), data.get(1).getV());
     }
 
     /* #2957 */

@@ -2,7 +2,6 @@ package com.axibase.tsd.api.model.property;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.text.ParseException;
@@ -98,7 +97,7 @@ public class Property {
     }
 
     public void setDate(String date) throws ParseException {
-        this.date = Util.getDate(date);
+        this.date = Util.parseDate(date);
     }
 
     @Override
