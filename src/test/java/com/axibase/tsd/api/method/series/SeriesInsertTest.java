@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.metric.Metric;
@@ -14,6 +13,7 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.*;
@@ -308,12 +308,12 @@ public class SeriesInsertTest extends SeriesMethod {
     @Test
     public void testTimeRangeMinInISOSaved() throws Exception {
         Series series = new Series("e-time-range-2", "m-time-range-2");
-        series.addData(new Sample(Util.MIN_STORABLE_DATE, "0"));
+        series.addData(new Sample(MIN_STORABLE_DATE, "0"));
 
         Boolean success = insertSeries(series, 700);
         if (!success)
             fail("Failed to insert series");
-        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals("Empty data in returned series", 1, seriesList.get(0).getData().size());
         assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
@@ -359,12 +359,12 @@ public class SeriesInsertTest extends SeriesMethod {
         final BigDecimal v = new BigDecimal("4294970894999");
 
         Series series = new Series("e-time-range-6", "m-time-range-6");
-        series.addData(new Sample(Util.MAX_STORABLE_DATE, v));
+        series.addData(new Sample(MAX_STORABLE_DATE, v));
 
         Boolean success = insertSeries(series, 700);
         if (!success)
             fail("Failed to insert series");
-        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), Util.MAX_STORABLE_DATE, Util.NEXT_AFTER_MAX_STORABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MAX_STORABLE_DATE, addOneMS(MAX_STORABLE_DATE));
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
         assertEquals(v, seriesList.get(0).getData().get(0).getV());
@@ -392,12 +392,13 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testTimeRangeMaxInISOOverflow() throws Exception {
         final BigDecimal v = new BigDecimal("4294970895000");
 
+        final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
         Series series = new Series("e-time-range-8", "m-time-range-8");
-        series.addData(new Sample(Util.NEXT_AFTER_MAX_STORABLE_DATE, v));
+        series.addData(new Sample(NEXT_AFTER_MAX_STORABLE_DATE, v));
 
         assertFalse("Managed to insert series with t out of range", insertSeries(series, 700));
 
-        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), Util.NEXT_AFTER_MAX_STORABLE_DATE, "2106-02-07T07:28:15.001Z");
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), NEXT_AFTER_MAX_STORABLE_DATE, addOneMS(NEXT_AFTER_MAX_STORABLE_DATE));
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
         assertEquals(0, seriesList.get(0).getData().size());

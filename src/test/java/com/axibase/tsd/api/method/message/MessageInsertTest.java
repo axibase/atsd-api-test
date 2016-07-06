@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.junit.Assert;
@@ -8,6 +7,8 @@ import org.junit.Test;
 
 import javax.ws.rs.core.GenericType;
 import java.util.List;
+
+import static com.axibase.tsd.api.Util.*;
 
 public class MessageInsertTest extends MessageMethod {
     /* #2903 */
@@ -40,7 +41,7 @@ public class MessageInsertTest extends MessageMethod {
     public void testTimeRangeMinSaved() throws Exception {
         Message message = new Message("e-time-range-msg-1");
         message.setMessage("msg-time-range-msg-1");
-        message.setDate(Util.MIN_STORABLE_DATE);
+        message.setDate(MIN_STORABLE_DATE);
 
         Boolean success = insertMessage(message);
         // wait for message availability
@@ -48,7 +49,7 @@ public class MessageInsertTest extends MessageMethod {
 
         if (!success)
             Assert.fail("Failed to insert message");
-        MessageQuery messageQuery = new MessageQuery(message.getEntity(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        MessageQuery messageQuery = new MessageQuery(message.getEntity(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {});
 
@@ -62,7 +63,7 @@ public class MessageInsertTest extends MessageMethod {
     public void testTimeRangeMaxTimeSaved() throws Exception {
         Message message = new Message("e-time-range-msg-3");
         message.setMessage("msg-time-range-msg-3");
-        message.setDate(Util.MAX_STORABLE_DATE);
+        message.setDate(MAX_STORABLE_DATE);
 
         Boolean success = insertMessage(message);
         // wait for message availability
@@ -70,7 +71,7 @@ public class MessageInsertTest extends MessageMethod {
 
         if (!success)
             Assert.fail("Failed to insert message");
-        MessageQuery messageQuery = new MessageQuery(message.getEntity(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        MessageQuery messageQuery = new MessageQuery(message.getEntity(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {});
 
@@ -84,7 +85,7 @@ public class MessageInsertTest extends MessageMethod {
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Message message = new Message("e-time-range-msg-4");
         message.setMessage("msg-time-range-msg-4");
-        message.setDate(Util.NEXT_AFTER_MAX_STORABLE_DATE);
+        message.setDate(addOneMS(MAX_STORABLE_DATE));
 
         Boolean success = insertMessage(message);
         // wait for message availability

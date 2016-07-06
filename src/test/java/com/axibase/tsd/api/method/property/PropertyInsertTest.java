@@ -13,6 +13,8 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.Util.MAX_STORABLE_DATE;
+import static com.axibase.tsd.api.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.*;
@@ -192,7 +194,7 @@ public class PropertyInsertTest extends PropertyMethod {
     public void testTimeRangeMaxTimeSaved() throws Exception {
         Property property = new Property("t-time-range-p-3", "e-time-range-p-3");
         property.addTag("ttr-t", "ttr-v");
-        property.setDate(Util.MAX_STORABLE_DATE);
+        property.setDate(MAX_STORABLE_DATE);
 
         Response response = insertProperty(property);
         assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
@@ -205,7 +207,7 @@ public class PropertyInsertTest extends PropertyMethod {
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Property property = new Property("t-time-range-p-4", "e-time-range-p-4");
         property.addTag("ttr-t", "ttr-v");
-        property.setDate(Util.NEXT_AFTER_MAX_STORABLE_DATE);
+        property.setDate(addOneMS(MAX_STORABLE_DATE));
 
         Response response = insertProperty(property);
         assertNotEquals("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());
