@@ -61,14 +61,6 @@ public class Util {
         return d;
     }
 
-    public static String getMinDate() {
-        return "1970-01-01T00:00:00Z";
-    }
-
-    public static String getMaxDate() {
-        return "9999-01-01T00:00:00Z";
-    }
-
 
     public static class ABNF {
         private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

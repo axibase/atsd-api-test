@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.IntervalUnit;
 import com.axibase.tsd.api.model.message.Message;
@@ -14,7 +13,6 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
-
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.junit.Assert.assertEquals;
 
@@ -43,9 +41,9 @@ public class MessageInsertTest extends MessageMethod {
         });
         Message storedMessage = storedMessageList.get(0);
 
-        Assert.assertEquals("nurswgvml022", storedMessage.getEntity());
-        Assert.assertEquals("NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.", storedMessage.getMessage());
-        Assert.assertEquals("application", storedMessage.getType());
+        assertEquals("nurswgvml022", storedMessage.getEntity());
+        assertEquals("NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.", storedMessage.getMessage());
+        assertEquals("application", storedMessage.getType());
     }
 
     /* #2957 */
@@ -69,8 +67,8 @@ public class MessageInsertTest extends MessageMethod {
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {});
 
         Message msgResponse = storedMessageList.get(0);
-        Assert.assertEquals("Incorrect stored date", message.getDate(), msgResponse.getDate());
-        Assert.assertEquals("Incorrect stored message", message.getMessage(), msgResponse.getMessage());
+        assertEquals("Incorrect stored date", message.getDate(), msgResponse.getDate());
+        assertEquals("Incorrect stored message", message.getMessage(), msgResponse.getMessage());
     }
 
     /* #2957 */
@@ -113,76 +111,82 @@ public class MessageInsertTest extends MessageMethod {
             Assert.fail("Managed to insert message with date out of range");
     }
 
+    /* #2850 */
     @Test
     public void testISOTimezoneZ() throws Exception {
-        long startMillis = 1463788800000L;
-
-        Message message = new Message("message-insert-test-isoz");
+        String entityName = "message-insert-test-isoz";
+        Message message = new Message(entityName);
         message.setMessage("hello");
-        message.setDate(Util.ISOFormat(startMillis, false, "UTC"));
+        message.setDate("2016-05-21T00:00:00Z");
 
         Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
 
+        String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setEntity("message-insert-test-isoz");
-        messageQuery.setStartDate(Util.ISOFormat(startMillis, false, "UTC"));
-        messageQuery.setInterval(new Interval(1, IntervalUnit.SECOND));
+        messageQuery.setEntity(entityName);
+        messageQuery.setStartDate(date);
+        messageQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
         Message storedMessage = storedMessageList.get(0);
 
-        Assert.assertEquals(message.getEntity(), storedMessage.getEntity());
-        Assert.assertEquals(message.getMessage(), storedMessage.getMessage());
-        Assert.assertEquals(Util.ISOFormat(startMillis, true, "UTC"), storedMessage.getDate());
+        assertEquals(message.getEntity(), storedMessage.getEntity());
+        assertEquals(message.getMessage(), storedMessage.getMessage());
+        assertEquals(date, storedMessage.getDate());
     }
 
+    /* #2850 */
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
-        long startMillis = 1463788800000L;
-
-        Message message = new Message("message-insert-test-iso+hm");
+        String entityName = "message-insert-test-iso+hm";
+        Message message = new Message(entityName);
         message.setMessage("hello");
-        message.setDate(Util.ISOFormat(startMillis, false, "GMT+01:23"));
+        message.setDate("2016-05-21T01:23:00+01:23");
 
         Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
 
+        String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setEntity("message-insert-test-iso+hm");
-        messageQuery.setStartDate(Util.ISOFormat(startMillis, false, "UTC"));
-        messageQuery.setInterval(new Interval(1, IntervalUnit.SECOND));
+        messageQuery.setEntity(entityName);
+        messageQuery.setStartDate(date);
+        messageQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
         Message storedMessage = storedMessageList.get(0);
 
-        Assert.assertEquals(message.getEntity(), storedMessage.getEntity());
-        Assert.assertEquals(message.getMessage(), storedMessage.getMessage());
-        Assert.assertEquals(Util.ISOFormat(startMillis, true, "UTC"), storedMessage.getDate());
+        assertEquals(message.getEntity(), storedMessage.getEntity());
+        assertEquals(message.getMessage(), storedMessage.getMessage());
+        assertEquals(date, storedMessage.getDate());
     }
 
+    /* #2850 */
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
-        long startMillis = 1463788800000L;
-
-        Message message = new Message("message-insert-test-iso-hm");
+        String entityName = "message-insert-test-iso-hm";
+        Message message = new Message(entityName);
         message.setMessage("hello");
-        message.setDate(Util.ISOFormat(startMillis, false, "GMT-01:23"));
+        message.setDate("2016-05-20T22:37:00-01:23");
 
         Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
 
+        String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setEntity("message-insert-test-iso-hm");
-        messageQuery.setStartDate(Util.ISOFormat(startMillis, false, "UTC"));
-        messageQuery.setInterval(new Interval(1, IntervalUnit.SECOND));
+        messageQuery.setEntity(entityName);
+        messageQuery.setStartDate(date);
+        messageQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
         Message storedMessage = storedMessageList.get(0);
 
-        Assert.assertEquals(message.getEntity(), storedMessage.getEntity());
-        Assert.assertEquals(message.getMessage(), storedMessage.getMessage());
-        Assert.assertEquals(Util.ISOFormat(startMillis, true, "UTC"), storedMessage.getDate());
+        assertEquals(message.getEntity(), storedMessage.getEntity());
+        assertEquals(message.getMessage(), storedMessage.getMessage());
+        assertEquals(date, storedMessage.getDate());
     }
 
+    /* #2850 */
     @Test
     public void testLocalTimeUnsupported() throws Exception {
-        String entityName = "message-insert-test-localtime";
-        Message message = new Message(entityName);
+        Message message = new Message("message-insert-test-localtime");
         message.setMessage("hello");
         message.setDate("2016-07-21 00:00:00");
 
@@ -192,10 +196,11 @@ public class MessageInsertTest extends MessageMethod {
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-21 00:00:00\"}", response.readEntity(String.class), true);
 
     }
+
+    /* #2850 */
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
-        String entityName = "message-insert-test-xxtimezone";
-        Message message = new Message(entityName);
+        Message message = new Message("message-insert-test-xxtimezone");
         message.setMessage("hello");
         message.setDate("2016-07-20T22:50:00-0110");
 
@@ -204,10 +209,11 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
     }
+
+    /* #2850 */
     @Test
     public void testMillisecondsUnsupported() throws Exception {
-        String entityName = "message-insert-test-milliseconds";
-        Message message = new Message(entityName);
+        Message message = new Message("message-insert-test-milliseconds");
         message.setMessage("hello");
         message.setDate("1469059200000");
 

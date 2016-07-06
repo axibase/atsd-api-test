@@ -251,38 +251,23 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(resultProperty));
     }
 
+    /* #2850 */
     @Test
     public void testISOTimezoneZ() throws Exception {
-        insertWithTimezoneAndCheck("property-insert-test-isoz", "test1", "UTC");
-    }
-
-    @Test
-    public void testISOTimezonePlusHourMinute() throws Exception {
-        insertWithTimezoneAndCheck("property-insert-test-iso+hm", "test2", "GMT+01:23");
-    }
-
-    @Test
-    public void testISOTimezoneMinusHourMinute() throws Exception {
-        insertWithTimezoneAndCheck("property-insert-test-iso-hm", "test3", "GMT-01:23");
-    }
-
-    private void insertWithTimezoneAndCheck(String entityName, String type, String timezone) {
-        long startMillis = 1463788800000L;
-
-        Property property = new Property(type, entityName);
+        Property property = new Property("test1", "property-insert-test-isoz");
         property.addTag("test", "test");
-        property.setDate(Util.ISOFormat(startMillis, false, timezone));
-        property.setKey(new HashMap<String, String>());
+        property.setDate("2016-07-21T00:00:00Z");
 
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
         EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity(entityName);
+        entityFilter.setEntity("property-insert-test-isoz");
 
         DateFilter dateFilter = new DateFilter();
-        dateFilter.setStartDate(Util.ISOFormat(startMillis, false, "UTC"));
-        dateFilter.setInterval(new Interval(1, IntervalUnit.SECOND));
+        String date = "2016-07-21T00:00:00.000Z";
+        dateFilter.setStartDate(date);
+        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
 
         propertyQuery.setEntityFilter(entityFilter);
         propertyQuery.setDateFilter(dateFilter);
@@ -293,8 +278,70 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
         Assert.assertEquals(property.getTags(), storedProperty.getTags());
-        Assert.assertEquals(Util.ISOFormat(startMillis, true, "UTC"), storedProperty.getDate());
+        Assert.assertEquals(date, storedProperty.getDate());
     }
+
+    /* #2850 */
+    @Test
+    public void testISOTimezonePlusHourMinute() throws Exception {
+        Property property = new Property("test2", "property-insert-test-iso+hm");
+        property.addTag("test", "test");
+        property.setDate("2016-07-21T01:23:00+01:23");
+
+        insertProperty(property);
+
+        PropertyQuery propertyQuery = new PropertyQuery();
+        EntityFilter entityFilter = new EntityFilter();
+        entityFilter.setEntity("property-insert-test-iso+hm");
+
+        DateFilter dateFilter = new DateFilter();
+        String date = "2016-07-21T00:00:00.000Z";
+        dateFilter.setStartDate(date);
+        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+
+        propertyQuery.setEntityFilter(entityFilter);
+        propertyQuery.setDateFilter(dateFilter);
+        propertyQuery.setType(property.getType());
+
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        Property storedProperty = storedPropertyList.get(0);
+
+        Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
+        Assert.assertEquals(property.getTags(), storedProperty.getTags());
+        Assert.assertEquals(date, storedProperty.getDate());
+    }
+
+    /* #2850 */
+    @Test
+    public void testISOTimezoneMinusHourMinute() throws Exception {
+        Property property = new Property("test3", "property-insert-test-iso-hm");
+        property.addTag("test", "test");
+        property.setDate("2016-07-20T22:37:00-01:23");
+
+        insertProperty(property);
+
+        PropertyQuery propertyQuery = new PropertyQuery();
+        EntityFilter entityFilter = new EntityFilter();
+        entityFilter.setEntity("property-insert-test-iso-hm");
+
+        DateFilter dateFilter = new DateFilter();
+        String date = "2016-07-21T00:00:00.000Z";
+        dateFilter.setStartDate(date);
+        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+
+        propertyQuery.setEntityFilter(entityFilter);
+        propertyQuery.setDateFilter(dateFilter);
+        propertyQuery.setType(property.getType());
+
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        Property storedProperty = storedPropertyList.get(0);
+
+        Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
+        Assert.assertEquals(property.getTags(), storedProperty.getTags());
+        Assert.assertEquals(date, storedProperty.getDate());
+    }
+
+    /* #2850 */
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "property-insert-test-localtime";
@@ -310,6 +357,8 @@ public class PropertyInsertTest extends PropertyMethod {
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
 
     }
+
+    /* #2850 */
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "property-insert-test-xx-timezone";
@@ -324,6 +373,8 @@ public class PropertyInsertTest extends PropertyMethod {
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
     }
+
+    /* #2850 */
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "property-insert-test-milliseconds";

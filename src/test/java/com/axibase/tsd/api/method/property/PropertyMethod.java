@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
@@ -86,8 +88,8 @@ class PropertyMethod extends BaseMethod {
         query.put("type", property.getType());
         query.put("key", property.getKey());
         if (null == property.getDate()) {
-            query.put("startDate", Util.getMinDate());
-            query.put("endDate", Util.getMaxDate());
+            query.put("startDate", Util.MIN_STORABLE_DATE);
+            query.put("endDate", Util.MAX_QUERYABLE_DATE);
         } else {
             query.put("startDate", property.getDate());
             query.put("interval", new HashMap<String, Object>() {{

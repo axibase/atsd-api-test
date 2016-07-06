@@ -502,6 +502,7 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
+    /* #2850 */
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "e-iso-11";
@@ -517,6 +518,8 @@ public class SeriesInsertTest extends SeriesMethod {
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected 'T' character but found ' ' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
 
     }
+
+    /* #2850 */
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "e-iso-12";
@@ -531,6 +534,8 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
     }
+
+    /* #2850 */
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "e-iso-13";

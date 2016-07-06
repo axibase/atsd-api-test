@@ -324,8 +324,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>(property.getKey()) {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.getMinDate());
-        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -345,8 +345,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>(property.getKey()) {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.getMinDate());
-        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -365,8 +365,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.getMinDate());
-        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -385,8 +385,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.getMinDate());
-        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -406,8 +406,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k1", "kv2");
         }});
-        queryObj.put("startDate", Util.getMinDate());
-        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -427,8 +427,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k1", "kv2");
         }});
-        queryObj.put("startDate", Util.getMinDate());
-        queryObj.put("endDate", Util.getMaxDate());
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());

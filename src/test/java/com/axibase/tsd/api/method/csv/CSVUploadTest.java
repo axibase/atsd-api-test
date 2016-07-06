@@ -244,7 +244,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Thread.sleep(1000L);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.getMinDate(), Util.getMaxDate());
+        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.MIN_STORABLE_DATE, Util.MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
         assertSeriesValue(entityName, metricName, "2016-06-19T00:00:00.000Z", "123.45", storedSeriesList);
     }
@@ -259,7 +259,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Thread.sleep(1000L);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.getMinDate(), Util.getMaxDate());
+        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.MIN_STORABLE_DATE, Util.MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
         assertSeriesValue(entityName, metricName, "2016-06-19T00:00:00.000Z", "123.45", storedSeriesList);
     }
