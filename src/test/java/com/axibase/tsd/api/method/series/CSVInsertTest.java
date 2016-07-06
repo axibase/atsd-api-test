@@ -2,11 +2,15 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.Util.*;
@@ -163,14 +167,14 @@ public class CSVInsertTest extends CSVInsertMethod {
         Metric metric = new Metric("m-time-range-9");
 
         String csvPayload = "date," + metric.getName() + "\n" +
-                "1970-01-01T00:00:00.000Z,      12.45\n" +
-                "2106-02-07T07:28:14.999Z, 10.8\n" +
-                "2106-02-07T07:28:15.000Z, 10";
+                MIN_STORABLE_DATE           + ", 12.45\n" +
+                MAX_STORABLE_DATE           + ", 10.8\n" +
+                addOneMS(MAX_STORABLE_DATE) + ", 10";
         csvInsert(entity.getName(), csvPayload, null, 1000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertNotEquals("Empty data in returned series", "[]", getField(0,"data",storedSeriesList1));
+        assertNotEquals("Empty data in returned series", "[]", getField(0, "data", storedSeriesList1));
         assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, getDataField(0, "d", storedSeriesList1));
         assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
 
@@ -178,7 +182,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
         seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MAX_STORABLE_DATE, NEXT_AFTER_MAX_STORABLE_DATE);
         JSONArray storedSeriesList3 = executeQuery(seriesQuery);
-        assertNotEquals("Empty data in returned series", "[]", getField(0,"data",storedSeriesList3));
+        assertNotEquals("Empty data in returned series", "[]", getField(0, "data", storedSeriesList3));
         assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, getDataField(0, "d", storedSeriesList3));
         assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList3));
 
@@ -194,25 +198,23 @@ public class CSVInsertTest extends CSVInsertMethod {
         Metric metric = new Metric("m-time-range-10");
 
         String csvPayload = "time," + metric.getName() + "\n" +
-                "0,      12.45\n" +
-                "4294970894999, 10.8\n" +
-                "4294970895000, 10";
-        csvInsert(entity.getName(), csvPayload, null, 1000);
+                getMillis(MIN_STORABLE_DATE)           + ", 12.45\n" +
+                getMillis(MAX_STORABLE_DATE)           + ", 10.8\n" +
+                getMillis(addOneMS(MAX_STORABLE_DATE)) + " 10";
+        csvInsert(entity.getName(), csvPayload, null, 2000);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertNotEquals("Empty data in returned series", "[]", getField(0,"data",storedSeriesList1));
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
+        List<Series> series = executeQueryReturnSeries(seriesQuery);
+        List<Sample> data = series.get(0).getData();
 
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), 4294970894999L, 4294970895000L);
-        JSONArray storedSeriesList3 = executeQuery(seriesQuery);
-        assertNotEquals("Empty data in returned series", "[]", getField(0,"data",storedSeriesList3));
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, getDataField(0, "d", storedSeriesList3));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList3));
+        assertNotEquals("Empty data in returned series", 0, data.size());
 
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), 4294970895000L, 4294970895001L);
-        JSONArray storedSeriesList4 = executeQuery(seriesQuery);
-        assertEquals("Stored data is not empty", "[]", getField(0, "data", storedSeriesList4));
+        assertEquals("Out of range data were inserted", 2, data.size());
+
+        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, data.get(0).getD());
+        assertEquals("Stored value incorrect", new BigDecimal("12.45"), data.get(0).getV());
+
+        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, data.get(1).getD());
+        assertEquals("Stored value incorrect", new BigDecimal("10.8"), data.get(1).getV());
     }
 }
