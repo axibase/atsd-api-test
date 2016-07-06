@@ -189,18 +189,16 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals(response.getStatus(), OK.getStatusCode());
         Thread.sleep(1000L);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.getMinDate(), Util.getMaxDate());
+        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
         Series series = seriesList.get(0);
 
-        assertEquals("Managed to insert dataset with date out of range", 3, series.getData().size());
+        assertEquals("Managed to insert dataset with date out of range", 2, series.getData().size());
 
-        assertEquals("Incorrect stored date", "1970-01-01T00:00:00.000Z", series.getData().get(0).getD());
+        assertEquals("Min storable date failed to save", Util.MIN_STORABLE_DATE, series.getData().get(0).getD());
         assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getV().toString());
-        assertEquals("Incorrect stored date", "1970-01-01T00:00:00.001Z", series.getData().get(1).getD());
-        assertEquals("Incorrect stored value", "12", series.getData().get(1).getV().toString());
-        assertEquals("Incorrect stored date", "2106-02-07T07:28:14.999Z", series.getData().get(2).getD());
-        assertEquals("Incorrect stored value", "10.8", series.getData().get(2).getV().toString());
+        assertEquals("Max storable date failed to save", Util.MAX_STORABLE_DATE, series.getData().get(1).getD());
+        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
     }
 
     @Test
@@ -214,18 +212,16 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals(response.getStatus(), OK.getStatusCode());
         Thread.sleep(1000L);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.getMinDate(), Util.getMaxDate());
+        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
         Series series = seriesList.get(0);
 
-        assertEquals("Managed to insert dataset with date out of range", 3, series.getData().size());
+        assertEquals("Managed to insert dataset with date out of range", 2, series.getData().size());
 
-        assertEquals("Incorrect stored date", "1970-01-01T00:00:00.000Z", series.getData().get(0).getD());
+        assertEquals("Min storable date failed to save", Util.MIN_STORABLE_DATE, series.getData().get(0).getD());
         assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getV().toString());
-        assertEquals("Incorrect stored date", "1970-01-01T00:00:00.001Z", series.getData().get(1).getD());
-        assertEquals("Incorrect stored value", "12", series.getData().get(1).getV().toString());
-        assertEquals("Incorrect stored date", "2106-02-07T07:28:14.999Z", series.getData().get(2).getD());
-        assertEquals("Incorrect stored value", "10.8", series.getData().get(2).getV().toString());
+        assertEquals("Max storable date failed to save", Util.MAX_STORABLE_DATE, series.getData().get(1).getD());
+        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
     }
 
 

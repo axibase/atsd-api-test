@@ -7,12 +7,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -192,19 +189,6 @@ public class PropertyInsertTest extends PropertyMethod {
 
     /* #2957 */
     @Test
-    public void testTimeRangeTimeSaved() throws Exception {
-        Property property = new Property("t-time-range-p-2", "e-time-range-p-2");
-        property.addTag("ttr-t", "ttr-v");
-        property.setDate("1970-01-01T00:00:00.001Z");
-
-        Response response = insertProperty(property);
-        assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
-
-        assertTrue(propertyExist(property));
-    }
-
-    /* #2957 */
-    @Test
     public void testTimeRangeMaxTimeSaved() throws Exception {
         Property property = new Property("t-time-range-p-3", "e-time-range-p-3");
         property.addTag("ttr-t", "ttr-v");
@@ -221,7 +205,7 @@ public class PropertyInsertTest extends PropertyMethod {
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Property property = new Property("t-time-range-p-4", "e-time-range-p-4");
         property.addTag("ttr-t", "ttr-v");
-        property.setDate("2106-02-07T07:28:15.000Z");
+        property.setDate(Util.NEXT_AFTER_MAX_STORABLE_DATE);
 
         Response response = insertProperty(property);
         assertNotEquals("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());
