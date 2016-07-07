@@ -2,9 +2,9 @@ package com.axibase.tsd.api.model;
 
 public class Interval {
     private int count;
-    private IntervalUnit unit;
+    private TimeUnit unit;
 
-    public Interval(int count, IntervalUnit unit) {
+    public Interval(int count, TimeUnit unit) {
         this.count = count;
         this.unit = unit;
     }
@@ -17,11 +17,11 @@ public class Interval {
         this.count = count;
     }
 
-    public IntervalUnit getUnit() {
+    public TimeUnit getUnit() {
         return unit;
     }
 
-    public void setUnit(IntervalUnit unit) {
+    public void setUnit(TimeUnit unit) {
         this.unit = unit;
     }
 }

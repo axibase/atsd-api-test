@@ -15,10 +15,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.*;
 import static org.junit.Assert.*;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -514,7 +512,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Response response = insertSeriesReturnResponse(series);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected 'T' character but found ' ' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
 
     }
@@ -531,7 +529,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Response response = insertSeriesReturnResponse(series);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
     }
 
@@ -547,7 +545,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Response response = insertSeriesReturnResponse(series);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
     }
 

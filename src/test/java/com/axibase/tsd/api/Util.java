@@ -76,27 +76,6 @@ public class Util {
             for (int i = 97; i < 122; i++) { //a-z
                 pool.add((char) i);
             }
-
-//            for (int i = 0x21; i < 0x7e; i++) { //visible character
-//                pool.add((char) i);
-//            }
-
-//            for (int i = 0x80; i < 0xFF; i++) { //Latin-1 Supplement
-//                pool.add((char) i);
-//            }
-
-//            for (int i = 0x100; i < 0x17F; i++) { //Latin Extended-A
-//                pool.add((char) i);
-//            }
-//
-//            for (int i = 0x370; i < 0x52F; i++) { //Greek and Coptic, Cyrillic, Cyrillic Supplement
-//                pool.add((char) i);
-//            }
-
-//            for (int i = 0x4E00; i < 0x4E5F; i++) {//9FFF; i++) { //CJK Unified Ideographs
-//                pool.add((char) i);
-//            }
-//            logger.debug("visible character pool: {}", pool);
             return pool;
 
         }

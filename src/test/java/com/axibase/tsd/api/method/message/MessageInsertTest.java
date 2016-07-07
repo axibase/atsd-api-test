@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.model.Interval;
-import com.axibase.tsd.api.model.IntervalUnit;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.junit.Assert;
@@ -125,14 +125,14 @@ public class MessageInsertTest extends MessageMethod {
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
-        messageQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
         Message storedMessage = storedMessageList.get(0);
 
-        assertEquals(message.getEntity(), storedMessage.getEntity());
-        assertEquals(message.getMessage(), storedMessage.getMessage());
-        assertEquals(date, storedMessage.getDate());
+        assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
+        assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
+        assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
     /* #2850 */
@@ -149,14 +149,14 @@ public class MessageInsertTest extends MessageMethod {
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
-        messageQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
         Message storedMessage = storedMessageList.get(0);
 
-        assertEquals(message.getEntity(), storedMessage.getEntity());
-        assertEquals(message.getMessage(), storedMessage.getMessage());
-        assertEquals(date, storedMessage.getDate());
+        assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
+        assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
+        assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
     /* #2850 */
@@ -173,14 +173,14 @@ public class MessageInsertTest extends MessageMethod {
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
-        messageQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>(){});
         Message storedMessage = storedMessageList.get(0);
 
-        assertEquals(message.getEntity(), storedMessage.getEntity());
-        assertEquals(message.getMessage(), storedMessage.getMessage());
-        assertEquals(date, storedMessage.getDate());
+        assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
+        assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
+        assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
     /* #2850 */
@@ -192,7 +192,7 @@ public class MessageInsertTest extends MessageMethod {
 
         Response response = insertMessageReturnResponse(message);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-21 00:00:00\"}", response.readEntity(String.class), true);
 
     }
@@ -206,7 +206,7 @@ public class MessageInsertTest extends MessageMethod {
 
         Response response = insertMessageReturnResponse(message);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
     }
 
@@ -219,7 +219,7 @@ public class MessageInsertTest extends MessageMethod {
 
         Response response = insertMessageReturnResponse(message);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 1469059200000\"}", response.readEntity(String.class), true);
     }
 

@@ -4,7 +4,7 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.DateFilter;
 import com.axibase.tsd.api.model.EntityFilter;
 import com.axibase.tsd.api.model.Interval;
-import com.axibase.tsd.api.model.IntervalUnit;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import org.junit.Assert;
@@ -267,7 +267,7 @@ public class PropertyInsertTest extends PropertyMethod {
         DateFilter dateFilter = new DateFilter();
         String date = "2016-07-21T00:00:00.000Z";
         dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         propertyQuery.setEntityFilter(entityFilter);
         propertyQuery.setDateFilter(dateFilter);
@@ -276,9 +276,9 @@ public class PropertyInsertTest extends PropertyMethod {
         List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
-        Assert.assertEquals(property.getTags(), storedProperty.getTags());
-        Assert.assertEquals(date, storedProperty.getDate());
+        Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        Assert.assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        Assert.assertEquals("Incorrect property date", date, storedProperty.getDate());
     }
 
     /* #2850 */
@@ -297,7 +297,7 @@ public class PropertyInsertTest extends PropertyMethod {
         DateFilter dateFilter = new DateFilter();
         String date = "2016-07-21T00:00:00.000Z";
         dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         propertyQuery.setEntityFilter(entityFilter);
         propertyQuery.setDateFilter(dateFilter);
@@ -306,9 +306,9 @@ public class PropertyInsertTest extends PropertyMethod {
         List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
-        Assert.assertEquals(property.getTags(), storedProperty.getTags());
-        Assert.assertEquals(date, storedProperty.getDate());
+        Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        Assert.assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        Assert.assertEquals("Incorrect property date", date, storedProperty.getDate());
     }
 
     /* #2850 */
@@ -327,7 +327,7 @@ public class PropertyInsertTest extends PropertyMethod {
         DateFilter dateFilter = new DateFilter();
         String date = "2016-07-21T00:00:00.000Z";
         dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         propertyQuery.setEntityFilter(entityFilter);
         propertyQuery.setDateFilter(dateFilter);
@@ -336,9 +336,9 @@ public class PropertyInsertTest extends PropertyMethod {
         List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals(property.getEntity(), storedProperty.getEntity());
-        Assert.assertEquals(property.getTags(), storedProperty.getTags());
-        Assert.assertEquals(date, storedProperty.getDate());
+        Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        Assert.assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        Assert.assertEquals("Incorrect property date", date, storedProperty.getDate());
     }
 
     /* #2850 */
@@ -353,7 +353,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
 
     }
@@ -370,7 +370,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
     }
 
@@ -386,7 +386,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
     }
 

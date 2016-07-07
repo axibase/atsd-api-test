@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.Interval;
-import com.axibase.tsd.api.model.IntervalUnit;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
@@ -42,9 +42,9 @@ public class SeriesQueryTest extends SeriesMethod {
 
         List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals(series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals(series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals(sampleDate, storedSeries.get(0).getData().get(0).getD());
+        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
+        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
+        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
     }
 
     /* #2850 */
@@ -56,9 +56,9 @@ public class SeriesQueryTest extends SeriesMethod {
 
         List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals(series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals(series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals(sampleDate, storedSeries.get(0).getData().get(0).getD());
+        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
+        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
+        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
     }
 
     /* #2850 */
@@ -70,9 +70,9 @@ public class SeriesQueryTest extends SeriesMethod {
 
         List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals(series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals(series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals(sampleDate, storedSeries.get(0).getData().get(0).getD());
+        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
+        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
+        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
     }
 
 
@@ -85,7 +85,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         Response response = executeQueryReturnResponse(seriesQuery);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01 14:23:20\"}", response.readEntity(String.class), true);
 
     }
@@ -99,7 +99,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         Response response = executeQueryReturnResponse(seriesQuery);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01T15:46:20+0123\"}", response.readEntity(String.class), true);
 
     }
@@ -113,7 +113,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         Response response = executeQueryReturnResponse(seriesQuery);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1467383000000\"}", response.readEntity(String.class), true);
     }
 
@@ -123,7 +123,7 @@ public class SeriesQueryTest extends SeriesMethod {
         seriesQuery.setEntity("series-query-e-1");
         seriesQuery.setMetric("series-query-m-1");
 
-        seriesQuery.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        seriesQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
         return seriesQuery;
     }
 }

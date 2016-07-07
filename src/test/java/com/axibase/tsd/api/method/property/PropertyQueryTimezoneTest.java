@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.property;
 import com.axibase.tsd.api.model.DateFilter;
 import com.axibase.tsd.api.model.EntityFilter;
 import com.axibase.tsd.api.model.Interval;
-import com.axibase.tsd.api.model.IntervalUnit;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import org.junit.Before;
@@ -41,9 +41,9 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
         Property storedProperty = storedPropertyList.get(0);
 
-        assertEquals(property.getEntity(), storedProperty.getEntity());
-        assertEquals(property.getTags(), storedProperty.getTags());
-        assertEquals(property.getDate(), storedProperty.getDate());
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
     /* #2850 */
@@ -57,9 +57,9 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
         Property storedProperty = storedPropertyList.get(0);
 
-        assertEquals(property.getEntity(), storedProperty.getEntity());
-        assertEquals(property.getTags(), storedProperty.getTags());
-        assertEquals(property.getDate(), storedProperty.getDate());
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
     /* #2850 */
@@ -72,9 +72,9 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
         Property storedProperty = storedPropertyList.get(0);
 
-        assertEquals(property.getEntity(), storedProperty.getEntity());
-        assertEquals(property.getTags(), storedProperty.getTags());
-        assertEquals(property.getDate(), storedProperty.getDate());
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
     /* #2850 */
@@ -86,7 +86,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         Response response = getProperty(propertyQuery);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-21 00:00:00\"}", response.readEntity(String.class), true);
 
     }
@@ -100,7 +100,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         Response response = getProperty(propertyQuery);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
     }
 
@@ -113,7 +113,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         Response response = getProperty(propertyQuery);
 
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1469059200000\"}", response.readEntity(String.class), true);
     }
 
@@ -126,7 +126,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         entityFilter.setEntity(property.getEntity());
 
         DateFilter dateFilter = new DateFilter();
-        dateFilter.setInterval(new Interval(1, IntervalUnit.MILLISECOND));
+        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         propertyQuery.setEntityFilter(entityFilter);
         propertyQuery.setDateFilter(dateFilter);
