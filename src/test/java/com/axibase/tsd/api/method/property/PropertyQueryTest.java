@@ -66,7 +66,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", "*");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("exactMatch", false);
 
@@ -92,7 +92,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", "*");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("exactMatch", true);
 
@@ -121,7 +121,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", "*");
         queryObj.put("key", property.getKey());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("exactMatch", false);
 
@@ -149,7 +149,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", "*");
         queryObj.put("key", property.getKey());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("exactMatch", true);
 
@@ -171,7 +171,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("key", new HashMap<String, String>() {{
             put("misskey", "misskey_value");
@@ -193,7 +193,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("key", new HashMap<String, String>() {{
             put("miss_key", "miss_key_value");
@@ -214,7 +214,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("key", new HashMap<String, String>() {{
             put("k1", "kv1");
@@ -235,7 +235,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("key", property.getKey());
         queryObj.put("exactMatch", false);
@@ -255,7 +255,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", "now");
         queryObj.put("key", property.getKey());
         queryObj.put("exactMatch", true);
@@ -290,7 +290,7 @@ public class PropertyQueryTest extends PropertyMethod {
             add(property.getEntity());
             add(lastProperty.getEntity());
         }});
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
@@ -316,7 +316,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
@@ -342,7 +342,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("last", false);
 
@@ -371,7 +371,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("last", true);
 
@@ -405,7 +405,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("last", true);
 
@@ -425,9 +425,9 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("key", property.getKey());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("interval", new HashMap<String, Object>() {{
-            put("count", 999);
+            put("count", 1999);
             put("unit", "YEAR");
         }});
 
@@ -636,7 +636,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", "$entity_tags");
         queryObj.put("entity", entity.getName());
         queryObj.put("key", tags);
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
@@ -665,7 +665,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("t1", "v1");
         }});
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
@@ -691,7 +691,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", "$entity_tags");
         queryObj.put("entity", entity.getName());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
@@ -719,7 +719,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", "$entity_tags");
         queryObj.put("entity", entity.getName());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
@@ -751,7 +751,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", "$entity_tags");
         queryObj.put("entity", entity.getName());
         queryObj.put("keyTagExpression", "tags.t1 == 'v1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -781,7 +781,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", "$entity_tags");
         queryObj.put("entity", entity.getName());
         queryObj.put("keyTagExpression", "tags.t1 == 'v2'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         JSONAssert.assertEquals("[]", formatToJsonString(getProperty(queryObj)), false);
@@ -810,7 +810,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", entityTagType);
         queryObj.put("entity", "wck-*");
         queryObj.put("key", entity1.getTags());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         JSONAssert.assertEquals("[]", formatToJsonString(getProperty(queryObj)), false);
@@ -844,7 +844,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", entityTagType);
         queryObj.put("entity", "wcke-*");
         queryObj.put("keyTagExpression", "keys.wc2t1 = 'wc2V1' OR tags.wc2t2 = 'wc2v2'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property3));
@@ -871,7 +871,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", entityTagType);
         queryObj.put("entity", entity.getName());
         queryObj.put("keyTagExpression", "tags.t1 == 'tV1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -895,7 +895,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", entityTagType);
         queryObj.put("entity", entity.getName());
         queryObj.put("keyTagExpression", "tags.T1 == 'tv1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -928,7 +928,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t1 == 'tv1' OR keys.k3 == 'kv3'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -957,7 +957,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t1 == 'tv1' AND keys.k2 == 'kv2'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -984,7 +984,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t1 LIKE 'tv*'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1012,7 +1012,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "keys.k1 LIKE 'kv*'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1040,7 +1040,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t1 == keys.k1");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1068,7 +1068,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t1 != keys.k1");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1095,7 +1095,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "keys.k2 == ''");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1122,7 +1122,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "keys.k2 != ''");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1149,7 +1149,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t2 == ''");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1176,7 +1176,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "tags.t2 != ''");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1196,7 +1196,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "lower(tags.t1) == 'tv1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1217,7 +1217,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "lower(keys.k1) == 'kv1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1237,7 +1237,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "upper(tags.t1) == 'TV1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1258,7 +1258,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
         queryObj.put("keyTagExpression", "upper(keys.k1) == 'KV1'");
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
 
@@ -1283,7 +1283,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 1);
 
@@ -1316,7 +1316,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 2);
 
@@ -1348,7 +1348,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 0);
 
@@ -1380,7 +1380,7 @@ public class PropertyQueryTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", property.getType());
         queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         queryObj.put("limit", -1);

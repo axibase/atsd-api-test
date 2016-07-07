@@ -21,7 +21,7 @@ public class CSVUploadMethod extends BaseMethod {
     public static File resolvePath(String path) throws URISyntaxException, FileNotFoundException {
         URL url = CSVUploadTest.class.getResource(path);
         if (url == null) {
-            throw new FileNotFoundException("File "+path+" not found");
+            throw new FileNotFoundException("File " + path + " not found");
         }
         return new File(url.toURI());
     }
@@ -55,14 +55,24 @@ public class CSVUploadMethod extends BaseMethod {
     }
 
     public static Response binaryCsvUpload(File file, String parserName) {
-        return binaryCsvUpload(file, parserName, null);
+        return binaryCsvUpload(file, parserName, null, null);
     }
+
     public static Response binaryCsvUpload(File file, String parserName, String encoding) {
+        return binaryCsvUpload(file, parserName, encoding, null);
+    }
+
+    public static Response binaryCsvUpload(File file, String parserName, com.axibase.tsd.api.model.entity.Entity entity) {
+        return binaryCsvUpload(file, parserName, null, entity.getName());
+    }
+
+    public static Response binaryCsvUpload(File file, String parserName, String encoding, String entity) {
         Response response = httpApiResource.path("csv")
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
                 .queryParam("filename", file.getName())
                 .queryParam("encoding", encoding)
+                .queryParam("default-entity", entity)
                 .request().post(Entity.entity(file, new MediaType("text", "csv")));
         response.bufferEntity();
         return response;

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
@@ -31,18 +32,20 @@ public class CSVUploadTest extends CSVUploadMethod {
     public static final String SIMPLE_PARSER = "simple-parser";
     public static final String SIMPLE_PARSER_ISO = "simple-parser-iso";
     public static final String SIMPLE_PARSER_MS = "simple-parser-ms";
+    public static final String LF_PARSER = "lf-parser";
+    public static final String CRLF_PARSER = "crlf-parser";
 
     @Rule
     public TestName name = new TestName();
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException {
-        String[] parsers = {SIMPLE_PARSER, SIMPLE_PARSER_ISO, SIMPLE_PARSER_MS};
+        String[] parsers = {SIMPLE_PARSER, SIMPLE_PARSER_ISO, SIMPLE_PARSER_MS, LF_PARSER, CRLF_PARSER};
         for (String parserName : parsers) {
             File configPath = resolvePath(RESOURCE_DIR + File.separator + parserName + ".xml");
             boolean success = importParser(configPath);
             if (!success)
-                 Assert.fail("Failed to import parser");
+                Assert.fail("Failed to import parser");
         }
     }
 
@@ -226,6 +229,62 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
     }
 
+    /* #3011 */
+    @Test
+    public void testFileWithCRLineBreak() throws Exception {
+        Entity entity = new Entity("e-cr-parser-ms-2");
+        Metric metric = new Metric("m-cr-parser-ms-2");
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+
+        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity);
+        assertEquals(response.getStatus(), OK.getStatusCode());
+        Thread.sleep(1000L);
+
+        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
+
+        assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
+        assertEquals("Date failed to save", "2012-03-24T06:17:00.000Z", sample.getD());
+    }
+
+    /* #3011 */
+    @Test
+    public void testFileWithLFLineBreak() throws Exception {
+        Entity entity = new Entity("e-lf-parser-ms-3");
+        Metric metric = new Metric("m-lf-parser-ms-3");
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+
+        Response response = binaryCsvUpload(csvPath, LF_PARSER, entity);
+        assertEquals(response.getStatus(), OK.getStatusCode());
+        Thread.sleep(1000L);
+
+        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
+
+        assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
+        assertEquals("Date failed to save", "2012-03-24T06:17:00.000Z", sample.getD());
+    }
+
+    /* #3011 */
+    @Test
+    public void testFileWithCRLFLineBreak() throws Exception {
+        Entity entity = new Entity("e-crlf-parser-ms-4");
+        Metric metric = new Metric("m-crlf-parser-ms-4");
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+
+        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity);
+        assertEquals(response.getStatus(), OK.getStatusCode());
+        Thread.sleep(1000L);
+
+        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
+
+        assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
+        assertEquals("Date failed to save", "2012-03-24T06:17:00.000Z", sample.getD());
+    }
 
     private void assertSeriesValue(String entity, String metric, String date, String value, JSONArray storedSeriesList) throws JSONException {
         assertEquals(entity, storedSeriesList.getJSONObject(0).getString("entity"));
@@ -244,7 +303,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Thread.sleep(1000L);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.MIN_STORABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
         assertSeriesValue(entityName, metricName, "2016-06-19T00:00:00.000Z", "123.45", storedSeriesList);
     }
@@ -259,7 +318,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Thread.sleep(1000L);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.MIN_STORABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
         assertSeriesValue(entityName, metricName, "2016-06-19T00:00:00.000Z", "123.45", storedSeriesList);
     }

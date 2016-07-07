@@ -88,7 +88,7 @@ class PropertyMethod extends BaseMethod {
         query.put("type", property.getType());
         query.put("key", property.getKey());
         if (null == property.getDate()) {
-            query.put("startDate", Util.MIN_STORABLE_DATE);
+            query.put("startDate", Util.MIN_QUERYABLE_DATE);
             query.put("endDate", Util.MAX_QUERYABLE_DATE);
         } else {
             query.put("startDate", property.getDate());

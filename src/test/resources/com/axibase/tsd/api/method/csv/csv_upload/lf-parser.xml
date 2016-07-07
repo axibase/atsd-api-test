@@ -1,0 +1,34 @@
+<list>
+  <com.axibase.tsd.model.csv.CsvConfiguration>
+    <name>lf-parser</name>
+    <putType>METRIC</putType>
+    <delimiter>,</delimiter>
+    <recordDelimiter>
+</recordDelimiter>
+    <padding>�</padding>
+    <comment></comment>
+    <textQualifier>&quot;</textQualifier>
+    <entityColumn/>
+    <defaultEntity>entity</defaultEntity>
+    <timestampFormat>MM/dd/yy&apos;T&apos;HH:mm</timestampFormat>
+    <timestampType>PATTERN</timestampType>
+    <processEvents>false</processEvents>
+    <writeProperty>false</writeProperty>
+    <enabled>true</enabled>
+    <discardNan>false</discardNan>
+    <ignoreParseErrors>false</ignoreParseErrors>
+    <tagColumns class="linked-hash-set"/>
+    <excludedColumns class="linked-hash-set"/>
+    <propertyColumns class="linked-hash-set"/>
+    <propertyKeyColumns class="linked-hash-set"/>
+    <defaultTags class="linked-hash-map"/>
+    <renamedColumns class="linked-hash-map"/>
+    <header/>
+    <decimalSeparator>.</decimalSeparator>
+    <groupingSeparator>�</groupingSeparator>
+    <schema>select(&quot;#row=2-*&quot;).select(&quot;#col=6&quot;).&#xd;
+addSeries().&#xd;
+metric(cell(1, col)).&#xd;
+timestamp(cell(row, 4) + &apos;T&apos; + cell(row, 5));</schema>
+  </com.axibase.tsd.model.csv.CsvConfiguration>
+</list>
