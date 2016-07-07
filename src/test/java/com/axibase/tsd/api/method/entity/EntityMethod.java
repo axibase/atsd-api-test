@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.method.BaseMethod;
-import com.axibase.tsd.api.model.metric.Metric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +60,7 @@ public class EntityMethod extends BaseMethod {
     }
 
 
-
-    public static Response getMetrics(String entityName, Map<String, String> parameters) {
+    public static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
         WebTarget target = httpApiResource.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target.queryParam(entry.getKey(), entry.getValue());
@@ -72,17 +70,17 @@ public class EntityMethod extends BaseMethod {
         return response;
     }
 
-    public static Response getMetrics(String entityName) {
-        return getMetrics(entityName, new HashMap<String, String>());
+    public static Response queryEntityMetrics(String entityName) {
+        return queryEntityMetrics(entityName, new HashMap<String, String>());
     }
 
-    public static Response getGroups(String entityName) {
+    public static Response queryEntityGroups(String entityName) {
         Response response = httpApiResource.path(METHOD_ENTITY_GROUPS).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;
     }
 
-    public static Response getPropertyTypes(String entityName) {
+    public static Response queryEntityPropertyTypes(String entityName) {
         Response response = httpApiResource.path(METHOD_ENTITY_PROPERTY_TYPES).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;

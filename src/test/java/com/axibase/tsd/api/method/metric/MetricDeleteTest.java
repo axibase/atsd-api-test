@@ -5,24 +5,24 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
+import static javax.ws.rs.core.Response.Status.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class MetricDeleteTest extends MetricMethod {
 
-    @Test //#1278
-    public void testURLEncodeNameWhiteSpace() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsWhiteSpace() throws Exception {
         final Metric metric = new Metric("delete metric-1");
 
         Response response = deleteMetric(metric.getName());
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    @Test //#1278
-    public void testURLEncodeNameSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("delete/metric-2");
         createOrReplaceMetricCheck(metric);
 
@@ -31,8 +31,9 @@ public class MetricDeleteTest extends MetricMethod {
         assertFalse(metricExist(metric));
     }
 
-    @Test //#1278
-    public void testURLEncodeNameCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("deleteйёmetric-3");
         createOrReplaceMetricCheck(metric);
 
@@ -40,6 +41,7 @@ public class MetricDeleteTest extends MetricMethod {
         assertFalse(metricExist(metric));
     }
 
+    /* #NoTicket */
     @Test
     public void testUnknownMetric() throws Exception {
         final Metric metric = new Metric("deletemetric-4");

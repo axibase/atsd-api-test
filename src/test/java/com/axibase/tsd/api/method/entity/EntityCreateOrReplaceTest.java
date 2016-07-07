@@ -13,23 +13,26 @@ import static org.junit.Assert.assertTrue;
  */
 public class EntityCreateOrReplaceTest extends EntityMethod {
 
-    @Test //1278
-    public void testURLCreateOrReplaceWhitespace() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("createentity 1");
 
         assertEquals(BAD_REQUEST.getStatusCode(), createOrReplaceEntity(entity).getStatus());
     }
 
-    @Test //1278
-    public void testURLCreateOrReplaceSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsSlash() throws Exception {
         Entity entity = new Entity("createentity/2");
 
         assertEquals(OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
         assertTrue(entityExist(entity));
     }
 
-    @Test //1278
-    public void testURLCreateOrReplaceCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("createйёentity3");
 
         assertEquals(OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());

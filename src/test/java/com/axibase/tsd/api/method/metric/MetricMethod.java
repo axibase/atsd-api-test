@@ -5,8 +5,6 @@ import com.axibase.tsd.api.model.metric.Metric;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.HashMap;

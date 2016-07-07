@@ -17,37 +17,40 @@ import static org.junit.Assert.assertTrue;
 public class EntityUpdateTest extends EntityMethod {
 
 
-    @Test //1278
-    public void testURLUpdateWhitespace() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("updateentity 1");
         assertEquals(BAD_REQUEST.getStatusCode(), updateEntity(entity).getStatus());
     }
 
-    @Test //1278
-    public void testURLUpdateSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsSlash() throws Exception {
         final Entity entity = new Entity("update_entity/2");
         entity.addTag("t1", "tv1");
         createOrReplaceEntityCheck(entity);
 
         Map<String, String> newTags = new HashMap<>();
         newTags.put("t2", "tv2");
-        checkUrlencodedPathHandledSuccessfullyOnUpdate(entity, newTags);
+        assertUrlencodedPathHandledSuccessfullyOnUpdate(entity, newTags);
     }
 
-    @Test //1278
-    public void testURLUpdateCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("update_йёentity3");
         entity.addTag("t1", "tv1");
         createOrReplaceEntityCheck(entity);
 
         Map<String, String> newTags = new HashMap<>();
         newTags.put("t2", "tv2");
-        checkUrlencodedPathHandledSuccessfullyOnUpdate(entity, newTags);
+        assertUrlencodedPathHandledSuccessfullyOnUpdate(entity, newTags);
     }
 
-    private void checkUrlencodedPathHandledSuccessfullyOnUpdate(final Entity entity, Map newTags) throws Exception {
+    private void assertUrlencodedPathHandledSuccessfullyOnUpdate(final Entity entity, Map newTags) throws Exception {
         entity.setTags(newTags);
-        assertEquals(OK.getStatusCode(), updateEntity(entity).getStatus());
+        assertEquals("Fail to execute updateEntity request", OK.getStatusCode(), updateEntity(entity).getStatus());
         assertTrue(entityExist(entity));
     }
 }

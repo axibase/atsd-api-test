@@ -16,30 +16,33 @@ import static org.junit.Assert.assertTrue;
 public class EntityGetPropertyTypesTest extends EntityMethod {
 
 
-    @Test //1278
-    public void testURLGetPropertyTypesWhitespace() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("get_property_types_entity 1");
-        assertEquals(BAD_REQUEST.getStatusCode(), getPropertyTypes(entity.getName()).getStatus());
+        assertEquals(BAD_REQUEST.getStatusCode(), queryEntityPropertyTypes(entity.getName()).getStatus());
     }
 
 
-    @Test //1278
-    public void testURLGetPropertyTypesSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsSlash() throws Exception {
         Entity entity = new Entity("get_property_types_/entity-2");
         createOrReplaceEntityCheck(entity);
-        checkUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(entity);
+        assertUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(entity);
 
     }
 
-    @Test //1278
-    public void testURLGetPropertyTypesCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("get_property_types_йёentity-3");
         createOrReplaceEntityCheck(entity);
-        checkUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(entity);
+        assertUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(entity);
     }
 
-    private void checkUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(final Entity entity) throws Exception {
-        Response response = getGroups(entity.getName());
+    private void assertUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(final Entity entity) throws Exception {
+        Response response = queryEntityGroups(entity.getName());
         assertEquals(OK.getStatusCode(), response.getStatus());
         assertTrue(compareJsonString("[]", formatToJsonString(response)));
     }

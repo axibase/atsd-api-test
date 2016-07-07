@@ -23,16 +23,18 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue(metricExist(metric));
     }
 
-    @Test //#1278
-    public void testURLEncodeNameWhiteSpace() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsWhiteSpace() throws Exception {
         final Metric metric = new Metric("createreplace metric-1");
 
         Response response = createOrReplaceMetric(metric);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    @Test //#1278
-    public void testURLEncodeNameSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("createreplace/metric-2");
         metric.setDataType(DataType.DECIMAL);
 
@@ -41,8 +43,9 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue(metricExist(metric));
     }
 
-    @Test //#1278
-    public void testURLEncodeNameCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("createreplacйёmetric-3");
         metric.setDataType(DataType.DECIMAL);
 

@@ -10,14 +10,11 @@ import org.junit.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmitry Korchagin.
@@ -25,35 +22,38 @@ import static org.junit.Assert.assertTrue;
 public class EntityGetMetricsTest extends EntityMethod {
 
 
-    @Test //1278
-    public void testURLGetMetricsWhitespace() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("getmetricsentity 1");
-        assertEquals(BAD_REQUEST.getStatusCode(), getMetrics(entity.getName()).getStatus());
+        assertEquals(BAD_REQUEST.getStatusCode(), queryEntityMetrics(entity.getName()).getStatus());
     }
 
 
-    @Test //1278
-    public void testURLGetMetricsSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsSlash() throws Exception {
         final Series series = new Series("getmetrics/entity2", "getmetrics-metric2");
         series.addData(new Sample("1970-01-01T00:00:00.000Z", "1"));
-        SeriesMethod.insertSeriesCheck(series, Util.DEFAULT_CHECK_TIMEOUT);
+        SeriesMethod.insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
 
-        checkUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
+        assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
     }
 
-    @Test //1278
-    public void testURLGetMetricsCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testEntityNameContainsCyrillic() throws Exception {
         final Series series = new Series("getmetricsйё/entity3", "getmetrics-metric3");
         series.addData(new Sample("1970-01-01T00:00:00.000Z", "1"));
-        SeriesMethod.insertSeriesCheck(series, Util.DEFAULT_CHECK_TIMEOUT);
+        SeriesMethod.insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
 
-        checkUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
+        assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
     }
 
-    private void checkUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) throws Exception {
-        Response response = getMetrics(series.getEntity());
+    private void assertUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) throws Exception {
+        Response response = queryEntityMetrics(series.getEntity());
         assertEquals(OK.getStatusCode(), response.getStatus());
-        List<Metric> metricList = response.readEntity(new GenericType<List<Metric>>(){
+        List<Metric> metricList = response.readEntity(new GenericType<List<Metric>>() {
         });
         assertEquals(1, metricList.size());
         assertEquals(series.getMetric(), metricList.get(0).getName());

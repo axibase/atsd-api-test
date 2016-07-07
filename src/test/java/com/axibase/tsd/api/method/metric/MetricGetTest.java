@@ -5,15 +5,14 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
+import static javax.ws.rs.core.Response.Status.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MetricGetTest extends MetricMethod {
 
-    @Test //#1278
+    /* #1278 */
+    @Test
     public void testURLEncodeNameWhiteSpace() throws Exception {
         final Metric metric = new Metric("get metric-1");
         Response response = getMetric(metric.getName());
@@ -21,8 +20,9 @@ public class MetricGetTest extends MetricMethod {
         assertTrue(response.readEntity(String.class).contains("Invalid metric name"));
     }
 
-    @Test //#1278
-    public void testURLEncodeNameSlash() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("get/metric-2");
         createOrReplaceMetricCheck(metric);
 
@@ -31,8 +31,9 @@ public class MetricGetTest extends MetricMethod {
         assertTrue(compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
     }
 
-    @Test //#1278
-    public void testURLEncodeNameCyrillic() throws Exception {
+    /* #1278 */
+    @Test
+    public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("getйёmetric-3");
         createOrReplaceMetricCheck(metric);
 

@@ -32,7 +32,7 @@ public class SeriesMethod extends BaseMethod {
         return response;
     }
 
-    public static <T> Response getSeries(T... queries) {
+    public static <T> Response querySeries(T... queries) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
         response.bufferEntity();
         return response;
@@ -45,27 +45,27 @@ public class SeriesMethod extends BaseMethod {
         }
         final long startCheckTimeMillis = System.currentTimeMillis();
         do {
-            if(seriesInserted(series)) {
+            if (seriesInserted(series)) {
                 return;
             }
             try {
-                Thread.sleep(Util.CHECK_INTERVAL);
+                Thread.sleep(Util.REQUEST_INTERVAL);
             } catch (InterruptedException e) {
                 throw new IOException("Fail to check inserted queries: checking was interrupted.");
             }
         } while (System.currentTimeMillis() <= startCheckTimeMillis + checkTimeoutMillis);
-        if(!seriesInserted(series)) {
+        if (!seriesInserted(series)) {
             throw new IOException("Fail to check inserted queries");
         }
     }
 
     public static void insertSeriesCheck(final Series series) throws IOException {
-        insertSeriesCheck(series, Util.DEFAULT_CHECK_TIMEOUT);
+        insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
     }
 
     private static boolean seriesInserted(Series series) throws IOException {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
-        Response response = getSeries(seriesQuery);
+        Response response = querySeries(seriesQuery);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         return compareJsonString(expected, response.readEntity(String.class));
     }
@@ -81,13 +81,14 @@ public class SeriesMethod extends BaseMethod {
         }
         return OK.getStatusCode() == response.getStatus();
     }
+
     public static Response insertSeriesReturnResponse(final Series series) {
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.bufferEntity();
         return response;
     }
 
-    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) {
+    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(Collections.singletonList(seriesQuery)));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
@@ -97,6 +98,7 @@ public class SeriesMethod extends BaseMethod {
         return response.readEntity(new GenericType<List<Series>>() {
         });
     }
+
 
     public static JSONArray executeQuery(final SeriesQuery seriesQuery) throws Exception {
         return executeQuery(Collections.singletonList(seriesQuery));

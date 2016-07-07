@@ -32,7 +32,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @BeforeClass
     public static void prepare() throws Exception {
         try {
-            insertSeriesCheck(series, Util.DEFAULT_CHECK_TIMEOUT);
+            insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
         } catch (IOException e) {
             fail("Can not store common dataset");
         }
@@ -89,7 +89,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate("2016-07-01 14:23:20");
 
-        Response response = getSeries(seriesQuery);
+        Response response = querySeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01 14:23:20\"}", response.readEntity(String.class), true);
@@ -103,7 +103,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate("2016-07-01T15:46:20+0123");
 
-        Response response = getSeries(seriesQuery);
+        Response response = querySeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01T15:46:20+0123\"}", response.readEntity(String.class), true);
@@ -117,7 +117,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate("1467383000000");
 
-        Response response = getSeries(seriesQuery);
+        Response response = querySeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1467383000000\"}", response.readEntity(String.class), true);
