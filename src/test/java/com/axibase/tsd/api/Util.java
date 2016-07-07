@@ -1,10 +1,12 @@
 package com.axibase.tsd.api;
 
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,8 +46,14 @@ public class Util {
         return ISOFormat(calendar.getTime());
     }
 
-    public static Date parseDate(String date){
-        return javax.xml.bind.DatatypeConverter.parseDateTime(date).getTime();
+    public static Date parseDate(String date) {
+        Date d = null;
+        try {
+            d = ISO8601Utils.parse(date, new ParsePosition(0));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return d;
     }
 
     public static String getMinDate() {
