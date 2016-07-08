@@ -41,6 +41,7 @@ public class SeriesMethod extends BaseMethod {
         response.bufferEntity();
         return response;
     }
+
     public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(Collections.singletonList(seriesQuery)));
         if (OK.getStatusCode() == response.getStatus()) {
@@ -51,12 +52,13 @@ public class SeriesMethod extends BaseMethod {
         return response.readEntity(new GenericType<List<Series>>() {
         });
     }
+
     public static Response executeQueryReturnResponse(final SeriesQuery seriesQuery) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(Collections.singletonList(seriesQuery), MediaType.APPLICATION_JSON_TYPE));
         response.bufferEntity();
         return response;
     }
-    
+
     public static boolean insertSeries(final Series series) throws IOException, InterruptedException, JSONException {
         return insertSeries(series, 0);
     }
@@ -83,7 +85,7 @@ public class SeriesMethod extends BaseMethod {
             response.close();
             throw new IOException("Failed to execute series query");
         }
-        return  new JSONArray(response.readEntity(String.class));
+        return new JSONArray(response.readEntity(String.class));
     }
 
     public static String getDataField(int index, String field, JSONArray array) throws JSONException {

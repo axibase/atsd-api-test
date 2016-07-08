@@ -562,10 +562,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        boolean success = insertSeries(series, 1000);
-        if (!success) {
-            fail("Failed to insert series");
-        }
+        insertSeriesCheck(series);
+
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MIN_STORABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
@@ -583,10 +581,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        boolean success = insertSeries(series, 1000);
-        if (!success) {
-            fail("Failed to insert series");
-        }
+        insertSeriesCheck(series);
+
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MAX_STORABLE_DATE, MAX_QUERYABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
@@ -604,10 +600,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        boolean success = insertSeries(series, 1000);
-        if (!success) {
-            fail("Failed to insert series");
-        }
+        insertSeriesCheck(series);
+
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
@@ -627,10 +621,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        boolean success = insertSeries(series, 1000);
-        if (!success) {
-            fail("Failed to insert series");
-        }
+        insertSeriesCheck(series);
+
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
@@ -650,10 +642,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        boolean success = insertSeries(series, 1000);
-        if (!success) {
-            fail("Failed to insert series");
-        }
+        insertSeriesCheck(series);
+
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_STORABLE_DATE, MAX_QUERYABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
