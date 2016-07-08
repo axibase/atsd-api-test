@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.metric.Metric;
@@ -283,7 +284,11 @@ public class SeriesInsertTest extends SeriesMethod {
         String d = "2016-06-09T20:00:00.000Z";
         series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
 
-        insertSeriesCheck(series);
+        //TODO upgrade insertSeriesCheck method to avoid this
+        if(insertSeries(series).getStatus() != OK.getStatusCode()) {
+            throw new IllegalStateException("Fail to execute insert series query");
+        }
+        Thread.sleep(Util.EXPECTED_PROCESSING_TIME); //wait to handle series by ATSD
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);

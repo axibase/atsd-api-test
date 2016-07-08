@@ -26,7 +26,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("getmetricsentity 1");
-        assertEquals(BAD_REQUEST.getStatusCode(), queryEntityMetrics(entity.getName()).getStatus());
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityMetrics(entity.getName()).getStatus());
     }
 
 
@@ -52,10 +52,10 @@ public class EntityGetMetricsTest extends EntityMethod {
 
     private void assertUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) throws Exception {
         Response response = queryEntityMetrics(series.getEntity());
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertEquals("Fail to execute queryEntityMetric", OK.getStatusCode(), response.getStatus());
         List<Metric> metricList = response.readEntity(new GenericType<List<Metric>>() {
         });
-        assertEquals(1, metricList.size());
-        assertEquals(series.getMetric(), metricList.get(0).getName());
+        assertEquals("Entity should have only 1 metric",1, metricList.size());
+        assertEquals("Metric in response does not match to inserted metric", series.getMetric(), metricList.get(0).getName());
     }
 }

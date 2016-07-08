@@ -17,7 +17,7 @@ public class MetricDeleteTest extends MetricMethod {
         final Metric metric = new Metric("delete metric-1");
 
         Response response = deleteMetric(metric.getName());
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     /* #1278 */
@@ -27,8 +27,8 @@ public class MetricDeleteTest extends MetricMethod {
         createOrReplaceMetricCheck(metric);
 
         Response response = deleteMetric(metric.getName());
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertFalse(metricExist(metric));
+        assertEquals("Fail to execute deleteMetric query", OK.getStatusCode(), response.getStatus());
+        assertFalse("Metric should be deleted", metricExist(metric));
     }
 
     /* #1278 */
@@ -37,15 +37,15 @@ public class MetricDeleteTest extends MetricMethod {
         final Metric metric = new Metric("deleteйёmetric-3");
         createOrReplaceMetricCheck(metric);
 
-        assertEquals(OK.getStatusCode(), deleteMetric(metric.getName()).getStatus());
-        assertFalse(metricExist(metric));
+        assertEquals("Fail to execute deleteMetric query", OK.getStatusCode(), deleteMetric(metric.getName()).getStatus());
+        assertFalse("Metric should be deleted", metricExist(metric));
     }
 
     /* #NoTicket */
     @Test
     public void testUnknownMetric() throws Exception {
         final Metric metric = new Metric("deletemetric-4");
-        assertEquals(NOT_FOUND.getStatusCode(), deleteMetric(metric.getName()).getStatus());
+        assertEquals("Wrong response on unknown metric", NOT_FOUND.getStatusCode(), deleteMetric(metric.getName()).getStatus());
     }
 
 

@@ -15,7 +15,7 @@ public class MetricSeriesTest extends MetricMethod {
     public void testMetricNameContainsWhiteSpace() throws Exception {
 
         final Metric metric = new Metric("series metric-1");
-        assertEquals(BAD_REQUEST.getStatusCode(), getMetricSeries(metric.getName()).getStatus());
+        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), queryMetricSeries(metric.getName()).getStatus());
     }
 
     /* #1278 */
@@ -24,7 +24,7 @@ public class MetricSeriesTest extends MetricMethod {
         final Metric metric = new Metric("series/metric-2");
         createOrReplaceMetricCheck(metric);
 
-        assertTrue(compareJsonString("[]", getMetricSeries(metric.getName()).readEntity(String.class)));
+        assertTrue("series array should be empty", compareJsonString("[]", queryMetricSeries(metric.getName()).readEntity(String.class)));
     }
 
     /* #1278 */
@@ -33,13 +33,13 @@ public class MetricSeriesTest extends MetricMethod {
         final Metric metric = new Metric("seriesйёmetric-3");
         createOrReplaceMetricCheck(metric);
 
-        assertTrue(compareJsonString("[]", getMetricSeries(metric.getName()).readEntity(String.class)));
+        assertTrue("series array should be empty", compareJsonString("[]", queryMetricSeries(metric.getName()).readEntity(String.class)));
     }
 
     @Test
     public void testUnknownMetric() throws Exception {
         final Metric metric = new Metric("seriesmetric-4");
-        assertEquals(NOT_FOUND.getStatusCode(), getMetricSeries(metric.getName()).getStatus());
+        assertEquals("Unknown metric should return NotFound", NOT_FOUND.getStatusCode(), queryMetricSeries(metric.getName()).getStatus());
     }
 
 

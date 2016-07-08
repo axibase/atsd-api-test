@@ -18,7 +18,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("createentity 1");
 
-        assertEquals(BAD_REQUEST.getStatusCode(), createOrReplaceEntity(entity).getStatus());
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), createOrReplaceEntity(entity).getStatus());
     }
 
     /* #1278 */
@@ -26,8 +26,8 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testEntityNameContainsSlash() throws Exception {
         Entity entity = new Entity("createentity/2");
 
-        assertEquals(OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
-        assertTrue(entityExist(entity));
+        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
+        assertTrue("Fail to get required entity", entityExist(entity));
     }
 
     /* #1278 */
@@ -35,7 +35,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("createйёentity3");
 
-        assertEquals(OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
-        assertTrue(entityExist(entity));
+        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
+        assertTrue("Fail to get required entity", entityExist(entity));
     }
 }

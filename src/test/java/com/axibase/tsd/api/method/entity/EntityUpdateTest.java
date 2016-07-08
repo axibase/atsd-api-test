@@ -21,7 +21,7 @@ public class EntityUpdateTest extends EntityMethod {
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("updateentity 1");
-        assertEquals(BAD_REQUEST.getStatusCode(), updateEntity(entity).getStatus());
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), updateEntity(entity).getStatus());
     }
 
     /* #1278 */
@@ -50,7 +50,7 @@ public class EntityUpdateTest extends EntityMethod {
 
     private void assertUrlencodedPathHandledSuccessfullyOnUpdate(final Entity entity, Map newTags) throws Exception {
         entity.setTags(newTags);
-        assertEquals("Fail to execute updateEntity request", OK.getStatusCode(), updateEntity(entity).getStatus());
-        assertTrue(entityExist(entity));
+        assertEquals("Fail to execute updateEntity", OK.getStatusCode(), updateEntity(entity).getStatus());
+        assertTrue("Entity in response does not match to updated entity", entityExist(entity));
     }
 }

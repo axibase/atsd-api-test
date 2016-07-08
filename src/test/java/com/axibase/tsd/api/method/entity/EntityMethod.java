@@ -107,7 +107,7 @@ public class EntityMethod extends BaseMethod {
             return false;
         }
         if (response.getStatus() != OK.getStatusCode()) {
-            throw new IOException("Fail to execute getMetric query");
+            throw new IOException("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class), strict);
     }

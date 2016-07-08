@@ -20,7 +20,7 @@ public class EntityGetGroupsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("getgroupsentity 1");
-        assertEquals(BAD_REQUEST.getStatusCode(), queryEntityGroups(entity.getName()).getStatus());
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityGroups(entity.getName()).getStatus());
     }
 
 
@@ -43,7 +43,7 @@ public class EntityGetGroupsTest extends EntityMethod {
 
     private void assertUrlencodedPathHandledSuccessfullyOnGetGroups(final Entity entity) throws Exception {
         Response response = queryEntityGroups(entity.getName());
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertTrue(compareJsonString("[]", formatToJsonString(response)));
+        assertEquals("Fail to execute queryEntityGroups", OK.getStatusCode(), response.getStatus());
+        assertTrue("Entity groups should be empty", compareJsonString("[]", formatToJsonString(response)));
     }
 }

@@ -33,6 +33,32 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         insertPropertyCheck(propertyLast2);
     }
 
+    private static Property buildProperty(String entityName, String date, String... key) {
+        if (key.length % 2 != 0) {
+            throw new IllegalArgumentException("Key should be specified as name=value pairs");
+        }
+        Property property = new Property();
+        property.setType(propertyType);
+        property.setEntity(entityName);
+        for (int i = 0; i < key.length; i += 2) {
+            property.addKey(key[i], key[i + 1]);
+        }
+        property.addTag("defaultname", "defaultval");
+        property.setDate(date);
+
+        return property;
+    }
+
+    private static Response executeOffsetQuery(int offset) {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", propertyType);
+        queryObj.put("entity", "*");
+        queryObj.put("startDate", Util.MIN_STORABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("offset", offset);
+        return getProperty(queryObj);
+    }
+
     //#2947
     /*
     Last offset = 0, = 0 therefore Last include
@@ -92,30 +118,5 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, executeOffsetQuery(100).readEntity(String.class), false);
     }
 
-    private static Property buildProperty(String entityName, String date, String... key) {
-        if (key.length % 2 != 0) {
-            throw new IllegalArgumentException("Key should be specified as name=value pairs");
-        }
-        Property property = new Property();
-        property.setType(propertyType);
-        property.setEntity(entityName);
-        for (int i = 0; i < key.length; i += 2) {
-            property.addKey(key[i], key[i + 1]);
-        }
-        property.addTag("defaultname", "defaultval");
-        property.setDate(date);
-
-        return property;
-    }
-
-    private static Response executeOffsetQuery(int offset) {
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", propertyType);
-        queryObj.put("entity", "*");
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
-        queryObj.put("offset", offset);
-        return getProperty(queryObj);
-    }
 
 }

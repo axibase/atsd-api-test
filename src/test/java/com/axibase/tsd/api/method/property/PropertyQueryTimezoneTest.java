@@ -25,6 +25,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         property.addTag("test", "test");
         property.setDate("2016-05-21T00:00:00.000Z");
     }
+
     @Before
     public void prepare() throws Exception {
         insertPropertyCheck(property);
@@ -38,7 +39,8 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         propertyQuery.getDateFilter().setStartDate("2016-05-21T00:00:00Z");
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        });
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -54,7 +56,8 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         propertyQuery.getDateFilter().setStartDate("2016-05-21T01:23:00+01:23");
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        });
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -69,7 +72,8 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         propertyQuery.getDateFilter().setStartDate("2016-05-20T22:37:00-01:23");
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        });
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());

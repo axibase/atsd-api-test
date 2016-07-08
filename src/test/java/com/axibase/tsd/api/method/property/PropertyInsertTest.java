@@ -11,13 +11,10 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -276,7 +273,8 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        });
         Property storedProperty = storedPropertyList.get(0);
 
         Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -307,7 +305,8 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        });
         Property storedProperty = storedPropertyList.get(0);
 
         Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -338,7 +337,8 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {});
+        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        });
         Property storedProperty = storedPropertyList.get(0);
 
         Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());

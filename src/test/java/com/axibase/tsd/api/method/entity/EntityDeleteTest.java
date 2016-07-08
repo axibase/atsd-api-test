@@ -18,7 +18,7 @@ public class EntityDeleteTest extends EntityMethod {
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("deleteentity 1");
-        assertEquals(BAD_REQUEST.getStatusCode(), deleteEntity(entity.getName()).getStatus());
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), deleteEntity(entity.getName()).getStatus());
     }
 
     /* #1278 */
@@ -27,8 +27,8 @@ public class EntityDeleteTest extends EntityMethod {
         final Entity entity = new Entity("deleteentity/2");
         createOrReplaceEntityCheck(entity);
 
-        assertEquals(OK.getStatusCode(), deleteEntity(entity.getName()).getStatus());
-        assertFalse(entityExist(entity));
+        assertEquals("Fail to execute deleteEntity query", OK.getStatusCode(), deleteEntity(entity.getName()).getStatus());
+        assertFalse("Entity should be deleted", entityExist(entity));
 
     }
 
@@ -38,8 +38,8 @@ public class EntityDeleteTest extends EntityMethod {
         Entity entity = new Entity("deleteйёentity3");
         createOrReplaceEntityCheck(entity);
 
-        assertEquals(OK.getStatusCode(), deleteEntity(entity.getName()).getStatus());
-        assertFalse(entityExist(entity));
+        assertEquals("Fail to execute deleteEntity query", OK.getStatusCode(), deleteEntity(entity.getName()).getStatus());
+        assertFalse("Entity should be deleted", entityExist(entity));
     }
 
 }

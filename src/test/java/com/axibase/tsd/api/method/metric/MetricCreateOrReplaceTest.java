@@ -19,8 +19,8 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric.getName(), metric);
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertTrue(metricExist(metric));
+        assertEquals("Fail to execute createOrReplace method", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
     /* #1278 */
@@ -29,7 +29,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         final Metric metric = new Metric("createreplace metric-1");
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     /* #1278 */
@@ -39,8 +39,8 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertTrue(metricExist(metric));
+        assertEquals("Fail to execute createOrReplace method", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
     /* #1278 */
@@ -50,7 +50,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals("Fail to execute createOrReplace metric query", OK.getStatusCode(), response.getStatus());
+        assertEquals("Fail to execute createOrReplace method", OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 }

@@ -38,17 +38,17 @@ public class MetricMethod extends BaseMethod {
         return updateMetric(metric.getName(), metric);
     }
 
-    public static Response getMetric(String metricName) throws Exception {
+    public static Response queryMetric(String metricName) throws Exception {
         Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
         response.bufferEntity();
         return response;
     }
 
-    public static Response getMetricSeries(String metricName) throws Exception {
-        return getMetricSeries(metricName, new HashMap<String, String>());
+    public static Response queryMetricSeries(String metricName) throws Exception {
+        return queryMetricSeries(metricName, new HashMap<String, String>());
     }
 
-    public static Response getMetricSeries(String metricName, Map<String, String> parameters) throws Exception {
+    public static Response queryMetricSeries(String metricName, Map<String, String> parameters) throws Exception {
         WebTarget target = httpApiResource.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target.queryParam(entry.getKey(), entry.getValue());
@@ -79,12 +79,12 @@ public class MetricMethod extends BaseMethod {
 
 
     public static boolean metricExist(final Metric metric) throws Exception {
-        final Response response = getMetric(metric.getName());
+        final Response response = queryMetric(metric.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
         if (response.getStatus() != OK.getStatusCode()) {
-            throw new IOException("Fail to execute getMetric query");
+            throw new IOException("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
     }

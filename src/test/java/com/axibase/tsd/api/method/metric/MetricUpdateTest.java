@@ -14,7 +14,7 @@ public class MetricUpdateTest extends MetricMethod {
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
         final Metric metric = new Metric("update metric-1");
-        assertEquals(BAD_REQUEST.getStatusCode(), updateMetric(metric).getStatus());
+        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), updateMetric(metric).getStatus());
     }
 
     /* #1278 */
@@ -25,8 +25,8 @@ public class MetricUpdateTest extends MetricMethod {
         createOrReplaceMetricCheck(metric);
 
         metric.setDataType(DataType.DOUBLE);
-        assertEquals(OK.getStatusCode(), updateMetric(metric).getStatus());
-        assertTrue(metricExist(metric));
+        assertEquals("Fail to execute updateMetric query", OK.getStatusCode(), updateMetric(metric).getStatus());
+        assertTrue("Can not find required metric", metricExist(metric));
     }
 
     /* #1278 */
@@ -37,14 +37,14 @@ public class MetricUpdateTest extends MetricMethod {
         createOrReplaceMetricCheck(metric);
 
         metric.setDataType(DataType.DOUBLE);
-        assertEquals(OK.getStatusCode(), updateMetric(metric).getStatus());
-        assertTrue(metricExist(metric));
+        assertEquals("Fail to execute updateMetric query", OK.getStatusCode(), updateMetric(metric).getStatus());
+        assertTrue("Can not find required metric", metricExist(metric));
     }
 
     @Test
     public void testUnknownMetric() throws Exception {
         final Metric metric = new Metric("updatemetric-4");
-        assertEquals(NOT_FOUND.getStatusCode(), updateMetric(metric).getStatus());
+        assertEquals("Unknown metric should return NotFound", NOT_FOUND.getStatusCode(), updateMetric(metric).getStatus());
     }
 
 

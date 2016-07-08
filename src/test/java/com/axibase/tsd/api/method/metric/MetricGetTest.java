@@ -15,8 +15,8 @@ public class MetricGetTest extends MetricMethod {
     @Test
     public void testURLEncodeNameWhiteSpace() throws Exception {
         final Metric metric = new Metric("get metric-1");
-        Response response = getMetric(metric.getName());
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        Response response = queryMetric(metric.getName());
+        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue(response.readEntity(String.class).contains("Invalid metric name"));
     }
 
@@ -26,9 +26,9 @@ public class MetricGetTest extends MetricMethod {
         final Metric metric = new Metric("get/metric-2");
         createOrReplaceMetricCheck(metric);
 
-        Response response = getMetric(metric.getName());
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertTrue(compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
+        Response response = queryMetric(metric.getName());
+        assertEquals("Fail to execute queryMetric query", OK.getStatusCode(), response.getStatus());
+        assertTrue("Metrics should be equal", compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
     }
 
     /* #1278 */
@@ -37,15 +37,15 @@ public class MetricGetTest extends MetricMethod {
         final Metric metric = new Metric("getйёmetric-3");
         createOrReplaceMetricCheck(metric);
 
-        Response response = getMetric(metric.getName());
-        assertEquals(OK.getStatusCode(), response.getStatus());
-        assertTrue(compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
+        Response response = queryMetric(metric.getName());
+        assertEquals("Fail to execute queryMetric query", OK.getStatusCode(), response.getStatus());
+        assertTrue("Metrics should be equal", compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
     }
 
     @Test
     public void testUnknownMetric() throws Exception {
         final Metric metric = new Metric("getmetric-4");
-        assertEquals(NOT_FOUND.getStatusCode(), getMetric(metric.getName()).getStatus());
+        assertEquals("Unknown metric should return NotFound", NOT_FOUND.getStatusCode(), queryMetric(metric.getName()).getStatus());
     }
 
 
