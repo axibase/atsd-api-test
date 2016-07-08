@@ -10,11 +10,10 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
-import static com.axibase.tsd.api.Util.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.junit.Assert.assertEquals;
 
@@ -122,7 +121,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateFilterRangeIsBeforeStorableRange() throws Exception {
         String entityName = "e-query-range-14";
         String metricName = "m-query-range-14";
-        String v = "7";
+        BigDecimal v = new BigDecimal("7");
         String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
@@ -141,7 +140,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateFilterRangeIsAfterStorableRange() throws Exception {
         String entityName = "e-query-range-15";
         String metricName = "m-query-range-15";
-        String v = "7";
+        BigDecimal v = new BigDecimal("7");
         String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
@@ -160,7 +159,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateFilterRangeIncludesStorableRange() throws Exception {
         String entityName = "e-query-range-16";
         String metricName = "m-query-range-16";
-        String v = "7";
+        BigDecimal v = new BigDecimal("7");
         String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
@@ -173,7 +172,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Incorrect stored value", v, data.get(0).getV().toString());
+        assertEquals("Incorrect stored value", v, data.get(0).getV());
     }
 
     /* #3013 */
@@ -181,7 +180,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateFilterRangeIntersectsStorableRangeBeginning() throws Exception {
         String entityName = "e-query-range-17";
         String metricName = "m-query-range-17";
-        String v = "7";
+        BigDecimal v = new BigDecimal("7");
         String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
@@ -194,7 +193,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Incorrect stored value", v, data.get(0).getV().toString());
+        assertEquals("Incorrect stored value", v, data.get(0).getV());
     }
 
     /* #3013 */
@@ -202,7 +201,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateFilterRangeIntersectsStorableRangeEnding() throws Exception {
         String entityName = "e-query-range-18";
         String metricName = "m-query-range-18";
-        String v = "7";
+        BigDecimal v = new BigDecimal("7");
         String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
@@ -215,7 +214,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Incorrect stored value", v, data.get(0).getV().toString());
+        assertEquals("Incorrect stored value", v, data.get(0).getV());
     }
 
     private SeriesQuery buildQuery() {
