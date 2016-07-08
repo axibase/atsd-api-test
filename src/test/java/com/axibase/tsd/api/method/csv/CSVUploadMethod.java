@@ -58,12 +58,8 @@ public class CSVUploadMethod extends BaseMethod {
         return binaryCsvUpload(file, parserName, null, null);
     }
 
-    public static Response binaryCsvUpload(File file, String parserName, String encoding) {
-        return binaryCsvUpload(file, parserName, encoding, null);
-    }
-
-    public static Response binaryCsvUpload(File file, String parserName, com.axibase.tsd.api.model.entity.Entity entity) {
-        return binaryCsvUpload(file, parserName, null, entity.getName());
+    public static Response binaryCsvUpload(File file, String parserName, String entity) {
+        return binaryCsvUpload(file, parserName, null, entity);
     }
 
     public static Response binaryCsvUpload(File file, String parserName, String encoding, String entity) {

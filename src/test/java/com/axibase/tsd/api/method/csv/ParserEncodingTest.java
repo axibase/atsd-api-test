@@ -63,7 +63,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
     private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws InterruptedException, IOException {
         Registry.Entity.registerPrefix(entityName);
 
-        Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding);
+        Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding, null);
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 

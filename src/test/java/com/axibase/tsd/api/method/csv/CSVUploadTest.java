@@ -237,7 +237,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity);
+        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         Thread.sleep(1000L);
 
@@ -256,7 +256,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        Response response = binaryCsvUpload(csvPath, LF_PARSER, entity);
+        Response response = binaryCsvUpload(csvPath, LF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         Thread.sleep(1000L);
 
@@ -275,7 +275,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
 
-        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity);
+        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         Thread.sleep(1000L);
 
