@@ -45,7 +45,7 @@ public class SeriesMethod extends BaseMethod {
         }
         final long startCheckTimeMillis = System.currentTimeMillis();
         do {
-            if (seriesInserted(series)) {
+            if (seriesIsInserted(series)) {
                 return;
             }
             try {
@@ -54,7 +54,7 @@ public class SeriesMethod extends BaseMethod {
                 throw new IOException("Fail to check inserted queries: checking was interrupted.");
             }
         } while (System.currentTimeMillis() <= startCheckTimeMillis + checkTimeoutMillis);
-        if (!seriesInserted(series)) {
+        if (!seriesIsInserted(series)) {
             throw new IOException("Fail to check inserted queries");
         }
     }
@@ -63,7 +63,7 @@ public class SeriesMethod extends BaseMethod {
         insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
     }
 
-    private static boolean seriesInserted(Series series) throws IOException {
+    private static boolean seriesIsInserted(Series series) throws IOException {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
         Response response = querySeries(seriesQuery);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
