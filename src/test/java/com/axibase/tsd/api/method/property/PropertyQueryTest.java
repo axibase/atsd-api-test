@@ -27,7 +27,8 @@ import static org.junit.Assert.assertTrue;
 public class PropertyQueryTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testStartDateInFuture() throws Exception {
         final Property property = new Property("query-type19", "query-entity19");
         property.addTag("t1", "tv1");
@@ -51,7 +52,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactFalseWildcardNoKey() throws Exception {
         final Property property = new Property("query-type18", "query-entity18");
         property.addTag("t1", "tv1");
@@ -77,7 +79,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactTrueWildcartNoKey() throws Exception {
         final Property property = new Property("query-type17", "query-entity17");
         property.addTag("t1", "tv1");
@@ -103,7 +106,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactFalseWildcart() throws Exception {
         final Property property = new Property("query-type16", "query-entity16");
         property.addTag("t1", "tv1");
@@ -132,7 +136,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactTrueWildcartKeyMatch() throws Exception {
         final Property property = new Property("query-type15", "query-entity15");
         property.addTag("t1", "tv1");
@@ -160,7 +165,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactFalseDiffKey() throws Exception {
         final Property property = new Property("query-type14", "query-entity14");
         property.addTag("t1", "tv1");
@@ -182,7 +188,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactTrueDiffKey() throws Exception {
         final Property property = new Property("query-type13", "query-entity13");
         property.addTag("t1", "tv1");
@@ -203,7 +210,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals("[]", formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactTruePartialMatch() throws Exception {
         final Property property = new Property("query-type12", "query-entity12");
         property.addTag("t1", "tv1");
@@ -225,7 +233,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactFalseFullMatch() throws Exception {
         final Property property = new Property("query-type11", "query-entity11");
         property.addTag("t1", "tv1");
@@ -245,7 +254,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testExactTrueFullMatch() throws Exception {
         final Property property = new Property("query-type10", "query-entity10");
         property.addTag("t1", "tv1");
@@ -265,7 +275,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntities() throws Exception {
         final Property property = new Property("query-type9", "query-entity9");
         property.addTag("t1", "tv1");
@@ -298,7 +309,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testLastDefault() throws Exception {
         final Property property = new Property("query-type8", "query-entity8");
         property.addTag("t1", "tv1");
@@ -324,7 +336,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testLastFalse() throws Exception {
         final Property property = new Property("query-type7", "query-entity7");
         property.addTag("t1", "tv1");
@@ -353,7 +366,8 @@ public class PropertyQueryTest extends PropertyMethod {
         logger.debug("given: {}", getProperty(queryObj));
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testLastTrue() throws Exception {
         final Property property = new Property("query-type6", "query-entity6");
         property.addTag("t1", "tv1");
@@ -379,7 +393,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testLastTrueReturnMultipleProperty() throws Exception {
         final Property property = new Property("query-type6.1", "query-entity6.1");
         property.addTag("t1", "tv1");
@@ -413,7 +428,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testStartPastIntervalGiveFuture() throws Exception {
         final Property property = new Property("query-type5", "query-entity5");
         property.addTag("t1", "tv1");
@@ -437,7 +453,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testStartEQDateInterval1MS() throws Exception {
         final Property property = new Property("query-type4", "query-entity4");
         property.addTag("t1", "tv1");
@@ -457,7 +474,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testStartPastEndFuture() throws Exception {
         final Property property = new Property("query-type3", "query-entity3");
         property.addTag("t1", "tv1");
@@ -478,7 +496,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testTypeEntityStartEndExactDefault() throws Exception {
         final Property property = new Property("query-type2", "query-entity2");
         property.addTag("t1", "tv1");
@@ -497,7 +516,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testTypeEntityStartEndExactFalse() throws Exception {
         final Property property = new Property("query-type1", "query-entity1");
         property.addTag("t1", "tv1");
@@ -517,7 +537,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testPartKey() throws Exception {
         final Property property = new Property("query-type41.5", "query-entity41.5");
         property.addTag("fs_type", "ext4");
@@ -540,7 +561,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEndDateAbsent() throws IOException {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
@@ -553,7 +575,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testStartDateAbsent() throws IOException {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
@@ -564,7 +587,8 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("{\"error\":\"IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate\"}", formatToJsonString(response));
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testOnlyTypeSpecified() throws IOException {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
@@ -575,7 +599,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityFilterEndDateAbsent() throws IOException {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
@@ -587,7 +612,8 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("{\"error\":\"IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate\"}", formatToJsonString(response));
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityFilterAbsent() throws IOException {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
@@ -599,7 +625,8 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("{\"error\":\"IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty\"}", formatToJsonString(response));
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTags() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity20");
@@ -617,7 +644,8 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue(propertyExist(property));
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsTagsAsKeyExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity21");
@@ -644,7 +672,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals("[]", formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsTagsAsPartKeyExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity22");
@@ -673,7 +702,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals("[]", formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsEmptyKeyExactFalse() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity23");
@@ -701,7 +731,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsEmptyKeyExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity24");
@@ -730,7 +761,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsKeyExpression() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity25");
@@ -760,7 +792,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, formatToJsonString(getProperty(queryObj)), false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsKeyExpressionNoMatch() throws Exception {
         final String entityTagsType = "$entity_tags";
         EntityMethod entityMethod = new EntityMethod();
@@ -788,7 +821,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityWildcardTagsAsKey() throws Exception {
         final String entityTagType = "$entity_tags";
         Entity entity1 = new Entity("wck-query-entity33");
@@ -817,7 +851,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityWildcardExpression() throws Exception {
         final String entityTagType = "$entity_tags";
         Entity entity1 = new Entity("wcke-query-entity37");
@@ -854,7 +889,8 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsExpressionCaseSensitiveValue() throws Exception {
         final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity41");
@@ -878,7 +914,8 @@ public class PropertyQueryTest extends PropertyMethod {
         JSONAssert.assertEquals("[]", formatToJsonString(getProperty(queryObj)),false);
     }
 
-    @Test
+    /* #NoTicket - base tests*/
+@Test
     public void testEntityTagsKeyTagExpressionCaseInsensitiveName() throws Exception {
         final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity42");

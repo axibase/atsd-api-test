@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -25,6 +25,51 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_QUERY = "/series/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+
+    public static Response insertSeries(final Series series) {
+        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static <T> Response getSeries(T... queries) {
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static void insertSeriesCheck(final Series series, long checkTimeoutMillis) throws IOException {
+        Response response = insertSeries(series);
+        if (OK.getStatusCode() != response.getStatus()) {
+            throw new IOException("Fail to execute insertSeries query");
+        }
+        final long startCheckTimeMillis = System.currentTimeMillis();
+        do {
+            if(seriesInserted(series)) {
+                return;
+            }
+            try {
+                Thread.sleep(Util.CHECK_INTERVAL);
+            } catch (InterruptedException e) {
+                throw new IOException("Fail to check inserted queries: checking was interrupted.");
+            }
+        } while (System.currentTimeMillis() <= startCheckTimeMillis + checkTimeoutMillis);
+        if(!seriesInserted(series)) {
+            throw new IOException("Fail to check inserted queries");
+        }
+    }
+
+    public static void insertSeriesCheck(final Series series) throws IOException {
+        insertSeriesCheck(series, Util.DEFAULT_CHECK_TIMEOUT);
+    }
+
+    private static boolean seriesInserted(Series series) throws IOException {
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE);
+        Response response = getSeries(seriesQuery);
+        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        return compareJsonString(expected, response.readEntity(String.class));
+    }
+
     public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.close();
@@ -37,7 +82,7 @@ public class SeriesMethod extends BaseMethod {
         return OK.getStatusCode() == response.getStatus();
     }
     public static Response insertSeriesReturnResponse(final Series series) {
-        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.entity(Collections.singletonList(series), MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.bufferEntity();
         return response;
     }
@@ -53,32 +98,12 @@ public class SeriesMethod extends BaseMethod {
         });
     }
 
-    public static Response executeQueryReturnResponse(final SeriesQuery seriesQuery) {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(Collections.singletonList(seriesQuery), MediaType.APPLICATION_JSON_TYPE));
-        response.bufferEntity();
-        return response;
-    }
-
-    public static boolean insertSeries(final Series series) throws IOException, InterruptedException, JSONException {
-        return insertSeries(series, 0);
-    }
-    public static void insertSeriesCheck(final Series series) throws Exception {
-        //todo: replace with normal check
-        Response insertResponse = insertSeriesReturnResponse(series);
-        insertResponse.bufferEntity();
-        if (OK.getStatusCode() != insertResponse.getStatus()) {
-            throw new IllegalStateException(insertResponse.readEntity(String.class));
-        }
-        insertResponse.close();
-        Thread.sleep(1000L); //wait for insert
-    }
-
     public static JSONArray executeQuery(final SeriesQuery seriesQuery) throws Exception {
         return executeQuery(Collections.singletonList(seriesQuery));
     }
 
     public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws IOException, JSONException {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(seriesQueries, MediaType.APPLICATION_JSON_TYPE));
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(seriesQueries));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {

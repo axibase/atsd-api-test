@@ -3,15 +3,20 @@ package com.axibase.tsd.api.model.metric;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.series.DataType;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Metric {
     private String name;
-    private String enabled;
-    private String persistent;
+    private Boolean enabled;
     private DataType dataType;
+    private Boolean counter;
+    private Boolean persistent;
     private String timePrecision;
     private String retentionInterval;
+    private String invalidAction;
+    private String lastInsertDate;
+    private Boolean versioned;
 
     public Metric() {
     }
@@ -23,6 +28,37 @@ public class Metric {
         this.name = name;
     }
 
+    public String getInvalidAction() {
+        return invalidAction;
+    }
+
+    public void setInvalidAction(String invalidAction) {
+        this.invalidAction = invalidAction;
+    }
+
+    public String getLastInsertDate() {
+        return lastInsertDate;
+    }
+
+    public void setLastInsertDate(String lastInsertDate) {
+        this.lastInsertDate = lastInsertDate;
+    }
+
+    public Boolean getVersioned() {
+        return versioned;
+    }
+
+    public void setVersioned(Boolean versioned) {
+        this.versioned = versioned;
+    }
+
+    public Boolean getCounter() {
+        return counter;
+    }
+
+    public void setCounter(Boolean counter) {
+        this.counter = counter;
+    }
 
     public String getName() {
         return name;
@@ -32,19 +68,19 @@ public class Metric {
         this.name = name;
     }
 
-    public String getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(String enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    public String getPersistent() {
+    public Boolean getPersistent() {
         return persistent;
     }
 
-    public void setPersistent(String persistent) {
+    public void setPersistent(Boolean persistent) {
         this.persistent = persistent;
     }
 

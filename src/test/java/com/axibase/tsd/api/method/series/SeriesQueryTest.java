@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
@@ -10,12 +11,14 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
@@ -28,7 +31,11 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @BeforeClass
     public static void prepare() throws Exception {
-        insertSeriesCheck(series);
+        try {
+            insertSeriesCheck(series, Util.DEFAULT_CHECK_TIMEOUT);
+        } catch (IOException e) {
+            fail("Can not store common dataset");
+        }
     }
 
 
@@ -82,7 +89,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate("2016-07-01 14:23:20");
 
-        Response response = executeQueryReturnResponse(seriesQuery);
+        Response response = getSeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01 14:23:20\"}", response.readEntity(String.class), true);
@@ -96,7 +103,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate("2016-07-01T15:46:20+0123");
 
-        Response response = executeQueryReturnResponse(seriesQuery);
+        Response response = getSeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01T15:46:20+0123\"}", response.readEntity(String.class), true);
@@ -110,7 +117,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate("1467383000000");
 
-        Response response = executeQueryReturnResponse(seriesQuery);
+        Response response = getSeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1467383000000\"}", response.readEntity(String.class), true);
