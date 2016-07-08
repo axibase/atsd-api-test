@@ -50,7 +50,19 @@ public class MessageMethod extends BaseMethod {
         return insertMessage(message, 0);
     }
 
-    public static Response executeQuery(final MessageQuery messageQuery) throws IOException {
+    public static void insertMessageCheck(final Message message) throws InterruptedException, IOException {
+        //todo: replace with normal check
+        Response response = insertMessageReturnResponse(message);
+        response.bufferEntity();
+        if (OK.getStatusCode() != response.getStatus()) {
+            throw new IllegalStateException(response.readEntity(String.class));
+        }
+        response.close();
+
+        Thread.sleep(1000l); //wait for message to be inserted
+    }
+
+    public static Response executeQuery(final MessageQuery messageQuery) {
         Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(Collections.singletonList(messageQuery)));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {

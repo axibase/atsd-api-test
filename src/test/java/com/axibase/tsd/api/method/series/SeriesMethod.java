@@ -41,7 +41,7 @@ public class SeriesMethod extends BaseMethod {
         response.bufferEntity();
         return response;
     }
-    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
+    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(Collections.singletonList(seriesQuery)));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
@@ -51,7 +51,7 @@ public class SeriesMethod extends BaseMethod {
         return response.readEntity(new GenericType<List<Series>>() {
         });
     }
-    public static Response executeQueryReturnResponse(final SeriesQuery seriesQuery) throws Exception {
+    public static Response executeQueryReturnResponse(final SeriesQuery seriesQuery) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(Collections.singletonList(seriesQuery), MediaType.APPLICATION_JSON_TYPE));
         response.bufferEntity();
         return response;
@@ -59,6 +59,16 @@ public class SeriesMethod extends BaseMethod {
     
     public static boolean insertSeries(final Series series) throws IOException, InterruptedException, JSONException {
         return insertSeries(series, 0);
+    }
+    public static void insertSeriesCheck(final Series series) throws Exception {
+        //todo: replace with normal check
+        Response insertResponse = insertSeriesReturnResponse(series);
+        insertResponse.bufferEntity();
+        if (OK.getStatusCode() != insertResponse.getStatus()) {
+            throw new IllegalStateException(insertResponse.readEntity(String.class));
+        }
+        insertResponse.close();
+        Thread.sleep(1000l); //wait for insert
     }
 
     public static JSONArray executeQuery(final SeriesQuery seriesQuery) throws Exception {

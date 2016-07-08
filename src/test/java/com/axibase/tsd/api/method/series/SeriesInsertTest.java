@@ -281,7 +281,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String d = "2016-06-09T20:00:00.000Z";
         series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
 
-        assertTrue("Failed to insert series", insertSeries(series, 1000));
+        insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);

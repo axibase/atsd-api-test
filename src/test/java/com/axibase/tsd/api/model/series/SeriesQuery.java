@@ -110,8 +110,12 @@ public class SeriesQuery {
         return tags;
     }
 
-    public void setTags(String tag, String value) {
+    public void addTags(String tag, String value) {
         tags.put(tag, value);
+    }
+
+    public void setTags(Map<String, String> tags) {
+        this.tags = new HashMap<>(tags);
     }
 
     @Override

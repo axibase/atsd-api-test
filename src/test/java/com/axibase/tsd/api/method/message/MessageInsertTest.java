@@ -119,7 +119,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T00:00:00Z");
 
-        Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
+        insertMessageCheck(message);
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
@@ -143,7 +143,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T01:23:00+01:23");
 
-        Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
+        insertMessageCheck(message);
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
@@ -167,7 +167,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-20T22:37:00-01:23");
 
-        Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
+        insertMessageCheck(message);
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();

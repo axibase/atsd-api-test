@@ -14,7 +14,6 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
@@ -27,9 +26,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @BeforeClass
     public static void prepare() throws Exception {
-        boolean isSucceed = insertSeries(series);
-        assertTrue("Cannot store common dataset", isSucceed);
-        Thread.sleep(1000l);
+        insertSeriesCheck(series);
     }
 
 

@@ -20,7 +20,7 @@ public class MessageQueryTest extends MessageMethod {
     private static final Message message;
 
     static {
-        message = new Message("message-query-test-isoz");
+        message = new Message("message-query-test-timezone");
         message.setMessage("hello");
         message.setDate("2016-05-21T00:00:00.000Z");
     }

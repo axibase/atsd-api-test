@@ -284,7 +284,8 @@ public class PropertyInsertTest extends PropertyMethod {
     /* #2850 */
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
-        Property property = new Property("test2", "property-insert-test-iso+hm");
+        String entityName = "property-insert-test-iso+hm";
+        Property property = new Property("test2", entityName);
         property.addTag("test", "test");
         property.setDate("2016-07-21T01:23:00+01:23");
 
@@ -292,7 +293,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         PropertyQuery propertyQuery = new PropertyQuery();
         EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity("property-insert-test-iso+hm");
+        entityFilter.setEntity(entityName);
 
         DateFilter dateFilter = new DateFilter();
         String date = "2016-07-21T00:00:00.000Z";
@@ -314,7 +315,8 @@ public class PropertyInsertTest extends PropertyMethod {
     /* #2850 */
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
-        Property property = new Property("test3", "property-insert-test-iso-hm");
+        String entityName = "property-insert-test-iso-hm";
+        Property property = new Property("test3", entityName);
         property.addTag("test", "test");
         property.setDate("2016-07-20T22:37:00-01:23");
 
@@ -322,7 +324,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         PropertyQuery propertyQuery = new PropertyQuery();
         EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity("property-insert-test-iso-hm");
+        entityFilter.setEntity(entityName);
 
         DateFilter dateFilter = new DateFilter();
         String date = "2016-07-21T00:00:00.000Z";

@@ -27,7 +27,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
     }
     @Before
     public void prepare() throws Exception {
-        insertProperty(property);
+        insertPropertyCheck(property);
     }
 
     /* #2850 */
