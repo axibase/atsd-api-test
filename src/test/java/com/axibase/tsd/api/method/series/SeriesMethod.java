@@ -68,7 +68,7 @@ public class SeriesMethod extends BaseMethod {
             throw new IllegalStateException(insertResponse.readEntity(String.class));
         }
         insertResponse.close();
-        Thread.sleep(1000l); //wait for insert
+        Thread.sleep(1000L); //wait for insert
     }
 
     public static JSONArray executeQuery(final SeriesQuery seriesQuery) throws Exception {

@@ -59,7 +59,7 @@ public class MessageMethod extends BaseMethod {
         }
         response.close();
 
-        Thread.sleep(1000l); //wait for message to be inserted
+        Thread.sleep(1000L); //wait for message to be inserted
     }
 
     public static Response executeQuery(final MessageQuery messageQuery) {
