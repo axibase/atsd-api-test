@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CSVInsertMethod extends SeriesMethod {
-    
     protected static final String METHOD_CSV_INSERT = "/series/csv/{entity}";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
