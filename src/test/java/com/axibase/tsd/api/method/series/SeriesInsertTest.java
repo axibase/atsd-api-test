@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 
 public class SeriesInsertTest extends SeriesMethod {
     final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
+
     /* #2871 */
     @Test
     public void testBigFloatOverflow() throws Exception {
@@ -270,6 +271,7 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
         assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
+
     /* #2850 */
     @Test
     public void testISOFormatsMinusHoursNoMS() throws Exception {
@@ -422,7 +424,7 @@ public class SeriesInsertTest extends SeriesMethod {
                 NEXT_AFTER_MAX_STORABLE_DATE, addOneMS(NEXT_AFTER_MAX_STORABLE_DATE));
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals("Managed to insert series with d out of range",0, seriesList.get(0).getData().size());
+        assertEquals("Managed to insert series with d out of range", 0, seriesList.get(0).getData().size());
     }
 
     /* #2927 */
@@ -549,4 +551,114 @@ public class SeriesInsertTest extends SeriesMethod {
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
     }
 
+    /* #3013 */
+    @Test
+    public void testQueryRangeIsLeftFromStorable() throws Exception {
+        String entityName = "e-query-range-14";
+        String metricName = "m-query-range-14";
+        String v = "7";
+        String d = MIN_STORABLE_DATE;
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample(d, v));
+
+        boolean success = insertSeries(series, 1000);
+        if (!success) {
+            fail("Failed to insert series");
+        }
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MIN_STORABLE_DATE);
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+
+        assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
+    }
+
+    /* #3013 */
+    @Test
+    public void testQueryRangeIsRightFromStorable() throws Exception {
+        String entityName = "e-query-range-15";
+        String metricName = "m-query-range-15";
+        String v = "7";
+        String d = MIN_STORABLE_DATE;
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample(d, v));
+
+        boolean success = insertSeries(series, 1000);
+        if (!success) {
+            fail("Failed to insert series");
+        }
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MAX_STORABLE_DATE, MAX_QUERYABLE_DATE);
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+
+        assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
+    }
+
+    /* #3013 */
+    @Test
+    public void testQueryRangeIncludesFromStorable() throws Exception {
+        String entityName = "e-query-range-16";
+        String metricName = "m-query-range-16";
+        String v = "7";
+        String d = MIN_STORABLE_DATE;
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample(d, v));
+
+        boolean success = insertSeries(series, 1000);
+        if (!success) {
+            fail("Failed to insert series");
+        }
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+
+        assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
+        assertEquals("Incorrect stored value", v, data.get(0).getV().toString());
+    }
+
+    /* #3013 */
+    @Test
+    public void testQueryRangeIntersectsStorableFromLeft() throws Exception {
+        String entityName = "e-query-range-17";
+        String metricName = "m-query-range-17";
+        String v = "7";
+        String d = MIN_STORABLE_DATE;
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample(d, v));
+
+        boolean success = insertSeries(series, 1000);
+        if (!success) {
+            fail("Failed to insert series");
+        }
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+
+        assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
+        assertEquals("Incorrect stored value", v, data.get(0).getV().toString());
+    }
+
+    /* #3013 */
+    @Test
+    public void testQueryRangeIntersectsStorableFromRight() throws Exception {
+        String entityName = "e-query-range-18";
+        String metricName = "m-query-range-18";
+        String v = "7";
+        String d = MIN_STORABLE_DATE;
+
+        Series series = new Series(entityName, metricName);
+        series.addData(new Sample(d, v));
+
+        boolean success = insertSeries(series, 1000);
+        if (!success) {
+            fail("Failed to insert series");
+        }
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_STORABLE_DATE, MAX_QUERYABLE_DATE);
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+
+        assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
+        assertEquals("Incorrect stored value", v, data.get(0).getV().toString());
+    }
 }
