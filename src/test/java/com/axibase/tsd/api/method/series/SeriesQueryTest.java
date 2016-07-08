@@ -119,7 +119,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     /* #3013 */
     @Test
-    public void testQueryRangeIsLeftFromStorable() throws Exception {
+    public void testDateFilterRangeIsBeforeStorableRange() throws Exception {
         String entityName = "e-query-range-14";
         String metricName = "m-query-range-14";
         String v = "7";
@@ -138,7 +138,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     /* #3013 */
     @Test
-    public void testQueryRangeIsRightFromStorable() throws Exception {
+    public void testDateFilterRangeIsAfterStorableRange() throws Exception {
         String entityName = "e-query-range-15";
         String metricName = "m-query-range-15";
         String v = "7";
@@ -157,7 +157,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     /* #3013 */
     @Test
-    public void testQueryRangeIncludesFromStorable() throws Exception {
+    public void testDateFilterRangeIncludesStorableRange() throws Exception {
         String entityName = "e-query-range-16";
         String metricName = "m-query-range-16";
         String v = "7";
@@ -178,7 +178,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     /* #3013 */
     @Test
-    public void testQueryRangeIntersectsStorableFromLeft() throws Exception {
+    public void testDateFilterRangeIntersectsStorableRangeBeginning() throws Exception {
         String entityName = "e-query-range-17";
         String metricName = "m-query-range-17";
         String v = "7";
@@ -199,7 +199,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     /* #3013 */
     @Test
-    public void testQueryRangeIntersectsStorableFromRight() throws Exception {
+    public void testDateFilterRangeIntersectsStorableRangeEnding() throws Exception {
         String entityName = "e-query-range-18";
         String metricName = "m-query-range-18";
         String v = "7";
