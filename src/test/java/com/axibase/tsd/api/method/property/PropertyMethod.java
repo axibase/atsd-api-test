@@ -23,7 +23,9 @@ import static javax.ws.rs.core.Response.Status.OK;
 class PropertyMethod extends BaseMethod {
     private static final String METHOD_PROPERTY_INSERT = "/properties/insert";
     private static final String METHOD_PROPERTY_QUERY = "/properties/query";
+    private static final String METHOD_PROPERTY_URL_QUERY = "/properties/{entity}/types/{type}";
     private static final String METHOD_PROPERTY_DELETE = "/properties/delete";
+    private static final String METHOD_PROPERTY_TYPE_QUERY = "/properties/{entity}/types";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
@@ -36,7 +38,7 @@ class PropertyMethod extends BaseMethod {
         return response;
     }
 
-    public static <T> Response getProperty(T... queries) {
+    public static <T> Response queryProperty(T... queries) {
         Response response = httpApiResource
                 .path(METHOD_PROPERTY_QUERY)
                 .request()
@@ -50,6 +52,25 @@ class PropertyMethod extends BaseMethod {
                 .path(METHOD_PROPERTY_DELETE)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response urlQueryProperty(String propertyType, String entityName) {
+        Response response = httpApiResource
+                .path(METHOD_PROPERTY_URL_QUERY)
+                .resolveTemplate("entity", entityName)
+                .resolveTemplate("type", propertyType)
+                .request().get();
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response typeQueryProperty(String entityName) {
+        Response response = httpApiResource
+                .path(METHOD_PROPERTY_TYPE_QUERY)
+                .resolveTemplate("entity", entityName)
+                .request().get();
         response.bufferEntity();
         return response;
     }
@@ -71,10 +92,10 @@ class PropertyMethod extends BaseMethod {
     }
 
     public static boolean propertyExist(final Property property, boolean strict) throws IOException {
-        Response response = getProperty(prepareStrictPropertyQuery(property));
+        Response response = queryProperty(prepareStrictPropertyQuery(property));
         if (response.getStatus() != OK.getStatusCode()) {
             response.close();
-            throw new IOException("Fail to execute getProperty");
+            throw new IOException("Fail to execute queryProperty");
         }
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         String given = response.readEntity(String.class);

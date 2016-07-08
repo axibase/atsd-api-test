@@ -45,7 +45,7 @@ public class EntityGetPropertyTypesTest extends EntityMethod {
     }
 
     private void assertUrlencodedPathHandledSuccessfullyOnGetPropertyTypes(final Entity entity) throws Exception {
-        Response response = queryEntityGroups(entity.getName());
+        Response response = queryEntityPropertyTypes(entity.getName());
         assertEquals("Fail to execute queryEntityGroups", OK.getStatusCode(), response.getStatus());
         assertTrue("List of entity groups should be empty", compareJsonString("[]", formatToJsonString(response)));
     }

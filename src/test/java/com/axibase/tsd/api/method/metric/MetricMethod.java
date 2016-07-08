@@ -38,7 +38,7 @@ public class MetricMethod extends BaseMethod {
         return updateMetric(metric.getName(), metric);
     }
 
-    public static Response queryMetric(String metricName) throws Exception {
+    public static Response queryMetric(String metricName) throws IOException {
         Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
         response.bufferEntity();
         return response;
@@ -51,7 +51,7 @@ public class MetricMethod extends BaseMethod {
     public static Response queryMetricSeries(String metricName, Map<String, String> parameters) throws Exception {
         WebTarget target = httpApiResource.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            target.queryParam(entry.getKey(), entry.getValue());
+            target = target.queryParam(entry.getKey(), entry.getValue());
         }
         Response response = target.request().get();
         response.bufferEntity();
@@ -70,15 +70,15 @@ public class MetricMethod extends BaseMethod {
 
     public static void createOrReplaceMetricCheck(Metric metric) throws Exception {
         if (createOrReplaceMetric(metric.getName(), jacksonMapper.writeValueAsString(metric)).getStatus() != OK.getStatusCode()) {
-            throw new IOException("Can not execute createOrReplace query");
+            throw new IOException("Can not execute createOrReplaceEntityGroup query");
         }
         if (!metricExist(metric)) {
-            throw new IOException("Fail to check metric createOrReplace");
+            throw new IOException("Fail to check metric createOrReplaceEntityGroup");
         }
     }
 
 
-    public static boolean metricExist(final Metric metric) throws Exception {
+    public static boolean metricExist(final Metric metric) throws IOException {
         final Response response = queryMetric(metric.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;

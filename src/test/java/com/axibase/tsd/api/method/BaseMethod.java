@@ -88,7 +88,7 @@ public abstract class BaseMethod {
 
     }
 
-    public static String formatToJsonString(Response response) {
+    public static String formatToJsonString(final Response response) {
         return response.readEntity(String.class);
     }
 

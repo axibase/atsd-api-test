@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Dmitry Korchagin.
  */
 public enum Registry {
-    Entity("Entity"), Metric("Metric"), Type("Type");
+    Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup");
 
     private String registryType;
     private Set<String> registeredSet = new HashSet<>();

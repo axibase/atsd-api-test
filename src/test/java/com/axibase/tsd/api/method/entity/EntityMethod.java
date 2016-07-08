@@ -63,7 +63,7 @@ public class EntityMethod extends BaseMethod {
     public static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
         WebTarget target = httpApiResource.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            target.queryParam(entry.getKey(), entry.getValue());
+            target = target.queryParam(entry.getKey(), entry.getValue());
         }
         Response response = target.request().get();
         response.bufferEntity();
@@ -89,10 +89,10 @@ public class EntityMethod extends BaseMethod {
 
     public static void createOrReplaceEntityCheck(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
         if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
-            throw new IOException("Can not execute createOrReplace query");
+            throw new IOException("Can not execute createOrReplaceEntityGroup query");
         }
         if (!entityExist(entity)) {
-            throw new IOException("Fail to check entity createOrReplace");
+            throw new IOException("Fail to check entity createOrReplaceEntityGroup");
         }
     }
 

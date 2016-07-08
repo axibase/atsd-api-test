@@ -271,7 +271,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
         Property storedProperty = storedPropertyList.get(0);
 
@@ -303,7 +303,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
         Property storedProperty = storedPropertyList.get(0);
 
@@ -335,7 +335,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = getProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
         Property storedProperty = storedPropertyList.get(0);
 

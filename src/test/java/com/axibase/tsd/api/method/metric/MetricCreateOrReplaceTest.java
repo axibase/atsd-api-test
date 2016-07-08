@@ -20,7 +20,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric.getName(), metric);
-        assertEquals("Fail to execute createOrReplace method", OK.getStatusCode(), response.getStatus());
+        assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
@@ -40,7 +40,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals("Fail to execute createOrReplace method", OK.getStatusCode(), response.getStatus());
+        assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
@@ -51,7 +51,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals("Fail to execute createOrReplace method", OK.getStatusCode(), response.getStatus());
+        assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 }

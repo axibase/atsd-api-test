@@ -518,7 +518,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample("2016-06-09 20:00:00", value));
 
-        Response response = insertSeriesReturnResponse(series);
+        Response response = insertSeries(series);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected 'T' character but found ' ' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
@@ -535,7 +535,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample("2016-06-09T09:50:00-1010", value));
 
-        Response response = insertSeriesReturnResponse(series);
+        Response response = insertSeries(series);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
@@ -551,7 +551,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample("1465502400000", value));
 
-        Response response = insertSeriesReturnResponse(series);
+        Response response = insertSeries(series);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);

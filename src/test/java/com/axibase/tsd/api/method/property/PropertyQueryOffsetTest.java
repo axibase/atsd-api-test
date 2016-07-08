@@ -58,7 +58,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         queryObj.put("startDate", Util.MIN_STORABLE_DATE);
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("offset", offset);
-        return getProperty(queryObj);
+        return queryProperty(queryObj);
     }
 
     //#2947
@@ -119,6 +119,4 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
 
         JSONAssert.assertEquals(expected, executeOffsetQuery(100).readEntity(String.class), false);
     }
-
-
 }

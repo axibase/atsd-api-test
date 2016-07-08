@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_INSERT = "/series/insert";
     private static final String METHOD_SERIES_QUERY = "/series/query";
+    private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
@@ -46,6 +49,24 @@ public class SeriesMethod extends BaseMethod {
         return response;
     }
 
+    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
+        WebTarget webTarget = httpApiResource
+                .path(METHOD_SERIES_URL_QUERY)
+                .resolveTemplate("format", format.toString())
+                .resolveTemplate("entity", entity)
+                .resolveTemplate("metric", metric);
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        Response response = webTarget.request().get();
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response urlQuerySeries(String entity, String metric, Map<String, String> parameters) {
+        return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
+    }
 
     public static void insertSeriesCheck(final Series series, long checkTimeoutMillis) throws IOException {
         insertSeriesCheck(Collections.singletonList(series), checkTimeoutMillis);
@@ -102,8 +123,8 @@ public class SeriesMethod extends BaseMethod {
             }});
         }
         String expected = jacksonMapper.writeValueAsString(expectedList);
-        String actual = response.readEntity(String.class);
-        return compareJsonString(expected, response.readEntity(String.class));
+        String  actual = response.readEntity(String.class);
+        return compareJsonString(expected, actual);
     }
 
     public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
@@ -118,14 +139,8 @@ public class SeriesMethod extends BaseMethod {
         return OK.getStatusCode() == response.getStatus();
     }
 
-    public static Response insertSeriesReturnResponse(final Series series) {
-        Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
-        response.bufferEntity();
-        return response;
-    }
-
     public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(Collections.singletonList(seriesQuery)));
+        Response response = querySeries(seriesQuery);
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
