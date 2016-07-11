@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.entity.Entity;
@@ -25,8 +26,9 @@ public class EntityGetMetricsTest extends EntityMethod {
     /* #1278 */
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
-        Entity entity = new Entity("getmetricsentity 1");
-        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityMetrics(entity.getName()).getStatus());
+        final String name = "getmetricsentity 1";
+        Registry.Entity.register(name);
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityMetrics(name).getStatus());
     }
 
 

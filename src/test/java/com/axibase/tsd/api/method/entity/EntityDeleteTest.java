@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.entity.Entity;
 import org.junit.Test;
 
@@ -17,8 +18,9 @@ public class EntityDeleteTest extends EntityMethod {
     /* #1278 */
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
-        Entity entity = new Entity("deleteentity 1");
-        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), deleteEntity(entity.getName()).getStatus());
+        final String name = "deleteentity 1";
+        Registry.Entity.register(name);
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), deleteEntity(name).getStatus());
     }
 
     /* #1278 */

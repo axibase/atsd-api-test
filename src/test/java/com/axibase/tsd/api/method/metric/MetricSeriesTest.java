@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.metric;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.metric.Metric;
 import org.junit.Test;
 
@@ -14,8 +15,9 @@ public class MetricSeriesTest extends MetricMethod {
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
 
-        final Metric metric = new Metric("series metric-1");
-        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), queryMetricSeries(metric.getName()).getStatus());
+        final String name = "series metric-1";
+        Registry.Metric.register(name);
+        assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), queryMetricSeries(name).getStatus());
     }
 
     /* #1278 */

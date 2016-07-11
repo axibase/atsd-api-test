@@ -19,8 +19,8 @@ public class EntityGetGroupsTest extends EntityMethod {
     /* #1278 */
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
-        Entity entity = new Entity("getgroupsentity 1");
-        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityGroups(entity.getName()).getStatus());
+        final String name = "getgroupsentity 1";
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityGroups(name).getStatus());
     }
 
 
