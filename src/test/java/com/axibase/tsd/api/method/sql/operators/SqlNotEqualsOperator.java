@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.ws.rs.ProcessingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,40 +40,29 @@ public class SqlNotEqualsOperator extends SqlMethod {
 
 
     /**
-     * #2933
-     * Temporarily it throws an error. Related to issue #3038
+     * issue #2933
      */
-    @Test
+    @Test(expected = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsFalse() {
         final String sqlQuery = "" +
                 "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
                 "WHERE datetime <> '2016-06-03T09:23:00.000Z' AND entity = 'sql-not-equals-syntax-entity'";
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("datetime");
-
-        assertTrue("Result rows must be empty", resultRows.isEmpty());
+        executeQuery(sqlQuery)
+                .readEntity(StringTable.class);
     }
 
     /**
-     * #2933
-     * Temporarily it throws an error. Related to issue #3038
+     * issue #2933
      */
-    @Test
+    @Test(expected = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsTrue() {
         final String sqlQuery = "" +
                 "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
                 "WHERE datetime <> '2016-06-03T09:25:00.000Z' AND entity = 'sql-not-equals-syntax-entity'";
-        List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-03T09:23:00.000Z")
-        );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("datetime");
-
-        assertEquals("Result rows must be indentical", expectedRows, resultRows);
+        executeQuery(sqlQuery)
+                .readEntity(StringTable.class);
     }
 
     /**
