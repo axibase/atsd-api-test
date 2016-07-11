@@ -53,6 +53,10 @@ public class Series {
         return tags;
     }
 
+    public void setTags(Map<String, String> tags) {
+        this.tags = tags;
+    }
+
     public List<Sample> getData() {
         return data;
     }

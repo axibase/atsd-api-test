@@ -6,9 +6,9 @@ import java.util.*;
 
 /**
  * @author Igor Shmagrinskiy
- *
- * Class for storing SQL result table in {@link String}
- * objects. It is using custom deserializer
+ *         <p>
+ *         Class for storing SQL result table in {@link String}
+ *         objects. It is using custom deserializer
  */
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
@@ -115,5 +115,21 @@ public class StringTable {
             filteredRows.add(filteredRow);
         }
         return filteredRows;
+    }
+
+
+    /**
+     * Filter row values by column names. Leaves those values, that indexes corresponded
+     * with columnNames contained in the set of requested column names
+     *
+     * @param requestedColumnNames - set of requested column names represented as args
+     * @return filtered rows
+     */
+    public List<List<String>> filterRows(String... requestedColumnNames) {
+        Set<String> filter = new HashSet<>();
+        for (String columnName : requestedColumnNames) {
+            filter.add(columnName);
+        }
+        return filterRows(filter);
     }
 }
