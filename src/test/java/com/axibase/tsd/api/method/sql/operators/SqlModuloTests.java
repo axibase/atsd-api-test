@@ -48,7 +48,7 @@ public class SqlModuloTests extends SqlTest {
 
 
     /**
-     * Following tests related to issue #2933
+     * Following tests related to issue #2922
      */
 
     /**
