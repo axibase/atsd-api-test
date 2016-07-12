@@ -44,7 +44,7 @@ public class SqlTimezoneFormatTests extends SqlTest {
 
         List<String> expectedColumnValues = Arrays.asList("2016-06-03T09:23:00+0000");
 
-        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
+        assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
     /**
@@ -60,7 +60,7 @@ public class SqlTimezoneFormatTests extends SqlTest {
 
         List<String> expectedColumnValues = Arrays.asList("2016-06-03T09:23:00");
 
-        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
+        assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
     /**
@@ -76,7 +76,7 @@ public class SqlTimezoneFormatTests extends SqlTest {
 
         List<String> expectedColumnValues = Arrays.asList("2016-06-03 02:23:00");
 
-        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
+        assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
     /**
@@ -92,6 +92,6 @@ public class SqlTimezoneFormatTests extends SqlTest {
 
         List<String> expectedColumnValues = Arrays.asList("2016-06-03 01:23:00");
 
-        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
+        assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 }

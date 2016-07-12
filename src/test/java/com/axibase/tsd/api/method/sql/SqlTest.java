@@ -14,11 +14,11 @@ public class SqlTest extends SqlMethod {
         assertEquals("Table rows  must  be identical", row1, row2);
     }
 
-    public void assertTableColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
+    public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
         assertEquals(String.format("Values of columns with names: %s are not equal to expected", columnNames), table.filterRows(columnNames), values);
     }
 
-    public void assertTableColumnValues(List<String> values, StringTable table, String columnName) {
+    public void assertTableContainsColumnValues(List<String> values, StringTable table, String columnName) {
         assertEquals(String.format("Values of column with name: %s are not equal to expected", columnName), table.columnValues(columnName), values);
     }
 }
