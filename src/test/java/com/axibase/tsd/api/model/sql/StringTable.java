@@ -9,6 +9,7 @@ import java.util.*;
  *         <p>
  *         Class for storing SQL result table in {@link String}
  *         objects. It is using custom deserializer
+ *         </p>
  */
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
