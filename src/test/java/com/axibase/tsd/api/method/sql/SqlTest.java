@@ -19,6 +19,6 @@ public class SqlTest extends SqlMethod {
     }
 
     public void assertTableColumnValues(List<String> values, StringTable table, String columnName) {
-        assertEquals(String.format("Values of columns with name: %s are not equal to expected", columnName), table.columnValues(columnName), values);
+        assertEquals(String.format("Values of column with name: %s are not equal to expected", columnName), table.columnValues(columnName), values);
     }
 }
