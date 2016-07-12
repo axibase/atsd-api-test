@@ -8,9 +8,8 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.ws.rs.core.Response;
-
-import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Igor Shmagrinskiy
@@ -41,7 +40,11 @@ public class SqlTimezoneFormatTests extends SqlTest {
                 "FROM 'sql-date-format-timezone-metric' " +
                 "WHERE datetime = '2016-06-03T09:23:00.000Z'";
 
-        assertResponseDateFormat(executeQuery(sqlQuery), "2016-06-03T09:23:00+0000");
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        List<String> expectedColumnValues = Arrays.asList("2016-06-03T09:23:00+0000");
+
+        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
     /**
@@ -53,8 +56,11 @@ public class SqlTimezoneFormatTests extends SqlTest {
                 "FROM 'sql-date-format-timezone-metric' " +
                 "WHERE datetime = '2016-06-03T09:23:00.000Z'";
 
-        assertResponseDateFormat(executeQuery(sqlQuery), "2016-06-03T09:23:00");
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
+        List<String> expectedColumnValues = Arrays.asList("2016-06-03T09:23:00");
+
+        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
     /**
@@ -66,7 +72,11 @@ public class SqlTimezoneFormatTests extends SqlTest {
                 "FROM 'sql-date-format-timezone-metric' " +
                 "WHERE datetime = '2016-06-03T09:23:00.000Z'";
 
-        assertResponseDateFormat(executeQuery(sqlQuery), "2016-06-03 02:23:00");
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        List<String> expectedColumnValues = Arrays.asList("2016-06-03 02:23:00");
+
+        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
     /**
@@ -78,20 +88,10 @@ public class SqlTimezoneFormatTests extends SqlTest {
                 "FROM 'sql-date-format-timezone-metric' " +
                 "WHERE datetime = '2016-06-03T09:23:00.000Z'";
 
-        assertResponseDateFormat(executeQuery(sqlQuery), "2016-06-03 01:23:00");
-    }
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
+        List<String> expectedColumnValues = Arrays.asList("2016-06-03 01:23:00");
 
-    /**
-     * Assert that Response contains table with date in expected format
-     *
-     * @param response           Sql execute response
-     * @param expectedFormatDate Expected formatted date
-     */
-    private void assertResponseDateFormat(Response response, String expectedFormatDate) {
-        String resultFormattedDate = response
-                .readEntity(StringTable.class)
-                .getValueAt(1, 0);
-        assertEquals("Incorrect date formatting", expectedFormatDate, resultFormattedDate);
+        assertTableColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 }

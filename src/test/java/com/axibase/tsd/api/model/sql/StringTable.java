@@ -118,6 +118,10 @@ public class StringTable {
         return filteredRows;
     }
 
+    public List<String> columnValues(String requestedColumnName) {
+        return filterRows(new HashSet<String>(Arrays.asList(requestedColumnName))).get(0);
+    }
+
 
     /**
      * Filter row values by column names. Leaves those values, that indexes corresponded
