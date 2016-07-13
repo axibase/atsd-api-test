@@ -4,7 +4,6 @@ import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.metric.Metric;
 import org.testng.annotations.Test;
 
-
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;

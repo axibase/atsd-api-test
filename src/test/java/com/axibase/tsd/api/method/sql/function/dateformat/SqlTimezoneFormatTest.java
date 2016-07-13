@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         SeriesMethod.insertSeriesCheck(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
                     addTag("a", "b");

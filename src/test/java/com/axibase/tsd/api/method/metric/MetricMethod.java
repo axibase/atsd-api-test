@@ -6,7 +6,6 @@ import com.axibase.tsd.api.model.metric.Metric;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +37,7 @@ public class MetricMethod extends BaseMethod {
         return updateMetric(metric.getName(), metric);
     }
 
-    public static Response queryMetric(String metricName) throws IOException {
+    public static Response queryMetric(String metricName) throws Exception {
         Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
         response.bufferEntity();
         return response;
@@ -70,21 +69,21 @@ public class MetricMethod extends BaseMethod {
 
     public static void createOrReplaceMetricCheck(Metric metric) throws Exception {
         if (createOrReplaceMetric(metric.getName(), jacksonMapper.writeValueAsString(metric)).getStatus() != OK.getStatusCode()) {
-            throw new IOException("Can not execute createOrReplaceEntityGroup query");
+            throw new Exception("Can not execute createOrReplaceEntityGroup query");
         }
         if (!metricExist(metric)) {
-            throw new IOException("Fail to check metric createOrReplaceEntityGroup");
+            throw new Exception("Fail to check metric createOrReplaceEntityGroup");
         }
     }
 
 
-    public static boolean metricExist(final Metric metric) throws IOException {
+    public static boolean metricExist(final Metric metric) throws Exception {
         final Response response = queryMetric(metric.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
         if (response.getStatus() != OK.getStatusCode()) {
-            throw new IOException("Fail to execute queryMetric query");
+            throw new Exception("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
     }

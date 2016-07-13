@@ -21,7 +21,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -72,16 +71,16 @@ public abstract class BaseMethod {
 
     }
 
-    public static boolean compareJsonString(String expected, String given) throws IOException {
+    public static boolean compareJsonString(String expected, String given) throws Exception {
         return compareJsonString(expected, given, false);
     }
 
-    public static boolean compareJsonString(String expected, String given, boolean strict) throws IOException {
+    public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
             return true;
         } catch (JSONException e) {
-            throw new IOException("Can not deserialize response");
+            throw new Exception("Can not deserialize response");
         } catch (AssertionError e) {
             return false;
         }

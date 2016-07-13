@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.Interval;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,62 @@ public class SeriesQuery {
     private Map<String, Object> aggregate;
     private String timeFormat;
     private Boolean exactMatch;
+
+    public SeriesQuery() {
+    }
+
+    public SeriesQuery(Series series) {
+        setEntity(series.getEntity());
+        setTags(new HashMap<>(series.getTags()));
+        setExactMatch(true);
+        setMetric(series.getMetric());
+        if (series.getData().size() == 0) {
+            setStartDate(Util.MIN_QUERYABLE_DATE);
+            setEndDate(Util.MAX_QUERYABLE_DATE);
+        } else {
+            try {
+                Long minDate = Util.getMillis(Util.MAX_QUERYABLE_DATE);
+                Long maxDate = Util.getMillis(Util.MIN_QUERYABLE_DATE);
+
+                Long curDate;
+                for (Sample sample : series.getData()) {
+                    curDate = sample.getT();
+                    if (curDate == null) {
+                        curDate = Util.getMillis(sample.getD());
+                    }
+                    minDate = Math.min(curDate, minDate);
+                    maxDate = Math.max(curDate, maxDate);
+                }
+
+                setStartDate(Util.ISOFormat(minDate));
+                setEndDate(Util.ISOFormat(maxDate + 1));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Fail to parse date string");
+            }
+        }
+    }
+
+    public SeriesQuery(String entity, String metric, long startTime, long endTime) {
+        this.entity = entity;
+        this.metric = metric;
+        this.startDate = Util.ISOFormat(startTime);
+        this.endDate = Util.ISOFormat(endTime);
+    }
+
+    public SeriesQuery(String entity, String metric, String startDate, String endDate) {
+        this.entity = entity;
+        this.metric = metric;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public SeriesQuery(String entity, String metric, String startDate, String endDate, Map<String, String> tags) {
+        this.entity = entity;
+        this.metric = metric;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.tags = tags;
+    }
 
     public void addAggregateType(String type) {
         if (aggregate == null) {
@@ -49,40 +106,6 @@ public class SeriesQuery {
         period.put("count", count);
         period.put("unit", unit);
         aggregate.put("period", period);
-    }
-
-    public SeriesQuery() {
-    }
-
-    public SeriesQuery(Series series) {
-        setEntity(series.getEntity());
-        setTags(new HashMap<>(series.getTags()));
-        setExactMatch(true);
-        setMetric(series.getMetric());
-        setStartDate(Util.MIN_QUERYABLE_DATE);
-        setEndDate(Util.MAX_QUERYABLE_DATE);
-    }
-
-    public SeriesQuery(String entity, String metric, long startTime, long endTime) {
-        this.entity = entity;
-        this.metric = metric;
-        this.startDate = Util.ISOFormat(startTime);
-        this.endDate = Util.ISOFormat(endTime);
-    }
-
-    public SeriesQuery(String entity, String metric, String startDate, String endDate) {
-        this.entity = entity;
-        this.metric = metric;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    public SeriesQuery(String entity, String metric, String startDate, String endDate, Map<String, String> tags) {
-        this.entity = entity;
-        this.metric = metric;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.tags = tags;
     }
 
     public String getEntity() {
@@ -122,12 +145,12 @@ public class SeriesQuery {
         return tags;
     }
 
-    public void addTags(String tag, String value) {
-        tags.put(tag, value);
-    }
-
     public void setTags(Map<String, String> tags) {
         this.tags = tags;
+    }
+
+    public void addTags(String tag, String value) {
+        tags.put(tag, value);
     }
 
     @Override

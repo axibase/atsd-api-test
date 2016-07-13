@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareDate() throws IOException {
+    public static void prepareDate() throws Exception {
         SeriesMethod.insertSeriesCheck(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
                     setData(Arrays.asList(

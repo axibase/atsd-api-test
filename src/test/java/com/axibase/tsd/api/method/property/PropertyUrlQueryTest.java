@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 
@@ -39,14 +38,14 @@ public class PropertyUrlQueryTest extends PropertyMethod {
 
     /* 1278 */
     @Test
-    public void testEntityNameContainsSlash() throws IOException {
+    public void testEntityNameContainsSlash() throws Exception {
         Property property = new Property("urlquery-property-type-3", "urlquery/entityname-3");
         assertUrlencodedPathHandledSuccessfullyOnUrlQuery(property);
     }
 
     /* 1278 */
     @Test
-    public void testTypeContainsSlash() throws IOException {
+    public void testTypeContainsSlash() throws Exception {
         Property property = new Property("urlquery-property/type-4", "urlquery-entityname-4");
         assertUrlencodedPathHandledSuccessfullyOnUrlQuery(property);
 
@@ -54,7 +53,7 @@ public class PropertyUrlQueryTest extends PropertyMethod {
 
     /* 1278 */
     @Test
-    public void testEntityNameContainsCyrillic() throws IOException {
+    public void testEntityNameContainsCyrillic() throws Exception {
         Property property = new Property("urlquery-property-type-5", "urlqueryйёentityname-5");
         assertUrlencodedPathHandledSuccessfullyOnUrlQuery(property);
 
@@ -62,13 +61,13 @@ public class PropertyUrlQueryTest extends PropertyMethod {
 
     /* 1278 */
     @Test
-    public void testTypeContainsCyrillic() throws IOException {
+    public void testTypeContainsCyrillic() throws Exception {
         Property property = new Property("urlquery-propertyйёtype-6", "urlquery-entityname-6");
         assertUrlencodedPathHandledSuccessfullyOnUrlQuery(property);
 
     }
 
-    public void assertUrlencodedPathHandledSuccessfullyOnUrlQuery(final Property property) throws IOException {
+    public void assertUrlencodedPathHandledSuccessfullyOnUrlQuery(final Property property) throws Exception {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
         Response response = urlQueryProperty(property.getType(), property.getEntity());

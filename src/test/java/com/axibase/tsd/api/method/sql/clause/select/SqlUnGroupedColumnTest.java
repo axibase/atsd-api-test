@@ -10,7 +10,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 
 import static javax.ws.rs.core.Response.Status;
 import static org.testng.Assert.assertEquals;
@@ -25,7 +24,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
-    public static void prepareDate() throws IOException {
+    public static void prepareDate() throws Exception {
         SeriesMethod.insertSeriesCheck(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
                     addData(new Sample("2016-06-29T08:00:00.000Z", "0"));

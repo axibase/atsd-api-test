@@ -6,8 +6,6 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-
-
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

@@ -15,13 +15,20 @@ import java.util.*;
  */
 public class Util {
 
-    private static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final Long REQUEST_INTERVAL = 500L;
     public static final Long EXPECTED_PROCESSING_TIME = 2000L;
     public static final String MIN_QUERYABLE_DATE = "1000-01-01T00:00:00.000Z";
     public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
     public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
     public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
+    public static final String RULE_METRIC_NAME = "test_alert_metric_1";
+    public static final String ALERT_OPEN_VALUE = "0";
+    public static final String ALERT_CLOSE_VALUE = "-1";
+    private static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
+
+    static {
+        Registry.Metric.register(RULE_METRIC_NAME);
+    }
 
     public static Date getCurrentDate() {
         return new Date();
@@ -43,9 +50,11 @@ public class Util {
     public static String ISOFormat(long t) {
         return ISOFormat(new Date(t));
     }
+
     public static String ISOFormat(long t, boolean withMillis, String timeZoneName) {
         return ISOFormat(new Date(t), withMillis, timeZoneName);
     }
+
     public static String ISOFormat(Date date, boolean withMillis, String timeZoneName) {
         String pattern = (withMillis) ? "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" : "yyyy-MM-dd'T'HH:mm:ssXXX";
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
@@ -63,6 +72,28 @@ public class Util {
         return d;
     }
 
+    public static String generateStringFromChar(char c, int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    public static String addOneMS(String date) {
+        return ISOFormat(parseDate(date).getTime() + 1);
+    }
+
+    public static Long getMillis(String date) throws ParseException {
+        return parseDate(date).getTime();
+    }
+
+    public static String transformDateToServerTimeZone(String date, int offsetMinutes) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(parseDate(date));
+        instance.add(Calendar.MINUTE, -offsetMinutes);
+        return ISOFormat(instance.getTime());
+    }
 
     public static class ABNF {
         private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -122,28 +153,5 @@ public class Util {
             }
             return str.toString();
         }
-    }
-
-    public static String generateStringFromChar(char c, int length) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(c);
-        }
-        return sb.toString();
-    }
-
-    public static String addOneMS(String date) {
-        return ISOFormat(parseDate(date).getTime() + 1);
-    }
-
-    public static Long getMillis(String date) throws ParseException {
-        return parseDate(date).getTime();
-    }
-
-    public static String transformDateToServerTimeZone(String date, int offsetMinutes) {
-        Calendar instance = Calendar.getInstance();
-        instance.setTime(parseDate(date));
-        instance.add(Calendar.MINUTE,-offsetMinutes);
-        return ISOFormat(instance.getTime());
     }
 }

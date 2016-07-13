@@ -15,9 +15,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-
 import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.OK;
@@ -69,66 +67,51 @@ public class SeriesMethod extends BaseMethod {
         return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
     }
 
-    public static void insertSeriesCheck(final Series series, long checkTimeoutMillis) throws IOException {
+    public static void insertSeriesCheck(final Series series, long checkTimeoutMillis) throws Exception {
         insertSeriesCheck(Collections.singletonList(series), checkTimeoutMillis);
     }
 
-    public static void insertSeriesCheck(final List<Series> seriesList, long checkTimeoutMillis) throws IOException {
+    public static void insertSeriesCheck(final List<Series> seriesList, long checkTimeoutMillis) throws Exception {
         Response response = insertSeries(seriesList);
         if (OK.getStatusCode() != response.getStatus()) {
-            throw new IOException("Fail to execute insertSeries query");
+            throw new Exception("Fail to execute insertSeries query");
         }
         final long startCheckTimeMillis = System.currentTimeMillis();
         do {
             if (seriesListIsInserted(seriesList)) {
                 return;
             }
-            try {
-                Thread.sleep(Util.REQUEST_INTERVAL);
-            } catch (InterruptedException e) {
-                throw new IOException("Fail to check inserted queries: checking was interrupted.");
-            }
+            Thread.sleep(Util.REQUEST_INTERVAL);
         } while (System.currentTimeMillis() <= startCheckTimeMillis + checkTimeoutMillis);
         if (!seriesListIsInserted(seriesList)) {
-            throw new IOException("Fail to check inserted queries");
+            throw new Exception("Fail to check inserted queries");
         }
     }
 
-    public static void insertSeriesCheck(final Series series) throws IOException {
+    public static void insertSeriesCheck(final Series series) throws Exception {
         insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
     }
 
-    public static void insertSeriesCheck(final List<Series> series) throws IOException {
+    public static void insertSeriesCheck(final List<Series> series) throws Exception {
         insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
     }
 
-    private static boolean seriesListIsInserted(final List<Series> seriesList) throws IOException {
+    public static boolean seriesListIsInserted(final List<Series> seriesList) throws Exception {
         List<SeriesQuery> seriesQueryList = new ArrayList<>();
+        List<Series> formattedSeriesList = new ArrayList<>();
         for (final Series series : seriesList) {
-            seriesQueryList.add(new SeriesQuery(series) {{
-                setTags(series.getTags());
-            }});
+            seriesQueryList.add(new SeriesQuery(series));
+            Series formattedSeries = series.copy();
+            formattedSeries.setTags(series.getFormattedTags());
+            formattedSeriesList.add(formattedSeries);
         }
         Response response = querySeries(seriesQueryList);
-        List<Series> expectedList = new ArrayList<>();
-        for (final Series series : seriesList) {
-            final Map<String, String> formattedTags = new HashMap<>();
-            for (String key : series.getTags().keySet()) {
-                formattedTags.put(key.toLowerCase(), series.getTags().get(key));
-            }
-            expectedList.add(new Series() {{
-                setEntity(series.getEntity().toLowerCase());
-                setData(series.getData());
-                setMetric(series.getMetric());
-                setTags(formattedTags);
-            }});
-        }
-        String expected = jacksonMapper.writeValueAsString(expectedList);
-        String  actual = response.readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(formattedSeriesList);
+        String actual = response.readEntity(String.class);
         return compareJsonString(expected, actual);
     }
 
-    public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
+    public static boolean insertSeries(final Series series, long sleepDuration) throws Exception, InterruptedException, JSONException {
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.close();
         Thread.sleep(sleepDuration);
@@ -156,13 +139,13 @@ public class SeriesMethod extends BaseMethod {
         return executeQuery(Collections.singletonList(seriesQuery));
     }
 
-    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws IOException, JSONException {
+    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws Exception, JSONException {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(seriesQueries));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
         } else {
             response.close();
-            throw new IOException("Failed to execute series query");
+            throw new Exception("Failed to execute series query");
         }
         return new JSONArray(response.readEntity(String.class));
     }
