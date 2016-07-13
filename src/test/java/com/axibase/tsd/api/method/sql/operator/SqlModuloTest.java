@@ -10,7 +10,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.ProcessingException;
-import java.io.IOException;
 import java.util.*;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -27,7 +26,7 @@ public class SqlModuloTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         Registry.Entity.register(TEST_ENTITY_NAME);
         Registry.Metric.register(TEST_METRIC1_NAME);
         Registry.Metric.register(TEST_METRIC2_NAME);

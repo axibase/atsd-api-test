@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.entity;
 import com.axibase.tsd.api.model.entity.Entity;
 import org.testng.annotations.Test;
 
-
 import java.util.HashMap;
 import java.util.Map;
 

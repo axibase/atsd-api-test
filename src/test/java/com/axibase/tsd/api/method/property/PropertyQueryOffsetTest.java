@@ -3,14 +3,11 @@ package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.property.Property;
-
-
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +25,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
 
 
     @BeforeClass
-    public static void prepareProperty() throws IOException {
+    public static void prepareProperty() throws Exception {
         insertPropertyCheck(propertyPast1);
         insertPropertyCheck(propertyMiddl);
         insertPropertyCheck(propertyLast1);
@@ -61,11 +58,11 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         return queryProperty(queryObj);
     }
 
-    //#2947
-    /*
-    Last offset = 0, = 0 therefore Last include
-    Middle offset = 5, > 0 therefore Past do not include
-    Past offset = 10, > 0 therefore Past do not include
+    /**
+     * #2947
+     * Last offset = 0, = 0 therefore Last include
+     * Middle offset = 5, > 0 therefore Past do not include
+     * Past offset = 10, > 0 therefore Past do not include
      */
     @Test
     public void testOffset0SelectsLast() throws Exception {
@@ -74,10 +71,10 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, executeOffsetQuery(0).readEntity(String.class), false);
     }
 
-    //#2947
-    /*
-    offset < 0 therefore include ALL.
-    */
+    /**
+     * #2947
+     * offset < 0 therefore include ALL.
+     */
     @Test
     public void testOffsetNegativeSelectAll() throws Exception {
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));
@@ -85,10 +82,10 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, executeOffsetQuery(-5).readEntity(String.class), false);
     }
 
-    //#2947
-     /*
-    Middle offset = 5, Last offset = 0, <= 5 therefore Middle&Last include
-    Past offset = 10, > 5 therefore Past do not include
+    /**
+     * #2947
+     * Middle offset = 5, Last offset = 0, <= 5 therefore Middle&Last include
+     * Past offset = 10, > 5 therefore Past do not include
      */
     @Test
     public void testOffsetEqualDateDiffSelectsDateInclusive() throws Exception {
@@ -97,10 +94,10 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, executeOffsetQuery(5).readEntity(String.class), false);
     }
 
-    //#2947
-    /*
-    Middle offset = 5, Last offset = 0, < 6 therefore Middle&Last include
-    Past offset = 10, > 6 therefore Past do not include
+    /**
+     * #2947
+     * Middle offset = 5, Last offset = 0, < 6 therefore Middle&Last include
+     * Past offset = 10, > 6 therefore Past do not include
      */
     @Test
     public void testOffsetMoreDateSelectsLessOrEqualDate() throws Exception {
@@ -109,9 +106,9 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         JSONAssert.assertEquals(expected, executeOffsetQuery(6).readEntity(String.class), false);
     }
 
-    //#2947
-     /*
-    Middle offset = 5, Last offset = 0, Past offset = 10 < 100 therefore Past&Middle&Last include
+    /**
+     * #2947
+     * Middle offset = 5, Last offset = 0, Past offset = 10 < 100 therefore Past&Middle&Last include
      */
     @Test
     public void testOffsetLargeSelectAll() throws Exception {

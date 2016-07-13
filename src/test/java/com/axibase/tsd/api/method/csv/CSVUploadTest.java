@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -28,15 +27,15 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class CSVUploadTest extends CSVUploadMethod {
-    private static final String RESOURCE_DIR = "csv_upload";
-    private static final String ENTITY_PREFIX = "e-csv-simple-parser";
-    private static final String METRIC_PREFIX = "m-csv-simple-parser";
     public static final String SIMPLE_PARSER = "simple-parser";
     public static final String SIMPLE_PARSER_ISO = "simple-parser-iso";
     public static final String SIMPLE_PARSER_MS = "simple-parser-ms";
     public static final String LF_PARSER = "lf-parser";
     public static final String CRLF_PARSER = "crlf-parser";
-    public static Integer offsetMinutes  = 0;
+    private static final String RESOURCE_DIR = "csv_upload";
+    private static final String ENTITY_PREFIX = "e-csv-simple-parser";
+    private static final String METRIC_PREFIX = "m-csv-simple-parser";
+    public static Integer offsetMinutes = 0;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {
@@ -289,7 +288,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate,offsetMinutes), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, offsetMinutes), sample.getD());
     }
 
     private void assertSeriesValue(String entity, String metric, String date, String value, JSONArray storedSeriesList) throws JSONException {

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,25 +88,25 @@ public class EntityMethod extends BaseMethod {
 
     public static void createOrReplaceEntityCheck(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
         if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
-            throw new IOException("Can not execute createOrReplaceEntityGroup query");
+            throw new Exception("Can not execute createOrReplaceEntityGroup query");
         }
         if (!entityExist(entity)) {
-            throw new IOException("Fail to check entity createOrReplaceEntityGroup");
+            throw new Exception("Fail to check entity createOrReplaceEntityGroup");
         }
     }
 
 
-    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity) throws IOException {
+    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
         return entityExist(entity, false);
     }
 
-    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity, boolean strict) throws IOException {
+    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity, boolean strict) throws Exception {
         Response response = getEntity(entity.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
         if (response.getStatus() != OK.getStatusCode()) {
-            throw new IOException("Fail to execute queryMetric query");
+            throw new Exception("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class), strict);
     }

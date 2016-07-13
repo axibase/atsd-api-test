@@ -23,7 +23,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
     private static final String TEST_ENTITY2_NAME = TEST_PREFIX + "entity-2";
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         Registry.Entity.register(TEST_ENTITY1_NAME);
         Registry.Entity.register(TEST_ENTITY2_NAME);
         Registry.Metric.register(TEST_METRIC_NAME);

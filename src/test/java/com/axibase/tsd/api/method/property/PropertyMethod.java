@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Collections;
@@ -76,26 +75,26 @@ class PropertyMethod extends BaseMethod {
     }
 
 
-    public static void insertPropertyCheck(final Property property) throws IOException {
+    public static void insertPropertyCheck(final Property property) throws Exception {
         Response response = insertProperty(property);
         if (response.getStatus() != OK.getStatusCode()) {
-            throw new IOException("Can not execute insert property query");
+            throw new Exception("Can not execute insert property query");
         }
 
         if (!propertyExist(property)) {
-            throw new IOException("Fail to check inserted property");
+            throw new Exception("Fail to check inserted property");
         }
     }
 
-    public static boolean propertyExist(final Property property) throws IOException {
+    public static boolean propertyExist(final Property property) throws Exception {
         return propertyExist(property, false);
     }
 
-    public static boolean propertyExist(final Property property, boolean strict) throws IOException {
+    public static boolean propertyExist(final Property property, boolean strict) throws Exception {
         Response response = queryProperty(prepareStrictPropertyQuery(property));
         if (response.getStatus() != OK.getStatusCode()) {
             response.close();
-            throw new IOException("Fail to execute queryProperty");
+            throw new Exception("Fail to execute queryProperty");
         }
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         String given = response.readEntity(String.class);

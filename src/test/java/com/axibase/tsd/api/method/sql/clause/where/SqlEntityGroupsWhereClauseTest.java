@@ -11,7 +11,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     private static final String TEST_CASE_SENSITIVITY_GROUP_NAME = "SQL-entity-groups-where-clause-entity-group";
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         SeriesMethod.insertSeriesCheck(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
                     addData(new Sample("2016-07-14T15:00:07.000Z", "0"));

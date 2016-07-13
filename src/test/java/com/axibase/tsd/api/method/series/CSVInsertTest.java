@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.Util.*;
-
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 

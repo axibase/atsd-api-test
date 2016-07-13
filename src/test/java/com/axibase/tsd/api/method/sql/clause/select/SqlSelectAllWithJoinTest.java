@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +23,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         Registry.Entity.register(TEST_ENTITY_NAME);
         Registry.Metric.register(TEST_METRIC1_NAME);
         Registry.Metric.register(TEST_METRIC2_NAME);

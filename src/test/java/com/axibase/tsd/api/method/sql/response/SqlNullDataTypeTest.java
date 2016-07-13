@@ -10,7 +10,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
 
 
     @BeforeClass
-    public static void initialize() throws IOException {
+    public static void initialize() throws Exception {
         Registry.Metric.register(TEST_METRIC1_NAME);
         Registry.Metric.register(TEST_METRIC2_NAME);
         Registry.Entity.register(TEST_ENTITY_NAME);

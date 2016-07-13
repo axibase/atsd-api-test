@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class SqlGroupByDatetime extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         Registry.Metric.register(TEST_METRIC_NAME);
         Registry.Entity.register(TESTS_ENTITY1_NAME);
         Registry.Entity.register(TESTS_ENTITY2_NAME);

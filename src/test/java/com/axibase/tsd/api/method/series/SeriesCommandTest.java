@@ -4,9 +4,7 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-
 import org.json.JSONArray;
-
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.testng.Assert;

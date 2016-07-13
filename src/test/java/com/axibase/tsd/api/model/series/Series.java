@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.Registry;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -15,7 +16,7 @@ public class Series {
     private String entity;
     private String metric;
     private List<Sample> data;
-    private Map<String, String> tags ;
+    private Map<String, String> tags;
 
     public Series() {
         data = new ArrayList<>();
@@ -35,12 +36,30 @@ public class Series {
         this.tags = new HashMap<>();
     }
 
+    public Series copy() {
+        Series copy = new Series();
+        copy.setEntity(entity);
+        copy.setMetric(metric);
+        copy.setData(new ArrayList<>(data));
+        copy.setTags(new HashMap<>(tags));
+        return copy;
+    }
+
     public String getEntity() {
         return entity;
     }
 
     public void setEntity(String entity) {
         this.entity = entity;
+    }
+
+    @JsonIgnore
+    public Map<String, String> getFormattedTags() {
+        Map<String, String> formattedTags = new HashMap<>();
+        for (Map.Entry<String, String> tag : tags.entrySet()) {
+            formattedTags.put(tag.getKey().toLowerCase(), tag.getValue());
+        }
+        return formattedTags;
     }
 
     public String getMetric() {
@@ -68,14 +87,14 @@ public class Series {
     }
 
     public void addTag(String key, String value) {
-        if(tags == null) {
+        if (tags == null) {
             tags = new HashMap<>();
         }
         tags.put(key, value);
     }
 
     public void addData(Sample sample) {
-        if(data == null) {
+        if (data == null) {
             data = new ArrayList<>();
         }
         data.add(sample);

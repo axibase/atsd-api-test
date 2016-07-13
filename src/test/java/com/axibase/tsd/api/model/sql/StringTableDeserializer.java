@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 /**
  * @author Igor Shmagrinskiy
- * Deserialize class for Object mapper that used in {@link javax.ws.rs.core.Response} class for deserialization of JSON objects
+ *         Deserialize class for Object mapper that used in {@link javax.ws.rs.core.Response} class for deserialization of JSON objects
  */
 class StringTableDeserializer extends JsonDeserializer<StringTable> {
     @Override

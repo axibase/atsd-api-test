@@ -6,14 +6,11 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-
-
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collections;
@@ -22,9 +19,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
@@ -41,7 +36,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public static void prepare() throws Exception {
         try {
             insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
-        } catch (IOException e) {
+        } catch (Exception e) {
             fail("Can not store common dataset");
         }
     }
@@ -261,7 +256,7 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("8");
 
         calendar.setTime(parseDate(MIN_STORABLE_DATE));
-        Date maxStorableDay = parseDate(MAX_STORABLE_DATE);
+        Date maxStorableDay = parseDate("1970-01-14T01:38:00.000Z");//MAX_STORABLE_DATE);
 
         while (calendar.getTime().before(maxStorableDay)) {
             series.addData(new Sample(ISOFormat(calendar.getTime()), v));

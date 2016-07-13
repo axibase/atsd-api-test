@@ -4,7 +4,6 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import org.testng.annotations.Test;
 
-
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;

@@ -23,7 +23,7 @@ public class SqlExamplePercentilesTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
-    public static void prepareData() throws IOException, JSONException, InterruptedException {
+    public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.setData(Arrays.asList(
                 new Sample("2016-06-19T11:00:00.000Z", "11.1212"),

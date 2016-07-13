@@ -22,7 +22,7 @@ public class SqlExamplePerPeriodTest extends SqlTest {
 
 
     @BeforeClass
-    public void prepareData() throws IOException {
+    public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.setData(Arrays.asList(

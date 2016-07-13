@@ -6,9 +6,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 /**
  * @author Dmitry Korchagin.

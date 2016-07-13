@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -607,7 +606,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testEndDateAbsent() throws IOException {
+    public void testEndDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("entity", "test_entity");
@@ -623,7 +622,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testStartDateAbsent() throws IOException {
+    public void testStartDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("entity", "test_entity");
@@ -637,7 +636,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testOnlyTypeSpecified() throws IOException {
+    public void testOnlyTypeSpecified() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
 
@@ -651,7 +650,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testEntityFilterEndDateAbsent() throws IOException {
+    public void testEntityFilterEndDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("type", "test_type");
@@ -666,7 +665,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testEntityFilterAbsent() throws IOException {
+    public void testEntityFilterAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("startDate", "2016-06-01T12:04:59.191Z");
@@ -1426,7 +1425,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 1);
 
-        assertEquals("One property should be received",1, calculateJsonArraySize(formatToJsonString(queryProperty(queryObj))));
+        assertEquals("One property should be received", 1, calculateJsonArraySize(formatToJsonString(queryProperty(queryObj))));
     }
 
 
@@ -1607,7 +1606,6 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("keyTagExpression", "keys.uniq = '" + keyValue.toUpperCase() + "'");
         assertEquals("One property should be received", 1, calculateJsonArraySize(formatToJsonString(queryProperty(queryObj))));
     }
-
 
 
     /**

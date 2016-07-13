@@ -4,7 +4,6 @@ import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.metric.Metric;
 import org.testng.annotations.Test;
 
-
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.*;

@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +24,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         Registry.Entity.register(TEST_ENTITY1_NAME);
         Registry.Entity.register(TEST_ENTITY2_NAME);
         Registry.Metric.register(TEST_METRIC_NAME);
