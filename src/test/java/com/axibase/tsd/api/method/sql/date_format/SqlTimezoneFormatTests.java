@@ -94,4 +94,20 @@ public class SqlTimezoneFormatTests extends SqlTest {
 
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
+
+    /**
+     * issue #2904
+     */
+    @Test
+    public void testSimpleDateFormatZeroZoneAndGMT() {
+        String sqlQuery = "SELECT time,  date_format(time,'yyyy-MM-dd HH:mm:ss ZZ','PST') AS 'f-date'" +
+                "FROM 'sql-date-format-timezone-metric' " +
+                "WHERE datetime = '2016-06-03T09:23:00.000Z'";
+
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        List<String> expectedColumnValues = Arrays.asList("2016-06-03 02:23:00 -07:00");
+
+        assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
+    }
 }
