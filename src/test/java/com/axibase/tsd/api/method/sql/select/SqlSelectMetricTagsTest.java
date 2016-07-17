@@ -33,7 +33,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() {
-        Series series = new Series(TEST_METRIC_NAME, TEST_ENTITY_NAME);
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         sendSamplesToSeries(series,
                 new Sample("2016-06-29T08:00:00.000Z", "0"));
         updateSeriesMetricTags(series, Collections.unmodifiableMap(new HashMap<String, String>() {{
