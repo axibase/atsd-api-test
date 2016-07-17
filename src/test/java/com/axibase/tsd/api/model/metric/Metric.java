@@ -3,7 +3,8 @@ package com.axibase.tsd.api.model.metric;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.series.DataType;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Metric {
@@ -17,6 +18,7 @@ public class Metric {
     private String invalidAction;
     private String lastInsertDate;
     private Boolean versioned;
+    private Map<String, String> tags;
 
     public Metric() {
     }
@@ -32,79 +34,100 @@ public class Metric {
         return invalidAction;
     }
 
-    public void setInvalidAction(String invalidAction) {
+    public Metric setInvalidAction(String invalidAction) {
         this.invalidAction = invalidAction;
+        return this;
     }
 
     public String getLastInsertDate() {
         return lastInsertDate;
     }
 
-    public void setLastInsertDate(String lastInsertDate) {
+    public Metric setLastInsertDate(String lastInsertDate) {
         this.lastInsertDate = lastInsertDate;
+        return this;
     }
 
     public Boolean getVersioned() {
         return versioned;
     }
 
-    public void setVersioned(Boolean versioned) {
+    public Metric setVersioned(Boolean versioned) {
         this.versioned = versioned;
+        return this;
     }
 
     public Boolean getCounter() {
         return counter;
     }
 
-    public void setCounter(Boolean counter) {
+    public Metric setCounter(Boolean counter) {
         this.counter = counter;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Metric setName(String name) {
         this.name = name;
+        return this;
     }
 
     public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    public Metric setEnabled(Boolean enabled) {
         this.enabled = enabled;
+        return this;
     }
 
     public Boolean getPersistent() {
         return persistent;
     }
 
-    public void setPersistent(Boolean persistent) {
+    public Metric setPersistent(Boolean persistent) {
         this.persistent = persistent;
+        return this;
     }
 
     public DataType getDataType() {
         return dataType;
     }
 
-    public void setDataType(DataType dataType) {
+    public Metric setDataType(DataType dataType) {
         this.dataType = dataType;
+        return this;
     }
 
     public String getTimePrecision() {
         return timePrecision;
     }
 
-    public void setTimePrecision(String timePrecision) {
+    public Metric setTimePrecision(String timePrecision) {
         this.timePrecision = timePrecision;
+        return this;
+
     }
 
     public String getRetentionInterval() {
         return retentionInterval;
     }
 
-    public void setRetentionInterval(String retentionInterval) {
+    public Metric setRetentionInterval(String retentionInterval) {
         this.retentionInterval = retentionInterval;
+        return this;
+    }
+
+    public Map<String, String> getTags() {
+        return tags;
+
+    }
+
+    public Metric setTags(Map<String, String> tags) {
+        this.tags = tags;
+        return this;
     }
 }
