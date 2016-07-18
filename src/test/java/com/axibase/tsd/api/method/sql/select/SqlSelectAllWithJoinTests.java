@@ -44,11 +44,7 @@ public class SqlSelectAllWithJoinTests extends SqlTest {
 
     /**
      * Following tests related to issue #3033
-     */
-
-
-    /**
-     * issue #3033
+     * Issue #3033
      */
     @Test
     public void testSelectAllColumnsWithAlias() {
@@ -75,7 +71,7 @@ public class SqlSelectAllWithJoinTests extends SqlTest {
 
 
     /**
-     * issue #3033
+     * Issue #3033
      */
     @Test
     public void testSelectAllColumnsWithoutAlias() {
@@ -102,7 +98,7 @@ public class SqlSelectAllWithJoinTests extends SqlTest {
 
 
     /**
-     * issue #3033
+     * Issue #3033
      */
     @Test
     public void testSelectAllColumnsFromTableAlias() {
@@ -113,10 +109,36 @@ public class SqlSelectAllWithJoinTests extends SqlTest {
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                TEST_METRIC1_NAME + ".entity",
-                TEST_METRIC1_NAME + ".value",
-                TEST_METRIC1_NAME + ".datetime",
-                TEST_METRIC1_NAME + ".tags.a"
+                "t1.entity",
+                "t1.value",
+                "t1.datetime",
+                "t1.tags.a"
+        );
+
+        assertTableColumnsNames(expectedColumnNames, resultTable);
+    }
+
+    /**
+     * Issue #3033
+     */
+    @Test
+    public void testSelectAllColumnsFromSeveralTableAliases() {
+        String sqlQuery =
+                "SELECT t1.*, t2.* FROM 'sql-select-all-join-metric-1' t1 " +
+                        "JOIN 'sql-select-all-join-metric-2' t2";
+
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        List<String> expectedColumnNames = Arrays.asList(
+                "t1.entity",
+                "t2.entity",
+                "t1.value",
+                "t2.value",
+                "t1.datetime",
+                "t2.datetime",
+                "t1.tags.a",
+                "t2.tags.a",
+                "t2.tags.b"
         );
 
         assertTableColumnsNames(expectedColumnNames, resultTable);

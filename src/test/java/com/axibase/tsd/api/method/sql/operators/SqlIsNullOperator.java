@@ -33,17 +33,6 @@ public class SqlIsNullOperator extends SqlTest {
                     put("tag1", "val1");
                 }})
         );
-        try {
-            EntityMethod.updateEntity(new Entity() {{
-                setName(series.getEntity());
-                setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                    put("tag1", "val1");
-                }}));
-            }});
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to update Entity");
-        }
-
 
         sendSamplesToSeries(series, new Sample("2016-06-19T11:00:00.000Z", 1));
         series.setEntity(TEST_PREFIX + "entity-2");
