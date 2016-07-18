@@ -39,9 +39,13 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         updateSeriesMetricTags(series, Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("a", "b");
             put("b", "c");
+            put("a-b", "b-c");
+            put("Tag", "V");
         }}));
 
     }
+
+
 
     /*
       Following tests related to issue #3056
@@ -63,7 +67,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableColumnsNames(Arrays.asList("metric.tags"), resultTable);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("a=b;b=c")
+                Arrays.asList("Tag=V;a=b;a-b=b-c;b=c")
         );
         assertTableRows(expectedRows, resultTable);
     }
@@ -80,10 +84,14 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        assertTableColumnsNames(Arrays.asList(TEST_METRIC_NAME + ".metric.tags.a", TEST_METRIC_NAME + ".metric.tags.b"), resultTable);
+        assertTableColumnsNames(Arrays.asList(
+                TEST_METRIC_NAME + ".metric.tags.Tag",
+                TEST_METRIC_NAME + ".metric.tags.a",
+                TEST_METRIC_NAME + ".metric.tags.a-b",
+                TEST_METRIC_NAME + ".metric.tags.b"), resultTable);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("b", "c")
+                Arrays.asList("V", "b", "b-c", "c")
         );
         assertTableRows(expectedRows, resultTable);
     }
@@ -105,6 +113,73 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("b")
+        );
+        assertTableRows(expectedRows, resultTable);
+    }
+
+
+    /**
+     * Issue #3056
+     */
+    @Test
+    public void testSelectMetricSpecifiedTagWithDash() {
+        String sqlQuery =
+                "SELECT metric.tags.'a-b'\n" +
+                        "FROM 'sql-select-metric-tags-metric'\n" +
+                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        assertTableColumnsNames(Arrays.asList("metric.tags.'a-b'"), resultTable);
+
+        List<List<String>> expectedRows = Arrays.asList(
+                Arrays.asList("b-c")
+        );
+        assertTableRows(expectedRows, resultTable);
+    }
+
+
+    /**
+     * Issue #3056
+     */
+    @Test
+    public void testSelectMetricSpecifiedTagCaseSensitivityFalse()
+
+    {
+        String sqlQuery =
+                "SELECT metric.tags.tag\n" +
+                        "FROM 'sql-select-metric-tags-metric'\n" +
+                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        assertTableColumnsNames(Arrays.asList("metric.tags.tag"), resultTable);
+
+        List<List<String>> expectedRows = Arrays.asList(
+                Arrays.asList("null")
+        );
+        assertTableRows(expectedRows, resultTable);
+    }
+
+
+    /**
+     * Issue #3056
+     */
+    @Test
+    public void testSelectMetricSpecifiedTagCaseSensitivityTrue()
+
+    {
+        String sqlQuery =
+                "SELECT metric.tags.Tag\n" +
+                        "FROM 'sql-select-metric-tags-metric'\n" +
+                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        assertTableColumnsNames(Arrays.asList("metric.tags.Tag"), resultTable);
+
+        List<List<String>> expectedRows = Arrays.asList(
+                Arrays.asList("V")
         );
         assertTableRows(expectedRows, resultTable);
     }
