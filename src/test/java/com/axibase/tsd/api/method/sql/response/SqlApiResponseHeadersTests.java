@@ -42,7 +42,7 @@ public class SqlApiResponseHeadersTests extends SqlMethod {
                 .request()
                 .head();
         Set<String> responseAllowedMethods = parseResponseAllowedMethods(response);
-        response.close();
+        response.bufferEntity();
 
 
         Assert.assertEquals(expectedAllowedMethods, responseAllowedMethods);
@@ -56,7 +56,7 @@ public class SqlApiResponseHeadersTests extends SqlMethod {
                 .request()
                 .get();
         Assert.assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
-        response.close();
+        response.bufferEntity();
 
     }
 
@@ -68,7 +68,7 @@ public class SqlApiResponseHeadersTests extends SqlMethod {
                 .request()
                 .get();
         Assert.assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
-        response.close();
+        response.bufferEntity();
 
     }
 
@@ -82,7 +82,7 @@ public class SqlApiResponseHeadersTests extends SqlMethod {
                 .post(Entity.entity(form,
                         MediaType.APPLICATION_FORM_URLENCODED));
         Assert.assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
-        response.close();
+        response.bufferEntity();
 
     }
 
