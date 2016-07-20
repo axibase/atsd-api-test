@@ -128,7 +128,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, COUNT(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("1", resultTable.getValueAt(4, 0));
@@ -144,7 +145,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, SUM(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -160,7 +162,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, AVG(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -175,7 +178,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, AVG(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -190,7 +194,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, AVG(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -206,7 +211,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, FIRST(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -222,7 +228,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, FIRST(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -238,7 +245,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, DELTA(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
@@ -253,7 +261,8 @@ public class SqlNullDataTypeTest extends SqlMethod {
                 "SELECT datetime, entity, t1.value, t2.value, LAST(t2.value), 0.0/0.0 as nancol\n" +
                         "FROM 'sql-data-type-null-metric-1' t1\n" +
                         "OUTER JOIN 'sql-data-type-null-metric-2' t2\n" +
-                        "WHERE entity = 'sql-data-type-null-entity'";
+                        "WHERE entity = 'sql-data-type-null-entity'\n" +
+                        "GROUP BY entity,time, t1.value, t2.value";
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("0.0", resultTable.getValueAt(4, 0));
