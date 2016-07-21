@@ -26,6 +26,8 @@ public class SqlIsNullOperatorTest extends SqlTest {
             }}));
         }};
 
+        sendSamplesToSeries(series, new Sample("2016-06-19T11:00:00.000Z", 1));
+
         //Update series' entity
         updateSeriesEntityTags(
                 series,
@@ -33,8 +35,6 @@ public class SqlIsNullOperatorTest extends SqlTest {
                     put("tag1", "val1");
                 }})
         );
-
-        sendSamplesToSeries(series, new Sample("2016-06-19T11:00:00.000Z", 1));
         series.setEntity(TEST_PREFIX + "entity-2");
         series.setTags(Collections.
                 unmodifiableMap(new HashMap<String, String>() {{
