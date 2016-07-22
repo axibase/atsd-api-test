@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
@@ -252,7 +251,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformToCorrectTimeZone(expectedDate), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, offsetMinutes), sample.getD());
     }
 
     /* #3011 */
@@ -272,7 +271,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformToCorrectTimeZone(expectedDate), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, offsetMinutes), sample.getD());
     }
 
     /* #3011 */
@@ -292,7 +291,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformToCorrectTimeZone(expectedDate), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate,offsetMinutes), sample.getD());
     }
 
     private void assertSeriesValue(String entity, String metric, String date, String value, JSONArray storedSeriesList) throws JSONException {
@@ -330,12 +329,5 @@ public class CSVUploadTest extends CSVUploadMethod {
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
         assertSeriesValue(entityName, metricName, "2016-06-19T00:00:00.000Z", "123.45", storedSeriesList);
-    }
-
-    private String transformToCorrectTimeZone(String expectedDate) {
-        Calendar instance = Calendar.getInstance();
-        instance.setTime(parseDate(expectedDate));
-        instance.add(Calendar.MINUTE,-offsetMinutes);
-        return ISOFormat(instance.getTime());
     }
 }

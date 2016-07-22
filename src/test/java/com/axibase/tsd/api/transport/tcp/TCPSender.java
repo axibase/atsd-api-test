@@ -1,5 +1,8 @@
 package com.axibase.tsd.api.transport.tcp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,6 +13,9 @@ import java.net.Socket;
  * @author Dmitry Korchagin.
  */
 public class TCPSender {
+
+    private static final Logger logger = LoggerFactory.getLogger(TCPSender.class);
+
     private String url;
     private Integer port;
     private StringBuilder command;
@@ -45,6 +51,7 @@ public class TCPSender {
     }
 
     public void send(String command, long sleepDuration) throws IOException, InterruptedException {
+        logger.debug(" > =====TCP=====\n > Sending via tcp://{}:{}\n > {}", url, port, command);
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         requestStream.writeBytes(command + '\n');

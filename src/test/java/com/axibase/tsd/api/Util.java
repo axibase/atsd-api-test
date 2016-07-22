@@ -139,4 +139,11 @@ public class Util {
     public static Long getMillis(String date) throws ParseException {
         return parseDate(date).getTime();
     }
+
+    public static String transformDateToServerTimeZone(String date, int offsetMinutes) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(parseDate(date));
+        instance.add(Calendar.MINUTE,-offsetMinutes);
+        return ISOFormat(instance.getTime());
+    }
 }

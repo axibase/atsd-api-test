@@ -142,7 +142,7 @@ public class SeriesInsertTest extends SeriesMethod {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored float value precision incorrect", new BigDecimal("9.0E16"), seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored double value precision incorrect", new BigDecimal("9.0E16"), seriesList.get(0).getData().get(0).getV());
     }
 
     /* #2871 */
