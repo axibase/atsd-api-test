@@ -3,9 +3,11 @@ package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.property.Property;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;

@@ -8,8 +8,9 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.junit.Test;
+
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.*;
-import static org.junit.Assert.*;
+import static org.testng.AssertJUnit.*;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -376,7 +377,7 @@ public class SeriesInsertTest extends SeriesMethod {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
-        assertNotEquals("Empty data in response", 0, data.size());
+        assertNotSame("Empty data in response", 0, data.size());
         assertEquals(v, data.get(0).getV());
     }
 
@@ -395,7 +396,7 @@ public class SeriesInsertTest extends SeriesMethod {
                 MAX_STORABLE_DATE, NEXT_AFTER_MAX_STORABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
-        assertNotEquals("Empty data in response", 0, data.size());
+        assertNotSame("Empty data in response", 0, data.size());
         assertEquals(v, data.get(0).getV());
     }
 

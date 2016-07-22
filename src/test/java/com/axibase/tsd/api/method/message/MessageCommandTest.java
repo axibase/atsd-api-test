@@ -3,14 +3,16 @@ package com.axibase.tsd.api.method.message;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
+
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collections;
 
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class MessageCommandTest extends MessageMethod {
     /* #2412 */
@@ -41,8 +43,7 @@ public class MessageCommandTest extends MessageMethod {
 
         message.setMessage(m.toString());
         sb.append(message.getMessage());
-
-        Assert.assertEquals("Command length is not maximal", MAX_LENGTH, sb.length());
+        Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
         tcpSender.send(sb.toString(), 1000);
 
         MessageQuery messageQuery = new MessageQuery();

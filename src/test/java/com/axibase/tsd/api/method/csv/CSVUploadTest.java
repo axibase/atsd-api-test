@@ -11,21 +11,21 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
@@ -37,9 +37,6 @@ public class CSVUploadTest extends CSVUploadMethod {
     public static final String LF_PARSER = "lf-parser";
     public static final String CRLF_PARSER = "crlf-parser";
     public static Integer offsetMinutes  = 0;
-
-    @Rule
-    public TestName name = new TestName();
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {
@@ -56,143 +53,144 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     /* #2916 */
     @Test
-    public void testPlainCsvMultipartUpload() throws Exception {
+    public void testPlainCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-1";
         String metricName = METRIC_PREFIX + "-1";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
+
     }
 
     /* #2916 */
     @Test
-    public void testPlainCsvBinaryUpload() throws Exception {
+    public void testPlainCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-2";
         String metricName = METRIC_PREFIX + "-2";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2919 */
     @Test
-    public void testTarGzCsvMultipartUpload() throws Exception {
+    public void testTarGzCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-3";
         String metricName = METRIC_PREFIX + "-3";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".tar.gz");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2919 */
     @Test
-    public void testTarGzCsvBinaryUpload() throws Exception {
+    public void testTarGzCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-4";
         String metricName = METRIC_PREFIX + "-4";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".tar.gz");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2919 */
     @Test
-    public void testZipCsvMultipartUpload() throws Exception {
+    public void testZipCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-5";
         String metricName = METRIC_PREFIX + "-5";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".zip");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2919 */
     @Test
-    public void testZipCsvBinaryUpload() throws Exception {
+    public void testZipCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-6";
         String metricName = METRIC_PREFIX + "-6";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".zip");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2919 */
     @Test
-    public void testGzCsvMultipartUpload() throws Exception {
+    public void testGzCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-7";
         String metricName = METRIC_PREFIX + "-7";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".gz");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".gz");
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2919 */
     @Test
-    public void testGzCsvBinaryUpload() throws Exception {
+    public void testGzCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-8";
         String metricName = METRIC_PREFIX + "-8";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".gz");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".gz");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2966 */
     @Test
-    public void testDSStoreFileInTarGz() throws Exception {
+    public void testDSStoreFileInTarGz(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-9";
         String metricName = METRIC_PREFIX + "-9";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".tar.gz");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2966 */
     @Test
-    public void testMetaFileInTarGz() throws Exception {
+    public void testMetaFileInTarGz(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-10";
         String metricName = METRIC_PREFIX + "-10";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".tar.gz");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2966 */
     @Test
-    public void testDSStoreFileInZip() throws Exception {
+    public void testDSStoreFileInZip(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-11";
         String metricName = METRIC_PREFIX + "-11";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".zip");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2966 */
     @Test
-    public void testMetaFileInZip() throws Exception {
+    public void testMetaFileInZip(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-12";
         String metricName = METRIC_PREFIX + "-12";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".zip");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
     /* #2957 */
     @Test
-    public void testTimeRangeInISO() throws Exception {
+    public void testTimeRangeInISO(Method method) throws Exception {
         Entity entity = new Entity("e-csv-simple-parser-iso-0");
         Metric metric = new Metric("m-csv-simple-parser-iso-0");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_ISO);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -212,11 +210,11 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     /* #2957 */
     @Test
-    public void testTimeRangeInMS() throws Exception {
+    public void testTimeRangeInMS(Method method) throws Exception {
         Entity entity = new Entity("e-csv-simple-parser-ms-1");
         Metric metric = new Metric("m-csv-simple-parser-ms-1");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_MS);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -236,11 +234,11 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     /* #3011 */
     @Test
-    public void testFileWithCRLineBreak() throws Exception {
+    public void testFileWithCRLineBreak(Method method) throws Exception {
         Entity entity = new Entity("e-cr-parser-ms-2");
         Metric metric = new Metric("m-cr-parser-ms-2");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -256,11 +254,11 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     /* #3011 */
     @Test
-    public void testFileWithLFLineBreak() throws Exception {
+    public void testFileWithLFLineBreak(Method method) throws Exception {
         Entity entity = new Entity("e-lf-parser-ms-3");
         Metric metric = new Metric("m-lf-parser-ms-3");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         Response response = binaryCsvUpload(csvPath, LF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -276,11 +274,11 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     /* #3011 */
     @Test
-    public void testFileWithCRLFLineBreak() throws Exception {
+    public void testFileWithCRLFLineBreak(Method method) throws Exception {
         Entity entity = new Entity("e-crlf-parser-ms-4");
         Metric metric = new Metric("m-crlf-parser-ms-4");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());

@@ -7,7 +7,8 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * @author Dmitry Korchagin.

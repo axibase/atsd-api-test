@@ -7,10 +7,9 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -23,7 +22,7 @@ import static com.axibase.tsd.api.Util.MAX_STORABLE_DATE;
 import static com.axibase.tsd.api.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.junit.Assert.*;
+import static org.testng.AssertJUnit.*;
 
 /**
  * @author Dmitry Korchagin.
@@ -219,13 +218,12 @@ public class PropertyInsertTest extends PropertyMethod {
         property.setDate(addOneMS(MAX_STORABLE_DATE));
 
         Response response = insertProperty(property);
-        assertNotEquals("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());
+        assertNotSame("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());
 
         assertFalse(propertyExist(property));
     }
 
-    @Ignore //behaviour is not defined
-    @Test //#2957
+    @Test(enabled = false)//#2957
     public void testSameTimeSamePropertyConjunction() throws Exception {
         final long timeMillis = System.currentTimeMillis();
         final Property property = new Property("insert-type8", "insert-entity8");
@@ -277,9 +275,9 @@ public class PropertyInsertTest extends PropertyMethod {
         });
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
-        Assert.assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
-        Assert.assertEquals("Incorrect property date", date, storedProperty.getDate());
+        Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
+        Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
+        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
     }
 
     /* #2850 */
@@ -309,9 +307,9 @@ public class PropertyInsertTest extends PropertyMethod {
         });
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
-        Assert.assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
-        Assert.assertEquals("Incorrect property date", date, storedProperty.getDate());
+        Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
+        Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
+        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
     }
 
     /* #2850 */
@@ -341,9 +339,9 @@ public class PropertyInsertTest extends PropertyMethod {
         });
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
-        Assert.assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
-        Assert.assertEquals("Incorrect property date", date, storedProperty.getDate());
+        Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
+        Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
+        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
     }
 
     /* #2850 */

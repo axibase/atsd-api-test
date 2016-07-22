@@ -2,12 +2,13 @@ package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.entity.Entity;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 
 /**
  * @author Dmitry Korchagin.

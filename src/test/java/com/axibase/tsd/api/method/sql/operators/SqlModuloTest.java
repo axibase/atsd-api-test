@@ -5,14 +5,15 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 
 import javax.ws.rs.ProcessingException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * @author Igor Shmagrinskiy
@@ -241,7 +242,7 @@ public class SqlModuloTest extends SqlTest {
     /**
      * issue #2922
      */
-    @Test(expected = ProcessingException.class)
+    @Test(expectedExceptions = ProcessingException.class)
     public void testDividingStringByString() {
         String sqlQuery =
                 "SELECT entity, datetime, tags.a , tags.b , tags.a % tags.b AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
@@ -255,7 +256,7 @@ public class SqlModuloTest extends SqlTest {
     /**
      * issue #2922
      */
-    @Test(expected = ProcessingException.class)
+    @Test(expectedExceptions = ProcessingException.class)
     public void testDividingNaNByNumber() {
         String sqlQuery =
                 "SELECT entity, datetime, value, 0/0 % m1.value AS 'modulo' FROM 'sql-modulo-metric-1'\n " +

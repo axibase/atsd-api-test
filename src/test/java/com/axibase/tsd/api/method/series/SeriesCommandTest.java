@@ -4,11 +4,13 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import junit.framework.Assert;
+
 import org.json.JSONArray;
-import org.junit.Test;
+
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +87,7 @@ public class SeriesCommandTest extends SeriesMethod {
         JSONArray storedSeriesList = executeQuery(seriesQueries);
 
         for (int i = 0; i < METRICS_COUNT; i++) {
-            Assert.assertEquals("Managed to insert command that length is max + 1", "[]", getField(i, "data", storedSeriesList));
+            Assert.assertEquals("[]", getField(i, "data", storedSeriesList), "Managed to insert command that length is max + 1");
         }
     }
 }

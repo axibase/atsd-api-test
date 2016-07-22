@@ -5,22 +5,22 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class ParserEncodingTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "parser_encoding";
@@ -29,9 +29,6 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
     public static final String ISO_8859_1 = "ISO-8859-1";
     public static final String WINDOWS_1251 = "Windows-1251";
-
-    @Rule
-    public TestName name = new TestName();
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException {
@@ -42,20 +39,20 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
     /* #2916 */
     @Test
-    public void testCsvCorrectTextEncodingISO8859_1() throws Exception {
+    public void testCsvCorrectTextEncodingISO8859_1(Method method) throws Exception {
         String controlSequence = "¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
         String entityName = ENTITY_PREFIX+"-1";
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, ISO_8859_1);
     }
 
     /* #2916 */
     @Test
-    public void testCsvCorrectTextEncodingWindows1251() throws Exception {
+    public void testCsvCorrectTextEncodingWindows1251(Method method) throws Exception {
         String controlSequence = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
         String entityName = ENTITY_PREFIX+"-2";
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + name.getMethodName() + ".csv");
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
 
         checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, WINDOWS_1251);
     }

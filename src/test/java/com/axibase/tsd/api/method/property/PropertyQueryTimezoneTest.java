@@ -6,16 +6,18 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-import org.junit.Before;
-import org.junit.Test;
+
+
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class PropertyQueryTimezoneTest extends PropertyMethod {
     private static final Property property;
@@ -26,7 +28,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         property.setDate("2016-05-21T00:00:00.000Z");
     }
 
-    @Before
+    @BeforeMethod
     public void prepare() throws Exception {
         insertPropertyCheck(property);
     }

@@ -2,13 +2,14 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.metric.Metric;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 
 public class MetricDeleteTest extends MetricMethod {
 

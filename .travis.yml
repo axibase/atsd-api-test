@@ -1,6 +1,7 @@
 language: java
 sudo: false
+install: true
 script:
-    - mvn clean test -Dmaven.test.failure.ignore=false  -DargLine="-Dlogin=$travisLogin -Dpassword=$travisPassword -DhttpPort=39088 -DtcpPort=39081 -DloggerLevel=info"
+    - mvn clean test -Dmaven.test.failure.ignore=false -Dlogin=$travisLogin -Dpassword=$travisPassword -DhttpPort=49088 -DtcpPort=49081 -DloggerLevel=info
 jdk:
     - openjdk7

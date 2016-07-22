@@ -4,9 +4,11 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.AssertJUnit;
+
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -14,7 +16,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageInsertTest extends MessageMethod {
 
@@ -31,7 +33,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage(messageText);
         message.setDate(date);
 
-        Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
+        Assert.assertTrue(insertMessage(message, 1000), "Fail to insert message");
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity("nurswgvml022");
@@ -92,8 +94,8 @@ public class MessageInsertTest extends MessageMethod {
         List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {});
 
         Message msgResponse = storedMessageList.get(0);
-        Assert.assertEquals("Max storable date failed to save", message.getDate(), msgResponse.getDate());
-        Assert.assertEquals("Incorrect stored message", message.getMessage(), msgResponse.getMessage());
+        Assert.assertEquals(message.getDate(), msgResponse.getDate(), "Max storable date failed to save");
+        Assert.assertEquals(message.getMessage(), msgResponse.getMessage(), "Incorrect stored message");
     }
 
     /* #2957 */

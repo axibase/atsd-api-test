@@ -6,7 +6,8 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -14,8 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.Util.*;
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotSame;
+
 
 public class CSVInsertTest extends CSVInsertMethod {
     /* #2009 */
@@ -176,7 +178,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         List<Series> series = executeQueryReturnSeries(seriesQuery);
         List<Sample> data = series.get(0).getData();
 
-        assertNotEquals("Empty data in returned series", 0, data.size());
+        assertNotSame("Empty data in returned series", 0, data.size());
 
         assertEquals("Out of range data were inserted", 2, data.size());
 
@@ -203,7 +205,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         List<Series> series = executeQueryReturnSeries(seriesQuery);
         List<Sample> data = series.get(0).getData();
 
-        assertNotEquals("Empty data in returned series", 0, data.size());
+        assertNotSame("Empty data in returned series", 0, data.size());
 
         assertEquals("Out of range data were inserted", 2, data.size());
 

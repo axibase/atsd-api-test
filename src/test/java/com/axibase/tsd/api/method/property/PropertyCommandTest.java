@@ -2,15 +2,17 @@ package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.model.property.Property;
 import org.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
+
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class PropertyCommandTest extends PropertyMethod {
     /* #2412 */
@@ -39,7 +41,7 @@ public class PropertyCommandTest extends PropertyMethod {
             property.addTag(tagName, textValue);
         }
 
-        Assert.assertEquals("Command length is not maximal", MAX_LENGTH, sb.length());
+        Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
         tcpSender.send(sb.toString(), 1000);
 
         Thread.sleep(1000);

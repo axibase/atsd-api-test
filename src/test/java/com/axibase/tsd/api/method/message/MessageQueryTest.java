@@ -4,17 +4,19 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.Assert;
+
+
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageQueryTest extends MessageMethod {
     private static final Message message;
@@ -24,9 +26,9 @@ public class MessageQueryTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T00:00:00.000Z");
     }
-    @Before
+    @BeforeMethod
     public void prepare() throws Exception {
-        Assert.assertTrue("Fail to insert message", insertMessage(message, 1000));
+        Assert.assertTrue(insertMessage(message, 1000), "Fail to insert message");
     }
 
 

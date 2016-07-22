@@ -5,8 +5,9 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 
 import javax.ws.rs.ProcessingException;
 import java.util.Arrays;
@@ -14,8 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * @author Igor Shmagrinskiy
@@ -42,7 +43,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     /**
      * issue #2933
      */
-    @Test(expected = ProcessingException.class)
+    @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsFalse() {
         final String sqlQuery = "" +
                 "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
@@ -55,7 +56,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     /**
      * issue #2933
      */
-    @Test(expected = ProcessingException.class)
+    @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsTrue() {
         final String sqlQuery = "" +
                 "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
