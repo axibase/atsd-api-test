@@ -5,7 +5,10 @@ import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+//import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.json.JSONArray;
@@ -30,7 +33,6 @@ import java.util.logging.Level;
 public abstract class BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final String METHOD_VERSION = "/version";
     protected static TCPSender tcpSender;
     protected static ObjectMapper jacksonMapper;
     protected static WebTarget httpApiResource;
@@ -94,12 +96,6 @@ public abstract class BaseMethod {
 
     public static int calculateJsonArraySize(String jsonArrayString) throws JSONException {
         return new JSONArray(jsonArrayString).length();
-    }
-
-    public static Response queryATSDVersion() {
-        Response response = httpApiResource.path(METHOD_VERSION).request().get();
-        response.bufferEntity();
-        return response;
     }
 
 }
