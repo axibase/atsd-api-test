@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.method.csv;
 
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
@@ -51,7 +51,7 @@ public class CSVUploadTest extends CSVUploadMethod {
             if (!success)
                 Assert.fail("Failed to import parser");
         }
-        JSONObject jsonObject = new JSONObject(VersionMethod.execute().readEntity(String.class));
+        JSONObject jsonObject = new JSONObject(BaseMethod.queryATSDVersion().readEntity(String.class));
         offsetMinutes = Integer.parseInt(((JSONObject) ((JSONObject) jsonObject.get("date")).get("timeZone")).get("offsetMinutes").toString());
     }
 
