@@ -1,7 +1,13 @@
 language: java
-sudo: false
+sudo: required
 install: true
+services:
+    - docker
+
+before_install:
+    - docker pull axibase/atsd:api_test
+    - docker run -d -p 8088:8088 -p 8081:8081 --name="atsd-api-test" -e axiname="$login" -e axipass="$password" axibase/atsd:api_test
 script:
-    - mvn clean test -Dmaven.test.failure.ignore=false -Dlogin=$travisLogin -Dpassword=$travisPassword -DhttpPort=49088 -DtcpPort=49081 -DloggerLevel=info
+    - mvn clean test -Dmaven.test.failure.ignore=false -DserverName=localhost -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=info
 jdk:
     - openjdk7
