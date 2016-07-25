@@ -28,7 +28,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
     }
     /*
-    Following tasks related to #3039 issue
+    Following tasks related to #3049 issue
      */
 
     /**
