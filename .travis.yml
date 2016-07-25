@@ -1,7 +1,24 @@
 language: java
-sudo: false
-install: true
-script:
-    - mvn clean test -Dmaven.test.failure.ignore=false -Dlogin=$travisLogin -Dpassword=$travisPassword -DhttpPort=49088 -DtcpPort=49081 -DloggerLevel=info
 jdk:
     - openjdk7
+sudo: required
+install: true
+services:
+    - docker
+addons:
+    hosts:
+        - atsd_travis
+cache:
+    directories:
+        - $HOME/.m2
+before_install:
+    - docker pull axibase/atsd:api_test
+    - docker run -d -p 8088:8088 -p 8081:8081 --name="atsd-api-test" -e axiname="$travisLogin" -e axipass="$travisPassword" axibase/atsd:api_test
+    - sudo hostname "$(hostname | cut -c1-63)"
+    - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
+    - cat /etc/hosts # optionally check the content *after*
+    - docker ps -a
+    - docker logs atsd-api-test
+    - while ! curl atsd_travis:8088 >/dev/null 2>&1; do echo "waiting to start $name server ..."; sleep 3; done
+script:
+    - mvn clean test -Dmaven.test.failure.ignore=false -DserverName="atsd_travis" -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=debug
