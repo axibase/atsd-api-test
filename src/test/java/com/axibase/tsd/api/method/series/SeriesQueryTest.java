@@ -245,7 +245,7 @@ public class SeriesQueryTest extends SeriesMethod {
             Response response = insertSeries(series);
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
-                    response.getStatusInfo().getStatusCode(), Response.Status.BAD_REQUEST.getStatusCode());
+                    BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     "{\"error\":\"IllegalArgumentException: Negative timestamp\"}", response.readEntity(String.class));
 
@@ -284,7 +284,7 @@ public class SeriesQueryTest extends SeriesMethod {
             Response response = insertSeries(series);
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
-                    response.getStatusInfo().getStatusCode(), Response.Status.BAD_REQUEST.getStatusCode());
+                    BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
             assertTrue("Attempt to insert date before min storable date doesn't return error",
                     response.readEntity(String.class).startsWith("{\"error\":\"IllegalArgumentException: Too large timestamp"));
 
