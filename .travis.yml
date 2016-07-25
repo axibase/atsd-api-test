@@ -11,5 +11,9 @@ addons:
 before_install:
     - docker pull axibase/atsd:api_test
     - docker run -d -p 8088:8088 -p 8081:8081 --name="atsd-api-test" -e axiname="$login" -e axipass="$password" axibase/atsd:api_test
+    - cat /etc/hosts # optionally check the content *before*
+    - sudo hostname "$(hostname | cut -c1-63)"
+    - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
+    - cat /etc/hosts # optionally check the content *after*
 script:
     - mvn clean test -Dmaven.test.failure.ignore=false -DserverName=atsd_travis -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=info
