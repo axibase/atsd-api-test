@@ -17,6 +17,16 @@ public class Entity {
     private Date lastInsertDate;
     private Map<String, String> tags;
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    private Boolean enabled;
+
     public Entity() {
 
     }
