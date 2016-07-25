@@ -57,7 +57,7 @@ public class Entity {
     }
 
     public Map<String, String> getTags() {
-        if (tags == null) {
+        if(tags == null) {
             return null;
         }
         return new HashMap<>(tags);
