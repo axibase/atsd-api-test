@@ -23,6 +23,7 @@ import java.util.List;
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.fail;
 
 public class SeriesQueryTest extends SeriesMethod {
