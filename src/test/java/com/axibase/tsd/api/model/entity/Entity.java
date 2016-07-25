@@ -28,6 +28,7 @@ public class Entity {
         }
         this.name = name;
     }
+
     public Boolean getEnabled() {
         return enabled;
     }
