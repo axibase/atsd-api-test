@@ -16,6 +16,7 @@ public class Entity {
     private String name;
     private Date lastInsertDate;
     private Map<String, String> tags;
+    private Boolean enabled;
 
     public Entity() {
 
@@ -26,6 +27,14 @@ public class Entity {
             Registry.Entity.register(name);
         }
         this.name = name;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getName() {
