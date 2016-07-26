@@ -17,8 +17,9 @@ before_install:
     - sudo hostname "$(hostname | cut -c1-63)"
     - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
     - cat /etc/hosts # optionally check the content *after*
-    - docker ps -a
-    - docker logs atsd-api-test
     - while ! curl atsd_travis:8088 >/dev/null 2>&1; do echo "waiting to start $name server ..."; sleep 3; done
 script:
+    - netstat -tulpn
     - mvn clean test -Dmaven.test.failure.ignore=false -DserverName="atsd_travis" -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=debug
+    - netstat -tulpn
+
