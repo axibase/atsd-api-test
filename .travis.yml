@@ -16,6 +16,8 @@ before_install:
     - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
     - cat /etc/hosts # optionally check the content *after*
     - docker ps -a
+    - sleep 5
+    - docker logs atsd-api-test
     - while ! curl atsd_travis:8088 >/dev/null 2>&1; do echo "waiting to start $name server ..."; sleep 3; done
     - netstat -tulpn 
 script:
