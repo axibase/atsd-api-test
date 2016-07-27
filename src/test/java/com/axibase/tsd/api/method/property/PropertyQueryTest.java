@@ -1426,7 +1426,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 1);
 
-        assertEquals(1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("One property should be received",1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
     }
 
 
@@ -1461,7 +1461,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 2);
 
-        assertEquals(2, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("Two property should be received", 2, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
     }
 
     /**
@@ -1495,7 +1495,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 0);
 
-        assertEquals(3, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("Three property should be received", 3, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
     }
 
 
@@ -1568,11 +1568,11 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 2);
 
-        assertEquals(2, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("Two property should be received", 2, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
 
         queryObj.put("entity", "query-entity57-b-limitentityo*");
         queryObj.put("limit", 1);
-        assertEquals(1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("One property should be received", calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
     }
 
 
@@ -1602,10 +1602,10 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 1);
 
-        assertEquals(1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("One property should be received", 1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
 
         queryObj.put("keyTagExpression", "keys.uniq = '" + keyValue.toUpperCase() + "'");
-        assertEquals(1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("One property should be received", 1, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
     }
 
 
@@ -1640,9 +1640,9 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
 
         queryObj.put("limit", -1);
-        assertEquals(3, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("Three property should be received", 3, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
 
         queryObj.put("limit", -5);
-        assertEquals(3, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
+        assertEquals("Three property should be received", 3, calculateJsonArraySize(formatToJsonString(getProperty(queryObj))));
     }
 }
