@@ -3,11 +3,11 @@ jdk:
     - openjdk7
 sudo: required
 install: true
+services:
+    - docker
 addons:
     hosts:
         - atsd.travis.com
-services:
-    - docker
 cache:
     directories:
         - $HOME/.m2
