@@ -15,7 +15,7 @@ before_install:
     - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
     - cat /etc/hosts # optionally check the content *after*
     - docker ps -a
-    - while ! curl atsd.travis.com:8088 >/dev/null 2>&1; do echo "waiting to start $name server ..."; sleep 3; done
+    - while ! curl `hostname`:8088 >/dev/null 2>&1; do echo "waiting to start $name server ..."; sleep 3; done
 script:
     - mvn clean test -Dmaven.test.failure.ignore=false -DserverName="`hostname`" -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=debug
     - netstat -tulpn
