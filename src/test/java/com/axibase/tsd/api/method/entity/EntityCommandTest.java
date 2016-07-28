@@ -73,7 +73,7 @@ public class EntityCommandTest extends EntityMethod{
     @Test
     public void testNewEntityTagsForNewEntity() throws Exception {
         //Create entity with tag
-        StringBuilder sb = new StringBuilder("entity");`
+        StringBuilder sb = new StringBuilder("entity");
         sb.append(" e:").append("ent-for-test-add-tags");
         sb.append(" t:").append(e_tag_1).append("=").append(e_val_1);
         tcpSender.send(sb.toString());
