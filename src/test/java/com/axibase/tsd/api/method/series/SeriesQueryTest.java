@@ -15,16 +15,22 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.fail;
 
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
     private static final Series series;
+    private static Calendar calendar = Calendar.getInstance();
+
 
     static {
         series = new Series("series-query-e-1", "series-query-m-1");
@@ -224,6 +230,73 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
         assertEquals("Incorrect stored value", v, data.get(0).getV());
+    }
+
+    /* #3043 */
+    @Test
+    public void testEveryDayFrom1969ToMinStorableDateFailToInsert() throws Exception {
+        Series series = new Series("e-query-range-19", "m-query-range-19");
+        BigDecimal v = new BigDecimal("7");
+
+        calendar.setTime(parseDate("1969-01-01T00:00:00.000Z"));
+        Date endDate = parseDate(MIN_STORABLE_DATE);
+
+        while (calendar.getTime().before(endDate)) {
+            series.setData(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
+            Response response = insertSeries(series);
+
+            assertEquals("Attempt to insert date before min storable date doesn't return error",
+                    BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
+            assertEquals("Attempt to insert date before min storable date doesn't return error",
+                    "{\"error\":\"IllegalArgumentException: Negative timestamp\"}", response.readEntity(String.class));
+
+            setRandomTimeDuringNextDay(calendar);
+        }
+    }
+
+    /* #3043 */
+    @Test
+    public void testEveryDayFromMinToMaxStorableDateCorrectlySaved() throws Exception {
+        Series series = new Series("e-query-range-20", "m-query-range-20");
+        BigDecimal v = new BigDecimal("8");
+
+        calendar.setTime(parseDate(MIN_STORABLE_DATE));
+        Date maxStorableDay = parseDate(MAX_STORABLE_DATE);
+
+        while (calendar.getTime().before(maxStorableDay)) {
+            series.addData(new Sample(ISOFormat(calendar.getTime()), v));
+            setRandomTimeDuringNextDay(calendar);
+        }
+        series.addData(new Sample(MAX_STORABLE_DATE, v));
+        insertSeriesCheck(series);
+    }
+
+    /* #3043 */
+    @Test
+    public void testEveryDayFromMaxStorableDateTo2110FailToInsert() throws Exception {
+        Series series = new Series("e-query-range-21", "m-query-range-21");
+        BigDecimal v = new BigDecimal("9");
+
+        calendar.setTime(parseDate(addOneMS(MAX_STORABLE_DATE)));
+        Date endDate = parseDate("2110-01-01T00:00:00.000Z");
+
+        while (calendar.getTime().before(endDate)) {
+            series.setData(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
+            Response response = insertSeries(series);
+
+            assertEquals("Attempt to insert date before min storable date doesn't return error",
+                    BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
+            assertTrue("Attempt to insert date before min storable date doesn't return error",
+                    response.readEntity(String.class).startsWith("{\"error\":\"IllegalArgumentException: Too large timestamp"));
+
+            setRandomTimeDuringNextDay(calendar);
+        }
+    }
+
+    private void setRandomTimeDuringNextDay(Calendar calendar) {
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, (int) (Math.random() * 24));
+        calendar.set(Calendar.MINUTE, (int) (Math.random() * 60));
     }
 
     private SeriesQuery buildQuery() {

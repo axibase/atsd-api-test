@@ -56,15 +56,15 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                TEST_METRIC1_NAME + ".entity",
-                TEST_METRIC2_NAME + ".entity",
-                TEST_METRIC1_NAME + ".value",
-                TEST_METRIC2_NAME + ".value",
-                TEST_METRIC1_NAME + ".datetime",
-                TEST_METRIC2_NAME + ".datetime",
-                TEST_METRIC1_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.b"
+                "t1.entity",
+                "t2.entity",
+                "t1.value",
+                "t2.value",
+                "t1.datetime",
+                "t2.datetime",
+                "t1.tags.a",
+                "t2.tags.a",
+                "t2.tags.b"
         );
 
         assertTableColumnsNames(expectedColumnNames, resultTable);

@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.entity.Entity;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.testng.annotations.Test;
 
 
@@ -9,6 +10,7 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * @author Dmitry Korchagin.
@@ -23,7 +25,7 @@ public class EntityDeleteTest extends EntityMethod {
         Registry.Entity.register(name);
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), deleteEntity(name).getStatus());
     }
-
+    
     /* #1278 */
     @Test
     public void testEntityNameContainsSlash() throws Exception {

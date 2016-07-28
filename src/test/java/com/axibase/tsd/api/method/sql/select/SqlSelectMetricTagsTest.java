@@ -68,7 +68,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableColumnsNames(Arrays.asList("metric.tags"), resultTable);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("Tag=V;a=b;a-b=b-c;b=c")
+                Arrays.asList("a=b;a-b=b-c;b=c;Tag=V")
         );
         assertTableRows(expectedRows, resultTable);
     }
@@ -86,10 +86,10 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Arrays.asList(
-                TEST_METRIC_NAME + ".metric.tags.Tag",
-                TEST_METRIC_NAME + ".metric.tags.a",
-                TEST_METRIC_NAME + ".metric.tags.a-b",
-                TEST_METRIC_NAME + ".metric.tags.b"), resultTable);
+                "metric.tags.Tag",
+                "metric.tags.a",
+                "metric.tags.a-b",
+                "metric.tags.b"), resultTable);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("V", "b", "b-c", "c")
