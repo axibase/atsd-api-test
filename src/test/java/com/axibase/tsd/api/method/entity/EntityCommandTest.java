@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.entity;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -12,96 +13,78 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class EntityCommandTest extends EntityMethod{
-    private String e_tag_1="e-tag-1";
-    private String e_tag_2="e-tag-2";
-    private String e_val_1="e-val-1";
-    private String e_val_1_upd="e-val-1-upd";
-    private String e_val_2="e-val-2";
-    //entityExist(EntityNameForTags,true);
-    /**
-     * Issue #3111
-     */
+    private static String E_TAG_1="e-tag-1";
+    private static String E_TAG_2="e-tag-2";
+    private static String E_VAL_1="e-val-1";
+    private static String E_VAL_1_UPD="e-val-1-upd";
+    private static String E_VAL_2="e-val-2";
+
+    /* #3111 */
 
     @Test
     public void testAddNewEntityTagForExistEntity() throws Exception {
-        //Create Entity with tags
-        Entity EntityWithTags = new Entity("e-with-tags");
-        EntityWithTags.addTag(e_tag_1, e_val_1);
-        createOrReplaceEntityCheck(EntityWithTags);
-        //Add entity tag for exist entity
-        StringBuilder sb = new StringBuilder("entity");
-        sb.append(" e:").append(EntityWithTags.getName());
-        sb.append(" t:").append(e_tag_2).append("=").append(e_val_2);
-        tcpSender.send(sb.toString());
-        //Add entity tag to model
-        EntityWithTags.addTag("e-tag-2", "e-val-2");
-        //Get from ATSD entity model
-        Response EntityNameForTagsGet = getEntity("e-with-tags");
-        Entity EntityNameForTagsGetToEnt = EntityNameForTagsGet.readEntity(Entity.class);
-        //Equal models
-        assertEquals("Entity tag was added for exist entity",EntityWithTags.getTags(), EntityNameForTagsGetToEnt.getTags());
+
+        Entity entityStoredWithTags = new Entity("e-with-tags");
+        entityStoredWithTags.addTag(E_TAG_1, E_VAL_1);
+        createOrReplaceEntityCheck(entityStoredWithTags);
+        
+        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s",entityStoredWithTags.getName(),E_TAG_2,E_VAL_2);
+        tcpSender.send(command);
+        
+        Entity entityExpectedWithTags = getEntity("e-with-tags").readEntity(Entity.class);
+        entityStoredWithTags.addTag("e-tag-2", "e-val-2");
+
+        assertEquals("Entity tag didn't added for exist entity",entityStoredWithTags.getTags(), entityExpectedWithTags.getTags());
     }
 
-    /**
-     * Issue #3111
-     */
+    /* #3111 */
 
     @Test
     public void testUpdateEntityTagsForExistEntity() throws Exception {
-        //Create Entity with tags
-        Entity EntityNameForTags = new Entity("e-for-test-update-tags");
-        EntityNameForTags.addTag(e_tag_1, e_val_1);
-        createOrReplaceEntityCheck(EntityNameForTags);
-        //Update entity tag for exist entity
-        StringBuilder sb = new StringBuilder("entity");
-        sb.append(" e:").append(EntityNameForTags.getName());
-        sb.append(" t:").append(e_tag_1).append("=").append(e_val_1_upd);
-        tcpSender.send(sb.toString());
-        //Update entity tag to model
-        EntityNameForTags.addTag(e_tag_1, e_val_1_upd);
-        //Get from ATSD entity model
-        Response EntityNameForTagsGet = getEntity("e-for-test-update-tags");
-        Entity EntityNameForTagsGetToEnt = EntityNameForTagsGet.readEntity(Entity.class);
-        //Equal models
-        assertEquals("Entity tag are updated.",EntityNameForTags.getTags(), EntityNameForTagsGetToEnt.getTags());
+
+        Entity entityStoredUpdateTags = new Entity("e-for-test-update-tags");
+        entityStoredUpdateTags.addTag(E_TAG_1, E_VAL_1);
+        createOrReplaceEntityCheck(entityStoredUpdateTags);
+
+        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s",entityStoredUpdateTags.getName(),E_TAG_1,E_VAL_1_UPD);
+        tcpSender.send(command);
+
+        Entity entityExpectedWithTags = getEntity("e-for-test-update-tags").readEntity(Entity.class);
+        entityStoredUpdateTags.addTag(E_TAG_1, E_VAL_1_UPD);
+
+        assertEquals("Entity tag didn't updated for exist entity.",entityStoredUpdateTags.getTags(), entityExpectedWithTags.getTags());
     }
 
-    /**
-     * Issue #3111
-     */
-
-    @Test
-    public void testNewEntityTagsForNewEntity() throws Exception {
-        //Create entity with tag
-        StringBuilder sb = new StringBuilder("entity");
-        sb.append(" e:").append("ent-for-test-add-tags");
-        sb.append(" t:").append(e_tag_1).append("=").append(e_val_1);
-        tcpSender.send(sb.toString());
-        //Create entity model with tag
-        Entity EntityNameForTags = new Entity("ent-for-test-add-tags");
-        EntityNameForTags.addTag(e_tag_1,e_val_1);
-        //Get from ATSD entity model
-        Response EntityNameForTagsGet = getEntity("ent-for-test-add-tags");
-        Entity EntityNameForTagsGetToEnt = EntityNameForTagsGet.readEntity(Entity.class);
-        //Equal models
-        assertEquals("New entity with tag create with tag",EntityNameForTags.getTags(), EntityNameForTagsGetToEnt.getTags());
-    }
-
-    /**
-     * Issue #3111
-     */
+    /* #3111 */
 
     @Test
     public void testAddNewEntityTagsMailformedForNewEntity() throws Exception {
-        //Create entity with malformed tag
-        StringBuilder sb = new StringBuilder("entity");
-        sb.append(" e:").append("ent-for-test-add-tags-mailformed");
-        sb.append(" t:").append("hello 1").append("=").append("world");
-        tcpSender.send(sb.toString());
-        final String name = "ent-for-test-add-tags-mailformed";
+
+        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s","ent-for-test-add-tags-mailformed","hello 1","world");
+        tcpSender.send(command);
+
+        String name = "ent-for-test-add-tags-mailformed";
         Registry.Entity.register(name);
-        //Equal error
-        assertEquals("Entity not found with ",NOT_FOUND.getStatusCode(),getEntity(name).getStatus());
+
+        assertEquals("Entity not found with mailformed ",NOT_FOUND.getStatusCode(),getEntity(name).getStatus());
+    }
+
+    /* #3111 */
+
+    @Test
+    public void testNewEntityTagsForNewEntity() throws Exception {
+
+        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s","e-for-test-add-tags",E_TAG_1,E_VAL_1);
+        tcpSender.send(command);
+
+        Thread.sleep(500L);
+
+        Entity entityStoredForTags = new Entity("e-for-test-add-tags");
+        entityStoredForTags.addTag(E_TAG_1,E_VAL_1);
+
+        Entity entityExpectedWithTags = getEntity("e-for-test-add-tags").readEntity(Entity.class);
+
+        assertEquals("New entity with tag didn't created with entity tag",entityStoredForTags.getTags(), entityExpectedWithTags.getTags());
     }
 
 }
