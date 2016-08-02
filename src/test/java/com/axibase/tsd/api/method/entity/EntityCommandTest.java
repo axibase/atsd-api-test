@@ -9,7 +9,6 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class EntityCommandTest extends EntityMethod{
     private final static String E_TAG_1="e-tag-1";
-    private final static String E_TAG_1="e-tag-1";
     private final static String E_TAG_2="e-tag-2";
     private final static String E_VAL_1="e-val-1";
     private final static String E_VAL_1_UPD="e-val-1-upd";
