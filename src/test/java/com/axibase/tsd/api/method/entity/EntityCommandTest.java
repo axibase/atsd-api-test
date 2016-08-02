@@ -24,17 +24,17 @@ public class EntityCommandTest extends EntityMethod{
     @Test
     public void testAddNewEntityTagForExistEntity() throws Exception {
 
-        Entity entityStoredWithTags = new Entity("e-with-tags");
-        entityStoredWithTags.addTag(E_TAG_1, E_VAL_1);
-        createOrReplaceEntityCheck(entityStoredWithTags);
+        Entity storedEntityWithTags = new Entity("e-with-tags");
+        storedEntityWithTags.addTag(E_TAG_1, E_VAL_1);
+        createOrReplaceEntityCheck(storedEntityWithTags);
         
-        String command = String.format("entity e:%s t:%s=%s",entityStoredWithTags.getName(),E_TAG_2,E_VAL_2);
+        String command = String.format("entity e:%s t:%s=%s",storedEntityWithTags.getName(),E_TAG_2,E_VAL_2);
         tcpSender.send(command);
         
-        Entity entityExpectedWithTags = getEntity("e-with-tags").readEntity(Entity.class);
-        entityStoredWithTags.addTag("e-tag-2", "e-val-2");
+        Entity expectedEntityWithTags = getEntity("e-with-tags").readEntity(Entity.class);
+        storedEntityWithTags.addTag("e-tag-2", "e-val-2");
 
-        assertEquals("Entity tag didn't added for exist entity",entityStoredWithTags.getTags(), entityExpectedWithTags.getTags());
+        assertEquals("Entity tag isn't add for existing entity",storedEntityWithTags.getTags(), expectedEntityWithTags.getTags());
     }
 
     /* #3111 */
@@ -42,17 +42,17 @@ public class EntityCommandTest extends EntityMethod{
     @Test
     public void testUpdateEntityTagsForExistEntity() throws Exception {
 
-        Entity entityStoredUpdateTags = new Entity("e-for-test-update-tags");
-        entityStoredUpdateTags.addTag(E_TAG_1, E_VAL_1);
-        createOrReplaceEntityCheck(entityStoredUpdateTags);
+        Entity storedEntityUpdateTags = new Entity("e-for-test-update-tags");
+        storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1);
+        createOrReplaceEntityCheck(storedEntityUpdateTags);
 
-        String command = String.format("entity e:%s t:%s=%s",entityStoredUpdateTags.getName(),E_TAG_1,E_VAL_1_UPD);
+        String command = String.format("entity e:%s t:%s=%s",storedEntityUpdateTags.getName(),E_TAG_1,E_VAL_1_UPD);
         tcpSender.send(command);
 
-        Entity entityExpectedWithTags = getEntity("e-for-test-update-tags").readEntity(Entity.class);
-        entityStoredUpdateTags.addTag(E_TAG_1, E_VAL_1_UPD);
+        Entity expectedEntityWithTags = getEntity("e-for-test-update-tags").readEntity(Entity.class);
+        storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1_UPD);
 
-        assertEquals("Entity tag didn't updated for exist entity.",entityStoredUpdateTags.getTags(), entityExpectedWithTags.getTags());
+        assertEquals("Entity tag isn't update for existing entity.",storedEntityUpdateTags.getTags(), expectedEntityWithTags.getTags());
     }
 
     /* #3111 */
@@ -79,12 +79,12 @@ public class EntityCommandTest extends EntityMethod{
 
         Thread.sleep(500L);
 
-        Entity entityStoredForTags = new Entity("e-for-test-add-tags");
-        entityStoredForTags.addTag(E_TAG_1,E_VAL_1);
+        Entity storedEntityForTags = new Entity("e-for-test-add-tags");
+        storedEntityForTags.addTag(E_TAG_1,E_VAL_1);
 
-        Entity entityExpectedWithTags = getEntity("e-for-test-add-tags").readEntity(Entity.class);
+        Entity expectedEntityWithTags = getEntity("e-for-test-add-tags").readEntity(Entity.class);
 
-        assertEquals("New entity with tag didn't created with entity tag",entityStoredForTags.getTags(), entityExpectedWithTags.getTags());
+        assertEquals("New entity with tag isn't create with entity tag",storedEntityForTags.getTags(), expectedEntityWithTags.getTags());
     }
 
 }
