@@ -9,12 +9,15 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class EntityCommandTest extends EntityMethod{
     private final static String E_TAG_1="e-tag-1";
+    private final static String E_TAG_1="e-tag-1";
     private final static String E_TAG_2="e-tag-2";
     private final static String E_VAL_1="e-val-1";
     private final static String E_VAL_1_UPD="e-val-1-upd";
     private final static String E_VAL_2="e-val-2";
 
-    /* #3111 */
+    /**
+     * #3111
+     */
 
     @Test
     public void testAddNewEntityTagForExistEntity() throws Exception {
@@ -34,7 +37,9 @@ public class EntityCommandTest extends EntityMethod{
         );
     }
 
-    /* #3111 */
+    /**
+     * #3111
+     */
 
     @Test
     public void testUpdateEntityTagsForExistEntity() throws Exception {
@@ -54,7 +59,9 @@ public class EntityCommandTest extends EntityMethod{
         );
     }
 
-    /* #3111 */
+    /**
+     * #3111
+     */
 
     @Test
     public void testAddNewEntityTagsMailformedForNewEntity() throws Exception {
@@ -72,7 +79,9 @@ public class EntityCommandTest extends EntityMethod{
         );
     }
 
-    /* #3111 */
+    /**
+     * #3111
+     */
 
     @Test
     public void testNewEntityTagsForNewEntity() throws Exception {
