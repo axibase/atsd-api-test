@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -13,6 +14,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * @author Igor Shmagrinskiy
@@ -21,12 +23,12 @@ import java.util.Arrays;
  *         and retrive result in specifed format.
  *         Usage:
  *         * <pre>
- *                 {@code
- *                      SqlMethod
- *                                  .executeQuery("SELECT 1")
- *                                  .readEntity(String.class);
- *                 }
- *                 </pre>
+ *                         {@code
+ *                              SqlMethod
+ *                                          .executeQuery("SELECT 1")
+ *                                          .readEntity(String.class);
+ *                         }
+ *                         </pre>
  */
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
@@ -74,6 +76,16 @@ public class SqlMethod extends BaseMethod {
         }
         if (!isSuccessInsert) {
             throw new IllegalStateException("Failed to insert series: " + series);
+        }
+    }
+
+    protected static void updateSeriesEntityTags(Series series, Map<String, String> tags) {
+        com.axibase.tsd.api.model.entity.Entity entity = new com.axibase.tsd.api.model.entity.Entity();
+        entity.setTags(tags);
+        try {
+            EntityMethod.updateEntity(series.getEntity(), entity);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 }
