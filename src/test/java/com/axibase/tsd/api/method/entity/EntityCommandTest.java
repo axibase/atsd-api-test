@@ -28,7 +28,7 @@ public class EntityCommandTest extends EntityMethod{
         entityStoredWithTags.addTag(E_TAG_1, E_VAL_1);
         createOrReplaceEntityCheck(entityStoredWithTags);
         
-        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s",entityStoredWithTags.getName(),E_TAG_2,E_VAL_2);
+        String command = String.format("entity e:%1$s t:%2$s=%3$s",entityStoredWithTags.getName(),E_TAG_2,E_VAL_2);
         tcpSender.send(command);
         
         Entity entityExpectedWithTags = getEntity("e-with-tags").readEntity(Entity.class);
@@ -46,7 +46,7 @@ public class EntityCommandTest extends EntityMethod{
         entityStoredUpdateTags.addTag(E_TAG_1, E_VAL_1);
         createOrReplaceEntityCheck(entityStoredUpdateTags);
 
-        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s",entityStoredUpdateTags.getName(),E_TAG_1,E_VAL_1_UPD);
+        String command = String.format("entity e:%1$s t:%2$s=%3$s",entityStoredUpdateTags.getName(),E_TAG_1,E_VAL_1_UPD);
         tcpSender.send(command);
 
         Entity entityExpectedWithTags = getEntity("e-for-test-update-tags").readEntity(Entity.class);
@@ -60,7 +60,7 @@ public class EntityCommandTest extends EntityMethod{
     @Test
     public void testAddNewEntityTagsMailformedForNewEntity() throws Exception {
 
-        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s","ent-for-test-add-tags-mailformed","hello 1","world");
+        String command = String.format("entity e:%1$s t:%2$s=%3$s","ent-for-test-add-tags-mailformed","hello 1","world");
         tcpSender.send(command);
 
         String name = "ent-for-test-add-tags-mailformed";
@@ -74,7 +74,7 @@ public class EntityCommandTest extends EntityMethod{
     @Test
     public void testNewEntityTagsForNewEntity() throws Exception {
 
-        String command = String.format("entity e:%1$2s t:%2$2s=%3$2s","e-for-test-add-tags",E_TAG_1,E_VAL_1);
+        String command = String.format("entity e:%1$s t:%2$s=%3$s","e-for-test-add-tags",E_TAG_1,E_VAL_1);
         tcpSender.send(command);
 
         Thread.sleep(500L);
