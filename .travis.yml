@@ -12,14 +12,13 @@ cache:
         - $HOME/.m2
         - $HOME/docker_images
 before_install:
-    #- docker pull axibase/atsd:api_test
-    #- docker save axibase/atsd:api_test > $HOME/docker_images/axibase_atsd_api_test.tar
-    - docker load < $HOME/docker_images/axibase_atsd_api_test.tar
-    - docker run -d -p 8088:8088 -p 8081:8081 --name="atsd-api-test" -e axiname="$travisLogin" -e axipass="$travisPassword" axibase/atsd:api_test
     - sudo hostname "$(hostname | cut -c1-63)"
     - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
     - cat /etc/hosts # optionally check the content *after*
+    - docker load < $HOME/docker_images/axibase_atsd_api_test.tar || true
+    - docker run -d -p 8088:8088 -p 8081:8081 --name="atsd-api-test" -e axiname="$travisLogin" -e axipass="$travisPassword" axibase/atsd:api_test
     - while ! curl atsd.travis.com:8088 >/dev/null 2>&1; do echo "waiting to start $name server ..."; sleep 3; done
+    - if [ ! -f $HOME/docker_images/axibase_atsd_api_test.tar ]; then docker save axibase/atsd:api_test > $HOME/docker_images/axibase_atsd_api_test.tar; fi
 install: true
 script:
     - mvn clean test -Dmaven.test.failure.ignore=false -DserverName="atsd.travis.com" -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=info
