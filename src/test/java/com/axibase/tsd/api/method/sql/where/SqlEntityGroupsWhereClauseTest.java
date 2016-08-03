@@ -1,8 +1,9 @@
 package com.axibase.tsd.api.method.sql.where;
 
-import com.axibase.tsd.api.method.entitygroup.EntityGroupsMethod;
+import com.axibase.tsd.api.method.entityGroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.entityGroup.EntityGroup;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -33,18 +34,18 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addData(new Sample("2016-07-14T15:00:07.000Z", "0"));
         SeriesMethod.insertSeriesCheck(series);
-        EntityGroupsMethod.createOrReplaceEntityGroup(TEST_ENTITY_GROUP1_NAME);
-        EntityGroupsMethod.createOrReplaceEntityGroup(TEST_ENTITY_GROUP2_NAME);
-        EntityGroupsMethod.createOrReplaceEntityGroup(TEST_CASE_SENSITIVITY_GROUP_NAME);
+        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP1_NAME));
+        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
+        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_CASE_SENSITIVITY_GROUP_NAME));
     }
 
 
     @BeforeMethod
     public void clearEntityGroups() throws InterruptedException {
         List<String> emptyList = new ArrayList<>();
-        EntityGroupsMethod.setEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, emptyList);
-        EntityGroupsMethod.setEntitiesToEntityGroup(TEST_ENTITY_GROUP2_NAME, emptyList);
-        EntityGroupsMethod.setEntitiesToEntityGroup(TEST_CASE_SENSITIVITY_GROUP_NAME, emptyList);
+        EntityGroupMethod.setEntities(TEST_ENTITY_GROUP1_NAME, emptyList);
+        EntityGroupMethod.setEntities(TEST_ENTITY_GROUP2_NAME, emptyList);
+        EntityGroupMethod.setEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, emptyList);
     }
 
 
@@ -57,7 +58,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testEntityGroupsInOneElementSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
                         "WHERE entity.groups IN ('" + TEST_ENTITY_GROUP1_NAME + "')  \n" +
@@ -76,7 +77,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testEntityGroupsNotInOneElementSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
                         "WHERE NOT entity.groups IN ('" + TEST_ENTITY_GROUP1_NAME + "')  \n" +
@@ -93,7 +94,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testInEntityGroupsContainOneElement() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
                         "WHERE '" + TEST_ENTITY_GROUP1_NAME + "' IN entity.groups\n" +
@@ -112,7 +113,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testNotInEntityGroupsContainOneElement() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
                         "WHERE '" + TEST_ENTITY_GROUP1_NAME + "' NOT IN entity.groups\n" +
@@ -130,7 +131,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testOneEntityGroupInThreeElementSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
                         "WHERE entity.groups IN ('" + TEST_ENTITY_GROUP1_NAME + "', 'group', '" + TEST_ENTITY_GROUP2_NAME + "')  \n" +
@@ -150,7 +151,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testEntityGroupsNotInSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
                         "WHERE entity.groups IN ('" + TEST_ENTITY_GROUP1_NAME + "', 'group', '" + TEST_ENTITY_GROUP2_NAME + "')  \n" +
@@ -170,9 +171,9 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testTwoEntityGroupsIntersectingOneElementSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
@@ -193,10 +194,9 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testTwoEntityGroupsNotIntersectingOneElementSet() {
-        EntityGroupsMethod
-                .addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
@@ -268,7 +268,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testEntityGroupsInCaseSensitivitySet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
@@ -286,7 +286,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testEntityGroupsNotInCaseSensitivitySet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
@@ -307,7 +307,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testCaseSensitivityEntityGroupsInSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +
@@ -328,7 +328,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
      */
     @Test
     public void testCaseSensitivityEntityGroupsNotInSet() {
-        EntityGroupsMethod.addEntitiesToEntityGroup(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
+        EntityGroupMethod.addEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery =
                 "SELECT datetime, entity, value, entity.groups FROM '" + TEST_METRIC_NAME + "'\n" +

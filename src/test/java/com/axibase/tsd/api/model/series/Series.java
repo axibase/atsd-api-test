@@ -15,7 +15,7 @@ public class Series {
     private String entity;
     private String metric;
     private List<Sample> data;
-    private Map<String, String> tags;
+    private Map<String, String> tags ;
 
     public Series() {
         data = new ArrayList<>();
@@ -68,10 +68,16 @@ public class Series {
     }
 
     public void addTag(String key, String value) {
+        if(tags == null) {
+            tags = new HashMap<>();
+        }
         tags.put(key, value);
     }
 
     public void addData(Sample sample) {
+        if(data == null) {
+            data = new ArrayList<>();
+        }
         data.add(sample);
     }
 

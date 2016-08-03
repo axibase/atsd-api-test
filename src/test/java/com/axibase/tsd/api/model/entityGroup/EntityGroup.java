@@ -17,12 +17,12 @@ public class EntityGroup {
     Map<String, String> tags = new HashMap<>();
 
     public EntityGroup() {
-        if (null != name) {
-            Registry.EntityGroup.register(name);
-        }
     }
 
     public EntityGroup(String name) {
+        if (null != name) {
+            Registry.EntityGroup.register(name);
+        }
         this.name = name;
     }
 
