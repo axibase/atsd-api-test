@@ -40,6 +40,17 @@ public class TCPSender {
         BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
         String response = responseStream.readLine();
+        if (response == null ) return false;
+        return response.equals("ok");
+    }
+
+    public boolean sendDebugMode(long sleepDuration) throws IOException, InterruptedException {
+        Socket socket = new Socket(url, port);
+        DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
+        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
+        String response = responseStream.readLine();
+        Thread.sleep(sleepDuration);
         return response.equals("ok");
     }
 
@@ -61,5 +72,19 @@ public class TCPSender {
 
     public void send(String command) throws IOException, InterruptedException {
         send(command, 0);
+    }
+
+    public void sendCheck (String command) throws IOException, InterruptedException {
+        setCommand(command);
+        boolean successed = sendDebugMode();
+        if (!successed)
+            throw new IOException("Fail to check inserted command");
+    }
+
+    public void sendCheck (String command, long sleepDuration) throws IOException, InterruptedException {
+        setCommand(command);
+        boolean successed = sendDebugMode(sleepDuration);
+        if (!successed)
+            throw new IOException("Fail to check inserted command");
     }
 }

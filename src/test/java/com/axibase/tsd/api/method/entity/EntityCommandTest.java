@@ -7,12 +7,12 @@ import org.testng.annotations.Test;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
-public class EntityCommandTest extends EntityMethod{
-    private final static String E_TAG_1="e-tag-1";
-    private final static String E_TAG_2="e-tag-2";
-    private final static String E_VAL_1="e-val-1";
-    private final static String E_VAL_1_UPD="e-val-1-upd";
-    private final static String E_VAL_2="e-val-2";
+public class EntityCommandTest extends EntityMethod {
+    private final static String E_TAG_1 = "e-tag-1";
+    private final static String E_TAG_2 = "e-tag-2";
+    private final static String E_VAL_1 = "e-val-1";
+    private final static String E_VAL_1_UPD = "e-val-1-upd";
+    private final static String E_VAL_2 = "e-val-2";
 
     /**
      * #3111
@@ -25,9 +25,9 @@ public class EntityCommandTest extends EntityMethod{
         Entity storedEntityWithTags = new Entity(entityWithTags);
         storedEntityWithTags.addTag(E_TAG_1, E_VAL_1);
         createOrReplaceEntityCheck(storedEntityWithTags);
-        
-        String command = String.format("entity e:%s t:%s=%s",storedEntityWithTags.getName(),E_TAG_2,E_VAL_2);
-        tcpSender.send(command);
+
+        String command = String.format("entity e:%s t:%s=%s", storedEntityWithTags.getName(), E_TAG_2, E_VAL_2);
+        tcpSender.sendCheck(command);
 
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
 
@@ -48,8 +48,8 @@ public class EntityCommandTest extends EntityMethod{
         storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1);
         createOrReplaceEntityCheck(storedEntityUpdateTags);
 
-        String command = String.format("entity e:%s t:%s=%s",storedEntityUpdateTags.getName(),E_TAG_1,E_VAL_1_UPD);
-        tcpSender.send(command);
+        String command = String.format("entity e:%s t:%s=%s", storedEntityUpdateTags.getName(), E_TAG_1, E_VAL_1_UPD);
+        tcpSender.sendCheck(command);
 
         storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1_UPD);
 
@@ -68,13 +68,13 @@ public class EntityCommandTest extends EntityMethod{
         String entityTagNameForMailformed = "hello 1";
         String entityTagValueForMailformed = "world";
 
-        String command = String.format("entity e:%s t:%s=%s",entityNameForTestMailformed,entityTagNameForMailformed,entityTagValueForMailformed);
+        String command = String.format("entity e:%s t:%s=%s", entityNameForTestMailformed, entityTagNameForMailformed, entityTagValueForMailformed);
         tcpSender.send(command);
 
         Registry.Entity.register(entityNameForTestMailformed);
 
         assertEquals("Entity not found with mailformed ",
-                NOT_FOUND.getStatusCode(),getEntity(entityNameForTestMailformed).getStatus()
+                NOT_FOUND.getStatusCode(), getEntity(entityNameForTestMailformed).getStatus()
         );
     }
 
@@ -86,13 +86,14 @@ public class EntityCommandTest extends EntityMethod{
     public void testNewEntityTagsForNewEntity() throws Exception {
         String entityNameForTestAddTags = "e-for-test-add-tags";
 
-        String command = String.format("entity e:%s t:%s=%s",entityNameForTestAddTags,E_TAG_1,E_VAL_1);
-        tcpSender.send(command, Util.EXPECTED_PROCESSING_TIME);
+        String command = String.format("entity e:%s t:%s=%s", entityNameForTestAddTags, E_TAG_1, E_VAL_1);
+
+        tcpSender.sendCheck(command,Util.EXPECTED_PROCESSING_TIME);
 
         Entity storedEntityForTags = new Entity(entityNameForTestAddTags);
-        storedEntityForTags.addTag(E_TAG_1,E_VAL_1);
+        storedEntityForTags.addTag(E_TAG_1, E_VAL_1);
 
-        assertEquals("New entity with tag isn't create with entity tag",storedEntityForTags.getTags(),
+        assertEquals("New entity with tag isn't create with entity tag", storedEntityForTags.getTags(),
                 getEntity(entityNameForTestAddTags).readEntity(Entity.class).getTags()
         );
     }
