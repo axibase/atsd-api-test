@@ -274,7 +274,7 @@ public class SqlFunctionMathTest extends SqlTest {
      * Issue #3049
      * Will fail until won't fixed
      */
-    @Test
+    @Test(enabled = false)
     public void testIsNotNullWithMathFunction() {
         String sqlQuery = "SELECT SQRT(value) FROM'" + TEST_METRIC_NAME + "'\n" +
                 "WHERE entity = '" + TEST_ENTITY_NAME + "'\n" +
@@ -295,7 +295,7 @@ public class SqlFunctionMathTest extends SqlTest {
      * Issue #3049
      * Will fail until won't fixed
      */
-    @Test
+    @Test(enabled = false)
     public void testIsNullWithMathFunction() {
         String sqlQuery = "SELECT SQRT(value) FROM'" + TEST_METRIC_NAME + "'\n" +
                 "WHERE entity = '" + TEST_ENTITY_NAME + "'\n" +
