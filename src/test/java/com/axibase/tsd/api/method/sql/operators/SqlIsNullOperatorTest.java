@@ -1,16 +1,16 @@
 package com.axibase.tsd.api.method.sql.operators;
 
-import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Igor Shmagrinskiy
@@ -63,17 +63,6 @@ public class SqlIsNullOperatorTest extends SqlTest {
     /**
      * Following tests related to #2937 issue.
      */
-
-    private static void updateSeriesEntityTags(final Series series, final Map<String, String> newTags) {
-        try {
-            EntityMethod.updateEntity(new Entity() {{
-                setName(series.getEntity());
-                setTags(newTags);
-            }});
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to update Entity tags");
-        }
-    }
 
     /**
      * Issue #2937

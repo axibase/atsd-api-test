@@ -119,7 +119,12 @@ public class StringTable {
     }
 
     public List<String> columnValues(String requestedColumnName) {
-        return filterRows(new HashSet<String>(Arrays.asList(requestedColumnName))).get(0);
+        List<List<String>> rows = filterRows(new HashSet<String>(Arrays.asList(requestedColumnName)));
+        List<String> column = new ArrayList<>();
+        for (List<String> r : rows) {
+            column.add(r.get(0));
+        }
+        return column;
     }
 
 
