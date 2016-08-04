@@ -92,7 +92,7 @@ public class EntityGroupsMethod extends BaseMethod {
     }
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup) {
-        return createOrReplaceEntityGroup(entityGroup, "", null, null);
+        return createOrReplaceEntityGroup(entityGroup, "{}", null, null);
     }
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup, T query, String expression) {

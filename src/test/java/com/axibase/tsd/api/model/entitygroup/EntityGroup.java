@@ -24,8 +24,7 @@ public class EntityGroup {
         return tags;
     }
 
-    public EntityGroup setTags(Map<String, String> tags) {
+    public void setTags(Map<String, String> tags) {
         this.tags = tags;
-        return this;
     }
 }
