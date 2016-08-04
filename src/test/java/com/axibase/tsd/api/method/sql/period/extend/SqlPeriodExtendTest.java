@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.period.extend;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -7,6 +8,8 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,20 +18,42 @@ import java.util.List;
  */
 public class SqlPeriodExtendTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-extend-";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_ENTITY1_NAME = TEST_PREFIX + "entity-1";
+    private static final String TEST_ENTITY2_NAME = TEST_PREFIX + "entity-2";
+
 
     @BeforeClass
-    public static void prepareData() {
-        Series series = new Series(TEST_PREFIX + "entity-1", TEST_PREFIX + "metric") {{
-            addTag("a", "b");
-            addTag("b", "c");
-        }};
-        sendSamplesToSeries(series,
-                new Sample("2016-07-14T15:00:06.001Z", "1"),
-                new Sample("2016-07-14T15:00:08.001Z", "2")
+    public static void prepareData() throws IOException {
+
+        List<Series> seriesList = new ArrayList<>();
+
+        seriesList.add(
+                new Series() {{
+                    addTag("a", "b");
+                    addTag("b", "c");
+                    setMetric(TEST_METRIC_NAME);
+                    setEntity(TEST_ENTITY1_NAME);
+                    setData(Arrays.asList(
+                            new Sample("2016-07-14T15:00:06.001Z", "1"),
+                            new Sample("2016-07-14T15:00:08.001Z", "2")
+                    ));
+                }}
         );
-        series.setEntity(TEST_PREFIX + "entity-2");
-        sendSamplesToSeries(series,
-                new Sample("2016-07-14T15:00:06.001Z", "3"));
+
+        seriesList.add(
+                new Series() {{
+                    addTag("a", "b");
+                    addTag("b", "c");
+                    setMetric(TEST_METRIC_NAME);
+                    setEntity(TEST_ENTITY2_NAME);
+                    setData(Arrays.asList(
+                            new Sample("2016-07-14T15:00:06.001Z", "3")
+                    ));
+                }}
+        );
+
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
 

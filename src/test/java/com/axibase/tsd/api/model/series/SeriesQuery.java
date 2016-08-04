@@ -18,6 +18,7 @@ public class SeriesQuery {
     private Map<String, String> tags = new HashMap<>();
     private Map<String, Object> aggregate;
     private String timeFormat;
+    private Boolean exactMatch;
 
     public void addAggregateType(String type) {
         if (aggregate == null) {
@@ -50,7 +51,18 @@ public class SeriesQuery {
         aggregate.put("period", period);
     }
 
-    public SeriesQuery() {}
+    public SeriesQuery() {
+    }
+
+    public SeriesQuery(Series series) {
+        setEntity(series.getEntity());
+        setTags(new HashMap<>(series.getTags()));
+        setExactMatch(true);
+        setMetric(series.getMetric());
+        setStartDate(Util.MIN_QUERYABLE_DATE);
+        setEndDate(Util.MAX_QUERYABLE_DATE);
+    }
+
     public SeriesQuery(String entity, String metric, long startTime, long endTime) {
         this.entity = entity;
         this.metric = metric;
@@ -115,7 +127,7 @@ public class SeriesQuery {
     }
 
     public void setTags(Map<String, String> tags) {
-        this.tags = new HashMap<>(tags);
+        this.tags = tags;
     }
 
     @Override
@@ -142,5 +154,13 @@ public class SeriesQuery {
 
     public void setInterval(Interval interval) {
         this.interval = interval;
+    }
+
+    public Boolean getExactMatch() {
+        return exactMatch;
+    }
+
+    public void setExactMatch(Boolean exactMatch) {
+        this.exactMatch = exactMatch;
     }
 }

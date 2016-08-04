@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.date_format;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,12 +20,11 @@ public class SqlTimezoneFormatTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareData() {
+    public static void prepareData() throws IOException {
         Series testSeries = new Series(TEST_PREFIX + "entity", TEST_PREFIX + "metric");
         testSeries.addTag("a", "b");
-        sendSamplesToSeries(testSeries,
-                new Sample(Util.parseDate("2016-06-03T09:23:00.000Z").getTime(), "7")
-        );
+        testSeries.addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
+        SeriesMethod.insertSeriesCheck(testSeries);
     }
 
     /**

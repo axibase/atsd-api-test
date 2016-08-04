@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.period;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -7,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,13 +22,14 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareDate() {
+    public static void prepareDate() throws IOException {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        sendSamplesToSeries(series,
+        series.setData(Arrays.asList(
                 new Sample("2016-06-19T11:00:00.001Z", "0"),
                 new Sample("2016-06-19T11:00:05.001Z", "1"),
                 new Sample("2016-06-19T11:00:10.001Z", "2")
-        );
+        ));
+        SeriesMethod.insertSeriesCheck(series);
     }
 
     /*

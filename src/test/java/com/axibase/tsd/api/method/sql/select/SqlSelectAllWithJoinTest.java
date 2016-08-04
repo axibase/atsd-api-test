@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.select;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -8,7 +8,8 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,25 +23,37 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     private static final String TEST_ENTITY = TEST_PREFIX + "entity-1";
 
     @BeforeClass
-    public static void prepareData() {
-        Series leftSeries = new Series(TEST_ENTITY, TEST_METRIC1_NAME);
-        leftSeries.addTag("a", "b");
-        sendSamplesToSeries(leftSeries,
-                new Sample(Util.parseDate("2016-06-03T09:23:00.000Z").getTime(), "7"),
-                new Sample(Util.parseDate("2016-06-03T09:24:00.000Z").getTime(), "0"),
-                new Sample(Util.parseDate("2016-06-03T09:25:00.000Z").getTime(), "12"),
-                new Sample(Util.parseDate("2016-06-03T09:26:00.000Z").getTime(), "10.3"),
-                new Sample(Util.parseDate("2016-06-03T09:27:00.000Z").getTime(), "10")
-        );
-        leftSeries.setMetric(TEST_METRIC2_NAME);
-        leftSeries.addTag("b", "c");
-        Series rightSeries = leftSeries;
-        sendSamplesToSeries(rightSeries,
-                new Sample(Util.parseDate("2016-06-03T09:23:00.000Z").getTime(), "5"),
-                new Sample(Util.parseDate("2016-06-03T09:24:00.000Z").getTime(), "7"),
-                new Sample(Util.parseDate("2016-06-03T09:25:00.000Z").getTime(), "-2"),
-                new Sample(Util.parseDate("2016-06-03T09:26:00.000Z").getTime(), "-2.1")
-        );
+    public static void prepareData() throws IOException {
+        List<Series> seriesList = new ArrayList<>();
+
+        seriesList.add(new Series() {{
+            setMetric(TEST_METRIC1_NAME);
+            setEntity(TEST_ENTITY);
+            setData(Arrays.asList(
+                    new Sample("2016-06-03T09:23:00.000Z", "7"),
+                    new Sample("2016-06-03T09:24:00.000Z", "0"),
+                    new Sample("2016-06-03T09:25:00.000Z", "12"),
+                    new Sample("2016-06-03T09:26:00.000Z", "10.3"),
+                    new Sample("2016-06-03T09:27:00.000Z", "10")
+            ));
+            addTag("a", "b");
+        }});
+
+
+        seriesList.add(new Series() {{
+            setMetric(TEST_METRIC2_NAME);
+            setEntity(TEST_ENTITY);
+            setData(Arrays.asList(
+                    new Sample("2016-06-03T09:23:00.000Z", "5"),
+                    new Sample("2016-06-03T09:24:00.000Z", "7"),
+                    new Sample("2016-06-03T09:25:00.000Z", "-2"),
+                    new Sample("2016-06-03T09:26:00.000Z", "-2.1")
+            ));
+            addTag("a", "b");
+            addTag("b", "c");
+        }});
+
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
     /**

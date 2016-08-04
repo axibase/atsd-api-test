@@ -1,19 +1,20 @@
 package com.axibase.tsd.api.method.sql.response;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.Assert;
-import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.Arrays;
 
 import static javax.ws.rs.core.Response.Status.*;
 
@@ -24,14 +25,15 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-response-codes";
 
     @BeforeClass
-    public static void prepareDataSet() {
+    public static void prepareDataSet() throws IOException {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        sendSamplesToSeries(testSeries,
+        testSeries.setData(Arrays.asList(
                 new Sample("2016-06-03T09:23:00.000Z", "16.0"),
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
-        );
+        ));
+        SeriesMethod.insertSeriesCheck(testSeries);
     }
 
     @Test

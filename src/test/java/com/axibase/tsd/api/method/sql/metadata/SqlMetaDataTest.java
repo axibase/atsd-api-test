@@ -1,13 +1,15 @@
 package com.axibase.tsd.api.method.sql.metadata;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.Assert;
-import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
 
 
 /**
@@ -20,12 +22,13 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     @BeforeClass
-    public static void prepareDataSet() {
+    public static void prepareDataSet() throws IOException {
         final String sqlQuery = "SELECT entity, metric, value, value*100, datetime  FROM 'sql-metadata-metric'\n" +
                 "WHERE entity = 'sql-metadata-entity'";
-        sendSamplesToSeries(testSeries,
+        testSeries.addData(
                 new Sample("2016-06-29T08:00:00.000Z", "0.05")
         );
+        SeriesMethod.insertSeriesCheck(testSeries);
         resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
     }
 

@@ -119,7 +119,15 @@ public class StringTable {
     }
 
     public List<String> columnValues(String requestedColumnName) {
-        return filterRows(new HashSet<String>(Arrays.asList(requestedColumnName))).get(0);
+        List<List<String>> filteredRows = filterRows(new HashSet<String>(Arrays.asList(requestedColumnName)));
+        List<String> resultColumn = new ArrayList<>();
+        for (List<String> row : filteredRows) {
+            if (row.size() < 1) {
+                throw new IllegalStateException("Table doesn't contain requested column!");
+            }
+            resultColumn.add(row.get(0));
+        }
+        return resultColumn;
     }
 
 

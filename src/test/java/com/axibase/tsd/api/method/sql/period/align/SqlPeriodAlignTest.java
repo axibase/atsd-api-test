@@ -1,15 +1,15 @@
 package com.axibase.tsd.api.method.sql.period.align;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.Assert;
-import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,16 +21,17 @@ public class SqlPeriodAlignTest extends SqlMethod {
 
 
     @BeforeClass
-    public static void prepareDataSet() {
+    public static void prepareDataSet() throws IOException {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        sendSamplesToSeries(testSeries,
+        testSeries.setData(Arrays.asList(
                 new Sample("2016-06-03T09:20:00.124Z", "16.0"),
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.321Z", "19.0"),
                 new Sample("2016-06-03T09:45:00.126Z", "19.0"),
                 new Sample("2016-06-03T09:45:00.400Z", "17.0")
-        );
+        ));
+        SeriesMethod.insertSeriesCheck(testSeries);
     }
 
     /**

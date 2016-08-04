@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.operators;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -7,7 +8,10 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,19 +26,32 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareData() {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
-        sendSamplesToSeries(series,
-                new Sample("2016-06-29T08:00:00.000Z", (BigDecimal) null),
-                new Sample("2016-06-29T08:00:01.000Z", 3)
+    public static void prepareData() throws IOException {
+
+        List<Series> seriesList = new ArrayList<>();
+
+        seriesList.add(
+                new Series() {{
+                    setEntity(TEST_ENTITY_NAME);
+                    setMetric(TEST_METRIC1_NAME);
+                    setData(Arrays.asList(
+                            new Sample("2016-06-29T08:00:00.000Z", (BigDecimal) null),
+                            new Sample("2016-06-29T08:00:01.000Z", 3)
+                    ));
+                }}
         );
 
-        series.setMetric(TEST_METRIC2_NAME);
-
-        sendSamplesToSeries(series,
-                new Sample("2016-06-29T08:00:00.000Z", 0),
-                new Sample("2016-06-29T08:00:01.000Z", 1)
+        seriesList.add(
+                new Series() {{
+                    setMetric(TEST_METRIC2_NAME);
+                    setEntity(TEST_ENTITY_NAME);
+                    setData(Arrays.asList(
+                            new Sample("2016-06-29T08:00:00.000Z", 0),
+                            new Sample("2016-06-29T08:00:01.000Z", 1)
+                    ));
+                }}
         );
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
     /*

@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.groupby;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -7,7 +8,10 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,22 +26,44 @@ public class SqlGroupByDatetime extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareData() {
-        Series series = new Series(TESTS_ENTITY1_NAME, TEST_METRIC_NAME);
-        sendSamplesToSeries(series,
-                new Sample("2016-06-19T11:00:00.500Z", "0"),
-                new Sample("2016-06-19T11:00:01.500Z", "1"),
-                new Sample("2016-06-19T11:00:02.500Z", "2")
+    public static void prepareData() throws IOException {
+
+
+        List<Series> seriesList = new ArrayList<>();
+        seriesList.add(
+                new Series() {{
+                    setEntity(TESTS_ENTITY1_NAME);
+                    setMetric(TEST_METRIC_NAME);
+                    setData(Arrays.asList(
+                            new Sample("2016-06-19T11:00:00.500Z", "0"),
+                            new Sample("2016-06-19T11:00:01.500Z", "1"),
+                            new Sample("2016-06-19T11:00:02.500Z", "2")
+                    ));
+                }}
         );
-        series.setEntity(TESTS_ENTITY2_NAME);
-        sendSamplesToSeries(series,
-                new Sample("2016-06-19T11:00:00.500Z", "0"),
-                new Sample("2016-06-19T11:00:01.500Z", "1")
+
+        seriesList.add(
+                new Series() {{
+                    setEntity(TESTS_ENTITY2_NAME);
+                    setMetric(TEST_METRIC_NAME);
+                    setData(Arrays.asList(
+                            new Sample("2016-06-19T11:00:00.500Z", "0"),
+                            new Sample("2016-06-19T11:00:01.500Z", "1")
+                    ));
+                }}
         );
-        series.setEntity(TESTS_ENTITY3_NAME);
-        sendSamplesToSeries(series,
-                new Sample("2016-06-19T11:00:00.500Z", "0")
+
+        seriesList.add(
+                new Series() {{
+                    setEntity(TESTS_ENTITY3_NAME);
+                    setMetric(TEST_METRIC_NAME);
+                    setData(Collections.singletonList(
+                            new Sample("2016-06-19T11:00:00.500Z", "0")
+                    ));
+                }}
         );
+
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
     /*
     Following tests related to #3102 issue

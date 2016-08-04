@@ -18,6 +18,8 @@ public class Series {
     private Map<String, String> tags;
 
     public Series() {
+        data = new ArrayList<>();
+        tags = new HashMap<>();
     }
 
     public Series(String entity, String metric) {
