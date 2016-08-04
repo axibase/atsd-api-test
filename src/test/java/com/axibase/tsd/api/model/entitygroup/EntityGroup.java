@@ -16,9 +16,8 @@ public class EntityGroup {
         return name;
     }
 
-    public EntityGroup setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public Map<String, String> getTags() {
