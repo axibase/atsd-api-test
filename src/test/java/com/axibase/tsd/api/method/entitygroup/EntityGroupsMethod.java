@@ -20,9 +20,15 @@ public class EntityGroupsMethod extends BaseMethod {
     private static WebTarget httpEntitiesApiResource = httpApiResource.path("/entity-groups/");
 
     public static Response list(String expression, Map<String, String> tags) {
-        Response response = httpEntitiesApiResource
-                .queryParam("tags", tags)
-                .queryParam("expression", expression)
+        WebTarget resource = httpEntitiesApiResource;
+        if (tags != null) {
+            resource = resource.queryParam("tags", tags);
+        }
+        if (expression != null) {
+            resource = resource.queryParam("expression", expression);
+        }
+
+        Response response = resource
                 .request()
                 .get();
         response.bufferEntity();
@@ -30,45 +36,27 @@ public class EntityGroupsMethod extends BaseMethod {
     }
 
     public static Response list(String expression) {
-        Response response = httpEntitiesApiResource
-                .queryParam("expression", expression)
-                .request()
-                .get();
-        response.bufferEntity();
-        return response;
+        return list(expression, null);
     }
 
     public static Response list(Map<String, String> tags) {
-        Response response = httpEntitiesApiResource
-                .queryParam("tags", tags)
-                .request()
-                .get();
-        response.bufferEntity();
-        return response;
+        return list(null, tags);
     }
 
     public static Response list() {
-        Response response = httpEntitiesApiResource
-                .request()
-                .get();
-        response.bufferEntity();
-        return response;
-    }
-
-
-    public static <T> Response updateEntityGroup(String entityGroup, T query) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .request()
-                .method("PATCH", Entity.json(query));
-        response.bufferEntity();
-        return response;
+        return list(null, null);
     }
 
 
     public static <T> Response updateEntityGroup(String entityGroup, T query, String expression, Map<String, String> tags) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .queryParam("expression", expression)
-                .queryParam("tags", tags)
+        WebTarget resource = httpEntitiesApiResource.path(entityGroup);
+        if (tags != null) {
+            resource = resource.queryParam("tags", tags);
+        }
+        if (expression != null) {
+            resource = resource.queryParam("expression", expression);
+        }
+        Response response = resource
                 .request()
                 .method("PATCH", Entity.json(query));
         response.bufferEntity();
@@ -76,28 +64,27 @@ public class EntityGroupsMethod extends BaseMethod {
     }
 
     public static <T> Response updateEntityGroup(String entityGroup, T query, String expression) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .queryParam("expression", expression)
-                .request()
-                .method("PATCH", Entity.json(query));
-        response.bufferEntity();
-        return response;
+        return updateEntityGroup(entityGroup, query, expression, null);
     }
 
     public static <T> Response updateEntityGroup(String entityGroup, T query, Map<String, String> tags) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .queryParam("tags", tags)
-                .request()
-                .method("PATCH", Entity.json(query));
-        response.bufferEntity();
-        return response;
+        return updateEntityGroup(entityGroup, query, null, tags);
+    }
+
+    public static <T> Response updateEntityGroup(String entityGroup, T query) {
+        return updateEntityGroup(entityGroup, query, null, null);
     }
 
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup, T query, String expression, Map<String, String> tags) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .queryParam("expression", expression)
-                .queryParam("tags", tags)
+        WebTarget resource = httpEntitiesApiResource.path(entityGroup);
+        if (tags != null) {
+            resource = resource.queryParam("tags", tags);
+        }
+        if (expression != null) {
+            resource = resource.queryParam("expression", expression);
+        }
+        Response response = resource
                 .request()
                 .put(Entity.json(query));
         response.bufferEntity();
@@ -105,37 +92,19 @@ public class EntityGroupsMethod extends BaseMethod {
     }
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .request()
-                .put(Entity.json("{}"));
-        response.bufferEntity();
-        return response;
+        return createOrReplaceEntityGroup(entityGroup, "", null, null);
     }
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup, T query, String expression) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .queryParam("expression", expression)
-                .request()
-                .put(Entity.json(query));
-        response.bufferEntity();
-        return response;
+        return createOrReplaceEntityGroup(entityGroup, query, expression, null);
     }
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup, T query, Map<String, String> tags) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .queryParam("tags", tags)
-                .request()
-                .put(Entity.json(query));
-        response.bufferEntity();
-        return response;
+        return createOrReplaceEntityGroup(entityGroup, query, null, tags);
     }
 
     public static <T> Response createOrReplaceEntityGroup(String entityGroup, T query) {
-        Response response = httpEntitiesApiResource.path(entityGroup)
-                .request()
-                .put(Entity.json(query));
-        response.bufferEntity();
-        return response;
+        return createOrReplaceEntityGroup(entityGroup, query, null, null);
     }
 
     public static Response getEntityGroup(String entityGroup) {
