@@ -45,12 +45,6 @@ public class EntityGroupCreateOrReplaceTest extends EntityGroupMethod {
     }
 
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
-        if (entityGroupExist(entityGroup)) {
-            deleteEntityGroup(entityGroup.getName());
-        }
-        if (entityGroupExist(entityGroup)) {
-            throw new IllegalArgumentException("Fail to prepare database to test");
-        }
         Response response = createOrReplaceEntityGroup(entityGroup);
         assertEquals("Fail to execute createOrReplaceEntityGroup query", OK.getStatusCode(), response.getStatus());
         assertTrue("Entity not found", entityGroupExist(entityGroup));
