@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.syntax;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -27,7 +28,9 @@ public class SqlTableAliasTest extends SqlTest {
             put("a", "b");
             put("b", "c");
         }});
-
+        Registry.Metric.register(TEST_METRIC1_NAME);
+        Registry.Metric.register(TEST_METRIC2_NAME);
+        Registry.Entity.register(TEST_ENTITY_NAME);
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
                         new Series() {{

@@ -63,7 +63,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableColumnsNames(Collections.singletonList("metric.tags"), resultTable);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("a=b;a-b=b-c;b=c;Tag=V")
+                Collections.singletonList("a=b;a-b=b-c;b=c;tag=V")
         );
         assertTableRows(expectedRows, resultTable);
     }
@@ -81,13 +81,13 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Arrays.asList(
-                "metric.tags.Tag",
+                "metric.tags.tag",
                 "metric.tags.a",
                 "metric.tags.a-b",
                 "metric.tags.b"), resultTable);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("V", "b", "b-c", "c")
+                Arrays.asList("b", "b-c", "c", "V")
         );
         assertTableRows(expectedRows, resultTable);
     }
@@ -152,7 +152,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableColumnsNames(Collections.singletonList("metric.tags.tag"), resultTable);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("null")
+                Collections.singletonList("V")
         );
         assertTableRows(expectedRows, resultTable);
     }
@@ -175,7 +175,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableColumnsNames(Collections.singletonList("metric.tags.Tag"), resultTable);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("V")
+                Collections.singletonList("null")
         );
         assertTableRows(expectedRows, resultTable);
     }
