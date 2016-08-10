@@ -29,7 +29,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public static void initialize() throws IOException {
         Registry.Metric.register(TEST_METRIC1_NAME);
         Registry.Metric.register(TEST_METRIC2_NAME);
-        Registry.Entity.register(TEST_METRIC1_NAME);
+        Registry.Entity.register(TEST_ENTITY_NAME);
 
         List<Series> seriesList = new ArrayList<>();
 
