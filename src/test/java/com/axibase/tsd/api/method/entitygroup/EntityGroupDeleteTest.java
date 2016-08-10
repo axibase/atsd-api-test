@@ -1,6 +1,6 @@
-package com.axibase.tsd.api.method.entityGroup;
+package com.axibase.tsd.api.method.entitygroup;
 
-import com.axibase.tsd.api.model.entityGroup.EntityGroup;
+import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;

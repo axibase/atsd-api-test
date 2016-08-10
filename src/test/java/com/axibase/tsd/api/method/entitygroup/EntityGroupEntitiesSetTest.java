@@ -1,6 +1,6 @@
-package com.axibase.tsd.api.method.entityGroup;
+package com.axibase.tsd.api.method.entitygroup;
 
-import com.axibase.tsd.api.model.entityGroup.EntityGroup;
+import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -12,14 +12,14 @@ import static org.testng.AssertJUnit.assertEquals;
 /**
  * @author Dmitry Korchagin.
  */
-public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
+public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
 
     /**
      * #1278
      */
     @Test
     public void testNameContainsWhitespace() throws Exception {
-        EntityGroup entityGroup = new EntityGroup("urlencodedelentities entitygroup1");
+        EntityGroup entityGroup = new EntityGroup("urlencodesetentities entitygroup1");
         assertUrlEncodePathHandledCorrectly(entityGroup);
 
     }
@@ -29,7 +29,7 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
      */
     @Test
     public void testNameContainsSlash() throws Exception {
-        EntityGroup entityGroup = new EntityGroup("urlencodedelentities/entitygroup2");
+        EntityGroup entityGroup = new EntityGroup("urlencodesetentities/entitygroup2");
         assertUrlEncodePathHandledCorrectly(entityGroup);
 
     }
@@ -39,7 +39,7 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
      */
     @Test
     public void testNameContainsCyrillic() throws Exception {
-        EntityGroup entityGroup = new EntityGroup("urlencodedelentitiesйёentitygroup3");
+        EntityGroup entityGroup = new EntityGroup("urlencodesetentitiesйёentitygroup3");
         assertUrlEncodePathHandledCorrectly(entityGroup);
 
     }
@@ -47,16 +47,19 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         createOrReplaceEntityGroupCheck(entityGroup);
 
-        List<String> entitiesList = Arrays.asList("entity1", "entity2");
+        List<String> entitiesDefault = Arrays.asList("entity1", "entity2");
+        List<String> entitiesToSet = Arrays.asList("entity3", "entity4");
+        deleteEntities(entityGroup.getName(), entitiesToSet);
+
         List<Map> expectedResponse = new ArrayList<>();
-        for (String s : entitiesList) {
+        for (String s : entitiesDefault) {
             Map<String, Object> element = new HashMap<>();
             element.put("name", s);
             element.put("enabled", true);
             expectedResponse.add(element);
         }
 
-        Response response = addEntities(entityGroup.getName(), entitiesList);
+        Response response = addEntities(entityGroup.getName(), entitiesDefault);
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalStateException("Fail to execute addEntities query");
         }
@@ -70,13 +73,24 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
             throw new IllegalStateException("Fail to get added entities");
         }
 
-        response = deleteEntities(entityGroup.getName(), entitiesList);
+        expectedResponse = new ArrayList<>();
+        for (String s : entitiesToSet) {
+            Map<String, Object> element = new HashMap<>();
+            element.put("name", s);
+            element.put("enabled", true);
+            expectedResponse.add(element);
+        }
+
+        response = setEntities(entityGroup.getName(), entitiesToSet);
         assertEquals("Fail to execute deleteEntities query", OK.getStatusCode(), response.getStatus());
 
+        expected = jacksonMapper.writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new IllegalStateException("Fail to execute getEntities query");
+        if (OK.getStatusCode() != response.getStatus()) {
+            throw new IllegalArgumentException("Fail to execute getEntities query");
         }
-        assertEquals("Entity list should be empty", "[]", formatToJsonString(response));
+        if (!compareJsonString(expected, formatToJsonString(response))) {
+            throw new IllegalStateException("Fail to get added entities");
+        }
     }
 }

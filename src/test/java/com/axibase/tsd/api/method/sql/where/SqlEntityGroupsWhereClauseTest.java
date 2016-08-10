@@ -1,9 +1,9 @@
 package com.axibase.tsd.api.method.sql.where;
 
-import com.axibase.tsd.api.method.entityGroup.EntityGroupMethod;
+import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.model.entityGroup.EntityGroup;
+import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;

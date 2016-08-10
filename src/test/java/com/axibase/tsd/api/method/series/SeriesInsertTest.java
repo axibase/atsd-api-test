@@ -284,12 +284,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
         series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
-
-        //TODO upgrade insertSeriesCheck method to avoid this
-        if(insertSeries(series).getStatus() != OK.getStatusCode()) {
-            throw new IllegalStateException("Fail to execute insert series query");
-        }
-        Thread.sleep(Util.EXPECTED_PROCESSING_TIME); //wait to handle series by ATSD
+        insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -322,10 +317,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Long endTime = 1L;
         Series series = new Series("e-time-range-1", "m-time-range-1");
         series.addData(new Sample(0, "0"));
+        insertSeriesCheck(series);
 
-        Boolean success = insertSeries(series, 700);
-        if (!success)
-            fail("Failed to insert series");
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
@@ -336,10 +329,8 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testTimeRangeMinInISOSaved() throws Exception {
         Series series = new Series("e-time-range-2", "m-time-range-2");
         series.addData(new Sample(MIN_STORABLE_DATE, "0"));
+        insertSeriesCheck(series);
 
-        Boolean success = insertSeries(series, 700);
-        if (!success)
-            fail("Failed to insert series");
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals("Empty data in returned series", 1, seriesList.get(0).getData().size());
@@ -353,10 +344,8 @@ public class SeriesInsertTest extends SeriesMethod {
         Long endTime = 2L;
         Series series = new Series("e-time-range-3", "m-time-range-3");
         series.addData(new Sample(time, "1"));
+        insertSeriesCheck(series);
 
-        boolean success = insertSeries(series, 700);
-        if (!success)
-            fail("Failed to insert series");
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getV());
@@ -370,10 +359,8 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Series series = new Series("e-time-range-5", "m-time-range-5");
         series.addData(new Sample(t, v));
+        insertSeriesCheck(series);
 
-        Boolean success = insertSeries(series, 700);
-        if (!success)
-            fail("Failed to insert series");
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
@@ -388,10 +375,8 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Series series = new Series("e-time-range-6", "m-time-range-6");
         series.addData(new Sample(MAX_STORABLE_DATE, v));
+        insertSeriesCheck(series);
 
-        Boolean success = insertSeries(series, 700);
-        if (!success)
-            fail("Failed to insert series");
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(),
                 MAX_STORABLE_DATE, NEXT_AFTER_MAX_STORABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();

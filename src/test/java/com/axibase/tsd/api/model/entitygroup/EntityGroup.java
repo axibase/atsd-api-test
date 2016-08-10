@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.model.entityGroup;
+package com.axibase.tsd.api.model.entitygroup;
 
 import com.axibase.tsd.api.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;

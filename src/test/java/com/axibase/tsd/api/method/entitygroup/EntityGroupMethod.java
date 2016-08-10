@@ -1,7 +1,7 @@
-package com.axibase.tsd.api.method.entityGroup;
+package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.method.BaseMethod;
-import com.axibase.tsd.api.model.entityGroup.EntityGroup;
+import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
