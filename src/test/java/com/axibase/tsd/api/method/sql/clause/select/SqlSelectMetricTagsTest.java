@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.select;
+package com.axibase.tsd.api.method.sql.clause.select;
 
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
@@ -25,9 +25,12 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(
+                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+                    addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
+                }}
+        );
+
         MetricMethod.updateMetric(TEST_METRIC_NAME, new Metric() {{
             setTags(
                     Collections.unmodifiableMap(new HashMap<String, String>() {{
@@ -53,10 +56,10 @@ public class SqlSelectMetricTagsTest extends SqlTest {
      */
     @Test
     public void testSelectMetricTags() {
-        String sqlQuery =
-                "SELECT metric.tags\n" +
-                        "FROM 'sql-select-metric-tags-metric'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+        String sqlQuery = String.format(
+                "SELECT metric.tags\nFROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'\n",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -73,10 +76,10 @@ public class SqlSelectMetricTagsTest extends SqlTest {
      */
     @Test
     public void testSelectMetricMultipleTags() {
-        String sqlQuery =
-                "SELECT metric.tags.*\n" +
-                        "FROM 'sql-select-metric-tags-metric'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+        String sqlQuery = String.format(
+                "SELECT metric.tags.*\n FROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'\n",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -126,7 +129,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        assertTableColumnsNames(Collections.singletonList("metric.tags.'a-b'"), resultTable);
+        assertTableColumnsNames(Collections.singletonList("metric.tags.a-b"), resultTable);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("b-c")

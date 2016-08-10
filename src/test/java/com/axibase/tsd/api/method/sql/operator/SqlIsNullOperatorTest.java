@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.sql.operators;
+package com.axibase.tsd.api.method.sql.operator;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
@@ -25,8 +26,13 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        List<Series> seriesList = new ArrayList<>();
+        Registry.Metric.register(TEST_METRIC_NAME);
+        Registry.Entity.register(TEST_ENTITY1_NAME);
+        Registry.Entity.register(TEST_ENTITY2_NAME);
+        Registry.Entity.register(TEST_ENTITY3_NAME);
+        Registry.Entity.register(TEST_ENTITY4_NAME);
 
+        List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series() {{
             setMetric(TEST_METRIC_NAME);
             setEntity(TEST_ENTITY1_NAME);
@@ -84,19 +90,21 @@ public class SqlIsNullOperatorTest extends SqlTest {
      */
     @Test
     public void testIsNullMetricTags() {
-        String sqlQuery =
+        String sqlQuery = String.format(
                 "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM 'sql-operator-is-null-metric'\n" +
+                        "FROM '%s'\n" +
                         "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:11:00.000Z'\n" +
-                        "AND tags.tag4 IS NULL\n";
+                        "AND tags.tag4 IS NULL\n",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-operator-is-null-entity-1", "2016-06-19T11:00:00.000Z", "1", "null", "null", "val1"),
-                Arrays.asList("sql-operator-is-null-entity-2", "2016-06-19T11:05:00.000Z", "2", "null", "val2", "val2"),
-                Arrays.asList("sql-operator-is-null-entity-3", "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-06-19T11:00:00.000Z", "1", "val1", "null", "null"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-06-19T11:05:00.000Z", "2", "val2", "val2", "null"),
+                Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
 
         assertTableRows(expectedRows, resultTable);
@@ -107,16 +115,17 @@ public class SqlIsNullOperatorTest extends SqlTest {
      */
     @Test
     public void testNotIsNullMetricTags() {
-        String sqlQuery =
-                "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM 'sql-operator-is-null-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, value, tags.*\nFROM '%s'\n" +
                         "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND NOT tags.tag4 IS NULL\n";
+                        "AND NOT tags.tag4 IS NULL\n",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("sql-operator-is-null-entity-4", "2016-06-19T11:15:00.000Z", "4", "val4", "null", "null")
+                Arrays.asList(TEST_ENTITY4_NAME, "2016-06-19T11:15:00.000Z", "4", "null", "null", "val4")
         );
 
         assertTableRows(expectedRows, resultTable);
@@ -127,16 +136,17 @@ public class SqlIsNullOperatorTest extends SqlTest {
      */
     @Test
     public void testIsNotNullMetricTags() {
-        String sqlQuery =
-                "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM 'sql-operator-is-null-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
                         "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND tags.tag4 IS NOT NULL\n";
+                        "AND tags.tag4 IS NOT NULL\n",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("sql-operator-is-null-entity-4", "2016-06-19T11:15:00.000Z", "4", "val4", "null", "null")
+                Arrays.asList(TEST_ENTITY4_NAME, "2016-06-19T11:15:00.000Z", "4", "null", "null", "val4")
         );
 
         assertTableRows(expectedRows, resultTable);
@@ -147,18 +157,19 @@ public class SqlIsNullOperatorTest extends SqlTest {
      */
     @Test
     public void testNotIsNotNullMetricTags() {
-        String sqlQuery =
-                "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM 'sql-operator-is-null-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
                         "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND NOT tags.tag4 IS NOT NULL\n";
+                        "AND NOT tags.tag4 IS NOT NULL\n",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-operator-is-null-entity-1", "2016-06-19T11:00:00.000Z", "1", "null", "null", "val1"),
-                Arrays.asList("sql-operator-is-null-entity-2", "2016-06-19T11:05:00.000Z", "2", "null", "val2", "val2"),
-                Arrays.asList("sql-operator-is-null-entity-3", "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-06-19T11:00:00.000Z", "1", "val1", "null", "null"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-06-19T11:05:00.000Z", "2", "val2", "val2", "null"),
+                Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
 
         assertTableRows(expectedRows, resultTable);
@@ -169,16 +180,17 @@ public class SqlIsNullOperatorTest extends SqlTest {
      */
     @Test
     public void testIsNotNullEntityTags() throws Exception {
-        String sqlQuery =
-                "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM 'sql-operator-is-null-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
                         "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND entity.tags.tag1 IS NOT NULL\n";
+                        "AND entity.tags.tag1 IS NOT NULL",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-operator-is-null-entity-1", "2016-06-19T11:00:00.000Z", "1", "null", "null", "val1")
+        List<List<String>> expectedRows = Collections.singletonList(
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-06-19T11:00:00.000Z", "1", "val1", "null", "null")
         );
 
         assertTableRows(expectedRows, resultTable);
@@ -189,17 +201,18 @@ public class SqlIsNullOperatorTest extends SqlTest {
      */
     @Test
     public void testIsNullEntityTags() throws Exception {
-        String sqlQuery =
-                "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM 'sql-operator-is-null-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
                         "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:11:00.000Z'\n" +
-                        "AND entity.tags.tag1 IS NULL\n";
+                        "AND entity.tags.tag1 IS NULL\n",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-operator-is-null-entity-2", "2016-06-19T11:05:00.000Z", "2", "null", "val2", "val2"),
-                Arrays.asList("sql-operator-is-null-entity-3", "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-06-19T11:05:00.000Z", "2", "val2", "val2", "null"),
+                Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
 
         assertTableRows(expectedRows, resultTable);

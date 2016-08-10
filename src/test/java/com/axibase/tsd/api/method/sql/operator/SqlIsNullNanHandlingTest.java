@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.sql.operators;
+package com.axibase.tsd.api.method.sql.operator;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -27,7 +28,10 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException {
-
+        Registry.Metric.register(TEST_METRIC1_NAME);
+        Registry.Metric.register(TEST_METRIC2_NAME);
+        Registry.Entity.register(TEST_ENTITY_NAME);
+        
         List<Series> seriesList = new ArrayList<>();
 
         seriesList.add(

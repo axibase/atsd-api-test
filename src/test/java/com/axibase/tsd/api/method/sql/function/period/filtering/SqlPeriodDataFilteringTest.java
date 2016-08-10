@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.period.filtering;
+package com.axibase.tsd.api.method.sql.function.period.filtering;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
@@ -20,17 +20,21 @@ import java.util.List;
  */
 public class SqlPeriodDataFilteringTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-period-data-filtering";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
 
     @BeforeClass
     public static void prepareDataSet() throws IOException {
-        Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        testSeries.setData(Arrays.asList(
-                new Sample("2016-06-27T14:20:00.000Z", "4.0"),
-                new Sample("2016-06-27T14:22:00.000Z", "4.0"),
-                new Sample("2016-06-27T14:22:01.000Z", "4.0")
-        ));
-        SeriesMethod.insertSeriesCheck(testSeries);
+        SeriesMethod.insertSeriesCheck(
+                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+                    setData(Arrays.asList(
+                            new Sample("2016-06-27T14:20:00.000Z", "4.0"),
+                            new Sample("2016-06-27T14:22:00.000Z", "4.0"),
+                            new Sample("2016-06-27T14:22:01.000Z", "4.0")
+                    ));
+                }}
+        );
     }
 
 
@@ -44,11 +48,12 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
      */
     @Test
     public void testFirstValueOutOfBounds() {
-        final String sqlQuery =
-                "SELECT datetime, count(value) FROM 'sql-period-data-filtering-metric' " +
-                        "WHERE entity = 'sql-period-data-filtering-entity'\n" +
+        final String sqlQuery = String.format(
+                "SELECT datetime, count(value) FROM '%s'\nWHERE entity = '%s' " +
                         "AND datetime >= '2016-06-27T14:20:01Z' and datetime < '2016-06-27T14:21:01Z'\n" +
-                        "GROUP BY PERIOD(1 MINUTE)";
+                        "GROUP BY PERIOD(1 MINUTE)",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         final List<List<String>> resultTableRows =
                 executeQuery(sqlQuery)
@@ -67,11 +72,12 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
      */
     @Test
     public void testLastValueOutOfBounds() {
-        final String sqlQuery =
-                "SELECT datetime, count(value) FROM 'sql-period-data-filtering-metric' " +
-                        "WHERE entity = 'sql-period-data-filtering-entity'\n" +
+        final String sqlQuery = String.format(
+                "SELECT datetime, count(value) FROM '%s'\nWHERE entity = '%s'\n" +
                         "AND datetime >= '2016-06-27T14:21:00Z' and datetime < '2016-06-27T14:22:01Z'\n" +
-                        "GROUP BY PERIOD(1 MINUTE)";
+                        "GROUP BY PERIOD(1 MINUTE)",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         final List<List<String>> resultTableRows =
                 executeQuery(sqlQuery)

@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.sql.operators;
+package com.axibase.tsd.api.method.sql.operator;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -27,8 +28,11 @@ public class SqlModuloTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException {
-        final List<Series> seriesList = new ArrayList<>();
+        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Metric.register(TEST_METRIC1_NAME);
+        Registry.Metric.register(TEST_METRIC2_NAME);
 
+        final List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series() {{
             setMetric(TEST_METRIC1_NAME);
             setEntity(TEST_ENTITY_NAME);
@@ -74,10 +78,11 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingPositiveByPositiveInteger() {
-        String sqlQuery =
-                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value % m2.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:23:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:23:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("7.0", "5.0", "2.0")
         );
@@ -94,10 +99,11 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingZeroByPositiveInteger() {
-        String sqlQuery =
-                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value % m2.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:24:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:24:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("0.0", "7.0", "0.0")
@@ -114,12 +120,13 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingPositiveByZeroInteger() {
-        String sqlQuery =
-                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value % m1.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:24:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:24:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
-        List<List<String>> expectedRows = Arrays.asList(
+        List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("7.0", "0.0", "NaN")
         );
 
@@ -135,12 +142,13 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingPositiveByNegativeInteger() {
-        String sqlQuery =
-                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value % m2.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:25:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:25:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
-        List<List<String>> expectedRows = Arrays.asList(
+        List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("12.0", "-2.0", "0.0")
         );
 
@@ -156,12 +164,14 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingNegativeByPositiveInteger() {
-        String sqlQuery =
-                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value % m1.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:25:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:25:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
-        List<List<String>> expectedRows = Arrays.asList(
+
+        List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("-2.0", "12.0", "-2.0")
         );
 
@@ -177,10 +187,12 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingPositiveByNegativeDecimal() {
-        String sqlQuery =
-                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value % m2.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:26:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+
+                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:26:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
         Double expectedModulo = 1.9;
 
@@ -198,11 +210,11 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingNegativeByPositiveDecimal() {
-        String sqlQuery =
-                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value % m1.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:26:00.000Z' AND entity = 'sql-modulo-entity'";
-
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:26:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
         Double expectedModulo = -2.1;
 
         Double resultModulo = Double.parseDouble(executeQuery(sqlQuery)
@@ -219,12 +231,13 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingNullByNumber() {
-        String sqlQuery =
-                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value % m2.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:27:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:27:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
-        List<List<String>> expectedRows = Arrays.asList(
+        List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("10.0", "null", "null")
         );
 
@@ -240,12 +253,13 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test
     public void testDividingNumberByNull() {
-        String sqlQuery =
-                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m1.value % m2.value AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:27:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:27:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
-        List<List<String>> expectedRows = Arrays.asList(
+        List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("null", "10.0", "null")
         );
 
@@ -261,10 +275,11 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test(expectedExceptions = ProcessingException.class)
     public void testDividingStringByString() {
-        String sqlQuery =
-                "SELECT entity, datetime, tags.a , tags.b , tags.a % tags.b AS 'modulo' FROM 'sql-modulo-metric-1' m1\n " +
-                        "OUTER JOIN 'sql-modulo-metric-2' m2 " +
-                        "WHERE datetime = '2016-06-03T09:23:00.000Z' AND entity = 'sql-modulo-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, m2.value AS 'num', m1.value AS 'den', tags.a %s tags.b AS 'modulo' FROM '%s' m1\n " +
+                        "OUTER JOIN '%s' m2\nWHERE datetime = '2016-06-03T09:27:00.000Z' AND entity = '%s'",
+                "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
+        );
 
         executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -275,9 +290,11 @@ public class SqlModuloTest extends SqlTest {
      */
     @Test(expectedExceptions = ProcessingException.class)
     public void testDividingNaNByNumber() {
-        String sqlQuery =
-                "SELECT entity, datetime, value, 0/0 % m1.value AS 'modulo' FROM 'sql-modulo-metric-1'\n " +
-                        "WHERE datetime = '2016-06-03T09:23:00.000Z' AND entity = 'sql-modulo-entity' ";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, value, 0/0 %s m1.value AS 'modulo' FROM '%s'\n " +
+                        "WHERE datetime = '2016-06-03T09:23:00.000Z' AND entity = '%s' ",
+                "%", TEST_METRIC1_NAME, TEST_ENTITY_NAME
+        );
 
         executeQuery(sqlQuery)
                 .readEntity(StringTable.class);

@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.sql.select;
+package com.axibase.tsd.api.method.sql.clause.select;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -20,15 +21,18 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-all-join-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
     private static final String TEST_METRIC2_NAME = TEST_PREFIX + "metric-2";
-    private static final String TEST_ENTITY = TEST_PREFIX + "entity-1";
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
     public static void prepareData() throws IOException {
-        List<Series> seriesList = new ArrayList<>();
+        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Metric.register(TEST_METRIC1_NAME);
+        Registry.Metric.register(TEST_METRIC2_NAME);
 
+        List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series() {{
             setMetric(TEST_METRIC1_NAME);
-            setEntity(TEST_ENTITY);
+            setEntity(TEST_ENTITY_NAME);
             setData(Arrays.asList(
                     new Sample("2016-06-03T09:23:00.000Z", "7"),
                     new Sample("2016-06-03T09:24:00.000Z", "0"),
@@ -42,7 +46,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
 
         seriesList.add(new Series() {{
             setMetric(TEST_METRIC2_NAME);
-            setEntity(TEST_ENTITY);
+            setEntity(TEST_ENTITY_NAME);
             setData(Arrays.asList(
                     new Sample("2016-06-03T09:23:00.000Z", "5"),
                     new Sample("2016-06-03T09:24:00.000Z", "7"),
@@ -62,9 +66,10 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
      */
     @Test
     public void testSelectAllColumnsWithAlias() {
-        String sqlQuery =
-                "SELECT * FROM 'sql-select-all-join-metric-1' t1 " +
-                        "JOIN 'sql-select-all-join-metric-2' t2";
+        String sqlQuery = String.format(
+                "SELECT * FROM '%s' t1\nJOIN '%s' t2",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -116,9 +121,10 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
      */
     @Test
     public void testSelectAllColumnsFromTableAlias() {
-        String sqlQuery =
-                "SELECT t1.* FROM 'sql-select-all-join-metric-1' t1 " +
-                        "JOIN 'sql-select-all-join-metric-2' t2";
+        String sqlQuery = String.format(
+                "SELECT t1.* FROM '%s' t1 \n JOIN '%s' t2",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -137,9 +143,10 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
      */
     @Test
     public void testSelectAllColumnsFromSeveralTableAliases() {
-        String sqlQuery =
-                "SELECT t1.*, t2.* FROM 'sql-select-all-join-metric-1' t1 " +
-                        "JOIN 'sql-select-all-join-metric-2' t2";
+        String sqlQuery = String.format(
+                "SELECT t1.*, t2.* FROM '%s' t1 JOIN '%s' t2",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 

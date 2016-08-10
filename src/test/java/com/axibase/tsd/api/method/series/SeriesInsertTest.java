@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.Test;
 
@@ -284,7 +283,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
         series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
-        insertSeriesCheck(series);
+        insertSeries(series, Util.EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -316,7 +315,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Long time = 0L;
         Long endTime = 1L;
         Series series = new Series("e-time-range-1", "m-time-range-1");
-        series.addData(new Sample(0, "0"));
+        series.addData(new Sample(Util.ISOFormat(0), "0"));
         insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
@@ -343,7 +342,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Long time = 1L;
         Long endTime = 2L;
         Series series = new Series("e-time-range-3", "m-time-range-3");
-        series.addData(new Sample(time, "1"));
+        series.addData(new Sample(Util.ISOFormat(time), "1"));
         insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
@@ -358,7 +357,7 @@ public class SeriesInsertTest extends SeriesMethod {
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-5", "m-time-range-5");
-        series.addData(new Sample(t, v));
+        series.addData(new Sample(Util.ISOFormat(t), v));
         insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);

@@ -16,7 +16,7 @@ import java.util.*;
  * @author Igor Shmagrinskiy
  */
 public class SqlTableAliasTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-standart-collection-view-";
+    private static final String TEST_PREFIX = "sql-standard-table-alias";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
     private static final String TEST_METRIC2_NAME = TEST_PREFIX + "metric-2";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";

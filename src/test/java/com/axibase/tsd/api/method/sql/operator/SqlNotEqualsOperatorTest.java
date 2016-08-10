@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.operators;
+package com.axibase.tsd.api.method.sql.operator;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
@@ -23,16 +23,19 @@ import static org.testng.AssertJUnit.assertTrue;
  */
 public class SqlNotEqualsOperatorTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-not-equals-syntax-";
-
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
 
     @BeforeClass
     public static void prepareData() throws IOException {
-        Series series = new Series(TEST_PREFIX + "entity", TEST_PREFIX + "metric");
-        series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-            put("a", "b");
-        }}));
-        series.addData(new Sample("2016-06-03T09:23:00.000Z", "1.01"));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(
+                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+                    setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
+                        put("a", "b");
+                    }}));
+                    addData(new Sample("2016-06-03T09:23:00.000Z", "1.01"));
+                }}
+        );
     }
 
     /*
@@ -45,9 +48,11 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
      */
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsFalse() {
-        final String sqlQuery = "" +
-                "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
-                "WHERE datetime <> '2016-06-03T09:23:00.000Z' AND entity = 'sql-not-equals-syntax-entity'";
+        final String sqlQuery = String.format(
+                "SELECT entity, value, datetime FROM '%s'" +
+                        "WHERE datetime <> '2016-06-03T09:23:00.000Z' AND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -58,9 +63,11 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
      */
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsTrue() {
-        final String sqlQuery = "" +
-                "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
-                "WHERE datetime <> '2016-06-03T09:25:00.000Z' AND entity = 'sql-not-equals-syntax-entity'";
+        final String sqlQuery = String.format(
+                "SELECT entity, value, datetime FROM '%s'" +
+                        "WHERE datetime <> '2016-06-03T09:25:00.000Z' AND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -71,9 +78,10 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
      */
     @Test
     public void testNotEqualsWithNumericIsFalse() {
-        final String sqlQuery = "" +
-                "SELECT entity, value FROM 'sql-not-equals-syntax-metric'" +
-                "WHERE value <> 1.2 AND entity = 'sql-not-equals-syntax-entity'";
+        final String sqlQuery = String.format(
+                "SELECT entity, value FROM '%s'WHERE value <> 1.2 AND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         List<List<String>> resultRows = executeQuery(sqlQuery)
                 .readEntity(StringTable.class)
@@ -91,9 +99,11 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
      */
     @Test
     public void testNotEqualsWithNumericIsTrue() {
-        final String sqlQuery = "" +
-                "SELECT entity, value FROM 'sql-not-equals-syntax-metric'" +
-                "WHERE value <> 1.01 AND entity = 'sql-not-equals-syntax-entity'";
+        final String sqlQuery = String.format(
+                "SELECT entity, value FROM '%s'\nWHERE value <> 1.01 AND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
         List<List<String>> resultRows = executeQuery(sqlQuery)
                 .readEntity(StringTable.class)
                 .getRows();
@@ -105,9 +115,11 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
      */
     @Test
     public void testNotEqualsWitStringIsFalse() {
-        final String sqlQuery = "" +
-                "SELECT entity, value, datetime FROM 'sql-not-equals-syntax-metric'" +
-                "WHERE tags.a <> 'b'";
+        final String sqlQuery = String.format(
+                "SELECT entity, value, datetime FROM '%s'\nWHERE tags.a <> 'b'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
         List<List<String>> resultRows = executeQuery(sqlQuery)
                 .readEntity(StringTable.class)
                 .getRows();
@@ -119,9 +131,10 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
      */
     @Test
     public void testNotEqualsWithStringIsTrue() {
-        final String sqlQuery = "" +
-                "SELECT entity, tags.a FROM 'sql-not-equals-syntax-metric'\n" +
-                "WHERE tags.a <> 'a' AND entity = 'sql-not-equals-syntax-entity'";
+        final String sqlQuery = String.format(
+                "SELECT entity, tags.a FROM '%s'\n WHERE tags.a <> 'a' AND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         List<List<String>> resultRows = executeQuery(sqlQuery)
                 .readEntity(StringTable.class)

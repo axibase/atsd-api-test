@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.sql.period.extend;
+package com.axibase.tsd.api.method.sql.function.period.extend;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -25,6 +26,10 @@ public class SqlPeriodExtendTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException {
+        Registry.Entity.register(TEST_ENTITY1_NAME);
+        Registry.Entity.register(TEST_ENTITY2_NAME);
+        Registry.Metric.register(TEST_METRIC_NAME);
+
 
         List<Series> seriesList = new ArrayList<>();
 
@@ -66,11 +71,12 @@ public class SqlPeriodExtendTest extends SqlTest {
      */
     @Test
     public void testPeriodExtendOptionBegin() {
-        String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE entity = 'sql-period-extend-entity-1'\n" +
-                        "AND datetime >= '2016-07-14T15:00:05.000Z' AND datetime <'2016-07-14T15:00:07.000Z'" +
-                        "GROUP BY PERIOD(1 SECOND,EXTEND)";
+        String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
+                        "AND datetime >= '2016-07-14T15:00:05.000Z' AND datetime <'2016-07-14T15:00:07.000Z'\n" +
+                        "GROUP BY PERIOD(1 SECOND,EXTEND)",
+                TEST_METRIC_NAME, TEST_ENTITY1_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -87,11 +93,12 @@ public class SqlPeriodExtendTest extends SqlTest {
      */
     @Test
     public void testPeriodExtendOptionTrail() {
-        String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE entity = 'sql-period-extend-entity-1'\n" +
+        String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
                         "AND datetime >= '2016-07-14T15:00:08.000Z' AND datetime <'2016-07-14T15:00:10.000Z'" +
-                        "GROUP BY PERIOD(1 SECOND,EXTEND)";
+                        "GROUP BY PERIOD(1 SECOND,EXTEND)",
+                TEST_METRIC_NAME, TEST_ENTITY1_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -109,11 +116,12 @@ public class SqlPeriodExtendTest extends SqlTest {
      */
     @Test
     public void testPeriodExtendOptionBeginAndTrail() {
-        String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE entity = 'sql-period-extend-entity-1'\n" +
-                        "AND datetime >= '2016-07-14T15:00:05.000Z' AND datetime <'2016-07-14T15:00:10.000Z'" +
-                        "GROUP BY PERIOD(1 SECOND,EXTEND)";
+        String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s'\n" +
+                        "WHERE entity = '%s'\nAND datetime >= '2016-07-14T15:00:05.000Z' " +
+                        "AND datetime <'2016-07-14T15:00:10.000Z'\nGROUP BY PERIOD(1 SECOND,EXTEND)",
+                TEST_METRIC_NAME, TEST_ENTITY1_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -135,11 +143,12 @@ public class SqlPeriodExtendTest extends SqlTest {
      */
     @Test
     public void testPeriodExtendOptionBeginAndTrailWithValueInterpolation() {
-        String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE entity = 'sql-period-extend-entity-1'\n" +
+        String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
                         "AND datetime >= '2016-07-14T15:00:05.000Z' AND datetime <'2016-07-14T15:00:10.000Z'" +
-                        "GROUP BY PERIOD(1 SECOND,EXTEND, VALUE 0)";
+                        "GROUP BY PERIOD(1 SECOND,EXTEND, VALUE 0)",
+                TEST_METRIC_NAME, TEST_ENTITY1_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -160,11 +169,12 @@ public class SqlPeriodExtendTest extends SqlTest {
      */
     @Test
     public void testPeriodExtendOptionBeginAndTrailWithLinearInterpolation() {
-        String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE entity = 'sql-period-extend-entity-1'\n" +
+        String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
                         "AND datetime >= '2016-07-14T15:00:05.000Z' AND datetime <'2016-07-14T15:00:10.000Z'" +
-                        "GROUP BY PERIOD(1 SECOND,EXTEND, LINEAR)";
+                        "GROUP BY PERIOD(1 SECOND,EXTEND, LINEAR)",
+                TEST_METRIC_NAME, TEST_ENTITY1_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -186,11 +196,12 @@ public class SqlPeriodExtendTest extends SqlTest {
     @Test
     public void testPeriodExtendOptionWithIntervalLinear() {
 
-        String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE entity='sql-period-extend-entity-1'\n" +
+        String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity='%s'\n" +
                         "AND datetime >= '2016-07-14T15:00:06.000Z' AND datetime < '2016-07-14T15:00:09.000Z'" +
-                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR), tags.a, tags.b";
+                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR), tags.a, tags.b",
+                TEST_METRIC_NAME, TEST_ENTITY1_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -211,20 +222,20 @@ public class SqlPeriodExtendTest extends SqlTest {
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithoutInterval() {
 
-        String sqlQuery =
-                "SELECT entity, datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
-                        "WHERE tags.a LIKE 'b*'\n" +
-                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\n" +
-                        "ORDER BY datetime";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, AVG(value) FROM '%s'\nWHERE tags.a LIKE 'b*'\n" +
+                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\nORDER BY datetime",
+                TEST_METRIC_NAME
+        );
 
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:06.000Z", "3.0"),
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:08.000Z", "2.0")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0")
 
         );
 
@@ -238,21 +249,22 @@ public class SqlPeriodExtendTest extends SqlTest {
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithstartDate() {
 
-        String sqlQuery =
-                "SELECT entity, datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
                         "WHERE tags.a LIKE 'b*' AND datetime >= '2016-07-14T15:00:05.000Z'\n" +
-                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\n" +
-                        "ORDER BY datetime";
+                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\nORDER BY datetime",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:05.000Z", "3.0"),//<--interpolated by NEXT
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:06.000Z", "3.0"),
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:08.000Z", "2.0")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:05.000Z", "3.0"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0")
 
         );
 
@@ -267,21 +279,22 @@ public class SqlPeriodExtendTest extends SqlTest {
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithEndDate() {
 
-        String sqlQuery =
-                "SELECT entity, datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
                         "WHERE tags.a LIKE 'b*' AND datetime < '2016-07-14T15:00:09.000Z'\n" +
-                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\n" +
-                        "ORDER BY datetime";
+                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\nORDER BY datetime",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:06.000Z", "3.0"),
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:07.000Z", "3.0"),//<--interpolated by PREVIOUS
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:08.000Z", "3.0")//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:07.000Z", "3.0"),//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:08.000Z", "3.0")//<--interpolated by PREVIOUS
 
         );
 
@@ -295,23 +308,24 @@ public class SqlPeriodExtendTest extends SqlTest {
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithStartAndEndDate() {
 
-        String sqlQuery =
-                "SELECT entity, datetime, AVG(value) FROM 'sql-period-extend-metric'\n" +
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
                         "WHERE datetime >= '2016-07-14T15:00:05.000Z' AND datetime < '2016-07-14T15:00:09.000Z'\n" +
-                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\n" +
-                        "ORDER BY datetime";
+                        "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR)\nORDER BY datetime",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:05.000Z", "3.0"),//<--interpolated by NEXT
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:06.000Z", "3.0"),
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:07.000Z", "3.0"),//<--interpolated by PREVIOUS
-                Arrays.asList("sql-period-extend-entity-1", "2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList("sql-period-extend-entity-2", "2016-07-14T15:00:08.000Z", "3.0")//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:05.000Z", "3.0"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:07.000Z", "3.0"),//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:08.000Z", "3.0")//<--interpolated by PREVIOUS
 
         );
 

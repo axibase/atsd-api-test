@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.period.align;
+package com.axibase.tsd.api.method.sql.function.period.align;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
@@ -18,24 +18,26 @@ import java.util.List;
  */
 public class SqlPeriodAlignTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-period-align";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
 
     @BeforeClass
     public static void prepareDataSet() throws IOException {
-        Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        testSeries.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.124Z", "16.0"),
-                new Sample("2016-06-03T09:26:00.000Z", "8.1"),
-                new Sample("2016-06-03T09:36:00.000Z", "6.0"),
-                new Sample("2016-06-03T09:41:00.321Z", "19.0"),
-                new Sample("2016-06-03T09:45:00.126Z", "19.0"),
-                new Sample("2016-06-03T09:45:00.400Z", "17.0")
-        ));
-        SeriesMethod.insertSeriesCheck(testSeries);
+        SeriesMethod.insertSeriesCheck(new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            setData(Arrays.asList(
+                    new Sample("2016-06-03T09:20:00.124Z", "16.0"),
+                    new Sample("2016-06-03T09:26:00.000Z", "8.1"),
+                    new Sample("2016-06-03T09:36:00.000Z", "6.0"),
+                    new Sample("2016-06-03T09:41:00.321Z", "19.0"),
+                    new Sample("2016-06-03T09:45:00.126Z", "19.0"),
+                    new Sample("2016-06-03T09:45:00.400Z", "17.0")
+            ));
+        }});
     }
 
-    /**
-     * Following tests related to #2906
+    /*
+      Following tests related to #2906
      */
 
 
@@ -44,10 +46,11 @@ public class SqlPeriodAlignTest extends SqlMethod {
      */
     @Test
     public void testStartTimeInclusiveAlignment() {
-        final String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-align-metric' \n" +
-                        "WHERE datetime >= '2016-06-03T09:20:00.123Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "GROUP BY PERIOD(5 minute, NONE, START_TIME)";
+        final String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s' \nWHERE datetime >= '2016-06-03T09:20:00.123Z' " +
+                        "AND datetime < '2016-06-03T09:45:00.000Z'\n GROUP BY PERIOD(5 minute, NONE, START_TIME)",
+                TEST_METRIC_NAME
+        );
 
         final List<List<String>> resultTableRows =
                 executeQuery(sqlQuery)
@@ -70,10 +73,11 @@ public class SqlPeriodAlignTest extends SqlMethod {
      */
     @Test
     public void testStartTimeExclusiveAlignment() {
-        final String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-align-metric' \n" +
-                        "WHERE datetime > '2016-06-03T09:20:00.123Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "GROUP BY PERIOD(5 minute, NONE, START_TIME)";
+        final String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s' \nWHERE datetime > '2016-06-03T09:20:00.123Z' " +
+                        "AND datetime < '2016-06-03T09:45:00.000Z'\nGROUP BY PERIOD(5 minute, NONE, START_TIME)",
+                TEST_METRIC_NAME
+        );
 
         final List<List<String>> resultTableRows =
                 executeQuery(sqlQuery)
@@ -96,10 +100,11 @@ public class SqlPeriodAlignTest extends SqlMethod {
      */
     @Test
     public void testEndTimeInclusiveAlignment() {
-        final String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-align-metric' \n" +
-                        "WHERE datetime >= '2016-06-03T09:20:00.000Z' AND datetime <= '2016-06-03T09:45:00.321Z'\n" +
-                        "GROUP BY PERIOD(5 minute, NONE, END_TIME)";
+        final String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s' \nWHERE datetime >= '2016-06-03T09:20:00.000Z' " +
+                        "AND datetime <= '2016-06-03T09:45:00.321Z'\nGROUP BY PERIOD(5 minute, NONE, END_TIME)",
+                TEST_METRIC_NAME
+        );
 
         final List<List<String>> resultTableRows =
                 executeQuery(sqlQuery)
@@ -121,10 +126,11 @@ public class SqlPeriodAlignTest extends SqlMethod {
      */
     @Test
     public void testEndTimeExclusiveAlignment() {
-        final String sqlQuery =
-                "SELECT datetime, AVG(value) FROM 'sql-period-align-metric' \n" +
-                        "WHERE datetime >= '2016-06-03T09:20:00.123Z' AND datetime <= '2016-06-03T09:45:00.323Z'\n" +
-                        "GROUP BY PERIOD(5 minute, NONE, END_TIME)";
+        final String sqlQuery = String.format(
+                "SELECT datetime, AVG(value) FROM '%s' \nWHERE datetime >= '2016-06-03T09:20:00.123Z' AND " +
+                        "datetime <= '2016-06-03T09:45:00.323Z'\nGROUP BY PERIOD(5 minute, NONE, END_TIME)",
+                TEST_METRIC_NAME
+        );
 
         final List<List<String>> resultTableRows =
                 executeQuery(sqlQuery)

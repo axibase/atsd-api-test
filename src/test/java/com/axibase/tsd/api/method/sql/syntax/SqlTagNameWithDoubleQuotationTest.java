@@ -24,6 +24,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
+
         final Map<String, String> tags = Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("tag", "0");
             put("tag\"quotation", "1");
@@ -58,8 +59,10 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testPlainName() {
-        String sqlQuery = "SELECT tags.\"tag\", metric.tags.\"tag\", entity.tags.\"tag\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag\", metric.tags.\"tag\", entity.tags.\"tag\" FROM '%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -76,8 +79,10 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testDoubleQuotationName() {
-        String sqlQuery = "SELECT tags.\"tag\\\"quotation\", metric.tags.\"tag\\\"quotation\", entity.tags.\"tag\\\"quotation\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag\"\"quotation\", metric.tags.\"tag\"\"quotation\", entity.tags.\"tag\"\"quotation\" FROM '%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -94,8 +99,10 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testPlusName() {
-        String sqlQuery = "SELECT tags.\"tag+plus\", metric.tags.\"tag+plus\", entity.tags.\"tag+plus\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag+plus\", metric.tags.\"tag+plus\", entity.tags.\"tag+plus\" FROM '%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -112,8 +119,10 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testMinusName() {
-        String sqlQuery = "SELECT tags.\"tag-minus\", metric.tags.\"tag-minus\", entity.tags.\"tag-minus\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag-minus\", metric.tags.\"tag-minus\", entity.tags.\"tag-minus\" FROM '%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -130,8 +139,10 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testMultipleName() {
-        String sqlQuery = "SELECT tags.\"tag*multiple\", metric.tags.\"tag*multiple\", entity.tags.\"tag*multiple\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag*multiple\", metric.tags.\"tag*multiple\", entity.tags.\"tag*multiple\" FROM '%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -148,8 +159,11 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testDivisionName() {
-        String sqlQuery = "SELECT tags.\"tag/division\", metric.tags.\"tag/division\", entity.tags.\"tag/division\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag/division\", metric.tags.\"tag/division\", entity.tags.\"tag/division\" FROM '%s'\n" +
+                        "WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -166,9 +180,11 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
      */
     @Test
     public void testDifferentQuotationName() {
-        String sqlQuery = "SELECT tags.\"tag\\\"quotation'\", metric.tags.\"tag\\\"quotation'\", entity.tags.\"tag\\\"quotation'\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'";
-
+        String sqlQuery = String.format(
+                "SELECT tags.\"tag\"\"quotation'\", metric.tags.\"tag\"\"quotation'\", entity.tags.\"tag\"\"quotation'\" " +
+                        "FROM '%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
 

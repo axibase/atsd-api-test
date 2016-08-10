@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.sql.groupby;
+package com.axibase.tsd.api.method.sql.clause.groupby;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -27,7 +28,10 @@ public class SqlGroupByDatetime extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException {
-
+        Registry.Metric.register(TEST_METRIC_NAME);
+        Registry.Entity.register(TESTS_ENTITY1_NAME);
+        Registry.Entity.register(TESTS_ENTITY2_NAME);
+        Registry.Entity.register(TESTS_ENTITY3_NAME);
 
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(
@@ -74,9 +78,10 @@ public class SqlGroupByDatetime extends SqlTest {
      */
     @Test
     public void testGroupByDatetimeSyntax() {
-        String sqlQuery =
-                "SELECT datetime , entity, value FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "GROUP BY datetime, entity, value";
+        String sqlQuery = String.format(
+                "SELECT datetime , entity, value FROM '%s'\nGROUP BY datetime, entity, value",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -99,9 +104,10 @@ public class SqlGroupByDatetime extends SqlTest {
      */
     @Test
     public void testGroupByDatetimeWithAggregateFunction() {
-        String sqlQuery =
-                "SELECT datetime, COUNT(value) FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "GROUP BY datetime,value";
+        String sqlQuery = String.format(
+                "SELECT datetime, COUNT(value) FROM '%s'\nGROUP BY datetime, value",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);

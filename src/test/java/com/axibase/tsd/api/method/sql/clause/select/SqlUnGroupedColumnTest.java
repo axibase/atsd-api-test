@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.select;
+package com.axibase.tsd.api.method.sql.clause.select;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
@@ -26,20 +26,19 @@ public class SqlUnGroupedColumnTest extends SqlTest {
 
     @BeforeClass
     public static void prepareDate() throws IOException {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addData(
-                new Sample("2016-06-29T08:00:00.000Z", "0")
+        SeriesMethod.insertSeriesCheck(
+                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+                    addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
+                }}
         );
-        SeriesMethod.insertSeriesCheck(series);
     }
 
     @Test
     public void testErrorRaisingSelectUngroupedColumnWithGroupClause() {
-        String sqlQuery =
-                "SELECT entity, datetime, avg(value)\n" +
-                        "FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'\n" +
-                        "GROUP BY entity";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, avg(value)\nFROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'\nGROUP BY entity",
+                TEST_METRIC_NAME
+        );
 
         Response response = executeQuery(sqlQuery);
 
@@ -49,10 +48,10 @@ public class SqlUnGroupedColumnTest extends SqlTest {
 
     @Test
     public void testErrorRaisingSelectUngroupedColumnWithoutGroupClause() {
-        String sqlQuery =
-                "SELECT entity, datetime, avg(value)\n" +
-                        "FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'";
+        String sqlQuery = String.format(
+                "SELECT entity, datetime, avg(value)\nFROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'",
+                TEST_METRIC_NAME
+        );
 
         Response response = executeQuery(sqlQuery);
 

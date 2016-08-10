@@ -23,14 +23,16 @@ public class SqlFunctionMathTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.setData(Arrays.asList(
-                new Sample("2016-06-29T08:00:00.000Z", "2.11"),
-                new Sample("2016-06-29T08:00:01.000Z", "7.567"),
-                new Sample("2016-06-29T08:00:02.000Z", "-1.23")
-                )
+        SeriesMethod.insertSeriesCheck(
+                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+                    setData(Arrays.asList(
+                            new Sample("2016-06-29T08:00:00.000Z", "2.11"),
+                            new Sample("2016-06-29T08:00:01.000Z", "7.567"),
+                            new Sample("2016-06-29T08:00:02.000Z", "-1.23")
+                            )
+                    );
+                }}
         );
-        SeriesMethod.insertSeriesCheck(series);
     }
     /*
     Following tasks related to #3049 issue
@@ -41,9 +43,10 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testAbs() {
-        String sqlQuery =
-                "SELECT ABS(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT ABS(value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -62,9 +65,10 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testСeil() {
-        String sqlQuery =
-                "SELECT CEIL(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT CEIL(value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -83,9 +87,10 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testFloor() {
-        String sqlQuery =
-                "SELECT FLOOR(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT FLOOR(value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -104,9 +109,11 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testRound() {
-        String sqlQuery =
-                "SELECT ROUND(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT ROUND(value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -125,9 +132,11 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testRoundTo2DecimalPlaces() {
-        String sqlQuery =
-                "SELECT ROUND(value,2) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT ROUND(value,2) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -146,9 +155,10 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testMod() {
-        String sqlQuery =
-                "SELECT MOD(value,2.11) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT MOD(value,2.11) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -167,9 +177,10 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testPower() {
-        String sqlQuery =
-                "SELECT Power(value,2.11) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT Power(value,2.11) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -188,9 +199,11 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testExp() {
-        String sqlQuery =
-                "SELECT EXP(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT EXP(value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -209,9 +222,11 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testLn() {
-        String sqlQuery =
-                "SELECT LN(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT LN(value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -230,9 +245,11 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testLog() {
-        String sqlQuery =
-                "SELECT LOG(1.5, value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT LOG(1.5, value) FROM'%s'\nWHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -253,9 +270,11 @@ public class SqlFunctionMathTest extends SqlTest {
      */
     @Test
     public void testSqrt() {
-        String sqlQuery =
-                "SELECT SQRT(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'";
+        String sqlQuery = String.format(
+                "SELECT SQRT(value) FROM'%s'\n WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -272,13 +291,13 @@ public class SqlFunctionMathTest extends SqlTest {
 
     /**
      * Issue #3049
-     * Will fail until won't fixed
      */
-    @Test(enabled = false)
+    @Test
     public void testIsNotNullWithMathFunction() {
-        String sqlQuery = "SELECT SQRT(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'\n" +
-                "AND SQRT(value) IS NOT NULL";
+        String sqlQuery = String.format(
+                "SELECT SQRT(value) FROM '%s'\nWHERE entity = '%s'AND SQRT(value) IS NOT NULL",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -293,13 +312,13 @@ public class SqlFunctionMathTest extends SqlTest {
 
     /**
      * Issue #3049
-     * Will fail until won't fixed
      */
-    @Test(enabled = false)
+    @Test
     public void testIsNullWithMathFunction() {
-        String sqlQuery = "SELECT SQRT(value) FROM'" + TEST_METRIC_NAME + "'\n" +
-                "WHERE entity = '" + TEST_ENTITY_NAME + "'\n" +
-                "AND SQRT(value) IS NULL";
+        String sqlQuery = String.format(
+                "SELECT SQRT(value) FROM '%s'\nWHERE entity = '%s'AND SQRT(value) IS NULL",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
