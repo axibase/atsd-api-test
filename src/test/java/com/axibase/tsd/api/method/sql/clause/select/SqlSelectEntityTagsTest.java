@@ -63,9 +63,6 @@ public class SqlSelectEntityTagsTest extends SqlTest {
         }});
     }
 
-    /*
-    Following tests related to #3062
-     */
 
     /**
      * Issue #3062
