@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.examples.aggregation;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -23,20 +24,25 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws IOException {
-        List<Series> seriesList = Arrays.asList(
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY1_NAME);
-                    addData(new Sample("2016-06-17T19:16:01.000Z", "1"));
-                    addData(new Sample("2016-06-17T19:16:02.000Z", "2"));
-                }},
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY2_NAME);
-                    addData(new Sample("2016-06-17T19:16:03.000Z", "3"));
-                    addData(new Sample("2016-06-17T19:16:04.000Z", "4"));
-                }}
-        );
+        Registry.Entity.register(TEST_ENTITY1_NAME);
+        Registry.Entity.register(TEST_ENTITY2_NAME);
+        Registry.Metric.register(TEST_METRIC_NAME);
+
+        Series series1 = new Series(),
+                series2 = new Series();
+
+        series1.setMetric(TEST_METRIC_NAME);
+        series1.setEntity(TEST_ENTITY1_NAME);
+        series1.addData(new Sample("2016-06-17T19:16:01.000Z", "1"));
+        series1.addData(new Sample("2016-06-17T19:16:02.000Z", "2"));
+
+        series2.setMetric(TEST_METRIC_NAME);
+        series2.setEntity(TEST_ENTITY2_NAME);
+        series2.addData(new Sample("2016-06-17T19:16:03.000Z", "3"));
+        series2.addData(new Sample("2016-06-17T19:16:04.000Z", "4"));
+
+        List<Series> seriesList = Arrays.asList(series1, series2);
+
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
@@ -54,8 +60,10 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2.0", "2016-06-17 19:16:01"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2.0", "2016-06-17 19:16:02"),
                 Arrays.asList(TEST_ENTITY2_NAME, "4.0", "2016-06-17 19:16:04")
         );
+
+        assertTableRows(expectedRows, resultTable);
     }
 }

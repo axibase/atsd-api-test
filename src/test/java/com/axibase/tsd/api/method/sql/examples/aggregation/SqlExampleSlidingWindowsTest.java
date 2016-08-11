@@ -27,37 +27,33 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
         Registry.Entity.register(TEST_ENTITY1_NAME);
         Registry.Entity.register(TEST_ENTITY2_NAME);
         Registry.Metric.register(TEST_METRIC_NAME);
+        Series series1 = new Series(),
+                series2 = new Series(),
+                series3 = new Series(),
+                series4 = new Series();
 
-        SeriesMethod.insertSeriesCheck(
-                Arrays.asList(
-                        new Series() {{
-                            setEntity(TEST_ENTITY1_NAME);
-                            setMetric(TEST_METRIC_NAME);
-                            addTag("a", "b");
-                            addData(new Sample("2016-06-19T11:00:00.000Z", "1"));
-                            addData(new Sample("2016-06-19T11:00:01.000Z", "2"));
-                        }},
-                        new Series() {{
-                            setEntity(TEST_ENTITY1_NAME);
-                            setMetric(TEST_METRIC_NAME);
-                            addTag("b", "c");
-                            addData(new Sample("2016-06-19T11:00:03.000Z", "3"));
-                        }},
+        series1.setEntity(TEST_ENTITY1_NAME);
+        series1.setMetric(TEST_METRIC_NAME);
+        series1.addTag("a", "b");
+        series1.addData(new Sample("2016-06-19T11:00:00.000Z", "1"));
+        series1.addData(new Sample("2016-06-19T11:00:01.000Z", "2"));
 
-                        new Series() {{
-                            setEntity(TEST_ENTITY2_NAME);
-                            setMetric(TEST_METRIC_NAME);
-                            addTag("a", "b");
-                            addData(new Sample("2016-06-19T11:00:04.000Z", "4"));
-                        }},
-                        new Series() {{
-                            setEntity(TEST_ENTITY2_NAME);
-                            setMetric(TEST_METRIC_NAME);
-                            addTag("b", "c");
-                            addData(new Sample("2016-06-19T11:00:05.000Z", "5"));
-                        }}
-                )
-        );
+        series2.setEntity(TEST_ENTITY1_NAME);
+        series2.setMetric(TEST_METRIC_NAME);
+        series2.addTag("b", "c");
+        series2.addData(new Sample("2016-06-19T11:00:03.000Z", "3"));
+
+        series3.setEntity(TEST_ENTITY2_NAME);
+        series3.setMetric(TEST_METRIC_NAME);
+        series3.addTag("a", "b");
+        series3.addData(new Sample("2016-06-19T11:00:04.000Z", "4"));
+
+        series4.setEntity(TEST_ENTITY2_NAME);
+        series4.setMetric(TEST_METRIC_NAME);
+        series4.addTag("b", "c");
+        series4.addData(new Sample("2016-06-19T11:00:05.000Z", "5"));
+
+        SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3, series4));
     }
 
     /**

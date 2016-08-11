@@ -23,20 +23,22 @@ public class SqlExamplePerPeriodTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws IOException {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    setData(Arrays.asList(
-                            new Sample("2015-09-30T09:00:05.869Z", "2.0"),
-                            new Sample("2015-09-30T09:00:05.860Z", "3.0"),
-                            new Sample("2015-09-30T09:00:05.195Z", "1.0"),
-                            new Sample("2015-09-30T09:00:06.526Z", "3.0"),
-                            new Sample("2015-09-30T09:00:06.858Z", "3.0"),
-                            new Sample("2015-09-30T09:00:06.217Z", "3.0"),
-                            new Sample("2015-09-30T09:00:06.211Z", "3.0"),
-                            new Sample("2015-09-30T09:00:06.321Z", "3.0")
-                    ));
-                }});
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+
+        series.setData(Arrays.asList(
+                new Sample("2015-09-30T09:00:05.869Z", "2.0"),
+                new Sample("2015-09-30T09:00:05.860Z", "3.0"),
+                new Sample("2015-09-30T09:00:05.195Z", "1.0"),
+                new Sample("2015-09-30T09:00:06.526Z", "3.0"),
+                new Sample("2015-09-30T09:00:06.858Z", "3.0"),
+                new Sample("2015-09-30T09:00:06.217Z", "3.0"),
+                new Sample("2015-09-30T09:00:06.211Z", "3.0"),
+                new Sample("2015-09-30T09:00:06.321Z", "3.0")
+        ));
+
+        SeriesMethod.insertSeriesCheck(series);
     }
+
 
     /**
      * Issue #3047

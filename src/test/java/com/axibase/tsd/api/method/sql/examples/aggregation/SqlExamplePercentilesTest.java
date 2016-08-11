@@ -24,18 +24,20 @@ public class SqlExamplePercentilesTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException, JSONException, InterruptedException {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addData(new Sample("2016-06-19T11:00:00.000Z", "11.1212"));
-                    addData(new Sample("2016-06-19T11:01:00.000Z", "11.3232"));
-                    addData(new Sample("2016-06-19T11:02:00.000Z", "11.123"));
-                    addData(new Sample("2016-06-19T11:03:00.000Z", "11.4343"));
-                    addData(new Sample("2016-06-19T11:04:00.000Z", "11.435"));
-                    addData(new Sample("2016-06-19T11:05:00.000Z", "11.33"));
-                    addData(new Sample("2016-06-19T11:06:00.000Z", "11.322"));
-                    addData(new Sample("2016-06-19T11:07:00.000Z", "11.3232"));
-                }}
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        series.setData(Arrays.asList(
+                new Sample("2016-06-19T11:00:00.000Z", "11.1212"),
+                new Sample("2016-06-19T11:01:00.000Z", "11.3232"),
+                new Sample("2016-06-19T11:02:00.000Z", "11.123"),
+                new Sample("2016-06-19T11:03:00.000Z", "11.4343"),
+                new Sample("2016-06-19T11:04:00.000Z", "11.435"),
+                new Sample("2016-06-19T11:05:00.000Z", "11.33"),
+                new Sample("2016-06-19T11:06:00.000Z", "11.322"),
+                new Sample("2016-06-19T11:07:00.000Z", "11.3232")
+                )
         );
+
+        SeriesMethod.insertSeriesCheck(series);
     }
 
     /**
