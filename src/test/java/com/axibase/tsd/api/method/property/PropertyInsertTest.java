@@ -30,7 +30,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     /* #NoTicket - base tests*/
     @Test
-    public void test_MultipleInsertDifferentKey_GetAll() throws Exception {
+    public void testMultipleInsertDifferentKeyGetAll() throws Exception {
         final Property firstProperty = new Property("insert-type4", "insert-entity4");
         firstProperty.addTag("t1", "v1");
         firstProperty.addKey("k1", "v1");

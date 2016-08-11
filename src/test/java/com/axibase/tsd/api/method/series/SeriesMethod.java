@@ -111,7 +111,7 @@ public class SeriesMethod extends BaseMethod {
         return compareJsonString(expected, actual);
     }
 
-    public static boolean insertSeries(final Series series, long sleepDuration) throws Exception, InterruptedException, JSONException {
+    public static boolean insertSeries(final Series series, long sleepDuration) throws Exception {
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.close();
         Thread.sleep(sleepDuration);
@@ -123,18 +123,7 @@ public class SeriesMethod extends BaseMethod {
         return OK.getStatusCode() == response.getStatus();
     }
 
-    public static boolean insertSeries(final List<Series> seriesList, long sleepDuration) throws InterruptedException {
-        Response response = insertSeries(seriesList);
-        Thread.sleep(sleepDuration);
-        if (OK.getStatusCode() == response.getStatus()) {
-            logger.debug("Series looks inserted");
-        } else {
-            logger.error("Fail to insert series");
-        }
-        return OK.getStatusCode() == response.getStatus();
-    }
-
-    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
+    public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
         Response response = querySeries(seriesQuery);
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
@@ -150,7 +139,7 @@ public class SeriesMethod extends BaseMethod {
         return executeQuery(Collections.singletonList(seriesQuery));
     }
 
-    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws Exception, JSONException {
+    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws Exception {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(seriesQueries));
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
