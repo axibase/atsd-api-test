@@ -61,8 +61,8 @@ public class MessageMethod extends BaseMethod {
         Thread.sleep(1000L); //wait for message to be inserted
     }
 
-    public static Response executeQuery(final MessageQuery messageQuery) {
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(Collections.singletonList(messageQuery)));
+    public static <T> Response executeQuery(T... messageQuery) {
+        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(messageQuery));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");

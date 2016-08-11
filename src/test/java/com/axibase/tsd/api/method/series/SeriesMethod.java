@@ -123,7 +123,7 @@ public class SeriesMethod extends BaseMethod {
         return OK.getStatusCode() == response.getStatus();
     }
 
-    public static List<Series> executeQueryReturnSeries(final SeriesQuery seriesQuery) throws Exception {
+    public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
         Response response = querySeries(seriesQuery);
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
