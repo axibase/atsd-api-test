@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.examples.aggregation;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -23,6 +24,10 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws IOException {
+        Registry.Entity.register(TEST_ENTITY1_NAME);
+        Registry.Entity.register(TEST_ENTITY2_NAME);
+        Registry.Metric.register(TEST_METRIC_NAME);
+
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
                         new Series() {{
