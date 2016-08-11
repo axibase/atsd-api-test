@@ -47,7 +47,7 @@ public class SqlExamplePercentilesTest extends SqlTest {
      * @see <a href="Aggregate Percentiles">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md</a>
      */
     @Test
-    void testExample() {
+    public void testExample() {
         String sqlQuery = String.format(
                 "SELECT percentile(25, value) AS \"p25\",\n" +
                         "  percentile(50, value) AS \"p50\",\n" +

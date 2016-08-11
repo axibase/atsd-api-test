@@ -50,7 +50,7 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
      * Issue #3047
      */
     @Test
-    void testExample() {
+    public void testExample() {
         String sqlQuery = String.format(
                 "SELECT entity, MAX(value), date_format(MAX_VALUE_TIME(value), 'yyyy-MM-dd HH:mm:ss') AS \"Max Time\"\n" +
                         "FROM '%s'\n" +
