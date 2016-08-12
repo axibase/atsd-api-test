@@ -37,13 +37,13 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
 
     @Test
     public void testAllowMethods() {
-        Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"));
+        Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "OPTIONS"));
         final Response response = httpSqlApiResource
                 .request()
                 .head();
         Set<String> responseAllowedMethods = parseResponseAllowedMethods(response);
         response.bufferEntity();
-        Assert.assertEquals(expectedAllowedMethods, responseAllowedMethods);
+        Assert.assertEquals(responseAllowedMethods, expectedAllowedMethods);
     }
 
 
@@ -54,7 +54,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .request()
                 .get();
         response.bufferEntity();
-        Assert.assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+        Assert.assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
     }
 
     @Test
