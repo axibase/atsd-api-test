@@ -33,7 +33,6 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(t, largeNumber));
-
         Metric metric = new Metric();
         metric.setName(metricName);
         metric.setDataType(DataType.FLOAT);
