@@ -17,7 +17,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-
 import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.OK;
@@ -124,13 +123,24 @@ public class SeriesMethod extends BaseMethod {
             }});
         }
         String expected = jacksonMapper.writeValueAsString(expectedList);
-        String  actual = response.readEntity(String.class);
+        String actual = response.readEntity(String.class);
         return compareJsonString(expected, actual);
     }
 
     public static boolean insertSeries(final Series series, long sleepDuration) throws IOException, InterruptedException, JSONException {
         Response response = httpApiResource.path(METHOD_SERIES_INSERT).request().post(Entity.json(Collections.singletonList(series)));
         response.close();
+        Thread.sleep(sleepDuration);
+        if (OK.getStatusCode() == response.getStatus()) {
+            logger.debug("Series looks inserted");
+        } else {
+            logger.error("Fail to insert series");
+        }
+        return OK.getStatusCode() == response.getStatus();
+    }
+
+    public static boolean insertSeries(final List<Series> seriesList, long sleepDuration) throws InterruptedException {
+        Response response = insertSeries(seriesList);
         Thread.sleep(sleepDuration);
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Series looks inserted");
