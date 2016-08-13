@@ -289,45 +289,7 @@ public class SqlFunctionMathTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3049
-     */
-    @Test
-    public void testIsNotNullWithMathFunction() {
-        String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM '%s'\nWHERE entity = '%s'AND SQRT(value) IS NOT NULL",
-                TEST_METRIC_NAME, TEST_ENTITY_NAME
-        );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
-
-        List<List<String>> expectedRows = Arrays.asList(
-                Collections.singletonList(Double.toString(Math.sqrt(2.11))),
-                Collections.singletonList(Double.toString(Math.sqrt(7.567)))
-        );
-
-        assertTableRows(expectedRows, resultTable);
-    }
-
-
-    /**
-     * Issue #3049
-     */
-    @Test
-    public void testIsNullWithMathFunction() {
-        String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM '%s'\nWHERE entity = '%s'AND SQRT(value) IS NULL",
-                TEST_METRIC_NAME, TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
-
-        List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("NaN")
-        );
-
-        assertTableRows(expectedRows, resultTable);
-    }
 
     private Double Mod(Double m, Double n) {
         return m - n * Math.floor(m / n);
