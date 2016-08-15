@@ -17,12 +17,12 @@ import javax.ws.rs.core.Response;
  *         and retrive result in specifed format.
  *         Usage:
  *         * <pre>
- *                         {@code
- *                              SqlMethod
- *                                          .executeQuery("SELECT 1")
- *                                          .readEntity(String.class);
- *                         }
- *                         </pre>
+ *                                 {@code
+ *                                      SqlMethod
+ *                                                  .executeQuery("SELECT 1")
+ *                                                  .readEntity(String.class);
+ *                                 }
+ *                                 </pre>
  */
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
@@ -44,9 +44,11 @@ public class SqlMethod extends BaseMethod {
         Form form = new Form();
         form.param("q", sqlQuery);
         form.param("outputFormat", outputFormat.toString());
-        return httpSqlApiResource
+        Response response = httpSqlApiResource
                 .request()
                 .post(Entity.form(form));
+        response.bufferEntity();
+        return response;
     }
 
     /**
