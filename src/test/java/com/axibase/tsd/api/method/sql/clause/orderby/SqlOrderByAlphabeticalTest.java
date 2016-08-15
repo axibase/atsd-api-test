@@ -130,9 +130,10 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
             Collections.reverse(resultList);
         }
 
-        for (String e : resultList) {
+        for (int i = 0; i < resultList.size(); i++) {
+            String e = resultList.get(i);
             if (e == null) {
-                resultList.set(resultList.indexOf(null), "null");
+                resultList.set(i, "null");
             }
         }
         return resultList;
