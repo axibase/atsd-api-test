@@ -65,7 +65,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testDivisionExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, t1.value/t2.value, t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -81,7 +81,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testExpressionNaNDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, t1.value/t2.value, t1.value/t1.value as nancol\n" +
-                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE entity = '%s'",
+                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -97,7 +97,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testMinusExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, t1.value-t2.value, t1.value/t1.value as nancol\n" +
-                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE entity = '%s'",
+                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -112,7 +112,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testPlusExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, t1.value+t2.value, t1.value/t1.value as nancol\n" +
-                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE entity = '%s'",
+                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -129,7 +129,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testMultiplicationExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, t1.value*t2.value, t1.value/t1.value as nancol\n" +
-                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE entity = '%s'",
+                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -149,7 +149,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testCountExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, COUNT(t2.value), t1.value/t1.value as nancol\n" +
-                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "FROM '%s' t1\nOUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -165,7 +165,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testSumExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, SUM(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -181,7 +181,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testAvgExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, AVG(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -197,7 +197,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testMinExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, AVG(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -212,7 +212,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testMaxExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, AVG(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'GROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'GROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -229,7 +229,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testFirstExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, FIRST(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -246,7 +246,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testCounterExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, FIRST(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -263,7 +263,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testDeltaExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, DELTA(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)
@@ -278,7 +278,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     public void testLastExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
                 "SELECT t1.value, t2.value, LAST(t2.value), t1.value/t1.value as nancol\nFROM '%s' t1\n" +
-                        "OUTER JOIN '%s' t2\nWHERE entity = '%s'\nGROUP BY t1.value, t2.value",
+                        "OUTER JOIN '%s' t2\nWHERE t1.entity = '%s'\nGROUP BY t1.value, t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)

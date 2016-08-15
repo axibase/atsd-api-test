@@ -31,7 +31,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
         Registry.Metric.register(TEST_METRIC1_NAME);
         Registry.Metric.register(TEST_METRIC2_NAME);
         Registry.Entity.register(TEST_ENTITY_NAME);
-        
+
         List<Series> seriesList = new ArrayList<>();
 
         seriesList.add(
@@ -67,11 +67,12 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
      */
     @Test
     public void testNanExcluding() {
-        String sqlQuery =
-                "SELECT t1.value + t2.value AS 'sum'  FROM '" + TEST_METRIC1_NAME + "' t1\n" +
-                        "JOIN '" + TEST_METRIC2_NAME + "' t2\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'\n" +
-                        "AND t1.value IS NOT NULL AND t2.value IS NOT NULL";
+        String sqlQuery = String.format(
+                "SELECT t1.value + t2.value AS 'sum'  FROM '%s' t1\n" +
+                        "JOIN '%s' t2\n" +
+                        "WHERE t1.value IS NOT NULL AND t2.value IS NOT NULL",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
