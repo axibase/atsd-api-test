@@ -10,7 +10,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,28 +28,25 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
         Registry.Entity.register(TEST_ENTITY2_NAME);
         Registry.Metric.register(TEST_METRIC_NAME);
 
-        List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY1_NAME);
-            setData(Arrays.asList(
-                    new Sample("2016-06-17T19:16:01.000Z", "1"),
-                    new Sample("2016-06-17T19:16:03.000Z", "3")
-                    )
-            );
-        }});
+        Series series1 = new Series(),
+                series2 = new Series();
+        series1.setMetric(TEST_METRIC_NAME);
+        series1.setEntity(TEST_ENTITY1_NAME);
+        series1.setData(Arrays.asList(
+                new Sample("2016-06-17T19:16:01.000Z", "1"),
+                new Sample("2016-06-17T19:16:03.000Z", "3")
+                )
+        );
 
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY2_NAME);
-            setData(Arrays.asList(
-                    new Sample("2016-06-17T19:16:02.000Z", "2"),
-                    new Sample("2016-06-17T19:16:04.000Z", "4")
-            ));
-        }});
+        series2.setMetric(TEST_METRIC_NAME);
+        series2.setEntity(TEST_ENTITY2_NAME);
+        series2.setData(Arrays.asList(
+                new Sample("2016-06-17T19:16:02.000Z", "2"),
+                new Sample("2016-06-17T19:16:04.000Z", "4")
+        ));
 
-        SeriesMethod.insertSeriesCheck(seriesList);
+        SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
     /**
