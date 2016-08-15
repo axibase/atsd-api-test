@@ -43,7 +43,7 @@ public class TCPSender {
         return response.equals("ok");
     }
 
-    public boolean sendDebugMode(long sleepDuration) throws Exception, InterruptedException {
+    public boolean sendDebugMode(long sleepDuration) throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -60,7 +60,7 @@ public class TCPSender {
         requestStream.close();
     }
 
-    public void send(String command, long sleepDuration) throws Exception, InterruptedException {
+    public void send(String command, long sleepDuration) throws Exception {
         logger.debug(" > =====TCP=====\n > Sending via tcp://{}:{}\n > {}", url, port, command);
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
@@ -69,18 +69,18 @@ public class TCPSender {
         Thread.sleep(sleepDuration);
     }
 
-    public void send(String command) throws Exception, InterruptedException {
+    public void send(String command) throws Exception {
         send(command, 0);
     }
 
-    public void sendCheck(String command) throws Exception, InterruptedException {
+    public void sendCheck(String command) throws Exception {
         setCommand(command);
         boolean successed = sendDebugMode();
         if (!successed)
             throw new Exception("Fail to check inserted command");
     }
 
-    public void sendCheck(String command, long sleepDuration) throws Exception, InterruptedException {
+    public void sendCheck(String command, long sleepDuration) throws Exception {
         setCommand(command);
         boolean successed = sendDebugMode(sleepDuration);
         if (!successed)
