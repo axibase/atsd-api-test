@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.OK;
+
 /**
  * @author Dmitry Korchagin.
  */
@@ -35,6 +37,8 @@ public class AlertQueryTest extends AlertMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
 
@@ -52,6 +56,8 @@ public class AlertQueryTest extends AlertMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
 
@@ -69,6 +75,8 @@ public class AlertQueryTest extends AlertMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
 

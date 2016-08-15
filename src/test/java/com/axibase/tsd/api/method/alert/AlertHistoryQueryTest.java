@@ -11,6 +11,8 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
+import static javax.ws.rs.core.Response.Status.OK;
+
 /**
  * @author Dmitry Korchagin.
  */
@@ -30,6 +32,8 @@ public class AlertHistoryQueryTest extends AlertMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
 
@@ -47,6 +51,8 @@ public class AlertHistoryQueryTest extends AlertMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
 
@@ -64,6 +70,8 @@ public class AlertHistoryQueryTest extends AlertMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
 
