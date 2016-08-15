@@ -54,7 +54,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
         checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, WINDOWS_1251);
     }
 
-    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws InterruptedException, Exception {
+    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws Exception {
         Registry.Entity.registerPrefix(entityName);
 
         Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding, null);
