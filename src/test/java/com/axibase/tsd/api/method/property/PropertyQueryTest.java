@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -607,7 +606,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testEndDateAbsent() throws IOException {
+    public void testEndDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("entity", "test_entity");
@@ -623,7 +622,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testStartDateAbsent() throws IOException {
+    public void testStartDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("entity", "test_entity");
@@ -637,7 +636,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testOnlyTypeSpecified() throws IOException {
+    public void testOnlyTypeSpecified() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
 
@@ -651,7 +650,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testEntityFilterEndDateAbsent() throws IOException {
+    public void testEntityFilterEndDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("type", "test_type");
@@ -666,7 +665,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testEntityFilterAbsent() throws IOException {
+    public void testEntityFilterAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("startDate", "2016-06-01T12:04:59.191Z");
@@ -1426,7 +1425,7 @@ public class PropertyQueryTest extends PropertyMethod {
         queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
         queryObj.put("limit", 1);
 
-        assertEquals("One property should be received",1, calculateJsonArraySize(formatToJsonString(queryProperty(queryObj))));
+        assertEquals("One property should be received", 1, calculateJsonArraySize(formatToJsonString(queryProperty(queryObj))));
     }
 
 
@@ -1609,7 +1608,6 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-
     /**
      * #2946
      */
@@ -1645,5 +1643,45 @@ public class PropertyQueryTest extends PropertyMethod {
 
         queryObj.put("limit", -5);
         assertEquals("Three property should be received", 3, calculateJsonArraySize(formatToJsonString(queryProperty(queryObj))));
+    }
+
+    /**
+     * 2979
+     */
+    @Test
+    public void testEntitiesWildcardStartChar() throws Exception {
+        final Property property = new Property("query-type59", "query-entity59");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entities", Arrays.asList("query-entity*"));
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+
+        final String given = formatToJsonString(queryProperty(queryObj));
+        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+        assertTrue(compareJsonString(expected, given));
+    }
+
+    /**
+     * 2979
+     */
+    @Test
+    public void testEntitiesWildcardQuestionChar() throws Exception {
+        final Property property = new Property("query-type60", "query-entity60");
+        property.addTag("t1", "tv1");
+        insertPropertyCheck(property);
+
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", property.getType());
+        queryObj.put("entities", Arrays.asList("query-entity6?"));
+        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+
+        final String given = formatToJsonString(queryProperty(queryObj));
+        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
+        assertTrue(compareJsonString(expected, given));
     }
 }

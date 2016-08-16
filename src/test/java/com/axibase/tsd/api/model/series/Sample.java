@@ -50,12 +50,12 @@ public class Sample {
         return d;
     }
 
-    public BigDecimal getV() {
-        return v;
-    }
-
     public void setD(String d) {
         this.d = d;
+    }
+
+    public BigDecimal getV() {
+        return v;
     }
 
     public void setV(BigDecimal v) {

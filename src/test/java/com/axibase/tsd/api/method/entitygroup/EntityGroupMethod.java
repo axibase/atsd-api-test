@@ -6,7 +6,6 @@ import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +114,7 @@ public class EntityGroupMethod extends BaseMethod {
         return response;
     }
 
-    public static void createOrReplaceEntityGroupCheck(EntityGroup entityGroup) throws IOException {
+    public static void createOrReplaceEntityGroupCheck(EntityGroup entityGroup) throws Exception {
         Response response = createOrReplaceEntityGroup(entityGroup);
         if (response.getStatus() != OK.getStatusCode()) {
             throw new IllegalStateException("Fail to execute createOrReplaceEntityGroup query");
@@ -131,7 +130,7 @@ public class EntityGroupMethod extends BaseMethod {
         }
     }
 
-    public static boolean entityGroupExist(EntityGroup entityGroup) throws IOException {
+    public static boolean entityGroupExist(EntityGroup entityGroup) throws Exception {
         Response response = getEntityGroup(entityGroup.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;

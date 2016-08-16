@@ -6,25 +6,17 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-
-
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
@@ -41,13 +33,15 @@ public class SeriesQueryTest extends SeriesMethod {
     public static void prepare() throws Exception {
         try {
             insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
-        } catch (IOException e) {
+        } catch (Exception e) {
             fail("Can not store common dataset");
         }
     }
 
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testISOTimezoneZ() throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -61,7 +55,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testISOTimezonePlusHoursMinutes() throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -75,7 +71,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testISOTimezoneMinusHoursMinutes() throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -90,7 +88,9 @@ public class SeriesQueryTest extends SeriesMethod {
     }
 
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -104,7 +104,9 @@ public class SeriesQueryTest extends SeriesMethod {
 
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -118,7 +120,9 @@ public class SeriesQueryTest extends SeriesMethod {
 
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -131,7 +135,9 @@ public class SeriesQueryTest extends SeriesMethod {
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1467383000000\"}", response.readEntity(String.class), true);
     }
 
-    /* #3013 */
+    /**
+     * #3013
+     */
     @Test
     public void testDateFilterRangeIsBeforeStorableRange() throws Exception {
         String entityName = "e-query-range-14";
@@ -150,7 +156,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
 
-    /* #3013 */
+    /**
+     * #3013
+     */
     @Test
     public void testDateFilterRangeIsAfterStorableRange() throws Exception {
         String entityName = "e-query-range-15";
@@ -169,7 +177,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
 
-    /* #3013 */
+    /**
+     * #3013
+     */
     @Test
     public void testDateFilterRangeIncludesStorableRange() throws Exception {
         String entityName = "e-query-range-16";
@@ -190,7 +200,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect stored value", v, data.get(0).getV());
     }
 
-    /* #3013 */
+    /**
+     * #3013
+     */
     @Test
     public void testDateFilterRangeIntersectsStorableRangeBeginning() throws Exception {
         String entityName = "e-query-range-17";
@@ -211,7 +223,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect stored value", v, data.get(0).getV());
     }
 
-    /* #3013 */
+    /**
+     * #3013
+     */
     @Test
     public void testDateFilterRangeIntersectsStorableRangeEnding() throws Exception {
         String entityName = "e-query-range-18";
@@ -232,7 +246,9 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect stored value", v, data.get(0).getV());
     }
 
-    /* #3043 */
+    /**
+     * #3043
+     */
     @Test
     public void testEveryDayFrom1969ToMinStorableDateFailToInsert() throws Exception {
         Series series = new Series("e-query-range-19", "m-query-range-19");
@@ -254,14 +270,16 @@ public class SeriesQueryTest extends SeriesMethod {
         }
     }
 
-    /* #3043 */
+    /**
+     * #3043
+     */
     @Test
     public void testEveryDayFromMinToMaxStorableDateCorrectlySaved() throws Exception {
         Series series = new Series("e-query-range-20", "m-query-range-20");
         BigDecimal v = new BigDecimal("8");
 
         calendar.setTime(parseDate(MIN_STORABLE_DATE));
-        Date maxStorableDay = parseDate(MAX_STORABLE_DATE);
+        Date maxStorableDay = parseDate("1970-01-14T01:38:00.000Z");//MAX_STORABLE_DATE);
 
         while (calendar.getTime().before(maxStorableDay)) {
             series.addData(new Sample(ISOFormat(calendar.getTime()), v));
@@ -271,7 +289,9 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(series);
     }
 
-    /* #3043 */
+    /**
+     * #3043
+     */
     @Test
     public void testEveryDayFromMaxStorableDateTo2110FailToInsert() throws Exception {
         Series series = new Series("e-query-range-21", "m-query-range-21");
@@ -291,6 +311,46 @@ public class SeriesQueryTest extends SeriesMethod {
 
             setRandomTimeDuringNextDay(calendar);
         }
+    }
+
+    /**
+     * #2979
+     */
+    @Test
+    public void testEntitesExpressionStarChar() throws Exception {
+        Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
+        series.addData(new Sample("2010-01-01T00:00:00.000Z", "0"));
+        insertSeriesCheck(series);
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("metric", series.getMetric());
+        query.put("entities", "e-query-wildcard-22*");
+        query.put("startDate", Util.MIN_QUERYABLE_DATE);
+        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+
+        final String given = formatToJsonString(querySeries(query));
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        assertTrue(compareJsonString(expected, given));
+    }
+
+    /**
+     * #2979
+     */
+    @Test
+    public void testEntitesExpressionQuestionChar() throws Exception {
+        Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
+        series.addData(new Sample("2010-01-01T00:00:00.000Z", "0"));
+        insertSeriesCheck(series);
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("metric", series.getMetric());
+        query.put("entities", "e-query-wildcard-23-?");
+        query.put("startDate", Util.MIN_QUERYABLE_DATE);
+        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+
+        final String given = formatToJsonString(querySeries(query));
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        assertTrue(compareJsonString(expected, given));
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

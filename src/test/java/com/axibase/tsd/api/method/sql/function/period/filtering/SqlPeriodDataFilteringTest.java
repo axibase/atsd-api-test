@@ -9,7 +9,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +24,7 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
 
 
     @BeforeClass
-    public static void prepareDataSet() throws IOException {
+    public static void prepareDataSet() throws Exception {
         SeriesMethod.insertSeriesCheck(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
                     setData(Arrays.asList(

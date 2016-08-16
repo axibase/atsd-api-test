@@ -3,12 +3,10 @@ package com.axibase.tsd.api.method.entity;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.Test;
-
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -58,7 +56,7 @@ public class EntityGetMetricsTest extends EntityMethod {
         assertEquals("Fail to execute queryEntityMetric", OK.getStatusCode(), response.getStatus());
         List<Metric> metricList = response.readEntity(new GenericType<List<Metric>>() {
         });
-        assertEquals("Entity should have only 1 metric",1, metricList.size());
+        assertEquals("Entity should have only 1 metric", 1, metricList.size());
         assertEquals("Metric in response does not match to inserted metric", series.getMetric(), metricList.get(0).getName());
     }
 }

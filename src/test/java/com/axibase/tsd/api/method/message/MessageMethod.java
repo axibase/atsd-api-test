@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
@@ -16,25 +15,25 @@ import java.util.List;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class MessageMethod extends BaseMethod {
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     static final String METHOD_MESSAGE_INSERT = "/messages/insert";
     static final String METHOD_MESSAGE_QUERY = "/messages/query";
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static Response insertMessageReturnResponse(final Message message) {
         return insertMessageReturnResponse(Collections.singletonList(message));
     }
+
     public static Response insertMessageReturnResponse(List<Message> messageList) {
         Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
         response.bufferEntity();
         return response;
     }
 
-    public static Boolean insertMessage(final Message message, long sleepDuration) throws IOException, InterruptedException {
+    public static Boolean insertMessage(final Message message, long sleepDuration) throws Exception {
         return insertMessage(Collections.singletonList(message), sleepDuration);
     }
 
-    public static Boolean insertMessage(List<Message> messageList, long sleepDuration) throws IOException, InterruptedException {
+    public static Boolean insertMessage(List<Message> messageList, long sleepDuration) throws Exception {
         Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
@@ -46,11 +45,11 @@ public class MessageMethod extends BaseMethod {
         return OK.getStatusCode() == response.getStatus();
     }
 
-    public static Boolean insertMessage(final Message message) throws IOException, InterruptedException {
+    public static Boolean insertMessage(final Message message) throws Exception {
         return insertMessage(message, 0);
     }
 
-    public static void insertMessageCheck(final Message message) throws InterruptedException, IOException {
+    public static void insertMessageCheck(final Message message) throws Exception {
         //todo: replace with normal check
         Response response = insertMessageReturnResponse(message);
         response.bufferEntity();
@@ -62,8 +61,8 @@ public class MessageMethod extends BaseMethod {
         Thread.sleep(1000L); //wait for message to be inserted
     }
 
-    public static Response executeQuery(final MessageQuery messageQuery) {
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(Collections.singletonList(messageQuery)));
+    public static <T> Response executeQuery(T... messageQuery) {
+        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(messageQuery));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");

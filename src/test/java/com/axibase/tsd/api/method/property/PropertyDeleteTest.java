@@ -4,13 +4,11 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +25,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Test
-    public void testFutureDateExactTrue() throws IOException {
+    public void testFutureDateExactTrue() throws Exception {
         final Property property = new Property("delete-type9", "delete-entity9");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -46,7 +44,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
 
     @Test
-    public void testFutureDateExactFalse() throws IOException {
+    public void testFutureDateExactFalse() throws Exception {
         final Property property = new Property("delete-type8", "delete-entity8");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -64,7 +62,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testFutureDateExactDefault() throws IOException {
+    public void testFutureDateExactDefault() throws Exception {
         final Property property = new Property("delete-type7", "delete-entity7");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -82,7 +80,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testCommonTypeEntityTypeEntityKey() throws IOException {
+    public void testCommonTypeEntityTypeEntityKey() throws Exception {
         final Property property = new Property("delete-type-6", "delete-entity6");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -108,7 +106,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
 
     @Test
-    public void testTypeEntityExactFalse() throws IOException {
+    public void testTypeEntityExactFalse() throws Exception {
         final Property property = new Property("delete-type-5", "delete-entity5");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -136,7 +134,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
 
     @Test
-    public void testTypeEntityKey() throws IOException {
+    public void testTypeEntityKey() throws Exception {
         final Property property = new Property("delete-type4", "delete-entity4");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -153,7 +151,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testMultipleTypeEntityExactTrue() throws IOException {
+    public void testMultipleTypeEntityExactTrue() throws Exception {
         final Property property = new Property("delete-type3", "delete-entity3");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -180,7 +178,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
 
     @Test
-    public void testTypeEntityExactTrue() throws IOException {
+    public void testTypeEntityExactTrue() throws Exception {
         final Property property = new Property("delete-type2", "delete-entity2");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -197,7 +195,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testEndDateEqDate() throws IOException {
+    public void testEndDateEqDate() throws Exception {
         final Property property = new Property("delete-type1", "delete-entity1");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -216,7 +214,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeStartEnd() throws IOException {
+    public void testTypeStartEnd() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "testtype");
         request.put("startDate", "2016-06-01T12:04:59.191Z");
@@ -229,7 +227,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeEnd() throws IOException {
+    public void testTypeEnd() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "testtype");
         request.put("endDate", "2016-06-01T12:04:59.191Z");
@@ -240,7 +238,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeStart() throws IOException {
+    public void testTypeStart() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "testtype");
         request.put("startDate", "2016-06-01T12:04:59.191Z");
@@ -251,7 +249,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeException() throws IOException {
+    public void testTypeException() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "testtype");
 

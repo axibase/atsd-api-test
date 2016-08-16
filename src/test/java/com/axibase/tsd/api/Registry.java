@@ -13,10 +13,10 @@ import java.util.Set;
 public enum Registry {
     Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup");
 
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private String registryType;
     private Set<String> registeredSet = new HashSet<>();
     private Set<String> registeredPrefixSet = new HashSet<>();
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     Registry(String registryType) {
         this.registryType = registryType;

@@ -13,7 +13,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     /* #NoTicket - base tests*/
     @Test
-    public void test_MultipleInsertDifferentKey_GetAll() throws IOException {
+    public void testMultipleInsertDifferentKeyGetAll() throws Exception {
         final Property firstProperty = new Property("insert-type4", "insert-entity4");
         firstProperty.addTag("t1", "v1");
         firstProperty.addKey("k1", "v1");
@@ -69,7 +68,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     /* #NoTicket - base tests*/
     @Test
-    public void testMultipleInsertSameTypeEntityKey() throws IOException {
+    public void testMultipleInsertSameTypeEntityKey() throws Exception {
         final long firstTime = System.currentTimeMillis() - 5;
         final long secondTime = System.currentTimeMillis();
 
@@ -108,7 +107,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     /* #NoTicket - base tests*/
     @Test
-    public void testSameTypeEntityKey() throws IOException {
+    public void testSameTypeEntityKey() throws Exception {
         final Property property = new Property("insert-type1", "insert-entity1");
         final long firstTime = System.currentTimeMillis() - 5;
         final long secondTime = System.currentTimeMillis();
@@ -147,7 +146,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     /* #NoTicket - base tests*/
     @Test
-    public void testExtraKeyInRoot() throws IOException {
+    public void testExtraKeyInRoot() throws Exception {
         final Property property = new Property("insert-type3", "insert-entity3");
 
         final Map<String, Object> insertObj = new HashMap<>();

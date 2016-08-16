@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
      * #1278
      */
     @Test
-    public void testEntityContainsWhitespace() throws IOException {
+    public void testEntityContainsWhitespace() throws Exception {
         final String entityName = "seriesurlquery entityname-1";
         Registry.Entity.register(entityName);
         Map<String, String> parameters = new HashMap<>();
@@ -55,7 +54,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
      * #1278
      */
     @Test
-    public void testEntityContainsSlash() throws IOException {
+    public void testEntityContainsSlash() throws Exception {
         Series series = new Series("seriesurlquery/entityname-3", "seriesurlquery-metric-3");
         assertUrlEncodePathHandledCorrectly(series);
 
@@ -65,7 +64,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
      * #1278
      */
     @Test
-    public void testMetricContainsSlash() throws IOException {
+    public void testMetricContainsSlash() throws Exception {
         Series series = new Series("seriesurlquery-entityname-4", "seriesurlquery/metric-4");
         assertUrlEncodePathHandledCorrectly(series);
     }
@@ -74,7 +73,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
      * #1278
      */
     @Test
-    public void testEntityContainsCyrillic() throws IOException {
+    public void testEntityContainsCyrillic() throws Exception {
         Series series = new Series("seriesurlqueryйёentityname-5", "seriesurlquery-metric-5");
         assertUrlEncodePathHandledCorrectly(series);
     }
@@ -83,12 +82,12 @@ public class SeriesUrlQueryTest extends SeriesMethod {
      * #1278
      */
     @Test
-    public void testMetricContainsCyrillic() throws IOException {
+    public void testMetricContainsCyrillic() throws Exception {
         Series series = new Series("seriesurlquery-entityname-6", "seriesurlqueryйёmetric-6");
         assertUrlEncodePathHandledCorrectly(series);
     }
 
-    private void assertUrlEncodePathHandledCorrectly(Series series) throws IOException {
+    private void assertUrlEncodePathHandledCorrectly(Series series) throws Exception {
         series.addData(new Sample(Util.MIN_STORABLE_DATE, "0"));
         insertSeriesCheck(series);
         Map<String, String> parameters = new HashMap<>();

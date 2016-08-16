@@ -4,11 +4,8 @@ import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.json.JSONException;
 import org.testng.Assert;
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
-
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collections;
 
@@ -17,7 +14,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class MessageCommandTest extends MessageMethod {
     /* #2412 */
     @Test
-    public void testMaxLength() throws IOException, JSONException, InterruptedException, ParseException {
+    public void testMaxLength() throws Exception {
         final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";
@@ -62,7 +59,7 @@ public class MessageCommandTest extends MessageMethod {
 
     /* #2412 */
     @Test
-    public void testMaxLengthOverflow() throws IOException, JSONException, InterruptedException, ParseException {
+    public void testMaxLengthOverflow() throws Exception {
         final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";

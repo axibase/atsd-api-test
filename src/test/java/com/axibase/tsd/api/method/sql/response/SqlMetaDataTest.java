@@ -9,8 +9,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-
 
 /**
  * @author Igor SHmagrinskiy
@@ -22,7 +20,7 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     @BeforeClass
-    public static void prepareDataSet() throws IOException {
+    public static void prepareDataSet() throws Exception {
         final String sqlQuery = "SELECT entity, metric, value, value*100, datetime  FROM 'sql-metadata-metric'\n" +
                 "WHERE entity = 'sql-metadata-entity'";
         testSeries.addData(

@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -22,7 +21,7 @@ public class SqlTableAliasTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
-    static void prepareData() throws IOException {
+    static void prepareData() throws Exception {
 
         final Map<String, String> tags = Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("a", "b");

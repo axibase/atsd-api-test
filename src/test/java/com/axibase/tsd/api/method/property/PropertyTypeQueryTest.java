@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 
@@ -32,20 +31,20 @@ public class PropertyTypeQueryTest extends PropertyMethod {
 
     /* 1278 */
     @Test
-    public void testEntityNameContainsSlash() throws IOException {
+    public void testEntityNameContainsSlash() throws Exception {
         Property property = new Property("typequery-property-type-2", "typequery/entityname-2");
         assertUrlencodedPathHandledSuccessfullyOnTypeQuery(property);
     }
 
     /* 1278 */
     @Test
-    public void testEntityNameContainsCyrillic() throws IOException {
+    public void testEntityNameContainsCyrillic() throws Exception {
         Property property = new Property("typequery-property-type-3", "typequeryйёentityname-3");
         assertUrlencodedPathHandledSuccessfullyOnTypeQuery(property);
 
     }
 
-    public void assertUrlencodedPathHandledSuccessfullyOnTypeQuery(final Property property) throws IOException {
+    public void assertUrlencodedPathHandledSuccessfullyOnTypeQuery(final Property property) throws Exception {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
         Response response = typeQueryProperty(property.getEntity());

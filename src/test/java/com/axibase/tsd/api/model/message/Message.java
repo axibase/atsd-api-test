@@ -18,7 +18,8 @@ public class Message {
     private Boolean persist;
     private Map<String, String> tags = new HashMap<>();
 
-    public Message() {}
+    public Message() {
+    }
 
     public Message(String entity) {
         if (entity != null) {

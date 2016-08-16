@@ -9,7 +9,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
 
 
     @BeforeClass
-    public static void prepareDataSet() throws IOException {
+    public static void prepareDataSet() throws Exception {
         SeriesMethod.insertSeriesCheck(new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
             setData(Arrays.asList(
                     new Sample("2016-06-03T09:20:00.124Z", "16.0"),

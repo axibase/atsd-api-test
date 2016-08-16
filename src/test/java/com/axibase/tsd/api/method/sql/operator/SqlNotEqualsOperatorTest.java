@@ -9,7 +9,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.ProcessingException;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         SeriesMethod.insertSeriesCheck(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
                     setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{

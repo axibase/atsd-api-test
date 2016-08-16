@@ -4,14 +4,11 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.json.JSONException;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +27,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
 
 
     @BeforeClass
-    public void prepareDataset() throws IOException {
+    public void prepareDataset() throws Exception {
         seriesA.addTag("tag-1", "val-1");
         seriesA.addTag("tag-2", "val-2");
         seriesA.addData(new Sample("1970-01-01T00:00:00.000Z", "0"));
@@ -56,7 +53,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
 
     /**
      * #3002
-     *  strict no tags => only seriesD should be received
+     * strict no tags => only seriesD should be received
      */
     @Test
     public void testExactTrueNoKey() throws Exception {
@@ -73,7 +70,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
 
     /**
      * #3002
-     *  soft no tags => all series will be received
+     * soft no tags => all series will be received
      */
     @Test
     public void testExactFalseNoKey() throws Exception {
@@ -90,7 +87,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
 
     /**
      * #3002
-     *  strict match tags => only series with specified tag (tag-1=val-1) will be received
+     * strict match tags => only series with specified tag (tag-1=val-1) will be received
      */
     @Test
     public void testExactTrueTagMatch() throws Exception {
@@ -109,7 +106,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
 
     /**
      * #3002
-     *  soft match tags => series which has the specified tag (tag-1=val-1) will be received
+     * soft match tags => series which has the specified tag (tag-1=val-1) will be received
      */
     @Test
     public void testExactFalseTagMatch() throws Exception {

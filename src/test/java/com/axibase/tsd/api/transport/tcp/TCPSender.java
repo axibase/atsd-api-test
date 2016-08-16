@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -34,17 +33,17 @@ public class TCPSender {
         command.append(commandPart);
     }
 
-    public boolean sendDebugMode() throws IOException {
+    public boolean sendDebugMode() throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
         String response = responseStream.readLine();
-        if (response == null ) return false;
+        if (response == null) return false;
         return response.equals("ok");
     }
 
-    public boolean sendDebugMode(long sleepDuration) throws IOException, InterruptedException {
+    public boolean sendDebugMode(long sleepDuration) throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -54,14 +53,14 @@ public class TCPSender {
         return response.equals("ok");
     }
 
-    public void send() throws IOException {
+    public void send() throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
         requestStream.writeBytes(command.append('\n').toString());
         requestStream.close();
     }
 
-    public void send(String command, long sleepDuration) throws IOException, InterruptedException {
+    public void send(String command, long sleepDuration) throws Exception {
         logger.debug(" > =====TCP=====\n > Sending via tcp://{}:{}\n > {}", url, port, command);
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
@@ -70,21 +69,21 @@ public class TCPSender {
         Thread.sleep(sleepDuration);
     }
 
-    public void send(String command) throws IOException, InterruptedException {
+    public void send(String command) throws Exception {
         send(command, 0);
     }
 
-    public void sendCheck (String command) throws IOException, InterruptedException {
+    public void sendCheck(String command) throws Exception {
         setCommand(command);
         boolean successed = sendDebugMode();
         if (!successed)
-            throw new IOException("Fail to check inserted command");
+            throw new Exception("Fail to check inserted command");
     }
 
-    public void sendCheck (String command, long sleepDuration) throws IOException, InterruptedException {
+    public void sendCheck(String command, long sleepDuration) throws Exception {
         setCommand(command);
         boolean successed = sendDebugMode(sleepDuration);
         if (!successed)
-            throw new IOException("Fail to check inserted command");
+            throw new Exception("Fail to check inserted command");
     }
 }
