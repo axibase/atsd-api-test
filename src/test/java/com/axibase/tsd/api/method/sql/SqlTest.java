@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.sql;
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +32,19 @@ public class SqlTest extends SqlMethod {
     }
 
     public void assertTableColumnsNames(List<String> expectedColumnsNames, StringTable table) {
-        Set<String> resultColumnNames = extractColumnNames(table.getColumnsMetaData());
-        assertEquals("Table columns names are not equal to expected", new HashSet<>(expectedColumnsNames), resultColumnNames);
+        assertTableColumnsNames(expectedColumnsNames, table, false);
+    }
+
+
+    public void assertTableColumnsNames(List<String> expectedColumnsNames, StringTable table, Boolean order) {
+        List<String> columnsNames = extractColumnNames(table.getColumnsMetaData());
+
+        if (order) {
+            assertEquals("Table columns names are not equal to expected", expectedColumnsNames, columnsNames);
+        } else {
+            assertEquals("Table columns names contain different elements", new HashSet<>(expectedColumnsNames), new HashSet<String>(columnsNames));
+
+        }
     }
 
     /**
@@ -41,8 +53,8 @@ public class SqlTest extends SqlMethod {
      * @param columnMetaData set of column metadata values
      * @return column names set
      */
-    private Set<String> extractColumnNames(Set<ColumnMetaData> columnMetaData) {
-        Set<String> columnNames = new HashSet<>();
+    private List<String> extractColumnNames(Set<ColumnMetaData> columnMetaData) {
+        List<String> columnNames = new ArrayList<>();
         for (ColumnMetaData data : columnMetaData) {
             columnNames.add(data.getName());
         }
