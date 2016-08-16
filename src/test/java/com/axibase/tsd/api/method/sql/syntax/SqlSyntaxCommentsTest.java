@@ -23,7 +23,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
-    public static void prepareData() throws IOException {
+    public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addData(new Sample("2016-06-03T09:24:00.000Z", "0"));
         SeriesMethod.insertSeriesCheck(series);

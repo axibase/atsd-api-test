@@ -24,7 +24,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     private static final String OK_REQUEST_ASSERT_MESSAGE_TEMPLATE = "Query mustn't raise any error for";
 
     @BeforeClass
-    public void prepareData() throws IOException {
+    public void prepareData() throws Exception {
         Series series1 = new Series(),
                 series2 = new Series();
 

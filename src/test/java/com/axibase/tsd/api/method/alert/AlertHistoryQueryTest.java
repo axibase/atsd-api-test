@@ -53,7 +53,7 @@ public class AlertHistoryQueryTest extends AlertMethod {
         Response response = queryAlertsHistory(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
+        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get any alerts by entity expression");
     }
 
     /**
@@ -72,7 +72,7 @@ public class AlertHistoryQueryTest extends AlertMethod {
         Response response = queryAlertsHistory(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
+        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get any alerts by entity expression");
     }
 
     private void generateAlertHistoryForEntity(final String entityName) throws Exception {

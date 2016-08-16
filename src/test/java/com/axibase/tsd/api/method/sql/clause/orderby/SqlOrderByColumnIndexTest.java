@@ -24,7 +24,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
 
     @BeforeClass
-    public void prepareData() throws IOException {
+    public void prepareData() throws Exception {
         Registry.Metric.register(TEST_METRIC_NAME);
         Registry.Entity.register(TEST_ENTITY1_NAME);
         Registry.Entity.register(TEST_ENTITY2_NAME);

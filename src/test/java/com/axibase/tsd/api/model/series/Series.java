@@ -57,7 +57,7 @@ public class Series {
     public Map<String, String> getFormattedTags() {
         Map<String, String> formattedTags = new HashMap<>();
         for (Map.Entry<String, String> tag : tags.entrySet()) {
-            formattedTags.put(tag.getKey().toLowerCase(), tag.getValue());
+            formattedTags.put(tag.getKey().toLowerCase().trim(), tag.getValue().trim());
         }
         return formattedTags;
     }

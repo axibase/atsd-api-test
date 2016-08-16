@@ -28,7 +28,7 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
     );
 
     @BeforeClass
-    public static void prepareData() throws IOException, InterruptedException {
+    public static void prepareData() throws Exception {
         Registry.Metric.register(TEST_METRIC_NAME);
         Registry.Entity.register(TEST_ENTITY_NAME);
 
@@ -53,7 +53,7 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
                 i++;
             }
         }
-        SeriesMethod.insertSeries(seriesList, Util.EXPECTED_PROCESSING_TIME);
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
 

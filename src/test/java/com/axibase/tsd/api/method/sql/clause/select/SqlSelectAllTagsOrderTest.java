@@ -28,7 +28,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         tags.put("a", "b");
         tags.put("tag", "value");
         tags.put("T", "V");
-        tags.put("Tag", "Value");
+        tags.put("Tags", "value");
         tags.put("1", "0");
         tags.put("Т", "З");
         tags.put("имя", "значение");

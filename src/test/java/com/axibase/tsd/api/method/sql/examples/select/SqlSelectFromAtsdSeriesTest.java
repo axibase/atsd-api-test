@@ -23,7 +23,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @BeforeClass
-    public void prepareData() throws IOException {
+    public void prepareData() throws Exception {
         Registry.Entity.register(TEST_ENTITY_NAME);
         Registry.Metric.register(TEST_METRIC1_NAME);
         Registry.Metric.register(TEST_METRIC2_NAME);

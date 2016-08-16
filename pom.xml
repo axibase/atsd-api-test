@@ -149,6 +149,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <!--parallel>classes</parallel>
+
                     <threadCount>5</threadCount-->
                     <forkCount>0</forkCount>
                 </configuration>
