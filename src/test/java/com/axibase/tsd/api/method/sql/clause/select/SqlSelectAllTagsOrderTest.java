@@ -20,20 +20,18 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-all-tags-order-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
-    private static final Map<String, String> TAGS = Collections.unmodifiableMap(
-            new HashMap<String, String>() {{
-                put("a", "b");
-                put("tag", "value");
-                put("T", "V");
-                put("Tag", "Value");
-                put("1", "0");
-                put("Т", "З");
-                put("имя", "значение");
-            }}
-    );
+    private Map<String, String> tags;
 
     @BeforeClass
-    public static void prepareData() throws Exception {
+    public void prepareData() throws Exception {
+        tags = new HashMap<>();
+        tags.put("a", "b");
+        tags.put("tag", "value");
+        tags.put("T", "V");
+        tags.put("Tag", "Value");
+        tags.put("1", "0");
+        tags.put("Т", "З");
+        tags.put("имя", "значение");
         Registry.Entity.register(TEST_ENTITY_NAME);
         Registry.Metric.register(TEST_METRIC_NAME);
 
@@ -42,13 +40,13 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         series.setMetric(TEST_METRIC_NAME);
         series.setEntity(TEST_ENTITY_NAME);
         series.addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
-        series.setTags(TAGS);
+        series.setTags(tags);
 
         SeriesMethod.insertSeriesCheck(series);
 
 
         Metric metricUpdateQuery = new Metric();
-        metricUpdateQuery.setTags(TAGS);
+        metricUpdateQuery.setTags(tags);
         MetricMethod.updateMetric(TEST_METRIC_NAME, metricUpdateQuery);
     }
 
@@ -64,7 +62,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "tags", true);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", true);
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
@@ -81,7 +79,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "tags", false);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", false);
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
@@ -99,7 +97,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "tags", false);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", false);
         expectedColumnNames.add(0, "entity");
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
@@ -118,7 +116,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "tags", false);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", false);
         expectedColumnNames.add("entity");
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
@@ -137,7 +135,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "metric.tags", false);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "metric.tags", false);
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
@@ -155,7 +153,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "metric.tags", false);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "metric.tags", false);
         expectedColumnNames.add(0, "entity");
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
@@ -174,7 +172,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(TAGS), "metric.tags", false);
+        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "metric.tags", false);
         expectedColumnNames.add("entity");
 
         assertTableColumnsNames(expectedColumnNames, resultTable, true);
@@ -190,7 +188,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
     private List<String> sortedTagsKeys(Map<String, String> tags) {
-        List<String> sortedTags = new ArrayList<String>(handleTags(tags.keySet()));
+        List<String> sortedTags = new ArrayList<>(handleTags(tags.keySet()));
         Collections.sort(sortedTags);
         return sortedTags;
     }
