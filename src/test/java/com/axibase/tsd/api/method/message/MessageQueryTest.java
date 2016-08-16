@@ -144,7 +144,7 @@ public class MessageQueryTest extends MessageMethod {
 
         final String given = formatToJsonString(executeQuery(query));
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
-        assertTrue(compareJsonString(expected, given));
+        assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
 
     /**
@@ -164,7 +164,7 @@ public class MessageQueryTest extends MessageMethod {
 
         final String given = formatToJsonString(executeQuery(query));
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
-        assertTrue(compareJsonString(expected, given));
+        assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
 
     /**
@@ -194,7 +194,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("entities", Collections.singletonList(pattern));
 
         final String entityResponse = formatToJsonString(executeQuery(query));
-        assertEquals(entitiesResponse, entityResponse);
+        assertEquals("Message in response does not match to inserted", entitiesResponse, entityResponse);
     }
 
     private MessageQuery buildMessageQuery() {
