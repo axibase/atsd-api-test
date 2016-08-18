@@ -21,6 +21,9 @@ import static org.testng.AssertJUnit.fail;
  * @author Igor Shmagrinskiy
  */
 public class SqlTest extends SqlMethod {
+    private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is  not ok";
+    private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
+
     public static void assertTableRows(List<List<String>> row1, List<List<String>> row2) {
         assertEquals("Table rows  must  be identical", row1, row2);
     }
@@ -54,8 +57,13 @@ public class SqlTest extends SqlMethod {
         }
     }
 
+
     public void assertOkRequest(Response response) {
-        assertEquals("Response status is  not ok", OK.getStatusCode(), response.getStatus());
+        assertOkRequest(DEFAULT_ASSERT_OK_REQUEST_MESSAGE, response);
+    }
+
+    public void assertOkRequest(String assertMessage, Response response) {
+        assertEquals(assertMessage, OK.getStatusCode(), response.getStatus());
         try {
             response.readEntity(StringTable.class);
         } catch (ProcessingException e) {
@@ -64,7 +72,11 @@ public class SqlTest extends SqlMethod {
     }
 
     public void assertBadRequest(Response response, String expectedMessage) {
-        assertEquals("Response status is not bad", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertBadRequest(DEFAULT_ASSERT_BAD_REQUEST_MESSAGE, response, expectedMessage);
+    }
+
+    public void assertBadRequest(String assertMessage, Response response, String expectedMessage) {
+        assertEquals(assertMessage, BAD_REQUEST.getStatusCode(), response.getStatus());
         String responseMessage = extractErrorMessage(response);
         assertEquals("Error message is different form expected", expectedMessage, responseMessage);
     }
