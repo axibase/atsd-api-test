@@ -55,18 +55,18 @@ public class SqlTest extends SqlMethod {
     }
 
     public void assertOkRequest(Response response) {
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertEquals("Response status is  not ok", OK.getStatusCode(), response.getStatus());
         try {
             response.readEntity(StringTable.class);
         } catch (ProcessingException e) {
-            fail();
+            fail("Failed to read table from respone!");
         }
     }
 
     public void assertBadRequest(Response response, String expectedMessage) {
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Response status is not bad", BAD_REQUEST.getStatusCode(), response.getStatus());
         String responseMessage = extractErrorMessage(response);
-        assertEquals(expectedMessage, responseMessage);
+        assertEquals("Error message is different form expected", expectedMessage, responseMessage);
     }
 
     /**
