@@ -4,6 +4,7 @@ package com.axibase.tsd.api.method.alert;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.alert.Alert;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -11,7 +12,6 @@ import javax.ws.rs.core.GenericType;
 import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.fail;
 
 /**
  * @author Dmitry Korchagin.
@@ -93,9 +93,7 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
         List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
         });
         for (Alert alert : alertList) {
-            if (!alert.getAcknowledged()) {
-                fail("Response should not contain acknowledged=false alerts");
-            }
+            Assert.assertTrue(alert.getAcknowledged(), "Response should not contain acknowledged=false alerts");
         }
     }
 
@@ -114,9 +112,7 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
         });
 
         for (Alert alert : alertList) {
-            if (alert.getAcknowledged()) {
-                fail("Response should not contain acknowledged=true alerts");
-            }
+            Assert.assertFalse(alert.getAcknowledged(), "Response should not contain acknowledged=true alerts");
         }
     }
 
