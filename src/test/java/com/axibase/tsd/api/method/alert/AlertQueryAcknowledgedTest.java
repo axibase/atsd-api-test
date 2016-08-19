@@ -29,13 +29,13 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
         Registry.Entity.register(ENTITY_NAME_ACK);
         generateAlertForEntity(ENTITY_NAME_ACK);
 
-        markSomeAlertAcknowledged();
+        markAlertAcknowledged(ENTITY_NAME_ACK);
         checkAllAcknowledgedTypesExist();
     }
 
-    private void markSomeAlertAcknowledged() {
+    private void markAlertAcknowledged(final String entityName) {
         Map<String, String> alertQuery = new HashMap<>();
-        alertQuery.put("entity", ENTITY_NAME_ACK);
+        alertQuery.put("entity", entityName);
         alertQuery.put("startDate", Util.MIN_QUERYABLE_DATE);
         alertQuery.put("endDate", Util.MAX_QUERYABLE_DATE);
 
