@@ -17,8 +17,8 @@ import static javax.ws.rs.core.Response.Status.OK;
  * @author Dmitry Korchagin.
  */
 public class AlertQueryAcknowledgedTest extends AlertMethod {
-    final String ENTITY_NAME = "alert-query-ack-entity-1";
-    final String ENTITY_NAME_ACK = "alert-query-ack-entity-1-ack";
+    private final String ENTITY_NAME = "alert-query-ack-entity-1";
+    private final String ENTITY_NAME_ACK = "alert-query-ack-entity-1-ack";
 
 
     @BeforeClass
