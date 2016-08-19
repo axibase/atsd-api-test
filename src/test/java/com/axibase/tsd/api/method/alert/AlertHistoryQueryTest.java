@@ -22,7 +22,7 @@ public class AlertHistoryQueryTest extends AlertMethod {
      * #2991
      */
     @Test
-    public void testEntityExpression() throws Exception {
+    public void testEntityWildcardStarChar() throws Exception {
         final String entityName = "alert-historyquery-entity-1";
         Registry.Entity.register(entityName);
         generateAlertHistoryForEntity(entityName);
@@ -75,15 +75,23 @@ public class AlertHistoryQueryTest extends AlertMethod {
         Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get any alerts by entity expression");
     }
 
-    private void generateAlertHistoryForEntity(final String entityName) throws Exception {
-        Series series = new Series();
-        series.setEntity(entityName);
-        series.setMetric(Util.RULE_METRIC_NAME);
-        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_OPEN_VALUE));
-        SeriesMethod.insertSeriesCheck(series);
+    /**
+     * #2981
+     */
+    @Test
+    public void testEntityExpressionFilterExist() throws Exception {
+        final String entityName = "alert-history-query-entity-4";
+        Registry.Entity.register(entityName);
+        generateAlertHistoryForEntity(entityName);
 
-        series.setData(null);
-        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_CLOSE_VALUE));
-        SeriesMethod.insertSeriesCheck(series);
+        Map<String, Object> query = new HashMap<>();
+        query.put("entityExpression", "name LIKE '*rt-history-query-entity-4'");
+        query.put("startDate", Util.MIN_QUERYABLE_DATE);
+        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        Response response = queryAlertsHistory(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
+        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
     }
+
 }

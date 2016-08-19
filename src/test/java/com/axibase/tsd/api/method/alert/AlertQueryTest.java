@@ -21,7 +21,7 @@ public class AlertQueryTest extends AlertMethod {
      * #2991
      */
     @Test
-    public void testEntityExpression() throws Exception {
+    public void testEntityWildcardStarChar() throws Exception {
         final String entityName = "alert-query-entity-1";
         Registry.Entity.register(entityName);
         generateAlertForEntity(entityName);
@@ -66,6 +66,25 @@ public class AlertQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Arrays.asList("alert-query-entity-?"));
+        query.put("startDate", Util.MIN_QUERYABLE_DATE);
+        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        Response response = queryAlerts(query);
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
+        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
+    }
+
+    /**
+     * #2981
+     */
+    @Test
+    public void testEntityExpressionFilterExist() throws Exception {
+        final String entityName = "alert-query-entity-4";
+        Registry.Entity.register(entityName);
+        generateAlertForEntity(entityName);
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("entityExpression", "name LIKE '*rt-query-entity-4'");
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);

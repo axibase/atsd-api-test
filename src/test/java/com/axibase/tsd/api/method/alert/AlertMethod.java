@@ -66,4 +66,17 @@ public class AlertMethod extends BaseMethod {
     }
 
 
+    public static void generateAlertHistoryForEntity(final String entityName) throws Exception {
+        Series series = new Series();
+        series.setEntity(entityName);
+        series.setMetric(Util.RULE_METRIC_NAME);
+        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_OPEN_VALUE));
+        SeriesMethod.insertSeriesCheck(series);
+
+        series.setData(null);
+        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_CLOSE_VALUE));
+        SeriesMethod.insertSeriesCheck(series);
+    }
+
+
 }
