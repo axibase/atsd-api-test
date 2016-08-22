@@ -604,33 +604,73 @@ public class SeriesInsertTest extends SeriesMethod {
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
     }
 
-
-    /* #3164 */
+    /**
+     * #3164
+     * */
     @Test
     public void testEmptyTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-1", "m-empty-tag-1");
         series.addData(new Sample(1465502400000l, "1"));
 
-        series.addTag("emptyTag", "");
+        series.addTag("empty-tag", "");
 
         Response response = insertSeries(series);
         String errorMessage = response.readEntity(String.class);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"emptytag\\\" has empty value\"}", errorMessage);
+        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
     }
-    /* #3164 */
+
+    /**
+     * #3164
+     * */
     @Test
     public void testNullTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-2", "m-empty-tag-2");
         series.addData(new Sample(1465502400000l, "1"));
 
-        series.addTag("emptyTag", null);
+        series.addTag("empty-tag", null);
 
         Response response = insertSeries(series);
         String errorMessage = response.readEntity(String.class);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"emptytag\\\" has empty value\"}", errorMessage);
+        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
+    }
+
+    /**
+     * #3164
+     **/
+    @Test
+    public void testNullTagValueWithNormalTagsRaisesError() throws Exception {
+        Series series = new Series("e-empty-tag-3", "m-empty-tag-3");
+        series.addData(new Sample(1465502400000l, "1"));
+
+        series.addTag("none-empty-tag", "value");
+        series.addTag("empty-tag", null);
+
+        Response response = insertSeries(series);
+        String errorMessage = response.readEntity(String.class);
+
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
+    }
+
+    /**
+     * #3164
+     **/
+    @Test
+    public void testEmptyTagValueWithNormalTagsRaisesError() throws Exception {
+        Series series = new Series("e-empty-tag-4", "m-empty-tag-4");
+        series.addData(new Sample(1465502400000l, "1"));
+
+        series.addTag("nonempty-tag", "value");
+        series.addTag("empty-tag", "");
+
+        Response response = insertSeries(series);
+        String errorMessage = response.readEntity(String.class);
+
+        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
     }
 }
