@@ -23,7 +23,9 @@ import static org.testng.AssertJUnit.*;
 public class SeriesInsertTest extends SeriesMethod {
     final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testBigFloatOverflow() throws Exception {
         String entityName = "e-float-1";
@@ -45,7 +47,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testBigDecimalOverflow() throws Exception {
         String entityName = "e-decimal-1";
@@ -64,7 +68,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertFalse("Managed to insert large decimal series", insertSeries(series, 1000));
     }
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testBigDecimalAggregatePrecision() throws Exception {
         String entityName = "e-decimal-2";
@@ -91,7 +97,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testDoubleAggregatePrecision() throws Exception {
         String entityName = "e-double-3";
@@ -119,7 +127,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored small double value incorrect", new BigDecimal("7.299999998400001"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testDoublePrecisionAfterCompaction() throws Exception {
         String entityName = "e-double-4";
@@ -144,7 +154,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored double value precision incorrect", new BigDecimal("9.0E16"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testFloatPrecisionAfterCompaction() throws Exception {
         String entityName = "e-float-4";
@@ -169,7 +181,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored float value precision incorrect", new BigDecimal("9.0E8"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2871 */
+    /**
+     * #2871
+     **/
     @Test
     public void testDecimalPrecisionAfterCompaction() throws Exception {
         String entityName = "e-decimal-4";
@@ -194,7 +208,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored decimal value precision incorrect", new BigDecimal("90000000000000003.93"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2009 */
+    /**
+     * #2009
+     **/
     @Test
     public void testISOFormatsZmsAbsent() throws Exception {
         String entityName = "e-iso-1";
@@ -214,7 +230,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2009 */
+    /**
+     * #2009
+     **/
     @Test
     public void testISOFormatsZms() throws Exception {
         String entityName = "e-iso-2";
@@ -234,7 +252,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2009 */
+    /**
+     * #2009
+     **/
     @Test
     public void testISOFormatsPlusHoursNoMS() throws Exception {
         String entityName = "e-iso-3";
@@ -253,7 +273,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2009 */
+    /**
+     * #2009
+     **/
     @Test
     public void testISOFormatsPlusHoursMS() throws Exception {
         String entityName = "e-iso-4";
@@ -272,7 +294,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Stored value incorrect", new BigDecimal(value), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     **/
     @Test
     public void testISOFormatsMinusHoursNoMS() throws Exception {
         String entityName = "e-iso-10";
@@ -291,7 +315,9 @@ public class SeriesInsertTest extends SeriesMethod {
     }
 
 
-    /* #2913 */
+    /**
+     * #2913
+     **/
     @Test
     public void testUnderscoreSequence() throws Exception {
         final long t = 1465485524888L;
@@ -308,7 +334,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Returned incorrect metric", series.getMetric(), seriesList.get(0).getMetric());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeMinInMSSsaved() throws Exception {
         Long time = 0L;
@@ -322,7 +350,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeMinInISOSaved() throws Exception {
         Series series = new Series("e-time-range-2", "m-time-range-2");
@@ -335,7 +365,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeInMSTimeSaved() throws Exception {
         Long time = 1L;
@@ -349,7 +381,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getV());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeMaxInMSSaved() throws Exception {
         final long t = getMillis(MAX_STORABLE_DATE);
@@ -366,7 +400,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals(v, data.get(0).getV());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeMaxInISOSaved() throws Exception {
         final BigDecimal v = new BigDecimal("" + getMillis(MAX_STORABLE_DATE));
@@ -383,7 +419,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals(v, data.get(0).getV());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeMaxInMSOverflow() throws Exception {
         final long t = getMillis(MAX_STORABLE_DATE) + 1;
@@ -400,7 +438,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Managed to insert series with t out of range", 0, data.size());
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeMaxInISOOverflow() throws Exception {
         final BigDecimal v = new BigDecimal("" + getMillis(NEXT_AFTER_MAX_STORABLE_DATE));
@@ -416,7 +456,9 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Managed to insert series with d out of range", 0, seriesList.get(0).getData().size());
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundGetRequest0() throws Exception {
         Response response = httpRootResource.path("api").path("404").request().get();
@@ -425,7 +467,9 @@ public class SeriesInsertTest extends SeriesMethod {
 
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundGetRequest1() throws Exception {
         Response response = httpApiResource.path("query").request().get();
@@ -434,7 +478,9 @@ public class SeriesInsertTest extends SeriesMethod {
 
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundGetRequest2() throws Exception {
         Response response = httpApiResource.path("404").request().get();
@@ -443,7 +489,9 @@ public class SeriesInsertTest extends SeriesMethod {
 
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundGetRequest3() throws Exception {
         Response response = httpApiResource.path("404").queryParam("not", "exist").request().get();
@@ -451,7 +499,9 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundOptionsRequestWithoutApiV1() throws Exception {
         Response response = httpRootResource.path("api").path("404").request().options();
@@ -459,7 +509,9 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundOptionsRequest0() throws Exception {
         Response response = httpApiResource.path("*").request().options();
@@ -467,7 +519,9 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundOptionsRequest1() throws Exception {
         Response response = httpApiResource.path("query").request().options();
@@ -475,7 +529,9 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundOptionsRequest2() throws Exception {
         Response response = httpApiResource.path("404").request().options();
@@ -483,7 +539,9 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
-    /* #2927 */
+    /**
+     * #2927
+     **/
     @Test
     public void testUrlNotFoundOptionsRequest3() throws Exception {
         Response response = httpApiResource.path("404").queryParam("not", "exist").request().options();
@@ -491,7 +549,9 @@ public class SeriesInsertTest extends SeriesMethod {
         response.close();
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     **/
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "e-iso-11";
@@ -508,7 +568,9 @@ public class SeriesInsertTest extends SeriesMethod {
 
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     **/
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "e-iso-12";
@@ -524,7 +586,9 @@ public class SeriesInsertTest extends SeriesMethod {
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     **/
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "e-iso-13";
