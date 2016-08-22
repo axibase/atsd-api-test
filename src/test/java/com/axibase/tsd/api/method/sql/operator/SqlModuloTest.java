@@ -79,7 +79,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingPositiveByPositiveInteger() {
         String sqlQuery = String.format(
                 "SELECT m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:23:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:23:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         List<List<String>> expectedRows = Collections.singletonList(
@@ -100,7 +100,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingZeroByPositiveInteger() {
         String sqlQuery = String.format(
                 "SELECT m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:24:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:24:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -121,7 +121,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingPositiveByZeroInteger() {
         String sqlQuery = String.format(
                 "SELECT m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:24:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:24:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -143,7 +143,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingPositiveByNegativeInteger() {
         String sqlQuery = String.format(
                 "SELECT m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:25:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:25:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -165,7 +165,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingNegativeByPositiveInteger() {
         String sqlQuery = String.format(
                 "SELECT m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:25:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:25:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -189,7 +189,7 @@ public class SqlModuloTest extends SqlTest {
         String sqlQuery = String.format(
 
                 "SELECT m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:26:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:26:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -211,7 +211,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingNegativeByPositiveDecimal() {
         String sqlQuery = String.format(
                 "SELECT m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:26:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:26:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
         Double expectedModulo = -2.1;
@@ -232,7 +232,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingNullByNumber() {
         String sqlQuery = String.format(
                 "SELECT m1.value AS 'num', m2.value AS 'den', m1.value %s m2.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:27:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:27:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -254,7 +254,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingNumberByNull() {
         String sqlQuery = String.format(
                 "SELECT m2.value AS 'num', m1.value AS 'den', m2.value %s m1.value AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:27:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:27:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -276,7 +276,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingStringByString() {
         String sqlQuery = String.format(
                 "SELECT m2.value AS 'num', m1.value AS 'den', tags.a %s tags.b AS 'modulo' FROM '%s' m1\n " +
-                        "OUTER JOIN '%s' m2\nWHERE t1.datetime = '2016-06-03T09:27:00.000Z' AND t1.entity = '%s'",
+                        "OUTER JOIN '%s' m2\nWHERE m1.datetime = '2016-06-03T09:27:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
@@ -291,7 +291,7 @@ public class SqlModuloTest extends SqlTest {
     public void testDividingNaNByNumber() {
         String sqlQuery = String.format(
                 "SELECT value, 0/0 %s m1.value AS 'modulo' FROM '%s'\n " +
-                        "WHERE t1.datetime = '2016-06-03T09:23:00.000Z' AND t1.entity = '%s' ",
+                        "WHERE m1.datetime = '2016-06-03T09:23:00.000Z' AND m1.entity = '%s' ",
                 "%", TEST_METRIC1_NAME, TEST_ENTITY_NAME
         );
 
