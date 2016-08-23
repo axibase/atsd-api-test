@@ -10,6 +10,7 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.Logger;
@@ -100,5 +101,12 @@ public abstract class BaseMethod {
         response.bufferEntity();
         return response;
     }
+
+    public static String extractErrorMessage(Response response) throws JSONException {
+        String jsonText = response.readEntity(String.class);
+        JSONObject json = new JSONObject(jsonText);
+        return json.getString("error");
+    }
+
 
 }

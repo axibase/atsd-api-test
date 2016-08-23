@@ -77,7 +77,7 @@ public class SqlTest extends SqlMethod {
 
     public void assertBadRequest(String assertMessage, Response response, String expectedMessage) {
         assertEquals(assertMessage, BAD_REQUEST.getStatusCode(), response.getStatus());
-        String responseMessage = extractErrorMessage(response);
+        String responseMessage = extractSqlErrorMessage(response);
         assertEquals("Error message is different form expected", expectedMessage, responseMessage);
     }
 
@@ -95,7 +95,7 @@ public class SqlTest extends SqlMethod {
         return columnNames;
     }
 
-    private String extractErrorMessage(Response response) {
+    private String extractSqlErrorMessage(Response response) {
         String jsonText = response.readEntity(String.class);
         try {
             JSONObject json = new JSONObject(jsonText);

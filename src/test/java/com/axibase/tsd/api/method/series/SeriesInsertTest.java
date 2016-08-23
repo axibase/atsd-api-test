@@ -21,6 +21,7 @@ import static org.testng.AssertJUnit.*;
 
 
 public class SeriesInsertTest extends SeriesMethod {
+    public static final String EMPTY_TAG_ERROR = "IllegalArgumentException: Tag \"%s\" has empty value";
     final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
 
     /**
@@ -611,14 +612,15 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testEmptyTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-1", "m-empty-tag-1");
         series.addData(new Sample(1465502400000l, "1"));
+        String emptyTagName = "empty-tag";
 
-        series.addTag("empty-tag", "");
+        series.addTag(emptyTagName, "");
 
         Response response = insertSeries(series);
-        String errorMessage = response.readEntity(String.class);
+        String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
     }
 
     /**
@@ -628,14 +630,15 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testNullTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-2", "m-empty-tag-2");
         series.addData(new Sample(1465502400000l, "1"));
+        String emptyTagName = "empty-tag";
 
-        series.addTag("empty-tag", null);
+        series.addTag(emptyTagName, null);
 
         Response response = insertSeries(series);
-        String errorMessage = response.readEntity(String.class);
+        String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
     }
 
     /**
@@ -645,15 +648,16 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testNullTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-3", "m-empty-tag-3");
         series.addData(new Sample(1465502400000l, "1"));
+        String emptyTagName = "empty-tag";
 
-        series.addTag("none-empty-tag", "value");
-        series.addTag("empty-tag", null);
+        series.addTag("nonempty-tag", "value");
+        series.addTag(emptyTagName, null);
 
         Response response = insertSeries(series);
-        String errorMessage = response.readEntity(String.class);
+        String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
     }
 
     /**
@@ -663,14 +667,15 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testEmptyTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-4", "m-empty-tag-4");
         series.addData(new Sample(1465502400000l, "1"));
+        String emptyTagName = "empty-tag";
 
         series.addTag("nonempty-tag", "value");
-        series.addTag("empty-tag", "");
+        series.addTag(emptyTagName, "");
 
         Response response = insertSeries(series);
-        String errorMessage = response.readEntity(String.class);
+        String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Tag \\\"empty-tag\\\" has empty value\"}", errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
     }
 }
