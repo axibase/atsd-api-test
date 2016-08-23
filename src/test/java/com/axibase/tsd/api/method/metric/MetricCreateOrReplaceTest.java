@@ -5,6 +5,8 @@ import com.axibase.tsd.api.model.series.DataType;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -23,7 +25,9 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
-    /* #1278 */
+    /**
+     * #1278
+     **/
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
         final Metric metric = new Metric("createreplace metric-1");
@@ -32,7 +36,9 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /* #1278 */
+    /**
+     * #1278
+     **/
     @Test
     public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("createreplace/metric-2");
@@ -43,7 +49,9 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
-    /* #1278 */
+    /**
+     * #1278
+     **/
     @Test
     public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("createreplacйёmetric-3");
@@ -52,5 +60,31 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         Response response = createOrReplaceMetric(metric);
         assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to check metric inserted", metricExist(metric));
+    }
+
+    /**
+     * #3141
+     **/
+    @Test
+    public void testMetricTagNameIsLowerCased() throws Exception {
+        final String TAG_NAME = "SoMeTaG";
+        final String TAG_VALUE = "value";
+
+        Metric metric = new Metric("create-metric-with-tag");
+        Map<String, String> tags = new HashMap<>();
+        tags.put(TAG_NAME, TAG_VALUE);
+        metric.setTags(tags);
+        Response response1 = createOrReplaceMetric(metric);
+        assertEquals("Failed to create metric", OK.getStatusCode(), response1.getStatus());
+
+        Response response2 = queryMetric(metric.getName());
+        Metric createdMetric = response2.readEntity(Metric.class);
+
+        assertEquals("Wrong metric name", metric.getName(), createdMetric.getName());
+
+        Map<String, String> expectedTags = new HashMap<>();
+        expectedTags.put(TAG_NAME.toLowerCase(), TAG_VALUE);
+
+        assertEquals("Wrong metric tags", expectedTags, createdMetric.getTags());
     }
 }
