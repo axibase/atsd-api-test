@@ -18,7 +18,7 @@ import java.util.*;
  * @author Igor Shmagrinskiy
  */
 public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-syntax-tag-name-with-double-quotation-";
+    private static final String TEST_PREFIX = "sql-select-tag-name-with-double-quotation-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
 
