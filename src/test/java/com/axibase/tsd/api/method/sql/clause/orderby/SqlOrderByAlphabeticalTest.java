@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.sql.clause.orderby;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -10,7 +9,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.*;
 
 /**

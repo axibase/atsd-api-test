@@ -7,7 +7,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 

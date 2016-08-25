@@ -3,13 +3,14 @@ package com.axibase.tsd.api.method.alert;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author Dmitry Korchagin.
@@ -38,8 +39,27 @@ public class AlertMethod extends BaseMethod {
         return response;
     }
 
+    public static boolean alertExist(String entityName, String metricName) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("entity", entityName);
+        query.put("metrics", Collections.singletonList(metricName));
+        query.put("startDate", Util.MIN_QUERYABLE_DATE);
+        query.put("endDate", Util.MAX_QUERYABLE_DATE);
 
-    public static <T> Response deletAlerts(T... queries) {
+        Response response = queryAlerts(query);
+        List<Alert> alertList = response.readEntity(new GenericType<List<Alert>>() {
+        });
+
+        Alert alert = new Alert();
+        alert.setEntity(entityName);
+        alert.setMetric(metricName);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(alert));
+        final String given = jacksonMapper.writeValueAsString(alertList);
+        return compareJsonString(expected, given);
+    }
+
+
+    public static <T> Response deleteAlerts(T... queries) {
         Response response = httpApiResource
                 .path(METHOD_ALERTS_DELETE)
                 .request()
@@ -73,9 +93,23 @@ public class AlertMethod extends BaseMethod {
         series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_OPEN_VALUE));
         SeriesMethod.insertSeriesCheck(series);
 
+
         series.setData(null);
         series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_CLOSE_VALUE));
         SeriesMethod.insertSeriesCheck(series);
+
+        Long startTime = System.currentTimeMillis();
+        boolean alertAbsent = true;
+        while(alertExist(entityName, Util.RULE_METRIC_NAME)) {
+            Thread.sleep(Util.REQUEST_INTERVAL);
+            if(System.currentTimeMillis() > (startTime + Util.EXPECTED_PROCESSING_TIME)) {
+                alertAbsent = false;
+                break;
+            }
+        }
+        if(!alertAbsent && alertExist(entityName, Util.RULE_METRIC_NAME)) {
+            throw new IllegalArgumentException("Fail to generate AlertHistory Element");
+        }
     }
 
 

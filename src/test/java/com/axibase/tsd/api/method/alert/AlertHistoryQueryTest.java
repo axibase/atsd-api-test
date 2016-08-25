@@ -2,14 +2,13 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.Series;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 

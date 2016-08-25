@@ -2,11 +2,9 @@ package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.json.JSONException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.text.ParseException;
 import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertTrue;

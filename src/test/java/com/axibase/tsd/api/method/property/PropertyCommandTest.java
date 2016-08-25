@@ -1,11 +1,9 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.model.property.Property;
-import org.json.JSONException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.text.ParseException;
 import java.util.HashMap;
 
 import static org.testng.AssertJUnit.assertFalse;
