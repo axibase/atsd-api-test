@@ -12,9 +12,6 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
 public class SqlLimitParamTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-response-limit-param-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
