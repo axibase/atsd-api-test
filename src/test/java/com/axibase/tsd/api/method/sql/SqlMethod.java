@@ -17,12 +17,12 @@ import javax.ws.rs.core.Response;
  *         and retrive result in specifed format.
  *         Usage:
  *         * <pre>
- *                                 {@code
- *                                      SqlMethod
- *                                                  .executeQuery("SELECT 1")
- *                                                  .readEntity(String.class);
- *                                 }
- *                                 </pre>
+ *                                                                                                         {@code
+ *                                                                                                              SqlMethod
+ *                                                                                                                          .executeQuery("SELECT 1")
+ *                                                                                                                          .readEntity(String.class);
+ *                                                                                                         }
+ *                                                                                                         </pre>
  */
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
@@ -37,18 +37,39 @@ public class SqlMethod extends BaseMethod {
      *
      * @param sqlQuery     SQL query in a String format
      * @param outputFormat some field from {@link OutputFormat}
+     * @param limit        limit of returned Rows
      * @return instance of Response
      */
-    public static Response executeQuery(String sqlQuery, OutputFormat outputFormat) {
+    public static Response executeQuery(String sqlQuery, OutputFormat outputFormat, Integer limit) {
         logger.debug("SQL query : {}", sqlQuery);
         Form form = new Form();
+        if (sqlQuery == null) {
+            throw new IllegalStateException("Query must be defined");
+        }
         form.param("q", sqlQuery);
-        form.param("outputFormat", outputFormat.toString());
+        if (outputFormat != null) {
+            form.param("outputFormat", outputFormat.toString());
+        }
+        if (limit != null) {
+            form.param("limit", Integer.toString(limit));
+        }
         Response response = httpSqlApiResource
                 .request()
                 .post(Entity.form(form));
         response.bufferEntity();
         return response;
+    }
+
+
+    /**
+     * Execute SQL executeQuery and retrieve result in specified format
+     *
+     * @param sqlQuery SQL executeQuery in a String format
+     * @param limit    limit of returned rows
+     * @return instance of Response
+     */
+    public static Response executeQuery(String sqlQuery, Integer limit) {
+        return executeQuery(sqlQuery, OutputFormat.JSON, limit);
     }
 
     /**
@@ -58,6 +79,6 @@ public class SqlMethod extends BaseMethod {
      * @return instance of Response
      */
     public static Response executeQuery(String sqlQuery) {
-        return executeQuery(sqlQuery, OutputFormat.JSON);
+        return executeQuery(sqlQuery, OutputFormat.JSON, null);
     }
 }
