@@ -14,7 +14,7 @@ public class SqlMetaDataTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-metadata-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
-    private static Series testSeries = new Series(TEST_METRIC_NAME, TEST_PREFIX + "-metric");
+    private static Series testSeries = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
     private static StringTable resultTable;
 
 
