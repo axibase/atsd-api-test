@@ -11,16 +11,14 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlSyntaxUnknownAliasTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-syntax-unknown-alias-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
     private static final String TEST_METRIC2_NAME = TEST_PREFIX + "metric-2";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
-    private static final String ERROR_MESSAGE_TEMPLATE1 = "Metric '%s' not found in from or join clauses";
-    private static final String ERROR_MESSAGE_TEMPLATE2 = "Invalid identifier '%s'";
+    private static final String METRIC_NOT_FOUND_MESSAGE_TEMPLATE = "Metric '%s' not found in from or join clauses";
+    private static final String INVALID_IDENTIFIER_MESSAGE_TEMPLATE = "Invalid identifier '%s'";
 
 
     @BeforeClass
@@ -44,7 +42,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInSelectWithoutJoin() {
@@ -56,13 +54,13 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE1, "t1")
+                response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1")
         );
     }
 
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInWhereWithoutJoin() {
@@ -74,13 +72,13 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE2, "t1")
+                response, String.format(INVALID_IDENTIFIER_MESSAGE_TEMPLATE, "t1")
         );
     }
 
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInOrderByWithoutJoin() {
@@ -92,13 +90,13 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE1, "t1")
+                response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1")
         );
     }
 
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInGroupByWithoutJoin() {
@@ -110,12 +108,12 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE1, "t1")
+                response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1")
         );
     }
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInSelectWithJoin() {
@@ -127,12 +125,12 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE1, "t2")
+                response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2")
         );
     }
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInWhereWithJoin() {
@@ -144,12 +142,12 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE2, "t2")
+                response, String.format(INVALID_IDENTIFIER_MESSAGE_TEMPLATE, "t2")
         );
     }
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInOrderByWithJoin() {
@@ -161,13 +159,13 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE1, "t2")
+                response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2")
         );
     }
 
 
     /**
-     * Issue #3234
+     * #3234
      */
     @Test
     public void testUnknownAliasInGroupByWithJoin() {
@@ -179,7 +177,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
-                response, String.format(ERROR_MESSAGE_TEMPLATE1, "t2")
+                response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2")
         );
     }
 }
