@@ -46,15 +46,11 @@ public class AlertMethod extends BaseMethod {
         query.put("startDate", Util.MIN_QUERYABLE_DATE);
         query.put("endDate", Util.MAX_QUERYABLE_DATE);
 
-        Response response = queryAlerts(query);
-        List<Alert> alertList = response.readEntity(new GenericType<List<Alert>>() {
-        });
-
         Alert alert = new Alert();
         alert.setEntity(entityName);
         alert.setMetric(metricName);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(alert));
-        final String given = jacksonMapper.writeValueAsString(alertList);
+        final String given = formatToJsonString(queryAlerts(query));
         return compareJsonString(expected, given);
     }
 
