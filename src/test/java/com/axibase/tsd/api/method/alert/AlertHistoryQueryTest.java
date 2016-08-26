@@ -12,9 +12,6 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class AlertHistoryQueryTest extends AlertMethod {
 
     /**

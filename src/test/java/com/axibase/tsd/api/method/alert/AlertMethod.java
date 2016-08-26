@@ -8,13 +8,9 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class AlertMethod extends BaseMethod {
     private static final String METHOD_ALERTS_QUERY = "/alerts/query";
     private static final String METHOD_ALERTS_UPDATE = "/alerts/update";
