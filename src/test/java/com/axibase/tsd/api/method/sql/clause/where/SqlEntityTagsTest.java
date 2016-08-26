@@ -14,9 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlEntityTagsTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-where-entity-tags-support-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -45,17 +43,17 @@ public class SqlEntityTagsTest extends SqlTest {
 
 
     /*
-      Following tests related to #2926 issue.
+      #2926 issue.
      */
 
     /**
-     * Issue #2926
+     * #2926
      */
     @Test
     public void testLikeOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1\nFROM '%s'\nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
-                        "entity.tags.tag1 LIKE 'val*'\nAND entity = '%s'",
+                "SELECT entity.tags.tag1 %nFROM '%s' %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
+                        "entity.tags.tag1 LIKE 'val*' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -69,13 +67,13 @@ public class SqlEntityTagsTest extends SqlTest {
     }
 
     /**
-     * Issue #2926
+     * #2926
      */
     @Test
     public void testNotLikeOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1\nFROM '%s'\nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
-                        "entity.tags.tag1 NOT LIKE 'val*'\nAND entity = '%s'",
+                "SELECT entity.tags.tag1 %nFROM '%s' %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
+                        "entity.tags.tag1 NOT LIKE 'val*' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -88,13 +86,13 @@ public class SqlEntityTagsTest extends SqlTest {
 
 
     /**
-     * Issue #2926
+     * #2926
      */
     @Test
     public void testEqualsOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1\nFROM '%s'\nWHERE datetime='2016-06-19T11:00:00.000Z' " +
-                        "AND entity.tags.tag1 ='val1'\nAND entity = '%s'",
+                "SELECT entity.tags.tag1 %nFROM '%s' %nWHERE datetime='2016-06-19T11:00:00.000Z' " +
+                        "AND entity.tags.tag1 ='val1' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -109,15 +107,15 @@ public class SqlEntityTagsTest extends SqlTest {
 
 
     /**
-     * Issue #2926
+     * #2926
      */
     @Test
     public void testNotEqualsOperator() {
-        String sqlQuery =
-                "SELECT entity.tags.tag1\n" +
-                        "FROM 'sql-where-entity-tags-support-metric'\n" +
-                        "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag1 <> 'val2'\n" +
-                        "AND entity = 'sql-where-entity-tags-support-entity'";
+        String sqlQuery = String.format(
+                "SELECT entity.tags.tag1 FROM '%s' %n" +
+                        "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag1 <> 'val2' %nAND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -130,13 +128,13 @@ public class SqlEntityTagsTest extends SqlTest {
 
 
     /**
-     * Issue #2926
+     * #2926
      */
     @Test
     public void testIsNullOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag4 FROM '%s'\n" +
-                        "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag4 IS NULL AND entity = '%s'",
+                "SELECT entity.tags.tag4 FROM '%s'%nWHERE datetime='2016-06-19T11:00:00.000Z' " +
+                        "AND entity.tags.tag4 IS NULL AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -150,13 +148,13 @@ public class SqlEntityTagsTest extends SqlTest {
     }
 
     /**
-     * Issue #2926
+     * #2926
      */
     @Test
     public void testIsNotNullOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag4 FROM '%s'\n" +
-                        "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag4 IS NOT NULL\n" +
+                "SELECT entity.tags.tag4 FROM '%s' %n" +
+                        "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag4 IS NOT NULL %n" +
                         "AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );

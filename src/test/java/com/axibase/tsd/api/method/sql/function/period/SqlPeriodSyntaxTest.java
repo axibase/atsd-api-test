@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlPeriodSyntaxTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-syntax-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -34,18 +32,18 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /*
-    Following tests related to #3057 issue
+    #3057 issue
      */
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodEmptyOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE entity = '%s'\nAND datetime >= '2016-06-19T11:00:00.000Z' AND " +
-                        "datetime < '2016-06-19T11:00:11.000Z'\nGROUP BY PERIOD(5 SECOND)",
+                "SELECT datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE entity = '%s' %nAND datetime >= '2016-06-19T11:00:00.000Z' AND " +
+                        "datetime < '2016-06-19T11:00:11.000Z' %nGROUP BY PERIOD(5 SECOND)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -62,13 +60,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodAlignOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(5 SECOND, START_TIME)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -85,13 +83,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodExtendOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s' " +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' " +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, EXTEND)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -109,13 +107,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodInterpolateOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, LINEAR)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -134,13 +132,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodAlignInterpolateOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, START_TIME, VALUE 0)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -159,13 +157,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodAlignExtendOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, START_TIME, EXTEND)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -184,13 +182,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodInterpolateAlignOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, VALUE 0, START_TIME)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -208,13 +206,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodInterpolateExtendOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, LINEAR, EXTEND)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -233,13 +231,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodExtendInterpolateOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'" +
-                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s'" +
+                        "AND datetime >= '2016-06-19T11:00:00.500Z' AND datetime < '2016-06-19T11:00:11.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, EXTEND, LINEAR)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -258,13 +256,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodAlignInterpolateExtendOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, START_TIME, LINEAR, EXTEND)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -286,12 +284,12 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodAlignExtendInterpolateOptions() {
-        String sqlQuery = String.format("SELECT datetime, AVG(value) FROM '%s'\n WHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z'\n" +
+        String sqlQuery = String.format("SELECT datetime, AVG(value) FROM '%s' %n WHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, START_TIME, EXTEND, LINEAR)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -313,13 +311,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodInterpolateAlignExtendOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND,LINEAR, START_TIME, EXTEND)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -341,13 +339,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodInterpolateExtendAlignOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE entity = '%s'\nAND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE entity = '%s' %nAND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND,LINEAR, EXTEND, START_TIME)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -370,13 +368,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodExtendInterpolateAlignOptions() {
         String sqlQuery = String.format(
-                "SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z'\n" +
+                "SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, EXTEND, LINEAR, START_TIME)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -398,12 +396,12 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
     /**
-     * Issue #3058
+     * #3058
      */
     @Test
     public void testPeriodExtendAlignInterpolateOptions() {
-        String sqlQuery = String.format("SELECT datetime, AVG(value) FROM '%s'\nWHERE entity = '%s'\n" +
-                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z'\n" +
+        String sqlQuery = String.format("SELECT datetime, AVG(value) FROM '%s' %nWHERE entity = '%s' %n" +
+                        "AND datetime >= '2016-06-19T10:59:57.500Z' AND datetime < '2016-06-19T11:00:13.000Z' %n" +
                         "GROUP BY PERIOD(2500 MILLISECOND, EXTEND, START_TIME, LINEAR)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );

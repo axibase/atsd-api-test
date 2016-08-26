@@ -15,9 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlSelectMetricTagsTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-metric-tags-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -47,17 +45,17 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
 
     /*
-      Following tests related to issue #3056
+      #3056
      */
 
 
     /**
-     * Issue #3056
+     * #3056
      */
     @Test
     public void testSelectMetricTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags\nFROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'\n",
+                "SELECT metric.tags %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -72,12 +70,12 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
     /**
-     * Issue #3056
+     * #3056
      */
     @Test
     public void testSelectMetricMultipleTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.*\n FROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'\n",
+                "SELECT metric.tags.* %n FROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -97,14 +95,14 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
 
     /**
-     * Issue #3056
+     * #3056
      */
     @Test
     public void testSelectMetricSpecifiedTag() {
-        String sqlQuery =
-                "SELECT metric.tags.a\n" +
-                        "FROM 'sql-select-metric-tags-metric'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+        String sqlQuery = String.format(
+                "SELECT metric.tags.a %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -118,15 +116,14 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
 
     /**
-     * Issue #3056
+     * #3056
      */
     @Test
     public void testSelectMetricSpecifiedTagWithDash() {
-        String sqlQuery =
-                "SELECT metric.tags.'a-b'\n" +
-                        "FROM 'sql-select-metric-tags-metric'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
-
+        String sqlQuery = String.format(
+                "SELECT metric.tags.'a-b' %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags.a-b"), resultTable);
@@ -139,17 +136,14 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
 
     /**
-     * Issue #3056
+     * #3056
      */
     @Test
-    public void testSelectMetricSpecifiedTagCaseSensitivityFalse()
-
-    {
-        String sqlQuery =
-                "SELECT metric.tags.tag\n" +
-                        "FROM 'sql-select-metric-tags-metric'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
-
+    public void testSelectMetricSpecifiedTagCaseSensitivityFalse() {
+        String sqlQuery = String.format(
+                "SELECT metric.tags.tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags.tag"), resultTable);
@@ -162,16 +156,14 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
 
     /**
-     * Issue #3056
+     * #3056
      */
     @Test
-    public void testSelectMetricSpecifiedTagCaseSensitivityTrue()
-
-    {
-        String sqlQuery =
-                "SELECT metric.tags.Tag\n" +
-                        "FROM 'sql-select-metric-tags-metric'\n" +
-                        "WHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='sql-select-metric-tags-entity'\n";
+    public void testSelectMetricSpecifiedTagCaseSensitivityTrue() {
+        String sqlQuery = String.format(
+                "SELECT metric.tags.Tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 

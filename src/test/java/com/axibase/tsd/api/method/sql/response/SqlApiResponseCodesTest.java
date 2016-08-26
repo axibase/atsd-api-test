@@ -17,9 +17,7 @@ import java.util.Arrays;
 
 import static javax.ws.rs.core.Response.Status.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlApiResponseCodesTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-response-codes";
 

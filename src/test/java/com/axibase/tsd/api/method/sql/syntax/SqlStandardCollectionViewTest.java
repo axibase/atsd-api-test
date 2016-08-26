@@ -17,9 +17,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlStandardCollectionViewTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-standard-collection-view-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
@@ -81,18 +79,18 @@ public class SqlStandardCollectionViewTest extends SqlTest {
     }
 
     /*
-    Following tests related to #3126 issue
+    #3126 issue
     Standard collection view
      */
 
     /**
-     * Issue #3126
-     * Test will fail until issue #3141 won't be fixed
+     * #3126
+     * Test will fail until #3141 won't be fixed
      */
     @Test
     public void testAlphabeticalOrder() {
         String sqlQuery = String.format(
-                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s' \nWHERE entity = '%s'",
+                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s'  %nWHERE entity = '%s'",
                 TEST_METRIC1_NAME, TEST_ENTITY1_NAME
         );
 
@@ -111,12 +109,12 @@ public class SqlStandardCollectionViewTest extends SqlTest {
     }
 
     /**
-     * Issue #3126
+     * #3126
      */
     @Test
     public void testEmptyTags() {
         String sqlQuery = String.format(
-                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s'\nWHERE entity = '%s'",
+                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC2_NAME, TEST_ENTITY2_NAME
         );
 

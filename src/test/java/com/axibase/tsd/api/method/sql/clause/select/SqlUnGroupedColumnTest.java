@@ -15,9 +15,6 @@ import static javax.ws.rs.core.Response.Status;
 import static org.testng.Assert.assertEquals;
 
 
-/**
- * @author Igor Shmagrinskiy
- */
 public class SqlUnGroupedColumnTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-un-grouped-column-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -35,7 +32,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
     @Test
     public void testErrorRaisingSelectUngroupedColumnWithGroupClause() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, avg(value)\nFROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'\nGROUP BY entity",
+                "SELECT entity, datetime, avg(value) %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z' %nGROUP BY entity",
                 TEST_METRIC_NAME
         );
 
@@ -48,7 +45,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
     @Test
     public void testErrorRaisingSelectUngroupedColumnWithoutGroupClause() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, avg(value)\nFROM '%s'\nWHERE datetime = '2016-06-29T08:00:00.000Z'",
+                "SELECT entity, datetime, avg(value) %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'",
                 TEST_METRIC_NAME
         );
 

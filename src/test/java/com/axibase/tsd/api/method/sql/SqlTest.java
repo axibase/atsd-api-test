@@ -17,9 +17,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlTest extends SqlMethod {
     private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is  not ok";
     private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";

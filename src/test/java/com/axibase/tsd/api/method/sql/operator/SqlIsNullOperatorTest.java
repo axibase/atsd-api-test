@@ -13,9 +13,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlIsNullOperatorTest extends SqlTest {
     private final static String TEST_PREFIX = "sql-operator-is-null-";
     private final static String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -82,19 +80,19 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /*
-      Following tests related to #2937 issue.
+      #2937 issue.
      */
 
     /**
-     * Issue #2937
+     * #2937
      */
     @Test
     public void testIsNullMetricTags() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, value, tags.*\n" +
-                        "FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:11:00.000Z'\n" +
-                        "AND tags.tag4 IS NULL\n",
+                "SELECT entity, datetime, value, tags.* %n" +
+                        "FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:11:00.000Z' %n" +
+                        "AND tags.tag4 IS NULL %n",
                 TEST_METRIC_NAME
         );
 
@@ -111,14 +109,14 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * Issue #2937
+     * #2937
      */
     @Test
     public void testNotIsNullMetricTags() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, value, tags.*\nFROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND NOT tags.tag4 IS NULL\n",
+                "SELECT entity, datetime, value, tags.* %nFROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z' %n" +
+                        "AND NOT tags.tag4 IS NULL %n",
                 TEST_METRIC_NAME
         );
 
@@ -132,14 +130,14 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * Issue #2937
+     * #2937
      */
     @Test
     public void testIsNotNullMetricTags() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND tags.tag4 IS NOT NULL\n",
+                "SELECT entity, datetime, value, tags.* FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z' %n" +
+                        "AND tags.tag4 IS NOT NULL %n",
                 TEST_METRIC_NAME
         );
 
@@ -153,14 +151,14 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * Issue #2937
+     * #2937
      */
     @Test
     public void testNotIsNotNullMetricTags() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
-                        "AND NOT tags.tag4 IS NOT NULL\n",
+                "SELECT entity, datetime, value, tags.* FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z' %n" +
+                        "AND NOT tags.tag4 IS NOT NULL %n",
                 TEST_METRIC_NAME
         );
 
@@ -176,13 +174,13 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * Issue #2937
+     * #2937
      */
     @Test
     public void testIsNotNullEntityTags() throws Exception {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z'\n" +
+                "SELECT entity, datetime, value, tags.* FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:16:00.000Z' %n" +
                         "AND entity.tags.tag1 IS NOT NULL",
                 TEST_METRIC_NAME
         );
@@ -197,14 +195,14 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * Issue #2937
+     * #2937
      */
     @Test
     public void testIsNullEntityTags() throws Exception {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, value, tags.* FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:11:00.000Z'\n" +
-                        "AND entity.tags.tag1 IS NULL\n",
+                "SELECT entity, datetime, value, tags.* FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' and datetime < '2016-06-19T11:11:00.000Z' %n" +
+                        "AND entity.tags.tag1 IS NULL %n",
                 TEST_METRIC_NAME
         );
 

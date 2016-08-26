@@ -12,9 +12,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-example-select-from-atsd-series-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
@@ -46,7 +44,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     }
 
     /**
-     * Issue #3177
+     * #3177
      * Test for alias documentation example.
      *
      * @see <a href="Aggregate Percentiles">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md</a>
@@ -54,7 +52,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testExample1() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value \nFROM atsd_series \nWHERE metric = '%s'\n", TEST_METRIC1_NAME);
+                "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric = '%s' %n", TEST_METRIC1_NAME);
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
@@ -67,12 +65,12 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     }
 
     /**
-     * Issue #3177
+     * #3177
      */
     @Test
     public void testExample2() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value \nFROM atsd_series \nWHERE metric IN ('%s','%s')\n",
+                "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric IN ('%s','%s') %n",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -89,12 +87,12 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     }
 
     /**
-     * Issue #3177
+     * #3177
      */
     @Test
     public void testExample3() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value \nFROM atsd_series \nWHERE metric = '%s' OR metric = '%s' ORDER BY METRIC\n",
+                "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric = '%s' OR metric = '%s' ORDER BY METRIC %n",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 

@@ -15,9 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlIsNullNanHandlingTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-is-null-nan-handling-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
@@ -58,17 +56,17 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
     }
 
     /*
-    Following tests related to #3077 issue
+    #3077 issue
      */
 
     /**
-     * #Issue #3077
+     * ##3077
      */
     @Test
     public void testNanExcluding() {
         String sqlQuery = String.format(
-                "SELECT t1.value + t2.value AS 'sum'  FROM '%s' t1\n" +
-                        "JOIN '%s' t2\n" +
+                "SELECT t1.value + t2.value AS 'sum'  FROM '%s' t1 %n" +
+                        "JOIN '%s' t2 %n" +
                         "WHERE t1.value IS NOT NULL AND t2.value IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -82,14 +80,15 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
     }
 
     /**
-     * #Issue #3077
+     * ##3077
      */
     @Test
     public void testNanIncluding() {
-        String sqlQuery =
-                "SELECT COUNT(value) AS 'nans'  FROM '" + TEST_METRIC1_NAME + "' t1\n" +
-                        "WHERE entity = '" + TEST_ENTITY_NAME + "'\n" +
-                        "AND value IS NOT NULL";
+        String sqlQuery = String.format(
+                "SELECT COUNT(value) AS 'nans'  FROM '%s' t1 %nWHERE entity = '%s' %n" +
+                        "AND value IS NOT NULL",
+                TEST_METRIC1_NAME, TEST_ENTITY_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);

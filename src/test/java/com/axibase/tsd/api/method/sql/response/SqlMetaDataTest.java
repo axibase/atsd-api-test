@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.metadata;
+package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
@@ -10,19 +10,21 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
-/**
- * @author Igor SHmagrinskiy
- */
 public class SqlMetaDataTest extends SqlMethod {
-    private static final String TEST_PREFIX = "sql-metadata";
-    private static Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
+    private static final String TEST_PREFIX = "sql-metadata-";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
+    private static Series testSeries = new Series(TEST_METRIC_NAME, TEST_PREFIX + "-metric");
     private static StringTable resultTable;
 
 
     @BeforeClass
     public static void prepareDataSet() throws Exception {
-        final String sqlQuery = "SELECT entity, metric, value, value*100, datetime  FROM 'sql-metadata-metric'\n" +
-                "WHERE entity = 'sql-metadata-entity'";
+        final String sqlQuery = String.format(
+                "SELECT entity, metric, value, value*100, datetime  FROM '%s' %n" +
+                        "WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
         testSeries.addData(
                 new Sample("2016-06-29T08:00:00.000Z", "0.05")
         );
@@ -32,11 +34,11 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     /**
-     * Following tests is related to bug #2973
+     * #2973
      */
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testEntityDataType() {
@@ -48,7 +50,7 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testEntityPropertyUrl() {
@@ -60,7 +62,7 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testMetricDataType() {
@@ -72,7 +74,7 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testMetricPropertyUrl() {
@@ -84,7 +86,7 @@ public class SqlMetaDataTest extends SqlMethod {
 
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testValueDataType() {
@@ -95,7 +97,7 @@ public class SqlMetaDataTest extends SqlMethod {
     }
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testValuePropertyUrl() {
@@ -106,7 +108,7 @@ public class SqlMetaDataTest extends SqlMethod {
     }
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testValueWithExpressionDataType() {
@@ -122,7 +124,7 @@ public class SqlMetaDataTest extends SqlMethod {
      */
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testValueWithExpressionPropertyUrl() {
@@ -133,7 +135,7 @@ public class SqlMetaDataTest extends SqlMethod {
     }
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testDateTimeDataType() {
@@ -144,7 +146,7 @@ public class SqlMetaDataTest extends SqlMethod {
     }
 
     /**
-     * issue: #2973
+     * #2973
      */
     @Test
     public void testDateTimePropertyUrl() {

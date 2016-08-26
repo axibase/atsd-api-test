@@ -16,9 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-entity-groups-where-clause-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -51,18 +49,18 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /*
-    Following tests related to #3020 issue
+    #3020 issue
      */
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testEntityGroupsInOneElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('%s')  \nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('%s')   %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
@@ -75,14 +73,14 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testEntityGroupsNotInOneElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE NOT entity.groups IN ('%s')  \nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE NOT entity.groups IN ('%s')   %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
@@ -94,14 +92,14 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testInEntityGroupsContainOneElement() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE '%s' IN entity.groups\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE '%s' IN entity.groups %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
@@ -115,14 +113,14 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testNotInEntityGroupsContainOneElement() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE '%s' NOT IN entity.groups\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE '%s' NOT IN entity.groups %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
@@ -135,14 +133,14 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testOneEntityGroupInThreeElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('%s', 'group', '%s')  \nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('%s', 'group', '%s')   %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME, TEST_ENTITY_GROUP2_NAME
         );
 
@@ -157,14 +155,14 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testEntityGroupsNotInSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('%s', 'group', '%s')  \nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('%s', 'group', '%s')   %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME, TEST_ENTITY_GROUP2_NAME
         );
 
@@ -179,7 +177,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testTwoEntityGroupsIntersectingOneElementSet() {
@@ -188,8 +186,8 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('%s')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('%s') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
@@ -204,7 +202,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testTwoEntityGroupsNotIntersectingOneElementSet() {
@@ -214,8 +212,8 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('group-1')  \nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('group-1')   %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME
         );
 
@@ -228,13 +226,13 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testZeroEntityGroupsIntersectingTwoElementSet() {
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('group-1', 'group-2')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('group-1', 'group-2') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
@@ -246,13 +244,13 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testZeroEntityGroupsNotIntersectingTwoElementSet() {
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups NOT IN ('group-1', 'group-2')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups NOT IN ('group-1', 'group-2') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME
         );
 
@@ -267,13 +265,13 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testZeroEntityGroupsNotIntersectingOneElementSet() {
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('group-1')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('group-1') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME
         );
 
@@ -286,15 +284,15 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testEntityGroupsInCaseSensitivitySet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('%s')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('%s') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
@@ -305,15 +303,15 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testEntityGroupsNotInCaseSensitivitySet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups NOT IN ('%s')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups NOT IN ('%s') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
 
@@ -328,15 +326,15 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testCaseSensitivityEntityGroupsInSet() {
         EntityGroupMethod.addEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\n" +
-                        "WHERE entity.groups IN ('%s')\nAND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %n" +
+                        "WHERE entity.groups IN ('%s') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
@@ -350,15 +348,15 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
 
     /**
-     * Issue #3020
+     * #3020
      */
     @Test
     public void testCaseSensitivityEntityGroupsNotInSet() {
         EntityGroupMethod.addEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
 
         String sqlQuery = String.format(
-                "SELECT datetime, entity, value, entity.groups FROM '%s'\nWHERE entity.groups NOT IN ('%s')  \n" +
-                        "AND datetime = '2016-07-14T15:00:07.000Z'\n",
+                "SELECT datetime, entity, value, entity.groups FROM '%s' %nWHERE entity.groups NOT IN ('%s')   %n" +
+                        "AND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
 

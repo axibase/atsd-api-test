@@ -14,9 +14,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-tag-name-with-double-quotation-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -50,17 +48,17 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         }});
     }
     /*
-    Following tests related to #3085 issue
+    #3085 issue
     Tag name With Special Characters
      */
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testPlainName() {
         String sqlQuery = String.format(
-                "SELECT tags.\"tag\", metric.tags.\"tag\", entity.tags.\"tag\" FROM '%s'\nWHERE entity = '%s'",
+                "SELECT tags.\"tag\", metric.tags.\"tag\", entity.tags.\"tag\" FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -75,12 +73,12 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     }
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testDoubleQuotationName() {
         String sqlQuery = String.format(
-                "SELECT tags.\"tag\"\"quotation\", metric.tags.\"tag\"\"quotation\", entity.tags.\"tag\"\"quotation\" FROM '%s'\nWHERE entity = '%s'",
+                "SELECT tags.\"tag\"\"quotation\", metric.tags.\"tag\"\"quotation\", entity.tags.\"tag\"\"quotation\" FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -95,12 +93,12 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     }
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testPlusName() {
         String sqlQuery = String.format(
-                "SELECT tags.\"tag+plus\", metric.tags.\"tag+plus\", entity.tags.\"tag+plus\" FROM '%s'\nWHERE entity = '%s'",
+                "SELECT tags.\"tag+plus\", metric.tags.\"tag+plus\", entity.tags.\"tag+plus\" FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -115,12 +113,12 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     }
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testMinusName() {
         String sqlQuery = String.format(
-                "SELECT tags.\"tag-minus\", metric.tags.\"tag-minus\", entity.tags.\"tag-minus\" FROM '%s'\nWHERE entity = '%s'",
+                "SELECT tags.\"tag-minus\", metric.tags.\"tag-minus\", entity.tags.\"tag-minus\" FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -135,12 +133,12 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     }
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testMultipleName() {
         String sqlQuery = String.format(
-                "SELECT tags.\"tag*multiple\", metric.tags.\"tag*multiple\", entity.tags.\"tag*multiple\" FROM '%s'\nWHERE entity = '%s'",
+                "SELECT tags.\"tag*multiple\", metric.tags.\"tag*multiple\", entity.tags.\"tag*multiple\" FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -155,12 +153,12 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     }
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testDivisionName() {
         String sqlQuery = String.format(
-                "SELECT tags.\"tag/division\", metric.tags.\"tag/division\", entity.tags.\"tag/division\" FROM '%s'\n" +
+                "SELECT tags.\"tag/division\", metric.tags.\"tag/division\", entity.tags.\"tag/division\" FROM '%s' %n" +
                         "WHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -176,13 +174,13 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
     }
 
     /**
-     * Issue #3085
+     * #3085
      */
     @Test
     public void testDifferentQuotationName() {
         String sqlQuery = String.format(
                 "SELECT tags.\"tag\"\"quotation'\", metric.tags.\"tag\"\"quotation'\", entity.tags.\"tag\"\"quotation'\" " +
-                        "FROM '%s'\nWHERE entity = '%s'",
+                        "FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = executeQuery(sqlQuery)

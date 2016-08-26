@@ -14,9 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlGroupByDatetime extends SqlTest {
     private static final String TEST_PREFIX = "sql-group-by-datetime-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -69,16 +67,16 @@ public class SqlGroupByDatetime extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
     /*
-    Following tests related to #3102 issue
+    #3102 issue
      */
 
     /**
-     * Issue #3102
+     * #3102
      */
     @Test
     public void testGroupByDatetimeSyntax() {
         String sqlQuery = String.format(
-                "SELECT datetime , entity, value FROM '%s'\nGROUP BY datetime, entity, value",
+                "SELECT datetime , entity, value FROM '%s' %nGROUP BY datetime, entity, value",
                 TEST_METRIC_NAME
         );
 
@@ -99,12 +97,12 @@ public class SqlGroupByDatetime extends SqlTest {
 
 
     /**
-     * Issue #3102
+     * #3102
      */
     @Test
     public void testGroupByDatetimeWithAggregateFunction() {
         String sqlQuery = String.format(
-                "SELECT datetime, COUNT(value) FROM '%s'\nGROUP BY datetime, value",
+                "SELECT datetime, COUNT(value) FROM '%s' %nGROUP BY datetime, value",
                 TEST_METRIC_NAME
         );
 

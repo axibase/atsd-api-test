@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlTableAliasTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-standard-table-alias";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
@@ -50,11 +48,11 @@ public class SqlTableAliasTest extends SqlTest {
 
 
     /*
-    Following tests related to #3084
+    #3084
      */
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectColumnWithoutJoinWithoutAlias() {
@@ -72,7 +70,7 @@ public class SqlTableAliasTest extends SqlTest {
 
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectAllWithoutJoinWithoutAlias() {
@@ -90,7 +88,7 @@ public class SqlTableAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectAllWithoutJoinWithAlias() {
@@ -108,12 +106,12 @@ public class SqlTableAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectColumnWithJoinWithAlias() {
         String sqlQuery = String.format(
-                "SELECT '%s'.entity, '%s'.value, '%s'.entity, '%s'.value FROM '%s' t1\n" +
+                "SELECT '%s'.entity, '%s'.value, '%s'.entity, '%s'.value FROM '%s' t1 %n" +
                         "JOIN  '%s' t2 ",
                 TEST_METRIC1_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC2_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -127,12 +125,12 @@ public class SqlTableAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectColumnWithJoinWithoutAlias() {
         String sqlQuery = String.format(
-                "SELECT '%s'.entity, '%s'.value, '%s'.entity, '%s'.value FROM '%s'\n" +
+                "SELECT '%s'.entity, '%s'.value, '%s'.entity, '%s'.value FROM '%s' %n" +
                         "JOIN  '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC2_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -146,12 +144,12 @@ public class SqlTableAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectAllWithJoinWithoutAlias() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s'\n" +
+                "SELECT * FROM '%s' %n" +
                         "JOIN '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -176,12 +174,12 @@ public class SqlTableAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3084
+     * #3084
      */
     @Test
     public void testSelectAllWithJoinWithAlias() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' t1\n" +
+                "SELECT * FROM '%s' t1 %n" +
                         "JOIN '%s' t2",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );

@@ -12,9 +12,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-clause-order-by-aggregated-column-alias-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -49,12 +47,12 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3185
+     * #3185
      */
     @Test
     public void testColumnNames() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s'\nGROUP BY entity\nORDER BY 'aggregated'",
+                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY 'aggregated'",
                 TEST_METRIC_NAME
         );
 
@@ -67,12 +65,12 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
 
 
     /**
-     * Issue #3185
+     * #3185
      */
     @Test
     public void testASC() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s'\nGROUP BY entity\nORDER BY 'aggregated'",
+                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY 'aggregated'",
                 TEST_METRIC_NAME
         );
 
@@ -87,12 +85,12 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3185
+     * #3185
      */
     @Test
     public void testDESC() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s'\nGROUP BY entity\nORDER BY 'aggregated' DESC",
+                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY 'aggregated' DESC",
                 TEST_METRIC_NAME
         );
 
@@ -107,12 +105,12 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     }
 
     /**
-     * Issue #3185
+     * #3185
      */
     @Test
     public void testOrderMultipleColumn() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s'\nGROUP BY entity\nORDER BY entity ASC, 'aggregated' DESC",
+                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY entity ASC, 'aggregated' DESC",
                 TEST_METRIC_NAME
         );
 

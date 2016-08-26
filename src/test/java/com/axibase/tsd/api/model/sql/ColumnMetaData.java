@@ -1,8 +1,6 @@
 package com.axibase.tsd.api.model.sql;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class ColumnMetaData implements Comparable<ColumnMetaData> {
     private String name;
     private Integer columnIndex;

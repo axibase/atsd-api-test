@@ -12,9 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlExamplePercentilesTest extends SqlTest {
     private final static String TEST_PREFIX = "sql-example-percentiles-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -39,7 +37,7 @@ public class SqlExamplePercentilesTest extends SqlTest {
     }
 
     /**
-     * Issue #3047
+     * #3047
      * Test for alias documentation example.
      *
      * @see <a href="Aggregate Percentiles">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md</a>
@@ -47,19 +45,19 @@ public class SqlExamplePercentilesTest extends SqlTest {
     @Test
     public void testExample() {
         String sqlQuery = String.format(
-                "SELECT percentile(25, value) AS \"p25\",\n" +
-                        "  percentile(50, value) AS \"p50\",\n" +
-                        "  median(value),\n" +
-                        "  percentile(75, value) AS \"p75\",\n" +
-                        "  percentile(90, value) AS \"p90\",\n" +
-                        "  percentile(95, value) AS \"p95\",\n" +
-                        "  percentile(97.5, value) AS \"p97.5\",\n" +
-                        "  percentile(99, value) AS \"p99\",\n" +
-                        "  percentile(99.5, value) AS \"p99.5\",\n" +
-                        "  percentile(99.9, value) AS \"p99.9\",\n" +
-                        "  percentile(99.99, value) AS \"p99.99\"\n" +
-                        "  FROM '%s'\n" +
-                        "WHERE entity = '%s' \n" +
+                "SELECT percentile(25, value) AS \"p25\", %n" +
+                        "  percentile(50, value) AS \"p50\", %n" +
+                        "  median(value), %n" +
+                        "  percentile(75, value) AS \"p75\", %n" +
+                        "  percentile(90, value) AS \"p90\", %n" +
+                        "  percentile(95, value) AS \"p95\", %n" +
+                        "  percentile(97.5, value) AS \"p97.5\", %n" +
+                        "  percentile(99, value) AS \"p99\", %n" +
+                        "  percentile(99.5, value) AS \"p99.5\", %n" +
+                        "  percentile(99.9, value) AS \"p99.9\", %n" +
+                        "  percentile(99.99, value) AS \"p99.99\" %n" +
+                        "  FROM '%s' %n" +
+                        "WHERE entity = '%s'  %n" +
                         " AND datetime >=\"2016-06-19T11:00:00.000Z\" AND datetime < \"2016-06-19T11:08:00.000Z\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );

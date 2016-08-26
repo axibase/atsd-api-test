@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlExampleCounterAggregatorTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-example-counter-aggregator-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -39,16 +37,16 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
     }
 
     /**
-     * Issue #3047
+     * #3047
      * Test for alias documentation example.
      *
      * @see <a href="Counter Aggregator">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-counter.md</a>
      */
     @Test
     public void testExample() {
-        String sqlQuery = String.format("SELECT datetime, count(value), max(value), first(value), last(value), counter(value), delta(value)\n" +
-                "FROM '%s'\n" +
-                "WHERE datetime >= '2015-09-30T09:00:05Z' AND datetime < '2015-09-30T09:00:07Z' \n" +
+        String sqlQuery = String.format("SELECT datetime, count(value), max(value), first(value), last(value), counter(value), delta(value) %n" +
+                "FROM '%s' %n" +
+                "WHERE datetime >= '2015-09-30T09:00:05Z' AND datetime < '2015-09-30T09:00:07Z'  %n" +
                 "GROUP BY period(1 second)", TEST_METRIC_NAME);
 
         StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);

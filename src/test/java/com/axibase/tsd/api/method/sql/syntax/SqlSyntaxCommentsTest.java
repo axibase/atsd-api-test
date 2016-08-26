@@ -29,12 +29,12 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testCorrectSimpleLineComment() {
         String sqlQuery = String.format(
-                "--line comment\nSELECT * FROM '%s'",
+                "--line comment %nSELECT * FROM '%s'",
                 TEST_METRIC_NAME
         );
         Response response = executeQuery(sqlQuery);
@@ -42,12 +42,12 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testCorrectMultiLineComment() {
         String sqlQuery = String.format(
-                "/* multi\nline\ncomment*/\nSELECT * FROM '%s'\n",
+                "/* multi %nline %ncomment*/ %nSELECT * FROM '%s' %n",
                 TEST_METRIC_NAME
         );
         Response response = executeQuery(sqlQuery);
@@ -56,12 +56,12 @@ public class SqlSyntaxCommentsTest extends SqlTest {
 
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testCorrectCommentAfterFrom() {
         String sqlQuery = String.format(
-                "/*comment*/\nSELECT *FROM   /*comment*/  '%s'\nWHERE datetime > now -5*minute",
+                "/*comment*/ %nSELECT *FROM   /*comment*/  '%s' %nWHERE datetime > now -5*minute",
                 TEST_METRIC_NAME
         );
         Response response = executeQuery(sqlQuery);
@@ -69,12 +69,12 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testCorrectNestedComment() {
         String sqlQuery = String.format(
-                "/*'/**/'*/\nSELECT * FROM '%s'",
+                "/*'/**/'*/ %nSELECT * FROM '%s'",
                 TEST_METRIC_NAME
         );
         Response response = executeQuery(sqlQuery);
@@ -82,7 +82,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testInCorrectCommentAfterDelimiter() {
@@ -96,12 +96,12 @@ public class SqlSyntaxCommentsTest extends SqlTest {
 
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testInCorrectCommentAsOperand() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s';\nWHERE entity = /*--*/",
+                "SELECT * FROM '%s'; %nWHERE entity = /*--*/",
                 TEST_METRIC_NAME
         );
         Response response = executeQuery(sqlQuery);
@@ -109,12 +109,12 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
     /**
-     * Issue #1956
+     * #1956
      */
     @Test
     public void testCorrectCommentBeforeDelimiter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s'\n/*--*/;",
+                "SELECT * FROM '%s' %n/*--*/;",
                 TEST_METRIC_NAME
         );
         Response response = executeQuery(sqlQuery);

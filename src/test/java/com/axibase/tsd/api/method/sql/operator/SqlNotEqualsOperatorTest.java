@@ -17,9 +17,7 @@ import java.util.List;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlNotEqualsOperatorTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-not-equals-syntax-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -38,12 +36,12 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     }
 
     /*
-      Following tests related to issue #2933
+      #2933
      */
 
 
     /**
-     * issue #2933
+     * #2933
      */
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsFalse() {
@@ -58,7 +56,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     }
 
     /**
-     * issue #2933
+     * #2933
      */
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsTrue() {
@@ -73,7 +71,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     }
 
     /**
-     * issue #2933
+     * #2933
      */
     @Test
     public void testNotEqualsWithNumericIsFalse() {
@@ -94,12 +92,12 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     }
 
     /**
-     * issue #2933
+     * #2933
      */
     @Test
     public void testNotEqualsWithNumericIsTrue() {
         final String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s'\nWHERE value <> 1.01 AND entity = '%s'",
+                "SELECT entity, value FROM '%s' %nWHERE value <> 1.01 AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -110,13 +108,13 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     }
 
     /**
-     * issue #2933
+     * #2933
      */
     @Test
     public void testNotEqualsWitStringIsFalse() {
         final String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s'\nWHERE tags.a <> 'b'",
-                TEST_METRIC_NAME, TEST_ENTITY_NAME
+                "SELECT entity, value, datetime FROM '%s' %nWHERE tags.a <> 'b'",
+                TEST_METRIC_NAME
         );
 
         List<List<String>> resultRows = executeQuery(sqlQuery)
@@ -126,12 +124,12 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     }
 
     /**
-     * issue #2933
+     * #2933
      */
     @Test
     public void testNotEqualsWithStringIsTrue() {
         final String sqlQuery = String.format(
-                "SELECT entity, tags.a FROM '%s'\n WHERE tags.a <> 'a' AND entity = '%s'",
+                "SELECT entity, tags.a FROM '%s' %n WHERE tags.a <> 'a' AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

@@ -13,9 +13,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlSelectAllTagsOrderTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-all-tags-order-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -51,7 +49,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAll() {
@@ -68,7 +66,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAllSeriesTags() {
@@ -86,7 +84,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAllTagsAndColumnBefore() {
@@ -105,7 +103,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAllTagsAndColumnAfter() {
@@ -124,7 +122,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAllSeriesMetricTags() {
@@ -142,7 +140,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAllMetricTagsAndColumnBefore() {
@@ -161,7 +159,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
 
     /**
-     * Issue #3166
+     * #3166
      */
     @Test
     public void testSelectAllMetricTagsAndColumnAfter() {

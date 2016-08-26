@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlSelectAllWithJoinTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-all-join-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
@@ -60,13 +58,12 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     }
 
     /**
-     * Following tests related to issue #3033
-     * Issue #3033
+     * #3033
      */
     @Test
     public void testSelectAllColumnsWithAlias() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' t1\nJOIN '%s' t2",
+                "SELECT * FROM '%s' t1 %nJOIN '%s' t2",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -89,7 +86,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
 
 
     /**
-     * Issue #3033
+     * #3033
      */
     @Test
     public void testSelectAllColumnsWithoutAlias() {
@@ -116,12 +113,12 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
 
 
     /**
-     * Issue #3033
+     * #3033
      */
     @Test
     public void testSelectAllColumnsFromTableAlias() {
         String sqlQuery = String.format(
-                "SELECT t1.* FROM '%s' t1 \n JOIN '%s' t2",
+                "SELECT t1.* FROM '%s' t1  %n JOIN '%s' t2",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -138,7 +135,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     }
 
     /**
-     * Issue #3033
+     * #3033
      */
     @Test
     public void testSelectAllColumnsFromSeveralTableAliases() {

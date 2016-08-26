@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-function-date-format-with-max-min-value-time-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";

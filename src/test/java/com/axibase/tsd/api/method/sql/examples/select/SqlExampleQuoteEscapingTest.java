@@ -36,7 +36,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
      */
     @Test
     public void testExample1() {
-        String sqlQuery = String.format("SELECT tags.* \nFROM '%s' \nWHERE datetime > '2016-07-27T22:40:00.000Z'",
+        String sqlQuery = String.format("SELECT tags.*  %nFROM '%s'  %nWHERE datetime > '2016-07-27T22:40:00.000Z'",
                 TEST_METRIC_NAME
         );
 
@@ -61,10 +61,10 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
     @Test
     public void testExample2() {
         String sqlQuery = String.format(
-                "SELECT tags.\"double\"\"quote\", tags.'double\"quote',\n" +
-                        "tags.\"single'quote\", tags.'single''quote',\n" +
-                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes'\n" +
-                        "FROM '%s'\nWHERE datetime > '2016-07-27T22:40:00.000Z'",
+                "SELECT tags.\"double\"\"quote\", tags.'double\"quote', %n" +
+                        "tags.\"single'quote\", tags.'single''quote', %n" +
+                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes' %n" +
+                        "FROM '%s' %nWHERE datetime > '2016-07-27T22:40:00.000Z'",
                 TEST_METRIC_NAME
 
         );
@@ -91,11 +91,11 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
     @Test
     public void testExample3() {
         String sqlQuery = String.format(
-                "SELECT tags.\"double\"\"quote\", tags.'double\"quote',\n" +
-                        "tags.\"single'quote\", tags.'single''quote',\n" +
-                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes'\n" +
-                        "FROM '%s'\nWHERE tags.\"double\"\"quote\" = 'tv1'\n" +
-                        "AND tags.'both''quo\"tes' IS NOT NULL\nAND tags.'single''quote' LIKE '*2'\n" +
+                "SELECT tags.\"double\"\"quote\", tags.'double\"quote', %n" +
+                        "tags.\"single'quote\", tags.'single''quote', %n" +
+                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes' %n" +
+                        "FROM '%s' %nWHERE tags.\"double\"\"quote\" = 'tv1' %n" +
+                        "AND tags.'both''quo\"tes' IS NOT NULL %nAND tags.'single''quote' LIKE '*2' %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 

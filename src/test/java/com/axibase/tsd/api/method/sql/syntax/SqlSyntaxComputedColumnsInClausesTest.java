@@ -33,8 +33,10 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
 
     @Test
     public void testSelectExpression() {
-        String sqlQuery =
-                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '" + TEST_METRIC_NAME + "'\n";
+        String sqlQuery = String.format(
+                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '%s' %n",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -49,10 +51,10 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
 
     @Test
     public void testOrderByComputedAlias() {
-        String sqlQuery =
-                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "ORDER BY \"computed\"";
-
+        String sqlQuery = String.format(
+                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '%s' %nORDER BY \"computed\"",
+                TEST_METRIC_NAME
+        );
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
 
@@ -66,9 +68,10 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
 
     @Test
     public void testOrderByComputedColumn() {
-        String sqlQuery =
-                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "ORDER BY SUM(ABS(value)-1)";
+        String sqlQuery = String.format(
+                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '%s' %nORDER BY SUM(ABS(value)-1)",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -83,9 +86,10 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
 
     @Test
     public void testOrder() {
-        String sqlQuery =
-                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "ORDER BY SUM(ABS(value)-1)";
+        String sqlQuery = String.format(
+                "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '%s' %nORDER BY SUM(ABS(value)-1)",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);

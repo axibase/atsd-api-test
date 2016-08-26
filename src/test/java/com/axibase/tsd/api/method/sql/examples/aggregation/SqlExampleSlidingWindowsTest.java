@@ -12,9 +12,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlExampleSlidingWindowsTest extends SqlTest {
     private final static String TEST_PREFIX = "sql-example-sliding-windows-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -56,7 +54,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
     }
 
     /**
-     * Issue #3047
+     * #3047
      * Test for query all tags documentation example.
      *
      * @see <a href="Aggregate - Sliding Window">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-sliding-window.md</a>
@@ -64,9 +62,9 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
     @Test
     public void testExample1() {
         String sqlQuery = String.format(
-                "SELECT entity, avg(value), max(value), last(value), count(*)\n" +
-                        "FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:00:06.000Z' \n" +
+                "SELECT entity, avg(value), max(value), last(value), count(*) %n" +
+                        "FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:00:06.000Z'  %n" +
                         "GROUP BY entity",
                 TEST_METRIC_NAME);
 
@@ -84,14 +82,14 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
 
 
     /**
-     * Issue #3047
+     * #3047
      */
     @Test
     public void testExample2() {
         String sqlQuery = String.format(
-                "SELECT entity,tags, avg(value), max(value), last(value), count(*)\n" +
-                        "FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:00:06.000Z' \n" +
+                "SELECT entity,tags, avg(value), max(value), last(value), count(*) %n" +
+                        "FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:00:06.000Z'  %n" +
                         "GROUP BY entity, tags",
                 TEST_METRIC_NAME);
 

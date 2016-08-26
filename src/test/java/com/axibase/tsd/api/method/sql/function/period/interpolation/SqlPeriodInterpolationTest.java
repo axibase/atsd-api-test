@@ -14,9 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlPeriodInterpolationTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-period-interpolation-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -39,7 +37,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
 
 
     /*
-     * Following tests related to #1475 task
+     * #1475 task
      * SQL: period() interpolation
      */
 
@@ -50,9 +48,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     @Test
     public void testNoInterpolation() {
         final String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(5 MINUTE)",
+                "SELECT entity, datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(5 MINUTE)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -75,9 +73,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     @Test
     public void testConstantValue0FillTheGaps() {
         final String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(5 MINUTE, VALUE 0)",
+                "SELECT entity, datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(5 MINUTE, VALUE 0)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -100,9 +98,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     @Test
     public void testNegativeConstantValueFillTheGaps() {
         final String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(5 MINUTE, VALUE -1)",
+                "SELECT entity, datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(5 MINUTE, VALUE -1)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -125,9 +123,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     @Test
     public void testPreviousValueFillTheGaps() {
         final String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(5 MINUTE, PREVIOUS)",
+                "SELECT entity, datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(5 MINUTE, PREVIOUS)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -150,9 +148,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     @Test
     public void testLinearInterpolatedValueFillTheGaps() {
         final String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(5 MINUTE, LINEAR)",
+                "SELECT entity, datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:45:00.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(5 MINUTE, LINEAR)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -175,9 +173,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     @Test
     public void testLinearInterpolatedValueFillTheMultipleGaps() {
         final String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:36:00.000Z' AND datetime < '2016-06-03T09:42:00.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(1 MINUTE, LINEAR)",
+                "SELECT entity, datetime, AVG(value) FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:36:00.000Z' AND datetime < '2016-06-03T09:42:00.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(1 MINUTE, LINEAR)",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -201,9 +199,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
      */
     @Test
     public void testHavingClauseWithPeriodFunction() {
-        final String sqlQuery = String.format("SELECT entity, datetime, AVG(value)FROM '%s'\n" +
-                        "WHERE datetime >= '2016-06-03T09:25:00.000Z' AND datetime < '2016-06-03T09:41:30.000Z'\n" +
-                        "AND entity = '%s'\nGROUP BY entity,PERIOD(5 MINUTE, VALUE 0) HAVING AVG(value) > 7",
+        final String sqlQuery = String.format("SELECT entity, datetime, AVG(value)FROM '%s' %n" +
+                        "WHERE datetime >= '2016-06-03T09:25:00.000Z' AND datetime < '2016-06-03T09:41:30.000Z' %n" +
+                        "AND entity = '%s' %nGROUP BY entity,PERIOD(5 MINUTE, VALUE 0) HAVING AVG(value) > 7",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

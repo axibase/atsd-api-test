@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlOrderByAlphabeticalTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-order-by-alphabetical-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -56,13 +54,14 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
 
 
     /**
-     * Issue #3162
+     * #3162
      */
     @Test
     public void testOrderByEntityTagNameASC() {
-        String sqlQuery =
-                "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "ORDER BY tags.tag ASC";
+        String sqlQuery = String.format(
+                "SELECT tags.tag FROM '%s' %nORDER BY tags.tag ASC",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -73,13 +72,14 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
     }
 
     /**
-     * Issue #3162
+     * #3162
      */
     @Test
     public void testOrderByEntityTagNameDESC() {
-        String sqlQuery =
-                "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
-                        "ORDER BY tags.tag DESC";
+        String sqlQuery = String.format(
+                "SELECT tags.tag FROM '%s' %nORDER BY tags.tag DESC",
+                TEST_METRIC_NAME
+        );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
