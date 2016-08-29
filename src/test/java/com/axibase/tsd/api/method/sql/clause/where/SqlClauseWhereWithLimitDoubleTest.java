@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-clause-where-with-limit-double-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
