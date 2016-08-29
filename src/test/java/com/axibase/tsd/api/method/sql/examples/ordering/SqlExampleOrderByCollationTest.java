@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.clause.orderby;
+package com.axibase.tsd.api.method.sql.examples.ordering;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
@@ -11,9 +11,11 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-
-public class SqlOrderByAlphabeticalTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-order-by-alphabetical-";
+/**
+ * @author Igor Shmagrinskiy
+ */
+public class SqlExampleOrderByCollationTest extends SqlTest {
+    private static final String TEST_PREFIX = "sql-order-by-collation-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
@@ -54,14 +56,13 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
 
 
     /**
-     * #3162
+     * Issue #3162
      */
     @Test
     public void testOrderByEntityTagNameASC() {
-        String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' %nORDER BY tags.tag ASC",
-                TEST_METRIC_NAME
-        );
+        String sqlQuery =
+                "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
+                        "ORDER BY tags.tag ASC";
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
@@ -72,14 +73,13 @@ public class SqlOrderByAlphabeticalTest extends SqlTest {
     }
 
     /**
-     * #3162
+     * Issue #3162
      */
     @Test
     public void testOrderByEntityTagNameDESC() {
-        String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' %nORDER BY tags.tag DESC",
-                TEST_METRIC_NAME
-        );
+        String sqlQuery =
+                "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
+                        "ORDER BY tags.tag DESC";
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
