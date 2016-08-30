@@ -73,10 +73,12 @@ public abstract class BaseMethod {
     }
 
     public static boolean compareJsonString(String expected, String given) throws Exception {
+
         return compareJsonString(expected, given, false);
     }
 
     public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
+        logger.debug("===Comparing Json String===\nStrict: {}\nExpected:\n{}\nGiven:\n{}", strict, expected, given);
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
             return true;
@@ -102,10 +104,20 @@ public abstract class BaseMethod {
         return response;
     }
 
-    public static String extractErrorMessage(Response response) throws JSONException {
+    public static String extractErrorMessage(Response response) throws Exception {
         String jsonText = response.readEntity(String.class);
-        JSONObject json = new JSONObject(jsonText);
-        return json.getString("error");
+
+        JSONObject json;
+        try {
+            json = new JSONObject(jsonText);
+        } catch (JSONException e) {
+            throw new JSONException("Fail to parse response as JSON");
+        }
+        try {
+            return json.getString("error");
+        } catch (JSONException e) {
+            throw new IllegalStateException("Fail to get error message from response. Perhaps response does not contain error message when it should.");
+        }
     }
 
 

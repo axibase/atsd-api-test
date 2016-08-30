@@ -17,12 +17,14 @@ import static javax.ws.rs.core.Response.Status.OK;
  * @author Dmitry Korchagin.
  */
 public class EntityGroupMethod extends BaseMethod {
-    final static String METHOD_ENTITYGROUP_LIST = "/entity-groups";
-    final static String METHOD_ENTITYGROUP = "/entity-groups/{group}";
-    final static String METHOD_ENTITYGROUP_ENTITIES = "/entity-groups/{group}/entities";
-    final static String METHOD_ENTITYGROUP_ENTITIES_ADD = "/entity-groups/{group}/entities/add";
-    final static String METHOD_ENTITYGROUP_ENTITIES_SET = "/entity-groups/{group}/entities/set";
-    final static String METHOD_ENTITYGROUP_ENTITIES_DELETE = "/entity-groups/{group}/entities/delete";
+    public final static String METHOD_ENTITYGROUP_LIST = "/entity-groups";
+    public final static String METHOD_ENTITYGROUP = "/entity-groups/{group}";
+    public final static String METHOD_ENTITYGROUP_ENTITIES = "/entity-groups/{group}/entities";
+    public final static String METHOD_ENTITYGROUP_ENTITIES_ADD = "/entity-groups/{group}/entities/add";
+    public final static String METHOD_ENTITYGROUP_ENTITIES_SET = "/entity-groups/{group}/entities/set";
+    public final static String METHOD_ENTITYGROUP_ENTITIES_DELETE = "/entity-groups/{group}/entities/delete";
+    public final static String SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION = "properties('some.prop').size() > 0";
+    public final static String CANNOT_MODIFY_ENTITY_ERROR_MESSAGE_TPL = "IllegalArgumentException: Can not modify entities for entity group '%s'. Please reset expression field first.";
 
     public static Response getEntityGroup(String groupName) {
         Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().get();
@@ -139,7 +141,10 @@ public class EntityGroupMethod extends BaseMethod {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
-        return compareJsonString(jacksonMapper.writeValueAsString(entityGroup), formatToJsonString(response));
+
+        final String expected = jacksonMapper.writeValueAsString(entityGroup);
+        final String given = formatToJsonString(response);
+        return compareJsonString(expected, given, true);
     }
 
 

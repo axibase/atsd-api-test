@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -42,6 +43,23 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
         EntityGroup entityGroup = new EntityGroup("urlencodedelentitiesйёentitygroup3");
         assertUrlEncodePathHandledCorrectly(entityGroup);
 
+    }
+
+    /**
+     * #3041
+     */
+    @Test
+    public void testUnableMofifyEntitiesWhileExpressionNotEmpty() throws Exception {
+        EntityGroup entityGroup = new EntityGroup("deleteentities-entitygroup-4");
+        entityGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
+        createOrReplaceEntityGroupCheck(entityGroup);
+
+        Response response = deleteEntities(entityGroup.getName(), Collections.singletonList("test-entity"));
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+
+        final String expected = String.format(CANNOT_MODIFY_ENTITY_ERROR_MESSAGE_TPL, entityGroup.getName());
+        final String actual = extractErrorMessage(response);
+        assertEquals(expected, actual);
     }
 
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {

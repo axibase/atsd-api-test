@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
@@ -40,8 +41,42 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
     public void testNameContainsCyrillic() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodeupdateйёentitygroup3");
         assertUrlEncodePathHandledCorrectly(entityGroup);
-
     }
+
+    /**
+     * #3301
+     */
+    @Test
+    public void testCanSetEmptyExpression() throws Exception {
+        EntityGroup entityGroup = new EntityGroup("update-entitygroup-4");
+        entityGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
+        createOrReplaceEntityGroupCheck(entityGroup);
+
+        entityGroup.setExpression("");
+
+        assertEquals(OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
+        assertTrue("Specified entityGroup does not exist", entityGroupExist(entityGroup));
+    }
+
+    /**
+     * #3301
+     */
+    @Test(enabled = false) //TODO wait for solution about tag matcher
+    public void testCanSetEmptyTags() throws Exception {
+        EntityGroup entityGroup = new EntityGroup("update-entitygroup-5");
+        entityGroup.addTag("tagName", "tagValue");
+        createOrReplaceEntityGroupCheck(entityGroup);
+
+        entityGroup.setTags(null);
+        entityGroup.addTag("*", "");
+
+        assertEquals(OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
+
+        entityGroup.setTags(null);
+        assertTrue("Specified entityGroup should not have any tag", entityGroupExist(entityGroup));
+    }
+
+
 
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         entityGroup.addTag("oldtag1", "oldtagvalue1");

@@ -9,12 +9,12 @@ import java.util.Map;
 /**
  * @author Dmitry Korchagin.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EntityGroup {
-    String name;
-    String expression;
+    private String name;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    Map<String, String> tags = new HashMap<>();
+    private String expression;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, String> tags = new HashMap<>();
 
     public EntityGroup() {
     }

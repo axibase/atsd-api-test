@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -45,6 +46,23 @@ public class EntityGroupEntitiesAddTest extends EntityGroupMethod {
 
     }
 
+    /**
+     * #3041
+     */
+    @Test
+    public void testUnableMofifyEntitiesWhileExpressionNotEmpty() throws Exception {
+        EntityGroup entityGroup = new EntityGroup("addentities-entitygroup-4");
+        entityGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
+        createOrReplaceEntityGroupCheck(entityGroup);
+
+        Response response = addEntities(entityGroup.getName(), Collections.singletonList("test-entity"));
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+
+        final String expected = String.format(CANNOT_MODIFY_ENTITY_ERROR_MESSAGE_TPL, entityGroup.getName());
+        final String actual = extractErrorMessage(response);
+        assertEquals(expected, actual);
+    }
+
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         createOrReplaceEntityGroupCheck(entityGroup);
 
@@ -59,7 +77,6 @@ public class EntityGroupEntitiesAddTest extends EntityGroupMethod {
 
         Response response = addEntities(entityGroup.getName(), entitiesList);
         assertEquals("Fail to execute addEntities query", OK.getStatusCode(), response.getStatus());
-
         String expected = jacksonMapper.writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
         if (OK.getStatusCode() != response.getStatus()) {
