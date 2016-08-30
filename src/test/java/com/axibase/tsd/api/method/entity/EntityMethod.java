@@ -18,12 +18,13 @@ import static javax.ws.rs.core.Response.Status.OK;
  * @author Dmitry Korchagin.
  */
 public class EntityMethod extends BaseMethod {
-    static final String METHOD_ENTITY_LIST = "/entities/";
-    static final String METHOD_ENTITY = "/entities/{entity}";
-    static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
-    static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
-    static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    public static final String METHOD_ENTITY_LIST = "/entities/";
+    public static final String METHOD_ENTITY = "/entities/{entity}";
+    public static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
+    public static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
+    public static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
+    public static final String UNKNOWN_ENTITY_FIELD_ERROR_PREFIX = "org.codehaus.jackson.map.exc.UnrecognizedPropertyException:";
+    public static final String TAG_VALUE_ARRAY_ERROR_PREFIX = "org.codehaus.jackson.map.JsonMappingException: Can not deserialize instance";
 
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
@@ -88,10 +89,10 @@ public class EntityMethod extends BaseMethod {
 
     public static void createOrReplaceEntityCheck(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
         if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
-            throw new Exception("Can not execute createOrReplaceEntityGroup query");
+            throw new IllegalStateException("Can not execute createOrReplaceEntity query");
         }
         if (!entityExist(entity)) {
-            throw new Exception("Fail to check entity createOrReplaceEntityGroup");
+            throw new IllegalStateException("Fail to check entity " + entity.getName());
         }
     }
 
