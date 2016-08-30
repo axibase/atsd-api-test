@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
@@ -57,11 +57,11 @@ public class SeriesQueryExactMatch extends SeriesMethod {
      */
     @Test
     public void testExactTrueNoKey() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE, new HashMap<String, String>());
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, new HashMap<String, String>());
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 
-        final String given = formatToJsonString(response);
+        final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
 
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(seriesD));
@@ -74,11 +74,11 @@ public class SeriesQueryExactMatch extends SeriesMethod {
      */
     @Test
     public void testExactFalseNoKey() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE, new HashMap<String, String>());
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, new HashMap<String, String>());
         seriesQuery.setExactMatch(false);
         Response response = querySeries(seriesQuery);
 
-        final String given = formatToJsonString(response);
+        final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 4, "Response array contains wrong elements count");
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
@@ -93,11 +93,11 @@ public class SeriesQueryExactMatch extends SeriesMethod {
     public void testExactTrueTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE, tags);
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, tags);
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 
-        final String given = formatToJsonString(response);
+        final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesB));
@@ -112,11 +112,11 @@ public class SeriesQueryExactMatch extends SeriesMethod {
     public void testExactFalseTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, Util.MIN_QUERYABLE_DATE, Util.MAX_QUERYABLE_DATE, tags);
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, tags);
         seriesQuery.setExactMatch(false);
         Response response = querySeries(seriesQuery);
 
-        final String given = formatToJsonString(response);
+        final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 2, "Response array contains wrong elements count");
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB));

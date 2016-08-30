@@ -127,7 +127,7 @@ public class EntityGroupMethod extends BaseMethod {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
-        if (!compareJsonString(jacksonMapper.writeValueAsString(entityGroup), formatToJsonString(response))) {
+        if (!compareJsonString(jacksonMapper.writeValueAsString(entityGroup), response.readEntity(String.class))) {
             throw new IllegalStateException("Fail to check entityGroup inserted");
         }
     }
@@ -141,9 +141,8 @@ public class EntityGroupMethod extends BaseMethod {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
-
         final String expected = jacksonMapper.writeValueAsString(entityGroup);
-        final String given = formatToJsonString(response);
+        final String given = response.readEntity(String.class);
         return compareJsonString(expected, given, true);
     }
 

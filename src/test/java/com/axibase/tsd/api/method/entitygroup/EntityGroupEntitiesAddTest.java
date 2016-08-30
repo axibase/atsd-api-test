@@ -82,6 +82,6 @@ public class EntityGroupEntitiesAddTest extends EntityGroupMethod {
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
-        assertTrue("Entities in response do not match to added entities", compareJsonString(expected, formatToJsonString(response)));
+        assertTrue("Entities in response do not match to added entities", compareJsonString(expected, response.readEntity(String.class)));
     }
 }

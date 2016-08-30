@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
@@ -36,7 +36,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     public void testEntityNameContainsSlash() throws Exception {
         final Series series = new Series("getmetrics/entity2", "getmetrics-metric2");
         series.addData(new Sample("1970-01-01T00:00:00.000Z", "1"));
-        SeriesMethod.insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
+        SeriesMethod.insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
 
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
     }
@@ -46,7 +46,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     public void testEntityNameContainsCyrillic() throws Exception {
         final Series series = new Series("getmetricsйё/entity3", "getmetrics-metric3");
         series.addData(new Sample("1970-01-01T00:00:00.000Z", "1"));
-        SeriesMethod.insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
+        SeriesMethod.insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
 
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
     }

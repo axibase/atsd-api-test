@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -25,12 +25,12 @@ public class AlertHistoryQueryTest extends AlertMethod {
 
         Map<String, String> query = new HashMap<>();
         query.put("entity", "alert-historyquery-entity*");
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
+        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
     }
 
     /**
@@ -44,12 +44,12 @@ public class AlertHistoryQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Collections.singletonList("alert-historyquery-entity*"));
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get any alerts by entity expression");
+        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get any alerts by entity expression");
     }
 
     /**
@@ -63,12 +63,12 @@ public class AlertHistoryQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Collections.singletonList("alert-historyquery-entity-?"));
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get any alerts by entity expression");
+        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get any alerts by entity expression");
     }
 
     /**
@@ -82,12 +82,12 @@ public class AlertHistoryQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entityExpression", "name LIKE '*rt-history-query-entity-4'");
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         Response response = queryAlertsHistory(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(formatToJsonString(response)) > 0, "Fail to get alerts by entity expression");
+        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
     }
 
 }

@@ -39,14 +39,14 @@ public class AlertMethod extends BaseMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("entity", entityName);
         query.put("metrics", Collections.singletonList(metricName));
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
 
         Alert alert = new Alert();
         alert.setEntity(entityName);
         alert.setMetric(metricName);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(alert));
-        final String given = formatToJsonString(queryAlerts(query));
+        final String given = queryAlerts(query).readEntity(String.class);
         return compareJsonString(expected, given);
     }
 
@@ -72,8 +72,8 @@ public class AlertMethod extends BaseMethod {
     public static void generateAlertForEntity(final String entityName) throws Exception {
         Series series = new Series();
         series.setEntity(entityName);
-        series.setMetric(Util.RULE_METRIC_NAME);
-        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_OPEN_VALUE));
+        series.setMetric(BaseMethod.RULE_METRIC_NAME);
+        series.addData(new Sample(Util.ISOFormat(new Date()), BaseMethod.ALERT_OPEN_VALUE));
         SeriesMethod.insertSeriesCheck(series);
     }
 
@@ -81,25 +81,25 @@ public class AlertMethod extends BaseMethod {
     public static void generateAlertHistoryForEntity(final String entityName) throws Exception {
         Series series = new Series();
         series.setEntity(entityName);
-        series.setMetric(Util.RULE_METRIC_NAME);
-        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_OPEN_VALUE));
+        series.setMetric(BaseMethod.RULE_METRIC_NAME);
+        series.addData(new Sample(Util.ISOFormat(new Date()), BaseMethod.ALERT_OPEN_VALUE));
         SeriesMethod.insertSeriesCheck(series);
 
 
         series.setData(null);
-        series.addData(new Sample(Util.ISOFormat(new Date()), Util.ALERT_CLOSE_VALUE));
+        series.addData(new Sample(Util.ISOFormat(new Date()), BaseMethod.ALERT_CLOSE_VALUE));
         SeriesMethod.insertSeriesCheck(series);
 
         Long startTime = System.currentTimeMillis();
         boolean alertAbsent = true;
-        while(alertExist(entityName, Util.RULE_METRIC_NAME)) {
-            Thread.sleep(Util.REQUEST_INTERVAL);
-            if(System.currentTimeMillis() > (startTime + Util.EXPECTED_PROCESSING_TIME)) {
+        while(alertExist(entityName, BaseMethod.RULE_METRIC_NAME)) {
+            Thread.sleep(BaseMethod.REQUEST_INTERVAL);
+            if(System.currentTimeMillis() > (startTime + BaseMethod.EXPECTED_PROCESSING_TIME)) {
                 alertAbsent = false;
                 break;
             }
         }
-        if(!alertAbsent && alertExist(entityName, Util.RULE_METRIC_NAME)) {
+        if(!alertAbsent && alertExist(entityName, BaseMethod.RULE_METRIC_NAME)) {
             throw new IllegalArgumentException("Fail to generate AlertHistory Element");
         }
     }

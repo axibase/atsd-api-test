@@ -47,6 +47,6 @@ public class EntityGroupEntitiesGetTest extends EntityGroupMethod {
         createOrReplaceEntityGroupCheck(entityGroup);
         Response response = getEntities(entityGroup.getName());
         assertEquals("Fail to execute getEntities query", OK.getStatusCode(), response.getStatus());
-        assertEquals("EntityGroup should not contains any entity", "[]", formatToJsonString(response));
+        assertEquals("EntityGroup should not contains any entity", "[]", response.readEntity(String.class));
     }
 }

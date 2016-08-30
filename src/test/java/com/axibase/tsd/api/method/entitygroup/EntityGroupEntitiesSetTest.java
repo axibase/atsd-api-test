@@ -87,7 +87,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
-        if (!compareJsonString(expected, formatToJsonString(response))) {
+        if (!compareJsonString(expected, response.readEntity(String.class))) {
             throw new IllegalStateException("Fail to get added entities");
         }
 
@@ -107,7 +107,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
-        if (!compareJsonString(expected, formatToJsonString(response))) {
+        if (!compareJsonString(expected, response.readEntity(String.class))) {
             throw new IllegalStateException("Fail to get added entities");
         }
     }

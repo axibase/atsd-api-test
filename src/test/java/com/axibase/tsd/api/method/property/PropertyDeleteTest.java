@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
@@ -223,7 +224,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
         Response response = deleteProperty(request);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", formatToJsonString(response));
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -234,7 +235,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
         Response response = deleteProperty(request);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", formatToJsonString(response));
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -245,7 +246,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
         Response response = deleteProperty(request);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", formatToJsonString(response));
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -256,7 +257,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
         Response response = deleteProperty(request);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", formatToJsonString(response));
+        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
     }
 
 
@@ -323,8 +324,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>(property.getKey()) {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -344,8 +345,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>(property.getKey()) {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -364,8 +365,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -384,8 +385,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k2", "kv2");
         }});
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -405,8 +406,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k1", "kv2");
         }});
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", true);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
@@ -426,8 +427,8 @@ public class PropertyDeleteTest extends PropertyMethod {
         queryObj.put("key", new HashMap<String, String>() {{
             put("k1", "kv2");
         }});
-        queryObj.put("startDate", Util.MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         queryObj.put("exactMatch", false);
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());

@@ -1,11 +1,15 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
+import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -32,7 +36,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @BeforeClass
     public static void prepare() throws Exception {
         try {
-            insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
+            insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
         } catch (Exception e) {
             fail("Can not store common dataset");
         }
@@ -325,10 +329,10 @@ public class SeriesQueryTest extends SeriesMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("metric", series.getMetric());
         query.put("entities", "e-query-wildcard-22*");
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
 
-        final String given = formatToJsonString(querySeries(query));
+        final String given = querySeries(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         assertTrue(compareJsonString(expected, given));
     }
@@ -345,12 +349,43 @@ public class SeriesQueryTest extends SeriesMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("metric", series.getMetric());
         query.put("entities", "e-query-wildcard-23-?");
-        query.put("startDate", Util.MIN_QUERYABLE_DATE);
-        query.put("endDate", Util.MAX_QUERYABLE_DATE);
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
 
-        final String given = formatToJsonString(querySeries(query));
+        final String given = querySeries(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         assertTrue(compareJsonString(expected, given));
+    }
+
+    /**
+     * #2970
+     */
+    @Test
+    public void testVersionedLimitSupport() throws Exception {
+        Series series = new Series("e-query-v-l-24", "m-query-v-l-24");
+        final int limitValue = 2;
+        Metric versionedMetric = new Metric();
+        versionedMetric.setName(series.getMetric());
+        versionedMetric.setVersioned(true);
+
+        MetricMethod.createOrReplaceMetric(versionedMetric);
+
+        series.addData(new Sample(BaseMethod.MIN_STORABLE_DATE, "0"));
+        series.addData(new Sample(addOneMS(BaseMethod.MIN_STORABLE_DATE), "1"));
+        series.addData(new Sample(addOneMS(addOneMS(BaseMethod.MIN_STORABLE_DATE)), "2"));
+        insertSeriesCheck(series);
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("entity", series.getEntity());
+        query.put("metric", series.getMetric());
+        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("versioned", true);
+        query.put("limit", limitValue);
+
+        final Response response = querySeries(query);
+        JSONArray jsonArray = new JSONArray(response.readEntity(String.class));
+        assertEquals("Response should contain only " + limitValue + " samples", limitValue, calculateJsonArraySize(((JSONObject)jsonArray.get(0)).getString("data")));
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

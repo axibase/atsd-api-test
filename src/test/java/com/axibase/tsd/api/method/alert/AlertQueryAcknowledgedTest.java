@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.alert.Alert;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -33,8 +33,8 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
     private void markAlertAcknowledged(final String entityName) {
         Map<String, String> alertQuery = new HashMap<>();
         alertQuery.put("entity", entityName);
-        alertQuery.put("startDate", Util.MIN_QUERYABLE_DATE);
-        alertQuery.put("endDate", Util.MAX_QUERYABLE_DATE);
+        alertQuery.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        alertQuery.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
 
         List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
         });
@@ -55,8 +55,8 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
     private void checkAllAcknowledgedTypesExist() {
         Map<String, Object> alertQuery = new HashMap<>();
         alertQuery.put("entities", Arrays.asList(ENTITY_NAME, ENTITY_NAME_ACK));
-        alertQuery.put("startDate", Util.MIN_QUERYABLE_DATE);
-        alertQuery.put("endDate", Util.MAX_QUERYABLE_DATE);
+        alertQuery.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        alertQuery.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
 
         List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
         });
@@ -83,8 +83,8 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
     public void testAcknowledgedFilterTrue() throws Exception {
         Map<String, Object> alertQuery = new HashMap<>();
         alertQuery.put("entities", Arrays.asList(ENTITY_NAME, ENTITY_NAME_ACK));
-        alertQuery.put("startDate", Util.MIN_QUERYABLE_DATE);
-        alertQuery.put("endDate", Util.MAX_QUERYABLE_DATE);
+        alertQuery.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        alertQuery.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         alertQuery.put("acknowledged", true);
 
         List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
@@ -101,8 +101,8 @@ public class AlertQueryAcknowledgedTest extends AlertMethod {
     public void testAcknowledgedFilterFalse() throws Exception {
         Map<String, Object> alertQuery = new HashMap<>();
         alertQuery.put("entities", Arrays.asList(ENTITY_NAME, ENTITY_NAME_ACK));
-        alertQuery.put("startDate", Util.MIN_QUERYABLE_DATE);
-        alertQuery.put("endDate", Util.MAX_QUERYABLE_DATE);
+        alertQuery.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+        alertQuery.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         alertQuery.put("acknowledged", false);
 
         List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {

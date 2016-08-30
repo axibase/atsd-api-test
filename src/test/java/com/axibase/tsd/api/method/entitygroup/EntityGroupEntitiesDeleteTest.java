@@ -84,7 +84,7 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
-        if (!compareJsonString(expected, formatToJsonString(response))) {
+        if (!compareJsonString(expected, response.readEntity(String.class))) {
             throw new IllegalStateException("Fail to get added entities");
         }
 
@@ -95,6 +95,6 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
         if (response.getStatus() != OK.getStatusCode()) {
             throw new IllegalStateException("Fail to execute getEntities query");
         }
-        assertEquals("Entity list should be empty", "[]", formatToJsonString(response));
+        assertEquals("Entity list should be empty", "[]", response.readEntity(String.class));
     }
 }

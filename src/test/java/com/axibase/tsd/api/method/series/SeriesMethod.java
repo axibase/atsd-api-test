@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Series;
@@ -99,7 +98,7 @@ public class SeriesMethod extends BaseMethod {
             if (seriesListIsInserted(seriesList)) {
                 return;
             }
-            Thread.sleep(Util.REQUEST_INTERVAL);
+            Thread.sleep(BaseMethod.REQUEST_INTERVAL);
         } while (System.currentTimeMillis() <= startCheckTimeMillis + checkTimeoutMillis);
         if (!seriesListIsInserted(seriesList)) {
             throw new Exception("Fail to check inserted queries");
@@ -107,11 +106,11 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static void insertSeriesCheck(final Series series) throws Exception {
-        insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
+        insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
     }
 
     public static void insertSeriesCheck(final List<Series> series) throws Exception {
-        insertSeriesCheck(series, Util.EXPECTED_PROCESSING_TIME);
+        insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
     }
 
     public static boolean seriesListIsInserted(final List<Series> seriesList) throws Exception {

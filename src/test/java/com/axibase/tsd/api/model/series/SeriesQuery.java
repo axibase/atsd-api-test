@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -30,12 +31,12 @@ public class SeriesQuery {
         setExactMatch(true);
         setMetric(series.getMetric());
         if (series.getData().size() == 0) {
-            setStartDate(Util.MIN_QUERYABLE_DATE);
-            setEndDate(Util.MAX_QUERYABLE_DATE);
+            setStartDate(BaseMethod.MIN_QUERYABLE_DATE);
+            setEndDate(BaseMethod.MAX_QUERYABLE_DATE);
         } else {
             try {
-                Long minDate = Util.getMillis(Util.MAX_QUERYABLE_DATE);
-                Long maxDate = Util.getMillis(Util.MIN_QUERYABLE_DATE);
+                Long minDate = Util.getMillis(BaseMethod.MAX_QUERYABLE_DATE);
+                Long maxDate = Util.getMillis(BaseMethod.MIN_QUERYABLE_DATE);
 
                 Long curDate;
                 for (Sample sample : series.getData()) {

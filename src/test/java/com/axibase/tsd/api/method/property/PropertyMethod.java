@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.property.Property;
 import org.slf4j.Logger;
@@ -108,8 +107,8 @@ class PropertyMethod extends BaseMethod {
         query.put("type", property.getType());
         query.put("key", property.getKey());
         if (null == property.getDate()) {
-            query.put("startDate", Util.MIN_QUERYABLE_DATE);
-            query.put("endDate", Util.MAX_QUERYABLE_DATE);
+            query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
+            query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
         } else {
             query.put("startDate", property.getDate());
             query.put("interval", new HashMap<String, Object>() {{

@@ -142,7 +142,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("startDate", message.getDate());
         query.put("endDate", Util.addOneMS(message.getDate()));
 
-        final String given = formatToJsonString(executeQuery(query));
+        final String given = executeQuery(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
@@ -162,7 +162,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("startDate", message.getDate());
         query.put("endDate", Util.addOneMS(message.getDate()));
 
-        final String given = formatToJsonString(executeQuery(query));
+        final String given = executeQuery(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
@@ -188,12 +188,12 @@ public class MessageQueryTest extends MessageMethod {
         query.put("startDate", message.getDate());
         query.put("endDate", Util.addOneMS(message.getDate()));
 
-        final String entitiesResponse = formatToJsonString(executeQuery(query));
+        final String entitiesResponse = executeQuery(query).readEntity(String.class);
 
         query.remove("entity");
         query.put("entities", Collections.singletonList(pattern));
 
-        final String entityResponse = formatToJsonString(executeQuery(query));
+        final String entityResponse = executeQuery(query).readEntity(String.class);
         assertEquals("Message in response does not match to inserted", entitiesResponse, entityResponse);
     }
 

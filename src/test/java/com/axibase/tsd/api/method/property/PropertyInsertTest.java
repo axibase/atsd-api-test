@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.DateFilter;
 import com.axibase.tsd.api.model.EntityFilter;
 import com.axibase.tsd.api.model.Interval;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.Util.MAX_STORABLE_DATE;
 import static com.axibase.tsd.api.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -187,7 +186,7 @@ public class PropertyInsertTest extends PropertyMethod {
     public void testTimeRangeMinSaved() throws Exception {
         Property property = new Property("t-time-range-p-1", "e-time-range--1");
         property.addTag("ttr-t", "ttr-v");
-        property.setDate(Util.MIN_STORABLE_DATE);
+        property.setDate(BaseMethod.MIN_STORABLE_DATE);
 
         Response response = insertProperty(property);
         Thread.sleep(1000L);

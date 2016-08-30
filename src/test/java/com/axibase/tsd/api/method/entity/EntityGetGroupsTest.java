@@ -44,6 +44,6 @@ public class EntityGetGroupsTest extends EntityMethod {
     private void assertUrlencodedPathHandledSuccessfullyOnGetGroups(final Entity entity) throws Exception {
         Response response = queryEntityGroups(entity.getName());
         assertEquals("Fail to execute queryEntityGroups", OK.getStatusCode(), response.getStatus());
-        assertTrue("Entity groups should be empty", compareJsonString("[]", formatToJsonString(response)));
+        assertTrue("Entity groups should be empty", compareJsonString("[]", response.readEntity(String.class)));
     }
 }
