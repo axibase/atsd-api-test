@@ -19,6 +19,7 @@ public class SeriesQuery {
     private Interval interval;
     private Map<String, String> tags = new HashMap<>();
     private Map<String, Object> aggregate;
+    private Map<String, Object> group;
     private String timeFormat;
     private Boolean exactMatch;
 
@@ -54,6 +55,18 @@ public class SeriesQuery {
                 throw new IllegalArgumentException("Fail to parse date string");
             }
         }
+    }
+
+    public void setAggregate(Map<String, Object> aggregate) {
+        this.aggregate = aggregate;
+    }
+
+    public Map<String, Object> getGroup() {
+        return group;
+    }
+
+    public void setGroup(Map<String, Object> group) {
+        this.group = group;
     }
 
     public SeriesQuery(String entity, String metric, long startTime, long endTime) {

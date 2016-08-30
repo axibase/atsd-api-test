@@ -11,10 +11,13 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -26,6 +29,7 @@ public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
     private static final Series series;
     private static Calendar calendar = Calendar.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
     static {
@@ -386,7 +390,82 @@ public class SeriesQueryTest extends SeriesMethod {
         final Response response = querySeries(query);
         JSONArray jsonArray = new JSONArray(response.readEntity(String.class));
         final String assertMessage = String.format("Response should contain only %d samples", limitValue);
-        assertEquals(assertMessage, limitValue, calculateJsonArraySize(((JSONObject)jsonArray.get(0)).getString("data")));
+        assertEquals(assertMessage, limitValue, calculateJsonArraySize(((JSONObject) jsonArray.get(0)).getString("data")));
+    }
+
+    /**
+     * #3030
+     */
+    @Test
+    public void testDateIntervalFieldEnoughToDetail() throws Exception {
+        Series series = new Series("entity-query-24", "metric-query-24");
+        series.addData(new Sample(MIN_STORABLE_DATE, 1));
+        insertSeriesCheck(series);
+
+        SeriesQuery query = new SeriesQuery();
+        query.setEntity(series.getEntity());
+        query.setMetric(series.getMetric());
+        query.setInterval(new Interval(99999, TimeUnit.QUARTER));
+
+        List<Series> storedSeries = executeQueryReturnSeries(query);
+
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String given = jacksonMapper.writeValueAsString(storedSeries);
+        assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
+    }
+
+    /**
+     * #3030
+     */
+    @Test
+    public void testDateIntervalFieldEnoughToGroup() throws Exception {
+        Series series = new Series("entity-query-25", "metric-query-25");
+        series.addData(new Sample(MIN_STORABLE_DATE, 1));
+        insertSeriesCheck(series);
+
+        SeriesQuery query = new SeriesQuery();
+        query.setEntity(series.getEntity());
+        query.setMetric(series.getMetric());
+        query.setInterval(new Interval(99999, TimeUnit.QUARTER));
+
+        Map<String, Object> group = new HashMap<>();
+        group.put("type", "SUM");
+        query.setGroup(group);
+
+        List<Series> storedSeries = executeQueryReturnSeries(query);
+
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String given = jacksonMapper.writeValueAsString(storedSeries);
+        assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
+    }
+
+    /**
+     * #3030
+     */
+    @Test
+    public void testDateIntervalFieldEnoughToAggregate() throws Exception {
+        final BigDecimal VALUE = new BigDecimal("1.0");
+        Series series = new Series("entity-query-26", "metric-query-26");
+        series.addData(new Sample("2014-01-01T00:00:00.000Z", VALUE));
+        insertSeriesCheck(series);
+
+        SeriesQuery query = new SeriesQuery();
+        query.setEntity(series.getEntity());
+        query.setMetric(series.getMetric());
+        Interval interval = new Interval(99999, TimeUnit.QUARTER);
+        query.setInterval(interval);
+
+        Map<String, Object> aggregate = new HashMap<>();
+        aggregate.put("type", "SUM");
+        aggregate.put("period", interval);
+        query.setAggregate(aggregate);
+
+
+        List<Series> storedSeries = executeQueryReturnSeries(query);
+        assertEquals("Response should contain only one series", 1, storedSeries.size());
+        List<Sample> data = storedSeries.get(0).getData();
+        assertEquals("Response should contain only one sample", 1, data.size());
+        assertEquals("Returned value does not match to expected SUM", VALUE, data.get(0).getV());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
@@ -394,6 +473,7 @@ public class SeriesQueryTest extends SeriesMethod {
         calendar.set(Calendar.HOUR_OF_DAY, (int) (Math.random() * 24));
         calendar.set(Calendar.MINUTE, (int) (Math.random() * 60));
     }
+
 
     private SeriesQuery buildQuery() {
         SeriesQuery seriesQuery = new SeriesQuery();
