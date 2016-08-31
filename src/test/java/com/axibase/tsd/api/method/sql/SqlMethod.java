@@ -10,20 +10,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 
-/**
- * @author Igor Shmagrinskiy
- *         <p>
- *         Class that make sql queries to ATSD instanse
- *         and retrive result in specifed format.
- *         Usage:
- *         * <pre>
- *                                                                                                         {@code
- *                                                                                                              SqlMethod
- *                                                                                                                          .executeQuery("SELECT 1")
- *                                                                                                                          .readEntity(String.class);
- *                                                                                                         }
- *                                                                                                         </pre>
- */
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
     private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
