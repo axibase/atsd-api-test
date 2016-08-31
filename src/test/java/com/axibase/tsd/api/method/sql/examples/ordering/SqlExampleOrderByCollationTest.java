@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlExampleOrderByCollationTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-order-by-collation-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -56,36 +54,30 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
 
 
     /**
-     * Issue #3162
+     * #3162
      */
     @Test
     public void testOrderByEntityTagNameASC() {
         String sqlQuery =
                 "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
                         "ORDER BY tags.tag ASC";
-
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         List<String> expectedColumn = sortList(trimList(NAMES), false);
-
-
         assertTableContainsColumnValues(expectedColumn, resultTable, "tags.tag");
     }
 
     /**
-     * Issue #3162
+     * #3162
      */
     @Test
     public void testOrderByEntityTagNameDESC() {
         String sqlQuery =
                 "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
                         "ORDER BY tags.tag DESC";
-
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
         List<String> expectedColumn = sortList(trimList(NAMES), true);
-
-
         assertTableContainsColumnValues(expectedColumn, resultTable, "tags.tag");
     }
 

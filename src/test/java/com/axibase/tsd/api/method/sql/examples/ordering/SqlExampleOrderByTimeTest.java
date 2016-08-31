@@ -39,11 +39,8 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
                 "SELECT datetime, value FROM '%s'%nORDER BY datetime",
                 TEST_METRIC_NAME
         );
-
         Response response = executeQuery(sqlQuery);
-
         StringTable resultTable = response.readEntity(StringTable.class);
-
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-27T22:41:50.000Z", "2.0"),
                 Arrays.asList("2016-07-27T22:41:51.000Z", "1.0"),
