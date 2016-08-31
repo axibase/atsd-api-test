@@ -59,7 +59,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
 
         final String expected = String.format(CANNOT_MODIFY_ENTITY_ERROR_MESSAGE_TPL, entityGroup.getName());
         final String actual = extractErrorMessage(response);
-        assertEquals(expected, actual);
+        assertEquals("Error does not match", expected, actual);
     }
 
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {

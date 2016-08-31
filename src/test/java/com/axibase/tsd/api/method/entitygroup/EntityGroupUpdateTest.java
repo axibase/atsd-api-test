@@ -4,7 +4,6 @@ import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
@@ -54,7 +53,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
 
         entityGroup.setExpression("");
 
-        assertEquals(OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
+        assertEquals("Fail to execute updateEntityGroup query", OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
         assertTrue("Specified entityGroup does not exist", entityGroupExist(entityGroup));
     }
 
@@ -70,7 +69,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
         entityGroup.setTags(null);
         entityGroup.addTag("*", "");
 
-        assertEquals(OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
+        assertEquals("Fail to execute updateEntityGroup query", OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
 
         entityGroup.setTags(null);
         assertTrue("Specified entityGroup should not have any tag", entityGroupExist(entityGroup));
