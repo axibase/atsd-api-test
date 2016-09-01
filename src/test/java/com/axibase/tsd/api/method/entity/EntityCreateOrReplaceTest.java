@@ -18,6 +18,7 @@ import java.util.Map;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
+import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -136,7 +137,11 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityCheck(entity);
 
         entity.setTags(null);
-        createOrReplaceEntityCheck(entity);
+        try {
+            createOrReplaceEntityCheck(entity);
+        } catch (IllegalStateException e) {
+            fail("Fail to replace tags if new tags are absent");
+        }
     }
 
     /**
@@ -149,7 +154,11 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityCheck(entity);
 
         entity.setTags(new HashMap<String, String>());
-        createOrReplaceEntityCheck(entity);
+        try {
+            createOrReplaceEntityCheck(entity);
+        } catch (IllegalStateException e) {
+            fail("Fail to replace tags if new tags are empty");
+        }
     }
 
     /**
