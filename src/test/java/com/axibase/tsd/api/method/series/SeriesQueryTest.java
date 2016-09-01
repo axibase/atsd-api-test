@@ -385,7 +385,8 @@ public class SeriesQueryTest extends SeriesMethod {
 
         final Response response = querySeries(query);
         JSONArray jsonArray = new JSONArray(response.readEntity(String.class));
-        assertEquals("Response should contain only " + limitValue + " samples", limitValue, calculateJsonArraySize(((JSONObject)jsonArray.get(0)).getString("data")));
+        final String assertMessage = String.format("Response should contain only %d samples", limitValue);
+        assertEquals(assertMessage, limitValue, calculateJsonArraySize(((JSONObject)jsonArray.get(0)).getString("data")));
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
