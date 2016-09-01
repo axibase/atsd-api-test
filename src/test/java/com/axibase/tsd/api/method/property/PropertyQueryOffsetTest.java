@@ -52,8 +52,8 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", propertyType);
         queryObj.put("entity", "*");
-        queryObj.put("startDate", BaseMethod.MIN_STORABLE_DATE);
-        queryObj.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        queryObj.put("startDate", MIN_STORABLE_DATE);
+        queryObj.put("endDate", MAX_QUERYABLE_DATE);
         queryObj.put("offset", offset);
         return queryProperty(queryObj);
     }

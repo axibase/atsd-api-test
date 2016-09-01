@@ -329,8 +329,8 @@ public class SeriesQueryTest extends SeriesMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("metric", series.getMetric());
         query.put("entities", "e-query-wildcard-22*");
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
 
         final String given = querySeries(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
@@ -349,8 +349,8 @@ public class SeriesQueryTest extends SeriesMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("metric", series.getMetric());
         query.put("entities", "e-query-wildcard-23-?");
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
 
         final String given = querySeries(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
@@ -370,16 +370,16 @@ public class SeriesQueryTest extends SeriesMethod {
 
         MetricMethod.createOrReplaceMetric(versionedMetric);
 
-        series.addData(new Sample(BaseMethod.MIN_STORABLE_DATE, "0"));
-        series.addData(new Sample(addOneMS(BaseMethod.MIN_STORABLE_DATE), "1"));
-        series.addData(new Sample(addOneMS(addOneMS(BaseMethod.MIN_STORABLE_DATE)), "2"));
+        series.addData(new Sample(MIN_STORABLE_DATE, "0"));
+        series.addData(new Sample(addOneMS(MIN_STORABLE_DATE), "1"));
+        series.addData(new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), "2"));
         insertSeriesCheck(series);
 
         Map<String, Object> query = new HashMap<>();
         query.put("entity", series.getEntity());
         query.put("metric", series.getMetric());
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
         query.put("versioned", true);
         query.put("limit", limitValue);
 

@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
@@ -306,7 +307,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     @Test
     public void testSeriesRemain() throws Exception {
         Series series = new Series("create-entity-17","create-entity-metric-17");
-        series.addData(new Sample(Util.MIN_STORABLE_DATE, 0));
+        series.addData(new Sample(MIN_STORABLE_DATE, 0));
         SeriesMethod.insertSeriesCheck(series);
 
         Entity entity = new Entity();

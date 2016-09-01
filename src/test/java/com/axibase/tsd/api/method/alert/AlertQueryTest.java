@@ -27,8 +27,8 @@ public class AlertQueryTest extends AlertMethod {
 
         Map<String, String> query = new HashMap<>();
         query.put("entity", "alert-query-entity*");
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
@@ -46,8 +46,8 @@ public class AlertQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Arrays.asList("alert-query-entity*"));
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
@@ -65,8 +65,8 @@ public class AlertQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Arrays.asList("alert-query-entity-?"));
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
@@ -84,8 +84,8 @@ public class AlertQueryTest extends AlertMethod {
 
         Map<String, Object> query = new HashMap<>();
         query.put("entityExpression", "name LIKE '*rt-query-entity-4'");
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());

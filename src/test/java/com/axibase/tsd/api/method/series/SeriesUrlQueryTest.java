@@ -30,8 +30,8 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         final String entityName = "seriesurlquery entityname-1";
         Registry.Entity.register(entityName);
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        parameters.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        parameters.put("startDate", MIN_QUERYABLE_DATE);
+        parameters.put("endDate", MAX_QUERYABLE_DATE);
         Response response = urlQuerySeries(entityName, "metricname", parameters);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
@@ -44,8 +44,8 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         final String metricName = "seriesurlquery metricname-2";
         Registry.Metric.register(metricName);
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        parameters.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        parameters.put("startDate", MIN_QUERYABLE_DATE);
+        parameters.put("endDate", MAX_QUERYABLE_DATE);
         Response response = urlQuerySeries("entityname", metricName, parameters);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
@@ -88,11 +88,11 @@ public class SeriesUrlQueryTest extends SeriesMethod {
     }
 
     private void assertUrlEncodePathHandledCorrectly(Series series) throws Exception {
-        series.addData(new Sample(BaseMethod.MIN_STORABLE_DATE, "0"));
+        series.addData(new Sample(MIN_STORABLE_DATE, "0"));
         insertSeriesCheck(series);
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        parameters.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        parameters.put("startDate", MIN_QUERYABLE_DATE);
+        parameters.put("endDate", MAX_QUERYABLE_DATE);
 
         Response response = urlQuerySeries(series.getEntity(), series.getMetric(), parameters);
         assertEquals(OK.getStatusCode(), response.getStatus());

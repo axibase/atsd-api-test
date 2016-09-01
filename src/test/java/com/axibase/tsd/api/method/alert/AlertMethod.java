@@ -39,8 +39,8 @@ public class AlertMethod extends BaseMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("entity", entityName);
         query.put("metrics", Collections.singletonList(metricName));
-        query.put("startDate", BaseMethod.MIN_QUERYABLE_DATE);
-        query.put("endDate", BaseMethod.MAX_QUERYABLE_DATE);
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
 
         Alert alert = new Alert();
         alert.setEntity(entityName);

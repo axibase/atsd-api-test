@@ -186,7 +186,7 @@ public class PropertyInsertTest extends PropertyMethod {
     public void testTimeRangeMinSaved() throws Exception {
         Property property = new Property("t-time-range-p-1", "e-time-range--1");
         property.addTag("ttr-t", "ttr-v");
-        property.setDate(BaseMethod.MIN_STORABLE_DATE);
+        property.setDate(MIN_STORABLE_DATE);
 
         Response response = insertProperty(property);
         Thread.sleep(1000L);

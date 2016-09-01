@@ -65,8 +65,8 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
-        messageQuery.setStartDate(BaseMethod.MIN_QUERYABLE_DATE);
-        messageQuery.setEndDate(BaseMethod.MAX_QUERYABLE_DATE);
+        messageQuery.setStartDate(MIN_QUERYABLE_DATE);
+        messageQuery.setEndDate(MAX_QUERYABLE_DATE);
         List<Message> storedMessageList = MessageMethod.executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 

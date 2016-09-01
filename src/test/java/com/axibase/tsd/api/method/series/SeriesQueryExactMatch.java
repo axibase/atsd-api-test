@@ -57,7 +57,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
      */
     @Test
     public void testExactTrueNoKey() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, new HashMap<String, String>());
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, new HashMap<String, String>());
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 
@@ -74,7 +74,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
      */
     @Test
     public void testExactFalseNoKey() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, new HashMap<String, String>());
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, new HashMap<String, String>());
         seriesQuery.setExactMatch(false);
         Response response = querySeries(seriesQuery);
 
@@ -93,7 +93,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
     public void testExactTrueTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, tags);
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, tags);
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 
@@ -112,7 +112,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
     public void testExactFalseTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, BaseMethod.MIN_QUERYABLE_DATE, BaseMethod.MAX_QUERYABLE_DATE, tags);
+        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, tags);
         seriesQuery.setExactMatch(false);
         Response response = querySeries(seriesQuery);
 
