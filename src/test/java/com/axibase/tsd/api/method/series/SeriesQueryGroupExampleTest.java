@@ -3,12 +3,15 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.SampleTriplet;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -16,23 +19,25 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     private final static String FIRST_ENTITY = "series-group-example-1";
     private final static String SECOND_ENTITY = "series-group-example-2";
     private final static String GROUPED_METRIC = "metric-group-example-1";
-    private static List<SampleTriplet> exampleData = new ArrayList<>();
+    private static List<SeriesGroupExampleStructure> exampleData;
 
     static {
         Registry.Entity.register(FIRST_ENTITY);
         Registry.Entity.register(SECOND_ENTITY);
         Registry.Metric.register(GROUPED_METRIC);
-        exampleData.add(new SampleTriplet(FIRST_ENTITY, "2016-06-25T08:00:00.000Z", 1));
-        exampleData.add(new SampleTriplet(SECOND_ENTITY, "2016-06-25T08:00:00.000Z", 11));
-        exampleData.add(new SampleTriplet(FIRST_ENTITY, "2016-06-25T08:00:05.000Z", 3));
-        exampleData.add(new SampleTriplet(FIRST_ENTITY, "2016-06-25T08:00:10.000Z", 5));
-        exampleData.add(new SampleTriplet(FIRST_ENTITY, "2016-06-25T08:00:15.000Z", 8));
-        exampleData.add(new SampleTriplet(SECOND_ENTITY, "2016-06-25T08:00:15.000Z", 8));
-        exampleData.add(new SampleTriplet(FIRST_ENTITY, "2016-06-25T08:00:30.000Z", 3));
-        exampleData.add(new SampleTriplet(SECOND_ENTITY, "2016-06-25T08:00:30.000Z", 13));
-        exampleData.add(new SampleTriplet(FIRST_ENTITY, "2016-06-25T08:00:45.000Z", 5));
-        exampleData.add(new SampleTriplet(SECOND_ENTITY, "2016-06-25T08:00:45.000Z", 15));
-        exampleData.add(new SampleTriplet(SECOND_ENTITY, "2016-06-25T08:00:59.000Z", 19));
+        exampleData = Arrays.asList(
+                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:00.000Z", 1),
+                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:00.000Z", 11),
+                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:05.000Z", 3),
+                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:10.000Z", 5),
+                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:15.000Z", 8),
+                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:15.000Z", 8),
+                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:30.000Z", 3),
+                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:30.000Z", 13),
+                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:45.000Z", 5),
+                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:45.000Z", 15),
+                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:59.000Z", 19)
+        );
     }
 
 
@@ -47,14 +52,14 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         secondSeries.setMetric(GROUPED_METRIC);
 
         String currentEntity;
-        for (SampleTriplet sampleTriplet : exampleData) {
-            currentEntity = sampleTriplet.getLeft();
+        for (SeriesGroupExampleStructure sampleTriplet : exampleData) {
+            currentEntity = sampleTriplet.getEntity();
             switch (currentEntity) {
                 case FIRST_ENTITY:
-                    firstSeries.addData(new Sample(sampleTriplet.getMiddle(), sampleTriplet.getRight()));
+                    firstSeries.addData(new Sample(sampleTriplet.getDate(), sampleTriplet.getValue()));
                     break;
                 case SECOND_ENTITY:
-                    secondSeries.addData(new Sample(sampleTriplet.getMiddle(), sampleTriplet.getRight()));
+                    secondSeries.addData(new Sample(sampleTriplet.getDate(), sampleTriplet.getValue()));
                     break;
                 default:
                     throw new IllegalStateException("Unexpected entity in exampleData");
@@ -65,8 +70,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#no-aggregation
      */
     @Test
     public void testExampleSum() throws Exception {
@@ -76,14 +80,15 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         group.put("type", "SUM");
         query.put("group", group);
 
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:00.000Z", "12.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:05.000Z", "3.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "5.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:15.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:45.000Z", "20.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:59.000Z", "19.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:00.000Z", "12.0"),
+                new Sample("2016-06-25T08:00:05.000Z", "3.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "5.0"),
+                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
+                new Sample("2016-06-25T08:00:59.000Z", "19.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -96,8 +101,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#truncation
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#truncation
      */
     @Test
     public void testExampleSumTruncate() throws Exception {
@@ -108,11 +112,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         group.put("truncate", true);
         query.put("group", group);
 
-
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:15.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:45.000Z", "20.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:45.000Z", "20.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -125,8 +129,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#extend
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#extend
      */
     @Test
     public void testExampleSumExtend() throws Exception {
@@ -139,13 +142,14 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         group.put("interpolate", interpolate);
         query.put("group", group);
 
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:05.000Z", "11.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "13.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:15.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:45.000Z", "20.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:59.000Z", "24.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:05.000Z", "11.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "13.0"),
+                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
+                new Sample("2016-06-25T08:00:59.000Z", "24.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -158,8 +162,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#interpolation-1
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#interpolation-1
      */
     @Test
     public void testExampleSumInterpolation() throws Exception {
@@ -172,14 +175,15 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         group.put("interpolate", interpolate);
         query.put("group", group);
 
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:00.000Z", "12.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:05.000Z", "14.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:15.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:45.000Z", "20.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:59.000Z", "19.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:00.000Z", "12.0"),
+                new Sample("2016-06-25T08:00:05.000Z", "14.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
+                new Sample("2016-06-25T08:00:59.000Z", "19.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -192,8 +196,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation
      */
     @Test
     public void testExampleSumAggregation() throws Exception {
@@ -202,13 +205,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         Map<String, Object> group = prepareGroupParameters("SUM", null, 10, TimeUnit.SECOND);
         query.put("group", group);
 
-
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:00.000Z", "15.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "21.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:40.000Z", "20.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:50.000Z", "19.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:00.000Z", "15.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "21.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:40.000Z", "20.0"),
+                new Sample("2016-06-25T08:00:50.000Z", "19.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -221,8 +224,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation
      */
     @Test
     public void testExampleSumGroupAggregation() throws Exception {
@@ -232,13 +234,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.put("group", group);
         query.put("aggregate", group); //aggregate parameter is equal to group parameter
 
-
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:00.000Z", "15.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "21.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "16.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:40.000Z", "20.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:50.000Z", "19.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:00.000Z", "15.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "21.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
+                new Sample("2016-06-25T08:00:40.000Z", "20.0"),
+                new Sample("2016-06-25T08:00:50.000Z", "19.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -251,8 +253,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#aggregation---group
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#aggregation---group
      */
     @Test
     public void testExampleSumAggregationToGroup() throws Exception {
@@ -264,12 +265,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         Map<String, Object> aggregate = prepareGroupParameters("COUNT", 0, 10, TimeUnit.SECOND);
         query.put("aggregate", aggregate);
 
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:00.000Z", "3.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "3.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "2.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:40.000Z", "2.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:50.000Z", "1.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:00.000Z", "3.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "3.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "2.0"),
+                new Sample("2016-06-25T08:00:40.000Z", "2.0"),
+                new Sample("2016-06-25T08:00:50.000Z", "1.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -282,8 +284,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     /**
      * #2995
-     *
-     * @see https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---aggregation
+     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---aggregation
      */
     @Test
     public void testExampleSumGroupToAggregation() throws Exception {
@@ -295,12 +296,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         Map<String, Object> aggregate = prepareGroupParameters("COUNT", 1, 10, TimeUnit.SECOND);
         query.put("aggregate", aggregate);
 
-        List<Sample> expectedSamples = new ArrayList<>();
-        expectedSamples.add(new Sample("2016-06-25T08:00:00.000Z", "2.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:10.000Z", "2.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:30.000Z", "1.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:40.000Z", "1.0"));
-        expectedSamples.add(new Sample("2016-06-25T08:00:50.000Z", "1.0"));
+        List<Sample> expectedSamples = Arrays.asList(
+                new Sample("2016-06-25T08:00:00.000Z", "2.0"),
+                new Sample("2016-06-25T08:00:10.000Z", "2.0"),
+                new Sample("2016-06-25T08:00:30.000Z", "1.0"),
+                new Sample("2016-06-25T08:00:40.000Z", "1.0"),
+                new Sample("2016-06-25T08:00:50.000Z", "1.0")
+        );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
@@ -310,7 +312,6 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         final String expected = jacksonMapper.writeValueAsString(expectedSamples);
         assertEquals("Grouped series do not match to expected", expected, actual);
     }
-
 
 
     private Map<String, Object> prepareDefaultQuery(String startDate, String endDate) {
@@ -324,17 +325,41 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
 
     private Map<String, Object> prepareGroupParameters(String type, Integer order, Integer periodCount, TimeUnit periodUnit) {
         Map<String, Object> groupParameter = new HashMap<>();
-        if(type != null)
+        if (type != null)
             groupParameter.put("type", type);
-        if(order != null)
+        if (order != null)
             groupParameter.put("order", order);
-        if(periodCount != null && periodUnit != null) {
+        if (periodCount != null && periodUnit != null) {
             Map<String, Object> period = new HashMap<>();
             period.put("count", periodCount);
             period.put("unit", periodUnit);
             groupParameter.put("period", period);
         }
         return groupParameter;
+    }
+
+    private static class SeriesGroupExampleStructure {
+        private String entity;
+        private String date;
+        private BigDecimal value;
+
+        public SeriesGroupExampleStructure(String entity, String date, Integer value) {
+            this.entity = entity;
+            this.date = date;
+            this.value = new BigDecimal(value);
+        }
+
+        public String getEntity() {
+            return entity;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public BigDecimal getValue() {
+            return value;
+        }
     }
 
 }
