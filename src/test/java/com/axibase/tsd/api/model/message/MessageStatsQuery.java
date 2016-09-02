@@ -1,28 +1,36 @@
 package com.axibase.tsd.api.model.message;
 
 import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.series.Aggregate;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import test.listeners.AggregateSampleTest;
 
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MessageQuery {
+public class MessageStatsQuery {
+    static final String MESSAGE_STATS_METRIC = "message-count";
     private String entity;
     private String type;
-    private String metric;
+    private final String metric = MESSAGE_STATS_METRIC;
     private String startDate;
     private String endDate;
     private String severity;
     private String source;
     private Map<String, String> tags;
     private Interval interval;
+    private Aggregate aggregate;
+
+    public Aggregate getAggregate() {
+        return aggregate;
+    }
+
+    public void setAggregate(Aggregate aggregate) {
+        this.aggregate = aggregate;
+    }
 
     public String getMetric() {
         return metric;
-    }
-
-    public void setMetric(String metric) {
-        this.metric = metric;
     }
 
     public String getEntity() {

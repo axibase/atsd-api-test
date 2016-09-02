@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.csv;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
@@ -67,7 +66,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(MIN_QUERYABLE_DATE);
         messageQuery.setEndDate(MAX_QUERYABLE_DATE);
-        List<Message> storedMessageList = MessageMethod.executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = MessageMethod.queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 
         assertEquals("Unexpected message body", controlSequence, storedMessageList.get(0).getMessage());

@@ -15,7 +15,10 @@ public class Aggregate {
     Integer order;
 
     public Aggregate() {
+    }
 
+    public Aggregate(AggregationType type) {
+        this(type, null, null);
     }
 
     public Aggregate(AggregationType type, Interval period) {

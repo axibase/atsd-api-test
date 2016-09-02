@@ -2,7 +2,6 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.alert.Alert;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -16,7 +15,6 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class AlertQueryAcknowledgedTest extends AlertMethod {
     private final String ENTITY_NAME = "alert-query-ack-entity-1";
     private final String ENTITY_NAME_ACK = "alert-query-ack-entity-1-ack";
-
 
     @BeforeClass
     public void prepareAlertData() throws Exception {

@@ -37,7 +37,7 @@ public class MessageInsertTest extends MessageMethod {
         messageQuery.setEntity("nurswgvml022");
         messageQuery.setStartDate(date);
         messageQuery.setEndDate(endDate);
-        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -64,7 +64,7 @@ public class MessageInsertTest extends MessageMethod {
         messageQuery.setStartDate(MIN_QUERYABLE_DATE);
         messageQuery.setEndDate(MAX_QUERYABLE_DATE);
 
-        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 
         Message msgResponse = storedMessageList.get(0);
@@ -90,7 +90,7 @@ public class MessageInsertTest extends MessageMethod {
         messageQuery.setStartDate(MIN_QUERYABLE_DATE);
         messageQuery.setEndDate(MAX_QUERYABLE_DATE);
 
-        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 
         Message msgResponse = storedMessageList.get(0);
@@ -121,7 +121,9 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T00:00:00Z");
 
-        insertMessageCheck(message);
+        insertMessage(message);
+        Thread.sleep(EXPECTED_PROCESSING_TIME);
+
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
@@ -129,7 +131,7 @@ public class MessageInsertTest extends MessageMethod {
         messageQuery.setStartDate(date);
         messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
-        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -146,7 +148,9 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T01:23:00+01:23");
 
-        insertMessageCheck(message);
+        insertMessage(message);
+        Thread.sleep(EXPECTED_PROCESSING_TIME);
+
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
@@ -154,7 +158,7 @@ public class MessageInsertTest extends MessageMethod {
         messageQuery.setStartDate(date);
         messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
-        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -171,7 +175,8 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-20T22:37:00-01:23");
 
-        insertMessageCheck(message);
+        insertMessage(message);
+        Thread.sleep(EXPECTED_PROCESSING_TIME);
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
@@ -179,7 +184,7 @@ public class MessageInsertTest extends MessageMethod {
         messageQuery.setStartDate(date);
         messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
-        List<Message> storedMessageList = executeQuery(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
