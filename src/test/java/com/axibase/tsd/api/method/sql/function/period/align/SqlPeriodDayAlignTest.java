@@ -1,9 +1,8 @@
 package com.axibase.tsd.api.method.sql.function.period.align;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.method.version.Version;
-import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -11,29 +10,32 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import static com.axibase.tsd.api.Util.*;
+import static com.axibase.tsd.api.Util.ISOFormat;
+import static com.axibase.tsd.api.Util.parseDate;
 
 public class SqlPeriodDayAlignTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-day-align-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String DAY_FORMAT_PATTERN = "yyyy-MM-dd";
+    private static final String START_TIME = "2016-06-19T00:00:00.000Z";
+    private static final String END_TIME = "2016-06-23T00:00:00.000Z";
+    private static final String ISO_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.ssS'Z'";
+    private static final Long DELTA = 900000L;
+    private static final Long DAY_LENGTH = 86400000L;
 
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        Long firstTime = parseDate("2016-06-19T00:00:00.000Z").getTime(),
-                lastTime = parseDate("2016-06-23T00:00:00.000Z").getTime(),
-                time = firstTime,
-                delta = 900000L;
+        Long firstTime = parseDate(START_TIME).getTime(),
+                lastTime = parseDate(END_TIME).getTime(),
+                time = firstTime;
         while (time < lastTime) {
             series.addData(new Sample(ISOFormat(time), "0"));
-            time += delta;
+            time += DELTA;
         }
         SeriesMethod.insertSeriesCheck(series);
     }
@@ -52,48 +54,43 @@ public class SqlPeriodDayAlignTest extends SqlTest {
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
-        List<List<String>> expectedRows = generateExpectedRows(Arrays.asList(
-                "2016-06-19T00:00:00.000Z",
-                "2016-06-20T00:00:00.000Z",
-                "2016-06-21T00:00:00.000Z",
-                "2016-06-22T00:00:00.000Z"
-        ));
+        List<List<String>> expectedRows = generateExpectedRows();
 
         assertTableRows(expectedRows, resultTable);
     }
 
 
-    private List<List<String>> generateExpectedRows(List<String> dates) {
+    private List<List<String>> generateExpectedRows() {
         List<List<String>> resultRows = new ArrayList<>();
-        Version version = VersionMethod.queryVersionCheck();
-        Integer offsetMinutes = version.
-                getDate()
-                .getTimeZone()
-                .getOffsetMinutes();
+        final String LOCAL_START_DATE = Util.formatDate(Util.parseDate(START_TIME), ISO_PATTERN);
+        final String LOCAL_END_DATE = Util.formatDate(Util.parseDate(END_TIME), ISO_PATTERN);
+        Long startTime = Util.parseDate(LOCAL_START_DATE).getTime();
+        Long endTime = Util.parseDate(LOCAL_END_DATE).getTime();
+        Long time = startTime;
 
-        int offsetSeriesCount = Math.abs(offsetMinutes / 15);
-
-        for (int i = 0; i < dates.size(); i++) {
-            String d = dates.get(i);
-            int daySeriesCount = (i == 0) ? 96 - Math.abs(offsetSeriesCount) : 96;
-            Date date = parseDate(d);
-            resultRows.add(
-                    Arrays.asList(
-                            formatDate(date, DAY_FORMAT_PATTERN),
-                            Integer.toString(daySeriesCount)
-                    )
-            );
-            if ((i + 1) == dates.size() && offsetMinutes != 0) {
-                Date nextDayAfterLast = new Date(date.getTime() + 24 * 60 * 60 * 1000);
-                resultRows.add(
-                        Arrays.asList(
-                                formatDate(nextDayAfterLast, DAY_FORMAT_PATTERN),
-                                Integer.toString(offsetSeriesCount)
-                        )
-                );
-
+        int daySeriesCount = 0;
+        while (time < endTime) {
+            if (isDayStart(time) && daySeriesCount > 0) {
+                resultRows.add(formatRow(time - DAY_LENGTH, daySeriesCount));
+                daySeriesCount = 0;
             }
+            time += DELTA;
+            daySeriesCount++;
+        }
+        if (daySeriesCount > 0) {
+            resultRows.add(formatRow(time - DELTA, daySeriesCount));
         }
         return resultRows;
     }
+
+    private List<String> formatRow(Long time, Integer count) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DAY_FORMAT_PATTERN);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return Arrays.asList(dateFormat.format(new Date(time)), Integer.toString(count));
+    }
+
+    private boolean isDayStart(Long time) {
+        return time % DAY_LENGTH == 0;
+    }
+
 }

@@ -1,15 +1,17 @@
 package com.axibase.tsd.api;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.version.Version;
+import com.axibase.tsd.api.method.version.VersionMethod;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author Dmitry Korchagin.
@@ -45,13 +47,8 @@ public class Util {
     }
 
     private static TimeZone getServerTimeZone() throws JSONException {
-        Response response = BaseMethod.queryATSDVersion();
-        JSONObject jsonObject = new JSONObject(response.readEntity(String.class));
-        return TimeZone.getTimeZone(jsonObject
-                .getJSONObject("date")
-                .getJSONObject("timeZone")
-                .getString("name")
-        );
+        Version version = VersionMethod.queryVersion().readEntity(Version.class);
+        return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
     }
 
     public static Date getNextDay() {
