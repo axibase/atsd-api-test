@@ -78,31 +78,4 @@ public class AlertMethod extends BaseMethod {
     }
 
 
-    public static void generateAlertHistoryForEntity(final String entityName) throws Exception {
-        Series series = new Series();
-        series.setEntity(entityName);
-        series.setMetric(BaseMethod.RULE_METRIC_NAME);
-        series.addData(new Sample(Util.ISOFormat(new Date()), BaseMethod.ALERT_OPEN_VALUE));
-        SeriesMethod.insertSeriesCheck(series);
-
-
-        series.setData(null);
-        series.addData(new Sample(Util.ISOFormat(new Date()), BaseMethod.ALERT_CLOSE_VALUE));
-        SeriesMethod.insertSeriesCheck(series);
-
-        Long startTime = System.currentTimeMillis();
-        boolean alertAbsent = true;
-        while(alertExist(entityName, BaseMethod.RULE_METRIC_NAME)) {
-            Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-            if(System.currentTimeMillis() > (startTime + BaseMethod.EXPECTED_PROCESSING_TIME)) {
-                alertAbsent = false;
-                break;
-            }
-        }
-        if(!alertAbsent && alertExist(entityName, BaseMethod.RULE_METRIC_NAME)) {
-            throw new IllegalArgumentException("Fail to generate AlertHistory Element");
-        }
-    }
-
-
 }
