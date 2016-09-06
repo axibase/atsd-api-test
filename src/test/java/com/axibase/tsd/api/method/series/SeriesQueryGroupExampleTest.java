@@ -1,9 +1,9 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
-import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -74,11 +74,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSum() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
-
-        Map<String, Object> group = new HashMap<>();
-        group.put("type", "SUM");
-        query.put("group", group);
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        query.setGroup(new Group(GroupType.SUM));
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:00.000Z", "12.0"),
@@ -105,12 +102,12 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumTruncate() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
 
-        Map<String, Object> group = new HashMap<>();
-        group.put("type", "SUM");
-        group.put("truncate", true);
-        query.put("group", group);
+        Group group = new Group(GroupType.SUM);
+        group.setTruncate(true);
+
+        query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:15.000Z", "16.0"),
@@ -133,14 +130,12 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumExtend() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
 
-        Map<String, Object> group = new HashMap<>();
-        group.put("type", "SUM");
-        Map<String, Object> interpolate = new HashMap<>();
-        interpolate.put("extend", true);
-        group.put("interpolate", interpolate);
-        query.put("group", group);
+        Group group = new Group(GroupType.SUM);
+        group.setInterpolate(new Interpolate(true));
+
+        query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:05.000Z", "11.0"),
@@ -166,14 +161,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumInterpolation() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
-        Map<String, Object> group = new HashMap<>();
-        group.put("type", "SUM");
-        Map<String, Object> interpolate = new HashMap<>();
-        interpolate.put("type", "PREVIOUS");
-        group.put("interpolate", interpolate);
-        query.put("group", group);
+        Group group = new Group(GroupType.SUM);
+        group.setInterpolate(new Interpolate(InterpolateType.PREVIOUS));
+        query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:00.000Z", "12.0"),
@@ -200,10 +192,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumAggregation() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
-
-        Map<String, Object> group = prepareGroupParameters("SUM", null, 10, TimeUnit.SECOND);
-        query.put("group", group);
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        query.setGroup(new Group(GroupType.SUM, new Interval(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:00.000Z", "15.0"),
@@ -228,11 +218,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumGroupAggregation() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        final Interval period = new Interval(10, TimeUnit.SECOND);
 
-        Map<String, Object> group = prepareGroupParameters("SUM", null, 10, TimeUnit.SECOND);
-        query.put("group", group);
-        query.put("aggregate", group); //aggregate parameter is equal to group parameter
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        query.setGroup(new Group(GroupType.SUM, period));
+        query.setAggregate(new Aggregate(AggregationType.SUM, period));
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:00.000Z", "15.0"),
@@ -257,13 +247,9 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumAggregationToGroup() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
-
-        Map<String, Object> group = prepareGroupParameters("SUM", 1, null, null);
-        query.put("group", group);
-
-        Map<String, Object> aggregate = prepareGroupParameters("COUNT", 0, 10, TimeUnit.SECOND);
-        query.put("aggregate", aggregate);
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        query.setGroup(new Group(GroupType.SUM, null, 1));
+        query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:00.000Z", "3.0"),
@@ -288,13 +274,9 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @Test
     public void testExampleSumGroupToAggregation() throws Exception {
-        Map<String, Object> query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
-
-        Map<String, Object> group = prepareGroupParameters("SUM", 0, 1, TimeUnit.MILLISECOND);
-        query.put("group", group);
-
-        Map<String, Object> aggregate = prepareGroupParameters("COUNT", 1, 10, TimeUnit.SECOND);
-        query.put("aggregate", aggregate);
+        SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
+        query.setGroup(new Group(GroupType.SUM, new Interval(1, TimeUnit.MILLISECOND), 0));
+        query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND), 1));
 
         List<Sample> expectedSamples = Arrays.asList(
                 new Sample("2016-06-25T08:00:00.000Z", "2.0"),
@@ -314,28 +296,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
 
-    private Map<String, Object> prepareDefaultQuery(String startDate, String endDate) {
-        Map<String, Object> defaultQuery = new HashMap<>();
-        defaultQuery.put("startDate", startDate);
-        defaultQuery.put("endDate", endDate);
-        defaultQuery.put("entities", Arrays.asList(FIRST_ENTITY, SECOND_ENTITY));
-        defaultQuery.put("metric", GROUPED_METRIC);
-        return defaultQuery;
-    }
-
-    private Map<String, Object> prepareGroupParameters(String type, Integer order, Integer periodCount, TimeUnit periodUnit) {
-        Map<String, Object> groupParameter = new HashMap<>();
-        if (type != null)
-            groupParameter.put("type", type);
-        if (order != null)
-            groupParameter.put("order", order);
-        if (periodCount != null && periodUnit != null) {
-            Map<String, Object> period = new HashMap<>();
-            period.put("count", periodCount);
-            period.put("unit", periodUnit);
-            groupParameter.put("period", period);
-        }
-        return groupParameter;
+    private SeriesQuery prepareDefaultQuery(String startDate, String endDate) {
+        SeriesQuery seriesQuery = new SeriesQuery();
+        seriesQuery.setMetric(GROUPED_METRIC);
+        seriesQuery.setEntities(Arrays.asList(FIRST_ENTITY, SECOND_ENTITY));
+        seriesQuery.setStartDate(startDate);
+        seriesQuery.setEndDate(endDate);
+        return seriesQuery;
     }
 
     private static class SeriesGroupExampleStructure {

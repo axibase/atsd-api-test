@@ -3,30 +3,32 @@ package com.axibase.tsd.api.model.series;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SeriesQuery {
     private String entity;
+    private List<String> entities;
     private String metric;
     private String startDate;
     private String endDate;
     private Interval interval;
     private Map<String, String> tags = new HashMap<>();
-    private Map<String, Object> aggregate;
-    private Map<String, Object> group;
+    private Aggregate aggregate;
+    private Group group;
     private String timeFormat;
     private Boolean exactMatch;
 
     public SeriesQuery() {
     }
 
-    public SeriesQuery(Series series) {
+    public SeriesQuery(Series series)  {
         setEntity(series.getEntity());
         setTags(new HashMap<>(series.getTags()));
         setExactMatch(true);
@@ -35,38 +37,31 @@ public class SeriesQuery {
             setStartDate(BaseMethod.MIN_QUERYABLE_DATE);
             setEndDate(BaseMethod.MAX_QUERYABLE_DATE);
         } else {
-            try {
-                Long minDate = Util.getMillis(BaseMethod.MAX_QUERYABLE_DATE);
-                Long maxDate = Util.getMillis(BaseMethod.MIN_QUERYABLE_DATE);
-
-                Long curDate;
-                for (Sample sample : series.getData()) {
-                    curDate = sample.getT();
-                    if (curDate == null) {
-                        curDate = Util.getMillis(sample.getD());
-                    }
-                    minDate = Math.min(curDate, minDate);
-                    maxDate = Math.max(curDate, maxDate);
-                }
-
-                setStartDate(Util.ISOFormat(minDate));
-                setEndDate(Util.ISOFormat(maxDate + 1));
-            } catch (ParseException e) {
-                throw new IllegalArgumentException("Fail to parse date string");
-            }
+            setIntervalBasedOnSeriesDate(series);
         }
     }
 
-    public void setAggregate(Map<String, Object> aggregate) {
-        this.aggregate = aggregate;
-    }
+    private void setIntervalBasedOnSeriesDate(final Series series) throws  IllegalArgumentException {
+        try {
+            Long minDate = Util.getMillis(BaseMethod.MAX_QUERYABLE_DATE);
+            Long maxDate = Util.getMillis(BaseMethod.MIN_QUERYABLE_DATE);
 
-    public Map<String, Object> getGroup() {
-        return group;
-    }
+            Long curDate;
+            for (Sample sample : series.getData()) {
+                curDate = sample.getT();
+                if (curDate == null) {
+                    curDate = Util.getMillis(sample.getD());
+                }
+                minDate = Math.min(curDate, minDate);
+                maxDate = Math.max(curDate, maxDate);
+            }
 
-    public void setGroup(Map<String, Object> group) {
-        this.group = group;
+            setStartDate(Util.ISOFormat(minDate));
+            setEndDate(Util.ISOFormat(maxDate + 1));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Fail to parse date  string to millis");
+        }
+
     }
 
     public SeriesQuery(String entity, String metric, long startTime, long endTime) {
@@ -91,35 +86,44 @@ public class SeriesQuery {
         this.tags = tags;
     }
 
-    public void addAggregateType(String type) {
-        if (aggregate == null) {
-            aggregate = new HashMap<>();
-        }
-        Object o = aggregate.get("types");
-        if (o == null) {
-            o = new ArrayList<>();
-        }
-        ArrayList<String> types = (ArrayList<String>) o;
-        types.add(type);
-        aggregate.put("types", types);
+    public Group getGroup() {
+        return group;
     }
 
-    public Map<String, Object> getAggregate() {
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public void addAggregateType(AggregationType type) {
+        if (aggregate == null) {
+            aggregate = new Aggregate();
+        }
+        aggregate.addType(type);
+    }
+
+
+    public List<String> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<String> entities) {
+        this.entities = entities;
+    }
+
+    public void setAggregate(Aggregate aggregate) {
+        this.aggregate = aggregate;
+    }
+
+
+    public Aggregate getAggregate() {
         return aggregate;
     }
 
-    public void setAggregatePeriod(int count, String unit) {
+    public void setAggregatePeriod(int count, TimeUnit unit) {
         if (aggregate == null) {
-            aggregate = new HashMap<>();
+            aggregate = new Aggregate();
         }
-        Object o = aggregate.get("period");
-        if (o == null) {
-            o = new HashMap<>();
-        }
-        Map period = (HashMap) o;
-        period.put("count", count);
-        period.put("unit", unit);
-        aggregate.put("period", period);
+        aggregate.setPeriod(new Interval(count, unit));
     }
 
     public String getEntity() {
