@@ -29,7 +29,7 @@ public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
     private static final Series series;
     private static Calendar calendar = Calendar.getInstance();
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger logger = LoggerFactory.getLogger(SeriesQueryTest.class);
 
 
     static {
