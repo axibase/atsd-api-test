@@ -7,11 +7,8 @@ import com.axibase.tsd.api.model.series.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -19,52 +16,32 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     private final static String FIRST_ENTITY = "series-group-example-1";
     private final static String SECOND_ENTITY = "series-group-example-2";
     private final static String GROUPED_METRIC = "metric-group-example-1";
-    private static List<SeriesGroupExampleStructure> exampleData;
-
-    static {
-        Registry.Entity.register(FIRST_ENTITY);
-        Registry.Entity.register(SECOND_ENTITY);
-        Registry.Metric.register(GROUPED_METRIC);
-        exampleData = Arrays.asList(
-                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:00.000Z", 1),
-                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:00.000Z", 11),
-                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:05.000Z", 3),
-                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:10.000Z", 5),
-                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:15.000Z", 8),
-                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:15.000Z", 8),
-                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:30.000Z", 3),
-                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:30.000Z", 13),
-                new SeriesGroupExampleStructure(FIRST_ENTITY, "2016-06-25T08:00:45.000Z", 5),
-                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:45.000Z", 15),
-                new SeriesGroupExampleStructure(SECOND_ENTITY, "2016-06-25T08:00:59.000Z", 19)
-        );
-    }
-
 
     @BeforeClass
     public void insertSeriesSet() throws Exception {
+        Registry.Metric.register(GROUPED_METRIC);
+
         Series firstSeries = new Series();
+        Registry.Entity.register(FIRST_ENTITY);
         firstSeries.setEntity(FIRST_ENTITY);
         firstSeries.setMetric(GROUPED_METRIC);
 
         Series secondSeries = new Series();
         secondSeries.setEntity(SECOND_ENTITY);
+        Registry.Entity.register(SECOND_ENTITY);
         secondSeries.setMetric(GROUPED_METRIC);
 
-        String currentEntity;
-        for (SeriesGroupExampleStructure sampleTriplet : exampleData) {
-            currentEntity = sampleTriplet.getEntity();
-            switch (currentEntity) {
-                case FIRST_ENTITY:
-                    firstSeries.addData(new Sample(sampleTriplet.getDate(), sampleTriplet.getValue()));
-                    break;
-                case SECOND_ENTITY:
-                    secondSeries.addData(new Sample(sampleTriplet.getDate(), sampleTriplet.getValue()));
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected entity in exampleData");
-            }
-        }
+        firstSeries.addData( new Sample("2016-06-25T08:00:00.000Z", 1));
+        secondSeries.addData(new Sample("2016-06-25T08:00:00.000Z", 11));
+        firstSeries.addData( new Sample("2016-06-25T08:00:05.000Z", 3));
+        firstSeries.addData( new Sample("2016-06-25T08:00:10.000Z", 5));
+        firstSeries.addData( new Sample("2016-06-25T08:00:15.000Z", 8));
+        secondSeries.addData(new Sample("2016-06-25T08:00:15.000Z", 8));
+        firstSeries.addData( new Sample("2016-06-25T08:00:30.000Z", 3));
+        secondSeries.addData(new Sample("2016-06-25T08:00:30.000Z", 13));
+        firstSeries.addData( new Sample("2016-06-25T08:00:45.000Z", 5));
+        secondSeries.addData(new Sample("2016-06-25T08:00:45.000Z", 15));
+        secondSeries.addData(new Sample("2016-06-25T08:00:59.000Z", 19));
         insertSeriesCheck(Arrays.asList(firstSeries, secondSeries));
     }
 
@@ -295,7 +272,6 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Grouped series do not match to expected", expected, actual);
     }
 
-
     private SeriesQuery prepareDefaultQuery(String startDate, String endDate) {
         SeriesQuery seriesQuery = new SeriesQuery();
         seriesQuery.setMetric(GROUPED_METRIC);
@@ -304,29 +280,4 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         seriesQuery.setEndDate(endDate);
         return seriesQuery;
     }
-
-    private static class SeriesGroupExampleStructure {
-        private String entity;
-        private String date;
-        private BigDecimal value;
-
-        public SeriesGroupExampleStructure(String entity, String date, Integer value) {
-            this.entity = entity;
-            this.date = date;
-            this.value = new BigDecimal(value);
-        }
-
-        public String getEntity() {
-            return entity;
-        }
-
-        public String getDate() {
-            return date;
-        }
-
-        public BigDecimal getValue() {
-            return value;
-        }
-    }
-
 }
