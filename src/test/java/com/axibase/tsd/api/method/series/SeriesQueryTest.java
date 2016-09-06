@@ -5,9 +5,7 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -428,9 +426,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.setMetric(series.getMetric());
         query.setInterval(new Interval(99999, TimeUnit.QUARTER));
 
-        Map<String, Object> group = new HashMap<>();
-        group.put("type", "SUM");
-        query.setGroup(group);
+        query.setGroup(new Group(GroupType.SUM));
 
         List<Series> storedSeries = executeQueryReturnSeries(query);
 
@@ -455,10 +451,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Interval interval = new Interval(99999, TimeUnit.QUARTER);
         query.setInterval(interval);
 
-        Map<String, Object> aggregate = new HashMap<>();
-        aggregate.put("type", "SUM");
-        aggregate.put("period", interval);
-        query.setAggregate(aggregate);
+        query.setAggregate(new Aggregate(AggregationType.SUM, interval));
 
 
         List<Series> storedSeries = executeQueryReturnSeries(query);
