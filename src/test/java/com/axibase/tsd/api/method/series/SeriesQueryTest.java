@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.AGGREGATE_NON_DETAIL_REQUIRE_PERIOD;
+import static com.axibase.tsd.api.AtsdErrorMessage.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
@@ -459,6 +461,59 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Response should contain only one sample", 1, data.size());
         assertEquals("Returned value does not match to expected SUM", VALUE, data.get(0).getV());
     }
+
+    /**
+     * #3324
+     */
+    @Test
+    public void testAggregateInterpolateNoTypeRaiseError() throws Exception {
+        SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+
+        Aggregate aggregate = new Aggregate(AggregationType.SUM, new Interval(99999, TimeUnit.QUARTER));
+        aggregate.setInterpolate(new Interpolate());
+
+        query.setAggregate(aggregate);
+
+        Response response = querySeries(query);
+
+        assertEquals("Query with interpolation but without type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", INTERPOLATE_TYPE_REQUIRED, extractErrorMessage(response));
+    }
+
+
+    /**
+     * #3324
+     */
+    @Test
+    public void testGroupInterpolateNoTypeRaiseError() throws Exception {
+        SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+
+        Group group = new Group(GroupType.SUM, new Interval(99999, TimeUnit.QUARTER));
+        group.setInterpolate(new Interpolate());
+
+        query.setGroup(group);
+
+        Response response = querySeries(query);
+
+        assertEquals("Query with interpolation but without type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", INTERPOLATE_TYPE_REQUIRED, extractErrorMessage(response));
+    }
+
+    /**
+     * #3324
+     */
+    @Test
+    public void testAggregateNoPeriodRaiseError() throws Exception {
+        SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+
+        query.setAggregate(new Aggregate(AggregationType.SUM));
+
+        Response response = querySeries(query);
+
+        assertEquals("Aggregate query without period should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", AGGREGATE_NON_DETAIL_REQUIRE_PERIOD, extractErrorMessage(response));
+    }
+
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
         calendar.add(Calendar.DAY_OF_YEAR, 1);

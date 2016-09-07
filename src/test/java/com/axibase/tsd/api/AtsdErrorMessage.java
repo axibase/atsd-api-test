@@ -16,5 +16,7 @@ public class AtsdErrorMessage {
 
     public static final String UNKNOWN_ENTITY_FIELD_PREFIX = "org.codehaus.jackson.map.exc.UnrecognizedPropertyException:";
     public static final String TAG_VALUE_ARRAY_PREFIX = "org.codehaus.jackson.map.JsonMappingException: Can not deserialize instance";
+    public static final String INTERPOLATE_TYPE_REQUIRED = "IllegalArgumentException: Interpolation type is required";
+    public static final String AGGREGATE_NON_DETAIL_REQUIRE_PERIOD = "IllegalArgumentException: Interpolation type is required for non-DETAIL aggregate function";
 
 }
