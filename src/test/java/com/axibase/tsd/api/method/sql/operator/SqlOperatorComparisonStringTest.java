@@ -13,13 +13,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.SQL_SYNTAX_COMPARISON_TPL;
+
 public class SqlOperatorComparisonStringTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-operator-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY1_NAME = TEST_PREFIX + "entity-1";
     private static final String TEST_ENTITY2_NAME = TEST_PREFIX + "entity-2";
-    private static final String SYNTAX_ERROR_MESSAGE_TEMPLATE =
-            "Syntax error at line %s position %s: no viable alternative at input '%s'";
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -142,7 +142,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = executeQuery(sqlQuery);
 
-        assertBadRequest(response, String.format(SYNTAX_ERROR_MESSAGE_TEMPLATE, '2', "19", "'-1'"));
+        assertBadRequest(response, String.format(SQL_SYNTAX_COMPARISON_TPL, '2', "19", "'-1'"));
     }
 
     /**
@@ -320,7 +320,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = executeQuery(sqlQuery);
 
-        assertBadRequest(response, String.format(SYNTAX_ERROR_MESSAGE_TEMPLATE, "2", "13", "metric >="));
+        assertBadRequest(response, String.format(SQL_SYNTAX_COMPARISON_TPL, "2", "13", "metric >="));
     }
 
     /**

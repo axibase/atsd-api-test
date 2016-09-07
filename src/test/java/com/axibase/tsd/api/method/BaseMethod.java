@@ -37,6 +37,7 @@ public abstract class BaseMethod {
     public static final String RULE_METRIC_NAME = "test_alert_metric_1";
     public static final String ALERT_OPEN_VALUE = "1";
     public static final String ALERT_CLOSE_VALUE = "-1";
+
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
     private static final String METHOD_VERSION = "/version";

@@ -63,18 +63,17 @@ public class SeriesQuery {
 
     }
 
-    public SeriesQuery(String entity, String metric, long startTime, long endTime) {
+    public SeriesQuery(String entity, String metric) {
         this.entity = entity;
         this.metric = metric;
-        this.startDate = Util.ISOFormat(startTime);
-        this.endDate = Util.ISOFormat(endTime);
+    }
+
+    public SeriesQuery(String entity, String metric, long startTime, long endTime) {
+        this(entity, metric, Util.ISOFormat(startTime), Util.ISOFormat(endTime), new HashMap<String, String>());
     }
 
     public SeriesQuery(String entity, String metric, String startDate, String endDate) {
-        this.entity = entity;
-        this.metric = metric;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this(entity, metric, startDate, endDate, new HashMap<String, String>());
     }
 
     public SeriesQuery(String entity, String metric, String startDate, String endDate, Map<String, String> tags) {

@@ -24,7 +24,6 @@ public class EntityGroupMethod extends BaseMethod {
     public final static String METHOD_ENTITYGROUP_ENTITIES_SET = "/entity-groups/{group}/entities/set";
     public final static String METHOD_ENTITYGROUP_ENTITIES_DELETE = "/entity-groups/{group}/entities/delete";
     public final static String SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION = "properties('some.prop').size() > 0";
-    public final static String CANNOT_MODIFY_ENTITY_ERROR_MESSAGE_TPL = "IllegalArgumentException: Can not modify entities for entity group '%s'. Please reset expression field first.";
 
     public static Response getEntityGroup(String groupName) {
         Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().get();

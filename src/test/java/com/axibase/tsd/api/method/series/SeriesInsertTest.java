@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.AtsdErrorMessage;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
@@ -21,8 +22,7 @@ import static org.testng.AssertJUnit.*;
 
 
 public class SeriesInsertTest extends SeriesMethod {
-    private static final String EMPTY_TAG_ERROR = "IllegalArgumentException: Tag \"%s\" has empty value";
-    private final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
+    final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
 
     /**
      * #2871
@@ -618,7 +618,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**
@@ -636,7 +636,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**
@@ -655,7 +655,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**
@@ -674,6 +674,6 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(EMPTY_TAG_ERROR, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
     }
 }

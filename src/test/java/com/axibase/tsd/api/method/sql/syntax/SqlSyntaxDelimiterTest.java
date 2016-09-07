@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.SQL_SYNTAX_DELIMITER_TPL;
+
 /**
  * @author Igor Shmagrinskiy
  */
@@ -20,8 +22,6 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-syntax-delimiter-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
-    private static final String ERROR_MESSAGE_TEMPLATE =
-            "Syntax error at line %d position %d: extraneous input '%s' expecting {<EOF>, AND, OR, ORDER, GROUP, LIMIT, WITH}";
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -172,7 +172,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         Response response = executeQuery(sqlQuery);
 
-        assertBadRequest(response, String.format(ERROR_MESSAGE_TEMPLATE, 2, 43, 'a'));
+        assertBadRequest(response, String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, 'a'));
     }
 
 
@@ -189,7 +189,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest("Query must return correct table",
-                response, String.format(ERROR_MESSAGE_TEMPLATE, 2, 43, '1')
+                response, String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, '1')
         );
     }
 

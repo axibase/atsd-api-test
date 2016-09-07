@@ -10,7 +10,10 @@ import java.util.Collections;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class MessageCommandTest extends MessageMethod {
-    /* #2412 */
+
+    /**
+     * #2412
+     */
     @Test
     public void testMaxLength() throws Exception {
         final int MAX_LENGTH = 128 * 1024;

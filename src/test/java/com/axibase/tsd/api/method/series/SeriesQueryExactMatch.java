@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
@@ -14,9 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class SeriesQueryExactMatch extends SeriesMethod {
     final String exactMatchEntityName = "series-query-exactmatch-entity-1";
     final String exactMatchMetricName = "series-query-exactmatch-metric-1";

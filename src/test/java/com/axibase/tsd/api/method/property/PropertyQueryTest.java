@@ -623,7 +623,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testStartDateAbsent() throws Exception {
+    public void testDateFilterAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "test_type");
         request.put("entity", "test_entity");
@@ -653,7 +653,6 @@ public class PropertyQueryTest extends PropertyMethod {
     @Test
     public void testEntityFilterEndDateAbsent() throws Exception {
         Map<String, Object> request = new HashMap<>();
-        request.put("type", "test_type");
         request.put("type", "test_type");
         request.put("startDate", "2016-06-01T12:04:59.191Z");
 

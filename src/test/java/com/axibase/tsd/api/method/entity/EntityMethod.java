@@ -23,8 +23,6 @@ public class EntityMethod extends BaseMethod {
     public static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
     public static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     public static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
-    public static final String UNKNOWN_ENTITY_FIELD_ERROR_PREFIX = "org.codehaus.jackson.map.exc.UnrecognizedPropertyException:";
-    public static final String TAG_VALUE_ARRAY_ERROR_PREFIX = "org.codehaus.jackson.map.JsonMappingException: Can not deserialize instance";
 
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {

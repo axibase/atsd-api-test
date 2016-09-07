@@ -10,13 +10,14 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL;
+
 
 public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-syntax-ambiguously-columns-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
     private static final String TEST_METRIC2_NAME = TEST_PREFIX + "metric-2";
     private static final String TEST_ENTITY1_NAME = TEST_PREFIX + "entity";
-    private static final String ERROR_MESSAGE_TEMPLATE = "Column '%s' ambiguously defined";
     private static final String BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE = "Query must raise ambiguously error for : %s";
     private static final String OK_REQUEST_ASSERT_MESSAGE_TEMPLATE = "Query mustn't raise any error for";
 
@@ -54,7 +55,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "value"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "value"));
     }
 
     /**
@@ -70,7 +71,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column entity"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "entity"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "entity"));
     }
 
     /**
@@ -86,7 +87,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column time"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "time"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "time"));
     }
 
 
@@ -103,7 +104,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "where clause"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "datetime"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "datetime"));
     }
 
     /**
@@ -119,7 +120,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "tags"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "tags"));
     }
 
 
@@ -136,7 +137,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column tags.a"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "tags.a"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "tags.a"));
     }
 
     /**
@@ -185,7 +186,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column metric.tags.a"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "metric.tags.a"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "metric.tags.a"));
     }
 
     /**
@@ -201,7 +202,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column entity.tags.a"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "entity.tags.a"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "entity.tags.a"));
     }
 
 
@@ -218,7 +219,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column ABS(value)"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "ABS(value)"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "ABS(value)"));
     }
 
     /**
@@ -234,7 +235,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
-                response, String.format(ERROR_MESSAGE_TEMPLATE, "AVG(value)"));
+                response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "AVG(value)"));
     }
 
     /**

@@ -13,10 +13,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.BAD_CREDENTIALS;
+
 public class AuthenticationTest extends BaseMethod {
     private static final String UNKNOWN_USER = "Unknown User";
     private static final String UNKNOWN_USER_PASSWORD = "Unknown User Password";
-    public static final String BAD_CREDENTIALS_ERROR_MESSAGE = "org.springframework.security.authentication.BadCredentialsException: Bad credentials";
 
     /**
      * #2870
@@ -28,7 +29,7 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, BAD_CREDENTIALS_ERROR_MESSAGE);
+        Assert.assertEquals(errorMessage, BAD_CREDENTIALS);
     }
 
     /**
@@ -41,7 +42,7 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, BAD_CREDENTIALS_ERROR_MESSAGE);
+        Assert.assertEquals(errorMessage, BAD_CREDENTIALS);
     }
 
     /**
@@ -53,7 +54,7 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, BAD_CREDENTIALS_ERROR_MESSAGE);
+        Assert.assertEquals(errorMessage, BAD_CREDENTIALS);
     }
 
     /**
@@ -65,6 +66,6 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, BAD_CREDENTIALS_ERROR_MESSAGE);
+        Assert.assertEquals(errorMessage, BAD_CREDENTIALS);
     }
 }

@@ -1,8 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
@@ -16,6 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.TAG_VALUE_ARRAY_PREFIX;
+import static com.axibase.tsd.api.AtsdErrorMessage.UNKNOWN_ENTITY_FIELD_PREFIX;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -23,9 +23,6 @@ import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class EntityCreateOrReplaceTest extends EntityMethod {
 
     /**
@@ -125,7 +122,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         Response response = createOrReplaceEntity(entityName, insertQuery);
 
         final String givenErrorMessage = extractErrorMessage(response);
-        assertTrue("Fail to check error message", givenErrorMessage.startsWith(UNKNOWN_ENTITY_FIELD_ERROR_PREFIX));
+        assertTrue("Fail to check error message", givenErrorMessage.startsWith(UNKNOWN_ENTITY_FIELD_PREFIX));
     }
 
     /**
@@ -275,7 +272,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         final Response response = createOrReplaceEntity(entityName, createOrReplaceEntityQuery);
         assertEquals("Request should be failed", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue("Error message mismatch", extractErrorMessage(response).startsWith(TAG_VALUE_ARRAY_ERROR_PREFIX));
+        assertTrue("Error message mismatch", extractErrorMessage(response).startsWith(TAG_VALUE_ARRAY_PREFIX));
         assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntity(entityName).getStatus());
 
     }
@@ -297,7 +294,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         final Response response = createOrReplaceEntity(entityName, createOrReplaceEntityQuery);
         assertEquals("Request should be failed", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue("Error message mismatch", extractErrorMessage(response).startsWith(TAG_VALUE_ARRAY_ERROR_PREFIX));
+        assertTrue("Error message mismatch", extractErrorMessage(response).startsWith(TAG_VALUE_ARRAY_PREFIX));
         assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntity(entityName).getStatus());
     }
 

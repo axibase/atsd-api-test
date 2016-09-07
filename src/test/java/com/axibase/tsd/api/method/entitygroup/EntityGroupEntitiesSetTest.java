@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.CANNOT_MODIFY_ENTITY_TPL;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -57,7 +58,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
         Response response = setEntities(entityGroup.getName(), Collections.singletonList("test-entity"));
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
 
-        final String expected = String.format(CANNOT_MODIFY_ENTITY_ERROR_MESSAGE_TPL, entityGroup.getName());
+        final String expected = String.format(CANNOT_MODIFY_ENTITY_TPL, entityGroup.getName());
         final String actual = extractErrorMessage(response);
         assertEquals("Error does not match", expected, actual);
     }
