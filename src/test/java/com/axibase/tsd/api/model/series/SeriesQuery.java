@@ -3,7 +3,6 @@ package com.axibase.tsd.api.model.series;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.Interval;
-import com.axibase.tsd.api.model.TimeUnit;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.text.ParseException;
@@ -94,14 +93,6 @@ public class SeriesQuery {
         this.group = group;
     }
 
-    public void addAggregateType(AggregationType type) {
-        if (aggregate == null) {
-            aggregate = new Aggregate();
-        }
-        aggregate.addType(type);
-    }
-
-
     public List<String> getEntities() {
         return entities;
     }
@@ -117,13 +108,6 @@ public class SeriesQuery {
 
     public Aggregate getAggregate() {
         return aggregate;
-    }
-
-    public void setAggregatePeriod(int count, TimeUnit unit) {
-        if (aggregate == null) {
-            aggregate = new Aggregate();
-        }
-        aggregate.setPeriod(new Interval(count, unit));
     }
 
     public String getEntity() {

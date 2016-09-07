@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Interpolate {
-    InterpolateType type;
-    Integer value;
-    Boolean extend;
+    private InterpolateType type;
+    private Integer value;
+    private Boolean extend;
 
     public Interpolate() {
 
@@ -14,10 +14,6 @@ public class Interpolate {
 
     public Interpolate(InterpolateType type) {
         this(type, null);
-    }
-
-    public Interpolate(Boolean extend) {
-        this(null, extend);
     }
 
     public Interpolate(InterpolateType type, Boolean extend) {
