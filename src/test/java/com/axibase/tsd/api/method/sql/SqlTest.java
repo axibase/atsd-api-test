@@ -27,8 +27,12 @@ public class SqlTest extends SqlMethod {
     }
 
     public static void assertTableRows(List<List<String>> row1, StringTable table) {
+        assertTableRows(row1, table, "Table rows  must  be identical");
+    }
+
+    public static void assertTableRows(List<List<String>> row1, StringTable table, String errorMessage) {
         List<List<String>> row2 = table.getRows();
-        assertEquals("Table rows  must  be identical", row1, row2);
+        assertEquals(errorMessage, row2, row1);
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {

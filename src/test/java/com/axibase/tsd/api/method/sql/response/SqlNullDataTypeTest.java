@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -11,10 +11,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
-public class SqlNullDataTypeTest extends SqlMethod {
+public class SqlNullDataTypeTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-data-type-null-";
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
     private static final String TEST_METRIC2_NAME = TEST_PREFIX + "metric-2";
@@ -45,17 +46,13 @@ public class SqlNullDataTypeTest extends SqlMethod {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /*
-      Bug#2934 operation on NULL should produce NULL instead of NaN
-     */
-
 
     /*
       Arithmetical function
      */
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testDivisionExpressionWithNullValueDataType() {
@@ -71,7 +68,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     }
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testExpressionNaNDataType() {
@@ -87,7 +84,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testMinusExpressionWithNullValueDataType() {
@@ -102,7 +99,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
     }
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testPlusExpressionWithNullValueDataType() {
@@ -119,7 +116,7 @@ public class SqlNullDataTypeTest extends SqlMethod {
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testMultiplicationExpressionWithNullValueDataType() {
@@ -138,147 +135,202 @@ public class SqlNullDataTypeTest extends SqlMethod {
       Aggregate function
      */
 
+
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testCountExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, COUNT(t2.value), t1.value/t1.value as nancol %n" +
-                        "FROM '%s' t1 %nOUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  COUNT(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
+
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("1", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("1")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testSumExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, SUM(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  SUM(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
+
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testAvgExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, AVG(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  AVG(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
+
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testMinExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, AVG(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  Min(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
+
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
+
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testMaxExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, AVG(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'GROUP BY t1.value, t2.value",
+                "SELECT  MAX(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testFirstExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, FIRST(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  FIRST(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testCounterExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, FIRST(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  COUNTER(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testDeltaExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, DELTA(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  DELTA(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
+
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
 
+
     /**
-     * issue: #2934
+     * #2934
      */
     @Test
     public void testLastExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, LAST(t2.value), t1.value/t1.value as nancol %nFROM '%s' t1 %n" +
-                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s' %nGROUP BY t1.value, t2.value",
+                "SELECT  LAST(t2.value) as nancol %nFROM '%s' t1 %n" +
+                        "OUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
+
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("0.0", resultTable.getValueAt(2, 0));
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Collections.singletonList("0.0")
+        );
+
+        assertTableRows(expectedRows, resultTable);
     }
+
 }
