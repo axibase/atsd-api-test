@@ -335,7 +335,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = executeQuery(sqlQuery);
 
-        assertBadRequest(response, "Failed to parse date value");
+        assertBadRequest(response, "Invalid date value");
     }
 
 }
