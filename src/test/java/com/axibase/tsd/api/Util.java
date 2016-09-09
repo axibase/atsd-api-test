@@ -13,9 +13,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class Util {
 
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
@@ -101,5 +98,13 @@ public class Util {
         instance.setTime(parseDate(date));
         instance.add(Calendar.MINUTE, -offsetMinutes);
         return ISOFormat(instance.getTime());
+    }
+
+    public static StringBuilder copyChar(char c, int count) {
+        StringBuilder sb = new StringBuilder("");
+        for(int i = 0; i < count; i++) {
+            sb.append(c);
+        }
+        return sb;
     }
 }

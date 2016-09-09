@@ -257,16 +257,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
-        EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity("property-insert-test-isoz");
 
-        DateFilter dateFilter = new DateFilter();
-        String date = "2016-07-21T00:00:00.000Z";
-        dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
-
-        propertyQuery.setEntityFilter(entityFilter);
-        propertyQuery.setDateFilter(dateFilter);
+        propertyQuery.setEntity("property-insert-test-isoz");
+        propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
+        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
         propertyQuery.setType(property.getType());
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
@@ -275,7 +269,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
         Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
+        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
     }
 
     /* #2850 */
@@ -289,17 +283,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
-        EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity(entityName);
-
-        DateFilter dateFilter = new DateFilter();
-        String date = "2016-07-21T00:00:00.000Z";
-        dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
-
-        propertyQuery.setEntityFilter(entityFilter);
-        propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
+        propertyQuery.setEntity(entityName);
+        propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
+        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
@@ -307,7 +294,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
         Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
+        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
     }
 
     /* #2850 */
@@ -321,17 +308,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
-        EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity(entityName);
-
-        DateFilter dateFilter = new DateFilter();
-        String date = "2016-07-21T00:00:00.000Z";
-        dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
-
-        propertyQuery.setEntityFilter(entityFilter);
-        propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
+        propertyQuery.setEntity(entityName);
+        propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
+        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
@@ -339,7 +319,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
         Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
+        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
     }
 
     /* #2850 */
