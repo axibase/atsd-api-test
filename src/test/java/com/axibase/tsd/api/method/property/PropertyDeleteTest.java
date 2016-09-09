@@ -1,16 +1,14 @@
 package com.axibase.tsd.api.method.property;
 
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.axibase.tsd.api.model.property.PropertyQuery;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,12 +16,7 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
-/**
- * @author Dmitry Korchagin.
- */
-@SuppressWarnings("unchecked")
 public class PropertyDeleteTest extends PropertyMethod {
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Test
     public void testFutureDateExactTrue() throws Exception {
@@ -32,14 +25,13 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addKey("k1", "v1");
         property.setDate(Util.getNextDay());
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("exactMatch", true);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertTrue("Property should be remain", propertyExist(property));
     }
 
@@ -51,14 +43,13 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addKey("k1", "v1");
         property.setDate(Util.getNextDay());
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("exactMatch", false);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -69,15 +60,13 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addKey("k1", "v1");
         property.setDate(Util.getNextDay());
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", property.getKey());
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertFalse("Property should be deleted", propertyExist(property));
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should be deleted", propertyExist(property));
     }
 
     @Test
@@ -86,23 +75,143 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
         Property secondProperty = new Property(null, "delete-entity6-2");
         secondProperty.setType(property.getType());
         secondProperty.setTags(property.getTags());
         secondProperty.addKey("k2", "v2");
         insertPropertyCheck(secondProperty);
-        logger.info("secondProperty inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", property.getKey());
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertFalse("First property should be deleted", propertyExist(property));
         assertTrue("Second property should remain", propertyExist(secondProperty));
+    }
+
+    @Test
+    public void testEmptyKey() throws Exception {
+        final Property property = new Property("delete-type-6.1", "delete-entity6.1");
+        property.addKey("k1", null);
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        Property secondProperty = new Property(null, "delete-entity6.1-2");
+        secondProperty.setType(property.getType());
+        secondProperty.setTags(property.getTags());
+        secondProperty.addKey("k2", "v2");
+        insertPropertyCheck(secondProperty);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("First property should be deleted", propertyExist(property));
+        assertTrue("Second property should remain", propertyExist(secondProperty));
+    }
+
+    @Test
+    public void testKeyValueNullExactTrue() throws Exception {
+        final Property property = new Property("delete-type-6.2", "delete-entity6.2");
+        property.addKey("k1", null);
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.addKey("k1", null);
+        deleteQuery.setExactMatch(true);
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testKeyValueNullExactFalse() throws Exception {
+        final Property property = new Property("delete-type-6.3", "delete-entity6.3");
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.addKey("k1", null);
+        deleteQuery.setExactMatch(false);
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testKeyValueEmpty() throws Exception {
+        final Property property = new Property("delete-type-6.3", "delete-entity6.3");
+        property.addTag("t1", "v1");
+        property.addKey("k1", "");
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testKeyNameTooLong() throws Exception {
+        final Property property = new Property("delete-type-6.4", "delete-entity6.4");
+        property.addTag("t1", "v1");
+        property.addKey(Util.copyChar('a', 10000).append("-key").toString(), "kv1");
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testKeyValueTooLong() throws Exception {
+        final Property property = new Property("delete-type-6.5", "delete-entity6.5");
+        property.addTag("t1", "v1");
+        property.addKey("kv1", Util.copyChar('a', 10000).append("-value").toString());
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testKeyCountTooMuch() throws Exception {
+        final Integer count = 1000;
+        final Property property = new Property("delete-type-6.6", "delete-entity6.6");
+        property.addTag("t1", "v1");
+        for(int i = 0; i < count; i++) {
+            property.addKey("key_name-" + String.valueOf(i), "key_value-" + String.valueOf(i));
+        }
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
     }
 
 
@@ -112,7 +221,6 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
         Property secondProperty = new Property();
         secondProperty.setType(property.getType());
@@ -120,15 +228,14 @@ public class PropertyDeleteTest extends PropertyMethod {
         secondProperty.setTags(property.getTags());
         secondProperty.addKey("k2", "v2");
         insertPropertyCheck(secondProperty);
-        logger.info("secondProperty inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("exactMatch", false);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertFalse("Frist property should be deleted", propertyExist(property));
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("First property should be deleted", propertyExist(property));
         assertFalse("Second property should be deleted", propertyExist(secondProperty));
 
     }
@@ -140,15 +247,67 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", property.getKey());
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testTypeObjectRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", new HashMap<>());
+        queryObj.put("entity", "mock-entity");
+        queryObj.put("key", new HashMap<>());
+
+        assertEquals("Delete query should fail if type is object", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
+    }
+
+    @Test
+    public void testTypeAbsentRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("entity", "mock-entity");
+        queryObj.put("key", new HashMap<>());
+
+        assertEquals("Delete query should fail if type is absent", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
+    }
+
+    @Test
+    public void testTypeTooLong() throws Exception {
+        final Property property = new Property(Util.copyChar('a', 10000).append("type-161").toString(), "delete-entity161");
+        property.addTag("t1", "v1");
+        property.addKey("k1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testTypeNullRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", null);
+        queryObj.put("entity", "mock-entity");
+
+        assertEquals("Delete query should fail if type is null", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
+    }
+
+    @Test
+    public void testTypeArrayRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("type", Collections.singletonList("mock-type"));
+        queryObj.put("entity", "mock-entity");
+
+        assertEquals("Delete query should fail if type is array", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
     }
 
     @Test
@@ -157,7 +316,6 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
         Property secondProperty = new Property();
         secondProperty.setType(property.getType());
@@ -165,14 +323,13 @@ public class PropertyDeleteTest extends PropertyMethod {
         secondProperty.addKey("k2", "v2");
         secondProperty.setTags(property.getTags());
         insertPropertyCheck(secondProperty);
-        logger.info("Second property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("exactMatch", true);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertTrue("First property should remain", propertyExist(property));
         assertTrue("Second property should remain", propertyExist(secondProperty));
     }
@@ -184,14 +341,13 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("type", property.getType());
-        queryObj.put("exactMatch", true);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertTrue("Property should be remain", propertyExist(property));
     }
 
@@ -200,64 +356,35 @@ public class PropertyDeleteTest extends PropertyMethod {
         final Property property = new Property("delete-type1", "delete-entity1");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
-        property.setDate(System.currentTimeMillis());
+        property.setDate("2016-06-01T12:00:00.000Z");
         insertPropertyCheck(property);
-        logger.info("Property inserted");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("type", property.getType());
-        queryObj.put("key", property.getKey());
-        queryObj.put("endDate", property.getDate());
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setEndDate(property.getDate());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertTrue("Property should be remain", propertyExist(property));
     }
 
     @Test
-    public void testTypeStartEnd() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "testtype");
-        request.put("startDate", "2016-06-01T12:04:59.191Z");
-        request.put("endDate", "2016-06-01T12:04:59.191Z");
+    public void testTypeStartEndRaiseError() throws Exception {
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType("mock-type");
+        deleteQuery.setStartDate(MIN_QUERYABLE_DATE);
+        deleteQuery.setEndDate(MAX_QUERYABLE_DATE);
 
 
-        Response response = deleteProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
+        assertEquals("Fail to execute delete query", BAD_REQUEST.getStatusCode(), deleteProperty(deleteQuery).getStatus());
     }
 
     @Test
-    public void testTypeEnd() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "testtype");
-        request.put("endDate", "2016-06-01T12:04:59.191Z");
+    public void testTypeOnlyRaiseError() throws Exception {
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType("mock-type");
 
-        Response response = deleteProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
-    }
-
-    @Test
-    public void testTypeStart() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "testtype");
-        request.put("startDate", "2016-06-01T12:04:59.191Z");
-
-        Response response = deleteProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
-    }
-
-    @Test
-    public void testTypeException() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "testtype");
-
-
-        Response response = deleteProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Entity is required\"}", response.readEntity(String.class));
+        assertEquals("Fail to execute delete query", BAD_REQUEST.getStatusCode(), deleteProperty(deleteQuery).getStatus());
     }
 
 
@@ -265,24 +392,22 @@ public class PropertyDeleteTest extends PropertyMethod {
     public void testEntityTagsExactTrue() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("delete-entity10");
+        entity.addTag("t1", "v1");
+        entity.addTag("t2", "v2");
+
         final Property property = new Property();
         property.setType(entityTagsType);
         property.setEntity(entity.getName());
-        Map tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
         EntityMethod.createOrReplaceEntityCheck(entity);
         assertTrue(propertyExist(property));
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("exactMatch", true);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType("$entity_tags");
+        deleteQuery.setEntity(entity.getName());
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertTrue(propertyExist(property));
     }
 
@@ -290,24 +415,23 @@ public class PropertyDeleteTest extends PropertyMethod {
     public void testEntityTagsExactFalse() throws Exception {
         final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("delete-entity11");
+        entity.addTag("t1", "v1");
+        entity.addTag("t2", "v2");
+
         final Property property = new Property();
         property.setType(entityTagsType);
         property.setEntity(entity.getName());
-        Map tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
+
         EntityMethod.createOrReplaceEntityCheck(entity);
         assertTrue(propertyExist(property));
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("exactMatch", false);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType("$entity_tags");
+        deleteQuery.setEntity(entity.getName());
+        deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertTrue(propertyExist(property));
     }
 
@@ -318,18 +442,16 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>(property.getKey()) {{
-            put("k2", "kv2");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertTrue(propertyExist(property));
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+        deleteQuery.addKey("k2", "kv2");
+        deleteQuery.setExactMatch(true);
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
@@ -339,18 +461,15 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>(property.getKey()) {{
-            put("k2", "kv2");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", false);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+        deleteQuery.addKey("k2", "kv2");
+        deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertTrue(propertyExist(property));
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
@@ -359,18 +478,14 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("k2", "kv2");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", true);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.addKey("k2", "kv2");
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertTrue(propertyExist(property));
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
@@ -379,61 +494,152 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("k2", "kv2");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", false);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.addKey("k2", "kv2");
+        deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertTrue(propertyExist(property));
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
-    public void testKeyMissmatchExactTrue() throws Exception {
+    public void testKeyValueMismatchExactTrue() throws Exception {
         final Property property = new Property("delete-type16", "delete-entity16");
+        final String keyName = "k1";
         property.addTag("t1", "v1");
-        property.addKey("k1", "kv1");
+        property.addKey(keyName, "kv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("k1", "kv2");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", true);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.addKey(keyName, "kv2");
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
-    public void testKeyMissmatchExactFalse() throws Exception {
+    public void testKeyValueMismatchExactFalse() throws Exception {
         final Property property = new Property("delete-type17", "delete-entity17");
         property.addTag("t1", "v1");
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("k1", "kv2");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", false);
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.addKey("k2", "kv2");
+        deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(queryObj).getStatus());
-        assertTrue(propertyExist(property));
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertTrue("Property should remain", propertyExist(property));
     }
+
+    @Test
+    public void testEntityEmptyRaiseError() throws Exception {
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType("mock-type");
+        deleteQuery.setEntity("");
+
+        assertEquals("Delete query should fail if entity is absent", BAD_REQUEST.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+    }
+
+    @Test
+    public void testEntityObjectRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("entity", new HashMap<>());
+        queryObj.put("key", "mock-type");
+
+        assertEquals("Delete query should fail if entity is object", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
+    }
+
+    @Test
+    public void testEntityArrayRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("entity", Collections.singletonList("mock-entity"));
+        queryObj.put("key", "mock-type");
+
+        assertEquals("Delete query should fail if entity is object", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
+    }
+
+    @Test
+    public void testEntityNullRaiseError() throws Exception {
+        Map<String, Object> queryObj = new HashMap<>();
+        queryObj.put("entity", null);
+        queryObj.put("key", "mock-type");
+
+        assertEquals("Delete query should fail if entity is object", BAD_REQUEST.getStatusCode(), deleteProperty(queryObj).getStatus());
+    }
+
+    @Test
+    public void testEntityTooLong() throws Exception {
+        final Property property = new Property("delete-type-18", Util.copyChar('a', 10000).append("type-18").toString());
+
+        property.addTag("t1", "v1");
+        property.addKey("k1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setKey(property.getKey());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be deleted", propertyExist(property));
+    }
+
+    @Test
+    public void testTimestampZeroDateFilterMatch() throws Exception {
+        final Property property = new Property("delete-type19", "delete-entity19");
+        property.addTag("t1", "v1");
+        property.setDate(MIN_STORABLE_DATE);
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setStartDate(property.getDate());
+        deleteQuery.setEndDate(Util.addOneMS(property.getDate()));
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be removed", propertyExist(property));
+    }
+
+    @Test
+    public void testTimestampZeroNoDateFilter() throws Exception {
+        final Property property = new Property("delete-type20", "delete-entity20");
+        property.addTag("t1", "v1");
+        property.setDate(MIN_STORABLE_DATE);
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be removed", propertyExist(property));
+    }
+
+    @Test
+    public void testTimestampZeroNoDateFilterExactMatch() throws Exception {
+        final Property property = new Property("delete-type21", "delete-entity21");
+        property.addTag("t1", "v1");
+        property.setDate(MIN_STORABLE_DATE);
+        insertPropertyCheck(property);
+
+        PropertyQuery deleteQuery = new PropertyQuery();
+        deleteQuery.setType(property.getType());
+        deleteQuery.setEntity(property.getEntity());
+        deleteQuery.setExactMatch(true);
+
+        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertFalse("Property should be removed", propertyExist(property));
+    }
+
 
 
 }

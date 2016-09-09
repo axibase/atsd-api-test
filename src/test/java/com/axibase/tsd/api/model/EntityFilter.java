@@ -14,6 +14,14 @@ public class EntityFilter {
     private String entityGroup;
     private String entityExpression;
 
+    public EntityFilter() {
+
+    }
+
+    public EntityFilter(String entity) {
+        this.entity = entity;
+    }
+
     public String getEntity() {
         return entity;
     }
