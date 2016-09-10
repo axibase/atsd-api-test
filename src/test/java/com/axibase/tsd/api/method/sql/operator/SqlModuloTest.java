@@ -80,14 +80,14 @@ public class SqlModuloTest extends SqlTest {
                         "OUTER JOIN '%s' m2 %nWHERE m1.datetime = '2016-06-03T09:23:00.000Z' AND m1.entity = '%s'",
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("7.0", "5.0", "2.0")
-        );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
-        assertTableRows(expectedRows, resultRows);
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"7.0", "5.0", "2.0"}
+        };
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
@@ -102,14 +102,15 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("0.0", "7.0", "0.0")
-        );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
-        assertTableRows(expectedRows, resultRows);
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+
+
+        String[][] expectedRows = {
+                {"0.0", "7.0", "0.0"}
+        };
+
+        assertTableRows(expectedRows, resultTable);
     }
 
     /**
@@ -123,14 +124,13 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("7.0", "0.0", "NaN")
-        );
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
-        assertTableRows(expectedRows, resultRows);
+        String[][] expectedRows = {
+                {"7.0", "0.0", "NaN"}
+        };
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
@@ -145,15 +145,13 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("12.0", "-2.0", "0.0")
-        );
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
+        String[][] expectedRows = {
+                {"12.0", "-2.0", "0.0"}
+        };
 
-        assertTableRows(expectedRows, resultRows);
+        assertTableRows(expectedRows, resultTable);
     }
 
     /**
@@ -167,15 +165,13 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("-2.0", "12.0", "-2.0")
-        );
+        String[][] expectedRows = {
+                {"-2.0", "12.0", "-2.0"}
+        };
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
-        assertTableRows(expectedRows, resultRows);
+        assertTableRows(expectedRows, resultTable);
     }
 
 
@@ -234,14 +230,13 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("10.0", "null", "null")
-        );
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
-        assertTableRows(expectedRows, resultRows);
+        String[][] expectedRows = {
+                {"10.0", "null", "null"}
+        };
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 
@@ -256,14 +251,13 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("null", "10.0", "null")
-        );
+        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .filterRows("num", "den", "modulo");
-        assertTableRows(expectedRows, resultRows);
+        String[][] expectedRows = {
+                {"null", "10.0", "null"}
+        };
+
+        assertTableRows(expectedRows, resultTable);
     }
 
 

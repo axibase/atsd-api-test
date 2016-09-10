@@ -74,9 +74,11 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
         StringTable resultTable = executeQuery(sqlQuery)
                 .readEntity(StringTable.class);
 
-        List<String> expectedColumn = Collections.singletonList("4.0");
+        List<List<String>> expectedRows = Collections.singletonList(
+            Collections.singletonList("4")
+        );
 
-        assertTableContainsColumnValues(expectedColumn, resultTable, "sum");
+        assertTableRows(expectedRows, resultTable);
     }
 
     /**

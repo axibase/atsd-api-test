@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.json.JSONException;
@@ -23,9 +24,6 @@ public class SqlTest extends SqlMethod {
     private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
     private static final Double EPS = 10e-7;
 
-    public static void assertTableRows(List<List<String>> row1, List<List<String>> row2) {
-        assertEquals("Table rows  must  be identical", row1, row2);
-    }
 
     public static void assertTableRows(List<List<String>> expectedRows, StringTable table, String errorMessage) {
         List<List<String>> actualRows = table.getRows();
@@ -58,6 +56,15 @@ public class SqlTest extends SqlMethod {
                 }
             }
         }
+    }
+
+    public static void assertTableRows(String[][] expectedRowsArray, StringTable table, String errorMessage) {
+        assertTableRows(Util.twoDArrayToList(expectedRowsArray), table, errorMessage);
+    }
+
+
+    public static void assertTableRows(String[][] expectedRowsArray, StringTable table) {
+        assertTableRows(Util.twoDArrayToList(expectedRowsArray), table);
     }
 
     public static void assertTableRows(List<List<String>> expectedRows, StringTable table) {

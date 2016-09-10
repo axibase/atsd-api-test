@@ -224,7 +224,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
                         "2", "0", "mismatched input 'OFFSET' expecting {<EOF>, WHERE, ORDER, GROUP, LIMIT, " +
-                                "WITH, INNER, OUTER, JOIN}"
+                                "WITH, INNER, OUTER, JOIN, OPTION}"
                 )
         );
     }
