@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.json.JSONException;
@@ -21,14 +22,53 @@ import static org.testng.AssertJUnit.fail;
 public class SqlTest extends SqlMethod {
     private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is  not ok";
     private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
+    private static final Double EPS = 10e-7;
 
-    public static void assertTableRows(List<List<String>> row1, List<List<String>> row2) {
-        assertEquals("Table rows  must  be identical", row1, row2);
+
+    public static void assertTableRows(List<List<String>> expectedRows, StringTable table, String errorMessage) {
+        List<List<String>> actualRows = table.getRows();
+        for (int i = 0; i < actualRows.size(); i++) {
+            List<String> actualRow = actualRows.get(i);
+            List<String> expectedRow = expectedRows.get(i);
+            for (int j = 0; j < actualRow.size(); j++) {
+                String dataType = table.getColumnMetaData(j).getDataType();
+                String expectedValue = expectedRow.get(j);
+                String actualValue = expectedRow.get(j);
+                switch (dataType) {
+                    case "double":
+                        Double actualDoubleValue = Double.parseDouble(actualValue);
+                        Double expectedDoubleValue = Double.parseDouble(actualValue);
+                        if (!actualDoubleValue.equals(expectedDoubleValue)) {
+                            fail(errorMessage);
+                        }
+                        break;
+                    case "float":
+                        Float actualFloatValue = Float.parseFloat(actualValue);
+                        Float expectedFloatValue = Float.parseFloat(actualValue);
+                        if (!actualFloatValue.equals(expectedFloatValue)) {
+                            fail(errorMessage);
+                        }
+                        break;
+                    default:
+                        if (!expectedValue.equals(actualValue)) {
+                            fail(errorMessage);
+                        }
+                }
+            }
+        }
     }
 
-    public static void assertTableRows(List<List<String>> row1, StringTable table) {
-        List<List<String>> row2 = table.getRows();
-        assertEquals("Table rows  must  be identical", row1, row2);
+    public static void assertTableRows(String[][] expectedRowsArray, StringTable table, String errorMessage) {
+        assertTableRows(Util.twoDArrayToList(expectedRowsArray), table, errorMessage);
+    }
+
+
+    public static void assertTableRows(String[][] expectedRowsArray, StringTable table) {
+        assertTableRows(Util.twoDArrayToList(expectedRowsArray), table);
+    }
+
+    public static void assertTableRows(List<List<String>> expectedRows, StringTable table) {
+        assertTableRows(expectedRows, table, "Table rows must be equals");
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
