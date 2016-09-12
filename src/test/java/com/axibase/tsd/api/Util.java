@@ -9,9 +9,7 @@ import org.json.JSONException;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * @author Dmitry Korchagin.
@@ -94,6 +92,14 @@ public class Util {
 
     public static Long getMillis(String date) throws ParseException {
         return parseDate(date).getTime();
+    }
+
+    public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {
+        List<List<T>> list = new ArrayList<List<T>>();
+        for (T[] array : twoDArray) {
+            list.add(Arrays.asList(array));
+        }
+        return list;
     }
 
     public static String transformDateToServerTimeZone(String date, int offsetMinutes) {
