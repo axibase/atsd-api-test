@@ -77,7 +77,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 Arrays.asList("2016-08-15T07:25:02.000Z", TEST_ENTITY_NAME, "5.4", "12.2", "17.6")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -101,7 +101,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 Arrays.asList("2016-08-15T07:25:02.000Z", TEST_ENTITY_NAME, "5.4", "12.2", "17.6", "17.6")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -125,7 +125,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 Arrays.asList("2016-08-15T07:25:02.000Z", TEST_ENTITY_NAME, "5.4", "12.2", "17.6", "17.6")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -148,6 +148,6 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY_NAME, "4.3", "5.4", "1.1000000000000005")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

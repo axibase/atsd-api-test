@@ -42,7 +42,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
                 Collections.singletonList("2015")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -62,6 +62,6 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
                 Collections.singletonList("2016")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

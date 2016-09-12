@@ -78,7 +78,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
             Collections.singletonList("4")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**

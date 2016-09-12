@@ -76,6 +76,6 @@ public class SqlExampleOrderByMultipleColumnsTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "b", "-2.0"),
                 Arrays.asList(TEST_ENTITY2_NAME, "c", "-2.0")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

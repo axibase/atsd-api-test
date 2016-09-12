@@ -69,7 +69,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("0", "0", "0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -89,7 +89,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("1", "1", "1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -109,7 +109,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("2", "2", "2")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -129,7 +129,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("3", "3", "3")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -149,7 +149,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("4", "4", "4")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -170,7 +170,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("5", "5", "5")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -190,6 +190,6 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 Arrays.asList("6", "6", "6")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

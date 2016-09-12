@@ -51,7 +51,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
                 Arrays.asList("tv3", "tv1", "tv2")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
 
     }
 
@@ -81,7 +81,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
                 Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -113,6 +113,6 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
                 Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

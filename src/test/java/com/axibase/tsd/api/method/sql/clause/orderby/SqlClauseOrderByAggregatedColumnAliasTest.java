@@ -81,7 +81,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "3.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -101,7 +101,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -121,7 +121,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "3.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 }

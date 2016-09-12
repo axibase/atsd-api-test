@@ -105,7 +105,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -126,7 +126,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY4_NAME, "2016-06-19T11:15:00.000Z", "4", "null", "null", "val4")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -147,7 +147,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY4_NAME, "2016-06-19T11:15:00.000Z", "4", "null", "null", "val4")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -170,7 +170,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -191,7 +191,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-06-19T11:00:00.000Z", "1", "val1", "null", "null")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -213,6 +213,6 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

@@ -58,7 +58,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -81,7 +81,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -103,7 +103,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -126,7 +126,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -161,7 +161,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -181,7 +181,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -201,7 +201,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -221,7 +221,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -241,7 +241,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -261,7 +261,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -283,7 +283,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -305,7 +305,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 

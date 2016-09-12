@@ -69,7 +69,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -88,7 +88,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -109,7 +109,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -128,7 +128,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -150,7 +150,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -172,7 +172,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -197,7 +197,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME + ';' + TEST_ENTITY_GROUP2_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -221,7 +221,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -239,7 +239,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -260,7 +260,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", "null")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -279,7 +279,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -299,7 +299,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -321,7 +321,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -343,7 +343,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_CASE_SENSITIVITY_GROUP_NAME)
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -364,7 +364,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
 
     }
 }

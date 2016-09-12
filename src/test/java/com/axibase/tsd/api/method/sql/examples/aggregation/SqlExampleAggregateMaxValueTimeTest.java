@@ -77,6 +77,6 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

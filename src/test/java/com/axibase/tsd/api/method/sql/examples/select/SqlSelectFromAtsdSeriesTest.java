@@ -61,7 +61,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "2016-06-17T19:16:02.000Z", "2")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -83,7 +83,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "2016-06-17T19:16:04.000Z", "4")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -105,6 +105,6 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "2016-06-17T19:16:04.000Z", "4.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

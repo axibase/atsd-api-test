@@ -82,7 +82,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:06.000Z", "1.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -104,7 +104,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 Arrays.asList("2016-07-14T15:00:09.000Z", "2.0") //<--interpolated by PREVIOUS value
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -131,7 +131,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -158,7 +158,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -184,7 +184,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -209,7 +209,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -236,7 +236,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -265,7 +265,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -295,7 +295,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -326,6 +326,6 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

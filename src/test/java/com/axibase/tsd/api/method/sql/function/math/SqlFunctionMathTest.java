@@ -54,7 +54,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.abs(-1.23)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -76,7 +76,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.ceil(-1.23)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -98,7 +98,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.floor(-1.23)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -121,7 +121,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.round(-1.23)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -144,7 +144,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.round(-1.23 * 100) / 100d))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -166,7 +166,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Mod(-1.23, 2.11)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -188,7 +188,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.pow(-1.23, 2.11)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -211,7 +211,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.exp(-1.23)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -234,7 +234,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.log(-1.23)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -259,7 +259,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList("NaN")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -282,7 +282,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 Collections.singletonList("NaN")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 

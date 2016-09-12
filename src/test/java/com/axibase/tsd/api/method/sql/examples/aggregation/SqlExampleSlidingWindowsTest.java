@@ -76,7 +76,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
 
     }
 
@@ -103,7 +103,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
 
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
 
     }
 }

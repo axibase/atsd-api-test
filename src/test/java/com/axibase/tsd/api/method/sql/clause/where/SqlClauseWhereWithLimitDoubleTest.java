@@ -41,7 +41,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("1.23")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -58,7 +58,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -75,7 +75,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -92,7 +92,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("1.23")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -109,7 +109,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -126,7 +126,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -141,7 +141,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.emptyList();
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -160,7 +160,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 Collections.singletonList("1.23"),
                 Collections.singletonList("0.89")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -179,7 +179,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 Collections.singletonList("1.23"),
                 Collections.singletonList("0.89")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -197,6 +197,6 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("1.23")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

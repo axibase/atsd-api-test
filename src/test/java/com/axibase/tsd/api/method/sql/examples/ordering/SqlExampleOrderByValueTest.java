@@ -71,6 +71,6 @@ public class SqlExampleOrderByValueTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "3.0"),
                 Arrays.asList(TEST_ENTITY1_NAME, "1.0")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

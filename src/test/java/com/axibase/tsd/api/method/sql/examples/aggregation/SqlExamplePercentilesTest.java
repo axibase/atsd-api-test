@@ -68,6 +68,6 @@ public class SqlExamplePercentilesTest extends SqlTest {
                 Arrays.asList("11.172749999999999", "11.3232", "11.3232", "11.408225", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

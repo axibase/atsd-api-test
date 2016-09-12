@@ -49,7 +49,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.sqrt(7.567)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -69,7 +69,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 Collections.singletonList("NaN")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -90,7 +90,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 Collections.singletonList(Double.toString(Math.sqrt(7.567d)))
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -109,7 +109,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 Collections.singletonList("NaN")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -127,6 +127,6 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

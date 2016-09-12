@@ -49,7 +49,7 @@ public class SqlExampleAvgValueTest extends SqlTest {
                 Collections.singletonList("11.3")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
 
     }
 
@@ -73,7 +73,7 @@ public class SqlExampleAvgValueTest extends SqlTest {
                 Arrays.asList("11.3", "11.5", "11.5", "2")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
 
     }
 }

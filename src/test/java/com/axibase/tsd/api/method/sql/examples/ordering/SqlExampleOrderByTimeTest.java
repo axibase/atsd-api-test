@@ -46,6 +46,6 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
                 Arrays.asList("2016-07-27T22:41:51.000Z", "1.0"),
                 Arrays.asList("2016-07-27T22:41:52.000Z", "0.0")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

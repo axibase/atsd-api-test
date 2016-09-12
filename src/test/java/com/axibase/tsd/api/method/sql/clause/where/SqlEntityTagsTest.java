@@ -63,7 +63,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 Collections.singletonList("val1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -81,7 +81,7 @@ public class SqlEntityTagsTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -102,7 +102,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 Collections.singletonList("val1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -123,7 +123,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 Collections.singletonList("val1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -144,7 +144,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 Collections.singletonList("null")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -163,6 +163,6 @@ public class SqlEntityTagsTest extends SqlTest {
 
         List<List<String>> expectedRows = Collections.emptyList();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

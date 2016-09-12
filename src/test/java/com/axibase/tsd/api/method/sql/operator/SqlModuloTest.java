@@ -87,7 +87,7 @@ public class SqlModuloTest extends SqlTest {
                 {"7.0", "5.0", "2.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -110,7 +110,7 @@ public class SqlModuloTest extends SqlTest {
                 {"0.0", "7.0", "0.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -130,7 +130,7 @@ public class SqlModuloTest extends SqlTest {
                 {"7.0", "0.0", "NaN"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -151,7 +151,7 @@ public class SqlModuloTest extends SqlTest {
                 {"12.0", "-2.0", "0.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -171,7 +171,7 @@ public class SqlModuloTest extends SqlTest {
                 {"-2.0", "12.0", "-2.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -236,7 +236,7 @@ public class SqlModuloTest extends SqlTest {
                 {"10.0", "null", "null"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -257,7 +257,7 @@ public class SqlModuloTest extends SqlTest {
                 {"null", "10.0", "null"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 

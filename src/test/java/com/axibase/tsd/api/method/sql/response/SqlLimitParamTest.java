@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.sql.response;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -10,9 +9,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class SqlLimitParamTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-response-limit-param-";
@@ -48,7 +44,7 @@ public class SqlLimitParamTest extends SqlTest {
                 {"0.0"}, {"1.0"}, {"2.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -70,7 +66,7 @@ public class SqlLimitParamTest extends SqlTest {
                 {"0.0"}, {"1.0"}, {"2.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -93,7 +89,7 @@ public class SqlLimitParamTest extends SqlTest {
                 {"2.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -115,7 +111,7 @@ public class SqlLimitParamTest extends SqlTest {
                 {"0.0"}, {"1.0"}, {"2.0"}, {"3.0"}
         };
 
-        assertTableRows(expectedRows, resultTable, "value");
+        assertTableRowsExist(expectedRows, resultTable, "value");
     }
 
 
@@ -137,7 +133,7 @@ public class SqlLimitParamTest extends SqlTest {
                 {"0.0"}, {"1.0"}, {"2.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -160,6 +156,6 @@ public class SqlLimitParamTest extends SqlTest {
                 {"0.0"}, {"1.0"}, {"2.0"}, {"3.0"}, {"4.0"}
         };
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

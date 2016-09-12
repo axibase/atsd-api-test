@@ -70,7 +70,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "5.0", "2016-06-19T11:00:06.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -95,7 +95,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "5.0", "2016-06-19T11:00:06.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -120,7 +120,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "6.0", "2016-06-19T11:00:00.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -145,7 +145,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "6.0", "2016-06-19T11:00:00.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -170,7 +170,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "5.0", "2016-06-19T11:00:06.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -195,7 +195,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "5.0", "2016-06-19T11:00:06.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -221,6 +221,6 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY1_NAME, "2.0", "2016-06-19T11:00:01.000Z")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

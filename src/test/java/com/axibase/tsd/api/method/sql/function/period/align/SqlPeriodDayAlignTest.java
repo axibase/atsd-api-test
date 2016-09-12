@@ -56,7 +56,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
 
         List<List<String>> expectedRows = generateExpectedRows();
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 

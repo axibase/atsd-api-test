@@ -56,7 +56,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -79,7 +79,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:05.500Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -103,7 +103,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -127,7 +127,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -152,7 +152,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:08.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -178,7 +178,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:10.500Z", "2.0")//<-EXTEND BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -202,7 +202,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:08.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -227,7 +227,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -252,7 +252,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -280,7 +280,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -307,7 +307,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -335,7 +335,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -363,7 +363,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -392,7 +392,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -419,6 +419,6 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

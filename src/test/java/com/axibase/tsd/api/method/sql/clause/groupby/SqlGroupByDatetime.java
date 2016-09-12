@@ -92,7 +92,7 @@ public class SqlGroupByDatetime extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:02.500Z", TESTS_ENTITY1_NAME, "2.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -115,6 +115,6 @@ public class SqlGroupByDatetime extends SqlTest {
                 Arrays.asList("2016-06-19T11:00:02.500Z", "1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

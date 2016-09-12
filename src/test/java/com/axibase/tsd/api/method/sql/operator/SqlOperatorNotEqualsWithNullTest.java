@@ -53,7 +53,7 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.emptyList();
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -70,6 +70,6 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

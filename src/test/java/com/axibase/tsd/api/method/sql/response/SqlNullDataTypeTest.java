@@ -154,7 +154,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("1")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -176,7 +176,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -198,7 +198,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -220,7 +220,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -242,7 +242,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -264,7 +264,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -286,7 +286,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -308,7 +308,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -330,7 +330,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 Collections.singletonList("0.0")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 }

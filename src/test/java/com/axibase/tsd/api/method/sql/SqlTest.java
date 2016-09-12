@@ -25,7 +25,7 @@ public class SqlTest extends SqlMethod {
     private static final Double EPS = 10e-7;
 
 
-    public static void assertTableRows(List<List<String>> expectedRows, StringTable table, String errorMessage) {
+    public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table, String errorMessage) {
         List<List<String>> actualRows = table.getRows();
         for (int i = 0; i < actualRows.size(); i++) {
             List<String> actualRow = actualRows.get(i);
@@ -58,17 +58,17 @@ public class SqlTest extends SqlMethod {
         }
     }
 
-    public static void assertTableRows(String[][] expectedRowsArray, StringTable table, String errorMessage) {
-        assertTableRows(Util.twoDArrayToList(expectedRowsArray), table, errorMessage);
+    public static void assertTableRowsExist(String[][] expectedRowsArray, StringTable table, String errorMessage) {
+        assertTableRowsExist(Util.twoDArrayToList(expectedRowsArray), table, errorMessage);
     }
 
 
-    public static void assertTableRows(String[][] expectedRowsArray, StringTable table) {
-        assertTableRows(Util.twoDArrayToList(expectedRowsArray), table);
+    public static void assertTableRowsExist(String[][] expectedRowsArray, StringTable table) {
+        assertTableRowsExist(Util.twoDArrayToList(expectedRowsArray), table);
     }
 
-    public static void assertTableRows(List<List<String>> expectedRows, StringTable table) {
-        assertTableRows(expectedRows, table, "Table rows must be equals");
+    public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table) {
+        assertTableRowsExist(expectedRows, table, "Table rows must be equals");
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {

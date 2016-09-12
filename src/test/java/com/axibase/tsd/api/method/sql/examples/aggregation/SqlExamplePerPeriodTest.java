@@ -57,6 +57,6 @@ public class SqlExamplePerPeriodTest extends SqlTest {
                 Arrays.asList("2015-09-30T09:00:06.000Z", "3.0", "3.0", "3.0", "5")
         );
 
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

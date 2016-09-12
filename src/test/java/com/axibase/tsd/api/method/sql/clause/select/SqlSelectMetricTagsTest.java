@@ -66,7 +66,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("a=b;a-b=b-c;b=c;tag=V")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
     /**
@@ -90,7 +90,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("b", "b-c", "c", "V")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -111,7 +111,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("b")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -131,7 +131,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("b-c")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -151,7 +151,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("V")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 
 
@@ -172,6 +172,6 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("null")
         );
-        assertTableRows(expectedRows, resultTable);
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }
