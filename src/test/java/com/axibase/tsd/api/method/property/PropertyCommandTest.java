@@ -10,13 +10,15 @@ import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class PropertyCommandTest extends PropertyMethod {
-    /* #2412 */
+
+    /**
+     * #2412
+     */
     @Test
     public void testMaxLength() throws Exception {
         final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";
-        String endDate = "2016-05-21T00:00:01Z";
 
         final Property property = new Property("t-property-max-cmd-length", "e-property-max-cmd-len");
         property.setDate(startDate);
@@ -44,13 +46,14 @@ public class PropertyCommandTest extends PropertyMethod {
         assertTrue(propertyExist(property));
     }
 
-    /* #2412 */
+    /**
+     * #2412
+     */
     @Test
     public void testMaxLengthOverflow() throws Exception {
         final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";
-        String endDate = "2016-05-21T00:00:01Z";
 
         final Property property = new Property("t-property-max-cmd-lnngth", "e-property-max-cmd-over");
         property.setDate(startDate);

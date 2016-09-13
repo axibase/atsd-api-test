@@ -1,29 +1,55 @@
 package com.axibase.tsd.api.model.property;
 
-import com.axibase.tsd.api.model.DateFilter;
-import com.axibase.tsd.api.model.EntityFilter;
-import com.axibase.tsd.api.model.ResultFilter;
+import com.axibase.tsd.api.model.Interval;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PropertyQuery {
     private String type;
-    private Boolean exactMatch;
-    private String keyTagExpression;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String entity;
+    private List<String> entities;
+    private String entityGroup;
+    private String entityExpression;
     private Map<String, String> key = new HashMap<>();
+    private String keyTagExpression;
+    private String startDate;
+    private String endDate;
+    private Interval interval;
 
-    @JsonUnwrapped
-    private EntityFilter entityFilter;
-    @JsonUnwrapped
-    private DateFilter dateFilter;
-    @JsonUnwrapped
-    private ResultFilter resultFilter;
+    private Boolean exactMatch;
+
+    private Integer limit;
+    private Boolean last;
+    private Integer offset;
+
+    public PropertyQuery() {
+
+    }
+
+    public PropertyQuery(String type, String entity) {
+        this(type, entity, null);
+    }
+
+    public PropertyQuery(String type, String entity, Map<String, String> key) {
+        this.type = type;
+        this.entity = entity;
+        if(key != null) {
+            this.key = new HashMap<>(key);
+        }
+    }
+
+
+    public Interval getInterval() {
+        return interval;
+    }
+
+    public void setInterval(Interval interval) {
+        this.interval = interval;
+    }
 
     public String getType() {
         return type;
@@ -33,12 +59,51 @@ public class PropertyQuery {
         this.type = type;
     }
 
-    public Boolean isExactMatch() {
-        return exactMatch;
+    public String getEntity() {
+        return entity;
     }
 
-    public void setExactMatch(Boolean exactMatch) {
-        this.exactMatch = exactMatch;
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
+
+    public List<String> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<String> entities) {
+        this.entities = entities;
+    }
+
+    public String getEntityGroup() {
+        return entityGroup;
+    }
+
+    public void setEntityGroup(String entityGroup) {
+        this.entityGroup = entityGroup;
+    }
+
+    public String getEntityExpression() {
+        return entityExpression;
+    }
+
+    public void setEntityExpression(String entityExpression) {
+        this.entityExpression = entityExpression;
+    }
+
+    public Map<String, String> getKey() {
+        return key;
+    }
+
+    public void setKey(Map<String, String> key) {
+        this.key = key;
+    }
+
+    public void addKey(String keyName, String keyValue) {
+        if(key == null) {
+            key = new HashMap<>();
+        }
+        key.put(keyName, keyValue);
     }
 
     public String getKeyTagExpression() {
@@ -49,35 +114,51 @@ public class PropertyQuery {
         this.keyTagExpression = keyTagExpression;
     }
 
-    public EntityFilter getEntityFilter() {
-        return entityFilter;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setEntityFilter(EntityFilter entityFilter) {
-        this.entityFilter = entityFilter;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public DateFilter getDateFilter() {
-        return dateFilter;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setDateFilter(DateFilter dateFilter) {
-        this.dateFilter = dateFilter;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
-    public ResultFilter getResultFilter() {
-        return resultFilter;
+    public Boolean getExactMatch() {
+        return exactMatch;
     }
 
-    public void setResultFilter(ResultFilter resultFilter) {
-        this.resultFilter = resultFilter;
+    public void setExactMatch(Boolean exactMatch) {
+        this.exactMatch = exactMatch;
     }
 
-    public Map<String, String> getKey() {
-        return Collections.unmodifiableMap(key);
+    public Integer getLimit() {
+        return limit;
     }
 
-    public void setKey(Map<String, String> key) {
-        this.key = new HashMap<>(key);
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public Boolean getLast() {
+        return last;
+    }
+
+    public void setLast(Boolean last) {
+        this.last = last;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
     }
 }

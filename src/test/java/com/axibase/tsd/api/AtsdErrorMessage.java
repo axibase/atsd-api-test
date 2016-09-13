@@ -3,6 +3,11 @@ package com.axibase.tsd.api;
 public class AtsdErrorMessage {
     public static final String DATE_FILTER_COMBINATION_REQUIRED = "IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate";
     public static final String DATE_FILTER_END_GREATER_START_REQUIRED ="IllegalArgumentException: End Date must be greater than Start Date";
+    public static final String DATE_FILTER_WRONG_SYNTAX_TPL = "IllegalArgumentException: Wrong %s syntax: %s";
+    public static final String DATE_FILTER_INVALID_FORMAT = "IllegalArgumentException: Invalid date format";
+
+
+    public static final String ENTITY_FILTER_REQUIRED ="IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty";
 
     public static final String BAD_CREDENTIALS ="org.springframework.security.authentication.BadCredentialsException: Bad credentials";
 
@@ -18,4 +23,5 @@ public class AtsdErrorMessage {
     public static final String TAG_VALUE_ARRAY_PREFIX = "org.codehaus.jackson.map.JsonMappingException: Can not deserialize instance";
     public static final String INTERPOLATE_TYPE_REQUIRED = "IllegalArgumentException: Interpolation type is required";
     public static final String AGGREGATE_NON_DETAIL_REQUIRE_PERIOD = "IllegalArgumentException: Aggregation period is required for aggregation type '%s'";
+
 }

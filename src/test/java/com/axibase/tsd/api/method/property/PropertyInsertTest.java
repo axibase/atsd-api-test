@@ -1,8 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.method.BaseMethod;
-import com.axibase.tsd.api.model.DateFilter;
-import com.axibase.tsd.api.model.EntityFilter;
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
@@ -17,17 +15,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.axibase.tsd.api.AtsdErrorMessage.DATE_FILTER_INVALID_FORMAT;
 import static com.axibase.tsd.api.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class PropertyInsertTest extends PropertyMethod {
 
-    /* #NoTicket - base tests*/
+    /**
+     * #NoTicket - base tests
+     */
     @Test
     public void testMultipleInsertDifferentKeyGetAll() throws Exception {
         final Property firstProperty = new Property("insert-type4", "insert-entity4");
@@ -40,32 +38,16 @@ public class PropertyInsertTest extends PropertyMethod {
         thirdProperty.addTag("t1", "v1");
         thirdProperty.addKey("k1", "v1");
 
-        Map<String, Object> insertFirstObj = new HashMap<>();
-        insertFirstObj.put("type", firstProperty.getType());
-        insertFirstObj.put("entity", firstProperty.getEntity());
-        insertFirstObj.put("key", firstProperty.getKey());
-        insertFirstObj.put("tags", firstProperty.getTags());
-
-        Map<String, Object> insertSecondObj = new HashMap<>();
-        insertSecondObj.put("type", secondProperty.getType());
-        insertSecondObj.put("entity", secondProperty.getEntity());
-        insertSecondObj.put("key", secondProperty.getKey());
-        insertSecondObj.put("tags", secondProperty.getTags());
-
-        Map<String, Object> insertThirdObj = new HashMap<>();
-        insertThirdObj.put("type", thirdProperty.getType());
-        insertThirdObj.put("entity", thirdProperty.getEntity());
-        insertThirdObj.put("key", thirdProperty.getKey());
-        insertThirdObj.put("tags", thirdProperty.getTags());
-
-        assertEquals(OK.getStatusCode(), insertProperty(insertFirstObj, insertSecondObj, insertThirdObj).getStatus());
+        assertEquals(OK.getStatusCode(), insertProperty(firstProperty, secondProperty, thirdProperty).getStatus());
         assertTrue(propertyExist(firstProperty));
         assertTrue(propertyExist(secondProperty));
         assertTrue(propertyExist(thirdProperty));
     }
 
 
-    /* #NoTicket - base tests*/
+    /**
+     * #NoTicket - base tests
+     */
     @Test
     public void testMultipleInsertSameTypeEntityKey() throws Exception {
         final long firstTime = System.currentTimeMillis() - 5;
@@ -85,26 +67,15 @@ public class PropertyInsertTest extends PropertyMethod {
         }});
         updatedProperty.setDate(secondTime);
 
-        Map<String, Object> insertFirstObj = new HashMap<>();
-        insertFirstObj.put("type", property.getType());
-        insertFirstObj.put("entity", property.getEntity());
-        insertFirstObj.put("key", property.getKey());
-        insertFirstObj.put("tags", property.getTags());
-        insertFirstObj.put("date", property.getDate());
+        assertEquals(OK.getStatusCode(), insertProperty(property, updatedProperty).getStatus());
 
-        Map<String, Object> insertUpdatedObj = new HashMap<>();
-        insertUpdatedObj.put("type", updatedProperty.getType());
-        insertUpdatedObj.put("entity", updatedProperty.getEntity());
-        insertUpdatedObj.put("key", updatedProperty.getKey());
-        insertUpdatedObj.put("tags", updatedProperty.getTags());
-        insertUpdatedObj.put("date", updatedProperty.getDate());
-        assertEquals(OK.getStatusCode(), insertProperty(insertFirstObj, insertUpdatedObj).getStatus());
-
-        assertTrue(propertyExist(updatedProperty, true));
-        assertFalse(propertyExist(property, true));
+        assertTrue("Updated property should exist", propertyExist(updatedProperty, true));
+        assertFalse("Old property should not exist", propertyExist(property, true));
     }
 
-    /* #NoTicket - base tests*/
+    /**
+     * #NoTicket - base tests
+     */
     @Test
     public void testSameTypeEntityKey() throws Exception {
         final Property property = new Property("insert-type1", "insert-entity1");
@@ -123,48 +94,39 @@ public class PropertyInsertTest extends PropertyMethod {
         }});
         updatedProperty.setDate(secondTime);
 
-        Map<String, Object> insertFirstObj = new HashMap<>();
-        insertFirstObj.put("type", property.getType());
-        insertFirstObj.put("entity", property.getEntity());
-        insertFirstObj.put("key", property.getKey());
-        insertFirstObj.put("tags", property.getTags());
-        insertFirstObj.put("date", property.getDate());
-        insertProperty(insertFirstObj);
-        assertTrue(propertyExist(property, true));
+        insertPropertyCheck(property);
+        insertPropertyCheck(updatedProperty);
 
-        Map<String, Object> insertUpdatedObj = new HashMap<>();
-        insertUpdatedObj.put("type", updatedProperty.getType());
-        insertUpdatedObj.put("entity", updatedProperty.getEntity());
-        insertUpdatedObj.put("key", updatedProperty.getKey());
-        insertUpdatedObj.put("tags", updatedProperty.getTags());
-        insertUpdatedObj.put("date", updatedProperty.getDate());
-        insertProperty(insertUpdatedObj);
-        assertTrue(propertyExist(updatedProperty, true));
-        assertFalse(propertyExist(property, true));
+        assertTrue("Updated property should exist", propertyExist(updatedProperty, true));
+        assertFalse("Old property should not exist", propertyExist(property, true));
     }
 
-    /* #NoTicket - base tests*/
+    /**
+     * #NoTicket - base tests
+     */
     @Test
     public void testExtraKeyInRoot() throws Exception {
         final Property property = new Property("insert-type3", "insert-entity3");
+        property.setDate("2014-02-02T00:00:00.000Z");
+        property.addTag("t1", "tv1");
 
         final Map<String, Object> insertObj = new HashMap<>();
         insertObj.put("type", property.getType());
         insertObj.put("entity", property.getEntity());
-        insertObj.put("key", property.getKey());
         insertObj.put("tags", property.getTags());
         insertObj.put("date", property.getDate());
         insertObj.put("extraField", "extraValue");
 
         Response response = insertProperty(insertObj);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue(response.readEntity(String.class).contains("UnrecognizedPropertyException"));
 
-        assertFalse(propertyExist(property));
+        assertFalse("Inserted property should not exist", propertyExist(property));
 
     }
 
-    /* #NoTicket - base tests*/
+    /**
+     * #NoTicket - base tests
+     */
     @Test
     public void testNoKeySamePropertyOverwrite() throws Exception {
         final Property property = new Property("insert-type7", "insert-entity7");
@@ -181,7 +143,10 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(property2));
     }
 
-    /* #2957 */
+
+    /**
+     * #2957
+     */
     @Test
     public void testTimeRangeMinSaved() throws Exception {
         Property property = new Property("t-time-range-p-1", "e-time-range--1");
@@ -195,7 +160,9 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(property));
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     */
     @Test
     public void testTimeRangeMaxTimeSaved() throws Exception {
         Property property = new Property("t-time-range-p-3", "e-time-range-p-3");
@@ -208,7 +175,9 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(property));
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     */
     @Test
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Property property = new Property("t-time-range-p-4", "e-time-range-p-4");
@@ -221,7 +190,10 @@ public class PropertyInsertTest extends PropertyMethod {
         assertFalse(propertyExist(property));
     }
 
-    @Test(enabled = false)//#2957
+    /**
+     * #2957
+     */
+    @Test
     public void testSameTimeSamePropertyConjunction() throws Exception {
         final long timeMillis = System.currentTimeMillis();
         final Property property = new Property("insert-type8", "insert-entity8");
@@ -243,11 +215,12 @@ public class PropertyInsertTest extends PropertyMethod {
         resultProperty.addTag("t1", "tv1");
         resultProperty.addTag("t2", "tv2");
 
-
         assertTrue(propertyExist(resultProperty));
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testISOTimezoneZ() throws Exception {
         Property property = new Property("test1", "property-insert-test-isoz");
@@ -257,16 +230,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
-        EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity("property-insert-test-isoz");
 
-        DateFilter dateFilter = new DateFilter();
-        String date = "2016-07-21T00:00:00.000Z";
-        dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
-
-        propertyQuery.setEntityFilter(entityFilter);
-        propertyQuery.setDateFilter(dateFilter);
+        propertyQuery.setEntity("property-insert-test-isoz");
+        propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
+        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
         propertyQuery.setType(property.getType());
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
@@ -275,10 +242,12 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
         Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
+        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
         String entityName = "property-insert-test-iso+hm";
@@ -289,17 +258,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
-        EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity(entityName);
-
-        DateFilter dateFilter = new DateFilter();
-        String date = "2016-07-21T00:00:00.000Z";
-        dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
-
-        propertyQuery.setEntityFilter(entityFilter);
-        propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
+        propertyQuery.setEntity(entityName);
+        propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
+        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
@@ -307,10 +269,12 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
         Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
+        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         String entityName = "property-insert-test-iso-hm";
@@ -321,17 +285,10 @@ public class PropertyInsertTest extends PropertyMethod {
         insertProperty(property);
 
         PropertyQuery propertyQuery = new PropertyQuery();
-        EntityFilter entityFilter = new EntityFilter();
-        entityFilter.setEntity(entityName);
-
-        DateFilter dateFilter = new DateFilter();
-        String date = "2016-07-21T00:00:00.000Z";
-        dateFilter.setStartDate(date);
-        dateFilter.setInterval(new Interval(1, TimeUnit.MILLISECOND));
-
-        propertyQuery.setEntityFilter(entityFilter);
-        propertyQuery.setDateFilter(dateFilter);
         propertyQuery.setType(property.getType());
+        propertyQuery.setEntity(entityName);
+        propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
+        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
@@ -339,10 +296,12 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
         Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(date, storedProperty.getDate(), "Incorrect property date");
+        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "property-insert-test-localtime";
@@ -355,11 +314,13 @@ public class PropertyInsertTest extends PropertyMethod {
         Response response = insertProperty(property);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
+        assertEquals("Error message mismatch", DATE_FILTER_INVALID_FORMAT, extractErrorMessage(response));
 
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "property-insert-test-xx-timezone";
@@ -372,10 +333,12 @@ public class PropertyInsertTest extends PropertyMethod {
         Response response = insertProperty(property);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
+        assertEquals("Error message mismatch", DATE_FILTER_INVALID_FORMAT, extractErrorMessage(response));
     }
 
-    /* #2850 */
+    /**
+     * #2850
+     */
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "property-insert-test-milliseconds";
@@ -388,7 +351,270 @@ public class PropertyInsertTest extends PropertyMethod {
         Response response = insertProperty(property);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Invalid date format\"}", response.readEntity(String.class), true);
+        assertEquals("Error message mismatch", DATE_FILTER_INVALID_FORMAT, extractErrorMessage(response));
     }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueNull() throws Exception {
+        Property property = new Property("insert-property-t-1", "insert-property-e-1");
+        property.addKey("k1", null);
+        property.addTag("t1", "tv1");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setKey(new HashMap<String, String>());
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueContainNull() throws Exception {
+        Property property = new Property("insert-property-t-2", "insert-property-e-2");
+        property.addTag("t1", "tv1");
+        property.addTag("t2", null);
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setTags(null);
+        storedProperty.addTag("t1", "tv1");
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueNull() throws Exception {
+        Property property = new Property("insert-property-t-3", "insert-property-e-3");
+        property.addTag("t1", null);
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        assertEquals("Query should fail if tag contain only null values", BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueEmpty() throws Exception {
+        Property property = new Property("insert-property-t-4", "insert-property-e-4");
+        property.addKey("k1", "");
+        property.addTag("t1", "tv1");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setKey(null);
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueEmpty() throws Exception {
+        Property property = new Property("insert-property-t-41", "insert-property-e-41");
+        property.addTag("t1", "tv1");
+        property.addTag("t2", "");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setTags(null);
+        storedProperty.addTag("t1", "tv1");
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueContainSpace() throws Exception {
+        Property property = new Property("insert-property-t-5", "insert-property-e-5");
+        property.addKey("k1", " spaced ");
+        property.addTag("t1", "tv1");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setKey(null);
+        storedProperty.addKey("k1", "spaced");
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueSpaces() throws Exception {
+        Property property = new Property("insert-property-t-6", "insert-property-e-6");
+        property.addKey("k1", "   ");
+        property.addTag("t1", "tv1");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setKey(null);
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueContainSpace() throws Exception {
+        Property property = new Property("insert-property-t-7", "insert-property-e-7");
+        property.addTag("t1", " tv1 ");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setTags(null);
+        storedProperty.addTag("t1", "tv1");
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueSpaces() throws Exception {
+        Property property = new Property("insert-property-t-8", "insert-property-e-8");
+        property.addTag("t1", "   ");
+        property.addTag("t2", "tv2");
+        property.setDate("2016-06-09T09:50:00.000Z");
+
+        Response response = insertProperty(property);
+
+        Property storedProperty = property.clone();
+        storedProperty.setTags(null);
+        storedProperty.addTag("t2", "tv2");
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueInteger() throws Exception {
+        final Property storedProperty = new Property("insert-property-t-9", "insert-property-e-9");
+        storedProperty.addTag("t1", "tv1");
+        storedProperty.addKey("k1", "111");
+
+        Map<String, Object> property = new HashMap<>();
+        property.put("type", storedProperty.getType());
+        property.put("entity", storedProperty.getEntity());
+        property.put("tags", storedProperty.getTags());
+
+        Map<String, Object> key = new HashMap<>();
+        key.put("k1", 111);
+        property.put("key", key);
+
+        Response response = insertProperty(property);
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueBoolean() throws Exception {
+        final Property storedProperty = new Property("insert-property-t-10", "insert-property-e-10");
+        storedProperty.addTag("t1", "tv1");
+        storedProperty.addKey("k1", "true");
+
+        Map<String, Object> property = new HashMap<>();
+        property.put("type", storedProperty.getType());
+        property.put("entity", storedProperty.getEntity());
+        property.put("tags", storedProperty.getTags());
+
+        Map<String, Object> key = new HashMap<>();
+        key.put("k1", true);
+        property.put("key", key);
+
+        Response response = insertProperty(property);
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueInteger() throws Exception {
+        final Property storedProperty = new Property("insert-property-t-11", "insert-property-e-11");
+        storedProperty.addTag("t1", "111");
+
+        Map<String, Object> property = new HashMap<>();
+        property.put("type", storedProperty.getType());
+        property.put("entity", storedProperty.getEntity());
+
+        Map<String, Object> tags = new HashMap<>();
+        tags.put("t1", 111);
+        property.put("tags", tags);
+
+        Response response = insertProperty(property);
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testTagValueBoolean() throws Exception {
+        final Property storedProperty = new Property("insert-property-t-12", "insert-property-e-12");
+        storedProperty.addTag("t1", "true");
+
+        Map<String, Object> property = new HashMap<>();
+        property.put("type", storedProperty.getType());
+        property.put("entity", storedProperty.getEntity());
+
+        Map<String, Object> tags = new HashMap<>();
+        tags.put("t1", true);
+        property.put("tags", tags);
+
+        Response response = insertProperty(property);
+
+        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
+    }
+
 
 }

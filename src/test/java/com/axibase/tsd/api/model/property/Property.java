@@ -29,6 +29,24 @@ public class Property {
         this.entity = entity;
     }
 
+    public Property clone() {
+        Property cloned = new Property();
+        cloned.setType(type);
+        cloned.setEntity(entity);
+        if(key == null) {
+            cloned.setKey(new HashMap<String, String>());
+        } else {
+            cloned.setKey(new HashMap<>(key));
+        }
+        if(tags == null) {
+            cloned.setTags(new HashMap<String, String>());
+        } else {
+            cloned.setTags(new HashMap<>(tags));
+        }
+        cloned.setDate(date);
+        return cloned;
+    }
+
     public void addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
