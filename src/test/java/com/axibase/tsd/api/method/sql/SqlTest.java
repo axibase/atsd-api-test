@@ -34,28 +34,36 @@ public class SqlTest extends SqlMethod {
                 String dataType = table.getColumnMetaData(j).getDataType();
                 String expectedValue = expectedRow.get(j);
                 String actualValue = expectedRow.get(j);
-                switch (dataType) {
-                    case "double":
-                        Double actualDoubleValue = Double.parseDouble(actualValue);
-                        Double expectedDoubleValue = Double.parseDouble(actualValue);
-                        if (!actualDoubleValue.equals(expectedDoubleValue)) {
-                            fail(errorMessage);
-                        }
-                        break;
-                    case "float":
-                        Float actualFloatValue = Float.parseFloat(actualValue);
-                        Float expectedFloatValue = Float.parseFloat(actualValue);
-                        if (!actualFloatValue.equals(expectedFloatValue)) {
-                            fail(errorMessage);
-                        }
-                        break;
-                    default:
-                        if (!expectedValue.equals(actualValue)) {
-                            fail(errorMessage);
-                        }
+                try {
+                    switch (dataType) {
+                        case "double":
+                            Double actualDoubleValue = Double.parseDouble(actualValue);
+                            Double expectedDoubleValue = Double.parseDouble(actualValue);
+                            if (!actualDoubleValue.equals(expectedDoubleValue)) {
+                                fail(errorMessage);
+                            }
+                            break;
+                        case "float":
+                            Float actualFloatValue = Float.parseFloat(actualValue);
+                            Float expectedFloatValue = Float.parseFloat(actualValue);
+                            if (!actualFloatValue.equals(expectedFloatValue)) {
+                                fail(errorMessage);
+                            }
+                            break;
+                        default:
+                            if (!expectedValue.equals(actualValue)) {
+                                fail(errorMessage);
+                            }
+                    }
+                } catch (NumberFormatException nfe) {
+                    if (!expectedValue.equals(actualValue)) {
+                        fail(errorMessage);
+                    }
                 }
             }
+
         }
+
     }
 
     public static void assertTableRowsExist(String[][] expectedRowsArray, StringTable table, String errorMessage) {
