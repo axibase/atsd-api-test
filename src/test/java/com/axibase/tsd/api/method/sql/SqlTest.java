@@ -27,25 +27,28 @@ public class SqlTest extends SqlMethod {
 
     public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table, String errorMessage) {
         List<List<String>> actualRows = table.getRows();
+        if (actualRows.size() != expectedRows.size()) {
+            fail(errorMessage);
+        }
         for (int i = 0; i < actualRows.size(); i++) {
             List<String> actualRow = actualRows.get(i);
             List<String> expectedRow = expectedRows.get(i);
             for (int j = 0; j < actualRow.size(); j++) {
                 String dataType = table.getColumnMetaData(j).getDataType();
                 String expectedValue = expectedRow.get(j);
-                String actualValue = expectedRow.get(j);
+                String actualValue = actualRow.get(j);
                 try {
                     switch (dataType) {
                         case "double":
                             Double actualDoubleValue = Double.parseDouble(actualValue);
-                            Double expectedDoubleValue = Double.parseDouble(actualValue);
+                            Double expectedDoubleValue = Double.parseDouble(expectedValue);
                             if (!actualDoubleValue.equals(expectedDoubleValue)) {
                                 fail(errorMessage);
                             }
                             break;
                         case "float":
                             Float actualFloatValue = Float.parseFloat(actualValue);
-                            Float expectedFloatValue = Float.parseFloat(actualValue);
+                            Float expectedFloatValue = Float.parseFloat(expectedValue);
                             if (!actualFloatValue.equals(expectedFloatValue)) {
                                 fail(errorMessage);
                             }
