@@ -676,4 +676,15 @@ public class SeriesInsertTest extends SeriesMethod {
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
     }
+
+    /**
+     * 2416
+     */
+    @Test
+    public void testTagValueNullRaiseError() throws Exception {
+        Series series = new Series("nulltag-entity-1", "nulltag-metric-1");
+        series.addData(new Sample(1, "1"));
+        series.addTag("t1", null);
+        assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), insertSeries(series).getStatus());
+    }
 }

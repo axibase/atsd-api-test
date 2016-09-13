@@ -1,32 +1,25 @@
 package com.axibase.tsd.api.method.property;
 
 
+import com.axibase.tsd.api.AtsdErrorMessage;
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.model.property.PropertyQuery;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
-
-/**
- * @author Dmitry Korchagin.
- */
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.testng.AssertJUnit.*;
 
 public class PropertyQueryTest extends PropertyMethod {
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     /**
      * #NoTicket
      */
@@ -38,19 +31,13 @@ public class PropertyQueryTest extends PropertyMethod {
         property.setDate(Util.getNextDay());
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", property.getKey());
-        queryObj.put("startDate", property.getDate());
-        queryObj.put("interval", new HashMap<String, Object>() {{
-            put("unit", "DAY");
-            put("count", 2);
-        }});
+        PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity(), property.getKey());
+        query.setStartDate(property.getDate());
+        query.setInterval(new Interval(2, TimeUnit.DAY));
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        final String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
     }
 
 
@@ -58,7 +45,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactFalseWildcardNoKey() throws Exception {
+    public void testEntityWildcardExactFalse() throws Exception {
         final Property property = new Property("query-type18", "query-entity18");
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
@@ -69,17 +56,13 @@ public class PropertyQueryTest extends PropertyMethod {
         secondProperty.addKey("k2", "kv2");
         insertPropertyCheck(secondProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", "*");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("exactMatch", false);
-
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setExactMatch(false);
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, secondProperty));
+        String given = queryProperty(query).readEntity(String.class);
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, given));
     }
 
 
@@ -87,7 +70,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactTrueWildcartNoKey() throws Exception {
+    public void testMultipleEntityWildcardKeyNotMatchExactTrue() throws Exception {
         final Property property = new Property("query-type17", "query-entity17");
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
@@ -98,17 +81,13 @@ public class PropertyQueryTest extends PropertyMethod {
         secondProperty.addKey("k2", "kv2");
         insertPropertyCheck(secondProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", "*");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("exactMatch", true);
-
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setExactMatch(true);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        String given = queryProperty(query).readEntity(String.class);
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only first series should be returned", compareJsonString(expected, given));
     }
 
 
@@ -116,7 +95,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactFalseWildcart() throws Exception {
+    public void testMultipleEntityWildcardKeyPartMatchExactFalse() throws Exception {
         final Property property = new Property("query-type16", "query-entity16");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
@@ -129,18 +108,13 @@ public class PropertyQueryTest extends PropertyMethod {
         secondProperty.addKey("k2", "kv2");
         insertPropertyCheck(secondProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", "*");
-        queryObj.put("key", property.getKey());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("exactMatch", false);
-
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setExactMatch(false);
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, secondProperty));
+        String given = queryProperty(query).readEntity(String.class);
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, given));
     }
 
 
@@ -148,7 +122,7 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactTrueWildcartKeyMatch() throws Exception {
+    public void testMultipleEntityWildcardKeyPartMatchExactTrue() throws Exception {
         final Property property = new Property("query-type15", "query-entity15");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
@@ -157,21 +131,18 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property secondProperty = new Property(null, "query-entity15-2");
         secondProperty.setType(property.getType());
         secondProperty.addTag("t2", "tv2");
+        secondProperty.setKey(property.getKey());
         secondProperty.addKey("k2", "kv2");
         insertPropertyCheck(secondProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", "*");
-        queryObj.put("key", property.getKey());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("exactMatch", true);
-
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setKey(property.getKey());
+        query.setExactMatch(true);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        String given = queryProperty(query).readEntity(String.class);
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, given));
     }
 
 
@@ -179,24 +150,20 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactFalseDiffKey() throws Exception {
+    public void testExtraKeyExactTrue() throws Exception {
         final Property property = new Property("query-type14", "query-entity14");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.addKey("k2", "kv2");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("misskey", "misskey_value");
-        }});
-        queryObj.put("exactMatch", true);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setKey(property.getKey());
+        query.addKey("extra_key", "extra_key_val");
+        query.setExactMatch(true);
 
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        Response response = queryProperty(query);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
     }
 
 
@@ -204,24 +171,19 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactTrueDiffKey() throws Exception {
+    public void testDiffKeyExactTrue() throws Exception {
         final Property property = new Property("query-type13", "query-entity13");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.addKey("k2", "kv2");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("miss_key", "miss_key_value");
-        }});
-        queryObj.put("exactMatch", true);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.addKey("k2", "k2_val");
+        query.setExactMatch(true);
 
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        Response response = queryProperty(query);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
     }
 
     /**
@@ -235,17 +197,13 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addKey("k2", "kv2");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("k1", "kv1");
-        }});
-        queryObj.put("exactMatch", true);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.addKey("k1", "kv1");
+        query.setExactMatch(true);
 
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        Response response = queryProperty(query);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
     }
 
 
@@ -253,82 +211,68 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testExactFalseFullMatch() throws Exception {
+    public void testKeyMatchExactFalse() throws Exception {
         final Property property = new Property("query-type11", "query-entity11");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("key", property.getKey());
-        queryObj.put("exactMatch", false);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setKey(property.getKey());
+        query.setExactMatch(false);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        Response response = queryProperty(query);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
     }
 
-    /**
-     * #NoTicket
-     */
     @Test
-    public void testExactTrueFullMatch() throws Exception {
+    public void testKeyMatchExactTrue() throws Exception {
         final Property property = new Property("query-type10", "query-entity10");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", "now");
-        queryObj.put("key", property.getKey());
-        queryObj.put("exactMatch", true);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "*");
+        query.setKey(property.getKey());
+        query.setExactMatch(true);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        Response response = queryProperty(query);
+        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
     }
 
     /**
      * #NoTicket
      */
     @Test
-    public void testEntities() throws Exception {
+    public void testEntitiesField() throws Exception {
         final Property property = new Property("query-type9", "query-entity9");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
 
-        final Property lastProperty = new Property(null, "query-entity9-2");
-        lastProperty.setType(property.getType());
-        lastProperty.addTag("t2", "tv2");
+        final Property secondProperty = new Property(null, "query-entity9-2");
+        secondProperty.setType(property.getType());
+        secondProperty.addTag("t2", "tv2");
 
 
-        insertPropertyCheck(lastProperty);
+        insertPropertyCheck(secondProperty);
 
-        final Property wrongProperty = new Property(null, "query-wrongentity-9");
+        final Property wrongProperty = new Property(null, "query-wrong-entity-9");
         wrongProperty.setType(property.getType());
         wrongProperty.addTag("tw1", "twv1");
         insertPropertyCheck(wrongProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entities", new ArrayList<String>() {{
-            add(property.getEntity());
-            add(lastProperty.getEntity());
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = new PropertyQuery();
+        query.setType(property.getType());
+        query.setEntities(Arrays.asList(property.getEntity(), secondProperty.getEntity()));
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
 
-        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, secondProperty));
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Stored properties does not match to expected", compareJsonString(expected, given));
     }
 
     /**
@@ -349,15 +293,11 @@ public class PropertyQueryTest extends PropertyMethod {
         lastProperty.setDate(Util.getCurrentDate());
         insertPropertyCheck(lastProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Both properties should be returned if 'last' field is not specified", compareJsonString(expected, given));
     }
 
     /**
@@ -378,18 +318,12 @@ public class PropertyQueryTest extends PropertyMethod {
         lastProperty.setDate(Util.getCurrentDate());
         insertPropertyCheck(lastProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("last", false);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setLast(false);
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, lastProperty));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
-        logger.debug("expected: {}", expected);
-        logger.debug("given: {}", queryProperty(queryObj));
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Both properties should be returned if 'last' field is not specified", compareJsonString(expected, given));
     }
 
     /**
@@ -410,15 +344,12 @@ public class PropertyQueryTest extends PropertyMethod {
         lastProperty.setDate(Util.getCurrentDate());
         insertPropertyCheck(lastProperty);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("last", true);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setLast(true);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(lastProperty));
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Only last property should be returned if 'last' field is set to 'true'", compareJsonString(expected, given));
     }
 
     /**
@@ -447,15 +378,12 @@ public class PropertyQueryTest extends PropertyMethod {
         lastPropertySecond.setDate(lastProperty.getDate());
         insertPropertyCheck(lastPropertySecond);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("last", true);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setLast(true);
 
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(lastProperty, lastPropertySecond));
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Only two last properties should be in response", compareJsonString(expected, given));
     }
 
     /**
@@ -469,19 +397,14 @@ public class PropertyQueryTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", property.getKey());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("interval", new HashMap<String, Object>() {{
-            put("count", 1999);
-            put("unit", "YEAR");
-        }});
+        PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
+        query.setKey(property.getKey());
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setInterval(new Interval(1999, TimeUnit.YEAR));
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        logger.debug("Expected json: {}", expected);
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
     }
 
 
@@ -489,22 +412,20 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testStartEQDateInterval1MS() throws Exception {
+    public void testStartEQDate() throws Exception {
         final Property property = new Property("query-type4", "query-entity4");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
         property.setDate(Util.getCurrentDate());
-        insertPropertyCheck(property);
+        insertProperty(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", property.getDate());
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
+        query.setStartDate(property.getDate());
+        query.setEndDate(Util.addOneMS(property.getDate()));
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
     }
 
 
@@ -519,16 +440,13 @@ public class PropertyQueryTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", property.getKey());
-        queryObj.put("startDate", Util.ISOFormat(Util.getPreviousDay()));
-        queryObj.put("endDate", Util.ISOFormat(Util.getNextDay()));
+        PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
+        query.setStartDate(Util.ISOFormat(Util.getPreviousDay()));
+        query.setEndDate( Util.ISOFormat(Util.getNextDay()));
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
     }
 
 
@@ -536,22 +454,18 @@ public class PropertyQueryTest extends PropertyMethod {
      * #NoTicket
      */
     @Test
-    public void testTypeEntityStartEndExactDefault() throws Exception {
+    public void testDefaultQueryExactDefault() throws Exception {
         final Property property = new Property("query-type2", "query-entity2");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
         property.setDate(Util.getCurrentDate());
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", property.getDate());
-        queryObj.put("endDate", Util.ISOFormat(Util.getNextDay()));
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -565,16 +479,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("exactMatch", false);
-        queryObj.put("startDate", property.getDate());
-        queryObj.put("endDate", Util.ISOFormat(Util.getNextDay()));
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setExactMatch(false);
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -586,21 +496,17 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addTag("fs_type", "ext4");
         property.addKey("file_system", "/");
         property.addKey("mount_point", "/sda1");
-        property.setDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse("2016-05-25T04:00:00.000Z"));
+        property.setDate("2016-05-25T04:00:00.000Z");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("file_system", "/");
-        }});
-        queryObj.put("startDate", "2016-05-25T04:00:00Z");
-        queryObj.put("endDate", "2016-05-25T05:00:00Z");
+        PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
+        query.addKey("file_system", "/");
+        query.setStartDate("2016-05-25T04:00:00Z");
+        query.setEndDate("2016-05-25T05:00:00Z");
 
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -608,14 +514,12 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEndDateAbsent() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "test_type");
-        request.put("entity", "test_entity");
-        request.put("startDate", "2016-05-25T05:00:00Z");
+        PropertyQuery query = new PropertyQuery("mock-type", "mock-entity");
+        query.setStartDate("2016-05-25T05:00:00Z");
 
-        Response response = queryProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate\"}", response.readEntity(String.class));
+        Response response = queryProperty(query);
+        assertEquals("Query should fail if endDate is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
 
@@ -624,13 +528,11 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testDateFilterAbsent() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "test_type");
-        request.put("entity", "test_entity");
+        PropertyQuery query = new PropertyQuery("mock-type", "mock-entity");
 
-        Response response = queryProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate\"}", response.readEntity(String.class));
+        Response response = queryProperty(query);
+        assertEquals("Query should fail if DateFiled is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
     /**
@@ -638,63 +540,47 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testOnlyTypeSpecified() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "test_type");
+        PropertyQuery query = new PropertyQuery();
+        query.setType("mock-type");
 
-        Response response = queryProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate\"}", response.readEntity(String.class));
+        Response response = queryProperty(query);
+        assertEquals("Query should fail if DateFiled is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
-
-    /**
-     * #NoTicket
-     */
-    @Test
-    public void testEntityFilterEndDateAbsent() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "test_type");
-        request.put("startDate", "2016-06-01T12:04:59.191Z");
-
-        Response response = queryProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate\"}", response.readEntity(String.class));
-    }
 
     /**
      * #NoTicket
      */
     @Test
     public void testEntityFilterAbsent() throws Exception {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "test_type");
-        request.put("startDate", "2016-06-01T12:04:59.191Z");
-        request.put("endDate", "2016-06-01T13:04:59.191Z");
+        PropertyQuery query = new PropertyQuery();
+        query.setType("mock-type");
+        query.setStartDate("2016-06-01T12:04:59.191Z");
+        query.setEndDate("2016-06-01T13:04:59.191Z");
 
-        Response response = queryProperty(request);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("{\"error\":\"IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty\"}", response.readEntity(String.class));
+        Response response = queryProperty(query);
+        assertEquals("Query EntityFilter is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error message mismatch", AtsdErrorMessage.ENTITY_FILTER_REQUIRED, extractErrorMessage(response));
     }
 
     /**
      * #NoTicket
      */
     @Test
-    public void testEntityTags() throws Exception {
-        final String entityTagsType = "$entity_tags";
+    public static void testEntityTags() throws Exception {
         final Entity entity = new Entity("query-entity20");
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         final Property property = new Property();
-        property.setType(entityTagsType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
+
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        assertTrue(propertyExist(property));
+        assertTrue("Properties with entityTag should be specified", propertyExist(property));
     }
 
     /**
@@ -702,61 +588,39 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsTagsAsKeyExactTrue() throws Exception {
-        final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity21");
-        final Property property = new Property();
-        property.setType(entityTagsType);
-        property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("key", tags);
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", true);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.setKey(entity.getTags());
+        query.setExactMatch(true);
 
-
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        assertTrue("No property should be returned", compareJsonString(expected, given));
     }
 
     /**
      * #NoTicket
      */
     @Test
-    public void testEntityTagsTagsAsPartKeyExactTrue() throws Exception {
-        final String entityTagsType = "$entity_tags";
+    public void testEntityTagsTagsAsPartKeyExactFalse() throws Exception {
         final Entity entity = new Entity("query-entity22");
-        final Property property = new Property();
-        property.setType(entityTagsType);
-        property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("key", new HashMap<String, String>() {{
-            put("t1", "v1");
-        }});
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", false);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.addKey("t1", "tv1");
+        query.setExactMatch(false);
 
-
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        assertTrue("No property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -764,30 +628,23 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsEmptyKeyExactFalse() throws Exception {
-        final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity23");
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         final Property property = new Property();
-        property.setType(entityTagsType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
+
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", false);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.setExactMatch(false);
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue(String.format("Property with type %s for inserted entity should be returned", ENTITY_TAGS_PROPERTY_TYPE), compareJsonString(expected, given));
     }
 
     /**
@@ -795,30 +652,23 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsEmptyKeyExactTrue() throws Exception {
-        final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity24");
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         final Property property = new Property();
-        property.setType(entityTagsType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
+
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("exactMatch", false);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.setExactMatch(true);
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue(String.format("Property with type %s for inserted entity should be returned", ENTITY_TAGS_PROPERTY_TYPE), compareJsonString(expected, given));
     }
 
     /**
@@ -826,32 +676,24 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsKeyExpression() throws Exception {
-        final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity25");
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         final Property property = new Property();
-        property.setType(entityTagsType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
+
         EntityMethod.createOrReplaceEntityCheck(entity);
-        assertTrue(propertyExist(property));
 
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.setKeyTagExpression("tags.t1 == 'tv1'");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("keyTagExpression", "tags.t1 == 'v1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue(String.format("Property with type %s for inserted entity should be returned", ENTITY_TAGS_PROPERTY_TYPE), compareJsonString(expected, given));
 
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
     }
 
     /**
@@ -859,28 +701,23 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsKeyExpressionNoMatch() throws Exception {
-        final String entityTagsType = "$entity_tags";
         final Entity entity = new Entity("query-entity26");
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
         final Property property = new Property();
-        property.setType(entityTagsType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
-        Map<String, String> tags = new HashMap<String, String>() {{
-            put("t1", "v1");
-            put("t2", "v2");
-        }};
-        entity.setTags(tags);
-        property.setTags(tags);
+        property.setTags(entity.getTags());
+
         EntityMethod.createOrReplaceEntityCheck(entity);
-        assertTrue(propertyExist(property));
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", "$entity_tags");
-        queryObj.put("entity", entity.getName());
-        queryObj.put("keyTagExpression", "tags.t1 == 'v2'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.setKeyTagExpression("tags.t1 == 'v2'");
 
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        assertTrue("No property should be returned", compareJsonString(expected, given));
     }
 
 
@@ -889,30 +726,16 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityWildcardTagsAsKey() throws Exception {
-        final String entityTagType = "$entity_tags";
-        Entity entity1 = new Entity("wck-query-entity33");
-        entity1.addTag("wct1", "wcv1");
-        Entity entity2 = new Entity("wck-query-entity34");
-        entity2.addTag("wct1", "wcV1");
-        Entity entity3 = new Entity("wck-query-entity35");
-        entity3.addTag("wct1", "wcv1");
-        entity3.addTag("wct2", "wcv2");
-        Entity entity4 = new Entity("wck-query-entity36");
-        entity4.addTag("wct2", "wcV2");
-        EntityMethod.createOrReplaceEntityCheck(entity1);
-        EntityMethod.createOrReplaceEntityCheck(entity2);
-        EntityMethod.createOrReplaceEntityCheck(entity3);
-        EntityMethod.createOrReplaceEntityCheck(entity4);
+        final Entity entity = new Entity("wck-query-entity33");
+        entity.addTag("wct1", "wcv1");
+        EntityMethod.createOrReplaceEntityCheck(entity);
 
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE,  "wck-*");
+        query.setKey(entity.getTags());
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", entityTagType);
-        queryObj.put("entity", "wck-*");
-        queryObj.put("key", entity1.getTags());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        assertTrue("No property should be returned", compareJsonString(expected, given));
     }
 
 
@@ -921,7 +744,6 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityWildcardExpression() throws Exception {
-        final String entityTagType = "$entity_tags";
         Entity entity1 = new Entity("wcke-query-entity37");
         entity1.addTag("wc2t1", "wc2v1");
         Entity entity2 = new Entity("wcke-query-entity38");
@@ -937,21 +759,16 @@ public class PropertyQueryTest extends PropertyMethod {
         EntityMethod.createOrReplaceEntityCheck(entity4);
 
         final Property property3 = new Property();
-        property3.setType(entityTagType);
+        property3.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property3.setEntity(entity3.getName());
         property3.setTags(entity3.getTags());
 
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, "wcke-*");
+        query.setKeyTagExpression("keys.wc2t1 = 'wc2V1' OR tags.wc2t2 = 'wc2v2'");
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", entityTagType);
-        queryObj.put("entity", "wcke-*");
-        queryObj.put("keyTagExpression", "keys.wc2t1 = 'wc2V1' OR tags.wc2t2 = 'wc2v2'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property3));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue(String.format("Property with type %s for inserted entity should be returned", ENTITY_TAGS_PROPERTY_TYPE), compareJsonString(expected, given));
 
     }
 
@@ -961,26 +778,21 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsExpressionCaseSensitiveValue() throws Exception {
-        final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity41");
         entity.addTag("t1", "tv1");
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-
         final Property property = new Property();
-        property.setType(entityTagType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
         property.setTags(entity.getTags());
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", entityTagType);
-        queryObj.put("entity", entity.getName());
-        queryObj.put("keyTagExpression", "tags.t1 == 'tV1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE,  entity.getName());
+        query.setKeyTagExpression("tags.t1 == 'tV1'");
 
-
-        JSONAssert.assertEquals("[]", queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        assertTrue("No property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -988,28 +800,23 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testEntityTagsKeyTagExpressionCaseInsensitiveName() throws Exception {
-        final String entityTagType = "$entity_tags";
         Entity entity = new Entity("query-entity42");
         entity.addTag("t1", "tv1");
         EntityMethod.createOrReplaceEntityCheck(entity);
 
 
         final Property property = new Property();
-        property.setType(entityTagType);
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
         property.setEntity(entity.getName());
         property.setTags(entity.getTags());
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", entityTagType);
-        queryObj.put("entity", entity.getName());
-        queryObj.put("keyTagExpression", "tags.T1 == 'tv1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
 
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
+        query.setKeyTagExpression("tags.T1 == 'tv1'");
 
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue(String.format("Property with type %s for inserted entity should be returned", ENTITY_TAGS_PROPERTY_TYPE), compareJsonString(expected, given));
     }
 
     /**
@@ -1034,17 +841,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property3.addKey("k3", "kv3");
         insertPropertyCheck(property3);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t1 == 'tv1' OR keys.k3 == 'kv3'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t1 == 'tv1' OR keys.k3 == 'kv3'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(property, property2, property3));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("All inserted properties should be returned", compareJsonString(expected, given));
     }
 
 
@@ -1057,24 +859,20 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
         insertPropertyCheck(property);
+
         final Property property2 = new Property();
         property2.setType(property.getType());
         property2.setEntity(property.getEntity());
         property2.addTag("t1", "tv1");
         property2.addKey("k2", "kv2");
-
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t1 == 'tv1' AND keys.k2 == 'kv2'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t1 == 'tv1' AND keys.k2 == 'kv2'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property2));
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1094,17 +892,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k2", "kv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t1 LIKE 'tv*'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t1 LIKE 'tv*'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1124,17 +917,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k1", "kg2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "keys.k1 LIKE 'kv*'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("keys.k1 LIKE 'kg*'");
 
-
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        String given = queryProperty(query).readEntity(String.class);
+        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property2));
+        assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1154,17 +942,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k1", "tv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t1 == keys.k1");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t1 == keys.k1");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1184,17 +967,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k1", "tv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t1 != keys.k1");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t1 != keys.k1");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property2));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1213,17 +991,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k2", "tv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "keys.k2 == ''");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("keys.k2 == ''");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1242,17 +1015,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k2", "tv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "keys.k2 != ''");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("keys.k2 != ''");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property2));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1271,17 +1039,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k2", "tv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t2 == ''");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t2 == ''");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1300,17 +1063,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k2", "tv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "tags.t2 != ''");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("tags.t2 != ''");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property2));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1322,17 +1080,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addTag("t1", "TV1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "lower(tags.t1) == 'tv1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("lower(tags.t1) == 'tv1'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1345,17 +1098,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addKey("k1", "KV1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "lower(keys.k1) == 'kv1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("lower(keys.k1) == 'kv1'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1367,17 +1115,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "upper(tags.t1) == 'TV1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("upper(tags.t1) == 'TV1'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1390,16 +1133,12 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addKey("k1", "KV1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "upper(keys.k1) == 'KV1'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("upper(keys.k1) == 'KV1'");
 
-
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        JSONAssert.assertEquals(expected, queryProperty(queryObj).readEntity(String.class), false);
+        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
     }
 
     /**
@@ -1407,6 +1146,7 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testLimit1() throws Exception {
+        final int limit = 1;
         final Property property = new Property("query-type55", "query-entity55");
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
@@ -1418,14 +1158,11 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addKey("k2", "kv2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("limit", 1);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setLimit(limit);
 
-        assertEquals("One property should be received", 1, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        int actual = calculateJsonArraySize(queryProperty(query).readEntity(String.class));
+        assertEquals("One property should be received", limit, actual);
     }
 
 
@@ -1434,6 +1171,7 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testLimit2() throws Exception {
+        final int limit = 2;
         final Property property = new Property("query-type56", "query-entity56");
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
@@ -1453,14 +1191,11 @@ public class PropertyQueryTest extends PropertyMethod {
         insertPropertyCheck(property3);
 
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("limit", 2);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setLimit(limit);
 
-        assertEquals("Two property should be received", 2, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        int actual = calculateJsonArraySize(queryProperty(query).readEntity(String.class));
+        assertEquals("Two property should be received", limit, actual);
     }
 
     /**
@@ -1468,6 +1203,7 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testLimit0() throws Exception {
+        final int limit = 0;
         final Property property = new Property("query-type57", "query-entity57");
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
@@ -1487,14 +1223,10 @@ public class PropertyQueryTest extends PropertyMethod {
         insertPropertyCheck(property3);
 
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("limit", 0);
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, property.getEntity());
+        query.setLimit(limit);
 
-        assertEquals("Three property should be received", 3, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        assertEquals("Three property should be received", limit, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
     }
 
 
@@ -1503,6 +1235,7 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testLimitWithDateFilter() throws Exception {
+        final int limit = 1;
         final Property property1 = new Property("query-type57-a", "query-entity57-a");
         property1.setDate("2016-07-18T02:35:00.000Z");
         property1.addKey("uniq", "key1");
@@ -1517,22 +1250,21 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property1.getType());
-        queryObj.put("entity", property1.getEntity());
-        queryObj.put("startDate", property2.getDate());
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("limit", 1);
-        String given = queryProperty(queryObj).readEntity(String.class);
+        PropertyQuery query = new PropertyQuery(property1.getType(), property1.getEntity());
+        query.setStartDate(property2.getDate());
+        query.setEndDate(MAX_QUERYABLE_DATE);
+        query.setLimit(limit);
+
+        String given = queryProperty(query).readEntity(String.class);
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property2));
         assertTrue("Property2 should be returned", compareJsonString(expected, given));
 
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", Util.addOneMS(property1.getDate()));
-        given = queryProperty(queryObj).readEntity(String.class);
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(Util.addOneMS(property1.getDate()));
+
+        given = queryProperty(query).readEntity(String.class);
         expected = jacksonMapper.writeValueAsString(Collections.singletonList(property1));
         assertTrue("Property1 should be returned", compareJsonString(expected, given));
-
     }
 
     /**
@@ -1560,18 +1292,15 @@ public class PropertyQueryTest extends PropertyMethod {
         property3.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property3);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", "query-entity57-b-limitentity-*");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("limit", 2);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), "query-entity57-b-limitentity-*");
 
-        assertEquals("Two property should be received", 2, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        query.setLimit(2);
 
-        queryObj.put("entity", "query-entity57-b-limitentityo*");
-        queryObj.put("limit", 1);
-        assertEquals("One property should be received", 1, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        assertEquals("Two property should be received", 2, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
+
+        query.setEntity("query-entity57-b-limitentityo*");
+        query.setLimit(1);
+        assertEquals("One property should be received", 1, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
     }
 
 
@@ -1580,6 +1309,7 @@ public class PropertyQueryTest extends PropertyMethod {
      */
     @Test
     public void testLimitWithKeyExpression() throws Exception {
+        final int limit = 1;
         final Property property = new Property("query-type57-c", "query-entity57-c");
         final String keyValue = "key1";
         property.addKey("uniq", keyValue);
@@ -1593,18 +1323,14 @@ public class PropertyQueryTest extends PropertyMethod {
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("keyTagExpression", "keys.uniq = '" + keyValue + "'");
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
-        queryObj.put("limit", 1);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setKeyTagExpression("keys.uniq = '" + keyValue + "'");
+        query.setLimit(limit);
 
-        assertEquals("One property should be received", 1, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        assertEquals("One property should be received", limit, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
 
-        queryObj.put("keyTagExpression", "keys.uniq = '" + keyValue.toUpperCase() + "'");
-        assertEquals("One property should be received", 1, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        query.setKeyTagExpression("keys.uniq = '" + keyValue.toUpperCase() + "'");
+        assertEquals("One property should be received", limit, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
     }
 
 
@@ -1632,17 +1358,12 @@ public class PropertyQueryTest extends PropertyMethod {
         insertPropertyCheck(property3);
 
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entity", property.getEntity());
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.setLimit(-1);
+        assertEquals("Three property should be received", 3, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
 
-        queryObj.put("limit", -1);
-        assertEquals("Three property should be received", 3, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
-
-        queryObj.put("limit", -5);
-        assertEquals("Three property should be received", 3, calculateJsonArraySize(queryProperty(queryObj).readEntity(String.class)));
+        query.setLimit(-5);
+        assertEquals("Three property should be received", 3, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
     }
 
     /**
@@ -1654,15 +1375,15 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entities", Arrays.asList("query-entity*"));
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = new PropertyQuery();
+        query.setType(property.getType());
+        query.setEntities(Collections.singletonList("query-entity*"));
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
 
-        final String given = queryProperty(queryObj).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
-        assertTrue(compareJsonString(expected, given));
+        final String given = queryProperty(query).readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Inserted property should be recieved", compareJsonString(expected, given));
     }
 
     /**
@@ -1674,14 +1395,202 @@ public class PropertyQueryTest extends PropertyMethod {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
 
-        Map<String, Object> queryObj = new HashMap<>();
-        queryObj.put("type", property.getType());
-        queryObj.put("entities", Arrays.asList("query-entity6?"));
-        queryObj.put("startDate", MIN_QUERYABLE_DATE);
-        queryObj.put("endDate", MAX_QUERYABLE_DATE);
+        PropertyQuery query = new PropertyQuery();
+        query.setType(property.getType());
+        query.setEntities(Collections.singletonList("query-entity6?"));
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
 
-        final String given = queryProperty(queryObj).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(property));
-        assertTrue(compareJsonString(expected, given));
+        final String given = queryProperty(query).readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Inserted property should be recieved", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueNullExactTrue() throws Exception {
+        final Property property = new Property("query-type-61", "query-entity61");
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.addKey("k1", null);
+        query.setExactMatch(true);
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueNullExactFalse() throws Exception {
+        final Property property = new Property("query-type-62", "query-entity62");
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.addKey("k1", null);
+        query.setExactMatch(false);
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueEmptyExactTrue() throws Exception {
+        final Property property = new Property("query-type-63", "query-entity63");
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.addKey("k1", "");
+        query.setExactMatch(true);
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueEmptyExactFalse() throws Exception {
+        final Property property = new Property("query-type-64", "query-entity64");
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.addKey("k1", "");
+        query.setExactMatch(false);
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueSpaces() throws Exception {
+        final Property property = new Property("query-type-65", "query-entity65");
+        property.addTag("t1", "v1");
+        insertPropertyCheck(property);
+
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.addKey("k1", "      ");
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueContainsSpaces() throws Exception {
+        final Property property = new Property("query-type-66", "query-entity66");
+        property.addTag("t1", "v1");
+        property.addKey("k1", "kv1");
+        insertPropertyCheck(property);
+
+        PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
+        query.addKey("k1", " kv1 ");
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueBoolean() throws Exception {
+        final Property property = new Property("query-type-67", "query-entity67");
+        property.addTag("t1", "v1");
+        property.addKey("k1", "true");
+        insertPropertyCheck(property);
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("type", property.getType());
+        query.put("entity", property.getEntity());
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
+
+        Map<String, Object> key = new HashMap<>();
+        key.put("k1", true);
+        query.put("key", key);
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    /**
+     * #2416
+     */
+    @Test
+    public void testKeyValueInteger() throws Exception {
+        final Property property = new Property("query-type-68", "query-entity68");
+        property.addTag("t1", "v1");
+        property.addKey("k1", "111");
+        insertPropertyCheck(property);
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("type", property.getType());
+        query.put("entity", property.getEntity());
+        query.put("startDate", MIN_QUERYABLE_DATE);
+        query.put("endDate", MAX_QUERYABLE_DATE);
+
+        Map<String, Object> key = new HashMap<>();
+        key.put("k1", 111);
+        query.put("key", key);
+
+        Response response = queryProperty(query);
+
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    private PropertyQuery prepareSimplePropertyQuery(String type, String entity) {
+        PropertyQuery query = new PropertyQuery(type, entity);
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
+        return query;
     }
 }

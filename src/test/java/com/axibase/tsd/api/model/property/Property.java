@@ -34,12 +34,12 @@ public class Property {
         cloned.setType(type);
         cloned.setEntity(entity);
         if(key == null) {
-            cloned.setKey(new HashMap<String, String>());
+            cloned.setKey(null);
         } else {
             cloned.setKey(new HashMap<>(key));
         }
         if(tags == null) {
-            cloned.setTags(new HashMap<String, String>());
+            cloned.setTags(null);
         } else {
             cloned.setTags(new HashMap<>(tags));
         }
@@ -114,16 +114,5 @@ public class Property {
 
     public void setDate(Date date) {
         this.date = Util.ISOFormat(date);
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "type='" + getType() + '\'' +
-                ", entity='" + getEntity() + '\'' +
-                ", key=" + getKey() +
-                ", tags=" + getTags() +
-                ", date=" + getDate() +
-                '}';
     }
 }
