@@ -35,9 +35,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(property.getDate());
         query.setInterval(new Interval(2, TimeUnit.DAY));
 
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        final String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
 
@@ -87,7 +85,7 @@ public class PropertyQueryTest extends PropertyMethod {
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         String given = queryProperty(query).readEntity(String.class);
 
-        assertTrue("Only first series should be returned", compareJsonString(expected, given));
+        assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
 
@@ -142,7 +140,7 @@ public class PropertyQueryTest extends PropertyMethod {
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         String given = queryProperty(query).readEntity(String.class);
 
-        assertTrue("Stored series do not match to inserted", compareJsonString(expected, given));
+        assertTrue("Stored property do not match to inserted", compareJsonString(expected, given));
     }
 
 
@@ -183,7 +181,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
         Response response = queryProperty(query);
-        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
+        assertTrue("Should not receive any properties", compareJsonString(expected, response.readEntity(String.class)));
     }
 
     /**
@@ -203,7 +201,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
         Response response = queryProperty(query);
-        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
+        assertTrue("Should not receive any properties", compareJsonString(expected, response.readEntity(String.class)));
     }
 
 
@@ -221,9 +219,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setKey(property.getKey());
         query.setExactMatch(false);
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        Response response = queryProperty(query);
-        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
+        assertInsertedPropertyReturned(property, query);
+
     }
 
     @Test
@@ -237,9 +234,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setKey(property.getKey());
         query.setExactMatch(true);
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        Response response = queryProperty(query);
-        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
+        assertInsertedPropertyReturned(property, query);
+
     }
 
     /**
@@ -402,9 +398,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(MIN_QUERYABLE_DATE);
         query.setInterval(new Interval(1999, TimeUnit.YEAR));
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
 
@@ -423,9 +417,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(property.getDate());
         query.setEndDate(Util.addOneMS(property.getDate()));
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
 
@@ -444,9 +436,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(Util.ISOFormat(Util.getPreviousDay()));
         query.setEndDate( Util.ISOFormat(Util.getNextDay()));
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
 
@@ -463,9 +453,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -482,9 +470,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.setExactMatch(false);
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -504,9 +490,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate("2016-05-25T04:00:00Z");
         query.setEndDate("2016-05-25T05:00:00Z");
 
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        String given = queryProperty(query).readEntity(String.class);
-        assertTrue("Inserted properties should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1083,9 +1067,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.setKeyTagExpression("lower(tags.t1) == 'tv1'");
 
-        String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1101,9 +1083,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.setKeyTagExpression("lower(keys.k1) == 'kv1'");
 
-        String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1118,9 +1098,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.setKeyTagExpression("upper(tags.t1) == 'TV1'");
 
-        String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1136,9 +1114,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.setKeyTagExpression("upper(keys.k1) == 'KV1'");
 
-        String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Inserted property should be returned", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1381,9 +1357,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(MIN_QUERYABLE_DATE);
         query.setEndDate(MAX_QUERYABLE_DATE);
 
-        final String given = queryProperty(query).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Inserted property should be recieved", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1401,9 +1375,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(MIN_QUERYABLE_DATE);
         query.setEndDate(MAX_QUERYABLE_DATE);
 
-        final String given = queryProperty(query).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Inserted property should be recieved", compareJsonString(expected, given));
+        assertInsertedPropertyReturned(property, query);
     }
 
     /**
@@ -1419,12 +1391,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("k1", null);
         query.setExactMatch(true);
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1440,12 +1407,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("k1", null);
         query.setExactMatch(false);
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1461,12 +1423,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("k1", "");
         query.setExactMatch(true);
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1482,12 +1439,7 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("k1", "");
         query.setExactMatch(false);
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1502,12 +1454,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.addKey("k1", "      ");
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1523,12 +1470,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
         query.addKey("k1", " kv1 ");
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1551,12 +1493,7 @@ public class PropertyQueryTest extends PropertyMethod {
         key.put("k1", true);
         query.put("key", key);
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     /**
@@ -1579,12 +1516,7 @@ public class PropertyQueryTest extends PropertyMethod {
         key.put("k1", 111);
         query.put("key", key);
 
-        Response response = queryProperty(query);
-
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
-        final String given = response.readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
-        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+        assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
     private PropertyQuery prepareSimplePropertyQuery(String type, String entity) {
@@ -1592,5 +1524,19 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setStartDate(MIN_QUERYABLE_DATE);
         query.setEndDate(MAX_QUERYABLE_DATE);
         return query;
+    }
+
+    private void assertStoredPropertyDoesNotMatchToInserted(Property property, Object query) throws Exception {
+        Response response = queryProperty(query);
+        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        final String given = response.readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Property does not match to expected", compareJsonString(expected, given));
+    }
+
+    private void assertInsertedPropertyReturned(Property property, PropertyQuery query) throws Exception{
+        final String given = queryProperty(query).readEntity(String.class);
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        assertTrue("Inserted property should be received", compareJsonString(expected, given));
     }
 }
