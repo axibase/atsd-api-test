@@ -75,14 +75,6 @@ public class Util {
         return d;
     }
 
-    public static String generateStringFromChar(char c, int length) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(c);
-        }
-        return sb.toString();
-    }
-
     public static String addOneMS(String date) {
         return ISOFormat(parseDate(date).getTime() + 1);
     }
@@ -106,8 +98,7 @@ public class Util {
         return ISOFormat(instance.getTime());
     }
 
-    public static StringBuilder copyChar(char c, int count) {
-        StringBuilder sb = new StringBuilder("");
+    public static StringBuilder appendChar(StringBuilder sb, char c, int count) {
         for(int i = 0; i < count; i++) {
             sb.append(c);
         }

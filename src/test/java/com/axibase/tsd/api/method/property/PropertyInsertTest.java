@@ -405,6 +405,8 @@ public class PropertyInsertTest extends PropertyMethod {
         Response response = insertProperty(property);
 
         assertEquals("Query should fail if tag contain only null values", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertFalse("Inserted property should not be stored", propertyExist(property));
+
     }
 
     /**

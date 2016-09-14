@@ -22,7 +22,7 @@ public class SeriesCommandTest extends SeriesMethod {
         final int METRIC_PREFIX_LENGTH = 13097 - 2;
 
         String entityName = "e-series-max-len";
-        String metricPrefix = Util.generateStringFromChar('m', METRIC_PREFIX_LENGTH) + "-";
+        String metricPrefix = Util.appendChar(new StringBuilder(), 'm', METRIC_PREFIX_LENGTH).append("-").toString();
         String date = "2016-05-21T00:00:00.000Z";
         String endDate = "2016-05-21T00:00:00.001Z";
 
@@ -63,7 +63,7 @@ public class SeriesCommandTest extends SeriesMethod {
         final int METRIC_PREFIX_LENGTH = 13097 - 2;
 
         String entityName = "e-series-max-over";
-        String metricPrefix = Util.generateStringFromChar('m', METRIC_PREFIX_LENGTH) + "-";
+        String metricPrefix = Util.appendChar(new StringBuilder(), 'm', METRIC_PREFIX_LENGTH).append("-").toString();
         String date = "2016-05-21T00:00:00.000Z";
         String endDate = "2016-05-21T00:00:00.001Z";
 
