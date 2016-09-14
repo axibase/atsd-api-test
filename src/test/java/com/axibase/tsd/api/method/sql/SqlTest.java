@@ -26,6 +26,7 @@ public class SqlTest extends SqlMethod {
 
 
     public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table, String errorMessage) {
+        //TODO: pretty comparision view, make abstract comparision method
         List<List<String>> actualRows = table.getRows();
         if (actualRows.size() != expectedRows.size()) {
             fail(errorMessage);
