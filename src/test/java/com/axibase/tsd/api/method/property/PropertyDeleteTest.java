@@ -67,7 +67,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
-        assertTrue("Property should be deleted", propertyExist(property));
+        assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
