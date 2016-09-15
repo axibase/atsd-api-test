@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -159,9 +158,9 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("extra_key", "extra_key_val");
         query.setExactMatch(true);
 
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        String emptyJsonList = "[]";
         Response response = queryProperty(query);
-        assertTrue("Stored series do not match to inserted", compareJsonString(expected, response.readEntity(String.class)));
+        assertTrue("Stored series do not match to inserted", compareJsonString(emptyJsonList, response.readEntity(String.class)));
     }
 
 
@@ -179,9 +178,9 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("k2", "k2_val");
         query.setExactMatch(true);
 
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        String emptyJsonList = "[]";
         Response response = queryProperty(query);
-        assertTrue("Should not receive any properties", compareJsonString(expected, response.readEntity(String.class)));
+        assertTrue("Should not receive any properties", compareJsonString(emptyJsonList, response.readEntity(String.class)));
     }
 
     /**
@@ -199,9 +198,9 @@ public class PropertyQueryTest extends PropertyMethod {
         query.addKey("k1", "kv1");
         query.setExactMatch(true);
 
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
+        String emptyJsonList = "[]";
         Response response = queryProperty(query);
-        assertTrue("Should not receive any properties", compareJsonString(expected, response.readEntity(String.class)));
+        assertTrue("Should not receive any properties", compareJsonString(emptyJsonList, response.readEntity(String.class)));
     }
 
 
@@ -583,8 +582,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setExactMatch(true);
 
         String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
-        assertTrue("No property should be returned", compareJsonString(expected, given));
+        String emptyJsonList = "[]";
+        assertTrue("No property should be returned", compareJsonString(emptyJsonList, given));
     }
 
     /**
@@ -603,8 +602,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setExactMatch(false);
 
         String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
-        assertTrue("No property should be returned", compareJsonString(expected, given));
+        String emptyJsonList = "[]";
+        assertTrue("No property should be returned", compareJsonString(emptyJsonList, given));
     }
 
     /**
@@ -700,8 +699,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setKeyTagExpression("tags.t1 == 'v2'");
 
         String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
-        assertTrue("No property should be returned", compareJsonString(expected, given));
+        String emptyJsonList = "[]";
+        assertTrue("No property should be returned", compareJsonString(emptyJsonList, given));
     }
 
 
@@ -718,8 +717,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setKey(entity.getTags());
 
         String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
-        assertTrue("No property should be returned", compareJsonString(expected, given));
+        String emptyJsonList = "[]";
+        assertTrue("No property should be returned", compareJsonString(emptyJsonList, given));
     }
 
 
@@ -775,8 +774,8 @@ public class PropertyQueryTest extends PropertyMethod {
         query.setKeyTagExpression("tags.t1 == 'tV1'");
 
         String given = queryProperty(query).readEntity(String.class);
-        String expected = jacksonMapper.writeValueAsString(Collections.emptyList());
-        assertTrue("No property should be returned", compareJsonString(expected, given));
+        String emptyJsonList = "[]";
+        assertTrue("No property should be returned", compareJsonString(emptyJsonList, given));
     }
 
     /**

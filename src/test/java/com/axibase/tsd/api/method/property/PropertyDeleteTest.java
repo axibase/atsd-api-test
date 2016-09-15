@@ -7,7 +7,6 @@ import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
