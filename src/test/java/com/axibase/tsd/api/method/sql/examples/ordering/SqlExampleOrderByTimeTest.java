@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -24,7 +25,7 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
         series.addData(new Sample("2016-07-27T22:41:52.000Z", "0"));
         series.addData(new Sample("2016-07-27T22:41:51.000Z", "1"));
         series.addData(new Sample("2016-07-27T22:41:50.000Z", "2"));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

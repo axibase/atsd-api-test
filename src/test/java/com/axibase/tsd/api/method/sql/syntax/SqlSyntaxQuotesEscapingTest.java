@@ -33,7 +33,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
         series.setMetric(TEST_METRIC_NAME);
         series.addData(new Sample("2016-07-27T22:41:50.407Z", "12.4"));
         series.setTags(tags);
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         Metric updatedMetricQuery = new Metric();
         updatedMetricQuery.setTags(tags);

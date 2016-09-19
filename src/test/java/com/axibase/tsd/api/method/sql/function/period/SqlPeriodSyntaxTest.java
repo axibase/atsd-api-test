@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -20,15 +21,14 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
     @BeforeClass
     public static void prepareDate() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    setData(Arrays.asList(
-                            new Sample("2016-06-19T11:00:00.001Z", "0"),
-                            new Sample("2016-06-19T11:00:05.001Z", "1"),
-                            new Sample("2016-06-19T11:00:10.001Z", "2")
-                    ));
-                }}
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        List<Sample> data = Arrays.asList(
+                new Sample("2016-06-19T11:00:00.001Z", "0"),
+                new Sample("2016-06-19T11:00:05.001Z", "1"),
+                new Sample("2016-06-19T11:00:10.001Z", "2")
         );
+        series.setData(data);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /*

@@ -33,12 +33,11 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
             put("tag\"quotation'", "6");
         }});
 
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addData(new Sample("2016-06-19T11:00:00.500Z", "0"));
-                    setTags(tags);
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            addData(new Sample("2016-06-19T11:00:00.500Z", "0"));
+            setTags(tags);
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         MetricMethod.updateMetric(TEST_METRIC_NAME, new Metric() {{
             setTags(tags);
@@ -47,10 +46,6 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
             setTags(tags);
         }});
     }
-    /*
-    #3085 issue
-    Tag name With Special Characters
-     */
 
     /**
      * #3085

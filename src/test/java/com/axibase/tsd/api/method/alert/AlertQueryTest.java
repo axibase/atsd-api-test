@@ -2,7 +2,8 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.Util;
+import org.json.JSONArray;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -92,4 +93,30 @@ public class AlertQueryTest extends AlertMethod {
         Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
     }
 
+    /**
+     * #2993
+     */
+    @Test
+    public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
+        final String entityName = "alert-query-entity-5";
+        Registry.Entity.register(entityName);
+        generateAlertForEntity(entityName);
+
+        Map<String, Object> qExist = new HashMap<>();
+        qExist.put("entity", entityName);
+        qExist.put("startDate", MIN_QUERYABLE_DATE);
+        qExist.put("endDate", MAX_QUERYABLE_DATE);
+
+        Map<String, Object> qUnknown = new HashMap<>();
+        qUnknown.put("entity", "UNKNOWN");
+        qUnknown.put("startDate", MIN_QUERYABLE_DATE);
+        qUnknown.put("endDate", MAX_QUERYABLE_DATE);
+
+        Response response = queryAlerts(qExist, qUnknown);
+        JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
+        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
+        Assert.assertTrue(jsonResponse.length() == 2, "Fail to get alerts by queries with unknown entity");
+        Assert.assertEquals("ENTITY not found for name: 'unknown'", Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse), "Unexpected warning message");
+    }
 }

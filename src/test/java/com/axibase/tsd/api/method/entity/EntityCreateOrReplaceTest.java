@@ -307,7 +307,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testSeriesRemain() throws Exception {
         Series series = new Series("create-entity-17","create-entity-metric-17");
         series.addData(new Sample(MIN_STORABLE_DATE, 0));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         Entity entity = new Entity();
         entity.setName(series.getEntity());

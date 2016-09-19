@@ -4,7 +4,9 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.version.Version;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -104,4 +106,12 @@ public class Util {
         }
         return sb;
     }
+
+    public static String extractJSONObjectFieldFromJSONArrayByIndex(int index, String field, JSONArray array) throws JSONException {
+        if (array == null) {
+            return "JSONArray is null";
+        }
+        return (((JSONObject) array.get(index)).get(field)).toString();
+    }
+
 }

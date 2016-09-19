@@ -23,15 +23,14 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
 
     @BeforeClass
     public static void prepareDataSet() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    setData(Arrays.asList(
-                            new Sample("2016-06-27T14:20:00.000Z", "4.0"),
-                            new Sample("2016-06-27T14:22:00.000Z", "4.0"),
-                            new Sample("2016-06-27T14:22:01.000Z", "4.0")
-                    ));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            setData(Arrays.asList(
+                    new Sample("2016-06-27T14:20:00.000Z", "4.0"),
+                    new Sample("2016-06-27T14:22:00.000Z", "4.0"),
+                    new Sample("2016-06-27T14:22:01.000Z", "4.0")
+            ));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 
@@ -41,7 +40,7 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
      */
 
     /**
-     * redmine: #2967
+     * #2967
      */
     @Test
     public void testFirstValueOutOfBounds() {
@@ -65,7 +64,7 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
     }
 
     /**
-     * redmine: #2967
+     * #2967
      */
     @Test
     public void testLastValueOutOfBounds() {

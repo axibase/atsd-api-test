@@ -85,7 +85,7 @@ public class SeriesCommandTest extends SeriesMethod {
         JSONArray storedSeriesList = executeQuery(seriesQueries);
 
         for (int i = 0; i < METRICS_COUNT; i++) {
-            Assert.assertEquals("[]", getField(i, "data", storedSeriesList), "Managed to insert command that length is max + 1");
+            Assert.assertEquals("[]", Util.extractJSONObjectFieldFromJSONArrayByIndex(i, "data", storedSeriesList), "Managed to insert command that length is max + 1");
         }
     }
 }

@@ -21,12 +21,11 @@ public class SqlTimezoneFormatTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addTag("a", "b");
-                    addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            addTag("a", "b");
+            addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /*

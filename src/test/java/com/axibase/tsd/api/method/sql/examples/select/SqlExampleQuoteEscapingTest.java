@@ -25,7 +25,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
         series.addTag("double\"quote", "tv1");
         series.addTag("single'quote", "tv2");
         series.addTag("both'quo\"tes", "tv3");
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

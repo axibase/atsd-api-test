@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 
 public class SqlLimitParamTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-response-limit-param-";
@@ -23,7 +24,7 @@ public class SqlLimitParamTest extends SqlTest {
         series.addData(new Sample("2016-06-29T08:00:02.000Z", "2"));
         series.addData(new Sample("2016-06-29T08:00:03.000Z", "3"));
         series.addData(new Sample("2016-06-29T08:00:04.000Z", "4"));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 
-
 public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-entity-groups-where-clause-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -27,11 +26,10 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addData(new Sample("2016-07-14T15:00:07.000Z", "0"));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            addData(new Sample("2016-07-14T15:00:07.000Z", "0"));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP1_NAME));
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
@@ -47,10 +45,6 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         EntityGroupMethod.setEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, emptyList);
     }
 
-
-    /*
-    #3020 issue
-     */
 
     /**
      * #3020

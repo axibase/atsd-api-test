@@ -9,10 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class SqlPeriodInterpolationTest extends SqlMethod {
@@ -24,15 +21,14 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
 
     @BeforeClass
     public static void prepareDataSet() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    setData(Arrays.asList(
-                            new Sample("2016-06-03T09:26:00.000Z", "8.1"),
-                            new Sample("2016-06-03T09:36:00.000Z", "6.0"),
-                            new Sample("2016-06-03T09:41:00.000Z", "19.0")
-                    ));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            setData(Arrays.asList(
+                    new Sample("2016-06-03T09:26:00.000Z", "8.1"),
+                    new Sample("2016-06-03T09:36:00.000Z", "6.0"),
+                    new Sample("2016-06-03T09:41:00.000Z", "19.0")
+            ));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 
@@ -43,7 +39,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
 
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testNoInterpolation() {
@@ -68,7 +64,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     }
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testConstantValue0FillTheGaps() {
@@ -93,7 +89,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     }
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testNegativeConstantValueFillTheGaps() {
@@ -118,7 +114,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     }
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testPreviousValueFillTheGaps() {
@@ -143,7 +139,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     }
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testLinearInterpolatedValueFillTheGaps() {
@@ -168,7 +164,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     }
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testLinearInterpolatedValueFillTheMultipleGaps() {
@@ -195,7 +191,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     }
 
     /**
-     * redmine: #1475
+     *  #1475
      */
     @Test
     public void testHavingClauseWithPeriodFunction() {

@@ -22,7 +22,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.io.FileNotFoundException;
-import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
@@ -128,6 +127,4 @@ public abstract class BaseMethod {
             throw new IllegalStateException("Fail to get error message from response. Perhaps response does not contain error message when it should.");
         }
     }
-
-
 }

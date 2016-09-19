@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
@@ -39,7 +38,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @BeforeClass
     public static void prepare() throws Exception {
         try {
-            insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
+            insertSeriesCheck(Collections.singletonList(series));
         } catch (Exception e) {
             fail("Can not store common dataset");
         }
@@ -155,7 +154,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MIN_STORABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -176,7 +175,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), addOneMS(MAX_STORABLE_DATE), MAX_QUERYABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -197,7 +196,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -220,7 +219,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -243,7 +242,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample(d, v));
 
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_STORABLE_DATE, MAX_QUERYABLE_DATE);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -266,7 +265,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         while (calendar.getTime().before(endDate)) {
             series.setData(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
-            Response response = insertSeries(series);
+            Response response = insertSeries(Collections.singletonList(series), false);
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
@@ -286,14 +285,14 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("8");
 
         calendar.setTime(parseDate(MIN_STORABLE_DATE));
-        Date maxStorableDay = parseDate("1970-01-14T01:38:00.000Z");//MAX_STORABLE_DATE);
+        Date maxStorableDay = parseDate(MAX_STORABLE_DATE);
 
         while (calendar.getTime().before(maxStorableDay)) {
             series.addData(new Sample(ISOFormat(calendar.getTime()), v));
             setRandomTimeDuringNextDay(calendar);
         }
         series.addData(new Sample(MAX_STORABLE_DATE, v));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**
@@ -309,7 +308,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         while (calendar.getTime().before(endDate)) {
             series.setData(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
-            Response response = insertSeries(series);
+            Response response = insertSeries(Collections.singletonList(series), false);
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
@@ -327,7 +326,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testEntitesExpressionStarChar() throws Exception {
         Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
         series.addData(new Sample("2010-01-01T00:00:00.000Z", "0"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
         query.put("metric", series.getMetric());
@@ -347,7 +346,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testEntitesExpressionQuestionChar() throws Exception {
         Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
         series.addData(new Sample("2010-01-01T00:00:00.000Z", "0"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
         query.put("metric", series.getMetric());
@@ -376,7 +375,7 @@ public class SeriesQueryTest extends SeriesMethod {
         series.addData(new Sample(MIN_STORABLE_DATE, "0"));
         series.addData(new Sample(addOneMS(MIN_STORABLE_DATE), "1"));
         series.addData(new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), "2"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
         query.put("entity", series.getEntity());
@@ -399,7 +398,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateIntervalFieldEnoughToDetail() throws Exception {
         Series series = new Series("entity-query-24", "metric-query-24");
         series.addData(new Sample(MIN_STORABLE_DATE, 1));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery();
         query.setEntity(series.getEntity());
@@ -420,7 +419,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateIntervalFieldEnoughToGroup() throws Exception {
         Series series = new Series("entity-query-25", "metric-query-25");
         series.addData(new Sample(MIN_STORABLE_DATE, 1));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery();
         query.setEntity(series.getEntity());
@@ -444,7 +443,7 @@ public class SeriesQueryTest extends SeriesMethod {
         final BigDecimal VALUE = new BigDecimal("1.0");
         Series series = new Series("entity-query-26", "metric-query-26");
         series.addData(new Sample("2014-01-01T00:00:00.000Z", VALUE));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery();
         query.setEntity(series.getEntity());

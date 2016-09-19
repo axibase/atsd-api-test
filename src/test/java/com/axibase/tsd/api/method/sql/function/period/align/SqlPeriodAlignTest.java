@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -21,7 +22,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
 
     @BeforeClass
     public static void prepareDataSet() throws Exception {
-        SeriesMethod.insertSeriesCheck(new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
             setData(Arrays.asList(
                     new Sample("2016-06-03T09:20:00.124Z", "16.0"),
                     new Sample("2016-06-03T09:26:00.000Z", "8.1"),
@@ -30,16 +31,12 @@ public class SqlPeriodAlignTest extends SqlMethod {
                     new Sample("2016-06-03T09:45:00.126Z", "19.0"),
                     new Sample("2016-06-03T09:45:00.400Z", "17.0")
             ));
-        }});
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /*
       #2906
-     */
-
-
-    /**
-     * redmine: 2906
      */
     @Test
     public void testStartTimeInclusiveAlignment() {
@@ -66,7 +63,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
 
 
     /**
-     * redmine: 2906
+     *  2906
      */
     @Test
     public void testStartTimeExclusiveAlignment() {
@@ -93,7 +90,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
 
 
     /**
-     * redmine: 2906
+     *  2906
      */
     @Test
     public void testEndTimeInclusiveAlignment() {
@@ -119,7 +116,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
 
 
     /**
-     * redmine: 2906
+     *  2906
      */
     @Test
     public void testEndTimeExclusiveAlignment() {

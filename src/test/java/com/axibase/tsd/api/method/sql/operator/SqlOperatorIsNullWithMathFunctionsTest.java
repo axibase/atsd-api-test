@@ -29,7 +29,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

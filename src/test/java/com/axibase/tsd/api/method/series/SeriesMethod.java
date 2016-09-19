@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Series;
@@ -16,8 +17,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.OK;
@@ -29,24 +30,35 @@ public class SeriesMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
-    public static Response insertSeries(final List<Series> seriesList, String user, String password) {
+    public static Response insertSeries(final List<Series> seriesList, String user, String password, boolean sleepEnabled) {
         Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
-        if (user != null && password != null) {
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
-        }
+
+        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+
         Response response = builder.post(Entity.json(seriesList));
         response.bufferEntity();
+        try {
+            if (sleepEnabled)
+                Thread.sleep(BaseMethod.EXPECTED_PROCESSING_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return response;
     }
-    public static Response insertSeries(final List<Series> seriesList) {
-        return insertSeries(seriesList, null, null);
+
+    public static Response insertSeries(final List<Series> seriesList, String user, String password) {
+        return insertSeries(seriesList, user, password, true);
     }
 
-
-    public static Response insertSeries(final Series series) {
-        return insertSeries(Collections.singletonList(series));
+    public static Response insertSeries(final List<Series> seriesList, boolean sleepEnabled) throws FileNotFoundException {
+        return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword(), sleepEnabled);
     }
+
+    public static Response insertSeries(final List<Series> seriesList) throws FileNotFoundException {
+        return insertSeries(seriesList, true);
+    }
+
 
     public static <T> Response querySeries(T... queries) {
         return querySeries(Arrays.asList(queries));
@@ -61,6 +73,7 @@ public class SeriesMethod extends BaseMethod {
     public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
         return urlQuerySeries(entity, metric, format, parameters, null, null);
     }
+
     public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters, String user, String password) {
         WebTarget webTarget = httpApiResource
                 .path(METHOD_SERIES_URL_QUERY)
@@ -85,11 +98,7 @@ public class SeriesMethod extends BaseMethod {
         return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
     }
 
-    public static void insertSeriesCheck(final Series series, long checkTimeoutMillis) throws Exception {
-        insertSeriesCheck(Collections.singletonList(series), checkTimeoutMillis);
-    }
-
-    public static void insertSeriesCheck(final List<Series> seriesList, long checkTimeoutMillis) throws Exception {
+    public static void insertSeriesCheck(final List<Series> seriesList) throws Exception {
         Response response = insertSeries(seriesList);
         if (OK.getStatusCode() != response.getStatus()) {
             throw new Exception("Fail to execute insertSeries query");
@@ -100,18 +109,10 @@ public class SeriesMethod extends BaseMethod {
                 return;
             }
             Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + checkTimeoutMillis);
+        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.EXPECTED_PROCESSING_TIME);
         if (!seriesListIsInserted(seriesList)) {
             throw new Exception("Fail to check inserted queries");
         }
-    }
-
-    public static void insertSeriesCheck(final Series series) throws Exception {
-        insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
-    }
-
-    public static void insertSeriesCheck(final List<Series> series) throws Exception {
-        insertSeriesCheck(series, BaseMethod.EXPECTED_PROCESSING_TIME);
     }
 
     public static boolean seriesListIsInserted(final List<Series> seriesList) throws Exception {
@@ -129,17 +130,6 @@ public class SeriesMethod extends BaseMethod {
         return compareJsonString(expected, actual);
     }
 
-    public static boolean insertSeries(final Series series, long sleepDuration) throws Exception {
-        Response response = insertSeries(Collections.singletonList(series));
-        Thread.sleep(sleepDuration);
-        if (OK.getStatusCode() == response.getStatus()) {
-            logger.debug("Series looks inserted");
-        } else {
-            logger.error("Fail to insert series");
-        }
-        return OK.getStatusCode() == response.getStatus();
-    }
-
     public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
         Response response = querySeries(seriesQuery);
         if (OK.getStatusCode() == response.getStatus()) {
@@ -153,8 +143,9 @@ public class SeriesMethod extends BaseMethod {
 
 
     public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries) {
-        return  executeQueryRaw(seriesQueries, null, null);
+        return executeQueryRaw(seriesQueries, null, null);
     }
+
     public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries, String user, String password) {
         Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_QUERY).request();
         if (user != null && password != null) {
@@ -165,6 +156,7 @@ public class SeriesMethod extends BaseMethod {
         response.bufferEntity();
         return response;
     }
+
     public static JSONArray executeQuery(final SeriesQuery seriesQuery) throws Exception {
         return executeQuery(Collections.singletonList(seriesQuery));
     }
@@ -186,13 +178,4 @@ public class SeriesMethod extends BaseMethod {
         }
         return ((JSONObject) ((JSONArray) ((JSONObject) array.get(0)).get("data")).get(index)).get(field).toString();
     }
-
-    public static String getField(int index, String field, JSONArray array) throws JSONException {
-        if (array == null) {
-            return "returnedSeries is null";
-        }
-        return (((JSONObject) array.get(index)).get(field)).toString();
-    }
-
-
 }

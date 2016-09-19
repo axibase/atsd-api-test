@@ -24,11 +24,10 @@ public class SqlEntityTagsTest extends SqlTest {
     @BeforeClass
     public static void prepareDate() throws Exception {
 
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addData(new Sample("2016-06-19T11:00:00.000Z", 3));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            addData(new Sample("2016-06-19T11:00:00.000Z", 3));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         EntityMethod.updateEntity(TEST_ENTITY_NAME, new Entity() {{
             setTags(

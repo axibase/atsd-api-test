@@ -37,7 +37,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

@@ -25,14 +25,13 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                        put("a", "b");
-                    }}));
-                    addData(new Sample("2016-06-03T09:23:00.000Z", "1.01"));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
+                put("a", "b");
+            }}));
+            addData(new Sample("2016-06-03T09:23:00.000Z", "1.01"));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /*

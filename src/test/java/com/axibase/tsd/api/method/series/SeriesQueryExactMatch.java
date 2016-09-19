@@ -27,24 +27,22 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         seriesA.addTag("tag-1", "val-1");
         seriesA.addTag("tag-2", "val-2");
         seriesA.addData(new Sample("1970-01-01T00:00:00.000Z", "0"));
-        insertSeriesCheck(seriesA);
 
         seriesB.setEntity(exactMatchEntityName);
         seriesB.setMetric(exactMatchMetricName);
         seriesB.addTag("tag-1", "val-1");
         seriesB.addData(new Sample("1970-01-01T00:00:00.000Z", "0"));
-        insertSeriesCheck(seriesB);
 
         seriesC.setEntity(exactMatchEntityName);
         seriesC.setMetric(exactMatchMetricName);
         seriesC.addTag("tag-2", "val-2");
         seriesC.addData(new Sample("1970-01-01T00:00:00.000Z", "0"));
-        insertSeriesCheck(seriesC);
 
         seriesD.setEntity(exactMatchEntityName);
         seriesD.setMetric(exactMatchMetricName);
         seriesD.addData(new Sample("1970-01-01T00:00:00.000Z", "0"));
-        insertSeriesCheck(seriesD);
+
+        insertSeriesCheck(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
     }
 
     /**

@@ -29,7 +29,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     public void testIntervalOnly() throws Exception {
         Series series = new Series("datefilter-e-1", "datefilter-m-1");
         series.addData(DATE_FILTER_DEFAULT_SAMPLE);
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
         query.setInterval(new Interval(40, TimeUnit.YEAR));
@@ -48,7 +48,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     public void testIntervalAndEnd() throws Exception {
         Series series = new Series("datefilter-e-2", "datefilter-m-2");
         series.addData(DATE_FILTER_DEFAULT_SAMPLE);
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
         query.setInterval(new Interval(300, TimeUnit.YEAR));
@@ -68,7 +68,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     public void testIntervalAndStart() throws Exception {
         Series series = new Series("datefilter-e-3", "datefilter-m-3");
         series.addData(DATE_FILTER_DEFAULT_SAMPLE);
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
         query.setInterval(new Interval(300, TimeUnit.YEAR));
