@@ -40,7 +40,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         series.addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
         series.setTags(tags);
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
 
         Metric metricUpdateQuery = new Metric();

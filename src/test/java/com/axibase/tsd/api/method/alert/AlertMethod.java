@@ -18,10 +18,12 @@ public class AlertMethod extends BaseMethod {
     private static final String METHOD_ALERTS_HISTORY_QUERY = "/alerts/history/query";
 
     public static <T> Response queryAlerts(T... queries) {
+        Entity<List<T>> json = Entity.json(Arrays.asList(queries));
+        System.out.println(json);
         Response response = httpApiResource
                 .path(METHOD_ALERTS_QUERY)
                 .request()
-                .post(Entity.json(Arrays.asList(queries)));
+                .post(json);
         response.bufferEntity();
         return response;
     }
@@ -74,7 +76,7 @@ public class AlertMethod extends BaseMethod {
         series.setEntity(entityName);
         series.setMetric(BaseMethod.RULE_METRIC_NAME);
         series.addData(new Sample(Util.ISOFormat(new Date()), BaseMethod.ALERT_OPEN_VALUE));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 

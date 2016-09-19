@@ -11,6 +11,8 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
+import java.util.Collections;
+
 import static javax.ws.rs.core.Response.Status;
 import static org.testng.Assert.assertEquals;
 
@@ -22,11 +24,10 @@ public class SqlUnGroupedColumnTest extends SqlTest {
 
     @BeforeClass
     public static void prepareDate() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     @Test

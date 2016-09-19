@@ -28,7 +28,7 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
                 new Sample("2016-06-19T11:00:01.500Z", "1"),
                 new Sample("2016-06-19T11:00:02.500Z", "-3")
         ));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     @Test

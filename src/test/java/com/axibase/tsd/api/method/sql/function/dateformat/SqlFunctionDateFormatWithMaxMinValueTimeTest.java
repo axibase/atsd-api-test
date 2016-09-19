@@ -22,7 +22,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addData(new Sample("2015-06-03T09:23:01.000Z", "2"));
         series.addData(new Sample("2016-06-03T09:23:02.000Z", "1"));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 

@@ -23,11 +23,10 @@ public class SqlSelectMetricTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         MetricMethod.updateMetric(TEST_METRIC_NAME, new Metric() {{
             setTags(
@@ -41,13 +40,6 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         }});
 
     }
-
-
-
-    /*
-      #3056
-     */
-
 
     /**
      * #3056

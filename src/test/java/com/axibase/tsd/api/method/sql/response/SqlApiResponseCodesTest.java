@@ -14,6 +14,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.*;
 
@@ -30,7 +31,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.000Z", "19.0")
         ));
-        SeriesMethod.insertSeriesCheck(testSeries);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }
 
     @Test

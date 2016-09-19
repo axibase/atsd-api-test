@@ -9,6 +9,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 
 public class SqlMetaDataTest extends SqlMethod {
     private static final String TEST_PREFIX = "sql-metadata-";
@@ -28,7 +30,7 @@ public class SqlMetaDataTest extends SqlMethod {
         testSeries.addData(
                 new Sample("2016-06-29T08:00:00.000Z", "0.05")
         );
-        SeriesMethod.insertSeriesCheck(testSeries);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
         resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
     }
 

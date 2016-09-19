@@ -33,7 +33,7 @@ public class SqlExamplePercentilesTest extends SqlTest {
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

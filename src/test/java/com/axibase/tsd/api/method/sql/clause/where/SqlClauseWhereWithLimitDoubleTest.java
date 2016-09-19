@@ -24,7 +24,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addData(new Sample("2016-06-19T11:00:00.000Z", "1.23"));
         series.addData(new Sample("2016-06-19T11:01:00.000Z", "0.89"));
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

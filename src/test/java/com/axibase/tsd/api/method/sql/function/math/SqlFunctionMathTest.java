@@ -20,20 +20,16 @@ public class SqlFunctionMathTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        SeriesMethod.insertSeriesCheck(
-                new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-                    setData(Arrays.asList(
-                            new Sample("2016-06-29T08:00:00.000Z", "2.11"),
-                            new Sample("2016-06-29T08:00:01.000Z", "7.567"),
-                            new Sample("2016-06-29T08:00:02.000Z", "-1.23")
-                            )
-                    );
-                }}
-        );
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+            setData(Arrays.asList(
+                    new Sample("2016-06-29T08:00:00.000Z", "2.11"),
+                    new Sample("2016-06-29T08:00:01.000Z", "7.567"),
+                    new Sample("2016-06-29T08:00:02.000Z", "-1.23")
+                    )
+            );
+        }};
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
-    /*
-    #3049 issue
-     */
 
     /**
      * #3049

@@ -37,7 +37,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
             series.addData(new Sample(ISOFormat(time), "0"));
             time += DELTA;
         }
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**

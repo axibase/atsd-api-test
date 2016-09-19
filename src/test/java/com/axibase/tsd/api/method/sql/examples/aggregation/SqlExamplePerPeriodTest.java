@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -33,7 +34,7 @@ public class SqlExamplePerPeriodTest extends SqlTest {
                 new Sample("2015-09-30T09:00:06.321Z", "3.0")
         ));
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 

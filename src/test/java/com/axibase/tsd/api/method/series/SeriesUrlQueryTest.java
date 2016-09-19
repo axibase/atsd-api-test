@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.Test;
@@ -9,6 +8,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +89,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
 
     private void assertUrlEncodePathHandledCorrectly(Series series) throws Exception {
         series.addData(new Sample(MIN_STORABLE_DATE, "0"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
         parameters.put("endDate", MAX_QUERYABLE_DATE);

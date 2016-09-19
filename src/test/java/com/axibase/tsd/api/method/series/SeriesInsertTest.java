@@ -2,7 +2,6 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.AtsdErrorMessage;
 import com.axibase.tsd.api.Util;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
@@ -14,9 +13,11 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.Util.*;
+import static com.axibase.tsd.api.Util.addOneMS;
+import static com.axibase.tsd.api.Util.getMillis;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.AssertJUnit.*;
 
@@ -41,7 +42,7 @@ public class SeriesInsertTest extends SeriesMethod {
         metric.setDataType(DataType.FLOAT);
 
         MetricMethod.createOrReplaceMetricCheck(metric);
-        assertTrue("Failed to insert float series", insertSeries(series, 1000));
+        assertEquals("Failed to insert float series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -66,7 +67,7 @@ public class SeriesInsertTest extends SeriesMethod {
         metric.setDataType(DataType.DECIMAL);
 
         MetricMethod.createOrReplaceMetricCheck(metric);
-        assertFalse("Managed to insert large decimal series", insertSeries(series, 1000));
+        assertEquals("Managed to insert large decimal series", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
     }
 
     /**
@@ -89,7 +90,7 @@ public class SeriesInsertTest extends SeriesMethod {
         for (int i = 0; i < 12; i++) {
             series.addData(new Sample(t + i * 5000, number));
         }
-        assertTrue("Failed to insert small decimal series", insertSeries(series, 1000));
+        assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
         seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
@@ -117,7 +118,7 @@ public class SeriesInsertTest extends SeriesMethod {
         for (int i = 0; i < 12; i++) {
             series.addData(new Sample(t + i * 5000, number));
         }
-        assertTrue("Failed to insert small decimal series", insertSeries(series, 1000));
+        assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
         seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
@@ -144,7 +145,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         series.addData(new Sample(t, number));
-        assertTrue("Failed to insert double series", insertSeries(series, 1000));
+        assertEquals("Failed to insert double series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
@@ -171,7 +172,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         series.addData(new Sample(t, number));
-        assertTrue("Failed to insert float series", insertSeries(series, 1000));
+        assertEquals("Failed to insert float series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
@@ -198,7 +199,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         series.addData(new Sample(t, number));
-        assertTrue("Failed to insert decimal series", insertSeries(series, 1000));
+        assertEquals("Failed to insert decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
@@ -221,7 +222,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String d = "2016-06-09T17:08:09Z";
         series.addData(new Sample(d, value));
 
-        assertTrue("Failed to insert series", insertSeries(series, 1000));
+        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -243,7 +244,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String d = "2016-06-09T17:08:09.100Z";
         series.addData(new Sample(d, value));
 
-        assertTrue("Failed to insert series", insertSeries(series, 1000));
+        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -264,7 +265,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String d = "2016-06-09T10:08:09.000Z";
         series.addData(new Sample("2016-06-09T17:08:09+07:00", value));
 
-        assertTrue("Failed to insert series", insertSeries(series, 1000));
+        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -285,7 +286,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String d = "2016-06-09T10:08:09.999Z";
         series.addData(new Sample("2016-06-09T17:08:09.999+07:00", value));
 
-        assertTrue("Failed to insert series", insertSeries(series, 1000));
+        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -305,7 +306,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
         series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
-        insertSeries(series, BaseMethod.EXPECTED_PROCESSING_TIME);
+        assertEquals("Fail to insert series", OK.getStatusCode(),insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -324,7 +325,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series("e___underscore", "m___underscore");
         series.addData(new Sample(t, "0"));
 
-        assertTrue("Failed to insert float series", insertSeries(series, 1000));
+        assertEquals("Fail to insert series", OK.getStatusCode(),insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -342,7 +343,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Long endTime = 1L;
         Series series = new Series("e-time-range-1", "m-time-range-1");
         series.addData(new Sample(Util.ISOFormat(0), "0"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -356,7 +357,7 @@ public class SeriesInsertTest extends SeriesMethod {
     public void testTimeRangeMinInISOSaved() throws Exception {
         Series series = new Series("e-time-range-2", "m-time-range-2");
         series.addData(new Sample(MIN_STORABLE_DATE, "0"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -373,7 +374,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Long endTime = 2L;
         Series series = new Series("e-time-range-3", "m-time-range-3");
         series.addData(new Sample(Util.ISOFormat(time), "1"));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -390,7 +391,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Series series = new Series("e-time-range-5", "m-time-range-5");
         series.addData(new Sample(Util.ISOFormat(t), v));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -408,7 +409,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         Series series = new Series("e-time-range-6", "m-time-range-6");
         series.addData(new Sample(MAX_STORABLE_DATE, v));
-        insertSeriesCheck(series);
+        insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(),
                 MAX_STORABLE_DATE, NEXT_AFTER_MAX_STORABLE_DATE);
@@ -429,7 +430,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series("e-time-range-7", "m-time-range-7");
         series.addData(new Sample(t, v));
 
-        assertFalse("Managed to insert series with t out of range", insertSeries(series, 700));
+        assertEquals("Managed to insert series with t out of range", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
@@ -446,7 +447,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series("e-time-range-8", "m-time-range-8");
         series.addData(new Sample(NEXT_AFTER_MAX_STORABLE_DATE, v));
 
-        assertFalse("Managed to insert series with d out of range", insertSeries(series, 700));
+        assertEquals("Managed to insert series with d out of range", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(),
                 NEXT_AFTER_MAX_STORABLE_DATE, addOneMS(NEXT_AFTER_MAX_STORABLE_DATE));
@@ -560,7 +561,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample("2016-06-09 20:00:00", value));
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected 'T' character but found ' ' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
@@ -579,7 +580,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample("2016-06-09T09:50:00-1010", value));
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
@@ -597,7 +598,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         series.addData(new Sample("1465502400000", value));
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
@@ -605,7 +606,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /**
      * #3164
-     * */
+     */
     @Test
     public void testEmptyTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-1", "m-empty-tag-1");
@@ -614,7 +615,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         series.addTag(emptyTagName, "");
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
@@ -623,7 +624,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
     /**
      * #3164
-     * */
+     */
     @Test
     public void testNullTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-2", "m-empty-tag-2");
@@ -632,7 +633,7 @@ public class SeriesInsertTest extends SeriesMethod {
 
         series.addTag(emptyTagName, null);
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
@@ -651,7 +652,7 @@ public class SeriesInsertTest extends SeriesMethod {
         series.addTag("nonempty-tag", "value");
         series.addTag(emptyTagName, null);
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
@@ -670,7 +671,7 @@ public class SeriesInsertTest extends SeriesMethod {
         series.addTag("nonempty-tag", "value");
         series.addTag(emptyTagName, "");
 
-        Response response = insertSeries(series);
+        Response response = insertSeries(Collections.singletonList(series));
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
@@ -685,6 +686,6 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series("nulltag-entity-1", "nulltag-metric-1");
         series.addData(new Sample(1, "1"));
         series.addTag("t1", null);
-        assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), insertSeries(series).getStatus());
+        assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
     }
 }
