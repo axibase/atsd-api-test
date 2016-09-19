@@ -21,8 +21,7 @@ public class AlertHistoryQueryTest extends AlertMethod {
     public void generateAlertHistory() throws Exception {
         Registry.Entity.register(ALERTHISTORY_ENTITY_NAME);
         generateAlertForEntity(ALERTHISTORY_ENTITY_NAME);
-        Thread.sleep(5000L);
-//        Thread.sleep(EXPECTED_PROCESSING_TIME);
+        Thread.sleep(EXPECTED_PROCESSING_TIME);
     }
 
     /**
