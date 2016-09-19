@@ -107,7 +107,7 @@ public class Util {
         return sb;
     }
 
-    public static String extractField(int index, String field, JSONArray array) throws JSONException {
+    public static String extractJSONObjectFieldFromJSONArrayByIndex(int index, String field, JSONArray array) throws JSONException {
         if (array == null) {
             return "JSONArray is null";
         }

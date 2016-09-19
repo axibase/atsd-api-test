@@ -106,7 +106,7 @@ public class AlertHistoryQueryTest extends AlertMethod {
 
         Assert.assertEquals(response.getStatus(), OK.getStatusCode());
         Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) == 2, "Fail to get alert history by queries with unknown entity");
-        Assert.assertEquals("ENTITY not found for name: 'unknown'", Util.extractField(1, "warning", jsonResponse), "Unexpected warning message");
+        Assert.assertEquals("ENTITY not found for name: 'unknown'", Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse), "Unexpected warning message");
 
     }
 }
