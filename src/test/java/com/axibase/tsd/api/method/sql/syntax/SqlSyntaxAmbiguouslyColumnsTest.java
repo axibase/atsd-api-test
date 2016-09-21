@@ -251,7 +251,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = executeQuery(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "where clause"),
-                response, "Condition in where clause ambiguously defined");
+                response, "TestRunCondition in where clause ambiguously defined");
     }
 
     /**

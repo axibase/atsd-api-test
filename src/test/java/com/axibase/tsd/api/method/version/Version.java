@@ -11,7 +11,7 @@ public class Version {
 
     @JsonProperty("buildInfo")
     private BuildInfo buildInfo;
-    @JsonProperty("licence")
+    @JsonProperty("license")
     private Licence licence;
     @JsonProperty("date")
     private Date date;
