@@ -6,6 +6,7 @@ import org.testng.*;
 
 public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITestListener {
     private ProductVersion version = null;
+    private boolean testSkipped = false;
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult result) {
@@ -21,8 +22,15 @@ public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITest
 
 
     @Override
-    public void afterInvocation(IInvokedMethod iInvokedMethod, ITestResult iTestResult) {
-
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+        if (method.isTestMethod()) {
+            if (method.getClass().isAnnotationPresent(AtsdRule.class)) {
+                System.out.println("This gets invoked after every TestNG Test that has @MyTestNGAnnotation Annotation...");
+            }
+            if (testSkipped) {
+                testResult.setStatus(ITestResult.SKIP);
+            }
+        }
     }
 
     @Override
@@ -57,7 +65,7 @@ public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITest
                 version = m1.getConstructorOrMethod().getMethod().getAnnotation(AtsdRule.class).version();
                 ProductVersion actualVersion = VersionMethod.queryVersionCheck().getLicence().getProductVersion();
                 if (version != actualVersion) {
-                    throw new SkipException(String.format("This test designed only for %s version of ATSD", version));
+                    testSkipped = true;
                 }
             }
         }

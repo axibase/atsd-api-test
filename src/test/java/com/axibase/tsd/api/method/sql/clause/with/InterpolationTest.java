@@ -65,8 +65,8 @@ public class InterpolationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @Test(enabled = false)
+    //@AtsdRule(version = ProductVersion.ENTERPRISE)
     public void testNoneInterpolationRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
