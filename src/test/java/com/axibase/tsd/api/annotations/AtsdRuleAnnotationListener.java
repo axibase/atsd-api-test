@@ -24,12 +24,13 @@ public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITest
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         if (method.isTestMethod()) {
-            if (method.getClass().isAnnotationPresent(AtsdRule.class)) {
-                System.out.println("This gets invoked after every TestNG Test that has @MyTestNGAnnotation Annotation...");
+            if (method.getTestMethod().getConstructorOrMethod().getMethod().isAnnotationPresent(AtsdRule.class)) {
+                if (testSkipped) {
+
+                    testResult.setStatus(ITestResult.SKIP);
+                }
             }
-            if (testSkipped) {
-                testResult.setStatus(ITestResult.SKIP);
-            }
+
         }
     }
 
