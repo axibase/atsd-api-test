@@ -1,0 +1,166 @@
+package com.axibase.tsd.api.method.sql.function.dateformat;
+
+import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.sql.StringTable;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.Date;
+
+public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
+    private static final String TEST_PREFIX = "sql-function-date-format-time-expression-";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
+
+    @BeforeClass
+    public static void prepareData() throws Exception {
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        series.addData(new Sample("2016-06-03T09:41:00.000Z", "0"));
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+    }
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testSimpleArithmetic() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time+1) FROM '%s'", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"2016-06-03T09:41:00.001Z"}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testMinus() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time-1) FROM '%s'", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"2016-06-03T09:40:59.999Z"}
+        };
+
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testDivisionByZero() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time/0) FROM '%s'", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {Util.ISOFormat(new Date(Long.MAX_VALUE))}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testAllOperations() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time + 200/2 - 20*5) FROM '%s'", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"2016-06-03T09:41:00.000Z"}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testDivisionWithRest() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time + 10/3) FROM '%s'", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"2016-06-03T09:41:00.003Z"}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testNanHandling() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time + 0/0) FROM '%s'", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"null"}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testNullFormattedOrderBy() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time + 0/0) FROM '%s' ORDER BY datetime", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"null"}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+
+}
