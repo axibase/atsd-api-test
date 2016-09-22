@@ -2,10 +2,10 @@ package com.axibase.tsd.api.method.sql.clause.with;
 
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.annotations.AtsdRule;
+import com.axibase.tsd.api.annotations.states.HbaseVersion;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.method.version.ProductVersion;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -39,7 +39,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testNoneInterpolationRawIntervalInRequestInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -75,7 +75,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testNoneInterpolationRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -118,7 +118,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testNoneInterpolationEndOfRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -159,7 +159,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testNoneInterpolationBeginOfRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -200,7 +200,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testNoneInterpolationWithoutData() throws Exception {
         //Create data for test
         String testMetricName = testNameGenerator.getMetricName();
@@ -217,7 +217,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testPriorInterpolationRawIntervalInRequestInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -253,7 +253,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testPriorInterpolationRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -296,7 +296,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testPriorInterpolationEndOfRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -337,7 +337,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testPriorInterpolationBeginOfRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -380,7 +380,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testPriorInterpolationWithoutData() throws Exception {
         //Create data for test
         String testMetricName = testNameGenerator.getMetricName();
@@ -431,7 +431,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testLinearInterpolationRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -474,7 +474,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testLinearInterpolationEndOfRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -515,7 +515,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testLinearInterpolationBeginOfRequestIntervalInRawInterval() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -551,7 +551,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testLinearInterpolationWithoutData() throws Exception {
         //Create data for test
         String testMetricName = testNameGenerator.getMetricName();
@@ -568,7 +568,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testLinearInterpolation() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -587,11 +587,6 @@ public class InterpolationTest extends SqlTest {
         //Generate expected expected rows
         Long startTime = Util.parseDate("2016-08-24T23:22:00Z").getTime();
         Long endTime = Util.parseDate("2016-08-25T14:18:00.00Z").getTime();
-        List<Sample> interpolatingNodes = Util.filterSamples(
-                series.getData(),
-                startTime,
-                endTime
-        );
         List<Sample> interpolatedSamples = interpolatedValues(
                 interpolatingFunction(series.getData()),
                 startTime,
@@ -611,7 +606,7 @@ public class InterpolationTest extends SqlTest {
     }
 
     @Test
-    @AtsdRule(version = ProductVersion.ENTERPRISE)
+    @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)
     public void testLinearInterpolation1() throws Exception {
         //Create data for test
         String testEntityName = testNameGenerator.getEntityName();
@@ -626,11 +621,6 @@ public class InterpolationTest extends SqlTest {
         //Generate expected expected rows
         Long startTime = Util.parseDate("2016-08-24T23:21:59.000Z").getTime();
         Long endTime = Util.parseDate("2016-08-24T23:22:01.000Z").getTime();
-        List<Sample> interpolatingNodes = Util.filterSamples(
-                series.getData(),
-                startTime,
-                endTime
-        );
         List<Sample> interpolatedSamples = interpolatedValues(
                 interpolatingFunction(series.getData()),
                 startTime,
