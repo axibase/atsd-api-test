@@ -21,7 +21,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addData(new Sample("2016-06-03T09:41:00.000Z", "0"));
+        series.addData(new Sample("2016-06-03T09:41:00.000Z", "1"));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
@@ -158,6 +158,47 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
 
         String[][] expectedRows = {
                 {"null"}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testValueAsParam() {
+        String sqlQuery = String.format(
+                "SELECT date_format(value) FROM '%s' ORDER BY datetime", TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {Util.ISOFormat(1)}
+        };
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+
+    /**
+     * #3283
+     */
+    @Test
+    public void testOverflow() {
+        String sqlQuery = String.format(
+                "SELECT date_format(time + %s - %s) FROM '%s' ORDER BY datetime",
+                Long.toString(Long.MAX_VALUE), Long.toString(Long.MAX_VALUE), TEST_METRIC_NAME
+        );
+
+        Response response = executeQuery(sqlQuery);
+
+        StringTable resultTable = response.readEntity(StringTable.class);
+
+        String[][] expectedRows = {
+                {"2016-06-03T09:41:00.000Z"}
         };
         assertTableRowsExist(expectedRows, resultTable);
     }
