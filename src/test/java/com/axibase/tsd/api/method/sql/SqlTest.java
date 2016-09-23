@@ -87,12 +87,7 @@ public class SqlTest extends SqlMethod {
     }
 
     private static String format(String message, Object expected, Object actual) {
-        String formatted = "";
-        if (message != null) {
-            formatted = message + " ";
-        }
-
-        return formatted + "expected:<" + expected + "> but was:<" + actual + ">";
+        return String.format("%s expected:<%s> but was:<%s>", message, expected, actual);
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
