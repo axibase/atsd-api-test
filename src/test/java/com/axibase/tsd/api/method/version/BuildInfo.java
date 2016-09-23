@@ -15,6 +15,8 @@ public class BuildInfo {
     private String buildNumber;
     @JsonProperty("buildId")
     private String buildId;
+    @JsonProperty("hbaseVersion")
+    private String hbaseVersion;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -76,4 +78,13 @@ public class BuildInfo {
         this.additionalProperties.put(name, value);
     }
 
+    @JsonProperty("hbaseVersion")
+    public String getHbaseVersion() {
+        return hbaseVersion;
+    }
+
+    @JsonProperty("hbaseVersion")
+    public void setHbaseVersion(String hbaseVersion) {
+        this.hbaseVersion = hbaseVersion;
+    }
 }
