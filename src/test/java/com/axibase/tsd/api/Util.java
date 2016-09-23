@@ -3,6 +3,7 @@ package com.axibase.tsd.api;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.version.Version;
 import com.axibase.tsd.api.method.version.VersionMethod;
+import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,6 +94,29 @@ public class Util {
         return list;
     }
 
+    public static List<List<String>> sampleListToTableView(List<Sample> samples) {
+        List<List<String>> resultRows = new ArrayList<>();
+        for (Sample s : samples) {
+            resultRows.add(Arrays.asList(s.getD(), s.getV().toString()));
+        }
+        return resultRows;
+    }
+
+    public static List<Sample> filterSamples(List<Sample> samples, Long lowThreshold, Long upThreshold) {
+        List<Sample> resultRows = new ArrayList<>();
+        for (Sample s : samples) {
+            Long time = s.getT();
+            if (time == null) {
+                time = Util.parseDate(s.getD()).getTime();
+            }
+            if (time >= lowThreshold && time < upThreshold) {
+                resultRows.add(s);
+            }
+        }
+        return resultRows;
+    }
+
+
     public static String transformDateToServerTimeZone(String date, int offsetMinutes) {
         Calendar instance = Calendar.getInstance();
         instance.setTime(parseDate(date));
@@ -101,7 +125,7 @@ public class Util {
     }
 
     public static StringBuilder appendChar(StringBuilder sb, char c, int count) {
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             sb.append(c);
         }
         return sb;
