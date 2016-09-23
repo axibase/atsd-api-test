@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.property;
+package com.axibase.tsd.api.method.property.command;
 
+import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.property.Property;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -9,7 +10,8 @@ import java.util.HashMap;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class PropertyCommandTest extends PropertyMethod {
+public class LengthTest extends PropertyMethod {
+
 
     /**
      * #2412
@@ -82,4 +84,6 @@ public class PropertyCommandTest extends PropertyMethod {
 
         assertFalse("Managed to insert command that length is max + 1", propertyExist(property));
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
+import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -40,7 +41,7 @@ public class SeriesMethod extends BaseMethod {
         response.bufferEntity();
         try {
             if (sleepEnabled)
-                Thread.sleep(BaseMethod.EXPECTED_PROCESSING_TIME);
+                Thread.sleep(BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -109,7 +110,7 @@ public class SeriesMethod extends BaseMethod {
                 return;
             }
             Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.EXPECTED_PROCESSING_TIME);
+        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
         if (!seriesListIsInserted(seriesList)) {
             throw new Exception("Fail to check inserted queries");
         }
@@ -177,5 +178,13 @@ public class SeriesMethod extends BaseMethod {
             return "returnedSeries is null";
         }
         return ((JSONObject) ((JSONArray) ((JSONObject) array.get(0)).get("data")).get(index)).get(field).toString();
+    }
+
+    protected String buildSeriesCommandFromSeriesAndSample(Series series, Sample sample) {
+        StringBuilder sb = new StringBuilder("series");
+        sb.append(" e:\"").append(series.getEntity()).append("\"");
+        sb.append(" m:\"").append(series.getMetric()).append("\"=").append(sample.getV());
+        sb.append(" d:").append(sample.getD());
+        return sb.toString();
     }
 }

@@ -15,10 +15,7 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
-/**
- * @author Dmitry Korchagin.
- */
-class PropertyMethod extends BaseMethod {
+public class PropertyMethod extends BaseMethod {
     private static final String METHOD_PROPERTY_INSERT = "/properties/insert";
     private static final String METHOD_PROPERTY_QUERY = "/properties/query";
     private static final String METHOD_PROPERTY_URL_QUERY = "/properties/{entity}/types/{type}";
@@ -119,6 +116,17 @@ class PropertyMethod extends BaseMethod {
         query.put("exactMatch", true);
 
         return query;
+    }
+
+    protected String buildPropertyCommandFromProperty(Property property) {
+        StringBuilder sb = new StringBuilder("property");
+        sb.append(" e:\"").append(property.getEntity()).append("\"");
+        sb.append(" t:\"").append(property.getType()).append("\"");
+        sb.append(" d:").append(property.getDate());
+        for (Map.Entry e : property.getTags().entrySet()) {
+            sb.append(" v:\"").append(e.getKey()).append("\"=\"").append(e.getValue()).append("\"");
+        }
+        return sb.toString();
     }
 
 }

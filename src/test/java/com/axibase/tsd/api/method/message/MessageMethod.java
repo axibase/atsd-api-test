@@ -13,9 +13,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -106,7 +104,7 @@ public class MessageMethod extends BaseMethod {
                 return;
             }
             Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.EXPECTED_PROCESSING_TIME);
+        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
         if (!messageExist(message)) {
             throw new Exception("Fail to check inserted messages");
         }
@@ -121,5 +119,15 @@ public class MessageMethod extends BaseMethod {
             logger.error("Failed to execute message query");
         }
         return response;
+    }
+
+
+    protected String buildMessageCommandFromMessage(Message message) {
+        StringBuilder sb = new StringBuilder("message");
+        sb.append(" e:\"").append(message.getEntity()).append("\"");
+        sb.append(" t:type=\"").append(message.getType()).append("\"");
+        sb.append(" m:\"").append(message.getMessage()).append("\"");
+        sb.append(" d:").append(message.getDate());
+        return sb.toString();
     }
 }

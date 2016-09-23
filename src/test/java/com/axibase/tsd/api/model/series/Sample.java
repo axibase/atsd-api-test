@@ -1,10 +1,13 @@
 package com.axibase.tsd.api.model.series;
 
+import com.axibase.tsd.api.Util;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
@@ -22,6 +25,11 @@ public class Sample {
 
     public Sample(String d, int v) {
         this.d = d;
+        this.v = new BigDecimal(String.valueOf(v));
+    }
+
+    public Sample(Date d, String v) {
+        this.d = Util.ISOFormat(d);
         this.v = new BigDecimal(String.valueOf(v));
     }
 
@@ -78,7 +86,7 @@ public class Sample {
 
         Sample sample = (Sample) o;
 
-        if (t != sample.t) return false;
+        if (!Objects.equals(t, sample.t)) return false;
         if (getD() != null ? !getD().equals(sample.getD()) : sample.getD() != null) return false;
         return getV().equals(sample.getV());
 

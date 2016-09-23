@@ -1,5 +1,6 @@
-package com.axibase.tsd.api.method.message;
+package com.axibase.tsd.api.method.message.command;
 
+import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.testng.Assert;
@@ -9,7 +10,7 @@ import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-public class MessageCommandTest extends MessageMethod {
+public class LengthTest extends MessageMethod {
 
     /**
      * #2412
@@ -58,7 +59,9 @@ public class MessageCommandTest extends MessageMethod {
         assertTrue(compareJsonString(sentMessage, storedMessage, true));
     }
 
-    /* #2412 */
+    /**
+     * #2412
+     */
     @Test
     public void testMaxLengthOverflow() throws Exception {
         final int MAX_LENGTH = 128 * 1024;
@@ -106,4 +109,6 @@ public class MessageCommandTest extends MessageMethod {
 
         assertTrue(compareJsonString(expected, response, true));
     }
+
+
 }

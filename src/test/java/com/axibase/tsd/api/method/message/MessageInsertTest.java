@@ -12,7 +12,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static com.axibase.tsd.api.Util.*;
+import static com.axibase.tsd.api.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -122,7 +122,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("2016-05-21T00:00:00Z");
 
         insertMessage(message);
-        Thread.sleep(EXPECTED_PROCESSING_TIME);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
 
         String date = "2016-05-21T00:00:00.000Z";
@@ -149,7 +149,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("2016-05-21T01:23:00+01:23");
 
         insertMessage(message);
-        Thread.sleep(EXPECTED_PROCESSING_TIME);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
 
         String date = "2016-05-21T00:00:00.000Z";
@@ -176,7 +176,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate("2016-05-20T22:37:00-01:23");
 
         insertMessage(message);
-        Thread.sleep(EXPECTED_PROCESSING_TIME);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();

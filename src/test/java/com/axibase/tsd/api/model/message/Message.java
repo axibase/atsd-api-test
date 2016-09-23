@@ -1,9 +1,11 @@
 package com.axibase.tsd.api.model.message;
 
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +71,10 @@ public class Message {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public void setDate(Date date) {
+        this.date = Util.ISOFormat(date);
     }
 
     public String getSeverity() {
