@@ -12,7 +12,6 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -23,20 +22,6 @@ import java.util.List;
 public class InterpolationTest extends SqlTest {
     private static LinearInterpolator interpolator = new LinearInterpolator();
     private static TestNameGenerator testNameGenerator = testNames(InterpolationTest.class);
-
-
-    @BeforeTest
-    public static void prepareData() throws Exception {
-    }
-
-    private static Double interpolate(Double x1, Double y1, Double x2, Double y2, Double time) {
-        return y1 + (y2 - y1) / (x2 - x1) * (time - x1);
-    }
-
-    public static void main(String[] args) {
-        double d = interpolate((double) Util.parseDate("2016-08-24T23:22:09.000Z").getTime(), 5692.0d, (double) Util.parseDate("2016-08-25T14:17:07.000Z").getTime(), 6544.0d, (double) Util.parseDate("2016-08-24T23:23:00.000Z").getTime());
-        System.out.println(d);
-    }
 
     @Test
     @AtsdRule(hbaseVersion = HbaseVersion.HBASE1)

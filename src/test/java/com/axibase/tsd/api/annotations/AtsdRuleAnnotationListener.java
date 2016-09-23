@@ -9,12 +9,39 @@ import org.testng.*;
 public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITestListener {
     private ProductVersion version;
     private HbaseVersion hbaseVersion;
-    private boolean testSkipped = false;
+    private boolean testSkipped;
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult result) {
+        testSkipped = false;
         if (method.isTestMethod() && annotationPresent(method, AtsdRule.class)) {
+            AtsdRule annotation = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(AtsdRule.class);
+            version = annotation.version();
+            hbaseVersion = annotation.hbaseVersion();
+            Version versionInfo = VersionMethod.queryVersionCheck();
 
+            ProductVersion actualVersion = versionInfo.getLicence().getProductVersion();
+            if (version != null && version != actualVersion) {
+                testSkipped = true;
+            }
+            String hbaseVersionValue = versionInfo.getBuildInfo().getHbaseVersion();
+            if (hbaseVersionValue != null) {
+
+            }
+            HbaseVersion actualHbaseVersion = null;
+            if (hbaseVersionValue != null) {
+                actualHbaseVersion = versionInfo.getBuildInfo().getHbaseVersion().startsWith("0") ?
+                        HbaseVersion.HBASE0 : HbaseVersion.HBASE1;
+            } else {
+                throw new IllegalStateException("Atsd doesn't conatin information about hbase version");
+            }
+
+            if (hbaseVersion != null && hbaseVersion != actualHbaseVersion) {
+                testSkipped = true;
+            }
+        }
+        if (testSkipped) {
+            throw new SkipException("");
         }
     }
 
@@ -29,8 +56,7 @@ public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITest
         if (method.isTestMethod()) {
             if (method.getTestMethod().getConstructorOrMethod().getMethod().isAnnotationPresent(AtsdRule.class)) {
                 if (testSkipped) {
-
-                    testResult.setStatus(ITestResult.SKIP);
+                    method.getTestMethod().getConstructorOrMethod().setEnabled(false);
                 }
             }
 
@@ -53,7 +79,7 @@ public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITest
 
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-
+        iTestResult.setStatus(ITestResult.SKIP);
     }
 
     @Override
@@ -63,36 +89,6 @@ public class AtsdRuleAnnotationListener implements IInvokedMethodListener, ITest
 
     @Override
     public void onStart(ITestContext context) {
-        for (ITestNGMethod m1 : context.getAllTestMethods()) {
-            if (m1.getConstructorOrMethod().getMethod().isAnnotationPresent(AtsdRule.class)) {
-                //capture metadata information.
-                AtsdRule annotation = m1.getConstructorOrMethod().getMethod().getAnnotation(AtsdRule.class);
-                version = annotation.version();
-                hbaseVersion = annotation.hbaseVersion();
-
-                Version versionInfo = VersionMethod.queryVersionCheck();
-
-                ProductVersion actualVersion = versionInfo.getLicence().getProductVersion();
-                if (version != null && version != actualVersion) {
-                    testSkipped = true;
-                }
-                String hbaseVersionValue = versionInfo.getBuildInfo().getHbaseVersion();
-                if (hbaseVersionValue != null) {
-
-                }
-                HbaseVersion actualHbaseVersion = null;
-                if (hbaseVersionValue != null) {
-                    actualHbaseVersion = versionInfo.getBuildInfo().getHbaseVersion().startsWith("0") ?
-                            HbaseVersion.HBASE0 : HbaseVersion.HBASE1;
-                } else {
-                    throw new IllegalStateException("Atsd doesn't conatin information about hbase version");
-                }
-
-                if (hbaseVersion != null && hbaseVersion != actualHbaseVersion) {
-                    testSkipped = true;
-                }
-            }
-        }
     }
 
     @Override
