@@ -1,5 +1,5 @@
 
-package com.axibase.tsd.api.method.version;
+package com.axibase.tsd.api.model.version;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
