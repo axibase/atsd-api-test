@@ -116,4 +116,21 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB));
         Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
     }
+
+    /*
+    * #3371 test that wildcard for existing entity unfolded correctly
+    */
+    @Test
+    public void testWildcardInEntityName() throws Exception {
+        SeriesQuery seriesQuery = new SeriesQuery("series-query-exactmatch-entity*", exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        seriesQuery.setExactMatch(true);
+        Response response = querySeries(seriesQuery);
+
+        final String given = response.readEntity(String.class);
+        Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
+
+        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesD));
+        Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
+
+    }
 }
