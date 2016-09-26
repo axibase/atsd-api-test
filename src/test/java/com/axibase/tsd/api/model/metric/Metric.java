@@ -2,8 +2,11 @@ package com.axibase.tsd.api.model.metric;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.series.DataType;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,6 +22,7 @@ public class Metric {
     private String lastInsertDate;
     private Boolean versioned;
     private Map<String, String> tags;
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     public Metric() {
     }
@@ -129,5 +133,15 @@ public class Metric {
     public Metric setTags(Map<String, String> tags) {
         this.tags = tags;
         return this;
+    }
+
+    @JsonAnyGetter
+    public Map<String, java.lang.Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, java.lang.Object value) {
+        this.additionalProperties.put(name, value);
     }
 }
