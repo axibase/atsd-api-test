@@ -118,7 +118,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     @Test
     public void testUnknownAliasInSelectWithJoin() {
         String sqlQuery = String.format(
-                "SELECT t2.value FROM '%s' t1\nJOIN '%s' WHERE t1.value > 0\n",
+                "SELECT t2.value FROM '%s' t1%nJOIN '%s' WHERE t1.value > 0%n",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -135,7 +135,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     @Test
     public void testUnknownAliasInWhereWithJoin() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1\nJOIN '%s' WHERE t2.value > 0",
+                "SELECT t1.value FROM '%s' t1%nJOIN '%s' WHERE t2.value > 0",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -152,7 +152,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     @Test
     public void testUnknownAliasInOrderByWithJoin() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1\n JOIN '%s'WHERE t1.value > 0 ORDER BY t2.value",
+                "SELECT t1.value FROM '%s' t1%n JOIN '%s'WHERE t1.value > 0 ORDER BY t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -170,7 +170,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     @Test
     public void testUnknownAliasInGroupByWithJoin() {
         String sqlQuery = String.format(
-                "SELECT COUNT(t1.value) FROM '%s' t1\nJOIN '%s'\nWHERE t1.value > 0 GROUP BY t2.entity",
+                "SELECT COUNT(t1.value) FROM '%s' t1%nJOIN '%s'%nWHERE t1.value > 0 GROUP BY t2.entity",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 

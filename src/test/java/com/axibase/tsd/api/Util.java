@@ -17,6 +17,8 @@ public class Util {
 
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
+    public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
+
 
     static {
         Registry.Metric.register(BaseMethod.RULE_METRIC_NAME);
@@ -101,7 +103,7 @@ public class Util {
     }
 
     public static StringBuilder appendChar(StringBuilder sb, char c, int count) {
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             sb.append(c);
         }
         return sb;
