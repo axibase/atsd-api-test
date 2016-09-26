@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
+//test
 public class AlertHistoryQueryTest extends AlertMethod {
     private final static String ALERTHISTORY_ENTITY_NAME = "alert-historyquery-entity-1";
 
