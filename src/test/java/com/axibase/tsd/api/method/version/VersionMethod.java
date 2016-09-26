@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.version;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.model.version.Version;
 import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.WebTarget;

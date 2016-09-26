@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.version;
 
+import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.testng.annotations.Test;
