@@ -30,6 +30,7 @@ import java.util.logging.Level;
 public abstract class BaseMethod {
     public static final Long REQUEST_INTERVAL = 500L;
     public static final Long DEFAULT_EXPECTED_PROCESSING_TIME = 2000L;
+    public static final Long UPPER_BOUND_FOR_CHECK = 10000L;
     public static final String MIN_QUERYABLE_DATE = "1000-01-01T00:00:00.000Z";
     public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
     public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";

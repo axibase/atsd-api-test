@@ -110,7 +110,7 @@ public class SeriesMethod extends BaseMethod {
                 return;
             }
             Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
+        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.UPPER_BOUND_FOR_CHECK);
         if (!seriesListIsInserted(seriesList)) {
             throw new Exception("Fail to check inserted queries");
         }

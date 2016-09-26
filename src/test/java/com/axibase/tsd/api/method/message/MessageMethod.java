@@ -104,7 +104,7 @@ public class MessageMethod extends BaseMethod {
                 return;
             }
             Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
+        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.UPPER_BOUND_FOR_CHECK);
         if (!messageExist(message)) {
             throw new Exception("Fail to check inserted messages");
         }
