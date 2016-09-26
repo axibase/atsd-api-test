@@ -28,8 +28,6 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
         Registry.Metric.register(TEST_METRIC_NAME);
 
         Series series1 = new Series();
-        Series series2 = new Series();
-
         series1.setEntity(TEST_ENTITY1_NAME);
         series1.setMetric(TEST_METRIC_NAME);
         series1.setData(Arrays.asList(
@@ -39,6 +37,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 )
         );
 
+        Series series2 = new Series();
         series2.setEntity(TEST_ENTITY2_NAME);
         series2.setMetric(TEST_METRIC_NAME);
         series2.setData(Arrays.asList(

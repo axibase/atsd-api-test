@@ -1,12 +1,7 @@
 package com.axibase.tsd.api.method.alert;
 
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
-import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.alert.Alert;
-import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.Series;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
@@ -71,15 +66,4 @@ public class AlertMethod extends BaseMethod {
         response.bufferEntity();
         return response;
     }
-
-    public static void generateAlertForEntity(final String entityName) throws Exception {
-        Series series = new Series();
-        series.setEntity(entityName);
-        series.setMetric(BaseMethod.RULE_METRIC_NAME);
-        String date = VersionMethod.queryVersionCheck().getDate().getCurrentDate();
-        series.addData(new Sample(Util.parseDate(date), BaseMethod.ALERT_OPEN_VALUE));
-        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
-    }
-
-
 }

@@ -1,6 +1,5 @@
 package com.axibase.tsd.api;
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.version.Version;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
@@ -20,9 +19,6 @@ public class Util {
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
 
 
-    static {
-        Registry.Metric.register(BaseMethod.RULE_METRIC_NAME);
-    }
 
     public static Date getCurrentDate() {
         return new Date();

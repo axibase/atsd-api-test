@@ -34,7 +34,6 @@ public abstract class BaseMethod {
     public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
     public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
     public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
-    public static final String RULE_METRIC_NAME = "test_alert_metric_1";
     public static final String ALERT_OPEN_VALUE = "1";
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
 

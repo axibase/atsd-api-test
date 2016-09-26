@@ -12,9 +12,9 @@ import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
-public class AlertQueryAcknowledgedTest extends AlertMethod {
-    private final String ENTITY_NAME = "alert-query-ack-entity-1";
-    private final String ENTITY_NAME_ACK = "alert-query-ack-entity-1-ack";
+public class AlertQueryAcknowledgedTest extends AlertTest {
+    private static final String ENTITY_NAME = "alert-query-ack-entity-1";
+    private static final String ENTITY_NAME_ACK = "alert-query-ack-entity-1-ack";
 
     @BeforeClass
     public void prepareAlertData() throws Exception {

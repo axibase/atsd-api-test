@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
-public class AlertQueryTest extends AlertMethod {
+public class AlertQueryTest extends AlertTest {
 
 
     /**
