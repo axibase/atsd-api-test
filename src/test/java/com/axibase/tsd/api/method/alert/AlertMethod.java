@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.alert;
 
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.version.VersionMethod;
@@ -75,8 +76,9 @@ public class AlertMethod extends BaseMethod {
         Series series = new Series();
         series.setEntity(entityName);
         series.setMetric(BaseMethod.RULE_METRIC_NAME);
-        series.addData(new Sample(VersionMethod.queryVersionCheck().getDate().getCurrentDate(), BaseMethod.ALERT_OPEN_VALUE));
-        SeriesMethod.insertSeries(Collections.singletonList(series));
+        String date = VersionMethod.queryVersionCheck().getDate().getCurrentDate();
+        series.addData(new Sample(Util.parseDate(date), BaseMethod.ALERT_OPEN_VALUE));
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 
