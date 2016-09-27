@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import static com.axibase.tsd.api.Util.*;
+import static com.axibase.tsd.api.Util.transformDateToServerTimeZone;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -193,7 +193,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_ISO);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
@@ -217,7 +217,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_MS);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
@@ -241,7 +241,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
@@ -261,7 +261,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Response response = binaryCsvUpload(csvPath, LF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
@@ -281,7 +281,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
@@ -306,7 +306,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
 
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);
@@ -321,7 +321,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
 
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         JSONArray storedSeriesList = SeriesMethod.executeQuery(seriesQuery);

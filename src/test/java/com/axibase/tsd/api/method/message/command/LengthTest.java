@@ -11,13 +11,13 @@ import java.util.Collections;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class LengthTest extends MessageMethod {
+    private static final int MAX_LENGTH = 131072;
 
     /**
      * #2412
      */
     @Test
     public void testMaxLength() throws Exception {
-        final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";
         String endDate = "2016-05-21T00:00:01.000Z";
@@ -43,7 +43,7 @@ public class LengthTest extends MessageMethod {
         message.setMessage(m.toString());
         sb.append(message.getMessage());
         Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
-        tcpSender.send(sb.toString(), 1000);
+        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(message.getEntity());
@@ -64,7 +64,6 @@ public class LengthTest extends MessageMethod {
      */
     @Test
     public void testMaxLengthOverflow() throws Exception {
-        final int MAX_LENGTH = 128 * 1024;
 
         String startDate = "2016-05-21T00:00:00.000Z";
         String endDate = "2016-05-21T00:00:01.000Z";

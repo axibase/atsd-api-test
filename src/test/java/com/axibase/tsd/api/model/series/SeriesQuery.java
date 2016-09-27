@@ -23,6 +23,8 @@ public class SeriesQuery {
     private Group group;
     private String timeFormat;
     private Boolean exactMatch;
+    private Integer limit;
+    private Integer seriesLimit;
 
     public SeriesQuery() {
     }
@@ -38,6 +40,27 @@ public class SeriesQuery {
         } else {
             setIntervalBasedOnSeriesDate(series);
         }
+    }
+
+    public SeriesQuery(String entity, String metric) {
+        this.entity = entity;
+        this.metric = metric;
+    }
+
+    public SeriesQuery(String entity, String metric, long startTime, long endTime) {
+        this(entity, metric, Util.ISOFormat(startTime), Util.ISOFormat(endTime), new HashMap<String, String>());
+    }
+
+    public SeriesQuery(String entity, String metric, String startDate, String endDate) {
+        this(entity, metric, startDate, endDate, new HashMap<String, String>());
+    }
+
+    public SeriesQuery(String entity, String metric, String startDate, String endDate, Map<String, String> tags) {
+        this.entity = entity;
+        this.metric = metric;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.tags = tags;
     }
 
     private void setIntervalBasedOnSeriesDate(final Series series) throws  IllegalArgumentException {
@@ -63,25 +86,20 @@ public class SeriesQuery {
 
     }
 
-    public SeriesQuery(String entity, String metric) {
-        this.entity = entity;
-        this.metric = metric;
+    public Integer getLimit() {
+        return limit;
     }
 
-    public SeriesQuery(String entity, String metric, long startTime, long endTime) {
-        this(entity, metric, Util.ISOFormat(startTime), Util.ISOFormat(endTime), new HashMap<String, String>());
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 
-    public SeriesQuery(String entity, String metric, String startDate, String endDate) {
-        this(entity, metric, startDate, endDate, new HashMap<String, String>());
+    public Integer getSeriesLimit() {
+        return seriesLimit;
     }
 
-    public SeriesQuery(String entity, String metric, String startDate, String endDate, Map<String, String> tags) {
-        this.entity = entity;
-        this.metric = metric;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.tags = tags;
+    public void setSeriesLimit(Integer seriesLimit) {
+        this.seriesLimit = seriesLimit;
     }
 
     public Group getGroup() {
@@ -100,13 +118,12 @@ public class SeriesQuery {
         this.entities = entities;
     }
 
-    public void setAggregate(Aggregate aggregate) {
-        this.aggregate = aggregate;
-    }
-
-
     public Aggregate getAggregate() {
         return aggregate;
+    }
+
+    public void setAggregate(Aggregate aggregate) {
+        this.aggregate = aggregate;
     }
 
     public String getEntity() {

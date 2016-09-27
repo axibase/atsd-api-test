@@ -60,7 +60,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);

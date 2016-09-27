@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.BaseMethod;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ public class CSVInsertMethod extends SeriesMethod {
     }
     public static Response csvInsert(String entity, String csv, Map<String, String> tags) throws InterruptedException {
         Response response = csvInsert(entity, csv, tags, null, null);
-        Thread.sleep(BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
         return response;
     }
 

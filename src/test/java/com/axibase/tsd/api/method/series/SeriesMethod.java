@@ -41,7 +41,7 @@ public class SeriesMethod extends BaseMethod {
         response.bufferEntity();
         try {
             if (sleepEnabled)
-                Thread.sleep(BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
+                Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

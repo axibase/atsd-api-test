@@ -80,7 +80,7 @@ public class LengthTest extends PropertyMethod {
         }
         tcpSender.send(sb.toString(), 1000);
 
-        Thread.sleep(1000);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertFalse("Managed to insert command that length is max + 1", propertyExist(property));
     }

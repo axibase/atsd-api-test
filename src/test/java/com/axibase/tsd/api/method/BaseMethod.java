@@ -89,7 +89,7 @@ public abstract class BaseMethod {
     }
 
     public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
-        logger.debug("===Comparing Json String===\nStrict: {}\nExpected:\n{}\nGiven:\n{}", strict, expected, given);
+        logger.debug("===Comparing Json String===\nStrict: {}\nExpected:\n{}\nReceived:\n{}", strict, expected, given);
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
             logger.debug("===Json strings are equal===");

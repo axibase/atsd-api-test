@@ -1,11 +1,9 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -154,7 +152,7 @@ public class PropertyInsertTest extends PropertyMethod {
         property.setDate(MIN_STORABLE_DATE);
 
         Response response = insertProperty(property);
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
         assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
 
         assertTrue(propertyExist(property));

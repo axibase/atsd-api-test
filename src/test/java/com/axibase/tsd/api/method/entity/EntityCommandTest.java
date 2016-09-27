@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import org.testng.annotations.Test;
 
@@ -89,7 +88,7 @@ public class EntityCommandTest extends EntityMethod {
 
         String command = String.format("entity e:%s t:%s=%s", entityNameForTestAddTags, E_TAG_1, E_VAL_1);
 
-        tcpSender.sendCheck(command, BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME);
+        tcpSender.sendCheck(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         Entity storedEntityForTags = new Entity(entityNameForTestAddTags);
         storedEntityForTags.addTag(E_TAG_1, E_VAL_1);

@@ -31,7 +31,7 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage(messageText);
         message.setDate(date);
 
-        Assert.assertTrue(insertMessage(message, 1000), "Fail to insert message");
+        Assert.assertTrue(insertMessage(message, DEFAULT_EXPECTED_PROCESSING_TIME), "Fail to insert message");
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity("nurswgvml022");
@@ -55,7 +55,7 @@ public class MessageInsertTest extends MessageMethod {
 
         Boolean success = insertMessage(message);
         // wait for message availability
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         if (!success)
             Assert.fail("Failed to insert message");
@@ -81,7 +81,7 @@ public class MessageInsertTest extends MessageMethod {
 
         Boolean success = insertMessage(message);
         // wait for message availability
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         if (!success)
             Assert.fail("Failed to insert message");
@@ -107,7 +107,7 @@ public class MessageInsertTest extends MessageMethod {
 
         Boolean success = insertMessage(message);
         // wait for message availability
-        Thread.sleep(1000L);
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         if (success)
             Assert.fail("Managed to insert message with date out of range");
