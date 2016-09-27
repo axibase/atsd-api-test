@@ -27,7 +27,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     private final static int SERIES_WITH_TAGS_COUNT = 9;
     private final static int SAMPLES_COUNT = 10;
     private final static String START_SAMPLE_DATE = "2014-06-06T00:00:00.000Z";
-    private static List<Series> serieses = new ArrayList<>();
+    private static List<Series> seriesList = new ArrayList<>();
     private static List<String> entities = new ArrayList<>();
 
     static {
@@ -65,20 +65,20 @@ public class SeriesQueryLimitTest extends SeriesMethod {
             Registry.Entity.register(entityName);
             entities.add(entityName);
 
-            serieses.addAll(makeSeriesWithTagList(entityName, DEFAULT_QUERY_LIMIT_METRIC, SERIES_WITH_TAGS_COUNT));
-            serieses.add(makeSeriesWithoutTag(entityName, DEFAULT_QUERY_LIMIT_METRIC));
+            seriesList.addAll(makeSeriesWithTagList(entityName, DEFAULT_QUERY_LIMIT_METRIC, SERIES_WITH_TAGS_COUNT));
+            seriesList.add(makeSeriesWithoutTag(entityName, DEFAULT_QUERY_LIMIT_METRIC));
         }
 
-        insertSeriesCheck(serieses);
+        insertSeriesCheck(seriesList);
 
         //require to insert in two step to define latest inserted entity
         entityName = DEFAULT_QUERY_LIMIT_ENTITY_PREFIX.concat(String.valueOf(ENTITY_COUNT - 1));
         Registry.Entity.register(entityName);
         entities.add(entityName);
 
-        serieses.addAll(makeSeriesWithTagList(entityName, DEFAULT_QUERY_LIMIT_METRIC, SERIES_WITH_TAGS_COUNT));
-        serieses.add(makeSeriesWithoutTag(entityName, DEFAULT_QUERY_LIMIT_METRIC));
-        insertSeriesCheck(serieses);
+        seriesList.addAll(makeSeriesWithTagList(entityName, DEFAULT_QUERY_LIMIT_METRIC, SERIES_WITH_TAGS_COUNT));
+        seriesList.add(makeSeriesWithoutTag(entityName, DEFAULT_QUERY_LIMIT_METRIC));
+        insertSeriesCheck(seriesList);
     }
 
     private List<Series> makeSeriesWithTagList(String entityName, String metricName, int count) {
@@ -119,7 +119,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     public void testSeriesLimit0(SeriesQuery query) throws Exception {
         query.setSeriesLimit(0);
 
-        String expected = jacksonMapper.writeValueAsString(serieses);
+        String expected = jacksonMapper.writeValueAsString(seriesList);
 
         Response response = querySeries(query);
         assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
@@ -137,7 +137,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     public void testSeriesLimitNegative(SeriesQuery query) throws Exception {
         query.setSeriesLimit(-1);
 
-        String expected = jacksonMapper.writeValueAsString(serieses);
+        String expected = jacksonMapper.writeValueAsString(seriesList);
 
         Response response = querySeries(query);
         assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
@@ -195,7 +195,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         query.setLimit(limit);
         query.setSeriesLimit(seriesLimit);
 
-        String expected = jacksonMapper.writeValueAsString(serieses);
+        String expected = jacksonMapper.writeValueAsString(seriesList);
 
         Response response = querySeries(query);
         assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
@@ -284,7 +284,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         final int seriesLimit = 2;
         final int limit = 5;
         SeriesQuery query = prepareSeriesQueryWithEntityPattern();
-        query.setEntity(DEFAULT_QUERY_LIMIT_ENTITY_PREFIX + String.valueOf(ENTITY_COUNT - 1));
+        query.setEntity(DEFAULT_QUERY_LIMIT_ENTITY_PREFIX.concat(String.valueOf(ENTITY_COUNT - 1)));
         query.setSeriesLimit(seriesLimit);
         query.setLimit(limit);
 
@@ -336,7 +336,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         final int limit = 5;
         final int expectedSeries = 1;
         SeriesQuery query = prepareSeriesQueryWithEntityPattern();
-        query.setEntity(DEFAULT_QUERY_LIMIT_ENTITY_PREFIX + String.valueOf(ENTITY_COUNT - 1));
+        query.setEntity(DEFAULT_QUERY_LIMIT_ENTITY_PREFIX.concat(String.valueOf(ENTITY_COUNT - 1)));
         query.setSeriesLimit(seriesLimit);
         query.setLimit(limit);
         query.setExactMatch(true);
