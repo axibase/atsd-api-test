@@ -3,6 +3,8 @@ package com.axibase.tsd.api.method;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.config.RequestConfig;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -26,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 
-
 public abstract class BaseMethod {
     public static final Long REQUEST_INTERVAL = 500L;
     public static final Long DEFAULT_EXPECTED_PROCESSING_TIME = 2000L;
@@ -37,6 +38,7 @@ public abstract class BaseMethod {
     public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
     public static final String ALERT_OPEN_VALUE = "1";
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
+    private static final Integer SOCKET_READ_TIMEOUT = 120000;
 
 
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
@@ -66,6 +68,9 @@ public abstract class BaseMethod {
             clientConfig.register(MultiPartFeature.class);
             clientConfig.register(new LoggingFeature());
             clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
+            clientConfig.property(ApacheClientProperties.REQUEST_CONFIG, RequestConfig.custom()
+                    .setSocketTimeout(SOCKET_READ_TIMEOUT)
+                    .build());
             httpRootResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
                     .scheme(config.getProtocol())
                     .host(config.getServerName())
