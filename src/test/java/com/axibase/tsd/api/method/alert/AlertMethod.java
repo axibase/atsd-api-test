@@ -16,7 +16,7 @@ public class AlertMethod extends BaseMethod {
     public static <T> Response queryAlerts(T... queries) {
         Entity<List<T>> json = Entity.json(Arrays.asList(queries));
         System.out.println(json);
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_ALERTS_QUERY)
                 .request()
                 .post(json);
@@ -25,7 +25,7 @@ public class AlertMethod extends BaseMethod {
     }
 
     public static <T> Response updateAlerts(T... queries) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_ALERTS_UPDATE)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
@@ -43,14 +43,14 @@ public class AlertMethod extends BaseMethod {
         Alert alert = new Alert();
         alert.setEntity(entityName);
         alert.setMetric(metricName);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(alert));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(alert));
         final String given = queryAlerts(query).readEntity(String.class);
         return compareJsonString(expected, given);
     }
 
 
     public static <T> Response deleteAlerts(T... queries) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_ALERTS_DELETE)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
@@ -59,7 +59,7 @@ public class AlertMethod extends BaseMethod {
     }
 
     public static <T> Response queryAlertsHistory(T... queries) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_ALERTS_HISTORY_QUERY)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));

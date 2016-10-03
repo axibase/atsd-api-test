@@ -28,7 +28,7 @@ public class BackslashCharEscapeTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
 
         String command = buildPropertyCommandFromProperty(property);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted property can not be received", PropertyMethod.propertyExist(property));
     }
@@ -43,7 +43,7 @@ public class BackslashCharEscapeTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
 
         String command = buildPropertyCommandFromProperty(property);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted property can not be received", PropertyMethod.propertyExist(property));
     }

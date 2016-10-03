@@ -25,7 +25,7 @@ public class PropertyMethod extends BaseMethod {
 
 
     public static <T> Response insertProperty(T... queries) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_PROPERTY_INSERT)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
@@ -34,7 +34,7 @@ public class PropertyMethod extends BaseMethod {
     }
 
     public static <T> Response queryProperty(T... queries) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_PROPERTY_QUERY)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
@@ -43,7 +43,7 @@ public class PropertyMethod extends BaseMethod {
     }
 
     public static <T> Response deleteProperty(T... queries) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_PROPERTY_DELETE)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
@@ -52,7 +52,7 @@ public class PropertyMethod extends BaseMethod {
     }
 
     public static Response urlQueryProperty(String propertyType, String entityName) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_PROPERTY_URL_QUERY)
                 .resolveTemplate("entity", entityName)
                 .resolveTemplate("type", propertyType)
@@ -62,7 +62,7 @@ public class PropertyMethod extends BaseMethod {
     }
 
     public static Response typeQueryProperty(String entityName) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_PROPERTY_TYPE_QUERY)
                 .resolveTemplate("entity", entityName)
                 .request().get();
@@ -92,7 +92,7 @@ public class PropertyMethod extends BaseMethod {
             response.close();
             throw new Exception("Fail to execute queryProperty");
         }
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(property));
         String given = response.readEntity(String.class);
         logger.debug("check: {}\nresponse: {}", expected, given);
         return compareJsonString(expected, given, strict);

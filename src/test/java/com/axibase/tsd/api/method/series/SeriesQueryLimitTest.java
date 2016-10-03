@@ -119,7 +119,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     public void testSeriesLimit0(SeriesQuery query) throws Exception {
         query.setSeriesLimit(0);
 
-        String expected = jacksonMapper.writeValueAsString(seriesList);
+        String expected = getJacksonMapper().writeValueAsString(seriesList);
 
         Response response = querySeries(query);
         assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
@@ -137,7 +137,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     public void testSeriesLimitNegative(SeriesQuery query) throws Exception {
         query.setSeriesLimit(-1);
 
-        String expected = jacksonMapper.writeValueAsString(seriesList);
+        String expected = getJacksonMapper().writeValueAsString(seriesList);
 
         Response response = querySeries(query);
         assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
@@ -195,7 +195,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         query.setLimit(limit);
         query.setSeriesLimit(seriesLimit);
 
-        String expected = jacksonMapper.writeValueAsString(seriesList);
+        String expected = getJacksonMapper().writeValueAsString(seriesList);
 
         Response response = querySeries(query);
         assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());

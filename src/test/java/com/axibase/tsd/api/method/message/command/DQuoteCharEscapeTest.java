@@ -19,7 +19,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         String command = buildMessageCommandFromMessage(message);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         message.setEntity(message.getEntity().replace("\"\"", "\""));
         assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
@@ -35,7 +35,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         String command = buildMessageCommandFromMessage(message);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         message.setType(message.getType().replace("\"\"", "\""));
         assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
@@ -51,7 +51,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         String command = buildMessageCommandFromMessage(message);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         message.setMessage(message.getMessage().replace("\"\"", "\""));
         assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));

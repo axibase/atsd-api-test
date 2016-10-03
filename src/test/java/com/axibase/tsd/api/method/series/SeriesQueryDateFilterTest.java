@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-
 import java.util.Collections;
 
 import static com.axibase.tsd.api.AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED;
@@ -36,7 +35,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", OK.getStatusCode(), response.getStatus());
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
         final String given = response.readEntity(String.class);
         assertTrue("Stored series mismatch", compareJsonString(expected, given));
     }
@@ -56,7 +55,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", OK.getStatusCode(), response.getStatus());
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
         final String given = response.readEntity(String.class);
         assertTrue("Stored series mismatch", compareJsonString(expected, given));
     }
@@ -76,7 +75,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", OK.getStatusCode(), response.getStatus());
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
         final String given = response.readEntity(String.class);
         assertTrue("Stored series mismatch", compareJsonString(expected, given));
     }

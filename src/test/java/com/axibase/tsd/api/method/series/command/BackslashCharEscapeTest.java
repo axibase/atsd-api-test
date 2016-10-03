@@ -30,7 +30,7 @@ public class BackslashCharEscapeTest extends SeriesMethod {
         series.addData(sample);
 
         String command = buildSeriesCommandFromSeriesAndSample(series, sample);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted series can not be received", SeriesMethod.seriesListIsInserted(Collections.singletonList(series)));
     }
@@ -45,7 +45,7 @@ public class BackslashCharEscapeTest extends SeriesMethod {
         series.addData(sample);
 
         String command = buildSeriesCommandFromSeriesAndSample(series, sample);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted series can not be received", SeriesMethod.seriesListIsInserted(Collections.singletonList(series)));
     }

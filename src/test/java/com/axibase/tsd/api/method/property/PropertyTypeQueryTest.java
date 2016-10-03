@@ -49,7 +49,7 @@ public class PropertyTypeQueryTest extends PropertyMethod {
         insertPropertyCheck(property);
         Response response = typeQueryProperty(property.getEntity());
         assertEquals(OK.getStatusCode(), response.getStatus());
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property.getType()));
+        String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(property.getType()));
         assertTrue(compareJsonString(expected, response.readEntity(String.class)));
     }
 

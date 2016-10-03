@@ -48,6 +48,6 @@ public class EntityGroupGetTest extends EntityGroupMethod {
         createOrReplaceEntityGroupCheck(entityGroup);
         Response response = getEntityGroup(entityGroup.getName());
         assertEquals("Fail to execute getEntityGroup query", OK.getStatusCode(), response.getStatus());
-        assertTrue("Entity group in response does not match to inserted", compareJsonString(jacksonMapper.writeValueAsString(entityGroup), response.readEntity(String.class)));
+        assertTrue("Entity group in response does not match to inserted", compareJsonString(getJacksonMapper().writeValueAsString(entityGroup), response.readEntity(String.class)));
     }
 }

@@ -27,7 +27,7 @@ public class EntityCommandTest extends EntityMethod {
         createOrReplaceEntityCheck(storedEntityWithTags);
 
         String command = String.format("entity e:%s t:%s=%s", storedEntityWithTags.getName(), E_TAG_2, E_VAL_2);
-        tcpSender.sendCheck(command);
+        getTcpSender().sendCheck(command);
 
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
 
@@ -49,7 +49,7 @@ public class EntityCommandTest extends EntityMethod {
         createOrReplaceEntityCheck(storedEntityUpdateTags);
 
         String command = String.format("entity e:%s t:%s=%s", storedEntityUpdateTags.getName(), E_TAG_1, E_VAL_1_UPD);
-        tcpSender.sendCheck(command);
+        getTcpSender().sendCheck(command);
 
         storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1_UPD);
 
@@ -69,7 +69,7 @@ public class EntityCommandTest extends EntityMethod {
         String entityTagValueForMailformed = "world";
 
         String command = String.format("entity e:%s t:%s=%s", entityNameForTestMailformed, entityTagNameForMailformed, entityTagValueForMailformed);
-        tcpSender.send(command);
+        getTcpSender().send(command);
 
         Registry.Entity.register(entityNameForTestMailformed);
 
@@ -88,7 +88,7 @@ public class EntityCommandTest extends EntityMethod {
 
         String command = String.format("entity e:%s t:%s=%s", entityNameForTestAddTags, E_TAG_1, E_VAL_1);
 
-        tcpSender.sendCheck(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().sendCheck(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         Entity storedEntityForTags = new Entity(entityNameForTestAddTags);
         storedEntityForTags.addTag(E_TAG_1, E_VAL_1);

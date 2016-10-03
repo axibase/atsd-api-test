@@ -22,14 +22,14 @@ public class StringTable {
     }
 
 
-    public void addColumnMetaData(ColumnMetaData columnMetaData) {
+    void addColumnMetaData(ColumnMetaData columnMetaData) {
         if (tableStructure.containsKey(columnMetaData)) {
             throw new IllegalStateException("Table already contains this columnMetaData");
         }
         tableStructure.put(columnMetaData, new ArrayList<String>());
     }
 
-    public void addRow(ArrayList<String> row) {
+    void addRow(ArrayList<String> row) {
         int index = 0;
         for (String cell : row) {
             tableStructure
@@ -49,11 +49,10 @@ public class StringTable {
         throw new IllegalStateException("Table doesn't contains column with index " + index);
     }
 
-    public List<String> getRow(int index) {
+    private List<String> getRow(int index) {
         List<String> row = new ArrayList<>();
-        for (ColumnMetaData columnMetaData : tableStructure.keySet()) {
-            List<String> columnCells = tableStructure.get(columnMetaData);
-            row.add(columnCells.get(index));
+        for (Map.Entry<ColumnMetaData, List<String>> element : tableStructure.entrySet()) {
+            row.add(element.getValue().get(index));
         }
         return row;
 
@@ -70,15 +69,6 @@ public class StringTable {
         }
         return rows;
     }
-
-    public List<List<String>> getColumns() {
-        List<List<String>> columns = new ArrayList<>();
-        for (ColumnMetaData columnMetaData : tableStructure.keySet()) {
-            columns.add(tableStructure.get(columnMetaData));
-        }
-        return columns;
-    }
-
 
     public Set<ColumnMetaData> getColumnsMetaData() {
         return tableStructure.keySet();
@@ -119,7 +109,7 @@ public class StringTable {
     }
 
     public List<String> columnValues(String requestedColumnName) {
-        List<List<String>> filteredRows = filterRows(new HashSet<String>(Arrays.asList(requestedColumnName)));
+        List<List<String>> filteredRows = filterRows(new HashSet<>(Collections.singletonList(requestedColumnName)));
         List<String> resultColumn = new ArrayList<>();
         for (List<String> row : filteredRows) {
             if (row.size() < 1) {
@@ -140,9 +130,7 @@ public class StringTable {
      */
     public List<List<String>> filterRows(String... requestedColumnNames) {
         Set<String> filter = new HashSet<>();
-        for (String columnName : requestedColumnNames) {
-            filter.add(columnName);
-        }
+        Collections.addAll(filter, requestedColumnNames);
         return filterRows(filter);
     }
 }

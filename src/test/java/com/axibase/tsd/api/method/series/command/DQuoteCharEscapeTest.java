@@ -30,7 +30,7 @@ public class DQuoteCharEscapeTest extends SeriesMethod {
         series.addData(sample);
 
         String command = buildSeriesCommandFromSeriesAndSample(series, sample);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         series.setEntity(series.getEntity().replace("\"\"", "\""));
         assertTrue("Inserted series can not be received", SeriesMethod.seriesListIsInserted(Collections.singletonList(series)));
@@ -46,7 +46,7 @@ public class DQuoteCharEscapeTest extends SeriesMethod {
         series.addData(sample);
 
         String command = buildSeriesCommandFromSeriesAndSample(series, sample);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         series.setMetric(series.getMetric().replace("\"\"", "\""));
         assertTrue("Inserted series can not be received", SeriesMethod.seriesListIsInserted(Collections.singletonList(series)));

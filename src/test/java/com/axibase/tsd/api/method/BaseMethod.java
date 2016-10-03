@@ -3,8 +3,6 @@ package com.axibase.tsd.api.method;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.config.RequestConfig;
-import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -29,26 +27,25 @@ import java.util.logging.Level;
 
 
 public abstract class BaseMethod {
-    public static final Long REQUEST_INTERVAL = 500L;
     public static final Long DEFAULT_EXPECTED_PROCESSING_TIME = 2000L;
-    public static final Long UPPER_BOUND_FOR_CHECK = 10000L;
     public static final String MIN_QUERYABLE_DATE = "1000-01-01T00:00:00.000Z";
     public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
     public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
-    public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
-    public static final String ALERT_OPEN_VALUE = "1";
-    public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
-    private static final Integer SOCKET_READ_TIMEOUT = 120000;
+    protected static final Long REQUEST_INTERVAL = 500L;
+    protected static final Long UPPER_BOUND_FOR_CHECK = 10000L;
+    protected static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
+    protected static final String ALERT_OPEN_VALUE = "1";
+    protected static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
 
 
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
     private static final String METHOD_VERSION = "/version";
-    protected static TCPSender tcpSender;
-    protected static ObjectMapper jacksonMapper;
-    protected static WebTarget httpApiResource;
-    protected static WebTarget httpRootResource;
-    protected static Config config;
+    private static TCPSender tcpSender;
+    private static ObjectMapper jacksonMapper;
+    private static WebTarget httpApiResource;
+    private static WebTarget httpRootResource;
+    private static Config config;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -68,19 +65,16 @@ public abstract class BaseMethod {
             clientConfig.register(MultiPartFeature.class);
             clientConfig.register(new LoggingFeature());
             clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
-            clientConfig.property(ApacheClientProperties.REQUEST_CONFIG, RequestConfig.custom()
-                    .setSocketTimeout(SOCKET_READ_TIMEOUT)
-                    .build());
             httpRootResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
                     .scheme(config.getProtocol())
                     .host(config.getServerName())
                     .port(config.getHttpPort())
                     .build());
-            httpApiResource = httpRootResource.path(config.getApiPath());
-            tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
+            setHttpApiResource(getHttpRootResource().path(config.getApiPath()));
+            setTcpSender(new TCPSender(config.getServerName(), config.getTcpPort()));
 
-            jacksonMapper = new ObjectMapper();
-            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
+            setJacksonMapper(new ObjectMapper());
+            getJacksonMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
         } catch (FileNotFoundException fne) {
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
             throw new RuntimeException(fne);
@@ -113,7 +107,7 @@ public abstract class BaseMethod {
     }
 
     public static Response queryATSDVersion() {
-        Response response = httpApiResource.path(METHOD_VERSION).request().get();
+        Response response = getHttpApiResource().path(METHOD_VERSION).request().get();
         response.bufferEntity();
         return response;
     }
@@ -132,5 +126,37 @@ public abstract class BaseMethod {
         } catch (JSONException e) {
             throw new IllegalStateException("Fail to get error message from response. Perhaps response does not contain error message when it should.");
         }
+    }
+
+    public static TCPSender getTcpSender() {
+        return tcpSender;
+    }
+
+    public static void setTcpSender(TCPSender tcpSender) {
+        BaseMethod.tcpSender = tcpSender;
+    }
+
+    public static ObjectMapper getJacksonMapper() {
+        return jacksonMapper;
+    }
+
+    public static void setJacksonMapper(ObjectMapper jacksonMapper) {
+        BaseMethod.jacksonMapper = jacksonMapper;
+    }
+
+    public static WebTarget getHttpApiResource() {
+        return httpApiResource;
+    }
+
+    public static void setHttpApiResource(WebTarget httpApiResource) {
+        BaseMethod.httpApiResource = httpApiResource;
+    }
+
+    public static WebTarget getHttpRootResource() {
+        return httpRootResource;
+    }
+
+    public static void setHttpRootResource(WebTarget httpRootResource) {
+        BaseMethod.httpRootResource = httpRootResource;
     }
 }

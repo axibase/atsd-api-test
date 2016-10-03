@@ -19,7 +19,8 @@ import java.util.List;
 import static com.axibase.tsd.api.Util.addOneMS;
 import static com.axibase.tsd.api.Util.getMillis;
 import static javax.ws.rs.core.Response.Status.*;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotSame;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -461,7 +462,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundGetRequest0() throws Exception {
-        Response response = httpRootResource.path("api").path("404").request().get();
+        Response response = getHttpRootResource().path("api").path("404").request().get();
         assertEquals("Nonexistent url with /api doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
         response.close();
 
@@ -472,7 +473,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundGetRequest1() throws Exception {
-        Response response = httpApiResource.path("query").request().get();
+        Response response = getHttpApiResource().path("query").request().get();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
         response.close();
 
@@ -483,7 +484,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundGetRequest2() throws Exception {
-        Response response = httpApiResource.path("404").request().get();
+        Response response = getHttpApiResource().path("404").request().get();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
         response.close();
 
@@ -494,7 +495,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundGetRequest3() throws Exception {
-        Response response = httpApiResource.path("404").queryParam("not", "exist").request().get();
+        Response response = getHttpApiResource().path("404").queryParam("not", "exist").request().get();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
         response.close();
     }
@@ -504,7 +505,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundOptionsRequestWithoutApiV1() throws Exception {
-        Response response = httpRootResource.path("api").path("404").request().options();
+        Response response = getHttpRootResource().path("api").path("404").request().options();
         assertEquals("Nonexistent url without /api/v1 options doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
         response.close();
     }
@@ -514,7 +515,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundOptionsRequest0() throws Exception {
-        Response response = httpApiResource.path("*").request().options();
+        Response response = getHttpApiResource().path("*").request().options();
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
         response.close();
     }
@@ -524,7 +525,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundOptionsRequest1() throws Exception {
-        Response response = httpApiResource.path("query").request().options();
+        Response response = getHttpApiResource().path("query").request().options();
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
         response.close();
     }
@@ -534,7 +535,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundOptionsRequest2() throws Exception {
-        Response response = httpApiResource.path("404").request().options();
+        Response response = getHttpApiResource().path("404").request().options();
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
         response.close();
     }
@@ -544,7 +545,7 @@ public class SeriesInsertTest extends SeriesMethod {
      **/
     @Test
     public void testUrlNotFoundOptionsRequest3() throws Exception {
-        Response response = httpApiResource.path("404").queryParam("not", "exist").request().options();
+        Response response = getHttpApiResource().path("404").queryParam("not", "exist").request().options();
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
         response.close();
     }

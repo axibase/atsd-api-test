@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Property {
+public final class Property implements Cloneable {
     private String type;
     private String entity;
     private Map<String, String> key;
@@ -33,12 +33,12 @@ public class Property {
         Property cloned = new Property();
         cloned.setType(type);
         cloned.setEntity(entity);
-        if(key == null) {
+        if (key == null) {
             cloned.setKey(null);
         } else {
             cloned.setKey(new HashMap<>(key));
         }
-        if(tags == null) {
+        if (tags == null) {
             cloned.setTags(null);
         } else {
             cloned.setTags(new HashMap<>(tags));
@@ -103,6 +103,10 @@ public class Property {
         return date;
     }
 
+    public void setDate(Date date) {
+        this.date = Util.ISOFormat(date);
+    }
+
     @JsonProperty
     public void setDate(String date) {
         this.date = date;
@@ -110,9 +114,5 @@ public class Property {
 
     public void setDate(Long millis) {
         this.date = Util.ISOFormat(new Date(millis));
-    }
-
-    public void setDate(Date date) {
-        this.date = Util.ISOFormat(date);
     }
 }

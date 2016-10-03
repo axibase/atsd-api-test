@@ -19,7 +19,7 @@ public class EqualCharEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         String command = buildMessageCommandFromMessage(message);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
     }
@@ -34,7 +34,7 @@ public class EqualCharEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         String command = buildMessageCommandFromMessage(message);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
     }
@@ -49,7 +49,7 @@ public class EqualCharEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         String command = buildMessageCommandFromMessage(message);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
     }

@@ -32,7 +32,7 @@ public class SeriesMethod extends BaseMethod {
 
 
     public static Response insertSeries(final List<Series> seriesList, String user, String password, boolean sleepEnabled) {
-        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
+        Invocation.Builder builder = getHttpApiResource().path(METHOD_SERIES_INSERT).request();
 
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
@@ -66,7 +66,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static <T> Response querySeries(List<T> queries) {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
+        Response response = getHttpApiResource().path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
         response.bufferEntity();
         return response;
     }
@@ -76,7 +76,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters, String user, String password) {
-        WebTarget webTarget = httpApiResource
+        WebTarget webTarget = getHttpApiResource()
                 .path(METHOD_SERIES_URL_QUERY)
                 .resolveTemplate("format", format.toString())
                 .resolveTemplate("entity", entity)
@@ -126,7 +126,7 @@ public class SeriesMethod extends BaseMethod {
             formattedSeriesList.add(formattedSeries);
         }
         Response response = querySeries(seriesQueryList);
-        String expected = jacksonMapper.writeValueAsString(formattedSeriesList);
+        String expected = getJacksonMapper().writeValueAsString(formattedSeriesList);
         String actual = response.readEntity(String.class);
         return compareJsonString(expected, actual);
     }
@@ -148,7 +148,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries, String user, String password) {
-        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_QUERY).request();
+        Invocation.Builder builder = getHttpApiResource().path(METHOD_SERIES_QUERY).request();
         if (user != null && password != null) {
             builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
             builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);

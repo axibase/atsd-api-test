@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SeriesQueryExactMatch extends SeriesMethod {
-    final String exactMatchEntityName = "series-query-exactmatch-entity-1";
-    final String exactMatchMetricName = "series-query-exactmatch-metric-1";
-    final Series seriesA = new Series(exactMatchEntityName, exactMatchMetricName);
-    final Series seriesB = new Series();
-    final Series seriesC = new Series();
-    final Series seriesD = new Series();
+    private static final String exactMatchEntityName = "series-query-exactmatch-entity-1";
+    private static final String exactMatchMetricName = "series-query-exactmatch-metric-1";
+    private Series seriesA = new Series(exactMatchEntityName, exactMatchMetricName);
+    private Series seriesB = new Series();
+    private Series seriesC = new Series();
+    private Series seriesD = new Series();
 
 
     @BeforeClass
@@ -58,7 +58,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
 
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(seriesD));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(seriesD));
         Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
     }
 
@@ -75,7 +75,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 4, "Response array contains wrong elements count");
 
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
+        final String expected = getJacksonMapper().writeValueAsString(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
         Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
     }
 
@@ -94,7 +94,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
 
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesB));
+        final String expected = getJacksonMapper().writeValueAsString(Arrays.asList(seriesB));
         Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
     }
 
@@ -113,7 +113,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 2, "Response array contains wrong elements count");
 
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB));
+        final String expected = getJacksonMapper().writeValueAsString(Arrays.asList(seriesA, seriesB));
         Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
     }
 
@@ -129,7 +129,7 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         final String given = response.readEntity(String.class);
         Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
 
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesD));
+        final String expected = getJacksonMapper().writeValueAsString(Arrays.asList(seriesD));
         Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
 
     }

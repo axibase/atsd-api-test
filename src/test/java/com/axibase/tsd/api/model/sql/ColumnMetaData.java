@@ -1,6 +1,8 @@
 package com.axibase.tsd.api.model.sql;
 
 
+import java.util.Objects;
+
 public class ColumnMetaData implements Comparable<ColumnMetaData> {
     private String name;
     private Integer columnIndex;
@@ -57,6 +59,24 @@ public class ColumnMetaData implements Comparable<ColumnMetaData> {
 
     public void setTable(String table) {
         this.table = table;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ColumnMetaData)) return false;
+        ColumnMetaData that = (ColumnMetaData) o;
+        return Objects.equals(getName(), that.getName()) &&
+                Objects.equals(getColumnIndex(), that.getColumnIndex()) &&
+                Objects.equals(getTable(), that.getTable()) &&
+                Objects.equals(getDataType(), that.getDataType()) &&
+                Objects.equals(getPropertyUrl(), that.getPropertyUrl()) &&
+                Objects.equals(getTitles(), that.getTitles());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getColumnIndex(), getTable(), getDataType(), getPropertyUrl(), getTitles());
     }
 
     @Override

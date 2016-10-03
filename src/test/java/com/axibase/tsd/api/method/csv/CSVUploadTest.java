@@ -35,7 +35,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    public static Integer offsetMinutes = 0;
+    private static Integer offsetMinutes = 0;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {

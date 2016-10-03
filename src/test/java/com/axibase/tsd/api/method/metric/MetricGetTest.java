@@ -30,7 +30,7 @@ public class MetricGetTest extends MetricMethod {
 
         Response response = queryMetric(metric.getName());
         assertEquals("Fail to execute queryMetric query", OK.getStatusCode(), response.getStatus());
-        assertTrue("Metrics should be equal", compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
+        assertTrue("Metrics should be equal", compareJsonString(getJacksonMapper().writeValueAsString(metric), response.readEntity(String.class)));
     }
 
     /* #1278 */
@@ -41,7 +41,7 @@ public class MetricGetTest extends MetricMethod {
 
         Response response = queryMetric(metric.getName());
         assertEquals("Fail to execute queryMetric query", OK.getStatusCode(), response.getStatus());
-        assertTrue("Metrics should be equal", compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
+        assertTrue("Metrics should be equal", compareJsonString(getJacksonMapper().writeValueAsString(metric), response.readEntity(String.class)));
     }
 
     @Test

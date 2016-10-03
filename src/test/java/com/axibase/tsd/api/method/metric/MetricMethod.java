@@ -18,7 +18,7 @@ public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
 
     public static <T> Response createOrReplaceMetric(String metricName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().put(Entity.json(query));
+        Response response = getHttpApiResource().path(METHOD_METRIC).resolveTemplate("metric", metricName).request().put(Entity.json(query));
         response.bufferEntity();
         return response;
     }
@@ -28,7 +28,7 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static <T> Response updateMetric(String metricName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().method("PATCH", Entity.json(query));
+        Response response = getHttpApiResource().path(METHOD_METRIC).resolveTemplate("metric", metricName).request().method("PATCH", Entity.json(query));
         response.bufferEntity();
         return response;
     }
@@ -38,7 +38,7 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static Response queryMetric(String metricName) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
+        Response response = getHttpApiResource().path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
         response.bufferEntity();
         return response;
     }
@@ -48,7 +48,7 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static Response queryMetricSeries(String metricName, Map<String, String> parameters) throws Exception {
-        WebTarget target = httpApiResource.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
+        WebTarget target = getHttpApiResource().path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
@@ -62,13 +62,13 @@ public class MetricMethod extends BaseMethod {
 //    }
 
     public static Response deleteMetric(String metricName) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().delete();
+        Response response = getHttpApiResource().path(METHOD_METRIC).resolveTemplate("metric", metricName).request().delete();
         response.bufferEntity();
         return response;
     }
 
     public static void createOrReplaceMetricCheck(Metric metric) throws Exception {
-        if (createOrReplaceMetric(metric.getName(), jacksonMapper.writeValueAsString(metric)).getStatus() != OK.getStatusCode()) {
+        if (createOrReplaceMetric(metric.getName(), getJacksonMapper().writeValueAsString(metric)).getStatus() != OK.getStatusCode()) {
             throw new Exception("Can not execute createOrReplaceEntityGroup query");
         }
         if (!metricExist(metric)) {
@@ -85,7 +85,7 @@ public class MetricMethod extends BaseMethod {
         if (response.getStatus() != OK.getStatusCode()) {
             throw new Exception("Fail to execute queryMetric query");
         }
-        return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
+        return compareJsonString(getJacksonMapper().writeValueAsString(metric), response.readEntity(String.class));
     }
 
 }
