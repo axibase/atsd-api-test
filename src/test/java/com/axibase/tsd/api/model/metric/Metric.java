@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.metric;
 
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.model.command.metric.Interpolate;
 import com.axibase.tsd.api.model.series.DataType;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -21,17 +22,27 @@ public class Metric {
     private String invalidAction;
     private String lastInsertDate;
     private Boolean versioned;
+    private String label;
+    private String description;
+    private Interpolate interpolate;
+    private String filter;
     private Map<String, String> tags;
     private Map<String, Object> additionalProperties = new HashMap<>();
-
     public Metric() {
     }
-
     public Metric(String name) {
         if (name != null) {
             Registry.Metric.register(name);
         }
         this.name = name;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     public String getInvalidAction() {
@@ -143,5 +154,38 @@ public class Metric {
     @JsonAnySetter
     public void setAdditionalProperty(String name, java.lang.Object value) {
         this.additionalProperties.put(name, value);
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Interpolate getInterpolate() {
+        return interpolate;
+    }
+
+    public void setInterpolate(String interpolate) {
+        switch (interpolate) {
+            case "LINEAR":
+                this.interpolate = Interpolate.LINEAR;
+                break;
+            case "PREVIOUS":
+                this.interpolate = Interpolate.PREVIOUS;
+                break;
+            default:
+                throw new IllegalStateException("Incorrect interpolate type");
+        }
     }
 }
