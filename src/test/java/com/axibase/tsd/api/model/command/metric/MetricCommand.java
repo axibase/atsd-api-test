@@ -55,13 +55,13 @@ public class MetricCommand extends AbstractCommand {
 
     public MetricCommand(Metric metric) {
         this(metric.getName());
-        this.label = metric.getLabel();
-        this.interpolate = metric.getInterpolate();
-        this.description = metric.getDescription();
-        this.filterExpression = metric.getFilter();
-        this.versioning = metric.getVersioned();
-        this.dataType = metric.getDataType();
-        this.tags = metric.getTags();
+        appendLabel(metric.getLabel());
+        appendInterpolate(metric.getInterpolate());
+        appendDescription(metric.getDescription());
+        appendFilterExpression(metric.getFilter());
+        appendVersioning(metric.getVersioned());
+        appendDataType(metric.getDataType());
+        appendTags(metric.getTags());
         build();
     }
 
