@@ -2,6 +2,8 @@ package com.axibase.tsd.api.model.command.metric;
 
 
 import com.axibase.tsd.api.model.command.AbstractCommand;
+import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.DataType;
 
 import java.util.Map;
 
@@ -48,6 +50,18 @@ public class MetricCommand extends AbstractCommand {
     public MetricCommand(String metricName, Interpolate interpolate) {
         this(metricName);
         this.interpolate = interpolate;
+        build();
+    }
+
+    public MetricCommand(Metric metric) {
+        this(metric.getName());
+        this.label = metric.getLabel();
+        this.interpolate = metric.getInterpolate();
+        this.description = metric.getDescription();
+        this.filterExpression = metric.getFilter();
+        this.versioning = metric.getVersioned();
+        this.dataType = metric.getDataType();
+        this.tags = metric.getTags();
         build();
     }
 

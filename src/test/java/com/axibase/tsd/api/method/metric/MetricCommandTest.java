@@ -2,10 +2,10 @@ package com.axibase.tsd.api.method.metric;
 
 
 import com.axibase.tsd.api.model.command.SimpleCommand;
-import com.axibase.tsd.api.model.command.metric.DataType;
 import com.axibase.tsd.api.model.command.metric.Interpolate;
 import com.axibase.tsd.api.model.command.metric.MetricCommand;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.DataType;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
