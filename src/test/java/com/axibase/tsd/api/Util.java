@@ -17,7 +17,7 @@ public class Util {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
-
+    private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
 
 
     public static Date getCurrentDate() {
@@ -28,7 +28,6 @@ public class Util {
         return new Date(System.currentTimeMillis() - MILLIS_IN_DAY);
 
     }
-
 
     public static String formatDate(Date date, String pattern) {
         SimpleDateFormat format;
@@ -110,6 +109,16 @@ public class Util {
             return "JSONArray is null";
         }
         return (((JSONObject) array.get(index)).get(field)).toString();
+    }
+
+    public static class TestNames {
+        public static String generateMetricName() {
+            return NAME_GENERATOR.getMetricName();
+        }
+
+        public static String generateEntityName() {
+            return NAME_GENERATOR.getEntityName();
+        }
     }
 
 }

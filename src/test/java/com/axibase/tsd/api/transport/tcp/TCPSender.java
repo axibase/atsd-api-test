@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.transport.tcp;
 
+import com.axibase.tsd.api.model.command.PlainCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
+import static com.axibase.tsd.api.method.BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME;
 
 /**
  * @author Dmitry Korchagin.
@@ -78,6 +81,10 @@ public class TCPSender {
         boolean successed = sendDebugMode();
         if (!successed)
             throw new Exception("Fail to check inserted command");
+    }
+
+    public void send(PlainCommand command) throws Exception {
+        send(command.compose(), DEFAULT_EXPECTED_PROCESSING_TIME);
     }
 
     public void sendCheck(String command, long sleepDuration) throws Exception {
