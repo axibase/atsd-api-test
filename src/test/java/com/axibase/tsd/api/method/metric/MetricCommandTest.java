@@ -18,7 +18,9 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class MetricCommandTest extends MetricMethod {
 
-
+    /**
+     * #3137
+     */
     @Test
     public void testRequired() throws Exception {
         String metricName = generateMetricName();
@@ -28,6 +30,9 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Metric shouldn't be inserted", response.getStatus(), NOT_FOUND.getStatusCode());
     }
 
+    /**
+     * #3137
+     */
     @Test
     public void testLabel() throws Exception {
         String metricName = generateMetricName();
@@ -39,6 +44,9 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up label", label, actualMetric.getLabel());
     }
 
+    /**
+     * #3137
+     */
     @Test
     public void testDescription() throws Exception {
         String metricName = generateMetricName();
@@ -51,6 +59,9 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up description", description, actualMetric.getDescription());
     }
 
+    /**
+     * #3137
+     */
     @Test
     public void testVersioning() throws Exception {
         String metricName = generateMetricName();
@@ -62,6 +73,9 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up versioning", versioning, actualMetric.getVersioned());
     }
 
+    /**
+     * #3137
+     */
     @Test
     public void testFilterExpression() throws Exception {
         String metricName = generateMetricName();
@@ -74,6 +88,9 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up filterExpression", filterExpression, actualMetric.getFilter());
     }
 
+    /**
+     * #3137
+     */
     @Test
     public void testTags() throws Exception {
         String metricName = generateMetricName();
@@ -89,6 +106,9 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up filterExpression", tags, actualMetric.getTags());
     }
 
+    /**
+     * #3137
+     */
     @Test
     public void testInterpolate() throws Exception {
         String metricName = generateMetricName();
@@ -101,7 +121,10 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up filterExpression", interpolate, actualMetric.getInterpolate());
     }
 
-    //It's disabled for a while related with (#)
+    /**
+     * #3137
+     */
+    //It's disabled for a while related with (#3402)
     @Test(enabled = false)
     public void testIncorrectVersioningValue() throws Exception {
         String metricName = generateMetricName();
