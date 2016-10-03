@@ -12,11 +12,11 @@ import javax.ws.rs.core.Response;
 
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
-    private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
-    protected static final WebTarget httpSqlApiResource = httpRootResource
+    protected static final WebTarget httpSqlApiResource = getHttpRootResource()
             .property(ClientProperties.CONNECT_TIMEOUT, 1000)
             .property(ClientProperties.READ_TIMEOUT, 1000)
             .path(METHOD_SQL_API);
+    private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
 
     /**
      * Execute SQL executeQuery and retrieve result in specified format

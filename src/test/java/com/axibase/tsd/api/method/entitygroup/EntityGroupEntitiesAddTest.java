@@ -78,7 +78,7 @@ public class EntityGroupEntitiesAddTest extends EntityGroupMethod {
 
         Response response = addEntities(entityGroup.getName(), entitiesList);
         assertEquals("Fail to execute addEntities query", OK.getStatusCode(), response.getStatus());
-        String expected = jacksonMapper.writeValueAsString(expectedResponse);
+        String expected = getJacksonMapper().writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException("Fail to execute getEntities query");

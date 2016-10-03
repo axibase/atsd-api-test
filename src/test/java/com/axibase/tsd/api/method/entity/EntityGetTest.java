@@ -45,7 +45,7 @@ public class EntityGetTest extends EntityMethod {
         Response response = getEntity(entity.getName());
         assertEquals("Fail to execute getEntity", OK.getStatusCode(), response.getStatus());
 
-        String expected = jacksonMapper.writeValueAsString(entity);
+        String expected = getJacksonMapper().writeValueAsString(entity);
         assertTrue("Entity in response does not match to inserted entity", compareJsonString(expected, response.readEntity(String.class)));
     }
 }

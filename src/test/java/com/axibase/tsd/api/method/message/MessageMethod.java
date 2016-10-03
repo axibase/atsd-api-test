@@ -25,7 +25,7 @@ public class MessageMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static <T> Response queryMessageStats(T... query) throws Exception {
-        Response response = httpApiResource.path(METHOD_MESSAGE_STATS_QUERY).request().post(Entity.json(query));
+        Response response = getHttpApiResource().path(METHOD_MESSAGE_STATS_QUERY).request().post(Entity.json(query));
         response.bufferEntity();
         return response;
     }
@@ -45,7 +45,7 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static Response insertMessageReturnResponse(List<Message> messageList) {
-        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
+        Response response = getHttpApiResource().path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
         response.bufferEntity();
         return response;
     }
@@ -55,7 +55,7 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static Boolean insertMessage(List<Message> messageList, long sleepDuration) throws Exception {
-        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
+        Response response = getHttpApiResource().path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Message looks inserted");
@@ -84,7 +84,7 @@ public class MessageMethod extends BaseMethod {
             throw new IllegalStateException("Fail to execute queryMessage request: " + response.readEntity(String.class));
         }
 
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(message));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(message));
         final String given = response.readEntity(String.class);
         return compareJsonString(expected, given);
     }
@@ -111,7 +111,7 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static <T> Response queryMessage(T... messageQuery) {
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(messageQuery));
+        Response response = getHttpApiResource().path(METHOD_MESSAGE_QUERY).request().post(Entity.json(messageQuery));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");

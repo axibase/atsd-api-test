@@ -1,7 +1,7 @@
 package com.axibase.tsd.api;
 
-import com.axibase.tsd.api.method.version.Version;
 import com.axibase.tsd.api.method.version.VersionMethod;
+import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +66,7 @@ public class Util {
     }
 
     public static Date parseDate(String date) {
-        Date d = null;
+        Date d;
         try {
             d = ISO8601Utils.parse(date, new ParsePosition(0));
         } catch (ParseException e) {
@@ -84,7 +84,7 @@ public class Util {
     }
 
     public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {
-        List<List<T>> list = new ArrayList<List<T>>();
+        List<List<T>> list = new ArrayList<>();
         for (T[] array : twoDArray) {
             list.add(Arrays.asList(array));
         }

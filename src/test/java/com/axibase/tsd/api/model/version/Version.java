@@ -1,5 +1,5 @@
 
-package com.axibase.tsd.api.method.version;
+package com.axibase.tsd.api.model.version;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -11,12 +11,12 @@ public class Version {
 
     @JsonProperty("buildInfo")
     private BuildInfo buildInfo;
-    @JsonProperty("licence")
+    @JsonProperty("license")
     private Licence licence;
     @JsonProperty("date")
     private Date date;
     @JsonIgnore
-    private Map<String, java.lang.Object> additionalProperties = new HashMap<String, java.lang.Object>();
+    private Map<String, java.lang.Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The buildInfo

@@ -15,7 +15,9 @@ public class EqualCharEscapeTest extends PropertyMethod {
 
     static {
         DEFAULT_PROPERTY_TAGS = new HashMap();
-        DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
+        if (DEFAULT_EXPECTED_PROCESSING_TIME != null) {
+            DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
+        }
     }
 
     /**
@@ -28,7 +30,7 @@ public class EqualCharEscapeTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
 
         String command = buildPropertyCommandFromProperty(property);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         property.setEntity(property.getEntity().replace("\"", ""));
         assertTrue("Inserted property can not be received", PropertyMethod.propertyExist(property));
@@ -44,7 +46,7 @@ public class EqualCharEscapeTest extends PropertyMethod {
         property.setDate(Util.getCurrentDate());
 
         String command = buildPropertyCommandFromProperty(property);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
 
         property.setType(property.getType().replace("\"", ""));
         assertTrue("Inserted property can not be received", PropertyMethod.propertyExist(property));

@@ -41,7 +41,7 @@ public class LengthTest extends PropertyMethod {
         }
 
         Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
-        tcpSender.send(sb.toString(), 1000);
+        getTcpSender().send(sb.toString(), 1000);
 
         Thread.sleep(1000);
 
@@ -78,7 +78,7 @@ public class LengthTest extends PropertyMethod {
         if (MAX_LENGTH + 1 != sb.length()) {
             Assert.fail("Command length is not maximal");
         }
-        tcpSender.send(sb.toString(), 1000);
+        getTcpSender().send(sb.toString(), 1000);
 
         Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 

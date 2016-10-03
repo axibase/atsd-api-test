@@ -12,7 +12,7 @@ import java.net.Socket;
  * @author Dmitry Korchagin.
  */
 public class TCPSender {
-
+    private static final String DEFAULT_CHARSET_ENCODING = "UTF-8";
     private static final Logger logger = LoggerFactory.getLogger(TCPSender.class);
 
     private String url;
@@ -36,7 +36,7 @@ public class TCPSender {
     public boolean sendDebugMode() throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
-        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream(), DEFAULT_CHARSET_ENCODING));
         requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
         String response = responseStream.readLine();
         if (response == null) return false;
@@ -46,11 +46,11 @@ public class TCPSender {
     public boolean sendDebugMode(long sleepDuration) throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
-        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream(), DEFAULT_CHARSET_ENCODING));
         requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
         String response = responseStream.readLine();
         Thread.sleep(sleepDuration);
-        return response.equals("ok");
+        return "ok".equals(response);
     }
 
     public void send() throws Exception {

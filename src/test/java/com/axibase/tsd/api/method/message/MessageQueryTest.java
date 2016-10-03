@@ -143,7 +143,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("endDate", Util.addOneMS(message.getDate()));
 
         final String given = queryMessage(query).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
+        final String expected = getJacksonMapper().writeValueAsString(Arrays.asList(message));
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
 
@@ -163,7 +163,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("endDate", Util.addOneMS(message.getDate()));
 
         final String given = queryMessage(query).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
+        final String expected = getJacksonMapper().writeValueAsString(Arrays.asList(message));
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
 

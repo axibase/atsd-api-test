@@ -26,13 +26,13 @@ public class EntityGroupMethod extends BaseMethod {
     public final static String SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION = "properties('some.prop').size() > 0";
 
     public static Response getEntityGroup(String groupName) {
-        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().get();
+        Response response = getHttpApiResource().path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().get();
         response.bufferEntity();
         return response;
     }
 
     public static Response listEntityGroup(Map<String, String> parameters) {
-        WebTarget target = httpApiResource.path(METHOD_ENTITYGROUP_LIST);
+        WebTarget target = getHttpApiResource().path(METHOD_ENTITYGROUP_LIST);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
@@ -42,25 +42,25 @@ public class EntityGroupMethod extends BaseMethod {
     }
 
     public static Response updateEntityGroup(EntityGroup entityGroup) {
-        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", entityGroup.getName()).request().method("PATCH", Entity.json(entityGroup));
+        Response response = getHttpApiResource().path(METHOD_ENTITYGROUP).resolveTemplate("group", entityGroup.getName()).request().method("PATCH", Entity.json(entityGroup));
         response.bufferEntity();
         return response;
     }
 
     public static Response deleteEntityGroup(String groupName) {
-        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().delete();
+        Response response = getHttpApiResource().path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().delete();
         response.bufferEntity();
         return response;
     }
 
     public static Response createOrReplaceEntityGroup(EntityGroup entityGroup) {
-        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", entityGroup.getName()).request().put(Entity.json(entityGroup));
+        Response response = getHttpApiResource().path(METHOD_ENTITYGROUP).resolveTemplate("group", entityGroup.getName()).request().put(Entity.json(entityGroup));
         response.bufferEntity();
         return response;
     }
 
     public static Response getEntities(String groupName, Map<String, String> parameters) {
-        WebTarget target = httpApiResource.path(METHOD_ENTITYGROUP_ENTITIES).resolveTemplate("group", groupName);
+        WebTarget target = getHttpApiResource().path(METHOD_ENTITYGROUP_ENTITIES).resolveTemplate("group", groupName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
@@ -74,7 +74,7 @@ public class EntityGroupMethod extends BaseMethod {
     }
 
     public static Response addEntities(String groupName, Boolean createEntities, List<String> entityNames) {
-        WebTarget target = httpApiResource
+        WebTarget target = getHttpApiResource()
                 .path(METHOD_ENTITYGROUP_ENTITIES_ADD)
                 .resolveTemplate("group", groupName);
         if (createEntities != null) {
@@ -90,7 +90,7 @@ public class EntityGroupMethod extends BaseMethod {
     }
 
     public static Response setEntities(String groupName, Boolean createEntities, List<String> entityNames) {
-        WebTarget target = httpApiResource
+        WebTarget target = getHttpApiResource()
                 .path(METHOD_ENTITYGROUP_ENTITIES_SET)
                 .resolveTemplate("group", groupName);
         if (createEntities != null) {
@@ -106,7 +106,7 @@ public class EntityGroupMethod extends BaseMethod {
     }
 
     public static Response deleteEntities(String groupName, List entityNames) {
-        Response response = httpApiResource
+        Response response = getHttpApiResource()
                 .path(METHOD_ENTITYGROUP_ENTITIES_DELETE)
                 .resolveTemplate("group", groupName)
                 .request()
@@ -126,7 +126,7 @@ public class EntityGroupMethod extends BaseMethod {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
-        if (!compareJsonString(jacksonMapper.writeValueAsString(entityGroup), response.readEntity(String.class))) {
+        if (!compareJsonString(getJacksonMapper().writeValueAsString(entityGroup), response.readEntity(String.class))) {
             throw new IllegalStateException("Fail to check entityGroup inserted");
         }
     }
@@ -140,7 +140,7 @@ public class EntityGroupMethod extends BaseMethod {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
-        final String expected = jacksonMapper.writeValueAsString(entityGroup);
+        final String expected = getJacksonMapper().writeValueAsString(entityGroup);
         final String given = response.readEntity(String.class);
         return compareJsonString(expected, given, true);
     }

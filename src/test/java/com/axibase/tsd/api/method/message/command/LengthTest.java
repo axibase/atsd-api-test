@@ -43,7 +43,7 @@ public class LengthTest extends MessageMethod {
         message.setMessage(m.toString());
         sb.append(message.getMessage());
         Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
-        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(message.getEntity());
@@ -54,7 +54,7 @@ public class LengthTest extends MessageMethod {
         messageQuery.setSeverity(message.getSeverity());
         String storedMessage = queryMessage(messageQuery).readEntity(String.class);
 
-        String sentMessage = jacksonMapper.writeValueAsString(Collections.singletonList(message));
+        String sentMessage = getJacksonMapper().writeValueAsString(Collections.singletonList(message));
 
         assertTrue(compareJsonString(sentMessage, storedMessage, true));
     }
@@ -92,7 +92,7 @@ public class LengthTest extends MessageMethod {
         if (MAX_LENGTH + 1 != sb.length()) {
             Assert.fail("Command length is not maximal");
         }
-        tcpSender.send(sb.toString(), 1000);
+        getTcpSender().send(sb.toString(), 1000);
 
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(message.getEntity());

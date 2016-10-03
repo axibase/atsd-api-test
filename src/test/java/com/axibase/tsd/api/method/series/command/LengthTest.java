@@ -39,7 +39,7 @@ public class LengthTest extends SeriesMethod {
         if (MAX_LENGTH != sb.length()) {
             Assert.fail("Command length is not maximal");
         }
-        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
 
         ArrayList<SeriesQuery> seriesQueries = new ArrayList<>();
         final ArrayList<Series> seriesList = new ArrayList<>();
@@ -54,7 +54,7 @@ public class LengthTest extends SeriesMethod {
         JSONArray storedSeriesList = executeQuery(seriesQueries);
 
         String storedSeries = storedSeriesList.toString();
-        String sentSeries = jacksonMapper.writeValueAsString(seriesList);
+        String sentSeries = getJacksonMapper().writeValueAsString(seriesList);
 
         assertTrue("Returned series do not match to inserted", compareJsonString(sentSeries, storedSeries));
     }
@@ -82,7 +82,7 @@ public class LengthTest extends SeriesMethod {
         if (MAX_LENGTH + 1 != sb.length()) {
             Assert.fail("Command length is not equals to max + 1");
         }
-        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
+        getTcpSender().send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
 
         ArrayList<SeriesQuery> seriesQueries = new ArrayList<>();
         for (int i = 0; i < METRICS_COUNT; i++) {

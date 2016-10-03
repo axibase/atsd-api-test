@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.property.Property;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
@@ -66,7 +65,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
      */
     @Test
     public void testOffset0SelectsLast() throws Exception {
-        String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyLast1, propertyLast2));
+        String expected = getJacksonMapper().writeValueAsString(Arrays.asList(propertyLast1, propertyLast2));
 
         JSONAssert.assertEquals(expected, executeOffsetQuery(0).readEntity(String.class), false);
     }
@@ -77,7 +76,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
      */
     @Test
     public void testOffsetNegativeSelectAll() throws Exception {
-        String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));
+        String expected = getJacksonMapper().writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));
 
         JSONAssert.assertEquals(expected, executeOffsetQuery(-5).readEntity(String.class), false);
     }
@@ -89,7 +88,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
      */
     @Test
     public void testOffsetEqualDateDiffSelectsDateInclusive() throws Exception {
-        String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyMiddl, propertyLast1, propertyLast2));
+        String expected = getJacksonMapper().writeValueAsString(Arrays.asList(propertyMiddl, propertyLast1, propertyLast2));
 
         JSONAssert.assertEquals(expected, executeOffsetQuery(5).readEntity(String.class), false);
     }
@@ -101,7 +100,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
      */
     @Test
     public void testOffsetMoreDateSelectsLessOrEqualDate() throws Exception {
-        String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyMiddl, propertyLast1, propertyLast2));
+        String expected = getJacksonMapper().writeValueAsString(Arrays.asList(propertyMiddl, propertyLast1, propertyLast2));
 
         JSONAssert.assertEquals(expected, executeOffsetQuery(6).readEntity(String.class), false);
     }
@@ -112,7 +111,7 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
      */
     @Test
     public void testOffsetLargeSelectAll() throws Exception {
-        String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));
+        String expected = getJacksonMapper().writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));
 
         JSONAssert.assertEquals(expected, executeOffsetQuery(100).readEntity(String.class), false);
     }

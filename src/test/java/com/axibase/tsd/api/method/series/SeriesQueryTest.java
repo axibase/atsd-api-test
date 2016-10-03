@@ -26,14 +26,15 @@ import static org.testng.AssertJUnit.*;
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
     private static final Series series;
-    private static Calendar calendar = Calendar.getInstance();
     private static final Logger logger = LoggerFactory.getLogger(SeriesQueryTest.class);
-
 
     static {
         series = new Series("series-query-e-1", "series-query-m-1");
         series.addData(new Sample(sampleDate, "1"));
     }
+
+    private Random random = new Random();
+    private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
     public static void prepare() throws Exception {
@@ -335,7 +336,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.put("endDate", MAX_QUERYABLE_DATE);
 
         final String given = querySeries(query).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
         assertTrue(compareJsonString(expected, given));
     }
 
@@ -355,7 +356,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.put("endDate", MAX_QUERYABLE_DATE);
 
         final String given = querySeries(query).readEntity(String.class);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
         assertTrue(compareJsonString(expected, given));
     }
 
@@ -407,8 +408,8 @@ public class SeriesQueryTest extends SeriesMethod {
 
         List<Series> storedSeries = executeQueryReturnSeries(query);
 
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
-        final String given = jacksonMapper.writeValueAsString(storedSeries);
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
+        final String given = getJacksonMapper().writeValueAsString(storedSeries);
         assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
     }
 
@@ -430,8 +431,8 @@ public class SeriesQueryTest extends SeriesMethod {
 
         List<Series> storedSeries = executeQueryReturnSeries(query);
 
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
-        final String given = jacksonMapper.writeValueAsString(storedSeries);
+        final String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(series));
+        final String given = getJacksonMapper().writeValueAsString(storedSeries);
         assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
     }
 
@@ -516,8 +517,8 @@ public class SeriesQueryTest extends SeriesMethod {
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
         calendar.add(Calendar.DAY_OF_YEAR, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, (int) (Math.random() * 24));
-        calendar.set(Calendar.MINUTE, (int) (Math.random() * 60));
+        calendar.set(Calendar.HOUR_OF_DAY, random.nextInt(24));
+        calendar.set(Calendar.MINUTE, random.nextInt(60));
     }
 
 

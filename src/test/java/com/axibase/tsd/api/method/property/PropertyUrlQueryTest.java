@@ -72,7 +72,7 @@ public class PropertyUrlQueryTest extends PropertyMethod {
         insertPropertyCheck(property);
         Response response = urlQueryProperty(property.getType(), property.getEntity());
         assertEquals(OK.getStatusCode(), response.getStatus());
-        String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
+        String expected = getJacksonMapper().writeValueAsString(Collections.singletonList(property));
         assertTrue(compareJsonString(expected, response.readEntity(String.class)));
     }
 

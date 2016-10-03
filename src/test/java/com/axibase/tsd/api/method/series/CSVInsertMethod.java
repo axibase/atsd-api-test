@@ -18,7 +18,7 @@ public class CSVInsertMethod extends SeriesMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static Response csvInsert(String entity, String csv, Map<String, String> tags, String user, String password) {
-        WebTarget webTarget = httpApiResource.path(METHOD_CSV_INSERT).resolveTemplate("entity", entity);
+        WebTarget webTarget = getHttpApiResource().path(METHOD_CSV_INSERT).resolveTemplate("entity", entity);
         for (Map.Entry<String, String> entry : tags.entrySet()) {
             webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
         }

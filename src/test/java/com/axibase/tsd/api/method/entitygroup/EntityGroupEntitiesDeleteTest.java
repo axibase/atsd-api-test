@@ -80,7 +80,7 @@ public class EntityGroupEntitiesDeleteTest extends EntityGroupMethod {
             throw new IllegalStateException("Fail to execute addEntities query");
         }
 
-        String expected = jacksonMapper.writeValueAsString(expectedResponse);
+        String expected = getJacksonMapper().writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException("Fail to execute getEntities query");

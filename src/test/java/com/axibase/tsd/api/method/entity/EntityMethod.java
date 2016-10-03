@@ -1,13 +1,10 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.method.BaseMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +23,7 @@ public class EntityMethod extends BaseMethod {
 
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(Entity.json(query));
+        Response response = getHttpApiResource().path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(Entity.json(query));
         response.bufferEntity();
         return response;
     }
@@ -36,13 +33,13 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response getEntity(String entityName) {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().get();
+        Response response = getHttpApiResource().path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;
     }
 
     public static <T> Response updateEntity(String entityName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().method("PATCH", Entity.json(query));
+        Response response = getHttpApiResource().path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().method("PATCH", Entity.json(query));
         response.bufferEntity();
         return response;
     }
@@ -52,14 +49,14 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response deleteEntity(String entityName) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().delete();
+        Response response = getHttpApiResource().path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().delete();
         response.bufferEntity();
         return response;
     }
 
 
     public static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
-        WebTarget target = httpApiResource.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
+        WebTarget target = getHttpApiResource().path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
@@ -73,20 +70,20 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response queryEntityGroups(String entityName) {
-        Response response = httpApiResource.path(METHOD_ENTITY_GROUPS).resolveTemplate("entity", entityName).request().get();
+        Response response = getHttpApiResource().path(METHOD_ENTITY_GROUPS).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;
     }
 
     public static Response queryEntityPropertyTypes(String entityName) {
-        Response response = httpApiResource.path(METHOD_ENTITY_PROPERTY_TYPES).resolveTemplate("entity", entityName).request().get();
+        Response response = getHttpApiResource().path(METHOD_ENTITY_PROPERTY_TYPES).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;
     }
 
 
     public static void createOrReplaceEntityCheck(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
-        if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
+        if (createOrReplaceEntity(entity.getName(), getJacksonMapper().writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
             throw new IllegalStateException("Can not execute createOrReplaceEntity query");
         }
         if (!entityExist(entity)) {
@@ -107,6 +104,6 @@ public class EntityMethod extends BaseMethod {
         if (response.getStatus() != OK.getStatusCode()) {
             throw new Exception("Fail to execute queryMetric query");
         }
-        return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class), strict);
+        return compareJsonString(getJacksonMapper().writeValueAsString(entity), response.readEntity(String.class), strict);
     }
 }

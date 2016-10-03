@@ -52,7 +52,7 @@ public class Entity {
     }
 
     public void setLastInsertDate(Date lastInsertDate) {
-        this.lastInsertDate = lastInsertDate;
+        this.lastInsertDate = (Date) lastInsertDate.clone();
     }
 
     public Map<String, String> getTags() {

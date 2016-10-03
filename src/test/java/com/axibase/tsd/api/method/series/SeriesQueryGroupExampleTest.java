@@ -73,8 +73,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -104,8 +104,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -130,8 +130,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -159,8 +159,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -186,8 +186,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -213,8 +213,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -241,8 +241,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -274,8 +274,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -308,8 +308,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
@@ -341,8 +341,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
-        final String actual = jacksonMapper.writeValueAsString(givenSamples);
-        final String expected = jacksonMapper.writeValueAsString(expectedSamples);
+        final String actual = getJacksonMapper().writeValueAsString(givenSamples);
+        final String expected = getJacksonMapper().writeValueAsString(expectedSamples);
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 

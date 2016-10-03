@@ -27,7 +27,7 @@ public class CSVUploadMethod extends BaseMethod {
     }
 
     public static boolean importParser(File configPath) {
-        Invocation.Builder builder = httpRootResource.path("/csv/configs/import").request();
+        Invocation.Builder builder = getHttpRootResource().path("/csv/configs/import").request();
         MultiPart multiPart = new MultiPart();
         FileDataBodyPart fileDataBodyPart
                 = new FileDataBodyPart("file", configPath, getMediaTypeFromFile(configPath));
@@ -46,7 +46,7 @@ public class CSVUploadMethod extends BaseMethod {
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("filedata", file, mediaType);
         multiPart.bodyPart(fileDataBodyPart);
 
-        Response response = httpApiResource.path("csv")
+        Response response = getHttpApiResource().path("csv")
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
                 .request().post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
@@ -63,7 +63,7 @@ public class CSVUploadMethod extends BaseMethod {
     }
 
     public static Response binaryCsvUpload(File file, String parserName, String encoding, String entity) {
-        Response response = httpApiResource.path("csv")
+        Response response = getHttpApiResource().path("csv")
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
                 .queryParam("filename", file.getName())
