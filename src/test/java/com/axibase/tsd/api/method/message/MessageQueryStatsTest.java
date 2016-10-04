@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.message.MessageStatsQuery;
 import com.axibase.tsd.api.model.series.Aggregate;
 import com.axibase.tsd.api.model.series.AggregationType;
@@ -13,9 +12,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
