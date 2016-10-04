@@ -133,7 +133,7 @@ public class MetricCommand extends AbstractCommand {
     }
 
     private void appendTag(Map.Entry<String, String> tag) {
-        appendField("t", String.format("%s=%s", tag.getKey(), tag.getValue()));
+        appendField("t", String.format("%s=%s", escapeCsv(tag.getKey()), escapeCsv(tag.getValue())));
     }
 
     private void appendTags(Map<String, String> tags) {
