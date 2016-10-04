@@ -42,10 +42,8 @@ class TestNameGenerator {
                     testClass = clazz;
                     break;
                 }
-            } catch (NoSuchMethodException e) {
-                //next iteration
-            } catch (ClassNotFoundException e) {
-                //next iteration
+            } catch (NoSuchMethodException | ClassNotFoundException e) {
+                continue;
             }
         }
 
