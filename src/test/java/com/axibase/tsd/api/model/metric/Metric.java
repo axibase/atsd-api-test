@@ -27,8 +27,10 @@ public class Metric {
     private String filter;
     private Map<String, String> tags;
     private Map<String, Object> additionalProperties = new HashMap<>();
+
     public Metric() {
     }
+
     public Metric(String name) {
         if (name != null) {
             Registry.Metric.register(name);
@@ -184,7 +186,7 @@ public class Metric {
                 this.interpolate = Interpolate.PREVIOUS;
                 break;
             default:
-                throw new IllegalStateException("Incorrect interpolate type");
+                throw new IllegalStateException(String.format("Incorrect interpolate type: %s", interpolate));
         }
     }
 }
