@@ -1,11 +1,13 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import static com.axibase.tsd.api.AtsdErrorMessage.AGGREGATE_NON_DETAIL_REQUIRE_
 import static com.axibase.tsd.api.AtsdErrorMessage.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
@@ -43,7 +46,6 @@ public class SeriesQueryTest extends SeriesMethod {
             fail("Can not store common dataset");
         }
     }
-
 
     /**
      * #2850
@@ -519,7 +521,6 @@ public class SeriesQueryTest extends SeriesMethod {
         calendar.set(Calendar.HOUR_OF_DAY, (int) (Math.random() * 24));
         calendar.set(Calendar.MINUTE, (int) (Math.random() * 60));
     }
-
 
     private SeriesQuery buildQuery() {
         SeriesQuery seriesQuery = new SeriesQuery();
