@@ -1,13 +1,13 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -23,7 +23,6 @@ import static com.axibase.tsd.api.AtsdErrorMessage.AGGREGATE_NON_DETAIL_REQUIRE_
 import static com.axibase.tsd.api.AtsdErrorMessage.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
@@ -46,6 +45,7 @@ public class SeriesQueryTest extends SeriesMethod {
             fail("Can not store common dataset");
         }
     }
+
 
     /**
      * #2850
@@ -151,10 +151,9 @@ public class SeriesQueryTest extends SeriesMethod {
         String entityName = "e-query-range-14";
         String metricName = "m-query-range-14";
         BigDecimal v = new BigDecimal("7");
-        String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(d, v));
+        series.addData(new Sample(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -172,10 +171,9 @@ public class SeriesQueryTest extends SeriesMethod {
         String entityName = "e-query-range-15";
         String metricName = "m-query-range-15";
         BigDecimal v = new BigDecimal("7");
-        String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(d, v));
+        series.addData(new Sample(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -193,10 +191,9 @@ public class SeriesQueryTest extends SeriesMethod {
         String entityName = "e-query-range-16";
         String metricName = "m-query-range-16";
         BigDecimal v = new BigDecimal("7");
-        String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(d, v));
+        series.addData(new Sample(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -216,10 +213,9 @@ public class SeriesQueryTest extends SeriesMethod {
         String entityName = "e-query-range-17";
         String metricName = "m-query-range-17";
         BigDecimal v = new BigDecimal("7");
-        String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(d, v));
+        series.addData(new Sample(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -239,10 +235,9 @@ public class SeriesQueryTest extends SeriesMethod {
         String entityName = "e-query-range-18";
         String metricName = "m-query-range-18";
         BigDecimal v = new BigDecimal("7");
-        String d = MIN_STORABLE_DATE;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(d, v));
+        series.addData(new Sample(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -515,12 +510,44 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Error message mismatch", String.format(AGGREGATE_NON_DETAIL_REQUIRE_PERIOD, query.getAggregate().getType()), extractErrorMessage(response));
     }
 
+    /*
+    * #3371
+    */
+    @Test
+    public void testEntityWithWildcardExactMatchTrue() throws Exception {
+        String entityNameBase = "series-query-limit-entity-";
+        String metricName = "series-query-limit-metric";
+
+        Series series = new Series(entityNameBase.concat("1"), metricName);
+        series.addData(new Sample(sampleDate, "7"));
+        insertSeriesCheck(Collections.singletonList(series));
+
+        String entity = entityNameBase.concat("2");
+        Registry.Entity.register(entity);
+        series.setEntity(entity);
+        series.addTag("tag_key","tag_value");
+        series.addData(new Sample(addOneMS(sampleDate), "8"));
+        insertSeriesCheck(Collections.singletonList(series));
+
+        SeriesQuery seriesQuery = new SeriesQuery(entityNameBase.concat("*"), series.getMetric(),
+                MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        seriesQuery.setExactMatch(true);
+        seriesQuery.setLimit(2);
+        seriesQuery.setSeriesLimit(1);
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        assertEquals("ExactMatch true with wildcard doesn't return series without tags", 1, data.size());
+
+        seriesQuery.addTags("tag_key","tag_value");
+        data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        assertEquals("ExactMatch true with wildcard doesn't return series with tags", 2, data.size());
+    }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         calendar.set(Calendar.HOUR_OF_DAY, (int) (Math.random() * 24));
         calendar.set(Calendar.MINUTE, (int) (Math.random() * 60));
     }
+
 
     private SeriesQuery buildQuery() {
         SeriesQuery seriesQuery = new SeriesQuery();
