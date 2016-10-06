@@ -24,9 +24,9 @@ import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.fail;
 
 public class SeriesQueryWildcardTest extends SeriesMethod {
-    static String METRIC_FOR_ENTITY = "m-wc-0";
-    static String ENTITY_FOR_TAGS = "e-wc-1";
-    static String METRIC_FOR_TAGS = "m-wc-1";
+    private final static String METRIC_FOR_ENTITY = "m-wc-0";
+    private final static String ENTITY_FOR_TAGS = "e-wc-1";
+    private final static String METRIC_FOR_TAGS = "m-wc-1";
 
     @BeforeClass
     public static void prepare() throws Exception {
