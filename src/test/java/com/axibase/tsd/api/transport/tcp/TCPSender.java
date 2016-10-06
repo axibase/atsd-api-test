@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.transport.tcp;
 
+import com.axibase.tsd.api.model.command.PlainCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,11 +9,13 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import static com.axibase.tsd.api.method.BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME;
+
 /**
  * @author Dmitry Korchagin.
  */
 public class TCPSender {
-
+    private static final String DEFAULT_CHARSET_ENCODING = "UTF-8";
     private static final Logger logger = LoggerFactory.getLogger(TCPSender.class);
 
     private String url;
@@ -34,23 +37,19 @@ public class TCPSender {
     }
 
     public boolean sendDebugMode() throws Exception {
-        Socket socket = new Socket(url, port);
-        DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
-        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
-        String response = responseStream.readLine();
-        if (response == null) return false;
-        return response.equals("ok");
+        return sendDebugMode(0);
     }
 
     public boolean sendDebugMode(long sleepDuration) throws Exception {
         Socket socket = new Socket(url, port);
         DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
-        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedReader responseStream = new BufferedReader(new InputStreamReader(socket.getInputStream(), DEFAULT_CHARSET_ENCODING));
         requestStream.writeBytes(command.insert(0, "debug ").append('\n').toString());
         String response = responseStream.readLine();
-        Thread.sleep(sleepDuration);
-        return response.equals("ok");
+        if (sleepDuration > 0) {
+            Thread.sleep(sleepDuration);
+        }
+        return "ok".equals(response);
     }
 
     public void send() throws Exception {
@@ -71,6 +70,11 @@ public class TCPSender {
 
     public void send(String command) throws Exception {
         send(command, 0);
+    }
+
+
+    public void send(PlainCommand command) throws Exception {
+        send(command.compose(), DEFAULT_EXPECTED_PROCESSING_TIME);
     }
 
     public void sendCheck(String command) throws Exception {
