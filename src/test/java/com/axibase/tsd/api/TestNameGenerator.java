@@ -8,6 +8,7 @@ import java.util.Map;
 class TestNameGenerator {
     private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api.method";
     private Map<String, Integer> dictionary;
+    private Class TEST_ANNOTATION = org.testng.annotations.Test.class;
 
     public TestNameGenerator() {
         this.dictionary = new HashMap<>();
@@ -35,22 +36,48 @@ class TestNameGenerator {
         Class testClass = null;
         for (StackTraceElement stackTraceElement : ste) {
             try {
-                Class<?> clazz = Class.forName(stackTraceElement.getClassName());
+                Class clazz = Class.forName(stackTraceElement.getClassName());
                 Method method = clazz.getDeclaredMethod(stackTraceElement.getMethodName());
-                if (method.getAnnotation(org.testng.annotations.Test.class) != null) {
+                if (isTestMethod(method)) {
                     testMethod = method;
                     testClass = clazz;
                     break;
                 }
-            } catch (NoSuchMethodException | ClassNotFoundException e) {
+            } catch (NoClassDefFoundError | NoSuchMethodException | ClassNotFoundException e) {
                 continue;
             }
         }
 
         if (testMethod == null) {
-            throw new IllegalStateException("Test name generator must be called from Test method!");
+            for (StackTraceElement stackTraceElement : ste) {
+                try {
+                    Class<?> clazz = Class.forName(stackTraceElement.getClassName());
+                    if (isTestClass(clazz)) {
+                        testClass = clazz;
+                        break;
+                    }
+                } catch (NoClassDefFoundError | ClassNotFoundException e) {
+                    continue;
+                }
+            }
+            if (testClass == null) {
+                throw new IllegalStateException("Test name generator must be called from Test method!");
+            }
         }
         return methodToKeyName(testClass, testMethod).concat(key.toString());
+    }
+
+    private boolean isTestClass(Class<?> clazz) {
+        for (Method method : clazz.getMethods()) {
+            if (isTestMethod(method)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isTestMethod(Method method) {
+        return method.getAnnotation(TEST_ANNOTATION) != null;
     }
 
     private String extractBaseName(Class clazz) {
@@ -66,7 +93,9 @@ class TestNameGenerator {
     }
 
     private String methodToKeyName(Class<?> clazz, Method method) {
-        return String.format("%s%s", extractBaseName(clazz), camelToLisp(method.getName()));
+        return (method != null) ?
+                String.format("%s%s", extractBaseName(clazz), camelToLisp(method.getName()))
+                : extractBaseName(clazz);
     }
 
     private String camelToLisp(String camelCaseName) {
