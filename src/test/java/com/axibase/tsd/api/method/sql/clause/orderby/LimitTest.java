@@ -65,7 +65,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    @DataProvider(name = "entityOrderProvider")
+    @DataProvider(name = "entityOrderProvider", parallel = true)
     public Object[][] entityOrderProvider() {
         return new Object[][]{
                 {
@@ -113,7 +113,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    @DataProvider(name = "valueOrderProvider")
+    @DataProvider(name = "valueOrderProvider", parallel = true)
     public Object[][] valueOrderProvider() {
         return new Object[][]{
                 {
@@ -154,7 +154,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    @DataProvider(name = "datetimeOrderProvider")
+    @DataProvider(name = "datetimeOrderProvider", parallel = true)
     public Object[][] datetimeOrderProvider() {
         return new Object[][]{
                 {
@@ -201,7 +201,7 @@ public class LimitTest extends SqlTest {
     }
 
 
-    @DataProvider(name = "tagsOrderProvider")
+    @DataProvider(name = "tagsOrderProvider", parallel = true)
     public Object[][] tagsOrderProvider() {
         return new Object[][]{
                 {
@@ -216,7 +216,7 @@ public class LimitTest extends SqlTest {
     }
 
 
-    @DataProvider(name = "metricOrderProvider")
+    @DataProvider(name = "metricOrderProvider", parallel = true)
     public Object[][] metricOrderProvider() {
         return new Object[][]{
                 {
