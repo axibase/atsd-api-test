@@ -11,10 +11,10 @@ import java.util.Map;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class EqualCharEscapeTest extends PropertyMethod {
-    private final static Map DEFAULT_PROPERTY_TAGS;
+    private final static Map<String, String> DEFAULT_PROPERTY_TAGS;
 
     static {
-        DEFAULT_PROPERTY_TAGS = new HashMap();
+        DEFAULT_PROPERTY_TAGS = new HashMap<>();
         DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
     }
 

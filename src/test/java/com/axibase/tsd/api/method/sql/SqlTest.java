@@ -19,12 +19,12 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
 
-public class SqlTest extends SqlMethod {
+public abstract class SqlTest extends SqlMethod {
     private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is  not ok";
     private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
 
 
-    public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table, String errorMessage) {
+    private static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table, String errorMessage) {
         List<List<String>> actualRows = table.getRows();
         if (actualRows.size() != expectedRows.size()) {
             failNotEquals(errorMessage, expectedRows, actualRows);
@@ -88,6 +88,26 @@ public class SqlTest extends SqlMethod {
 
     private static String format(String message, Object expected, Object actual) {
         return String.format("%s expected:<%s> but was:<%s>", message, expected, actual);
+    }
+
+    public void assertSqlQueryRows(String sqlQuery, List<List<String>> expectedRows, String message) {
+        Response response = executeQuery(sqlQuery);
+        StringTable resultTable = response.readEntity(StringTable.class);
+        assertTableRowsExist(expectedRows,
+                resultTable,
+                String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery));
+    }
+
+    public void assertSqlQueryRows(String sqlQuery, String[][] expectedRows, String message) {
+        assertSqlQueryRows(sqlQuery, Util.twoDArrayToList(expectedRows), message);
+    }
+
+    public void assertSqlQueryRows(String sqlQuery, List<List<String>> expectedRows) {
+        assertSqlQueryRows(sqlQuery, expectedRows, "");
+    }
+
+    public void assertSqlQueryRows(String sqlQuery, String[][] expectedRows) {
+        assertSqlQueryRows(sqlQuery, Util.twoDArrayToList(expectedRows));
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
