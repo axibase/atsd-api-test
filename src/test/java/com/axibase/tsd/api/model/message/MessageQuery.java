@@ -13,6 +13,9 @@ public class MessageQuery {
     private String startDate;
     private String endDate;
     private String severity;
+
+    private String minSeverity;
+    private String[] severities;
     private String source;
     private Map<String, String> tags;
     private Interval interval;
@@ -71,6 +74,22 @@ public class MessageQuery {
 
     public void setSeverity(String severity) {
         this.severity = severity;
+    }
+
+    public void setSeverities(String[] severities) {
+        this.severities = severities;
+    }
+
+    public void setMinSeverity(String minSeverity) {
+        this.minSeverity = minSeverity;
+    }
+
+    public String getMinSeverity() {
+        return minSeverity;
+    }
+
+    public String[] getSeverities() {
+        return severities;
     }
 
     public String getSource() {

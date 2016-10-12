@@ -13,7 +13,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -24,6 +26,26 @@ public class MessageMethod extends BaseMethod {
     static final String METHOD_MESSAGE_STATS_QUERY = "/messages/stats/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    static Map<String, Integer> severities;
+    static Map<String, String> aliases;
+
+    static {
+        severities = new HashMap();
+        severities.put("UNDEFINED", 0);
+        severities.put("UNKNOWN", 1);
+        severities.put("NORMAL", 2);
+        severities.put("WARNING", 3);
+        severities.put("MINOR", 4);
+        severities.put("MAJOR", 5);
+        severities.put("CRITICAL", 6);
+        severities.put("FATAL", 7);
+
+        aliases = new HashMap<>();
+        aliases.put("INFO", "NORMAL");
+        aliases.put("WARN", "WARNING");
+        aliases.put("ERROR", "CRITICAL");
+    }
+
     public static <T> Response queryMessageStats(T... query) throws Exception {
         Response response = httpApiResource.path(METHOD_MESSAGE_STATS_QUERY).request().post(Entity.json(query));
         response.bufferEntity();
@@ -32,7 +54,7 @@ public class MessageMethod extends BaseMethod {
 
     public static <T> List<Series> queryMessageStatsReturnSeries(T... query) throws Exception {
         Response response = queryMessageStats(query);
-        if(response.getStatus() != OK.getStatusCode()) {
+        if (response.getStatus() != OK.getStatusCode()) {
             throw new IllegalStateException("Fail to execute queryMessageStats");
         }
         List<Series> serieses = response.readEntity(new GenericType<List<Series>>() {
@@ -80,7 +102,7 @@ public class MessageMethod extends BaseMethod {
         query.setSource(message.getSource());
 
         Response response = queryMessage(query);
-        if(response.getStatus() != OK.getStatusCode() && response.getStatus() != NOT_FOUND.getStatusCode()) {
+        if (response.getStatus() != OK.getStatusCode() && response.getStatus() != NOT_FOUND.getStatusCode()) {
             throw new IllegalStateException("Fail to execute queryMessage request: " + response.readEntity(String.class));
         }
 
@@ -96,7 +118,7 @@ public class MessageMethod extends BaseMethod {
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalStateException(response.readEntity(String.class));
         }
-        response.close();
+        response.bufferEntity();
 
         final long startCheckTimeMillis = System.currentTimeMillis();
         do {
@@ -111,7 +133,8 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static <T> Response queryMessage(T... messageQuery) {
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(Entity.json(messageQuery));
+        Entity<T[]> json = Entity.json(messageQuery);
+        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(json);
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Query looks succeeded");
@@ -120,7 +143,6 @@ public class MessageMethod extends BaseMethod {
         }
         return response;
     }
-
 
     protected String buildMessageCommandFromMessage(Message message) {
         StringBuilder sb = new StringBuilder("message");
