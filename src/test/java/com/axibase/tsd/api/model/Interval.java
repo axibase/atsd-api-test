@@ -24,4 +24,9 @@ public class Interval {
     public void setUnit(TimeUnit unit) {
         this.unit = unit;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d %s", count, unit.toString());
+    }
 }
