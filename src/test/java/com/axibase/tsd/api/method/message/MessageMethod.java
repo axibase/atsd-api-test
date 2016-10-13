@@ -26,20 +26,9 @@ public class MessageMethod extends BaseMethod {
     static final String METHOD_MESSAGE_STATS_QUERY = "/messages/stats/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    static Map<String, Integer> severities;
     static Map<String, String> aliases;
 
     static {
-        severities = new HashMap();
-        severities.put("UNDEFINED", 0);
-        severities.put("UNKNOWN", 1);
-        severities.put("NORMAL", 2);
-        severities.put("WARNING", 3);
-        severities.put("MINOR", 4);
-        severities.put("MAJOR", 5);
-        severities.put("CRITICAL", 6);
-        severities.put("FATAL", 7);
-
         aliases = new HashMap<>();
         aliases.put("INFO", "NORMAL");
         aliases.put("WARN", "WARNING");

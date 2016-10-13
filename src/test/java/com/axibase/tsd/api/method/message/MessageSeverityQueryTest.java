@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.message;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import org.apache.commons.codec.binary.StringUtils;
+import com.axibase.tsd.api.model.message.Severity;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -18,15 +18,13 @@ public class MessageSeverityQueryTest extends MessageMethod {
     private static Message message;
     private static MessageQuery messageQuery;
 
-    private static Set<String> stringSeverities = severities.keySet();
-
     @BeforeClass
     public void insertMessages() throws Exception {
         message = new Message("message-query-test-severity");
         message.setMessage("message-text");
         message.setDate(MIN_STORABLE_DATE);
-        for (String severity : stringSeverities) {
-            message.setSeverity(severity);
+        for (Severity severity : Severity.values()) {
+            message.setSeverity(severity.name());
             insertMessageCheck(message);
             message.setDate(Util.addOneMS(message.getDate()));
         }
@@ -77,13 +75,13 @@ public class MessageSeverityQueryTest extends MessageMethod {
     */
     @Test
     public void testMinSeverityCaseInsensitive() throws Exception {
-        for (Map.Entry<String, Integer> entry : severities.entrySet()) {
-            messageQuery.setMinSeverity(properCase(entry.getKey()));
+        for (Severity severity : Severity.values()) {
+            messageQuery.setMinSeverity(properCase(severity.name()));
             List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
             });
-            Integer minimumSeverity = entry.getValue();
+            Integer minimumSeverity = severity.getNumVal();
             for (Message m : messages) {
-                int actualSeverity = MessageMethod.severities.get(m.getSeverity());
+                int actualSeverity = Severity.valueOf(m.getSeverity()).getNumVal();
                 Assert.assertTrue(actualSeverity >= minimumSeverity, "Received severity (" + actualSeverity + ") should be greater than minSeverity (" + minimumSeverity + ")");
             }
         }
@@ -94,12 +92,12 @@ public class MessageSeverityQueryTest extends MessageMethod {
     */
     @Test
     public void testSeverityCaseInsensitive() throws Exception {
-        for (String s : severities.keySet()) {
-            messageQuery.setSeverity(properCase(s));
+        for (Severity s : Severity.values()) {
+            messageQuery.setSeverity(properCase(s.name()));
             List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
             });
             String severity = messages.get(0).getSeverity();
-            Assert.assertEquals(s, severity, "Severity is case sensitive");
+            Assert.assertEquals(s.name(), severity, "Severity is case sensitive");
         }
     }
     /*
@@ -108,8 +106,8 @@ public class MessageSeverityQueryTest extends MessageMethod {
     */
     @Test
     public void testResponseSeverityNotNumeric() throws Exception {
-        for (String s : severities.keySet()) {
-            messageQuery.setSeverity(s);
+        for (Severity s : Severity.values()) {
+            messageQuery.setSeverity(s.name());
             List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
             });
             String severity = messages.get(0).getSeverity();
@@ -123,14 +121,15 @@ public class MessageSeverityQueryTest extends MessageMethod {
     */
     @Test
     public void testMinSeverityFilter() throws Exception {
-        for (Map.Entry<String, Integer> entry : MessageMethod.severities.entrySet()) {
-            String key = entry.getKey();
-            Integer minimumSeverity = entry.getValue();
+//        for (Map.Entry<String, Integer> entry : MessageMethod.severities.entrySet()) {
+        for (Severity severity : Severity.values()) {
+            String key = severity.name();
+            Integer minimumSeverity = severity.getNumVal();
             messageQuery.setMinSeverity(key);
             List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
             });
             for (Message m : messages) {
-                int actualSeverity = MessageMethod.severities.get(m.getSeverity());
+                int actualSeverity = Severity.valueOf(m.getSeverity()).getNumVal();
                 Assert.assertTrue(actualSeverity >= minimumSeverity, "Received severity (" + actualSeverity + ") should be greater than minSeverity (" + minimumSeverity + ")");
             }
         }
@@ -141,10 +140,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
     */
     @Test
     public void testActualSeveritiesCorrespondRequired() throws Exception {
-        messageQuery.setSeverities(stringSeverities.toArray(new String[stringSeverities.size()]));
+        String[] allSeverities = Severity.names();
+        messageQuery.setSeverities(allSeverities);
         List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
-        Assert.assertEquals(messages.size(), stringSeverities.size());
+        Assert.assertEquals(messages.size(), allSeverities.length);
     }
 
     private String properCase(String inputVal) {
