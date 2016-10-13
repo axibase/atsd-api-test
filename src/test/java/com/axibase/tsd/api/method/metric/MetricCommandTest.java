@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.metric.MetricCommand;
 import com.axibase.tsd.api.model.metric.Interpolate;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MetricCommandTest extends MetricMethod {
@@ -26,7 +28,7 @@ public class MetricCommandTest extends MetricMethod {
         MetricCommand command = new MetricCommand(metricName, (String) null);
         tcpSender.send(command);
         Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", response.getStatus(), NOT_FOUND.getStatusCode());
+        assertEquals("Metric shouldn't be inserted", OK.getStatusCode(), response.getStatus());
     }
 
     /**
@@ -120,16 +122,76 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Failed to set up filterExpression", interpolate, actualMetric.getInterpolate());
     }
 
+    @DataProvider(name = "incorrectVersioningFiledProvider")
+    public Object[][] provideVersioningFieldData() {
+        return new Object[][]{
+                {"a"},
+                {"тrue"},
+                {"tru"},
+                {"falsed"},
+                {"trueee"},
+                {"incorrect"},
+                {"кириллица"}
+        };
+    }
+
     /**
      * #3137
      */
-    //It's disabled for a while related with (#3402)
-    @Test(enabled = false)
-    public void testIncorrectVersioningValue() throws Exception {
+    @Test(dataProvider = "incorrectInterpolationFieldProvider")
+    public void testIncorrectVersioning(String value) throws Exception {
         String metricName = generateMetricName();
-        String incorrectCommand = String.format("metric m:%s v:\"a\"", metricName);
+        String incorrectCommand = String.format("metric m:%s v:%s",
+                metricName, value);
         tcpSender.send(incorrectCommand);
         Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", response.getStatus(), NOT_FOUND.getStatusCode());
+        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    @DataProvider(name = "incorrectInterpolationFieldProvider")
+    public Object[][] provideInterpolationFieldData() {
+        return new Object[][]{
+                {"PREVIOU"},
+                {"bla"},
+                {"sport"},
+                {"lineаr"}
+        };
+    }
+
+    /**
+     * #3137
+     */
+    @Test(dataProvider = "incorrectInterpolationFieldProvider")
+    public void testIncorrectInterpolation(String value) throws Exception {
+        String metricName = generateMetricName();
+        String incorrectCommand = String.format("metric m:%s i:%s",
+                metricName, value);
+        tcpSender.send(incorrectCommand);
+        Response response = MetricMethod.queryMetric(metricName);
+        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    @DataProvider(name = "incorrectDataTypeFieldProvider")
+    public Object[][] provideDataTypeFieldData() {
+        return new Object[][]{
+                {"int"},
+                {"lon"},
+                {"sss"},
+                {"уу"},
+                {"кириллица"}
+        };
+    }
+
+    /**
+     * #3137
+     */
+    @Test(dataProvider = "incorrectDataTypeFieldProvider")
+    public void testIncorrectDataType(String value) throws Exception {
+        String metricName = generateMetricName();
+        String incorrectCommand = String.format("metric m:%s p:%s",
+                metricName, value);
+        tcpSender.send(incorrectCommand);
+        Response response = MetricMethod.queryMetric(metricName);
+        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 }
