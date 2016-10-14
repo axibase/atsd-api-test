@@ -26,15 +26,6 @@ public class MessageMethod extends BaseMethod {
     static final String METHOD_MESSAGE_STATS_QUERY = "/messages/stats/query";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    static Map<String, String> aliases;
-
-    static {
-        aliases = new HashMap<>();
-        aliases.put("INFO", "NORMAL");
-        aliases.put("WARN", "WARNING");
-        aliases.put("ERROR", "CRITICAL");
-    }
-
     public static <T> Response queryMessageStats(T... query) throws Exception {
         Response response = httpApiResource.path(METHOD_MESSAGE_STATS_QUERY).request().post(Entity.json(query));
         response.bufferEntity();

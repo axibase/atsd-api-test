@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.message.Severity;
+import com.axibase.tsd.api.model.message.SeverityAlias;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -60,12 +61,12 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test
     public void testAliasProcessedCorrectly() throws Exception {
 
-        for (Map.Entry<String, String> entry : aliases.entrySet()) {
-            messageQuery.setSeverity(properCase(entry.getKey()));
+        for (SeverityAlias alias : SeverityAlias.values()) {
+            messageQuery.setSeverity(alias.name());
             List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
             });
             String severity = messages.get(0).getSeverity();
-            Assert.assertEquals(entry.getValue(), severity, "Alias processed wrong");
+            Assert.assertEquals(alias.getSeverity().name(), severity, "Alias processed wrong");
 
         }
     }
@@ -121,7 +122,6 @@ public class MessageSeverityQueryTest extends MessageMethod {
     */
     @Test
     public void testMinSeverityFilter() throws Exception {
-//        for (Map.Entry<String, Integer> entry : MessageMethod.severities.entrySet()) {
         for (Severity severity : Severity.values()) {
             String key = severity.name();
             Integer minimumSeverity = severity.getNumVal();
