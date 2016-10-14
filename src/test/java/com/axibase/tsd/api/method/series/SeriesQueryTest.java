@@ -1,7 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
@@ -508,38 +506,6 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Aggregate query without period should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals("Error message mismatch", String.format(AGGREGATE_NON_DETAIL_REQUIRE_PERIOD, query.getAggregate().getType()), extractErrorMessage(response));
-    }
-
-    /*
-    * #3371
-    */
-    @Test
-    public void testEntityWithWildcardExactMatchTrue() throws Exception {
-        String entityNameBase = "series-query-limit-entity-";
-        String metricName = "series-query-limit-metric";
-
-        Series series = new Series(entityNameBase.concat("1"), metricName);
-        series.addData(new Sample(sampleDate, "7"));
-        insertSeriesCheck(Collections.singletonList(series));
-
-        String entity = entityNameBase.concat("2");
-        Registry.Entity.register(entity);
-        series.setEntity(entity);
-        series.addTag("tag_key","tag_value");
-        series.addData(new Sample(addOneMS(sampleDate), "8"));
-        insertSeriesCheck(Collections.singletonList(series));
-
-        SeriesQuery seriesQuery = new SeriesQuery(entityNameBase.concat("*"), series.getMetric(),
-                MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        seriesQuery.setExactMatch(true);
-        seriesQuery.setLimit(2);
-        seriesQuery.setSeriesLimit(1);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
-        assertEquals("ExactMatch true with wildcard doesn't return series without tags", 1, data.size());
-
-        seriesQuery.addTags("tag_key","tag_value");
-        data = executeQueryReturnSeries(seriesQuery).get(0).getData();
-        assertEquals("ExactMatch true with wildcard doesn't return series with tags", 2, data.size());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

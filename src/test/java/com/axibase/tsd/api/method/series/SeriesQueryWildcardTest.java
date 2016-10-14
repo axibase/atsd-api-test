@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -7,7 +8,6 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -18,10 +18,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.axibase.tsd.api.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryWildcardTest extends SeriesMethod {
     private final static String METRIC_FOR_ENTITY = "m-wc-0";
@@ -33,6 +32,40 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         insertSeriesWithSimilarEntity();
         insertSeriesWithSimilarTags();
     }
+
+
+    /*
+    * #3371
+    */
+    @Test
+    public void testEntityWithWildcardExactMatchTrue() throws Exception {
+        String entityNameBase = "series-query-limit-entity-";
+        String metricName = "series-query-limit-metric";
+
+        Series series = new Series(entityNameBase.concat("1"), metricName);
+        series.addData(new Sample(MIN_STORABLE_DATE, "7"));
+        insertSeriesCheck(Collections.singletonList(series));
+
+        String entity = entityNameBase.concat("2");
+        Registry.Entity.register(entity);
+        series.setEntity(entity);
+        series.addTag("tag_key","tag_value");
+        series.addData(new Sample(addOneMS(MIN_STORABLE_DATE), "8"));
+        insertSeriesCheck(Collections.singletonList(series));
+
+        SeriesQuery seriesQuery = new SeriesQuery(entityNameBase.concat("*"), series.getMetric(),
+                MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        seriesQuery.setExactMatch(true);
+        seriesQuery.setLimit(2);
+        seriesQuery.setSeriesLimit(1);
+        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        assertEquals("ExactMatch true with wildcard doesn't return series without tags", 1, data.size());
+
+        seriesQuery.addTags("tag_key","tag_value");
+        data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        assertEquals("ExactMatch true with wildcard doesn't return series with tags", 2, data.size());
+    }
+
 
     /* #2207 */
     @Test(dataProvider = "entities")
