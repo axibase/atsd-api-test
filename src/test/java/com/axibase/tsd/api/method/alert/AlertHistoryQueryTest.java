@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.listeners.RetryAnalyzer;
 import org.json.JSONArray;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -27,7 +28,7 @@ public class AlertHistoryQueryTest extends AlertTest {
     /**
      * #2991
      */
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void testEntityWildcardStarChar() throws Exception {
         Map<String, String> query = new HashMap<>();
         query.put("entity", "alert-historyquery-entity*");
@@ -43,7 +44,7 @@ public class AlertHistoryQueryTest extends AlertTest {
     /**
      * #2979
      */
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void testEntitiesWildcardStarChar() throws Exception {
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Collections.singletonList("alert-historyquery-entity*"));
@@ -58,7 +59,7 @@ public class AlertHistoryQueryTest extends AlertTest {
     /**
      * #2979
      */
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void testEntitiesWildcardQuestionChar() throws Exception {
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Collections.singletonList("alert-historyquery-entity-?"));
@@ -74,7 +75,7 @@ public class AlertHistoryQueryTest extends AlertTest {
     /**
      * #2981
      */
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void testEntityExpressionFilterExist() throws Exception {
         Map<String, Object> query = new HashMap<>();
         query.put("entityExpression", "name LIKE '*rt-historyquery-entity-1'");
@@ -89,7 +90,7 @@ public class AlertHistoryQueryTest extends AlertTest {
     /**
      * #2993
      */
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
         Map<String, Object> qExist = new HashMap<>();
         qExist.put("entity", "alert-historyquery-entity-1");
