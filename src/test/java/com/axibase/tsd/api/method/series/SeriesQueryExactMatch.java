@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SeriesQueryExactMatch extends SeriesMethod {
-    final String exactMatchEntityName = "series-query-exactmatch-entity-1";
-    final String exactMatchMetricName = "series-query-exactmatch-metric-1";
-    final Series seriesA = new Series(exactMatchEntityName, exactMatchMetricName);
-    final Series seriesB = new Series();
-    final Series seriesC = new Series();
-    final Series seriesD = new Series();
+    private static final String exactMatchEntityName = "series-query-exactmatch-entity-1";
+    private static final String exactMatchMetricName = "series-query-exactmatch-metric-1";
+    private static final Series seriesA = new Series(exactMatchEntityName, exactMatchMetricName);
+    private static final Series seriesB = new Series();
+    private static final Series seriesC = new Series();
+    private static final Series seriesD = new Series();
 
 
     @BeforeClass

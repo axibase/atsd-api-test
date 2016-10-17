@@ -12,13 +12,36 @@ import com.axibase.tsd.api.model.property.PropertyQuery;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class PropertyQueryTest extends PropertyMethod {
+    /**
+     * #NoTicket
+     */
+    @Test
+    public static void testEntityTags() throws Exception {
+        final Entity entity = new Entity("query-entity20");
+        entity.addTag("t1", "tv1");
+        entity.addTag("t2", "tv2");
+
+        final Property property = new Property();
+        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
+        property.setEntity(entity.getName());
+        property.setTags(entity.getTags());
+
+        EntityMethod.createOrReplaceEntityCheck(entity);
+
+        assertTrue("Properties with entityTag should be specified", propertyExist(property));
+    }
+
     /**
      * #NoTicket
      */
@@ -36,7 +59,6 @@ public class PropertyQueryTest extends PropertyMethod {
 
         assertInsertedPropertyReturned(property, query);
     }
-
 
     /**
      * #NoTicket
@@ -62,7 +84,6 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Stored series do not match to inserted", compareJsonString(expected, given));
     }
 
-
     /**
      * #NoTicket
      */
@@ -86,7 +107,6 @@ public class PropertyQueryTest extends PropertyMethod {
 
         assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
-
 
     /**
      * #NoTicket
@@ -113,7 +133,6 @@ public class PropertyQueryTest extends PropertyMethod {
 
         assertTrue("Stored series do not match to inserted", compareJsonString(expected, given));
     }
-
 
     /**
      * #NoTicket
@@ -142,7 +161,6 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Stored property do not match to inserted", compareJsonString(expected, given));
     }
 
-
     /**
      * #NoTicket
      */
@@ -162,7 +180,6 @@ public class PropertyQueryTest extends PropertyMethod {
         Response response = queryProperty(query);
         assertTrue("Stored series do not match to inserted", compareJsonString(emptyJsonList, response.readEntity(String.class)));
     }
-
 
     /**
      * #NoTicket
@@ -202,7 +219,6 @@ public class PropertyQueryTest extends PropertyMethod {
         Response response = queryProperty(query);
         assertTrue("Should not receive any properties", compareJsonString(emptyJsonList, response.readEntity(String.class)));
     }
-
 
     /**
      * #NoTicket
@@ -400,7 +416,6 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-
     /**
      * #NoTicket
      */
@@ -419,7 +434,6 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-
     /**
      * #NoTicket
      */
@@ -433,11 +447,10 @@ public class PropertyQueryTest extends PropertyMethod {
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
         query.setStartDate(Util.ISOFormat(Util.getPreviousDay()));
-        query.setEndDate( Util.ISOFormat(Util.getNextDay()));
+        query.setEndDate(Util.ISOFormat(Util.getNextDay()));
 
         assertInsertedPropertyReturned(property, query);
     }
-
 
     /**
      * #NoTicket
@@ -505,7 +518,6 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
-
     /**
      * #NoTicket
      */
@@ -531,7 +543,6 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
-
     /**
      * #NoTicket
      */
@@ -545,25 +556,6 @@ public class PropertyQueryTest extends PropertyMethod {
         Response response = queryProperty(query);
         assertEquals("Query EntityFilter is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals("Error message mismatch", AtsdErrorMessage.ENTITY_FILTER_REQUIRED, extractErrorMessage(response));
-    }
-
-    /**
-     * #NoTicket
-     */
-    @Test
-    public static void testEntityTags() throws Exception {
-        final Entity entity = new Entity("query-entity20");
-        entity.addTag("t1", "tv1");
-        entity.addTag("t2", "tv2");
-
-        final Property property = new Property();
-        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
-        property.setEntity(entity.getName());
-        property.setTags(entity.getTags());
-
-        EntityMethod.createOrReplaceEntityCheck(entity);
-
-        assertTrue("Properties with entityTag should be specified", propertyExist(property));
     }
 
     /**
@@ -688,11 +680,6 @@ public class PropertyQueryTest extends PropertyMethod {
         entity.addTag("t1", "tv1");
         entity.addTag("t2", "tv2");
 
-        final Property property = new Property();
-        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
-        property.setEntity(entity.getName());
-        property.setTags(entity.getTags());
-
         EntityMethod.createOrReplaceEntityCheck(entity);
 
         PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
@@ -713,7 +700,7 @@ public class PropertyQueryTest extends PropertyMethod {
         entity.addTag("wct1", "wcv1");
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE,  "wck-*");
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, "wck-*");
         query.setKey(entity.getTags());
 
         String given = queryProperty(query).readEntity(String.class);
@@ -765,12 +752,7 @@ public class PropertyQueryTest extends PropertyMethod {
         entity.addTag("t1", "tv1");
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        final Property property = new Property();
-        property.setType(ENTITY_TAGS_PROPERTY_TYPE);
-        property.setEntity(entity.getName());
-        property.setTags(entity.getTags());
-
-        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE,  entity.getName());
+        PropertyQuery query = prepareSimplePropertyQuery(ENTITY_TAGS_PROPERTY_TYPE, entity.getName());
         query.setKeyTagExpression("tags.t1 == 'tV1'");
 
         String given = queryProperty(query).readEntity(String.class);
@@ -1533,7 +1515,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Property does not match to expected", compareJsonString(expected, given));
     }
 
-    private void assertInsertedPropertyReturned(Property property, PropertyQuery query) throws Exception{
+    private void assertInsertedPropertyReturned(Property property, PropertyQuery query) throws Exception {
         final String given = queryProperty(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         assertTrue("Inserted property should be received", compareJsonString(expected, given));

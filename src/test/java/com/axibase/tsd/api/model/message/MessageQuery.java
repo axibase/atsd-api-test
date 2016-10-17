@@ -3,6 +3,7 @@ package com.axibase.tsd.api.model.message;
 import com.axibase.tsd.api.model.Interval;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,7 +16,7 @@ public class MessageQuery {
     private String severity;
 
     private String minSeverity;
-    private String[] severities;
+    private List<String> severities;
     private String source;
     private Map<String, String> tags;
     private Interval interval;
@@ -76,20 +77,20 @@ public class MessageQuery {
         this.severity = severity;
     }
 
-    public void setSeverities(String[] severities) {
-        this.severities = severities;
+    public String getMinSeverity() {
+        return minSeverity;
     }
 
     public void setMinSeverity(String minSeverity) {
         this.minSeverity = minSeverity;
     }
 
-    public String getMinSeverity() {
-        return minSeverity;
+    public List<String> getSeverities() {
+        return severities;
     }
 
-    public String[] getSeverities() {
-        return severities;
+    public void setSeverities(List<String> severities) {
+        this.severities = severities;
     }
 
     public String getSource() {

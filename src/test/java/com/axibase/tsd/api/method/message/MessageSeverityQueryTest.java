@@ -13,14 +13,15 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.axibase.tsd.api.model.message.Severity.*;
 
 
 public class MessageSeverityQueryTest extends MessageMethod {
-    private static Message message;
-    private static MessageQuery messageQuery;
+    private Message message;
+    private MessageQuery messageQuery;
 
     @BeforeClass
     public void insertMessages() throws Exception {
@@ -135,7 +136,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test
     public void testActualSeveritiesCorrespondRequired() throws Exception {
         String[] allSeverities = names();
-        messageQuery.setSeverities(allSeverities);
+        messageQuery.setSeverities(Arrays.asList(allSeverities));
         List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Assert.assertEquals(messages.size(), allSeverities.length);

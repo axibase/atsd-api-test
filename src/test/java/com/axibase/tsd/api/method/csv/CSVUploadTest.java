@@ -27,15 +27,15 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class CSVUploadTest extends CSVUploadMethod {
-    public static final String SIMPLE_PARSER = "simple-parser";
-    public static final String SIMPLE_PARSER_ISO = "simple-parser-iso";
-    public static final String SIMPLE_PARSER_MS = "simple-parser-ms";
-    public static final String LF_PARSER = "lf-parser";
-    public static final String CRLF_PARSER = "crlf-parser";
+    private static final String SIMPLE_PARSER = "simple-parser";
+    private static final String SIMPLE_PARSER_ISO = "simple-parser-iso";
+    private static final String SIMPLE_PARSER_MS = "simple-parser-ms";
+    private static final String LF_PARSER = "lf-parser";
+    private static final String CRLF_PARSER = "crlf-parser";
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    public static Integer offsetMinutes = 0;
+    private static Integer offsetMinutes = 0;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {

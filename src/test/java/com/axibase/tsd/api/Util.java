@@ -1,7 +1,7 @@
 package com.axibase.tsd.api;
 
-import com.axibase.tsd.api.method.version.Version;
 import com.axibase.tsd.api.method.version.VersionMethod;
+import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;

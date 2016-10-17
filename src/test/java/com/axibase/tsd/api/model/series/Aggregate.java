@@ -31,7 +31,9 @@ public class Aggregate {
         this.order = order;
     }
 
-
+    public Integer getOrder() {
+        return order;
+    }
 
     public AggregationType getType() {
         return type;
@@ -50,7 +52,7 @@ public class Aggregate {
     }
 
     public void addType(AggregationType type) {
-        if(types == null) {
+        if (types == null) {
             types = new ArrayList<>();
         }
         types.add(type);

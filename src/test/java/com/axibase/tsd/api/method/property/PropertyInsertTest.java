@@ -364,7 +364,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setKey(new HashMap<String, String>());
 
         assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
@@ -383,7 +383,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setTags(null);
         storedProperty.addTag("t1", "tv1");
 
@@ -419,7 +419,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setKey(null);
 
         assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
@@ -438,7 +438,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setTags(null);
         storedProperty.addTag("t1", "tv1");
 
@@ -458,7 +458,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setKey(null);
         storedProperty.addKey("k1", "spaced");
 
@@ -478,7 +478,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setKey(null);
 
         assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
@@ -496,7 +496,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setTags(null);
         storedProperty.addTag("t1", "tv1");
 
@@ -516,7 +516,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        Property storedProperty = property.clone();
+        Property storedProperty = new Property(property);
         storedProperty.setTags(null);
         storedProperty.addTag("t2", "tv2");
 

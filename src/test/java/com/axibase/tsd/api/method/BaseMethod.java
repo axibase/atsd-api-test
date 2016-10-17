@@ -38,17 +38,14 @@ public abstract class BaseMethod {
     public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
     public static final String ALERT_OPEN_VALUE = "1";
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
+    protected final static TCPSender tcpSender;
+    protected final static ObjectMapper jacksonMapper;
+    protected final static WebTarget httpApiResource;
+    protected final static WebTarget httpRootResource;
+    static final Config config;
     private static final Integer TIMEOUT_INFINITY = 0;
-
-
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
-
     private static final String METHOD_VERSION = "/version";
-    protected static TCPSender tcpSender;
-    protected static ObjectMapper jacksonMapper;
-    protected static WebTarget httpApiResource;
-    protected static WebTarget httpRootResource;
-    protected static Config config;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -56,11 +53,6 @@ public abstract class BaseMethod {
         SLF4JBridgeHandler.install();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
         julLogger.setLevel(Level.FINEST);
-
-        prepare();
-    }
-
-    private static void prepare() {
         try {
             config = Config.getInstance();
             ClientConfig clientConfig = new ClientConfig();
@@ -86,8 +78,8 @@ public abstract class BaseMethod {
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
             throw new RuntimeException(fne);
         }
-
     }
+
 
     public static boolean compareJsonString(String expected, String given) throws Exception {
 

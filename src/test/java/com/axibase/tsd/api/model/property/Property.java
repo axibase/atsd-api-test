@@ -29,22 +29,12 @@ public class Property {
         this.entity = entity;
     }
 
-    public Property clone() {
-        Property cloned = new Property();
-        cloned.setType(type);
-        cloned.setEntity(entity);
-        if(key == null) {
-            cloned.setKey(null);
-        } else {
-            cloned.setKey(new HashMap<>(key));
-        }
-        if(tags == null) {
-            cloned.setTags(null);
-        } else {
-            cloned.setTags(new HashMap<>(tags));
-        }
-        cloned.setDate(date);
-        return cloned;
+    public Property(Property oldProperty) {
+        setType(oldProperty.getType());
+        setEntity(oldProperty.getEntity());
+        setDate(oldProperty.getDate());
+        setTags(oldProperty.getTags());
+        setDate(date);
     }
 
     public void addTag(String tagName, String tagValue) {
@@ -103,6 +93,10 @@ public class Property {
         return date;
     }
 
+    public void setDate(Date date) {
+        this.date = Util.ISOFormat(date);
+    }
+
     @JsonProperty
     public void setDate(String date) {
         this.date = date;
@@ -110,9 +104,5 @@ public class Property {
 
     public void setDate(Long millis) {
         this.date = Util.ISOFormat(new Date(millis));
-    }
-
-    public void setDate(Date date) {
-        this.date = Util.ISOFormat(date);
     }
 }
