@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,9 +15,7 @@ import java.util.Map;
 
 import static com.axibase.tsd.api.AtsdErrorMessage.TAG_VALUE_ARRAY_PREFIX;
 import static com.axibase.tsd.api.AtsdErrorMessage.UNKNOWN_ENTITY_FIELD_PREFIX;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
+import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -67,7 +64,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
         createOrReplaceEntity(entity);
 
-        Entity savedEntity = getEntity(entity.getName()).readEntity(Entity.class);
+        Entity savedEntity = getEntityResponse(entity.getName()).readEntity(Entity.class);
 
         Map<String, String> formattedTags = new HashMap<>();
         for(Map.Entry<String, String> e: entity.getTags().entrySet()) {
@@ -87,7 +84,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
         createOrReplaceEntity(entity);
 
-        Entity savedEntity = getEntity(entity.getName()).readEntity(Entity.class);
+        Entity savedEntity = getEntityResponse(entity.getName()).readEntity(Entity.class);
 
         assertEquals("Tags Value should retain case", entity.getTags(), savedEntity.getTags());
     }
@@ -101,7 +98,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
         createOrReplaceEntity(entity);
 
-        Entity savedEntity = getEntity(entity.getName()).readEntity(Entity.class);
+        Entity savedEntity = getEntityResponse(entity.getName()).readEntity(Entity.class);
 
         assertEquals("Entity name should be converted to lower case", entity.getName().toLowerCase(), savedEntity.getName());
     }
@@ -173,7 +170,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         entity.addTag("a", "b");
         createOrReplaceEntityCheck(entity);
 
-        Entity storedEntity = getEntity(entity.getName()).readEntity(Entity.class);
+        Entity storedEntity = getEntityResponse(entity.getName()).readEntity(Entity.class);
 
         assertEquals("Stored tags are incorrect", entity.getTags(), storedEntity.getTags());
     }
@@ -188,7 +185,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         entity.addTag("b", "c");
         assertEquals("Fail to execute createOrReplaceEntity", OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
 
-        Entity storedEntity = getEntity(entity.getName()).readEntity(Entity.class);
+        Entity storedEntity = getEntityResponse(entity.getName()).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
         expectedTags.put("b", "c");
 
@@ -208,7 +205,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entityName, createOrReplaceEntityQuery).getStatus());
 
-        Entity storedEntity = getEntity(entityName).readEntity(Entity.class);
+        Entity storedEntity = getEntityResponse(entityName).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
         expectedTags.put("a", "true");
 
@@ -228,7 +225,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entityName, createOrReplaceEntityQuery).getStatus());
 
-        Entity storedEntity = getEntity(entityName).readEntity(Entity.class);
+        Entity storedEntity = getEntityResponse(entityName).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
         expectedTags.put("a", "123");
 
@@ -249,7 +246,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entityName, createOrReplaceEntityQuery).getStatus());
 
-        Entity storedEntity = getEntity(entityName).readEntity(Entity.class);
+        Entity storedEntity = getEntityResponse(entityName).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
         expectedTags.put("a", "123");
         expectedTags.put("b", "true");
@@ -273,7 +270,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         final Response response = createOrReplaceEntity(entityName, createOrReplaceEntityQuery);
         assertEquals("Request should be failed", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue("Error message mismatch", extractErrorMessage(response).startsWith(TAG_VALUE_ARRAY_PREFIX));
-        assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntity(entityName).getStatus());
+        assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntityResponse(entityName).getStatus());
 
     }
 
@@ -295,7 +292,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         final Response response = createOrReplaceEntity(entityName, createOrReplaceEntityQuery);
         assertEquals("Request should be failed", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue("Error message mismatch", extractErrorMessage(response).startsWith(TAG_VALUE_ARRAY_PREFIX));
-        assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntity(entityName).getStatus());
+        assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntityResponse(entityName).getStatus());
     }
 
 

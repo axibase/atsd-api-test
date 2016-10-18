@@ -2,6 +2,9 @@ package com.axibase.tsd.api;
 
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.version.Version;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,12 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Util {
-
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
     private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
-
+    private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     public static Date getCurrentDate() {
         return new Date();
@@ -72,6 +74,14 @@ public class Util {
             throw new RuntimeException(e);
         }
         return d;
+    }
+
+    public static String prettyPrint(Object o) {
+        try {
+            return objectWriter.writeValueAsString(o);
+        } catch (JsonProcessingException e) {
+            return o.toString();
+        }
     }
 
     public static String addOneMS(String date) {

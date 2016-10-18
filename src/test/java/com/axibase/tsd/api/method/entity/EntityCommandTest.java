@@ -1,9 +1,14 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.model.command.entity.EntityCommand;
+import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
+import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -32,7 +37,7 @@ public class EntityCommandTest extends EntityMethod {
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
 
         assertEquals("Entity tag isn't add for existing entity",
-                storedEntityWithTags.getTags(), getEntity(entityWithTags).readEntity(Entity.class).getTags()
+                storedEntityWithTags.getTags(), getEntityResponse(entityWithTags).readEntity(Entity.class).getTags()
         );
     }
 
@@ -54,7 +59,7 @@ public class EntityCommandTest extends EntityMethod {
         storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1_UPD);
 
         assertEquals("Entity tag isn't update for existing entity.",
-                storedEntityUpdateTags.getTags(), getEntity(entityForTestUpdateTags).readEntity(Entity.class).getTags()
+                storedEntityUpdateTags.getTags(), getEntityResponse(entityForTestUpdateTags).readEntity(Entity.class).getTags()
         );
     }
 
@@ -74,7 +79,7 @@ public class EntityCommandTest extends EntityMethod {
         Registry.Entity.register(entityNameForTestMailformed);
 
         assertEquals("Entity not found with mailformed ",
-                NOT_FOUND.getStatusCode(), getEntity(entityNameForTestMailformed).getStatus()
+                NOT_FOUND.getStatusCode(), getEntityResponse(entityNameForTestMailformed).getStatus()
         );
     }
 
@@ -94,8 +99,27 @@ public class EntityCommandTest extends EntityMethod {
         storedEntityForTags.addTag(E_TAG_1, E_VAL_1);
 
         assertEquals("New entity with tag isn't create with entity tag", storedEntityForTags.getTags(),
-                getEntity(entityNameForTestAddTags).readEntity(Entity.class).getTags()
+                getEntityResponse(entityNameForTestAddTags).readEntity(Entity.class).getTags()
         );
     }
 
+    /**
+     * Model test
+     */
+    @Test
+    public void testModels() throws Exception {
+        final Entity sourceEntity = new Entity(generateEntityName());
+        sourceEntity.setInterpolationMode(InterpolationMode.PREVIOUS);
+        sourceEntity.setLabel("label");
+        sourceEntity.setTimeZoneID("GMT0");
+        sourceEntity.setTags(Collections.singletonMap("a", "b"));
+        sourceEntity.setEnabled(true);
+
+        EntityCommand command = new EntityCommand(sourceEntity);
+        tcpSender.send(command);
+
+        Entity actualEntity = getEntity(sourceEntity.getName());
+
+        assertEquals(sourceEntity, actualEntity);
+    }
 }

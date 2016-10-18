@@ -1,16 +1,14 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.method.BaseMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.axibase.tsd.api.model.entity.Entity;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
@@ -26,7 +24,7 @@ public class EntityMethod extends BaseMethod {
 
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(Entity.json(query));
+        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(json(query));
         response.bufferEntity();
         return response;
     }
@@ -35,19 +33,34 @@ public class EntityMethod extends BaseMethod {
         return createOrReplaceEntity(entity.getName(), entity);
     }
 
-    public static Response getEntity(String entityName) {
+    public static Response getEntityResponse(String entityName) {
         Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;
     }
 
+    public static Entity getEntity(String entityName) {
+        Response response = getEntityResponse(entityName);
+        if (response.getStatus() != OK.getStatusCode()) {
+            String error;
+            try {
+                error = extractErrorMessage(response);
+            } catch (Exception e) {
+                error = response.readEntity(String.class);
+            }
+            throw new IllegalStateException(String.format("Failed to get entity! Reason: %s", error));
+        }
+        return response.readEntity(Entity.class);
+    }
+
+
     public static <T> Response updateEntity(String entityName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().method("PATCH", Entity.json(query));
+        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().method("PATCH", json(query));
         response.bufferEntity();
         return response;
     }
 
-    public static Response updateEntity(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
+    public static Response updateEntity(Entity entity) throws Exception {
         return updateEntity(entity.getName(), entity);
     }
 
@@ -100,7 +113,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity, boolean strict) throws Exception {
-        Response response = getEntity(entity.getName());
+        Response response = getEntityResponse(entity.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }

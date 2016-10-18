@@ -22,7 +22,7 @@ public class EntityGetTest extends EntityMethod {
         final String name = "getentity 1";
         Registry.Entity.register(name);
 
-        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), getEntity(name).getStatus());
+        assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), getEntityResponse(name).getStatus());
     }
 
     /* #1278 */
@@ -42,8 +42,8 @@ public class EntityGetTest extends EntityMethod {
     }
 
     private void assertUrlencodedPathHandledSuccessfullyOnGet(final Entity entity) throws Exception {
-        Response response = getEntity(entity.getName());
-        assertEquals("Fail to execute getEntity", OK.getStatusCode(), response.getStatus());
+        Response response = getEntityResponse(entity.getName());
+        assertEquals("Fail to execute getEntityResponse", OK.getStatusCode(), response.getStatus());
 
         String expected = jacksonMapper.writeValueAsString(entity);
         assertTrue("Entity in response does not match to inserted entity", compareJsonString(expected, response.readEntity(String.class)));
