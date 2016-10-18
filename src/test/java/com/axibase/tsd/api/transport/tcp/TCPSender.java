@@ -9,6 +9,8 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import static com.axibase.tsd.api.method.BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME;
+
 /**
  * @author Dmitry Korchagin.
  */
@@ -72,7 +74,7 @@ public class TCPSender {
 
 
     public void send(PlainCommand command) throws Exception {
-        send(command.compose(), 10);
+        send(command.compose(), DEFAULT_EXPECTED_PROCESSING_TIME);
     }
 
     public void sendCheck(String command) throws Exception {
