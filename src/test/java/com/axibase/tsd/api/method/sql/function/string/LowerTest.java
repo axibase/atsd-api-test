@@ -36,6 +36,11 @@ public class LowerTest extends SqlTest {
             "entity.tags.'a'",
             "entity.tags.\"a\"",
             "entity.groups",
+            "entity.label",
+            "metric.label",
+            "metric.timezone",
+            "metric.interpolate",
+            "text",
             "\"ABC\"",
             "'a'"
     );
