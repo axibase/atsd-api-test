@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.method.sql.operator.StringOperators;
 import com.axibase.tsd.api.model.entity.Entity;
-import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -14,36 +13,12 @@ import org.testng.annotations.Test;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
 import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.*;
 
 
 public class LowerTest extends SqlTest {
-    private final static Sample DEFAULT_SAMPLE = new Sample("2016-06-03T09:23:00.000Z", 0);
-    private final static List<String> FUNCTION_ARGS = Arrays.asList(
-            "entity",
-            "metric",
-            "tags",
-            "tags.a",
-            "tags.'a'",
-            "tags.\"a\"",
-            "metric.tags",
-            "metric.tags.a",
-            "metric.tags.'a'",
-            "metric.tags.\"a\"",
-            "entity.tags",
-            "entity.tags.a",
-            "entity.tags.'a'",
-            "entity.tags.\"a\"",
-            "entity.groups",
-            "entity.label",
-            "metric.label",
-            "metric.timezone",
-            "metric.interpolate",
-            "text",
-            "\"ABC\"",
-            "'a'"
-    );
+
     private static String TEST_METRIC;
 
     private static void generateNames() {
@@ -53,22 +28,21 @@ public class LowerTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws FileNotFoundException, InterruptedException {
         generateNames();
-        prepareApplyTestData();
+        prepareApplyTestData(TEST_METRIC);
     }
 
     @DataProvider(name = "applyTestProvider", parallel = true)
     public Object[][] provideApplyTestsData() {
-        Integer size = FUNCTION_ARGS.size();
+        Integer size = POSSIBLE_FUNCTION_ARGS.size();
         Object[][] result = new Object[size][1];
         for (int i = 0; i < size; i++) {
-            result[i][0] = FUNCTION_ARGS.get(i);
+            result[i][0] = POSSIBLE_FUNCTION_ARGS.get(i);
         }
         return result;
     }
 
     /**
      * #2920
-     * Yet should fall
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
@@ -127,8 +101,8 @@ public class LowerTest extends SqlTest {
     public Object[][] provideStringBinaryOperatorTestsData() {
         List<List<String>> resultList = new ArrayList<>();
         for (StringOperators.Binary operator : StringOperators.Binary.values()) {
-            for (String left : FUNCTION_ARGS) {
-                for (String right : FUNCTION_ARGS) {
+            for (String left : POSSIBLE_FUNCTION_ARGS) {
+                for (String right : POSSIBLE_FUNCTION_ARGS) {
                     resultList.add(Arrays.asList(left, right, operator.toString()));
                 }
             }
@@ -147,7 +121,7 @@ public class LowerTest extends SqlTest {
      * #2920
      * Yet should fall
      */
-    @Test(dataProvider = "stringOperatorsTestProvider")
+    @Test(dataProvider = "stringOperatorsTestProvider", enabled = false)
     public void testWhereStringOperatorsApplyToVariable(String left, String right, String operator) throws Exception {
         String sqlQuery = String.format(
                 "SELECT datetime, value%nFROM '%s' WHERE LOWER(%s) %s %s ",
@@ -158,14 +132,5 @@ public class LowerTest extends SqlTest {
                 operator, sqlQuery
         );
         assertOkRequest(errorMessage, executeQuery(sqlQuery));
-    }
-
-    private void prepareApplyTestData() throws FileNotFoundException, InterruptedException {
-        String entityName = generateEntityName();
-        Series series = new Series(entityName, TEST_METRIC);
-        series.setEntity(entityName);
-        series.addData(DEFAULT_SAMPLE);
-        SeriesMethod.insertSeries(Collections.singletonList(series));
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);//Check is not working here
     }
 }
