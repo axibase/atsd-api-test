@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -86,5 +87,14 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         expectedTags.put(TAG_NAME.toLowerCase(), TAG_VALUE);
 
         assertEquals("Wrong metric tags", expectedTags, createdMetric.getTags());
+    }
+
+    @Test
+    public void testTimeZone() throws Exception {
+        Metric metric = new Metric(generateMetricName());
+        metric.setTimeZoneID("GMT0");
+        createOrReplaceMetricCheck(metric);
+        Metric actualMetric = queryMetric(metric.getName()).readEntity(Metric.class);
+        assertEquals(String.format("Failed to create metric with the %s timezone", metric.getTimeZoneID()), actualMetric.getTimeZoneID(), metric.getTimeZoneID());
     }
 }

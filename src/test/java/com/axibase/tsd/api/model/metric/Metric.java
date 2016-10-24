@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class Metric {
     private String label;
     private String description;
     private Interpolate interpolate;
+    private String timeZoneID;
     private String filter;
     private Map<String, String> tags;
     private Map<String, Object> additionalProperties = new HashMap<>();
@@ -188,5 +190,15 @@ public class Metric {
             default:
                 throw new IllegalStateException(String.format("Incorrect interpolate type: %s", interpolate));
         }
+    }
+
+    @JsonProperty("timeZone")
+    public String getTimeZoneID() {
+        return timeZoneID;
+    }
+
+    @JsonProperty("timeZone")
+    public void setTimeZoneID(String timeZoneID) {
+        this.timeZoneID = timeZoneID;
     }
 }

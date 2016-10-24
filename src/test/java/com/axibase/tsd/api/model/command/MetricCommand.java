@@ -1,8 +1,6 @@
-package com.axibase.tsd.api.model.command.metric;
+package com.axibase.tsd.api.model.command;
 
 
-import com.axibase.tsd.api.model.command.AbstractCommand;
-import com.axibase.tsd.api.model.command.FieldFormat;
 import com.axibase.tsd.api.model.metric.Interpolate;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
@@ -18,11 +16,12 @@ public class MetricCommand extends AbstractCommand {
     private String filterExpression;
     private Boolean versioning;
     private DataType dataType;
+    private String timeZoneId;
     private Map<String, String> tags;
     private Interpolate interpolate;
 
 
-    private MetricCommand(String metricName) {
+    public MetricCommand(String metricName) {
         super(METRIC_COMMAND);
         this.metricName = metricName;
     }
@@ -36,31 +35,7 @@ public class MetricCommand extends AbstractCommand {
         setFilterExpression(metric.getFilter());
         setVersioning(metric.getVersioned());
         setLabel(metric.getLabel());
-    }
-
-    public MetricCommand(String metricName, DataType dataType) {
-        this(metricName);
-        setDataType(dataType);
-    }
-
-    public MetricCommand(String metricName, String label) {
-        this(metricName);
-        setLabel(label);
-    }
-
-    public MetricCommand(String metricName, Boolean versioning) {
-        this(metricName);
-        setVersioning(versioning);
-    }
-
-    public MetricCommand(String metricName, Map<String, String> tags) {
-        this(metricName);
-        setTags(tags);
-    }
-
-    public MetricCommand(String metricName, Interpolate interpolate) {
-        this(metricName);
-        setInterpolate(interpolate);
+        setTimeZoneId(metric.getTimeZoneID());
     }
 
     public String getLabel() {
@@ -143,11 +118,22 @@ public class MetricCommand extends AbstractCommand {
         if (this.versioning != null) {
             stringBuilder.append(FieldFormat.quoted("v", versioning.toString()));
         }
+        if (this.timeZoneId != null) {
+            stringBuilder.append(FieldFormat.quoted("z", timeZoneId.toString()));
+        }
         if (this.tags != null) {
             for (Map.Entry<String, String> entry : tags.entrySet()) {
                 stringBuilder.append(FieldFormat.tag(entry.getKey(), entry.getValue()));
             }
         }
         return stringBuilder.toString();
+    }
+
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public void setTimeZoneId(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
     }
 }
