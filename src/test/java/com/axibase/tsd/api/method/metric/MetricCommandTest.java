@@ -89,7 +89,7 @@ public class MetricCommandTest extends MetricMethod {
         tcpSender.send(command);
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
-        assertEquals("Failed to set up versioning", timeZoneId, actualMetric.getTimeZoneID());
+        assertEquals("Failed to set up timezone", timeZoneId, actualMetric.getTimeZoneID());
     }
 
     /**
