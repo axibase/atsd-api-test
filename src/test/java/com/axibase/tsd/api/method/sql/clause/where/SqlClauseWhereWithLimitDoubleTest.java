@@ -36,7 +36,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value > 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("1.23")
@@ -53,7 +53,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value <= 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
@@ -70,7 +70,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value <= 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
@@ -87,7 +87,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value > 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("1.23")
@@ -104,7 +104,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE  1.01 > value LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
@@ -121,7 +121,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE  sqrt(1.01) > value LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0.89")
@@ -138,7 +138,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value = 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.emptyList();
         assertTableRowsExist(expectedRows, resultTable);
@@ -154,7 +154,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value IS NOT NULL LIMIT 2",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Arrays.asList(
                 Collections.singletonList("1.23"),
@@ -173,7 +173,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE value <> 1.01 LIMIT 2",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Arrays.asList(
                 Collections.singletonList("1.23"),
@@ -192,7 +192,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE SQRT(value) > 1.01 LIMIT 2",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("1.23")

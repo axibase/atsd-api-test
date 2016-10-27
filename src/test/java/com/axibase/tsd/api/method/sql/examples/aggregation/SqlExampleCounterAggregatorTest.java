@@ -50,7 +50,7 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
                 "WHERE datetime >= '2015-09-30T09:00:05Z' AND datetime < '2015-09-30T09:00:07Z'  %n" +
                 "GROUP BY period(1 second)", TEST_METRIC_NAME);
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2015-09-30T09:00:05.000Z", "3", "3.0", "1.0", "2.0", "4.0", "1.0"),

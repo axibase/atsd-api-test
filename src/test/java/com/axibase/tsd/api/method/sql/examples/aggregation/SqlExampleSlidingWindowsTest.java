@@ -68,7 +68,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
                         "GROUP BY entity",
                 TEST_METRIC_NAME);
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2.0", "3.0", "3.0", "3"),
@@ -93,7 +93,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
                         "GROUP BY entity, tags",
                 TEST_METRIC_NAME);
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "a=b", "1.5", "2.0", "2.0", "2"),

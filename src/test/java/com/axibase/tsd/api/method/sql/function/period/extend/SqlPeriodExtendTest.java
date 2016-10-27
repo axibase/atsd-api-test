@@ -75,7 +75,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:05.000Z", "1.0"), //<--interpolated by NEXT value
@@ -97,7 +97,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:08.000Z", "2.0"),
@@ -120,7 +120,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:05.000Z", "1.0"), //<--interpolated by NEXT value
@@ -147,7 +147,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:05.000Z", "0.0"), //<--interpolated by VALUE 0
@@ -173,7 +173,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:05.000Z", "1.0"), //<--interpolated by NEXT
@@ -200,7 +200,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:06.000Z", "1.0"),
@@ -226,7 +226,7 @@ public class SqlPeriodExtendTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
@@ -253,7 +253,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
@@ -283,7 +283,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
@@ -312,7 +312,7 @@ public class SqlPeriodExtendTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT

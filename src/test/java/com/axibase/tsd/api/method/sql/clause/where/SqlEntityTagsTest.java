@@ -56,7 +56,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("val1")
@@ -76,7 +76,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -95,7 +95,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("val1")
@@ -116,7 +116,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("val1")
@@ -137,7 +137,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("null")
@@ -158,7 +158,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 

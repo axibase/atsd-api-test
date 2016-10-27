@@ -58,7 +58,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", true);
 
@@ -75,7 +75,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", false);
 
@@ -93,7 +93,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", false);
         expectedColumnNames.add(0, "entity");
@@ -112,7 +112,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", false);
         expectedColumnNames.add("entity");
@@ -131,7 +131,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "metric.tags", false);
 
@@ -149,7 +149,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "metric.tags", false);
         expectedColumnNames.add(0, "entity");
@@ -168,7 +168,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "metric.tags", false);
         expectedColumnNames.add("entity");

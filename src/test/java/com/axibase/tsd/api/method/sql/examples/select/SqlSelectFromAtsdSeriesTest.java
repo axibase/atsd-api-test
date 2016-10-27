@@ -54,7 +54,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric = '%s' %n", TEST_METRIC1_NAME);
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "2016-06-17T19:16:01.000Z", "1"),
@@ -74,7 +74,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "2016-06-17T19:16:01.000Z", "1"),
@@ -96,7 +96,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "2016-06-17T19:16:01.000Z", "1.0"),

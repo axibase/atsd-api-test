@@ -50,7 +50,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
                 DAY_FORMAT_PATTERN, TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 

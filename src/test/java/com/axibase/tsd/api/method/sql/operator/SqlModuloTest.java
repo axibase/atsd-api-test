@@ -81,7 +81,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         String[][] expectedRows = {
                 {"7.0", "5.0", "2.0"}
@@ -103,7 +103,7 @@ public class SqlModuloTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
 
         String[][] expectedRows = {
@@ -124,7 +124,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         String[][] expectedRows = {
                 {"7.0", "0.0", "NaN"}
@@ -145,7 +145,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         String[][] expectedRows = {
                 {"12.0", "-2.0", "0.0"}
@@ -165,7 +165,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         String[][] expectedRows = {
                 {"-2.0", "12.0", "-2.0"}
@@ -189,7 +189,7 @@ public class SqlModuloTest extends SqlTest {
 
         Double expectedModulo = 1.9;
 
-        Double resultModulo = Double.parseDouble(executeQuery(sqlQuery)
+        Double resultModulo = Double.parseDouble(queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .getValueAt(2, 0)
         );
@@ -210,7 +210,7 @@ public class SqlModuloTest extends SqlTest {
         );
         Double expectedModulo = -2.1;
 
-        Double resultModulo = Double.parseDouble(executeQuery(sqlQuery)
+        Double resultModulo = Double.parseDouble(queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .getValueAt(2, 0)
         );
@@ -230,7 +230,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         String[][] expectedRows = {
                 {"10.0", "null", "null"}
@@ -251,7 +251,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         String[][] expectedRows = {
                 {"null", "10.0", "null"}
@@ -272,7 +272,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        executeQuery(sqlQuery)
+        queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
     }
 
@@ -287,7 +287,7 @@ public class SqlModuloTest extends SqlTest {
                 "%", TEST_METRIC1_NAME, TEST_ENTITY_NAME
         );
 
-        executeQuery(sqlQuery)
+        queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
     }
 

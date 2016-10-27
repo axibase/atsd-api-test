@@ -37,7 +37,7 @@ public class SqlLimitParamTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery, 5);
+        Response response = queryResponse(sqlQuery, 5);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -59,7 +59,7 @@ public class SqlLimitParamTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery, 3);
+        Response response = queryResponse(sqlQuery, 3);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -80,7 +80,7 @@ public class SqlLimitParamTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery, 3);
+        Response response = queryResponse(sqlQuery, 3);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -104,7 +104,7 @@ public class SqlLimitParamTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery, -1);
+        Response response = queryResponse(sqlQuery, -1);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -126,7 +126,7 @@ public class SqlLimitParamTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -148,7 +148,7 @@ public class SqlLimitParamTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery, -1);
+        Response response = queryResponse(sqlQuery, -1);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 

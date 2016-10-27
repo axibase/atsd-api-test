@@ -51,7 +51,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags"), resultTable);
 
@@ -71,7 +71,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Arrays.asList(
                 "metric.tags.tag",
@@ -96,7 +96,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags.a"), resultTable);
 
@@ -116,7 +116,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
                 "SELECT metric.tags.'a-b' %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags.a-b"), resultTable);
 
@@ -136,7 +136,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
                 "SELECT metric.tags.tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags.tag"), resultTable);
 
@@ -157,7 +157,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         assertTableColumnsNames(Collections.singletonList("metric.tags.Tag"), resultTable);
 

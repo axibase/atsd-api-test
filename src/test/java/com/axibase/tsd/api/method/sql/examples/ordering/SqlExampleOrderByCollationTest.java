@@ -61,7 +61,7 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
         String sqlQuery =
                 "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
                         "ORDER BY tags.tag ASC";
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         List<String> expectedColumn = sortList(trimList(NAMES), false);
         assertTableContainsColumnValues(expectedColumn, resultTable, "tags.tag");
@@ -75,7 +75,7 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
         String sqlQuery =
                 "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
                         "ORDER BY tags.tag DESC";
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         List<String> expectedColumn = sortList(trimList(NAMES), true);
         assertTableContainsColumnValues(expectedColumn, resultTable, "tags.tag");

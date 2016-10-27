@@ -50,7 +50,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumn = Arrays.asList("1", "2");
@@ -68,7 +68,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumn = Arrays.asList("1", "2");
@@ -87,7 +87,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumn = Collections.emptyList();
@@ -106,7 +106,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumn = Collections.emptyList();
@@ -125,7 +125,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
@@ -148,7 +148,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
@@ -170,7 +170,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
@@ -193,7 +193,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
@@ -216,7 +216,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,

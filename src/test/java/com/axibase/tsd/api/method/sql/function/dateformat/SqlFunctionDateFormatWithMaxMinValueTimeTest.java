@@ -36,7 +36,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("2015")
@@ -56,7 +56,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("2016")

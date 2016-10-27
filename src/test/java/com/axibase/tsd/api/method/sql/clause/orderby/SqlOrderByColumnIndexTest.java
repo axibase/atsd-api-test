@@ -58,7 +58,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -83,7 +83,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -108,7 +108,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -133,7 +133,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -158,7 +158,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -183,7 +183,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -209,7 +209,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(

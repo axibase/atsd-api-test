@@ -47,7 +47,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -71,7 +71,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -94,7 +94,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -118,7 +118,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -143,7 +143,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -168,7 +168,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -193,7 +193,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -217,7 +217,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -242,7 +242,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -267,7 +267,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -294,7 +294,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -322,7 +322,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -350,7 +350,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -379,7 +379,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -406,7 +406,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(

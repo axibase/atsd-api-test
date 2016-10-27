@@ -67,7 +67,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
                 "t1.entity",
@@ -94,7 +94,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
                 "SELECT * FROM 'sql-select-all-join-metric-1' " +
                         "JOIN 'sql-select-all-join-metric-2'";
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
                 TEST_METRIC1_NAME + ".entity",
@@ -122,7 +122,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
                 "t1.entity",
@@ -144,7 +144,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
                 "t1.entity",

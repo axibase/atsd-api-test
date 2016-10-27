@@ -52,7 +52,7 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
         );
 
         final List<List<String>> resultTableRows =
-                executeQuery(sqlQuery)
+                queryResponse(sqlQuery)
                         .readEntity(StringTable.class)
                         .getRows();
 
@@ -76,7 +76,7 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
         );
 
         final List<List<String>> resultTableRows =
-                executeQuery(sqlQuery)
+                queryResponse(sqlQuery)
                         .readEntity(StringTable.class)
                         .getRows();
         final List<List<String>> expectedTableRows = Collections.singletonList(

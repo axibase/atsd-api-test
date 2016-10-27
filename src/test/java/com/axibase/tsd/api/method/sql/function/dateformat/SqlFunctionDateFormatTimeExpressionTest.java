@@ -34,7 +34,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time+1) FROM '%s'", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -53,7 +53,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time-1) FROM '%s'", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -73,7 +73,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time/0) FROM '%s'", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -93,7 +93,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time + 200/2 - 20*5) FROM '%s'", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -113,7 +113,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time + 10/3) FROM '%s'", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -132,7 +132,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time + 0/0) FROM '%s'", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -152,7 +152,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(time + 0/0) FROM '%s' ORDER BY datetime", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -172,7 +172,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 "SELECT date_format(value) FROM '%s' ORDER BY datetime", TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -193,7 +193,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
                 Long.toString(Long.MAX_VALUE), Long.toString(Long.MAX_VALUE), TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 

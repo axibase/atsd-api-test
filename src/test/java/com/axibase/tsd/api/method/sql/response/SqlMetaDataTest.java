@@ -31,7 +31,7 @@ public class SqlMetaDataTest extends SqlMethod {
                 new Sample("2016-06-29T08:00:00.000Z", "0.05")
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
-        resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
     }
 
 

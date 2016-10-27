@@ -50,7 +50,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -72,7 +72,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -95,7 +95,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -117,7 +117,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -140,7 +140,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(response, String.format(SQL_SYNTAX_COMPARISON_TPL, '2', "19", "'-1'"));
     }
@@ -155,7 +155,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -175,7 +175,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -195,7 +195,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -215,7 +215,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -235,7 +235,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -255,7 +255,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -275,7 +275,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -297,7 +297,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         StringTable resultTable = response.readEntity(StringTable.class);
 
@@ -318,7 +318,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 "SELECT entity,value FROM atsd_series  %nWHERE metric >= 'value'"
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(response, String.format(SQL_SYNTAX_COMPARISON_TPL, "2", "13", "metric >="));
     }
@@ -333,7 +333,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(response, "Invalid date value");
     }

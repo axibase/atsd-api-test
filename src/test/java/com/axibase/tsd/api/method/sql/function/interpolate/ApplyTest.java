@@ -109,7 +109,7 @@ public class ApplyTest extends SqlTest {
         );
         String assertMessage = String.format("Sql query: %n	%s should return 200 http code",
                 sqlQuery);
-        assertOkRequest(assertMessage, executeQuery(sqlQuery));
+        assertOkRequest(assertMessage, queryResponse(sqlQuery));
     }
 
 
@@ -132,7 +132,7 @@ public class ApplyTest extends SqlTest {
                 "Failed to apply interpolation to series with only null data.%n\tQuery: %s",
                 sqlQuery
         );
-        assertOkRequest(assertMessage, executeQuery(sqlQuery));
+        assertOkRequest(assertMessage, queryResponse(sqlQuery));
     }
 
 }

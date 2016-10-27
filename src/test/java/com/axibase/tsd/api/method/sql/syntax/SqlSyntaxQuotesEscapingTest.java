@@ -54,7 +54,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -80,7 +80,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -109,7 +109,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -139,7 +139,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -171,7 +171,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -203,7 +203,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -235,7 +235,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(

@@ -43,7 +43,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
                 Util.formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssZ")
@@ -63,7 +63,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
                 Util.formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ss")
@@ -83,7 +83,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList("2016-06-03 02:23:00");
 
@@ -101,7 +101,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList("2016-06-03 01:23:00");
 
@@ -119,7 +119,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList("2016-06-03 02:23:00 -07:00");
 

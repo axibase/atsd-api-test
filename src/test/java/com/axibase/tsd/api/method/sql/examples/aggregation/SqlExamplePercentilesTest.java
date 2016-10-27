@@ -62,7 +62,7 @@ public class SqlExamplePercentilesTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("11.172749999999999", "11.3232", "11.3232", "11.408225", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435")

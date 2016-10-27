@@ -47,7 +47,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
         );
 
         final List<List<String>> resultTableRows =
-                executeQuery(sqlQuery)
+                queryResponse(sqlQuery)
                         .readEntity(StringTable.class)
                         .getRows();
 
@@ -74,7 +74,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
         );
 
         final List<List<String>> resultTableRows =
-                executeQuery(sqlQuery)
+                queryResponse(sqlQuery)
                         .readEntity(StringTable.class)
                         .getRows();
 
@@ -101,7 +101,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
         );
 
         final List<List<String>> resultTableRows =
-                executeQuery(sqlQuery)
+                queryResponse(sqlQuery)
                         .readEntity(StringTable.class)
                         .getRows();
 
@@ -127,7 +127,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
         );
 
         final List<List<String>> resultTableRows =
-                executeQuery(sqlQuery)
+                queryResponse(sqlQuery)
                         .readEntity(StringTable.class)
                         .getRows();
 

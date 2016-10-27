@@ -38,7 +38,7 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedColumns = Collections.singletonList(
@@ -55,7 +55,7 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
                 "SELECT SUM(ABS(value)-1) AS \"computed\" FROM '%s' %nORDER BY \"computed\"",
                 TEST_METRIC_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedColumns = Collections.singletonList(
@@ -73,7 +73,7 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedColumns = Collections.singletonList(
@@ -91,7 +91,7 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedColumns = Collections.singletonList(

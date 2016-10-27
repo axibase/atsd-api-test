@@ -57,7 +57,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);
@@ -82,7 +82,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);
@@ -107,7 +107,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);
@@ -132,7 +132,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);
@@ -157,7 +157,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);
@@ -184,7 +184,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:41:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);
@@ -208,7 +208,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
         Assert.assertEquals(expectedRows, resultRows);

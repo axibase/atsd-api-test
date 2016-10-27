@@ -62,7 +62,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("null", resultTable.getValueAt(2, 0));
     }
@@ -77,7 +77,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                         "FROM '%s' t1 %nOUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("NaN", resultTable.getValueAt(3, 0));
     }
@@ -93,7 +93,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                         "FROM '%s' t1 %nOUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("null", resultTable.getValueAt(2, 0));
     }
@@ -108,7 +108,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                         "FROM '%s' t1 %nOUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         Assert.assertEquals("null", resultTable.getValueAt(2, 0));
@@ -125,7 +125,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                         "FROM '%s' t1 %nOUTER JOIN '%s' t2 %nWHERE t1.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
         Assert.assertEquals("null", resultTable.getValueAt(2, 0));
     }
@@ -147,7 +147,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -169,7 +169,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -191,7 +191,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -213,7 +213,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -235,7 +235,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -257,7 +257,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -279,7 +279,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -301,7 +301,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -323,7 +323,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(

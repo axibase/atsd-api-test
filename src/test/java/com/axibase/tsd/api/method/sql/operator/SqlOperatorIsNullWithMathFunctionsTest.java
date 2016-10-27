@@ -42,7 +42,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Collections.singletonList(Double.toString(Math.sqrt(2.11))),
@@ -63,7 +63,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("NaN")
@@ -83,7 +83,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Collections.singletonList(Double.toString(Math.sqrt(2.11d))),
@@ -103,7 +103,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("NaN")
@@ -123,7 +123,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 

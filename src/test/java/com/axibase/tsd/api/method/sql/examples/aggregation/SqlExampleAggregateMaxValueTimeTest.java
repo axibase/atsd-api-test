@@ -55,7 +55,7 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
                         "WHERE datetime BETWEEN '2016-06-17T19:16:01.000Z' AND '2016-06-17T19:16:05.000Z'  %n" +
                         "GROUP BY entity", TEST_METRIC_NAME);
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(

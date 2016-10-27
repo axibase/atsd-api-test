@@ -74,7 +74,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumn = Collections.singletonList("a=b;b=c");
 
@@ -93,7 +93,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY3_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumn = Collections.singletonList("null");
 
@@ -113,7 +113,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY3_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumn = Collections.singletonList("null");
 

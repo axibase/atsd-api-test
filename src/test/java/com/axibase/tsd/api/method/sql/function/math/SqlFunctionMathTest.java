@@ -41,7 +41,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -63,7 +63,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -85,7 +85,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -108,7 +108,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -131,7 +131,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -153,7 +153,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -175,7 +175,7 @@ public class SqlFunctionMathTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -198,7 +198,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -221,7 +221,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
@@ -244,7 +244,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         Double denominator = Math.log(1.5);
@@ -269,7 +269,7 @@ public class SqlFunctionMathTest extends SqlTest {
         );
 
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(

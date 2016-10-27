@@ -70,7 +70,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.399999999999999"),
@@ -94,7 +94,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.399999999999999", "14.399999999999999"),
@@ -118,7 +118,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.399999999999999", "14.399999999999999"),
@@ -142,7 +142,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList(TEST_ENTITY_NAME, "4.3", "5.4", "1.1000000000000005")

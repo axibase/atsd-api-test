@@ -91,7 +91,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String sqlQuery, List<List<String>> expectedRows, String message) {
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         assertTableRowsExist(expectedRows,
                 resultTable,

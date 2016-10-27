@@ -51,7 +51,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1")
@@ -69,7 +69,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(INVALID_IDENTIFIER_MESSAGE_TEMPLATE, "t1")
@@ -87,7 +87,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1")
@@ -105,7 +105,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1")
@@ -122,7 +122,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2")
@@ -139,7 +139,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(INVALID_IDENTIFIER_MESSAGE_TEMPLATE, "t2")
@@ -156,7 +156,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2")
@@ -174,7 +174,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Alias shouldn't be recognized",
                 response, String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2")

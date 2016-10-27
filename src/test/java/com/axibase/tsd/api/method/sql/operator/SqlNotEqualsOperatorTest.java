@@ -50,7 +50,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        executeQuery(sqlQuery)
+        queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
     }
 
@@ -65,7 +65,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        executeQuery(sqlQuery)
+        queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
     }
 
@@ -79,7 +79,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows("value");
 
@@ -100,7 +100,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .getRows();
         assertTrue("Result rows must be empty", resultRows.isEmpty());
@@ -116,7 +116,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .getRows();
         assertTrue("Result rows must be empty", resultRows.isEmpty());
@@ -132,7 +132,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        List<List<String>> resultRows = executeQuery(sqlQuery)
+        List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows("tags.a");
 

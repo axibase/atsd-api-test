@@ -57,7 +57,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                         "WHERE entity.groups IN ('%s')   %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
@@ -78,7 +78,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -97,7 +97,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
@@ -118,7 +118,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -138,7 +138,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME, TEST_ENTITY_GROUP2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
@@ -160,7 +160,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME, TEST_ENTITY_GROUP2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
@@ -185,7 +185,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_GROUP1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME + ';' + TEST_ENTITY_GROUP2_NAME)
@@ -211,7 +211,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -229,7 +229,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                         "WHERE entity.groups IN ('group-1', 'group-2') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -248,7 +248,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", "null")
@@ -269,7 +269,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -289,7 +289,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                         "WHERE entity.groups IN ('%s') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 
@@ -309,7 +309,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_ENTITY_GROUP1_NAME)
@@ -331,7 +331,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                         "WHERE entity.groups IN ('%s') %nAND datetime = '2016-07-14T15:00:07.000Z' %n",
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("2016-07-14T15:00:07.000Z", TEST_ENTITY_NAME, "0", TEST_CASE_SENSITIVITY_GROUP_NAME)
@@ -354,7 +354,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_CASE_SENSITIVITY_GROUP_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
 

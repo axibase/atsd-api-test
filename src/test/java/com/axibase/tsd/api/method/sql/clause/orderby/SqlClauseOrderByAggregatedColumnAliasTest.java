@@ -56,7 +56,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList("entity", "aggregated");
 
@@ -74,7 +74,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2.0"),
@@ -94,7 +94,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY2_NAME, "3.0"),
@@ -114,7 +114,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY1_NAME, "2.0"),

@@ -50,7 +50,7 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE tags.a != 'b'",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.emptyList();
         assertTableRowsExist(expectedRows, resultTable);
@@ -65,7 +65,7 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
                 "SELECT value FROM '%s'%nWHERE tags.a != 'a'",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("0")

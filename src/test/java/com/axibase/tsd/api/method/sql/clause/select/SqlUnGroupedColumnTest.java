@@ -10,7 +10,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-
 import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status;
@@ -37,7 +36,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals(getErrorMessageFromResponse(response), "Include column \"datetime\" in the GROUP BY clause.");
@@ -50,7 +49,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals(getErrorMessageFromResponse(response), "SELECT expression cannot include both an aggregation function and a column not referenced in GROUP BY clause.");

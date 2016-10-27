@@ -69,7 +69,7 @@ public class SqlExampleOrderByMultipleColumnsTest extends SqlTest {
                 "SELECT entity, tags.tag, delta(value) FROM '%s'%nGROUP BY entity, tags%nORDER BY  tags.tag, DELTA(value) DESC",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY3_NAME, "a", "-2.0"),

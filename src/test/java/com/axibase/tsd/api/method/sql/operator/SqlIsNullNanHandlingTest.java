@@ -71,7 +71,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -92,7 +92,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumn = Collections.singletonList("1");

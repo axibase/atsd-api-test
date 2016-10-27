@@ -94,7 +94,7 @@ public class SqlStandardCollectionViewTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_ENTITY1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList(
@@ -118,7 +118,7 @@ public class SqlStandardCollectionViewTest extends SqlTest {
                 TEST_METRIC2_NAME, TEST_ENTITY2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("null", "null", "null", "null")

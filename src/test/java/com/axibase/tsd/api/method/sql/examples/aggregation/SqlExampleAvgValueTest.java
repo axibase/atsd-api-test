@@ -43,7 +43,7 @@ public class SqlExampleAvgValueTest extends SqlTest {
                         TEST_METRIC_NAME, TEST_ENTITY_NAME
                 );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Collections.singletonList("11.3")
@@ -67,7 +67,7 @@ public class SqlExampleAvgValueTest extends SqlTest {
                         TEST_METRIC_NAME, TEST_ENTITY_NAME
                 );
 
-        StringTable resultTable = executeQuery(sqlQuery).readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
                 Arrays.asList("11.3", "11.5", "11.5", "2")

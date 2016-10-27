@@ -38,7 +38,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "--line comment %nSELECT * FROM '%s'",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
@@ -51,7 +51,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "/* multi %nline %ncomment*/ %nSELECT * FROM '%s' %n",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
@@ -65,7 +65,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "/*comment*/ %nSELECT *FROM   /*comment*/  '%s' %nWHERE datetime > now -5*minute",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
@@ -78,7 +78,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "/*'/**/'*/ %nSELECT * FROM '%s'",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
@@ -91,7 +91,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "SELECT * FROM '%s';    /*--*/",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
@@ -105,7 +105,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "SELECT * FROM '%s'; %nWHERE entity = /*--*/",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
@@ -118,7 +118,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 "SELECT * FROM '%s' %n/*--*/;",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 }

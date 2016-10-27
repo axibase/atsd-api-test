@@ -40,7 +40,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -61,7 +61,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -83,7 +83,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -105,7 +105,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -127,7 +127,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -148,7 +148,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -170,7 +170,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(response, String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, 'a'));
     }
@@ -186,7 +186,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Query must return correct table",
                 response, String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, '1')
@@ -204,7 +204,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -226,7 +226,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Query must return correct table",
                 response, "Syntax error at line 2 position 42: extraneous input ';123' " +
@@ -243,7 +243,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Query must return correct table",
                 response, "Syntax error at line 2 position 46: no viable alternative at input '<EOF>'");

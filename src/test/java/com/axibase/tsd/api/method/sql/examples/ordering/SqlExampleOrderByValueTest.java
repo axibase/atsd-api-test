@@ -64,7 +64,7 @@ public class SqlExampleOrderByValueTest extends SqlTest {
                 "SELECT entity, AVG(value) FROM '%s'%nGROUP BY entity%nORDER BY AVG(value) DESC",
                 TEST_METRIC_NAME
         );
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(TEST_ENTITY3_NAME, "5.0"),

@@ -52,7 +52,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "value"));
@@ -68,7 +68,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column entity"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "entity"));
@@ -84,7 +84,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column time"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "time"));
@@ -101,7 +101,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "where clause"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "datetime"));
@@ -117,7 +117,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "tags"));
@@ -134,7 +134,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column tags.a"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "tags.a"));
@@ -150,7 +150,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "tags list"),
                 response, "Tags list ambiguously defined");
@@ -167,7 +167,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "metric tags list"),
                 response, "Metric tags list ambiguously defined");
@@ -183,7 +183,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column metric.tags.a"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "metric.tags.a"));
@@ -199,7 +199,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column entity.tags.a"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "entity.tags.a"));
@@ -216,7 +216,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column ABS(value)"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "ABS(value)"));
@@ -232,7 +232,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
                 response, String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "AVG(value)"));
@@ -248,7 +248,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "where clause"),
                 response, "Condition in where clause ambiguously defined");
@@ -264,7 +264,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -279,7 +279,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -294,7 +294,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -310,7 +310,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -325,7 +325,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -341,7 +341,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -356,7 +356,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -372,7 +372,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -388,7 +388,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -403,7 +403,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -419,7 +419,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -434,7 +434,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }
@@ -449,7 +449,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         assertOkRequest(OK_REQUEST_ASSERT_MESSAGE_TEMPLATE, response);
     }

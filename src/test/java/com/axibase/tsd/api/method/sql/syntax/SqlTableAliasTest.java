@@ -60,7 +60,7 @@ public class SqlTableAliasTest extends SqlTest {
                 "SELECT entity, value, tags FROM '%s'", TEST_METRIC1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList("entity", "value", "tags");
@@ -79,7 +79,7 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList("entity", "value", "tags.a", "tags.b", "datetime");
@@ -97,7 +97,7 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList("entity", "value", "tags.a", "tags.b", "datetime");
@@ -116,7 +116,7 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC2_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(TEST_METRIC1_NAME + ".entity", TEST_METRIC1_NAME + ".value", TEST_METRIC2_NAME + ".entity", TEST_METRIC2_NAME + ".value");
@@ -135,7 +135,7 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC2_NAME, TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(TEST_METRIC1_NAME + ".entity", TEST_METRIC1_NAME + ".value", TEST_METRIC2_NAME + ".entity", TEST_METRIC2_NAME + ".value");
@@ -154,7 +154,7 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -184,7 +184,7 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(

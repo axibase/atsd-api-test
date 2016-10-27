@@ -57,7 +57,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -77,7 +77,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -97,7 +97,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -117,7 +117,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -137,7 +137,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -158,7 +158,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
@@ -178,7 +178,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
                         "FROM '%s' %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(

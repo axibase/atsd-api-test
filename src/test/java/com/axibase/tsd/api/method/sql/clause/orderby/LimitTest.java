@@ -7,7 +7,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.DataProvider;
@@ -240,9 +239,7 @@ public class LimitTest extends SqlTest {
     }
 
     private void assertQueryLimit(String sqlQuery, Integer limit) {
-        List<List<String>> rows = executeQuery(sqlQuery)
-                .readEntity(StringTable.class)
-                .getRows();
+        List<List<String>> rows = queryTable(sqlQuery).getRows();
         String limitedSqlQuery = String.format("%s%nLIMIT %d", sqlQuery, limit);
         List<List<String>> expectedRows = (rows.size() > limit) ? rows.subList(0, limit) : rows;
         String errorMessage = String.format("SQL query with limit doesn't return first %d rows of query without limit!", limit);

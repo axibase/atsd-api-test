@@ -62,7 +62,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY1_NAME, "1"},
@@ -86,7 +86,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY1_NAME, "2"},
@@ -109,7 +109,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY1_NAME, "0"},
@@ -134,7 +134,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY1_NAME, "0"},
@@ -157,7 +157,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY1_NAME, "0"},
@@ -181,7 +181,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY2_NAME, "3"},
@@ -204,7 +204,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = executeQuery(sqlQuery);
+        Response response = queryResponse(sqlQuery);
 
         String[][] expectedRows = {
                 {TEST_ENTITY2_NAME, "3"},

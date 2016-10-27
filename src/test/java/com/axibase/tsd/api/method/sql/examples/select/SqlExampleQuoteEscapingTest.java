@@ -40,7 +40,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -69,7 +69,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
@@ -101,7 +101,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
 
         );
 
-        StringTable resultTable = executeQuery(sqlQuery)
+        StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
