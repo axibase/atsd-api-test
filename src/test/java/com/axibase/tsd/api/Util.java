@@ -32,13 +32,17 @@ public class Util {
     }
 
     public static String formatDate(Date date, String pattern) {
-        SimpleDateFormat format;
         try {
-            format = new SimpleDateFormat(pattern);
-            format.setTimeZone(Util.getServerTimeZone());
+            return formatDate(date, pattern, getServerTimeZone());
         } catch (JSONException e) {
-            throw new IllegalStateException("Failed to format date!");
+            throw new IllegalStateException("Unknow timezone");
         }
+    }
+
+    public static String formatDate(Date date, String pattern, TimeZone timeZone) {
+        SimpleDateFormat format;
+        format = new SimpleDateFormat(pattern);
+        format.setTimeZone(timeZone);
         return format.format(date);
     }
 
