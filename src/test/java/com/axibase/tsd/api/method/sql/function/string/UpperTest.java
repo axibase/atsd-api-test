@@ -38,6 +38,6 @@ public class UpperTest extends SqlTest {
         String sqlQuery = String.format("SELECT LOWER(%s) FROM '%s'",
                 param, TEST_METRIC
         );
-        assertOkRequest(String.format("Can't apply LOWER function to %s", param), executeQuery(sqlQuery));
+        assertOkRequest(String.format("Can't apply LOWER function to %s", param), queryResponse(sqlQuery));
     }
 }

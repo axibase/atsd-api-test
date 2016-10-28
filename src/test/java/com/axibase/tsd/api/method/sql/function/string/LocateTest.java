@@ -43,6 +43,6 @@ public class LocateTest extends SqlTest {
         String sqlQuery = String.format("SELECT LOCATE(%s) FROM '%s'",
                 param, TEST_METRIC
         );
-        assertOkRequest(String.format("Can't apply LOCATE function to %s", param), executeQuery(sqlQuery));
+        assertOkRequest(String.format("Can't apply LOCATE function to %s", param), queryResponse(sqlQuery));
     }
 }

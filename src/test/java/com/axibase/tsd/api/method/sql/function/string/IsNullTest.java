@@ -43,6 +43,6 @@ public class IsNullTest extends SqlTest {
         String sqlQuery = String.format("SELECT ISNULL(%s) FROM '%s'",
                 param, TEST_METRIC
         );
-        assertOkRequest(String.format("Can't apply CONCAT function to %s", param), executeQuery(sqlQuery));
+        assertOkRequest(String.format("Can't apply CONCAT function to %s", param), queryResponse(sqlQuery));
     }
 }

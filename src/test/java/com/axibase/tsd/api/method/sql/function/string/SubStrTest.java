@@ -42,6 +42,6 @@ public class SubStrTest extends SqlTest {
         String sqlQuery = String.format("SELECT SUBSTR(%s) FROM '%s'",
                 param, TEST_METRIC
         );
-        assertOkRequest(String.format("Can't apply SUBSTR function to %s%n\tQuery: %s", param, sqlQuery), executeQuery(sqlQuery));
+        assertOkRequest(String.format("Can't apply SUBSTR function to %s%n\tQuery: %s", param, sqlQuery), queryResponse(sqlQuery));
     }
 }
