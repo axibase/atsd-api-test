@@ -3,10 +3,9 @@ package com.axibase.tsd.api.method;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.config.RequestConfig;
-import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -43,7 +42,8 @@ public abstract class BaseMethod {
     protected final static WebTarget httpApiResource;
     protected final static WebTarget httpRootResource;
     static final Config config;
-    private static final Integer TIMEOUT_INFINITY = 0;
+    private static final Integer DEFAULT_READ_TIMEOUT = 60000;
+    private static final Integer DEFAULT_CONNECT_TIMEOUT = 10000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
     private static final String METHOD_VERSION = "/version";
 
@@ -60,10 +60,8 @@ public abstract class BaseMethod {
             clientConfig.register(MultiPartFeature.class);
             clientConfig.register(new LoggingFeature());
             clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
-            clientConfig.property(ApacheClientProperties.REQUEST_CONFIG, RequestConfig.custom()
-                    .setSocketTimeout(TIMEOUT_INFINITY)
-                    .setConnectTimeout(TIMEOUT_INFINITY)
-                    .build());
+            clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+            clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
             httpRootResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
                     .scheme(config.getProtocol())
                     .host(config.getServerName())
