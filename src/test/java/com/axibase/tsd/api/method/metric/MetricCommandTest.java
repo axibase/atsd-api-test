@@ -270,7 +270,6 @@ public class MetricCommandTest extends MetricMethod {
         command.setEnabled(null);
         tcpSender.send(command);
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-        // Ask Sergei for proper default value
         assertTrue("Failed to omit enabled", actualMetric.getEnabled());
     }
 }

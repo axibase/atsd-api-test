@@ -162,7 +162,6 @@ public class EntityCommandTest extends EntityMethod {
         command.setEnabled(null);
         tcpSender.send(command);
         Entity actualEntity = EntityMethod.getEntity(entityName);
-        // Ask Sergei for proper default value
         assertTrue("Failed to set enabled", actualEntity.getEnabled());
     }
 }
