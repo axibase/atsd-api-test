@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
 
 public class MetricCommandTest extends MetricMethod {
 
@@ -211,7 +211,6 @@ public class MetricCommandTest extends MetricMethod {
         assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-
     @DataProvider(name = "incorrectTimeZoneProvider")
     public Object[][] provideIncorrectTimeZoneData() {
         return new Object[][]{
@@ -220,6 +219,7 @@ public class MetricCommandTest extends MetricMethod {
                 {"GMT13"}
         };
     }
+
 
     /**
      * #3137
@@ -232,5 +232,44 @@ public class MetricCommandTest extends MetricMethod {
         tcpSender.send(command);
         Response response = MetricMethod.queryMetric(metricName);
         assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testEnabled() throws Exception {
+        String metricName = generateMetricName();
+        MetricCommand command = new MetricCommand(metricName);
+        command.setEnabled(true);
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertTrue("Failed to set enabled", actualMetric.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testDisabled() throws Exception {
+        String metricName = generateMetricName();
+        MetricCommand command = new MetricCommand(metricName);
+        command.setEnabled(false);
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertFalse("Failed to set disabled", actualMetric.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testNullEnabled() throws Exception {
+        String metricName = generateMetricName();
+        MetricCommand command = new MetricCommand(metricName);
+        command.setEnabled(null);
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertTrue("Failed to omit enabled", actualMetric.getEnabled());
     }
 }
