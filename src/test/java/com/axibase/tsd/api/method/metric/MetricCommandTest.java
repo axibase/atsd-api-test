@@ -11,8 +11,13 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.axibase.tsd.api.util.Mocks.metric;
-import static org.testng.AssertJUnit.assertEquals;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static org.testng.AssertJUnit.*;
 
 public class MetricCommandTest extends MetricTest {
 
@@ -198,7 +203,6 @@ public class MetricCommandTest extends MetricTest {
         assertEquals(assertMessage, expectedResult, CommandMethod.send(incorrectCommand));
     }
 
-
     @DataProvider(name = "incorrectTimeZoneProvider")
     public Object[][] provideIncorrectTimeZoneData() {
         return new Object[][]{
@@ -220,5 +224,82 @@ public class MetricCommandTest extends MetricTest {
                 incorrectCommand
         );
         assertEquals(assertMessage, expectedResult, CommandMethod.send(incorrectCommand));
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testEnabled() throws Exception {
+        String metricName = generateMetricName();
+        MetricCommand command = new MetricCommand(metricName);
+        command.setEnabled(true);
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertTrue("Failed to set enabled", actualMetric.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testDisabled() throws Exception {
+        String metricName = generateMetricName();
+        MetricCommand command = new MetricCommand(metricName);
+        command.setEnabled(false);
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertFalse("Failed to set disabled", actualMetric.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testNullEnabled() throws Exception {
+        String metricName = generateMetricName();
+        MetricCommand command = new MetricCommand(metricName);
+        command.setEnabled(null);
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertTrue("Failed to omit enabled", actualMetric.getEnabled());
+    }
+
+    @DataProvider(name = "incorrectEnabledProvider")
+    public Object[][] provideIncorrectEnabledData() {
+        return new Object[][]{
+                {"y"},
+                {"Y"},
+                {"yes"},
+                {"да"},
+                {"non"},
+                {"1"},
+                {"+"},
+                {"azazaz"}
+        };
+    }
+
+    /**
+     * #3550
+     */
+    @Test(dataProvider = "incorrectEnabledProvider")
+    public void testIncorrectEnabled(String enabled) throws Exception {
+        String metricName = generateMetricName();
+        String command = String.format("metric m:%s b:%s", metricName, enabled);
+        tcpSender.send(command);
+        Response serverResponse = MetricMethod.queryMetric(metricName);
+        assertTrue("Bad metric was accepted", serverResponse.getStatus() >= 400);
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testRawEnabled() throws Exception {
+        String metricName = generateMetricName();
+        String command = String.format("metric m:%s b:%s", metricName, "true");
+        tcpSender.send(command);
+        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
+        assertTrue("Failed to set enabled (raw)", actualMetric.getEnabled());
     }
 }

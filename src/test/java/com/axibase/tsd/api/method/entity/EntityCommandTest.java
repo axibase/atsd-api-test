@@ -8,12 +8,16 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.Response;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static org.testng.AssertJUnit.assertEquals;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static org.testng.AssertJUnit.*;
 
 public class EntityCommandTest extends EntityTest {
     private final static String E_TAG_1 = "e-tag-1";
@@ -97,5 +101,88 @@ public class EntityCommandTest extends EntityTest {
                 command
         );
         assertEntityExisting(assertMessage, sourceEntity);
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testEnabled() throws Exception {
+        EntityCommand command = new EntityCommand();
+        String entityName = generateEntityName();
+        command.setName(entityName);
+        command.setEnabled(true);
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        assertTrue("Failed to set enabled", actualEntity.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testDisabled() throws Exception {
+        EntityCommand command = new EntityCommand();
+        String entityName = generateEntityName();
+        command.setName(entityName);
+        command.setEnabled(false);
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        assertFalse("Failed to set disabled", actualEntity.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testNullEnabled() throws Exception {
+        EntityCommand command = new EntityCommand();
+        String entityName = generateEntityName();
+        command.setName(entityName);
+        command.setEnabled(null);
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        assertTrue("Failed to omit enabled", actualEntity.getEnabled());
+    }
+
+    @DataProvider(name = "incorrectEnabledProvider")
+    public Object[][] provideIncorrectEnabledData() {
+        return new Object[][]{
+                {"y"},
+                {"Y"},
+                {"yes"},
+                {"да"},
+                {"non"},
+                {"1"},
+                {"+"},
+                {"azazaz"},
+                {"longvalue"},
+                {"tr\tue"},
+                {"tr\u0775ue"}
+        };
+    }
+
+    /**
+     * #3550
+     */
+    @Test(dataProvider = "incorrectEnabledProvider")
+    public void testIncorrectEnabled(String enabled) throws Exception {
+        String entityName = generateEntityName();
+        String command = String.format("entity e:%s b:%s", entityName, enabled);
+        tcpSender.send(command);
+        Response serverResponse = EntityMethod.getEntityResponse(entityName);
+        assertEquals("Bad entity was accepted", NOT_FOUND.getStatusCode(), serverResponse.getStatus());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testRawEnabled() throws Exception {
+        String entityName = generateEntityName();
+        String command = String.format("entity e:%s b:%s", entityName, "true");
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        assertTrue("Failed to set enabled (raw)", actualEntity.getEnabled());
     }
 }
