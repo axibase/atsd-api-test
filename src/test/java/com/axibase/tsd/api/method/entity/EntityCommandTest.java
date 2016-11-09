@@ -10,7 +10,7 @@ import java.util.Collections;
 
 import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
 
 public class EntityCommandTest extends EntityMethod {
     private final static String E_TAG_1 = "e-tag-1";
@@ -121,5 +121,48 @@ public class EntityCommandTest extends EntityMethod {
         Entity actualEntity = getEntity(sourceEntity.getName());
 
         assertEquals(sourceEntity, actualEntity);
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testEnabled() throws Exception {
+        EntityCommand command = new EntityCommand();
+        String entityName = generateEntityName();
+        command.setName(entityName);
+        command.setEnabled(true);
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        assertTrue("Failed to set enabled", actualEntity.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testDisabled() throws Exception {
+        EntityCommand command = new EntityCommand();
+        String entityName = generateEntityName();
+        command.setName(entityName);
+        command.setEnabled(false);
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        assertFalse("Failed to set enabled", actualEntity.getEnabled());
+    }
+
+    /**
+     * #3550
+     */
+    @Test
+    public void testNullEnabled() throws Exception {
+        EntityCommand command = new EntityCommand();
+        String entityName = generateEntityName();
+        command.setName(entityName);
+        command.setEnabled(null);
+        tcpSender.send(command);
+        Entity actualEntity = EntityMethod.getEntity(entityName);
+        // Ask Sergei for proper default value
+        assertTrue("Failed to set enabled", actualEntity.getEnabled());
     }
 }
