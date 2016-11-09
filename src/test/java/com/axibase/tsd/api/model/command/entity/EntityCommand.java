@@ -14,6 +14,7 @@ public class EntityCommand extends AbstractCommand {
     private String timeZoneID;
     private InterpolationMode interpolationMode;
     private Map<String, String> tags;
+    private Boolean enabled;
 
     public EntityCommand() {
         super(ENTITY_COMMAND_TEXT);
@@ -27,6 +28,7 @@ public class EntityCommand extends AbstractCommand {
         setTimeZoneID(entity.getTimeZoneID());
         setTags(entity.getTags());
         setInterpolationMode(entity.getInterpolationMode());
+        setEnabled(entity.getEnabled());
     }
 
     public String getTimeZoneID() {
@@ -69,6 +71,14 @@ public class EntityCommand extends AbstractCommand {
         this.tags = tags;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public String compose() {
         StringBuilder stringBuilder = commandBuilder();
@@ -88,6 +98,9 @@ public class EntityCommand extends AbstractCommand {
         }
         if (this.timeZoneID != null) {
             stringBuilder.append(FieldFormat.quoted("z", timeZoneID));
+        }
+        if (this.enabled != null) {
+            stringBuilder.append(FieldFormat.quoted("b", enabled.toString()));
         }
 
         return stringBuilder.toString();
