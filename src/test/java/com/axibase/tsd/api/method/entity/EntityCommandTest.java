@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -15,7 +16,6 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
-import static org.testng.AssertJUnit.assertEquals;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.*;
 
@@ -108,12 +108,11 @@ public class EntityCommandTest extends EntityTest {
      */
     @Test
     public void testEnabled() throws Exception {
-        EntityCommand command = new EntityCommand();
-        String entityName = generateEntityName();
-        command.setName(entityName);
-        command.setEnabled(true);
+        Entity entity = new Entity(entity());
+        entity.setEnabled(true);
+        EntityCommand command = new EntityCommand(entity);
         tcpSender.send(command);
-        Entity actualEntity = EntityMethod.getEntity(entityName);
+        Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to set enabled", actualEntity.getEnabled());
     }
 
@@ -122,12 +121,11 @@ public class EntityCommandTest extends EntityTest {
      */
     @Test
     public void testDisabled() throws Exception {
-        EntityCommand command = new EntityCommand();
-        String entityName = generateEntityName();
-        command.setName(entityName);
-        command.setEnabled(false);
+        Entity entity = new Entity(entity());
+        entity.setEnabled(false);
+        EntityCommand command = new EntityCommand(entity);
         tcpSender.send(command);
-        Entity actualEntity = EntityMethod.getEntity(entityName);
+        Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertFalse("Failed to set disabled", actualEntity.getEnabled());
     }
 
@@ -136,12 +134,11 @@ public class EntityCommandTest extends EntityTest {
      */
     @Test
     public void testNullEnabled() throws Exception {
-        EntityCommand command = new EntityCommand();
-        String entityName = generateEntityName();
-        command.setName(entityName);
-        command.setEnabled(null);
+        Entity entity = new Entity(entity());
+        entity.setEnabled(null);
+        EntityCommand command = new EntityCommand(entity);
         tcpSender.send(command);
-        Entity actualEntity = EntityMethod.getEntity(entityName);
+        Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to omit enabled", actualEntity.getEnabled());
     }
 
@@ -167,22 +164,32 @@ public class EntityCommandTest extends EntityTest {
      */
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
-        String entityName = generateEntityName();
-        String command = String.format("entity e:%s b:%s", entityName, enabled);
+        String entityName = entity();
+        Registry.Entity.register(entityName);
+        String command = String.format("entity  e:%s b:%s", entityName, enabled);
         tcpSender.send(command);
         Response serverResponse = EntityMethod.getEntityResponse(entityName);
         assertEquals("Bad entity was accepted", NOT_FOUND.getStatusCode(), serverResponse.getStatus());
     }
 
+    @DataProvider(name = "correctEnabledProvider")
+    public Object[][] provideCorrectEnabledData() {
+        return new Object[][]{
+                {"true"},
+                {"false"}
+        };
+    }
+
     /**
      * #3550
      */
-    @Test
-    public void testRawEnabled() throws Exception {
-        String entityName = generateEntityName();
-        String command = String.format("entity e:%s b:%s", entityName, "true");
+    @Test(dataProvider = "correctEnabledProvider")
+    public void testRawEnabled(String enabled) throws Exception {
+        String entityName = "e-entity-command-raw-enabled-" + enabled;
+        Registry.Entity.register(entityName);
+        String command = String.format("entity  e:%s b:%s", entityName, enabled);
         tcpSender.send(command);
         Entity actualEntity = EntityMethod.getEntity(entityName);
-        assertTrue("Failed to set enabled (raw)", actualEntity.getEnabled());
+        assertEquals("Failed to set enabled (raw)", enabled, actualEntity.getEnabled().toString());
     }
 }

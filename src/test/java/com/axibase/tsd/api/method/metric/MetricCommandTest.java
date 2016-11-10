@@ -8,15 +8,13 @@ import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.axibase.tsd.api.util.Mocks.metric;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.*;
 
 public class MetricCommandTest extends MetricTest {
@@ -231,7 +229,8 @@ public class MetricCommandTest extends MetricTest {
      */
     @Test
     public void testEnabled() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
+        Registry.Metric.register(metricName);
         MetricCommand command = new MetricCommand(metricName);
         command.setEnabled(true);
         tcpSender.send(command);
@@ -244,7 +243,8 @@ public class MetricCommandTest extends MetricTest {
      */
     @Test
     public void testDisabled() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
+        Registry.Metric.register(metricName);
         MetricCommand command = new MetricCommand(metricName);
         command.setEnabled(false);
         tcpSender.send(command);
@@ -257,7 +257,8 @@ public class MetricCommandTest extends MetricTest {
      */
     @Test
     public void testNullEnabled() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
+        Registry.Metric.register(metricName);
         MetricCommand command = new MetricCommand(metricName);
         command.setEnabled(null);
         tcpSender.send(command);
@@ -284,22 +285,33 @@ public class MetricCommandTest extends MetricTest {
      */
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
+        Registry.Metric.register(metricName);
         String command = String.format("metric m:%s b:%s", metricName, enabled);
         tcpSender.send(command);
         Response serverResponse = MetricMethod.queryMetric(metricName);
         assertTrue("Bad metric was accepted", serverResponse.getStatus() >= 400);
     }
 
+    @DataProvider(name = "correctEnabledProvider")
+    public Object[][] provideCorrectEnabledData() {
+        return new Object[][]{
+                {"true"},
+                {"false"}
+        };
+    }
+
+
     /**
      * #3550
      */
-    @Test
-    public void testRawEnabled() throws Exception {
-        String metricName = generateMetricName();
-        String command = String.format("metric m:%s b:%s", metricName, "true");
+    @Test(dataProvider = "correctEnabledProvider")
+    public void testRawEnabled(String enabled) throws Exception {
+        String metricName = "m-metric-command-raw-enabled-" + enabled;
+        Registry.Metric.register(metricName);
+        String command = String.format("metric m:%s b:%s", metricName, enabled);
         tcpSender.send(command);
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-        assertTrue("Failed to set enabled (raw)", actualMetric.getEnabled());
+        assertEquals("Failed to set enabled (raw)", enabled, actualMetric.getEnabled().toString());
     }
 }
