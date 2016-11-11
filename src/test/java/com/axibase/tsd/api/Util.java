@@ -104,10 +104,27 @@ public class Util {
         return list;
     }
 
+    /**
+     * @deprecated Implementation affected by DST bug (#3591)
+     */
+    @Deprecated
     public static String transformDateToServerTimeZone(String date, int offsetMinutes) {
         Calendar instance = Calendar.getInstance();
         instance.setTime(parseDate(date));
         instance.add(Calendar.MINUTE, -offsetMinutes);
+        return ISOFormat(instance.getTime());
+    }
+
+    public static String transformDateToServerTimeZone(String date, String timezoneId) {
+        Calendar instance = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        instance.setTime(parseDate(date));
+        TimeZone serverTimeZone = TimeZone.getTimeZone(timezoneId);
+
+        instance.add(Calendar.MILLISECOND, -serverTimeZone.getRawOffset());
+        if (serverTimeZone.inDaylightTime(instance.getTime())) {
+            instance.add(Calendar.MILLISECOND, -serverTimeZone.getDSTSavings());
+        }
+
         return ISOFormat(instance.getTime());
     }
 

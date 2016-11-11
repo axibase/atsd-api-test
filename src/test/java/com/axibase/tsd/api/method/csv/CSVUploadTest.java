@@ -20,8 +20,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 
+import static com.axibase.tsd.api.Util.DEFAULT_TIMEZONE_NAME;
 import static com.axibase.tsd.api.Util.transformDateToServerTimeZone;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -36,6 +38,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
     private static Integer offsetMinutes = 0;
+    private static String timezone = DEFAULT_TIMEZONE_NAME;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {
@@ -47,7 +50,9 @@ public class CSVUploadTest extends CSVUploadMethod {
                 Assert.fail("Failed to import parser");
         }
         JSONObject jsonObject = new JSONObject(BaseMethod.queryATSDVersion().readEntity(String.class));
-        offsetMinutes = Integer.parseInt(((JSONObject) ((JSONObject) jsonObject.get("date")).get("timeZone")).get("offsetMinutes").toString());
+        JSONObject timeZoneJson = ((JSONObject) ((JSONObject) jsonObject.get("date")).get("timeZone"));
+        offsetMinutes = Integer.parseInt(timeZoneJson.get("offsetMinutes").toString());
+        timezone = timeZoneJson.get("name").toString();
     }
 
     /* #2916 */
@@ -248,7 +253,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, offsetMinutes), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
     }
 
     /* #3011 */
@@ -268,7 +273,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, offsetMinutes), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
     }
 
     /* #3011 */
@@ -288,8 +293,28 @@ public class CSVUploadTest extends CSVUploadMethod {
         String expectedDate = "2015-03-24T06:17:00.000Z";
 
         assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, offsetMinutes), sample.getD());
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
     }
+
+    /* #3591 */
+    @Test
+    public void testFileWithCRLineBreakAndDST(Method method) throws Exception {
+        System.out.println(new Date());
+        Entity entity = new Entity("e-cr-dst-parser-ms-2");
+        Metric metric = new Metric("m-cr-dst-parser-ms-2");
+
+        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+
+        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
+        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
+
+        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
+        String expectedDate = "2015-11-24T06:17:00.000Z";
+        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
+    }
+
 
     private void assertSeriesValue(String entity, String metric, String date, String value, JSONArray storedSeriesList) throws JSONException {
         assertEquals(entity, storedSeriesList.getJSONObject(0).getString("entity"));
