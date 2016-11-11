@@ -13,6 +13,8 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SeriesQuery {
     private String entity;
+    private String entityGroup;
+    private String entityExpression;
     private List<String> entities;
     private String metric;
     private String startDate;
@@ -203,5 +205,21 @@ public class SeriesQuery {
 
     public void setExactMatch(Boolean exactMatch) {
         this.exactMatch = exactMatch;
+    }
+
+    public String getEntityExpression() {
+        return entityExpression;
+    }
+
+    public void setEntityExpression(String entityExpression) {
+        this.entityExpression = entityExpression;
+    }
+
+    public String getEntityGroup() {
+        return entityGroup;
+    }
+
+    public void setEntityGroup(String entityGroup) {
+        this.entityGroup = entityGroup;
     }
 }
