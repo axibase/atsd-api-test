@@ -11,6 +11,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -508,6 +509,54 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Aggregate query without period should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals("Error message mismatch", String.format(AGGREGATE_NON_DETAIL_REQUIRE_PERIOD, query.getAggregate().getType()), extractErrorMessage(response));
+    }
+
+    @DataProvider(name = "dataTextProvider", parallel = true)
+    Object[][] provideDataText() {
+        return new Object[][]{
+                {1, "hello"},
+                {2, "HelLo"},
+                {3, "Hello World"},
+                {4, "spaces      \t\t\t afeqf everywhere"},
+                {5, "Кириллица"},
+                {6, "猫"},
+                {7, "Multi\nline"},
+                {8,  (String)null },
+                {9, "null"},
+                {10, "\"null\""},
+                {11, "true"},
+                {12, "\"true\""},
+                {13, "11"},
+                {14, "0"},
+                {15, "0.1"},
+                {16, "\"0.1\""},
+                {17, "\"+0.1\""},
+                {18, ""}
+        };
+    }
+
+    /**
+     * #3480
+     **/
+    @Test(dataProvider = "dataTextProvider")
+    public void testXTextField(int testN, Object x) throws Exception {
+        String entityName = "e-text-insert-"+testN;
+        String metricName = "m-text-insert-"+testN;
+
+        String largeNumber = "10.1";
+        Series series = new Series(entityName, metricName);
+        Sample sample = new Sample(MIN_STORABLE_DATE, largeNumber);
+        sample.setX(x);
+        series.addData(sample);
+        insertSeriesCheck(Collections.singletonList(series));
+
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
+        List<Sample> samples = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        if (x == null) {
+            assertNull("Stored text value incorrect", samples.get(0).getX());
+        } else {
+            assertEquals("Stored text value incorrect", x.toString(), samples.get(0).getX().toString());
+        }
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
@@ -664,5 +663,56 @@ public class SeriesInsertTest extends SeriesTest {
         series.addData(new Sample(1, "1"));
         series.addTag("t1", null);
         assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+    }
+
+    @DataProvider(name = "dataTextProvider", parallel = true)
+    Object[][] provideDataText() {
+        return new Object[][]{
+                {1, "hello"},
+                {2, "HelLo"},
+                {3, "Hello World"},
+                {4, "spaces      \t\t\t afeqf everywhere"},
+                {5, "Кириллица"},
+                {6, "猫"},
+                {7, "Multi\nline"},
+                {8,  (String)null },
+                {9, "null"},
+                {10, "\"null\""},
+                {11, "true"},
+                {12, "\"true\""},
+                {13, "11"},
+                {14, "0"},
+                {15, "0.1"},
+                {16, "\"0.1\""},
+                {17, "\"+0.1\""},
+                {18, ""}
+        };
+    }
+
+    /**
+     * #3480
+     **/
+    @Test(dataProvider = "dataTextProvider")
+    public void testXTextField(int testN, Object x) throws Exception {
+        String entityName = "e-text-"+testN;
+
+        String metricName = "m-text-"+testN;
+        String largeNumber = "10.1";
+        final long t = 1465485524888L;
+
+        Series series = new Series(entityName, metricName);
+        Sample sample = new Sample(t, largeNumber);
+        sample.setX(x);
+        series.addData(sample);
+
+        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        if (x == null) {
+            assertNull("Stored text value incorrect", seriesList.get(0).getData().get(0).getX());
+        } else {
+            assertEquals("Stored text value incorrect", x.toString(), seriesList.get(0).getData().get(0).getX().toString());
+        }
     }
 }
