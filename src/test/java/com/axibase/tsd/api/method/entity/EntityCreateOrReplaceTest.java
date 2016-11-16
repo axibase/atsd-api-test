@@ -1,10 +1,10 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import static com.axibase.tsd.api.AtsdErrorMessage.TAG_VALUE_ARRAY_PREFIX;
-import static com.axibase.tsd.api.AtsdErrorMessage.UNKNOWN_ENTITY_FIELD_PREFIX;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
+import static com.axibase.tsd.api.util.ErrorTemplate.TAG_VALUE_ARRAY_PREFIX;
+import static com.axibase.tsd.api.util.ErrorTemplate.UNKNOWN_ENTITY_FIELD_PREFIX;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;

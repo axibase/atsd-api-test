@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -91,7 +91,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
 
     @Test
     public void testTimeZone() throws Exception {
-        Metric metric = new Metric(generateMetricName());
+        Metric metric = new Metric(metric());
         metric.setTimeZoneID("GMT0");
         createOrReplaceMetricCheck(metric);
         Metric actualMetric = queryMetric(metric.getName()).readEntity(Metric.class);

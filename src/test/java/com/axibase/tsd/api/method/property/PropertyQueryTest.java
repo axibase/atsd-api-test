@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.method.property;
 
 
-import com.axibase.tsd.api.AtsdErrorMessage;
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.ErrorTemplate;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
@@ -515,7 +515,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         Response response = queryProperty(query);
         assertEquals("Query should fail if endDate is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
+        assertEquals("Error message mismatch", ErrorTemplate.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
     /**
@@ -527,7 +527,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         Response response = queryProperty(query);
         assertEquals("Query should fail if DateFiled is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
+        assertEquals("Error message mismatch", ErrorTemplate.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
     /**
@@ -540,7 +540,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         Response response = queryProperty(query);
         assertEquals("Query should fail if DateFiled is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
+        assertEquals("Error message mismatch", ErrorTemplate.DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
     /**
@@ -555,7 +555,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         Response response = queryProperty(query);
         assertEquals("Query EntityFilter is not specified", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", AtsdErrorMessage.ENTITY_FILTER_REQUIRED, extractErrorMessage(response));
+        assertEquals("Error message mismatch", ErrorTemplate.ENTITY_FILTER_REQUIRED, extractErrorMessage(response));
     }
 
     /**

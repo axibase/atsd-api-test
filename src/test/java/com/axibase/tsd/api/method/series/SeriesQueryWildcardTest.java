@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.axibase.tsd.api.Util.addOneMS;
+import static com.axibase.tsd.api.util.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 

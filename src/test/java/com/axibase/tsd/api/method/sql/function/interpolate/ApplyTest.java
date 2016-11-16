@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.function.interpolate;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.Interval;
@@ -18,18 +18,18 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static java.util.Collections.singletonList;
 
 public class ApplyTest extends SqlTest {
-    private static final String APPLY_METRIC = generateMetricName();
+    private static final String APPLY_METRIC = metric();
     private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-29T08:00:00.000Z", "0");
 
 
     @BeforeClass
     public static void prepareApplyData() throws Exception {
-        Series series = new Series(generateEntityName(), APPLY_METRIC);
+        Series series = new Series(entity(), APPLY_METRIC);
         series.addData(DEFAULT_SAMPLE);
         SeriesMethod.insertSeriesCheck(singletonList(series));
     }
@@ -120,7 +120,7 @@ public class ApplyTest extends SqlTest {
     public void testNullSeries() throws Exception {
         Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z'").getTime();
         Long endTime = Util.parseDate("2016-06-29T10:00:00.000Z").getTime();
-        Series series = new Series(generateEntityName(), generateMetricName());
+        Series series = new Series(entity(), metric());
         for (long i = startTime; i < endTime; i += 60000) {
             series.addData(new Sample(Util.ISOFormat(i), (BigDecimal) null));
         }

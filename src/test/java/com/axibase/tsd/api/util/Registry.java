@@ -1,4 +1,4 @@
-package com.axibase.tsd.api;
+package com.axibase.tsd.api.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

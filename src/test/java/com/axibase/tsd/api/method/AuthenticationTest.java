@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.BAD_CREDENTIALS;
-import static com.axibase.tsd.api.AtsdErrorMessage.USER_NOT_FOUND;
+import static com.axibase.tsd.api.util.ErrorTemplate.BAD_CREDENTIALS;
+import static com.axibase.tsd.api.util.ErrorTemplate.USER_NOT_FOUND;
 
 public class AuthenticationTest extends BaseMethod {
     private static final String UNKNOWN_USER = "Unknown User";

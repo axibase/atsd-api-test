@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.command.entity.EntityCommand;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -108,7 +108,7 @@ public class EntityCommandTest extends EntityMethod {
      */
     @Test
     public void testModels() throws Exception {
-        final Entity sourceEntity = new Entity(generateEntityName());
+        final Entity sourceEntity = new Entity(entity());
         sourceEntity.setInterpolationMode(InterpolationMode.PREVIOUS);
         sourceEntity.setLabel("label");
         sourceEntity.setTimeZoneID("GMT0");

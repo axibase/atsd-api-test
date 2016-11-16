@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.metric;
 
 
 import com.axibase.tsd.api.model.command.MetricCommand;
+import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.metric.Interpolate;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
@@ -12,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -23,7 +24,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testRequired() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         MetricCommand command = new MetricCommand((String) null);
         tcpSender.send(command);
         Response response = MetricMethod.queryMetric(metricName);
@@ -35,7 +36,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testLabel() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         String label = "label";
         MetricCommand command = new MetricCommand(metricName);
         command.setLabel(label);
@@ -50,7 +51,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testDescription() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         String description = "description";
         MetricCommand command = new MetricCommand(metricName);
         command.setDataType(DataType.DECIMAL);
@@ -66,7 +67,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testVersioning() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         Boolean versioning = true;
         MetricCommand command = new MetricCommand(metricName);
         command.setVersioning(versioning);
@@ -82,7 +83,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testTimezone() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         String timeZoneId = "GMT0";
         MetricCommand command = new MetricCommand(metricName);
         command.setTimeZoneId(timeZoneId);
@@ -97,7 +98,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testFilterExpression() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         MetricCommand command = new MetricCommand(metricName);
         String filterExpression = "expression";
         command.setFilterExpression(filterExpression);
@@ -112,7 +113,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testTags() throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         Map<String, String> tags = new HashMap<>();
         tags.put("a", "b");
         tags.put("c", "d");
@@ -129,8 +130,8 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testInterpolate() throws Exception {
-        String metricName = generateMetricName();
-        Interpolate interpolate = Interpolate.LINEAR;
+        String metricName = metric();
+        InterpolationMode interpolate = InterpolationMode.LINEAR;
         MetricCommand command = new MetricCommand(metricName);
         command.setInterpolate(interpolate);
         tcpSender.send(command);
@@ -156,7 +157,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test(dataProvider = "incorrectInterpolationFieldProvider")
     public void testIncorrectVersioning(String value) throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         String incorrectCommand = String.format("metric m:%s v:%s",
                 metricName, value);
         tcpSender.send(incorrectCommand);
@@ -179,7 +180,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test(dataProvider = "incorrectInterpolationFieldProvider")
     public void testIncorrectInterpolation(String value) throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         String incorrectCommand = String.format("metric m:%s i:%s",
                 metricName, value);
         tcpSender.send(incorrectCommand);
@@ -203,7 +204,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test(dataProvider = "incorrectDataTypeFieldProvider")
     public void testIncorrectDataType(String value) throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         String incorrectCommand = String.format("metric m:%s p:%s",
                 metricName, value);
         tcpSender.send(incorrectCommand);
@@ -226,7 +227,7 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test(dataProvider = "incorrectTimeZoneProvider")
     public void testIncorrectTimeZone(String incorrectTimeZone) throws Exception {
-        String metricName = generateMetricName();
+        String metricName = metric();
         MetricCommand command = new MetricCommand(metricName);
         command.setTimeZoneId("aaa");
         tcpSender.send(command);

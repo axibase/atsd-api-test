@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.property.command;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.property.Property;
 import org.testng.annotations.Test;

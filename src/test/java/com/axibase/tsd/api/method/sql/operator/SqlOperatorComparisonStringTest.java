@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.SQL_SYNTAX_COMPARISON_TPL;
+import static com.axibase.tsd.api.util.ErrorTemplate.SQL_SYNTAX_COMPARISON_TPL;
 
 public class SqlOperatorComparisonStringTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-operator-";

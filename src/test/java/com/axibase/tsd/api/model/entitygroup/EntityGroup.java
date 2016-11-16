@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.entitygroup;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.HashMap;

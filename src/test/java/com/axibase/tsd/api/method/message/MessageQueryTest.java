@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;

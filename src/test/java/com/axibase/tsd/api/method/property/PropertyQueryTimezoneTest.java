@@ -11,7 +11,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.DATE_FILTER_WRONG_SYNTAX_TPL;
+import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_WRONG_SYNTAX_TPL;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
 

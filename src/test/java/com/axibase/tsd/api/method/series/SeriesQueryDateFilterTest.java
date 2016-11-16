@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
@@ -12,8 +12,8 @@ import javax.ws.rs.core.Response;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.DATE_FILTER_COMBINATION_REQUIRED;
-import static com.axibase.tsd.api.AtsdErrorMessage.DATE_FILTER_END_GREATER_START_REQUIRED;
+import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_COMBINATION_REQUIRED;
+import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_END_GREATER_START_REQUIRED;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;

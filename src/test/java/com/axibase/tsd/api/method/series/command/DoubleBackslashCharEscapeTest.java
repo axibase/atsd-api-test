@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series.command;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;

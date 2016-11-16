@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import java.io.FileNotFoundException;
 
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 
@@ -17,7 +17,7 @@ public class LowerTest extends SqlTest {
     private static String TEST_METRIC;
 
     private static void generateNames() {
-        TEST_METRIC = generateMetricName();
+        TEST_METRIC = metric();
     }
 
     @BeforeClass

@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.method.sql.clause.orderby;
 
 
-import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 
 public class LimitTest extends SqlTest {
@@ -35,12 +35,12 @@ public class LimitTest extends SqlTest {
 
     @BeforeClass
     public static void generateNames() {
-        ENTITY_ORDER_METRIC = generateMetricName();
+        ENTITY_ORDER_METRIC = metric();
         Registry.Entity.register(ENTITY_ORDER_METRIC);
-        VALUE_ORDER_METRIC = generateMetricName();
-        DATETIME_ORDER_METRIC = generateMetricName();
+        VALUE_ORDER_METRIC = metric();
+        DATETIME_ORDER_METRIC = metric();
         Registry.Entity.register(DATETIME_ORDER_METRIC);
-        TAGS_ORDER_METRIC = generateMetricName();
+        TAGS_ORDER_METRIC = metric();
         Registry.Metric.register(TAGS_ORDER_METRIC);
     }
 
@@ -51,7 +51,7 @@ public class LimitTest extends SqlTest {
             Long date = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
             Series series = new Series();
             series.setMetric(ENTITY_ORDER_METRIC);
-            String entityName = generateEntityName();
+            String entityName = entity();
             Registry.Entity.register(entityName);
             series.setEntity(entityName);
             for (int j = 0; j < 10 - i; j++) {
@@ -99,7 +99,7 @@ public class LimitTest extends SqlTest {
     @BeforeGroups(groups = {VALUE_ORDER_TEST_GROUP})
     public void prepareValueOrderData() throws Exception {
         Long date = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
-        Series series = new Series(generateEntityName(), VALUE_ORDER_METRIC);
+        Series series = new Series(entity(), VALUE_ORDER_METRIC);
         float[] values = {1.23f, 3.12f, 5.67f, 4.13f, 5, -4, 4, 8, 6, 5};
         for (int i = 1; i < 10; i++) {
             Sample sample = new Sample(
@@ -142,7 +142,7 @@ public class LimitTest extends SqlTest {
 
     @BeforeGroups(groups = {DATETIME_ORDER_TEST_GROUP})
     public void prepareDateTimeOrderData() throws Exception {
-        Series series = new Series(generateEntityName(), DATETIME_ORDER_METRIC);
+        Series series = new Series(entity(), DATETIME_ORDER_METRIC);
         series.setData(Arrays.asList(
                 new Sample("2016-06-19T11:00:00.000Z", 1),
                 new Sample("2016-06-19T11:03:00.000Z", 2),
@@ -174,7 +174,7 @@ public class LimitTest extends SqlTest {
     @BeforeGroups(groups = {TAGS_ORDER_TEST_GROUP})
     public void prepareTagsTimeOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
-        String entityName = generateEntityName();
+        String entityName = entity();
         Registry.Entity.register(entityName);
         Long startTime = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
         int[] values = {6, 7, 0, -1, 5, 15, 88, 3, 11, 2};

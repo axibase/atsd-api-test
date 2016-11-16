@@ -1,6 +1,6 @@
-package com.axibase.tsd.api;
+package com.axibase.tsd.api.util;
 
-public class AtsdErrorMessage {
+public class ErrorTemplate {
     public static final String DATE_FILTER_COMBINATION_REQUIRED = "IllegalArgumentException: Insufficient parameters. One of the following combinations is required: interval, interval + startDate, interval + endDate, startDate + endDate";
     public static final String DATE_FILTER_END_GREATER_START_REQUIRED = "IllegalArgumentException: End Date must be greater than Start Date";
     public static final String DATE_FILTER_WRONG_SYNTAX_TPL = "IllegalArgumentException: Wrong %s syntax: %s";

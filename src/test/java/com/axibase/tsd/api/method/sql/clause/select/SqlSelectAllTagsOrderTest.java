@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.clause.select;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;

@@ -1,4 +1,4 @@
-package com.axibase.tsd.api;
+package com.axibase.tsd.api.util;
 
 
 import java.lang.reflect.Method;
@@ -23,7 +23,7 @@ class TestNameGenerator {
         return getTestName(Keys.METRIC);
     }
 
-    private String getTestName(Keys key) {
+    String getTestName(Keys key) {
         String keyName = getKeyName(key);
         Integer testNumber = (this.dictionary.containsKey(keyName)) ? dictionary.get(keyName) + 1 : 0;
         dictionary.put(keyName, testNumber);
@@ -102,8 +102,8 @@ class TestNameGenerator {
         return camelCaseName.replaceAll("(.)(\\p{Upper})", "$1-$2").toLowerCase().concat("-");
     }
 
-    private enum Keys {
-        ENTITY("entity"), METRIC("metric");
+    enum Keys {
+        ENTITY("entity"), METRIC("metric"), ENTITY_GROUP("entity-group"), MESSAGE("message"), PROPERTY("property");
 
         private String textValue;
 

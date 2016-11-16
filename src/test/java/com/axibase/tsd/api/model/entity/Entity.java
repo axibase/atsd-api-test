@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.entity;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.axibase.tsd.api.Util.prettyPrint;
+import static com.axibase.tsd.api.util.Util.prettyPrint;
 
 /**
  * @author Dmitry Korchagin.

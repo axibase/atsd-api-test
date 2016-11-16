@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.message.command;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import org.testng.annotations.Test;

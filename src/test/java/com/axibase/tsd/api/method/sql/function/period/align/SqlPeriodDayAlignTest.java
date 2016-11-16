@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.function.period.align;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.axibase.tsd.api.Util.ISOFormat;
-import static com.axibase.tsd.api.Util.parseDate;
+import static com.axibase.tsd.api.util.Util.ISOFormat;
+import static com.axibase.tsd.api.util.Util.parseDate;
 
 public class SqlPeriodDayAlignTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-day-align-";

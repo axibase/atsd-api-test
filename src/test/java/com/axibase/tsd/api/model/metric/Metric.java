@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.metric;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.model.common.InterpolationMode;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.series.DataType;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -24,7 +25,7 @@ public class Metric {
     private Boolean versioned;
     private String label;
     private String description;
-    private Interpolate interpolate;
+    private InterpolationMode interpolate;
     private String timeZoneID;
     private String filter;
     private Map<String, String> tags;
@@ -175,17 +176,21 @@ public class Metric {
         this.description = description;
     }
 
-    public Interpolate getInterpolate() {
+    public InterpolationMode getInterpolate() {
         return interpolate;
+    }
+
+    public void setInterpolate(InterpolationMode interpolate) {
+        this.interpolate = interpolate;
     }
 
     public void setInterpolate(String interpolate) {
         switch (interpolate) {
             case "LINEAR":
-                this.interpolate = Interpolate.LINEAR;
+                this.interpolate = InterpolationMode.LINEAR;
                 break;
             case "PREVIOUS":
-                this.interpolate = Interpolate.PREVIOUS;
+                this.interpolate = InterpolationMode.PREVIOUS;
                 break;
             default:
                 throw new IllegalStateException(String.format("Incorrect interpolate type: %s", interpolate));

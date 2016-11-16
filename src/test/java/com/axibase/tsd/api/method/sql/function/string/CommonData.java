@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.method.BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME;
 
 
@@ -40,7 +40,7 @@ class CommonData {
     );
 
     static void prepareApplyTestData(String testMetric) throws FileNotFoundException, InterruptedException {
-        String entityName = generateEntityName();
+        String entityName = entity();
         Series series = new Series(entityName, testMetric);
         series.setEntity(entityName);
         series.addData(DEFAULT_SAMPLE);

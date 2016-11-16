@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.syntax;
 
-import com.axibase.tsd.api.Registry;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;

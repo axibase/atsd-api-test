@@ -1,14 +1,13 @@
 package com.axibase.tsd.api.method.series;
 
 
-import com.axibase.tsd.api.AtsdErrorMessage;
-import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -16,15 +15,13 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-
-import static com.axibase.tsd.api.AtsdErrorMessage.JSON_MAPPING_EXCEPTION_NA;
-import static com.axibase.tsd.api.AtsdErrorMessage.JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER;
-import static com.axibase.tsd.api.Util.addOneMS;
-import static com.axibase.tsd.api.Util.getMillis;
-
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
+import static com.axibase.tsd.api.util.ErrorTemplate.*;
+import static com.axibase.tsd.api.util.Util.addOneMS;
+import static com.axibase.tsd.api.util.Util.getMillis;
 import static javax.ws.rs.core.Response.Status.*;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotSame;
 
 
 public class SeriesInsertTest extends SeriesMethod {
@@ -638,7 +635,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**
@@ -656,7 +653,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**
@@ -675,7 +672,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**
@@ -694,7 +691,7 @@ public class SeriesInsertTest extends SeriesMethod {
         String errorMessage = extractErrorMessage(response);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Incorrect error message", String.format(AtsdErrorMessage.EMPTY_TAG, emptyTagName), errorMessage);
+        assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
     /**

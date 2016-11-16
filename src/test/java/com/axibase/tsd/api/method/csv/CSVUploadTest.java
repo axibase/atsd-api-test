@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.csv;
 
-import com.axibase.tsd.api.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.entity.Entity;
@@ -9,6 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
+import com.axibase.tsd.api.util.Registry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.testng.Assert;
@@ -27,8 +27,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import static com.axibase.tsd.api.Util.DEFAULT_TIMEZONE_NAME;
-import static com.axibase.tsd.api.Util.parseDate;
+import static com.axibase.tsd.api.util.Util.DEFAULT_TIMEZONE_NAME;
+import static com.axibase.tsd.api.util.Util.parseDate;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -242,7 +242,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     @DataProvider(name = "parserProvider")
     private static Object[][] provideParsers() {
-        return new Object[][] {
+        return new Object[][]{
                 {2, "cr", CRLF_PARSER},
                 {3, "lf", LF_PARSER},
                 {4, "crlf", CRLF_PARSER}
@@ -253,8 +253,8 @@ public class CSVUploadTest extends CSVUploadMethod {
     @Test(dataProvider = "parserProvider")
     public void testFileWithLineBreak(Method method, int numTest, String lineBreakType, String parser) throws Exception {
         String nameSuffix = String.format("-%s-parser-ms-%d", lineBreakType, numTest);
-        Entity entity = new Entity("e"+nameSuffix);
-        Metric metric = new Metric("m"+nameSuffix);
+        Entity entity = new Entity("e" + nameSuffix);
+        Metric metric = new Metric("m" + nameSuffix);
 
         String confFileName = String.format("test-%s-parser.csv", lineBreakType);
         File csvPath = resolvePath(Paths.get(RESOURCE_DIR, confFileName).toString());

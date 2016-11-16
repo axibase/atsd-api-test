@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.DATE_FILTER_INVALID_FORMAT;
-import static com.axibase.tsd.api.Util.addOneMS;
+import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_INVALID_FORMAT;
+import static com.axibase.tsd.api.util.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;

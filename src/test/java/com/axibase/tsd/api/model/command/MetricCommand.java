@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.command;
 
 
+import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.metric.Interpolate;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
@@ -18,7 +19,7 @@ public class MetricCommand extends AbstractCommand {
     private DataType dataType;
     private String timeZoneId;
     private Map<String, String> tags;
-    private Interpolate interpolate;
+    private InterpolationMode interpolate;
 
 
     public MetricCommand(String metricName) {
@@ -86,11 +87,11 @@ public class MetricCommand extends AbstractCommand {
         this.tags = tags;
     }
 
-    public Interpolate getInterpolate() {
+    public InterpolationMode getInterpolate() {
         return interpolate;
     }
 
-    public void setInterpolate(Interpolate interpolate) {
+    public void setInterpolate(InterpolationMode interpolate) {
         this.interpolate = interpolate;
     }
 

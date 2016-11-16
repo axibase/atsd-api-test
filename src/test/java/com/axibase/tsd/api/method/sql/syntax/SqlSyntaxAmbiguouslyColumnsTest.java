@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL;
+import static com.axibase.tsd.api.util.ErrorTemplate.SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL;
 
 
 public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {

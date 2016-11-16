@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql;
 
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.json.JSONException;

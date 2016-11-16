@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.model.message;
 
-import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.Util;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Collections;

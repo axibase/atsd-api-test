@@ -1,4 +1,4 @@
-package com.axibase.tsd.api;
+package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.version.Version;
@@ -119,13 +119,24 @@ public class Util {
     }
 
     public static class TestNames {
-        public static String generateMetricName() {
+        public static String metric() {
             return NAME_GENERATOR.getMetricName();
         }
 
-        public static String generateEntityName() {
+        public static String entity() {
             return NAME_GENERATOR.getEntityName();
         }
-    }
 
+        public static String entityGroup() {
+            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.ENTITY_GROUP);
+        }
+
+        public static String property() {
+            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY);
+        }
+
+        public static String message() {
+            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.MESSAGE);
+        }
+    }
 }

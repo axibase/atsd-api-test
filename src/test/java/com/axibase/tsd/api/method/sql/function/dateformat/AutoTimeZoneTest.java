@@ -14,10 +14,10 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.Util.TestNames.generateEntityName;
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
-import static com.axibase.tsd.api.Util.formatDate;
-import static com.axibase.tsd.api.Util.parseDate;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Util.formatDate;
+import static com.axibase.tsd.api.util.Util.parseDate;
 import static java.util.TimeZone.getTimeZone;
 
 
@@ -29,13 +29,13 @@ public class AutoTimeZoneTest extends SqlTest {
 
     @Test
     public void testMetricTimeZone() throws Exception {
-        Metric metric = new Metric(generateMetricName());
+        Metric metric = new Metric(metric());
         metric.setTimeZoneID(ALGIERS_TIMEZONE_ID);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series();
         series.setMetric(metric.getName());
-        series.setEntity(generateEntityName());
+        series.setEntity(entity());
         series.addData(DEFAULT_SAMPLE);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
@@ -54,12 +54,12 @@ public class AutoTimeZoneTest extends SqlTest {
 
     @Test
     public void testEntityTimeZone() throws Exception {
-        Entity entity = new Entity(generateEntityName());
+        Entity entity = new Entity(entity());
         entity.setTimeZoneID(ALGIERS_TIMEZONE_ID);
         EntityMethod.createOrReplaceEntityCheck(entity);
 
         Series series = new Series();
-        series.setMetric(generateMetricName());
+        series.setMetric(metric());
         series.setEntity(entity.getName());
         series.addData(DEFAULT_SAMPLE);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
@@ -79,12 +79,12 @@ public class AutoTimeZoneTest extends SqlTest {
 
     @Test
     public void testPriorityTimeZone() throws Exception {
-        Entity entity = new Entity(generateEntityName());
+        Entity entity = new Entity(entity());
         entity.setTimeZoneID(ALGIERS_TIMEZONE_ID);
         EntityMethod.createOrReplaceEntityCheck(entity);
 
 
-        Metric metric = new Metric(generateMetricName());
+        Metric metric = new Metric(metric());
         String metricTimeZoneId = "Canada/Yukon";
         metric.setTimeZoneID(metricTimeZoneId);
         MetricMethod.createOrReplaceMetricCheck(metric);
@@ -111,7 +111,7 @@ public class AutoTimeZoneTest extends SqlTest {
 
     @Test
     public void testDefaultTimeZone() throws Exception {
-        Series series = new Series(generateEntityName(), generateMetricName());
+        Series series = new Series(entity(), metric());
         series.addData(DEFAULT_SAMPLE);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 

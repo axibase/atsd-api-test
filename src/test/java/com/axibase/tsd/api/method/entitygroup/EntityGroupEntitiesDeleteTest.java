@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
-import static com.axibase.tsd.api.AtsdErrorMessage.CANNOT_MODIFY_ENTITY_TPL;
+import static com.axibase.tsd.api.util.ErrorTemplate.CANNOT_MODIFY_ENTITY_TPL;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;

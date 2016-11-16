@@ -8,12 +8,12 @@ import org.testng.annotations.Test;
 
 import java.io.FileNotFoundException;
 
-import static com.axibase.tsd.api.Util.TestNames.generateMetricName;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 
 public class LengthTest extends SqlTest {
-    private static String TEST_METRIC = generateMetricName();
+    private static String TEST_METRIC = metric();
 
 
     @BeforeClass
