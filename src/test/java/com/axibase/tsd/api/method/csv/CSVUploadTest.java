@@ -1,18 +1,19 @@
 package com.axibase.tsd.api.method.csv;
 
 import com.axibase.tsd.api.Registry;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.version.Version;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -20,11 +21,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
-import java.util.Date;
+import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import static com.axibase.tsd.api.Util.DEFAULT_TIMEZONE_NAME;
-import static com.axibase.tsd.api.Util.transformDateToServerTimeZone;
+import static com.axibase.tsd.api.Util.parseDate;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -37,7 +41,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    private static Integer offsetMinutes = 0;
+    public static final String LINE_BREAKS_TEST_VALUE = "533.9";
     private static String timezone = DEFAULT_TIMEZONE_NAME;
 
     @BeforeClass
@@ -49,10 +53,9 @@ public class CSVUploadTest extends CSVUploadMethod {
             if (!success)
                 Assert.fail("Failed to import parser");
         }
-        JSONObject jsonObject = new JSONObject(BaseMethod.queryATSDVersion().readEntity(String.class));
-        JSONObject timeZoneJson = ((JSONObject) ((JSONObject) jsonObject.get("date")).get("timeZone"));
-        offsetMinutes = Integer.parseInt(timeZoneJson.get("offsetMinutes").toString());
-        timezone = timeZoneJson.get("name").toString();
+
+        Version versionInfo = VersionMethod.queryVersion().readEntity(Version.class);
+        timezone = versionInfo.getDate().getTimeZone().getName();
     }
 
     /* #2916 */
@@ -61,7 +64,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-1";
         String metricName = METRIC_PREFIX + "-1";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-multipart.csv").toString());
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
 
@@ -73,7 +76,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-2";
         String metricName = METRIC_PREFIX + "-2";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-binary.csv").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -84,7 +87,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-3";
         String metricName = METRIC_PREFIX + "-3";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-multipart.tar.gz").toString());
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
@@ -95,7 +98,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-4";
         String metricName = METRIC_PREFIX + "-4";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-binary.tar.gz").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -106,7 +109,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-5";
         String metricName = METRIC_PREFIX + "-5";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-multipart.zip").toString());
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
@@ -117,7 +120,8 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-6";
         String metricName = METRIC_PREFIX + "-6";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
+
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-binary.zip").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -128,7 +132,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-7";
         String metricName = METRIC_PREFIX + "-7";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".gz");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-multipart.gz").toString());
 
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
@@ -139,7 +143,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-8";
         String metricName = METRIC_PREFIX + "-8";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".gz");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-csv-binary.gz").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -150,8 +154,8 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-9";
         String metricName = METRIC_PREFIX + "-9";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
 
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-dsstore.tar.gz").toString());
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
@@ -161,7 +165,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-10";
         String metricName = METRIC_PREFIX + "-10";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".tar.gz");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-meta.tar.gz").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -172,7 +176,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-11";
         String metricName = METRIC_PREFIX + "-11";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-dsstore.zip").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -183,7 +187,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         String entityName = ENTITY_PREFIX + "-12";
         String metricName = METRIC_PREFIX + "-12";
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".zip");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-meta.zip").toString());
 
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
@@ -194,7 +198,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Entity entity = new Entity("e-csv-simple-parser-iso-0");
         Metric metric = new Metric("m-csv-simple-parser-iso-0");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-time-range-iso.csv").toString());
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_ISO);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -218,7 +222,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Entity entity = new Entity("e-csv-simple-parser-ms-1");
         Metric metric = new Metric("m-csv-simple-parser-ms-1");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-time-range-ms.csv").toString());
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_MS);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -236,74 +240,46 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
     }
 
-    /* #3011 */
-    @Test
-    public void testFileWithCRLineBreak(Method method) throws Exception {
-        Entity entity = new Entity("e-cr-parser-ms-2");
-        Metric metric = new Metric("m-cr-parser-ms-2");
-
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
-
-        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
-        String expectedDate = "2015-03-24T06:17:00.000Z";
-
-        assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
+    @DataProvider(name = "parserProvider")
+    private static Object[][] provideParsers() {
+        return new Object[][] {
+                {2, "cr", CRLF_PARSER},
+                {3, "lf", LF_PARSER},
+                {4, "crlf", CRLF_PARSER}
+        };
     }
 
     /* #3011 */
-    @Test
-    public void testFileWithLFLineBreak(Method method) throws Exception {
-        Entity entity = new Entity("e-lf-parser-ms-3");
-        Metric metric = new Metric("m-lf-parser-ms-3");
+    @Test(dataProvider = "parserProvider")
+    public void testFileWithLineBreak(Method method, int numTest, String lineBreakType, String parser) throws Exception {
+        String nameSuffix = String.format("-%s-parser-ms-%d", lineBreakType, numTest);
+        Entity entity = new Entity("e"+nameSuffix);
+        Metric metric = new Metric("m"+nameSuffix);
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+        String confFileName = String.format("test-%s-parser.csv", lineBreakType);
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, confFileName).toString());
 
-        Response response = binaryCsvUpload(csvPath, LF_PARSER, entity.getName());
+        Response response = binaryCsvUpload(csvPath, parser, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
-        String expectedDate = "2015-03-24T06:17:00.000Z";
+        Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
+        serverCalendar.clear();
+        serverCalendar.set(2015, Calendar.MARCH, 24, 6, 17);
 
-        assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
-    }
-
-    /* #3011 */
-    @Test
-    public void testFileWithCRLFLineBreak(Method method) throws Exception {
-        Entity entity = new Entity("e-crlf-parser-ms-4");
-        Metric metric = new Metric("m-crlf-parser-ms-4");
-
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
-
-        Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
-        String expectedDate = "2015-03-24T06:17:00.000Z";
-
-        assertEquals("Incorrect stored value", "533.9", sample.getV().toString());
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
+        assertEquals("Incorrect stored value", LINE_BREAKS_TEST_VALUE, sample.getV().toString());
+        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getD()));
     }
 
     /* #3591 */
     @Test
     public void testFileWithCRLineBreakAndDST(Method method) throws Exception {
-        System.out.println(new Date());
         Entity entity = new Entity("e-cr-dst-parser-ms-2");
         Metric metric = new Metric("m-cr-dst-parser-ms-2");
 
-        File csvPath = resolvePath(RESOURCE_DIR + File.separator + method.getName() + ".csv");
+        File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-cr-dst-parser.csv").toString());
 
         Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
@@ -311,8 +287,12 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
-        String expectedDate = "2015-11-24T06:17:00.000Z";
-        assertEquals("Date failed to save", transformDateToServerTimeZone(expectedDate, timezone), sample.getD());
+
+        Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
+        serverCalendar.clear();
+        serverCalendar.set(2015, Calendar.NOVEMBER, 24, 6, 17);
+
+        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getD()));
     }
 
 
