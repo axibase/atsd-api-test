@@ -42,8 +42,8 @@ public abstract class BaseMethod {
     protected final static WebTarget httpApiResource;
     protected final static WebTarget httpRootResource;
     static final Config config;
-    private static final Integer DEFAULT_READ_TIMEOUT = 60000;
-    private static final Integer DEFAULT_CONNECT_TIMEOUT = 10000;
+    private static final Integer DEFAULT_READ_TIMEOUT = 180000;
+    private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
     private static final String METHOD_VERSION = "/version";
 

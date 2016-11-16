@@ -38,10 +38,6 @@ public class SqlMetaDataTest extends SqlMethod {
     /**
      * #2973
      */
-
-    /**
-     * #2973
-     */
     @Test
     public void testEntityDataType() {
         String entityDataType = resultTable

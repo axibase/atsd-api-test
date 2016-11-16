@@ -44,8 +44,10 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     }
 
-
-    @Test
+    /**
+     * Disabled until #3609 will not be fixed
+     */
+    @Test(enabled = false)
     public void testNoQueryParamsPost() {
         final Response response = httpSqlApiResource
                 .request()

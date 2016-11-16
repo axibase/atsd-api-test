@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+
 import com.axibase.tsd.api.AtsdErrorMessage;
 import com.axibase.tsd.api.Util;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
@@ -8,7 +9,6 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -16,8 +16,13 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+
+import static com.axibase.tsd.api.AtsdErrorMessage.JSON_MAPPING_EXCEPTION_NA;
+import static com.axibase.tsd.api.AtsdErrorMessage.JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER;
 import static com.axibase.tsd.api.Util.addOneMS;
 import static com.axibase.tsd.api.Util.getMillis;
+
+import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.AssertJUnit.*;
 
@@ -306,7 +311,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
         series.addData(new Sample("2016-06-09T17:29:00-02:31", value));
-        assertEquals("Fail to insert series", OK.getStatusCode(),insertSeries(Collections.singletonList(series)).getStatus());
+        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -325,7 +330,7 @@ public class SeriesInsertTest extends SeriesMethod {
         Series series = new Series("e___underscore", "m___underscore");
         series.addData(new Sample(t, "0"));
 
-        assertEquals("Fail to insert series", OK.getStatusCode(),insertSeries(Collections.singletonList(series)).getStatus());
+        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
@@ -564,8 +569,13 @@ public class SeriesInsertTest extends SeriesMethod {
         Response response = insertSeries(Collections.singletonList(series));
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected 'T' character but found ' ' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
-
+        assertErrorMessageStart(
+                extractErrorMessage(response),
+                String.format(
+                        JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER,
+                        "T", " "
+                )
+        );
     }
 
     /**
@@ -583,7 +593,10 @@ public class SeriesInsertTest extends SeriesMethod {
         Response response = insertSeries(Collections.singletonList(series));
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: N/A (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
+        assertErrorMessageStart(
+                extractErrorMessage(response),
+                JSON_MAPPING_EXCEPTION_NA
+        );
     }
 
     /**
@@ -601,7 +614,13 @@ public class SeriesInsertTest extends SeriesMethod {
         Response response = insertSeries(Collections.singletonList(series));
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"org.codehaus.jackson.map.JsonMappingException: Expected '-' character but found '5' (through reference chain: com.axibase.tsd.model.api.ApiTimeSeriesModel[\\\"data\\\"]->com.axibase.tsd.model.api.ApiTimeSeriesValue[\\\"d\\\"])\"}", response.readEntity(String.class), true);
+        assertErrorMessageStart(
+                extractErrorMessage(response),
+                String.format(
+                        JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER,
+                        "-", "5"
+                )
+        );
     }
 
     /**

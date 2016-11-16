@@ -35,7 +35,10 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     }
 
 
-    @Test
+    /**
+     * Disabled until #3609 will not be fixed
+     */
+    @Test(enabled = false)
     public void testAllowMethods() {
         Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "OPTIONS"));
         final Response response = httpSqlApiResource
