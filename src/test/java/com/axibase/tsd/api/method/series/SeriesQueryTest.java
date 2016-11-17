@@ -5,11 +5,10 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Registry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -28,7 +27,6 @@ import static org.testng.AssertJUnit.*;
 public class SeriesQueryTest extends SeriesMethod {
     private static final String sampleDate = "2016-07-01T14:23:20.000Z";
     private static final Series series;
-    private static final Logger logger = LoggerFactory.getLogger(SeriesQueryTest.class);
 
     static {
         series = new Series("series-query-e-1", "series-query-m-1");
@@ -511,7 +509,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Error message mismatch", String.format(AGGREGATE_NON_DETAIL_REQUIRE_PERIOD, query.getAggregate().getType()), extractErrorMessage(response));
     }
 
-    @DataProvider(name = "dataTextProvider", parallel = true)
+    @DataProvider(name = "dataTextProvider")
     Object[][] provideDataText() {
         return new Object[][]{
                 {1, "hello"},
@@ -521,7 +519,7 @@ public class SeriesQueryTest extends SeriesMethod {
                 {5, "Кириллица"},
                 {6, "猫"},
                 {7, "Multi\nline"},
-                {8,  (String)null },
+                {8,  null },
                 {9, "null"},
                 {10, "\"null\""},
                 {11, "true"},
@@ -540,8 +538,8 @@ public class SeriesQueryTest extends SeriesMethod {
      **/
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(int testN, Object x) throws Exception {
-        String entityName = "e-text-insert-"+testN;
-        String metricName = "m-text-insert-"+testN;
+        String entityName = "e-series-query-text-insert-"+testN;
+        String metricName = "m-series-query-text-insert-"+testN;
 
         String largeNumber = "10.1";
         Series series = new Series(entityName, metricName);
@@ -557,6 +555,22 @@ public class SeriesQueryTest extends SeriesMethod {
         } else {
             assertEquals("Stored text value incorrect", x.toString(), samples.get(0).getX().toString());
         }
+    }
+
+    /**
+     * #3480
+     **/
+    @Test
+    public void testXTextFieldFailsOnNoValue() throws Exception {
+        String entityName = "e-series-query-text-null-1";
+        Registry.Entity.register(entityName);
+
+        String metricName = "m-series-query-text-null-1";
+        Registry.Metric.register(metricName);
+
+        String json = String.format("[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':%s}]}]".replace('\'', '"'),
+                entityName, metricName, "2016-10-11T13:00:00.000Z", "1.0", "");
+        assertEquals("Wrong status code", 400, querySeriesJson(json).getStatus());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

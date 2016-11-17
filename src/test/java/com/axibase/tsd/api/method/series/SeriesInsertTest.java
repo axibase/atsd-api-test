@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.util.Util.TestNames;
 import org.testng.annotations.DataProvider;
@@ -693,26 +694,120 @@ public class SeriesInsertTest extends SeriesTest {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(int testN, Object x) throws Exception {
-        String entityName = "e-text-"+testN;
-
-        String metricName = "m-text-"+testN;
-        String largeNumber = "10.1";
-        final long t = 1465485524888L;
+    public void testXTextField(int testId, Object x) throws Exception {
+        String entityName = "e-text-"+testId;
+        String metricName = "m-text-"+testId;
 
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample(t, largeNumber);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
         sample.setX(x);
         series.addData(sample);
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        insertSeriesCheck(Collections.singletonList(series));
 
-        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
+        SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         if (x == null) {
             assertNull("Stored text value incorrect", seriesList.get(0).getData().get(0).getX());
         } else {
             assertEquals("Stored text value incorrect", x.toString(), seriesList.get(0).getData().get(0).getX().toString());
         }
+    }
+
+    /**
+     * #3480
+     **/
+    @Test
+    public void testXTextFieldInsertedTwice() throws Exception {
+        String testId = "twice-1";
+        String entityName = "e-text-"+testId;
+        String metricName = "m-text-"+testId;
+
+        Series series = new Series(entityName, metricName);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
+        series.addData(sample);
+
+        String[] data = new String[] {"1", "2"};
+        for (String x: data) {
+            sample.setX(x);
+            insertSeriesCheck(Collections.singletonList(series));
+        }
+
+        SeriesQuery seriesQuery = new SeriesQuery(series);
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        assertEquals("Stored text value incorrect", data[data.length - 1], seriesList.get(0).getData().get(0).getX().toString());
+    }
+
+    /**
+     * #3480
+     **/
+    @Test
+    public void testXTextFieldInsertedTwiceWithVersioning() throws Exception {
+        String testId = "twice-versioning-1";
+
+        String metricName = "m-text-"+testId;
+        Metric metric = new Metric(metricName);
+        metric.setVersioned(true);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        Series series = new Series();
+        series.setMetric(metricName);
+        String entityName = "e-text-"+testId;
+        Registry.Entity.register(entityName);
+        series.setEntity(entityName);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
+        series.addData(sample);
+
+        String[] data = new String[] {"1", "2"};
+        for (String x: data) {
+            sample.setX(x);
+            insertSeriesCheck(Collections.singletonList(series));
+        }
+
+        SeriesQuery seriesQuery = new SeriesQuery(series);
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        assertEquals("Stored text value incorrect", data[data.length - 1], seriesList.get(0).getData().get(0).getX().toString());
+    }
+
+    /**
+     * #3480
+     **/
+    @Test
+    public void testXTextFieldPreservedFromTagsModifications() throws Exception {
+        String testId = "modify-tags-1";
+        String entityName = "e-text-"+testId;
+        String metricName = "m-text-"+testId;
+
+        Series series = new Series(entityName, metricName);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
+        String xText = "text";
+        sample.setX(xText);
+        series.addData(sample);
+        insertSeriesCheck(Collections.singletonList(series));
+
+        series.addTag("foo", "foo");
+        SeriesQuery seriesQuery = new SeriesQuery(series);
+        insertSeriesCheck(Collections.singletonList(series));
+
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
+        assertEquals("Stored text value incorrect", xText, seriesList.get(0).getData().get(0).getX().toString());
+    }
+
+    /**
+     * #3480
+     **/
+    @Test
+    public void testXTextFieldFailsOnNoValue() throws Exception {
+        String testId = "null-1";
+        String entityName = "e-text-"+testId;
+        Registry.Entity.register(entityName);
+
+        String metricName = "m-text-"+testId;
+        Registry.Metric.register(metricName);
+
+        String json = String.format("[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':%s}]}]".replace('\'', '"'),
+                entityName, metricName, "2016-10-11T13:00:00.000Z", "1.0", "");
+        assertEquals("Wrong status code", 400, insertSeriesJson(json).getStatus());
     }
 }

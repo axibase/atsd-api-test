@@ -20,6 +20,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
@@ -67,12 +68,35 @@ public class SeriesMethod extends BaseMethod {
     }
 
 
+    public static Response insertSeriesJson(String jsonString) throws FileNotFoundException {
+        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
+
+        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
+        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
+
+        Response response = builder.post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
+        response.bufferEntity();
+        try {
+            Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
     public static <T> Response querySeries(T... queries) {
         return querySeries(Arrays.asList(queries));
     }
 
     public static <T> Response querySeries(List<T> queries) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response querySeriesJson(String json) {
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(json, MediaType.APPLICATION_JSON));
         response.bufferEntity();
         return response;
     }
