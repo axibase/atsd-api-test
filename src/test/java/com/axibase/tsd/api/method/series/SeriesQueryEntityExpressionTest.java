@@ -20,8 +20,8 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -34,7 +34,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     public static final String propertyType = "test-entity-expression-asdef001";
     public static final String entityGroupName = "test-entity-expression-asdef001";
     public static final Metric metric = new Metric(metricName);
-    public static final Map<String, Map<String, String>> entitiesWithPropertyTags = new HashMap<>();
+    public static final List<Property> properties = new LinkedList<>();
     public static final String[] entitiesInGroup;
 
     private static final int ALL_ENTITIES;
@@ -44,31 +44,47 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     static {
         metric.setDataType(DataType.INTEGER);
 
-        Map<String, String> propertyTags1 = new HashMap<>();
-        propertyTags1.put("name", "asdef001");
-        propertyTags1.put("group", "hello");
-        entitiesWithPropertyTags.put("e-test-entity-expression-asdef001", propertyTags1);
+        Property property;
 
-        Map<String, String> propertyTags2 = new HashMap<>();
-        propertyTags2.put("name", "asdef002");
-        propertyTags2.put("group", "hell");
-        entitiesWithPropertyTags.put("e-test-entity-expression-asdef002", propertyTags2);
+        property = new Property();
+        property.setType(propertyType);
+        property.setEntity("e-test-entity-expression-asdef001");
+        property.addTag("name", "asdef001");
+        property.addTag("group", "hello");
+        property.addTag("multitag", "[one, other]");
+        property.addKey("testkey", "test");
+        property.addKey("otherkey", "other");
+        properties.add(property);
 
-        Map<String, String> propertyTags3 = new HashMap<>();
-        propertyTags3.put("name", "asdef003");
-        entitiesWithPropertyTags.put("e-test-entity-expression-asdef003", propertyTags3);
+        property = new Property();
+        property.setType(propertyType);
+        property.setEntity("e-test-entity-expression-asdef002");
+        property.addTag("name", "asdef002");
+        property.addTag("group", "hell");
+        property.addKey("testkey", "test");
+        properties.add(property);
 
-        Map<String, String> propertyTags4 = new HashMap<>();
-        propertyTags4.put("name", "asdef004");
-        propertyTags4.put("group", "main");
-        entitiesWithPropertyTags.put("e-test-entity-expression-asdef004", propertyTags4);
+        property = new Property();
+        property.setType(propertyType);
+        property.setEntity("e-test-entity-expression-asdef003");
+        property.addTag("name", "asdef003");
+        properties.add(property);
 
-        Map<String, String> propertyTags5 = new HashMap<>();
-        propertyTags5.put("name", "asdef005");
-        propertyTags5.put("group", "foo");
-        entitiesWithPropertyTags.put("e-test-entity-expression-asdef005", propertyTags5);
+        property = new Property();
+        property.setType(propertyType);
+        property.setEntity("e-test-entity-expression-asdef004");
+        property.addTag("name", "asdef004");
+        property.addTag("group", "main");
+        properties.add(property);
 
-        ALL_ENTITIES = entitiesWithPropertyTags.size();
+        property = new Property();
+        property.setType(propertyType);
+        property.setEntity("e-test-entity-expression-asdef005");
+        property.addTag("name", "asdef005");
+        property.addTag("group", "foo");
+        properties.add(property);
+
+        ALL_ENTITIES = properties.size();
 
         entitiesInGroup = new String[] {
                 "e-test-entity-expression-asdef001",
@@ -83,23 +99,19 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     @BeforeClass
     public static void createTestData() throws Exception {
         MetricMethod.createOrReplaceMetricCheck(metric);
-        for (String entityName: entitiesWithPropertyTags.keySet()) {
+        for (Property property: properties) {
+            String entityName = property.getEntity();
             Entity entity = new Entity(entityName);
             if (Arrays.asList(entitiesInGroup).contains(entityName)) {
                 entity.addTag("group", "append");
             }
             EntityMethod.createOrReplaceEntityCheck(entity);
-
-            Property property = new Property();
-            property.setEntity(entityName);
-            property.setType(propertyType);
-            property.setTags(entitiesWithPropertyTags.get(entityName));
             PropertyMethod.insertPropertyCheck(property);
 
             Series series = new Series();
             series.setEntity(entityName);
             series.setMetric(metricName);
-            series.addData(new Sample("2016-11-15T12:23:49.520Z", 1));
+            series.addData(new Sample("2026-11-15T12:23:49.520Z", 1));
             SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
         }
 
@@ -116,6 +128,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             // Contains method
             {"property_values('"+propertyType+"::name').contains('asdef001')", 1},
             {"property_values('"+propertyType+"::name').contains('asdef002')", 1},
+            {"property_values('"+propertyType+":testkey=test:name').contains('asdef003')", NO_ENTITY},
             {"property_values('"+propertyType+"::group').contains('main')", 1},
             {"property_values('"+propertyType+"::name').contains('lolololololololo002')", NO_ENTITY},
             // Matches method
@@ -123,11 +136,22 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             {"matches('*', property_values('"+propertyType+"::name'))", ALL_ENTITIES},
             {"matches('*def0*', property_values('"+propertyType+"::name'))", ALL_ENTITIES},
             {"matches('de', property_values('"+propertyType+"::name'))", NO_ENTITY},
+            {"matches('*', property_values('"+propertyType+":testkey=test:name'))", 2},
+            {"matches('*', property_values('"+propertyType+":testkey=test,otherkey=other:name'))", 1},
+            {"matches('*', property_values('"+propertyType+":otherkey=other:name'))", 1},
             {"matches('hel*', property_values('"+propertyType+"::group'))", 2},
-            // Is empty method
+            // IsEmpty method
             {"property_values('"+propertyType+"::badtag').isEmpty()", ALL_ENTITIES},
             {"property_values('"+propertyType+"::name').isEmpty()", NO_ENTITY},
+            {"property_values('"+propertyType+":testkey=test:name').isEmpty()", 3},
             {"property_values('"+propertyType+"::group').isEmpty()", 1},
+            // Property method
+            {"property('not-"+propertyType+"::badtag') = ''", ALL_ENTITIES},
+            {"property('"+propertyType+"::badtag') = ''", ALL_ENTITIES},
+            {"property('"+propertyType+":testkey=test:name') = ''", 3},
+            {"property('"+propertyType+"::name') = 'asdef001'", 1},
+            {"property('"+propertyType+"::multitag') = 'one'", 1},
+            {"property('"+propertyType+"::group') LIKE 'hel*'", 2},
             {null, ALL_ENTITIES}
         };
     }
@@ -176,6 +200,31 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         assertEquals("result count is wrong", Math.min(nResults, ALL_IN_ENTITY_GROUP), result.length());
     }
 
+    @DataProvider(name = "errorEntityExpressionProvider")
+    public static Object[][] provideErrorEntityExpression() {
+        return new Object[][] {
+            {"foo"},
+
+            {"property_values(foo).isEmpty()"},
+            {"property_values('"+propertyType+"::name').foo()"},
+
+            {"matches(foo).isEmpty()"},
+            {"matches(foo).foo()"},
+            {"matches(foo, '"+propertyType+"::name').isEmpty()"},
+            {"matches(foo, '"+propertyType+"::name').foo()"},
+
+            {"property(foo) = ''"},
+            {"property('"+propertyType+"::name') = foo"},
+        };
+    }
+
+    @Test(dataProvider = "errorEntityExpressionProvider")
+    public static void testErrorOnBadEntityExpression(String expression) throws Exception {
+        SeriesQuery query = createDummyQuery("*");
+        query.setEntityExpression(expression);
+        int status = SeriesMethod.executeQueryRaw(Collections.singletonList(query)).getStatus();
+        assertEquals("result count is wrong", 404, status);
+    }
 
 
     private static SeriesQuery createDummyQuery(String entityName) {
