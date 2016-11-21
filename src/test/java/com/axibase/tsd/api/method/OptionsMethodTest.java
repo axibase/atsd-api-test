@@ -76,10 +76,10 @@ public class OptionsMethodTest extends BaseMethod {
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
 
         Response response = builder.options();
-        assertEquals("Bad response status", 200, response.getStatus());
-        checkHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
-        checkHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
-        checkHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
+        assertEquals("Bad response status", Response.Status.OK, response.getStatus());
+        assertValidHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
+        assertValidHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
+        assertValidHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
     }
 
     @Test
@@ -90,34 +90,34 @@ public class OptionsMethodTest extends BaseMethod {
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
 
         Response response = builder.options();
-        assertEquals("Bad response status", 200, response.getStatus());
-        checkHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
-        checkHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
-        checkHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
+        assertEquals("Bad response status", Response.Status.OK, response.getStatus());
+        assertValidHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
+        assertValidHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
+        assertValidHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
     }
 
     private static Set<String> splitStringToSet(String str, String splitter) {
         return new HashSet<>(Arrays.asList(str.split(splitter)));
     }
 
-    private static void checkHeader(String expected, Response response, String header) throws Exception {
+    private static void assertValidHeader(String expected, Response response, String header) throws Exception {
         String got = response.getHeaderString(header);
         assertEquals(String.format("Invalid %s header set", header), expected, got);
     }
 
-    private static void checkHeaderSet(String expected, Response response, String header) throws Exception {
-        checkHeaderSet(expected, response, header, false);
+    private static void assertValidHeaderSet(String expected, Response response, String header) throws Exception {
+        assertValidHeaderSet(expected, response, header, false);
     }
 
-    private static void checkHeaderSet(Set<String> expectedSet, Response response, String header)  throws Exception {
-        checkHeaderSet(expectedSet, response, header, false);
+    private static void assertValidHeaderSet(Set<String> expectedSet, Response response, String header)  throws Exception {
+        assertValidHeaderSet(expectedSet, response, header, false);
     }
 
-    private static void checkHeaderSet(String expected, Response response, String header, boolean strict) throws Exception {
-        checkHeaderSet(splitStringToSet(expected, ", "), response, header, strict);
+    private static void assertValidHeaderSet(String expected, Response response, String header, boolean strict) throws Exception {
+        assertValidHeaderSet(splitStringToSet(expected, ", "), response, header, strict);
     }
 
-    private static void checkHeaderSet(Set<String> expectedSet, Response response, String header, boolean strict)  throws Exception {
+    private static void assertValidHeaderSet(Set<String> expectedSet, Response response, String header, boolean strict)  throws Exception {
         String got = response.getHeaderString(header);
         Set<String> gotSet = splitStringToSet(got, ", ");
         boolean acceptable = strict ? expectedSet.equals(gotSet)
