@@ -16,6 +16,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -222,9 +223,10 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     public static void testErrorOnBadEntityExpression(String expression) throws Exception {
         SeriesQuery query = createDummyQuery("*");
         query.setEntityExpression(expression);
-        int status = SeriesMethod.executeQueryRaw(Collections.singletonList(query)).getStatus();
-        if (status / 100 != 4) {
-            fail("Wrong result status code, expected 4**, got " + status);
+        Response response = SeriesMethod.executeQueryRaw(Collections.singletonList(query));
+        Response.Status.Family statusFamily = response.getStatusInfo().getFamily();
+        if (statusFamily != Response.Status.Family.CLIENT_ERROR) {
+            fail("Wrong result status code, expected 4**, got " + response.getStatus());
         }
     }
 
