@@ -1,9 +1,11 @@
 package com.axibase.tsd.api.method.csv;
 
-import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -60,12 +62,25 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
         assertEquals(response.getStatus(), OK.getStatusCode());
 
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        MessageQuery messageQuery = new MessageQuery();
+        final MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(MIN_QUERYABLE_DATE);
         messageQuery.setEndDate(MAX_QUERYABLE_DATE);
+
+
+        Checker.check(new AbstractCheck() {
+            @Override
+            public boolean isChecked() {
+                Response response = MessageMethod.queryMessage(messageQuery);
+                if (response.getStatus() != OK.getStatusCode()) {
+                    return false;
+                }
+                List<Message> storedMessageList = response.readEntity(new GenericType<List<Message>>() {
+                });
+                return storedMessageList.size() > 0;
+            }
+        });
+
         List<Message> storedMessageList = MessageMethod.queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 

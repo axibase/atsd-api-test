@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
@@ -71,32 +70,23 @@ public class Sample {
     }
 
     @Override
-    public String toString() {
-        return "Sample{" +
-                "d='" + d + '\'' +
-                ", t=" + t +
-                ", v=" + v +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Sample)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Sample sample = (Sample) o;
 
-        if (!Objects.equals(t, sample.t)) return false;
-        if (getD() != null ? !getD().equals(sample.getD()) : sample.getD() != null) return false;
-        return getV().equals(sample.getV());
+        if (d != null ? !d.equals(sample.d) : sample.d != null) return false;
+        if (t != null ? !t.equals(sample.t) : sample.t != null) return false;
+        return v != null ? v.equals(sample.v) : sample.v == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = getD() != null ? getD().hashCode() : 0;
-        result = 31 * result + (int) (t ^ (t >>> 32));
-        result = 31 * result + getV().hashCode();
+        int result = d != null ? d.hashCode() : 0;
+        result = 31 * result + (t != null ? t.hashCode() : 0);
+        result = 31 * result + (v != null ? v.hashCode() : 0);
         return result;
     }
 }

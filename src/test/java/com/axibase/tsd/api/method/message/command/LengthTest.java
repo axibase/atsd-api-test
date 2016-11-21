@@ -1,62 +1,39 @@
 package com.axibase.tsd.api.method.message.command;
 
+import com.axibase.tsd.api.method.checks.MessageCheck;
+import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
+import com.axibase.tsd.api.model.command.MessageCommand;
+import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.model.message.MessageQuery;
-import org.testng.Assert;
+import com.axibase.tsd.api.model.message.Severity;
+import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-
+import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class LengthTest extends MessageMethod {
-    private static final int MAX_LENGTH = 131072;
+    private static final int MAX_LENGTH = 128 * 1024;
 
     /**
      * #2412
      */
     @Test
     public void testMaxLength() throws Exception {
-
-        String startDate = "2016-05-21T00:00:00.000Z";
-        String endDate = "2016-05-21T00:00:01.000Z";
-
         final Message message = new Message("e-message-max-cmd-length", "t-message-max-cmd-length");
-        message.setDate(startDate);
-        message.setSeverity("MAJOR");
-        message.setSource("atsd");
+        message.setDate(Mocks.ISO_TIME);
+        message.setSeverity(Severity.MAJOR.name());
+        message.setMessage("");
+        MessageCommand command = new MessageCommand(message);
 
-        StringBuilder sb = new StringBuilder("message");
-        sb.append(" e:").append(message.getEntity());
-        sb.append(" t:").append("type").append("=").append(message.getType());
-        sb.append(" t:").append("severity").append("=").append(message.getSeverity());
-        sb.append(" t:").append("source").append("=").append(message.getSource());
-        sb.append(" d:").append(message.getDate());
-        sb.append(" m:");
+        Integer currentLength = command.compose().length();
 
-        StringBuilder m = new StringBuilder();
-        for (int i = 0; i < MAX_LENGTH - sb.length(); i++) {
-            m.append('m');
-        }
-
-        message.setMessage(m.toString());
-        sb.append(message.getMessage());
-        Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
-        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setEntity(message.getEntity());
-        messageQuery.setStartDate(startDate);
-        messageQuery.setEndDate(endDate);
-        messageQuery.setType(message.getType());
-        messageQuery.setSource(message.getSource());
-        messageQuery.setSeverity(message.getSeverity());
-        String storedMessage = queryMessage(messageQuery).readEntity(String.class);
-
-        String sentMessage = jacksonMapper.writeValueAsString(Collections.singletonList(message));
-
-        assertTrue(compareJsonString(sentMessage, storedMessage, true));
+        String newMessage = new String(new char[MAX_LENGTH - currentLength]).replace("\0", "m");
+        message.setMessage(newMessage);
+        command = new MessageCommand(message);
+        assertEquals(command.compose().length(), MAX_LENGTH);
+        CommandMethod.sendChecked(new MessageCheck(message), command);
     }
 
     /**
@@ -64,49 +41,27 @@ public class LengthTest extends MessageMethod {
      */
     @Test
     public void testMaxLengthOverflow() throws Exception {
-
-        String startDate = "2016-05-21T00:00:00.000Z";
-        String endDate = "2016-05-21T00:00:01.000Z";
-
         final Message message = new Message("e-message-max-len-overflow", "t-message-max-len-overflow");
-        message.setDate(startDate);
-        message.setSeverity("MAJOR");
-        message.setSource("atsd");
+        message.setDate(Mocks.ISO_TIME);
+        message.setSeverity(Severity.MAJOR.name());
+        message.setMessage("");
+        MessageCommand command = new MessageCommand(message);
 
-        StringBuilder sb = new StringBuilder("message");
-        sb.append(" e:").append(message.getEntity());
-        sb.append(" t:").append("type").append("=").append(message.getType());
-        sb.append(" t:").append("severity").append("=").append(message.getSeverity());
-        sb.append(" t:").append("source").append("=").append(message.getSource());
-        sb.append(" d:").append(message.getDate());
-        sb.append(" m:");
+        Integer currentLength = command.compose().length();
 
-        StringBuilder m = new StringBuilder();
-        for (int i = 0; i < MAX_LENGTH - sb.length() + 1; i++) {
-            m.append('m');
-        }
-
-        message.setMessage(m.toString());
-        sb.append(message.getMessage());
-
-        if (MAX_LENGTH + 1 != sb.length()) {
-            Assert.fail("Command length is not maximal");
-        }
-        tcpSender.send(sb.toString(), 1000);
-
-        MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setEntity(message.getEntity());
-        messageQuery.setStartDate(startDate);
-        messageQuery.setEndDate(endDate);
-        messageQuery.setType(message.getType());
-        messageQuery.setSource(message.getSource());
-        messageQuery.setSeverity(message.getSeverity());
-
-        String response = queryMessage(messageQuery).readEntity(String.class);
-        String expected = "{\"error\":\"com.axibase.tsd.service.DictionaryNotFoundException: " +
-                "ENTITY not found for name: 'e-message-max-len-overflow'\"}";
-
-        assertTrue(compareJsonString(expected, response, true));
+        String newMessage = new String(new char[MAX_LENGTH - currentLength + 1]).replace("\0", "m");
+        message.setMessage(newMessage);
+        command = new MessageCommand(message);
+        assertTrue("Command must have overflow length", command.compose().length() > MAX_LENGTH);
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        String assertMessage = String.format(
+                "Result must contain one failed command with length %s",
+                command.compose().length()
+        );
+        assertEquals(assertMessage,
+                expectedResult,
+                CommandMethod.send(command)
+        );
     }
 
 

@@ -1,10 +1,13 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,11 +53,11 @@ public class MessageMethod extends BaseMethod {
         return response;
     }
 
-    public static Boolean insertMessage(final Message message, long sleepDuration) throws Exception {
-        return insertMessage(Collections.singletonList(message), sleepDuration);
+    public static Boolean insertMessage(final Message message) throws Exception {
+        return insertMessage(Collections.singletonList(message));
     }
 
-    public static Boolean insertMessage(List<Message> messageList, long sleepDuration) throws Exception {
+    public static Boolean insertMessage(List<Message> messageList) throws Exception {
         Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
@@ -62,12 +65,7 @@ public class MessageMethod extends BaseMethod {
         } else {
             logger.error("Fail to insert message");
         }
-        Thread.sleep(sleepDuration); //give ATSD a few time to handle message
         return OK.getStatusCode() == response.getStatus();
-    }
-
-    public static Boolean insertMessage(final Message message) throws Exception {
-        return insertMessage(message, 0);
     }
 
     public static boolean messageExist(final Message message) throws Exception {
@@ -90,24 +88,17 @@ public class MessageMethod extends BaseMethod {
     }
 
 
-    public static void insertMessageCheck(final Message message) throws Exception {
+    public static void insertMessageCheck(final Message message, AbstractCheck check) throws Exception {
         Response response = insertMessageReturnResponse(message);
         response.bufferEntity();
         if (OK.getStatusCode() != response.getStatus()) {
             throw new IllegalStateException(response.readEntity(String.class));
         }
-        response.bufferEntity();
+        Checker.check(check);
+    }
 
-        final long startCheckTimeMillis = System.currentTimeMillis();
-        do {
-            if ((messageExist(message))) {
-                return;
-            }
-            Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.UPPER_BOUND_FOR_CHECK);
-        if (!messageExist(message)) {
-            throw new Exception("Fail to check inserted messages");
-        }
+    public static void insertMessageCheck(final Message message) throws Exception {
+        insertMessageCheck(message, new MessageCheck(message));
     }
 
     public static <T> Response queryMessage(T... messageQuery) {

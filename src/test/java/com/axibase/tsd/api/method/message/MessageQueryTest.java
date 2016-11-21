@@ -1,12 +1,11 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import com.axibase.tsd.api.util.Util;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,7 +28,7 @@ public class MessageQueryTest extends MessageMethod {
 
     @BeforeMethod
     public void prepare() throws Exception {
-        Assert.assertTrue(insertMessage(message, 1000), "Fail to insert message");
+        insertMessageCheck(message);
     }
 
 

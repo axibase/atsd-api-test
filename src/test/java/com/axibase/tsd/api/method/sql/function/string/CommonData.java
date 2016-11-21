@@ -4,13 +4,11 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.method.BaseMethod.DEFAULT_EXPECTED_PROCESSING_TIME;
 
 
 class CommonData {
@@ -39,12 +37,11 @@ class CommonData {
             "'a'"
     );
 
-    static void prepareApplyTestData(String testMetric) throws FileNotFoundException, InterruptedException {
-        String entityName = entity();
+    static void prepareApplyTestData(final String testMetric) throws Exception {
+        final String entityName = entity();
         Series series = new Series(entityName, testMetric);
         series.setEntity(entityName);
         series.addData(DEFAULT_SAMPLE);
-        SeriesMethod.insertSeries(Collections.singletonList(series));
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);//Check is not working here
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 }

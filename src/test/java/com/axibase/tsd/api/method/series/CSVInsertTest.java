@@ -1,264 +1,176 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.EntityCheck;
+import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.json.JSONArray;
+import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-import static com.axibase.tsd.api.util.Util.*;
+import static com.axibase.tsd.api.util.Mocks.SAMPLE;
+import static com.axibase.tsd.api.util.Mocks.series;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Util.parseDate;
+import static java.util.Collections.singletonList;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class CSVInsertTest extends CSVInsertMethod {
-    /* #2009 */
-    @Test
-    public void testISOFormatZNoMS() throws Exception {
-        Entity entity = new Entity("e-iso-5");
-        Metric metric = new Metric("m-iso-5");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("tag-1", "value-1");
-        tags.put("tag-2", "value-2");
 
-        String csvPayload = "date," + metric.getName() + "\n" +
-                "2016-05-21T00:00:00Z, 12.45\n" +
-                "2016-05-21T00:00:15Z, 10.8";
-        csvInsert(entity.getName(), csvPayload, tags);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
-                "2016-05-21T00:00:00Z", "2016-05-21T00:00:01Z", tags);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15Z", "2016-05-21T00:00:16Z");
-        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d", storedSeriesList2));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
+    @DataProvider(name = "formatPatternProvider")
+    private Object[][] provideFormatPattern() {
+        return new Object[][]{
+                {"yyyy-MM-dd'T'HH:mm:ss'Z'"},
+                {"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"},
+                {"yyyy-MM-dd'T'HH:mm:ssXXX"},
+                {"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"},
+        };
     }
 
-    /* #2009 */
-    @Test
-    public void testISOFormatZMS() throws Exception {
-        Entity entity = new Entity("e-iso-6");
-        Metric metric = new Metric("m-iso-6");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("tag-1", "value-1");
-        tags.put("tag-2", "value-2");
-
-        String csvPayload = "date," + metric.getName() + "\n" +
-                "2016-05-21T00:00:00.001Z, 12.45\n" +
-                "2016-05-21T00:00:15.001Z, 10.8";
-        csvInsert(entity.getName(), csvPayload, tags);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
-                "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
-                "2016-05-21T00:00:15.001Z", "2016-05-21T00:00:15.002Z");
-        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d", storedSeriesList2));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
+    /**
+     * #2009
+     */
+    @Test(dataProvider = "formatPatternProvider")
+    public void testFormattedDate(String template) {
+        Series expectedSeries = series();
+        expectedSeries.setData(singletonList(SAMPLE));
+        String csvPayload = String.format(
+                "date, %s%n%s, %s%n",
+                expectedSeries.getMetric(),
+                formatISODate(parseDate(SAMPLE.getD()), template), SAMPLE.getV()
+        );
+        csvInsert(expectedSeries.getEntity(), csvPayload, expectedSeries.getTags());
+        Checker.check(new SeriesCheck(singletonList(expectedSeries)));
     }
 
-    /* #2009 */
-    @Test
-    public void testISOFormatPlusHourNoMS() throws Exception {
-        Entity entity = new Entity("e-iso-7");
-        Metric metric = new Metric("m-iso-7");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("tag-1", "value-1");
-        tags.put("tag-2", "value-2");
-
-        String csvPayload = "date," + metric.getName() + "\n" +
-                "2016-05-21T00:00:00+00:00, 12.45\n" +
-                "2016-05-21T00:00:15+00:00, 10.8";
-        csvInsert(entity.getName(), csvPayload, tags);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00Z", "2016-05-21T00:00:10Z", tags);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15Z", "2016-05-21T00:00:20Z");
-        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d", storedSeriesList2));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
-    }
-
-    /* #2009 */
-    @Test
-    public void testISOFormatPlusHourMS() throws Exception {
-        Entity entity = new Entity("e-iso-8");
-        Metric metric = new Metric("m-iso-8");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("tag-1", "value-1");
-        tags.put("tag-2", "value-2");
-
-        String csvPayload = "date," + metric.getName() + "\n" +
-                "2016-05-21T00:00:00.001+00:00, 12.45\n" +
-                "2016-05-21T00:00:15.001+00:00, 10.8";
-        csvInsert(entity.getName(), csvPayload, tags);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(),
-                "2016-05-21T00:00:15.001Z", "2016-05-21T00:00:15.002Z");
-        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d", storedSeriesList2));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList2));
-    }
-
-    /* #2009 */
+    /**
+     * #2009
+     */
     @Test
     public void testMultipleISOFormat() throws Exception {
-        Entity entity = new Entity("e-iso-9");
-        Metric metric = new Metric("m-iso-9");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("tag-1", "value-1");
-        tags.put("tag-2", "value-2");
-
-        String csvPayload = "date," + metric.getName() + "\n" +
-                "2016-05-21T00:00:00Z,      12.45\n" +
-                "2016-05-21T00:00:00.001Z,      12\n" +
-                "2016-05-21T00:00:15+00:00, 10.8\n" +
-                "2016-05-21T00:00:15.001+00:00, 10";
-        csvInsert(entity.getName(), csvPayload, tags);
-
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00Z", "2016-05-21T00:00:10Z", tags);
-        JSONArray storedSeriesList1 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:00.000Z", getDataField(0, "d", storedSeriesList1));
-        assertEquals("Stored value incorrect", "12.45", getDataField(0, "v", storedSeriesList1));
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:00.001Z", "2016-05-21T00:00:00.002Z", tags);
-        JSONArray storedSeriesList2 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:00.001Z", getDataField(0, "d", storedSeriesList2));
-        assertEquals("Stored value incorrect", "12", getDataField(0, "v", storedSeriesList2));
-
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15Z", "2016-05-21T00:00:20Z");
-        JSONArray storedSeriesList3 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:15.000Z", getDataField(0, "d", storedSeriesList3));
-        assertEquals("Stored value incorrect", "10.8", getDataField(0, "v", storedSeriesList3));
-
-        seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), "2016-05-21T00:00:15.001Z", "2016-05-21T00:00:15.002Z");
-        JSONArray storedSeriesList4 = executeQuery(seriesQuery);
-        assertEquals("Stored date incorrect", "2016-05-21T00:00:15.001Z", getDataField(0, "d", storedSeriesList4));
-        assertEquals("Stored value incorrect", "10", getDataField(0, "v", storedSeriesList4));
+        Series series = Mocks.series();
+        series.setData(new ArrayList<Sample>());
+        String header = String.format("date, %s%n", series.getMetric());
+        StringBuilder payloadBuilder = new StringBuilder(header);
+        String[][] dateTemplatePairs = new String[][]{
+                {"2016-05-21T00:00:00.000Z", "yyyy-MM-dd'T'HH:mm:ss'Z'"},
+                {"2016-05-21T00:00:00.001Z", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"},
+                {"2016-05-21T00:00:15.000Z", "yyyy-MM-dd'T'HH:mm:ssXXX"},
+                {"2016-05-21T00:00:15.001Z", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"},
+        };
+        for (int i = 0; i < dateTemplatePairs.length; i++) {
+            Date date = parseDate(dateTemplatePairs[i][0]);
+            String pattern = dateTemplatePairs[i][1];
+            String csvRow = String.format(
+                    "%s, %s%n",
+                    formatISODate(date, pattern), Mocks.DECIMAL_VALUE
+            );
+            payloadBuilder.append(csvRow);
+            series.addData(new Sample(dateTemplatePairs[i][0], Mocks.DECIMAL_VALUE));
+        }
+        String csvPayload = payloadBuilder.toString();
+        csvInsertCheck(
+                new SeriesCheck(singletonList(series)),
+                series.getEntity(),
+                csvPayload,
+                series.getTags()
+        );
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     **/
     @Test
     public void testTimeRangeInISO() throws Exception {
-        Entity entity = new Entity("e-time-range-9");
-        Metric metric = new Metric("m-time-range-9");
+        Series series = Mocks.series();
+        series.setData(new ArrayList<Sample>());
+        series.addData(new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE));
+        series.addData(new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE));
 
-        String csvPayload = "date," + metric.getName() + "\n" +
-                MIN_STORABLE_DATE + ", 12.45\n" +
-                MAX_STORABLE_DATE + ", 10.8\n" +
-                addOneMS(MAX_STORABLE_DATE) + ", 10";
-        csvInsert(entity.getName(), csvPayload);
+        String csvPayload = String.format(
+                "date, %s%n%s, %s%n%s, %s%n",
+                series.getMetric(),
+                MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE,
+                MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE
 
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        List<Series> series = executeQueryReturnSeries(seriesQuery);
-        List<Sample> data = series.get(0).getData();
-
-        assertNotSame("Empty data in returned series", 0, data.size());
-
-        assertEquals("Out of range data were inserted", 2, data.size());
-
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Stored value incorrect", new BigDecimal("12.45"), data.get(0).getV());
-
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, data.get(1).getD());
-        assertEquals("Stored value incorrect", new BigDecimal("10.8"), data.get(1).getV());
+        );
+        csvInsertCheck(
+                new SeriesCheck(singletonList(series)),
+                series.getEntity(),
+                csvPayload,
+                series.getTags()
+        );
     }
 
-    /* #2957 */
+    /**
+     * #2957
+     */
     @Test
-    public void testTimeRangeInMS() throws Exception {
-        Entity entity = new Entity("e-time-range-10");
-        Metric metric = new Metric("m-time-range-10");
+    public void testTimeRangeInMS() {
+        Series series = Mocks.series();
+        series.setData(new ArrayList<Sample>());
+        series.addData(new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE));
+        series.addData(new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE));
 
-        String csvPayload = "time," + metric.getName() + "\n" +
-                getMillis(MIN_STORABLE_DATE) + ", 12.45\n" +
-                getMillis(MAX_STORABLE_DATE) + ", 10.8\n" +
-                getMillis(addOneMS(MAX_STORABLE_DATE)) + " 10";
-        csvInsert(entity.getName(), csvPayload);
+        String csvPayload = String.format(
+                "time, %s%n%s, %s%n%s, %s%n",
+                series.getMetric(),
+                Util.parseDate(MIN_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE,
+                Util.parseDate(MAX_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE
 
-        SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        List<Series> series = executeQueryReturnSeries(seriesQuery);
-        List<Sample> data = series.get(0).getData();
-
-        assertNotSame("Empty data in returned series", 0, data.size());
-
-        assertEquals("Out of range data were inserted", 2, data.size());
-
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Stored value incorrect", new BigDecimal("12.45"), data.get(0).getV());
-
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, data.get(1).getD());
-        assertEquals("Stored value incorrect", new BigDecimal("10.8"), data.get(1).getV());
+        );
+        csvInsertCheck(
+                new SeriesCheck(singletonList(series)),
+                series.getEntity(),
+                csvPayload,
+                series.getTags()
+        );
     }
+
+
+    @DataProvider(name = "entityNameProvider")
+    private Object[][] provideEntityName() {
+        return new Object[][]{
+                {"csvinsert entityname-11", "csvinsert_entityname-11",},
+                {"csvinsertйёentityname-13", "csvinsertйёentityname-13"},
+                {"csvinsert/entityname-12", "csvinsert/entityname-12"}
+
+        };
+    }
+
 
     /**
      * #1278
      */
-    @Test
-    public void testNameContainsWhitespace() throws Exception {
-        Entity entity = new Entity("csvinsert entityname-11");
-        Metric metric = new Metric("csv-metric-11");
-        String csvPayload = "time," + metric.getName() + "\n" +
-                "0, 0";
+    @Test(dataProvider = "entityNameProvider")
+    public void testEntityNames(String queryName, String expectedName) throws Exception {
+        Entity entity = new Entity(queryName);
+        Metric metric = new Metric(metric());
+        String csvPayload = String.format(
+                "time, %s%n0, 0%n",
+                metric.getName()
+        );
         Response response = csvInsert(entity.getName(), csvPayload);
-        assertEquals("Required should handle this(space -> _)", OK.getStatusCode(), response.getStatus());
-        final String savedEntityName = entity.getName().replaceAll(" ", "_");
-        assertTrue(EntityMethod.entityExist(new Entity(savedEntityName)));
-
+        String assertMessage = String.format("Failed to insert entity with name: %s", entity);
+        assertEquals(assertMessage, OK.getStatusCode(), response.getStatus());
+        entity.setName(expectedName);
+        Checker.check(new EntityCheck(entity));
     }
 
-    /**
-     * #1278
-     */
-    @Test
-    public void testNameContainsSlash() throws Exception {
-        Entity entity = new Entity("csvinsert/entityname-12");
-        Metric metric = new Metric("csvinsert-metric-12");
-        String csvPayload = "time," + metric.getName() + "\n" +
-                "0, 0";
-        Response response = csvInsert(entity.getName(), csvPayload);
-        assertEquals("Fail to execute csvInsert query", OK.getStatusCode(), response.getStatus());
-        assertTrue(EntityMethod.entityExist(entity));
-
-    }
-
-    /**
-     * #1278
-     */
-    @Test
-    public void testNameContainsCyrillic() throws Exception {
-        Entity entity = new Entity("csvinsertйёentityname-13");
-        Metric metric = new Metric("csvinsert-metric-13");
-        String csvPayload = "time," + metric.getName() + "\n" +
-                "0, 0";
-        Response response = csvInsert(entity.getName(), csvPayload);
-        assertEquals("Fail to execute csvInsert query", OK.getStatusCode(), response.getStatus());
-        assertTrue(EntityMethod.entityExist(entity));
-
+    private String formatISODate(Date isoDate, String pattern) {
+        DateFormat df = new SimpleDateFormat(pattern);
+        df.setTimeZone(java.util.TimeZone.getTimeZone("Zulu"));
+        return df.format(isoDate);
     }
 }

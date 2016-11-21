@@ -15,24 +15,17 @@ import static com.axibase.tsd.api.util.Util.parseDate;
 
 public class Mocks {
     public static final String ISO_TIME = "2016-06-03T09:23:00.000Z";
+    public static final Long MILLS_TIME = date().getTime();
+    public static final String DECIMAL_VALUE = "123.4567";
+    public static final Sample SAMPLE = new Sample(ISO_TIME, DECIMAL_VALUE);
+    public static final String TIMEZONE_ID = "GMT0";
+    public static final String LABEL = "label";
+    public static final String DESCRIPTION = "description";
+    public static final Map<String, String> TAGS = Collections.singletonMap("tag", "value");
 
     public static Date date() {
         return parseDate(ISO_TIME);
     }
-
-    public static final Long MILLS_TIME = date().getTime();
-
-    public static final String DECIMAL_VALUE = "123.4567";
-
-    public static final Sample SAMPLE = new Sample(ISO_TIME, DECIMAL_VALUE);
-
-    public static final String TIMEZONE_ID = "GMT12";
-
-    public static final String LABEL = "label";
-
-    public static final String DESCRIPTION = "description";
-
-    public static final Map<String, String> TAGS = Collections.singletonMap("tag", "value");
 
     public static Entity entity() {
         Entity resultEntity = new Entity(Util.TestNames.entity());

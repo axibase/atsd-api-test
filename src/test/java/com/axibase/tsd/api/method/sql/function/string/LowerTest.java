@@ -5,11 +5,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.FileNotFoundException;
-
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 
 public class LowerTest extends SqlTest {
@@ -21,7 +19,7 @@ public class LowerTest extends SqlTest {
     }
 
     @BeforeClass
-    public void prepareData() throws FileNotFoundException, InterruptedException {
+    public void prepareData() throws Exception {
         generateNames();
         prepareApplyTestData(TEST_METRIC);
     }

@@ -1,6 +1,9 @@
 package com.axibase.tsd.api.method.metric;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.model.metric.Metric;
 
 import javax.ws.rs.client.Entity;
@@ -67,15 +70,17 @@ public class MetricMethod extends BaseMethod {
         return response;
     }
 
-    public static void createOrReplaceMetricCheck(Metric metric) throws Exception {
+    public static void createOrReplaceMetricCheck(Metric metric, AbstractCheck check) throws Exception {
         if (createOrReplaceMetric(metric.getName(), jacksonMapper.writeValueAsString(metric)).getStatus() != OK.getStatusCode()) {
             throw new Exception("Can not execute createOrReplaceEntityGroup query");
         }
-        if (!metricExist(metric)) {
-            throw new Exception("Fail to check metric createOrReplaceEntityGroup");
-        }
+        Checker.check(check);
     }
 
+
+    public static void createOrReplaceMetricCheck(Metric metric) throws Exception {
+        createOrReplaceMetricCheck(metric, new MetricCheck(metric));
+    }
 
     public static boolean metricExist(final Metric metric) throws Exception {
         final Response response = queryMetric(metric.getName());

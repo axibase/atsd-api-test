@@ -1,22 +1,21 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+
+import static javax.ws.rs.core.Response.Status.OK;
 
 public class CSVInsertMethod extends SeriesMethod {
     protected static final String METHOD_CSV_INSERT = "/series/csv/{entity}";
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final long CSV_EXPECTED_PROCESSING_TIME = 2 * DEFAULT_EXPECTED_PROCESSING_TIME;
 
     public static Response csvInsert(String entity, String csv, Map<String, String> tags, String user, String password) {
         WebTarget webTarget = httpApiResource.path(METHOD_CSV_INSERT).resolveTemplate("entity", entity);
@@ -34,15 +33,28 @@ public class CSVInsertMethod extends SeriesMethod {
         return response;
     }
 
-    public static Response csvInsert(String entity, String csv, Map<String, String> tags) throws InterruptedException {
+    public static Response csvInsert(String entity, String csv, Map<String, String> tags) {
         Response response = csvInsert(entity, csv, tags, null, null);
-        Thread.sleep(CSV_EXPECTED_PROCESSING_TIME);
         return response;
     }
 
-    public static Response csvInsert(String entity, String csv) throws InterruptedException {
-        return csvInsert(entity, csv, new HashMap<String, String>());
+    public static Response csvInsert(String entity, String csv) {
+        return csvInsert(entity, csv, Collections.EMPTY_MAP);
     }
 
+    public void csvInsertCheck(AbstractCheck check, String entity, String csv, Map<String, String> tags) {
+        Response response = csvInsert(entity, csv, tags);
+        if (response.getStatus() != OK.getStatusCode()) {
+            String errorMessage = String.format(
+                    "Failed to insert Series as CSV for entity %s with payload : %n %s",
+                    entity, csv
+            );
+            throw new IllegalStateException(errorMessage);
+        }
+        Checker.check(check);
+    }
 
+    public void csvInsertCheck(AbstractCheck check, String entity, String csv) {
+        csvInsertCheck(check, entity, csv, Collections.EMPTY_MAP);
+    }
 }

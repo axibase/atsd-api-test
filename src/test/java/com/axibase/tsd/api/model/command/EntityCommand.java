@@ -1,7 +1,5 @@
-package com.axibase.tsd.api.model.command.entity;
+package com.axibase.tsd.api.model.command;
 
-import com.axibase.tsd.api.model.command.AbstractCommand;
-import com.axibase.tsd.api.model.command.FieldFormat;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 
@@ -83,7 +81,7 @@ public class EntityCommand extends AbstractCommand {
         }
         if (this.tags != null) {
             for (Map.Entry<String, String> entry : tags.entrySet()) {
-                stringBuilder.append(FieldFormat.tag(entry.getKey(), entry.getValue()));
+                stringBuilder.append(FieldFormat.keyValue("t", entry.getKey(), entry.getValue()));
             }
         }
         if (this.timeZoneID != null) {

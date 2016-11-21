@@ -1,6 +1,9 @@
 package com.axibase.tsd.api.method.entity;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.model.entity.Entity;
 
 import javax.ws.rs.client.WebTarget;
@@ -29,7 +32,7 @@ public class EntityMethod extends BaseMethod {
         return response;
     }
 
-    public static Response createOrReplaceEntity(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
+    public static Response createOrReplaceEntity(Entity entity) throws Exception {
         return createOrReplaceEntity(entity.getName(), entity);
     }
 
@@ -98,21 +101,22 @@ public class EntityMethod extends BaseMethod {
     }
 
 
-    public static void createOrReplaceEntityCheck(com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
+    public static void createOrReplaceEntityCheck(Entity entity, AbstractCheck check) throws Exception {
         if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
             throw new IllegalStateException("Can not execute createOrReplaceEntity query");
         }
-        if (!entityExist(entity)) {
-            throw new IllegalStateException("Fail to check entity " + entity.getName());
-        }
+        Checker.check(check);
     }
 
+    public static void createOrReplaceEntityCheck(Entity entity) throws Exception {
+        createOrReplaceEntityCheck(entity, new EntityCheck(entity));
+    }
 
-    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity) throws Exception {
+    public static boolean entityExist(final Entity entity) throws Exception {
         return entityExist(entity, false);
     }
 
-    public static boolean entityExist(final com.axibase.tsd.api.model.entity.Entity entity, boolean strict) throws Exception {
+    public static boolean entityExist(final Entity entity, boolean strict) throws Exception {
         Response response = getEntityResponse(entity.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;

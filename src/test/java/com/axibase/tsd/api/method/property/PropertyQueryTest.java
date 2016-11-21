@@ -1,14 +1,14 @@
 package com.axibase.tsd.api.method.property;
 
 
-import com.axibase.tsd.api.util.ErrorTemplate;
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
+import com.axibase.tsd.api.util.ErrorTemplate;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -1268,25 +1268,25 @@ public class PropertyQueryTest extends PropertyMethod {
     public void testLimitWithKeyExpression() throws Exception {
         final int limit = 1;
         final Property property = new Property("query-type57-c", "query-entity57-c");
-        final String keyValue = "key1";
-        property.addKey("uniq", keyValue);
+        final String tag = "key1";
+        property.addKey("uniq", tag);
         property.addTag("tag_key", "tag_value");
         insertPropertyCheck(property);
 
         final Property property2 = new Property();
         property2.setType(property.getType());
         property2.setEntity(property.getEntity());
-        property2.addKey("uniq", keyValue.toUpperCase());
+        property2.addKey("uniq", tag.toUpperCase());
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
-        query.setKeyTagExpression("keys.uniq = '" + keyValue + "'");
+        query.setKeyTagExpression("keys.uniq = '" + tag + "'");
         query.setLimit(limit);
 
         assertEquals("One property should be received", limit, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
 
-        query.setKeyTagExpression("keys.uniq = '" + keyValue.toUpperCase() + "'");
+        query.setKeyTagExpression("keys.uniq = '" + tag.toUpperCase() + "'");
         assertEquals("One property should be received", limit, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
     }
 

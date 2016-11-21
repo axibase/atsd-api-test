@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -111,6 +112,12 @@ public class Series {
         if (metric != null ? !metric.equals(series.metric) : series.metric != null) return false;
         if (data != null ? !data.equals(series.data) : series.data != null) return false;
         return tags != null ? tags.equals(series.tags) : series.tags == null;
+
+    }
+
+    @Override
+    public String toString() {
+        return Util.prettyPrint(this);
     }
 
     @Override
@@ -120,15 +127,5 @@ public class Series {
         result = 31 * result + (data != null ? data.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Series{" +
-                "entity='" + entity + '\'' +
-                ", metric='" + metric + '\'' +
-                ", tags=" + tags +
-                ", data=" + data +
-                '}';
     }
 }

@@ -1,10 +1,10 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -178,7 +178,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         final Integer count = 1000;
         final Property property = new Property("delete-type-6.6", "delete-entity6.6");
         property.addTag("t1", "v1");
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             property.addKey("key_name-" + String.valueOf(i), "key_value-" + String.valueOf(i));
         }
         insertPropertyCheck(property);
@@ -576,7 +576,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         property.addTag("t1", "v1");
         property.setDate(MIN_STORABLE_DATE);
         insertPropertyCheck(property);
-
+        assertTrue(propertyExist(property));
         PropertyQuery deleteQuery = new PropertyQuery();
         deleteQuery.setType(property.getType());
         deleteQuery.setEntity(property.getEntity());
@@ -778,5 +778,4 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertFalse("Property should be deleted", propertyExist(property));
     }
-
 }

@@ -1,10 +1,10 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

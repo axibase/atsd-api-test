@@ -1,7 +1,10 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -20,7 +23,10 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.OK;
 
@@ -57,7 +63,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static Response insertSeries(final List<Series> seriesList) throws FileNotFoundException {
-        return insertSeries(seriesList, true);
+        return insertSeries(seriesList, false);
     }
 
 
@@ -99,36 +105,20 @@ public class SeriesMethod extends BaseMethod {
         return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
     }
 
+    public static void insertSeriesCheck(Series... series) throws Exception {
+        insertSeriesCheck(Arrays.asList(series));
+    }
+
     public static void insertSeriesCheck(final List<Series> seriesList) throws Exception {
+        insertSeriesCheck(seriesList, new SeriesCheck(seriesList));
+    }
+
+    public static void insertSeriesCheck(final List<Series> seriesList, AbstractCheck check) throws Exception {
         Response response = insertSeries(seriesList);
         if (OK.getStatusCode() != response.getStatus()) {
             throw new Exception("Fail to execute insertSeries query");
         }
-        final long startCheckTimeMillis = System.currentTimeMillis();
-        do {
-            if (seriesListIsInserted(seriesList)) {
-                return;
-            }
-            Thread.sleep(BaseMethod.REQUEST_INTERVAL);
-        } while (System.currentTimeMillis() <= startCheckTimeMillis + BaseMethod.UPPER_BOUND_FOR_CHECK);
-        if (!seriesListIsInserted(seriesList)) {
-            throw new Exception("Fail to check inserted queries");
-        }
-    }
-
-    public static boolean seriesListIsInserted(final List<Series> seriesList) throws Exception {
-        List<SeriesQuery> seriesQueryList = new ArrayList<>();
-        List<Series> formattedSeriesList = new ArrayList<>();
-        for (final Series series : seriesList) {
-            seriesQueryList.add(new SeriesQuery(series));
-            Series formattedSeries = series.copy();
-            formattedSeries.setTags(series.getFormattedTags());
-            formattedSeriesList.add(formattedSeries);
-        }
-        Response response = querySeries(seriesQueryList);
-        String expected = jacksonMapper.writeValueAsString(formattedSeriesList);
-        String actual = response.readEntity(String.class);
-        return compareJsonString(expected, actual);
+        Checker.check(check);
     }
 
     public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {

@@ -138,5 +138,9 @@ public class Util {
         public static String message() {
             return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.MESSAGE);
         }
+
+        public static String propertyType() {
+            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY_TYPE);
+        }
     }
 }

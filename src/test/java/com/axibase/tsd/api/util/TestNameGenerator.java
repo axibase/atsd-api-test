@@ -103,7 +103,8 @@ class TestNameGenerator {
     }
 
     enum Keys {
-        ENTITY("entity"), METRIC("metric"), ENTITY_GROUP("entity-group"), MESSAGE("message"), PROPERTY("property");
+        ENTITY("entity"), METRIC("metric"), ENTITY_GROUP("entity-group"), MESSAGE("message"), PROPERTY("property"),
+        PROPERTY_TYPE("property-type");
 
         private String textValue;
 

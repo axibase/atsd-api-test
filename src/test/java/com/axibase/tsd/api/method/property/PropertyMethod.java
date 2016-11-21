@@ -1,6 +1,9 @@
 package com.axibase.tsd.api.method.property;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.model.property.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,15 +74,16 @@ public class PropertyMethod extends BaseMethod {
     }
 
 
-    public static void insertPropertyCheck(final Property property) throws Exception {
+    public static void insertPropertyCheck(final Property property, AbstractCheck check) throws Exception {
         Response response = insertProperty(property);
         if (response.getStatus() != OK.getStatusCode()) {
             throw new Exception("Can not execute insert property query");
         }
+        Checker.check(check);
+    }
 
-        if (!propertyExist(property)) {
-            throw new Exception("Fail to check inserted property");
-        }
+    public static void insertPropertyCheck(final Property property) throws Exception {
+        insertPropertyCheck(property, new PropertyCheck(property));
     }
 
     public static boolean propertyExist(final Property property) throws Exception {

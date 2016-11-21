@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.message;
 
+import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageInsertTest extends MessageMethod {
@@ -31,12 +33,13 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage(messageText);
         message.setDate(date);
 
-        Assert.assertTrue(insertMessage(message, DEFAULT_EXPECTED_PROCESSING_TIME), "Fail to insert message");
-
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity("nurswgvml022");
         messageQuery.setStartDate(date);
         messageQuery.setEndDate(endDate);
+
+        insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
+
         List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
@@ -53,16 +56,12 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("msg-time-range-msg-1");
         message.setDate(MIN_STORABLE_DATE);
 
-        Boolean success = insertMessage(message);
-        // wait for message availability
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        if (!success)
-            Assert.fail("Failed to insert message");
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(message.getEntity());
         messageQuery.setStartDate(MIN_QUERYABLE_DATE);
         messageQuery.setEndDate(MAX_QUERYABLE_DATE);
+
+        insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
         List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -79,16 +78,12 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("msg-time-range-msg-3");
         message.setDate(MAX_STORABLE_DATE);
 
-        Boolean success = insertMessage(message);
-        // wait for message availability
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        if (!success)
-            Assert.fail("Failed to insert message");
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(message.getEntity());
         messageQuery.setStartDate(MIN_QUERYABLE_DATE);
         messageQuery.setEndDate(MAX_QUERYABLE_DATE);
+
+        insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
         List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -106,8 +101,6 @@ public class MessageInsertTest extends MessageMethod {
         message.setDate(addOneMS(MAX_STORABLE_DATE));
 
         Boolean success = insertMessage(message);
-        // wait for message availability
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         if (success)
             Assert.fail("Managed to insert message with date out of range");
@@ -121,15 +114,13 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T00:00:00Z");
 
-        insertMessage(message);
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
         messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+
+        MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
         List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -148,15 +139,14 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-21T01:23:00+01:23");
 
-        insertMessage(message);
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
 
         String date = "2016-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
         messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+
+        MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
         List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -175,14 +165,14 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("hello");
         message.setDate("2016-05-20T22:37:00-01:23");
 
-        insertMessage(message);
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
 
         String date = "2016-05-21T00:00:00.000Z";
-        MessageQuery messageQuery = new MessageQuery();
+        final MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
         messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+
+        insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
         List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -233,4 +223,24 @@ public class MessageInsertTest extends MessageMethod {
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 1469059200000\"}", response.readEntity(String.class), true);
     }
 
+    private static class MessageQuerySizeCheck extends AbstractCheck {
+        private MessageQuery query;
+        private Integer size;
+
+        private MessageQuerySizeCheck(MessageQuery query, Integer size) {
+            this.query = query;
+            this.size = size;
+        }
+
+        @Override
+        public boolean isChecked() {
+            Response response = queryMessage(query);
+            if (response.getStatus() != OK.getStatusCode()) {
+                return false;
+            }
+            List<Message> storedMessageList = response.readEntity(new GenericType<List<Message>>() {
+            });
+            return storedMessageList.size() == size;
+        }
+    }
 }

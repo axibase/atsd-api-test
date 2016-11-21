@@ -1,62 +1,68 @@
 package com.axibase.tsd.api.method.series.command;
 
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.method.checks.SeriesCheck;
+import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.model.command.FieldFormat;
+import com.axibase.tsd.api.model.command.SeriesCommand;
+import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.json.JSONArray;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
+import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class LengthTest extends SeriesMethod {
+
+    private static final int MAX_LENGTH = 128 * 1024;
+
 
     /**
      * #2412
      */
     @Test
     public void testMaxLength() throws Exception {
-        final int MAX_LENGTH = 128 * 1024;
-        final int METRICS_COUNT = 10;
-        final int METRIC_PREFIX_LENGTH = 13097 - 2;
+        SeriesCommand seriesCommand = new SeriesCommand();
+        seriesCommand.setTimeISO(ISO_TIME);
+        seriesCommand.setEntityName(entity());
 
-        String entityName = "e-series-max-len";
-        String metricPrefix = Util.appendChar(new StringBuilder(), 'm', METRIC_PREFIX_LENGTH).append("-").toString();
-        String date = "2016-05-21T00:00:00.000Z";
-        String endDate = "2016-05-21T00:00:00.001Z";
+        Integer currentLength = seriesCommand.compose().length();
 
-        StringBuilder sb = new StringBuilder("series");
-        sb.append(" e:").append(entityName);
-        sb.append(" d:").append(date);
-        for (int i = 0; i < METRICS_COUNT; i++) {
-            sb.append(" m:").append(metricPrefix).append(i).append("=").append(i);
+        List<Series> seriesList = new ArrayList<>();
+        Map<String, String> values = new HashMap<>();
+
+        while (currentLength <= MAX_LENGTH) {
+            Series series = new Series();
+            series.setEntity(seriesCommand.getEntityName());
+            series.setMetric(metric());
+            series.addData(new Sample(ISO_TIME, "1"));
+            String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
+            currentLength += appendix.length();
+            if (currentLength < MAX_LENGTH) {
+                values.put(series.getMetric(), "1");
+                seriesList.add(series);
+            } else {
+                currentLength -= appendix.length();
+                Integer leftCount = MAX_LENGTH - currentLength;
+                String repeated = new String(new char[leftCount + 1]).replace("\0", "1");
+                Integer lastIndex = seriesList.size() - 1;
+                Series lastSeries = seriesList.get(lastIndex);
+                seriesList.remove(lastSeries);
+                lastSeries.setData(Collections.singletonList(new Sample(ISO_TIME, repeated)));
+                values.put(lastSeries.getMetric(), repeated);
+                seriesList.add(lastSeries);
+                break;
+            }
         }
-        if (MAX_LENGTH != sb.length()) {
-            Assert.fail("Command length is not maximal");
-        }
-        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        ArrayList<SeriesQuery> seriesQueries = new ArrayList<>();
-        final ArrayList<Series> seriesList = new ArrayList<>();
-        for (int i = 0; i < METRICS_COUNT; i++) {
-            Series series = new Series(null, metricPrefix + i);
-            series.setEntity(entityName);
-            series.setData(Collections.singletonList(new Sample(date, i)));
-            seriesList.add(series);
-            seriesQueries.add(new SeriesQuery(entityName, metricPrefix + i, date, endDate));
-        }
-
-        JSONArray storedSeriesList = executeQuery(seriesQueries);
-
-        String storedSeries = storedSeriesList.toString();
-        String sentSeries = jacksonMapper.writeValueAsString(seriesList);
-
-        assertTrue("Returned series do not match to inserted", compareJsonString(sentSeries, storedSeries));
+        seriesCommand.setValues(values);
+        assertEquals(seriesCommand.compose().length(), MAX_LENGTH);
+        CommandMethod.sendChecked(new SeriesCheck(seriesList), seriesCommand);
     }
 
     /**
@@ -64,35 +70,31 @@ public class LengthTest extends SeriesMethod {
      */
     @Test
     public void testMaxLengthOverflow() throws Exception {
-        final int MAX_LENGTH = 128 * 1024;
-        final int METRICS_COUNT = 10;
-        final int METRIC_PREFIX_LENGTH = 13097 - 2;
+        SeriesCommand seriesCommand = new SeriesCommand();
+        seriesCommand.setTimeISO(ISO_TIME);
+        seriesCommand.setEntityName(entity());
 
-        String entityName = "e-series-max-over";
-        String metricPrefix = Util.appendChar(new StringBuilder(), 'm', METRIC_PREFIX_LENGTH).append("-").toString();
-        String date = "2016-05-21T00:00:00.000Z";
-        String endDate = "2016-05-21T00:00:00.001Z";
+        Integer currentLength = seriesCommand.compose().length();
 
-        StringBuilder sb = new StringBuilder("series");
-        sb.append(" e:").append(entityName);
-        sb.append(" d:").append(date);
-        for (int i = 0; i < METRICS_COUNT; i++) {
-            sb.append(" m:").append(metricPrefix).append(i).append("=").append(i);
-        }
-        if (MAX_LENGTH + 1 != sb.length()) {
-            Assert.fail("Command length is not equals to max + 1");
-        }
-        tcpSender.send(sb.toString(), DEFAULT_EXPECTED_PROCESSING_TIME);
+        Map<String, String> values = new HashMap<>();
 
-        ArrayList<SeriesQuery> seriesQueries = new ArrayList<>();
-        for (int i = 0; i < METRICS_COUNT; i++) {
-            seriesQueries.add(new SeriesQuery(entityName, metricPrefix + i, date, endDate));
+        while (currentLength <= MAX_LENGTH) {
+            Series series = new Series();
+            series.setEntity(seriesCommand.getEntityName());
+            series.setMetric(metric());
+            series.addData(new Sample(ISO_TIME, "1"));
+            String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
+            currentLength += appendix.length();
+            values.put(series.getMetric(), "1");
         }
-        JSONArray storedSeriesList = executeQuery(seriesQueries);
+        seriesCommand.setValues(values);
+        assertTrue("SeriesCommand length is not overflow", seriesCommand.compose().length() > MAX_LENGTH);
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
 
-        for (int i = 0; i < METRICS_COUNT; i++) {
-            Assert.assertEquals("[]", Util.extractJSONObjectFieldFromJSONArrayByIndex(i, "data", storedSeriesList), "Managed to insert command that length is max + 1");
-        }
+        assertEquals("Sending result must contain one failed command",
+                expectedResult,
+                CommandMethod.send(seriesCommand)
+        );
     }
 
 

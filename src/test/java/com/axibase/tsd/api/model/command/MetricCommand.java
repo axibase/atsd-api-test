@@ -2,7 +2,6 @@ package com.axibase.tsd.api.model.command;
 
 
 import com.axibase.tsd.api.model.common.InterpolationMode;
-import com.axibase.tsd.api.model.metric.Interpolate;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 
@@ -124,7 +123,7 @@ public class MetricCommand extends AbstractCommand {
         }
         if (this.tags != null) {
             for (Map.Entry<String, String> entry : tags.entrySet()) {
-                stringBuilder.append(FieldFormat.tag(entry.getKey(), entry.getValue()));
+                stringBuilder.append(FieldFormat.keyValue("t", entry.getKey(), entry.getValue()));
             }
         }
         return stringBuilder.toString();

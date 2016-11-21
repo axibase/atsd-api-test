@@ -1,16 +1,24 @@
 package com.axibase.tsd.api.method.property.command;
 
+import com.axibase.tsd.api.method.checks.PropertyCheck;
+import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
+import com.axibase.tsd.api.model.command.PlainCommand;
+import com.axibase.tsd.api.model.command.PropertyCommand;
+import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.property.Property;
-import org.testng.Assert;
+import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
+import java.util.Collections;
 
-import static org.testng.AssertJUnit.assertFalse;
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.Util.TestNames.propertyType;
+import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class LengthTest extends PropertyMethod {
+    private static final int MAX_LENGTH = 128 * 1024;
 
 
     /**
@@ -18,33 +26,31 @@ public class LengthTest extends PropertyMethod {
      */
     @Test
     public void testMaxLength() throws Exception {
-        final int MAX_LENGTH = 128 * 1024;
-
-        String startDate = "2016-05-21T00:00:00.000Z";
-
-        final Property property = new Property("t-property-max-cmd-length", "e-property-max-cmd-len");
-        property.setDate(startDate);
-        property.setKey(new HashMap<String, String>());
+        final Property property = new Property(propertyType(), entity());
+        property.setDate(Mocks.ISO_TIME);
+        property.setKey(Collections.EMPTY_MAP);
         property.addTag("type", property.getType());
-
-        StringBuilder sb = new StringBuilder("property");
-        sb.append(" e:").append(property.getEntity());
-        sb.append(" d:").append(property.getDate());
-        sb.append(" t:").append(property.getType());
-        sb.append(" v:").append("type=").append(property.getTags().get("type"));
-
-        for (int i = 0; sb.length() < MAX_LENGTH; i++) {
+        PlainCommand command = new PropertyCommand(property);
+        Integer currentLength = command.compose().length();
+        for (int i = 0; currentLength < MAX_LENGTH; i++) {
             String tagName = "name" + i;
             String textValue = "sda" + i;
-            sb.append(" v:").append(tagName).append("=").append(textValue);
-            property.addTag(tagName, textValue);
+            String addedTag = String.format(" v:%s=%s", tagName, textValue);
+            currentLength += addedTag.length();
+            if (currentLength <= MAX_LENGTH) {
+                property.addTag(tagName, textValue);
+            } else {
+                currentLength -= addedTag.length();
+                break;
+            }
         }
-
-        Assert.assertEquals(MAX_LENGTH, sb.length(), "Command length is not maximal");
-        tcpSender.send(sb.toString(), 1000);
-
-        Thread.sleep(1000);
-
+        while (currentLength != MAX_LENGTH) {
+            property.setType(property.getType().concat("+"));
+            currentLength++;
+        }
+        command = new PropertyCommand(property);
+        assertEquals(MAX_LENGTH, command.compose().length(), "Command length is not maximal");
+        CommandMethod.sendChecked(new PropertyCheck(property), command);
         assertTrue(propertyExist(property));
     }
 
@@ -53,36 +59,23 @@ public class LengthTest extends PropertyMethod {
      */
     @Test
     public void testMaxLengthOverflow() throws Exception {
-        final int MAX_LENGTH = 128 * 1024;
-
-        String startDate = "2016-05-21T00:00:00.000Z";
-
-        final Property property = new Property("t-property-max-cmd-lnngth", "e-property-max-cmd-over");
-        property.setDate(startDate);
-        property.setKey(new HashMap<String, String>());
+        final Property property = new Property(propertyType(), entity());
+        property.setDate(Mocks.ISO_TIME);
+        property.setKey(Collections.EMPTY_MAP);
         property.addTag("type", property.getType());
-
-        StringBuilder sb = new StringBuilder("property");
-        sb.append(" e:").append(property.getEntity());
-        sb.append(" d:").append(property.getDate());
-        sb.append(" t:").append(property.getType());
-        sb.append(" v:").append("type=").append(property.getTags().get("type"));
-
-        for (int i = 0; sb.length() < MAX_LENGTH + 1; i++) {
+        PlainCommand command = new PropertyCommand(property);
+        Integer currentLength = command.compose().length();
+        for (int i = 0; currentLength < MAX_LENGTH + 1; i++) {
             String tagName = "name" + i;
             String textValue = "sda" + i;
-            sb.append(" v:").append(tagName).append("=").append(textValue);
+            currentLength += String.format(" v:%s=%s", tagName, textValue).length();
             property.addTag(tagName, textValue);
         }
-
-        if (MAX_LENGTH + 1 != sb.length()) {
-            Assert.fail("Command length is not maximal");
-        }
-        tcpSender.send(sb.toString(), 1000);
-
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-
-        assertFalse("Managed to insert command that length is max + 1", propertyExist(property));
+        command = new PropertyCommand(property);
+        CommandSendingResult actualResult = CommandMethod.send(command);
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        assertTrue("Command length is not greater than max", MAX_LENGTH < currentLength);
+        assertEquals(actualResult, expectedResult, "Managed to insert command that length is overflow max");
     }
 
 

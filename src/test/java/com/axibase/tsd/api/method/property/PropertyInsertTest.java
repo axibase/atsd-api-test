@@ -152,7 +152,6 @@ public class PropertyInsertTest extends PropertyMethod {
         property.setDate(MIN_STORABLE_DATE);
 
         Response response = insertProperty(property);
-        Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
         assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
 
         assertTrue(propertyExist(property));

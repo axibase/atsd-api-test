@@ -1,34 +1,28 @@
 package com.axibase.tsd.api.method.metric;
 
 
+import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.MetricCommand;
 import com.axibase.tsd.api.model.common.InterpolationMode;
-import com.axibase.tsd.api.model.metric.Interpolate;
+import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
-public class MetricCommandTest extends MetricMethod {
+public class MetricCommandTest extends MetricTest {
 
     /**
      * #3137
      */
     @Test
     public void testRequired() throws Exception {
-        String metricName = metric();
         MetricCommand command = new MetricCommand((String) null);
-        tcpSender.send(command);
-        Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        assertEquals("Command without metric Name sholdn't be inserted", expectedResult, CommandMethod.send(command));
     }
 
     /**
@@ -36,14 +30,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testLabel() throws Exception {
-        String metricName = metric();
-        String label = "label";
-        MetricCommand command = new MetricCommand(metricName);
-        command.setLabel(label);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-
-        assertEquals("Failed to set up label", label, actualMetric.getLabel());
+        Metric metric = new Metric(metric());
+        metric.setLabel(Mocks.LABEL);
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with label: %s",
+                metric.getLabel()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
     /**
@@ -51,15 +46,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testDescription() throws Exception {
-        String metricName = metric();
-        String description = "description";
-        MetricCommand command = new MetricCommand(metricName);
-        command.setDataType(DataType.DECIMAL);
-        command.setDescription(description);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-
-        assertEquals("Failed to set up description", description, actualMetric.getDescription());
+        Metric metric = new Metric(metric());
+        metric.setDescription(Mocks.DESCRIPTION);
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with description: %s",
+                metric.getDescription()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
     /**
@@ -67,14 +62,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testVersioning() throws Exception {
-        String metricName = metric();
-        Boolean versioning = true;
-        MetricCommand command = new MetricCommand(metricName);
-        command.setVersioning(versioning);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-
-        assertEquals("Failed to set up versioning", versioning, actualMetric.getVersioned());
+        Metric metric = new Metric(metric());
+        metric.setVersioned(true);
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with versioned: %s",
+                metric.getVersioned()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
 
@@ -83,14 +79,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testTimezone() throws Exception {
-        String metricName = metric();
-        String timeZoneId = "GMT0";
-        MetricCommand command = new MetricCommand(metricName);
-        command.setTimeZoneId(timeZoneId);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-
-        assertEquals("Failed to set up timezone", timeZoneId, actualMetric.getTimeZoneID());
+        Metric metric = new Metric(metric());
+        metric.setFilter("GMT0");
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with filter expression: %s",
+                metric.getTimeZoneID()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
     /**
@@ -98,14 +95,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testFilterExpression() throws Exception {
-        String metricName = metric();
-        MetricCommand command = new MetricCommand(metricName);
-        String filterExpression = "expression";
-        command.setFilterExpression(filterExpression);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-
-        assertEquals("Failed to set up filterExpression", filterExpression, actualMetric.getFilter());
+        Metric metric = new Metric(metric());
+        metric.setFilter("expression");
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with filter expression: %s",
+                metric.getFilter()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
     /**
@@ -113,16 +111,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testTags() throws Exception {
-        String metricName = metric();
-        Map<String, String> tags = new HashMap<>();
-        tags.put("a", "b");
-        tags.put("c", "d");
-        MetricCommand command = new MetricCommand(metricName);
-        command.setTags(tags);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-
-        assertEquals("Failed to set up tags", tags, actualMetric.getTags());
+        Metric metric = new Metric(metric());
+        metric.setTags(Mocks.TAGS);
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with tags: %s",
+                metric.getTags()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
     /**
@@ -130,13 +127,15 @@ public class MetricCommandTest extends MetricMethod {
      */
     @Test
     public void testInterpolate() throws Exception {
-        String metricName = metric();
-        InterpolationMode interpolate = InterpolationMode.LINEAR;
-        MetricCommand command = new MetricCommand(metricName);
-        command.setInterpolate(interpolate);
-        tcpSender.send(command);
-        Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
-        assertEquals("Failed to set up interpolation mode", interpolate, actualMetric.getInterpolate());
+        Metric metric = new Metric(metric());
+        metric.setInterpolate(InterpolationMode.LINEAR);
+        MetricCommand command = new MetricCommand(metric);
+        CommandMethod.send(command);
+        String assertMessage = String.format(
+                "Failed to insert metric with interpolate mode: %s",
+                metric.getInterpolate()
+        );
+        assertMetricExisting(assertMessage, metric);
     }
 
     @DataProvider(name = "incorrectVersioningFiledProvider")
@@ -160,9 +159,12 @@ public class MetricCommandTest extends MetricMethod {
         String metricName = metric();
         String incorrectCommand = String.format("metric m:%s v:%s",
                 metricName, value);
-        tcpSender.send(incorrectCommand);
-        Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        String assertMessage = String.format(
+                "Metric with incorrect versioning field (%s) shouldn't be inserted",
+                value
+        );
+        assertEquals(assertMessage, expectedResult, CommandMethod.send(incorrectCommand));
     }
 
     @DataProvider(name = "incorrectInterpolationFieldProvider")
@@ -183,9 +185,12 @@ public class MetricCommandTest extends MetricMethod {
         String metricName = metric();
         String incorrectCommand = String.format("metric m:%s i:%s",
                 metricName, value);
-        tcpSender.send(incorrectCommand);
-        Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        String assertMessage = String.format(
+                "Metric with incorrect interpolate field (%s) shouldn't be inserted",
+                value
+        );
+        assertEquals(assertMessage, expectedResult, CommandMethod.send(incorrectCommand));
     }
 
     @DataProvider(name = "incorrectDataTypeFieldProvider")
@@ -207,9 +212,12 @@ public class MetricCommandTest extends MetricMethod {
         String metricName = metric();
         String incorrectCommand = String.format("metric m:%s p:%s",
                 metricName, value);
-        tcpSender.send(incorrectCommand);
-        Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        String assertMessage = String.format(
+                "Metric with incorrect type field (%s) shouldn't be inserted",
+                value
+        );
+        assertEquals(assertMessage, expectedResult, CommandMethod.send(incorrectCommand));
     }
 
 
@@ -228,10 +236,13 @@ public class MetricCommandTest extends MetricMethod {
     @Test(dataProvider = "incorrectTimeZoneProvider")
     public void testIncorrectTimeZone(String incorrectTimeZone) throws Exception {
         String metricName = metric();
-        MetricCommand command = new MetricCommand(metricName);
-        command.setTimeZoneId("aaa");
-        tcpSender.send(command);
-        Response response = MetricMethod.queryMetric(metricName);
-        assertEquals("Metric shouldn't be inserted", NOT_FOUND.getStatusCode(), response.getStatus());
+        String incorrectCommand = String.format("metric m:%s z:%s",
+                metricName, incorrectTimeZone);
+        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
+        String assertMessage = String.format(
+                "Metric with incorrect versioning field (%s) shouldn't be inserted",
+                incorrectCommand
+        );
+        assertEquals(assertMessage, expectedResult, CommandMethod.send(incorrectCommand));
     }
 }
