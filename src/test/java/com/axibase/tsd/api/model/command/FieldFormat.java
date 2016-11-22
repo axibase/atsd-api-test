@@ -15,15 +15,13 @@ public class FieldFormat {
     }
 
     private static String escape(String s) {
-        if (s.indexOf("\"") >= 0) {
+        if (s.contains("\"")) {
             s = s.replaceAll("\"", "\"\"");
         }
         char[] escapeChars = {'=', '"', ' ', '\r', '\n', '\t'};
-        checkQuote:
         for (char c : escapeChars) {
             if (s.indexOf(c) >= 0) {
-                s = "\"" + s + "\"";
-                break checkQuote;
+                return String.format("\"%s\"", s);
             }
         }
         return s;

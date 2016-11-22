@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
 

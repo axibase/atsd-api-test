@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series.command;
 
-import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.command.FieldFormat;
@@ -12,6 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
+import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
@@ -61,8 +61,9 @@ public class LengthTest extends SeriesMethod {
             }
         }
         seriesCommand.setValues(values);
-        assertEquals(seriesCommand.compose().length(), MAX_LENGTH);
-        CommandMethod.sendChecked(new SeriesCheck(seriesList), seriesCommand);
+        assertEquals("Command length is not maximal", seriesCommand.compose().length(), MAX_LENGTH);
+        CommandMethod.send(seriesCommand);
+        assertSeriesExisting(seriesList);
     }
 
     /**

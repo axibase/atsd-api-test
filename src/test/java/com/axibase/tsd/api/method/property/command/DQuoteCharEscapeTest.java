@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.property.command;
 
-import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
@@ -12,7 +11,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
 
 public class DQuoteCharEscapeTest extends PropertyMethod {
     private final static Map DEFAULT_PROPERTY_TAGS;
@@ -31,8 +30,8 @@ public class DQuoteCharEscapeTest extends PropertyMethod {
         property.setTags(DEFAULT_PROPERTY_TAGS);
         property.setDate(Util.getCurrentDate());
         PlainCommand command = new PropertyCommand(property);
-        CommandMethod.sendChecked(new PropertyCheck(property), command);
-        assertTrue("Inserted property can not be received", PropertyMethod.propertyExist(property));
+        CommandMethod.send(command);
+        assertPropertyExisting("Inserted property can not be received", property);
     }
 
     /**
@@ -43,10 +42,8 @@ public class DQuoteCharEscapeTest extends PropertyMethod {
         Property property = new Property("property-command-test\"\"-t1", "property-command-test-e1");
         property.setTags(DEFAULT_PROPERTY_TAGS);
         property.setDate(Util.getCurrentDate());
-
         PlainCommand command = new PropertyCommand(property);
-        CommandMethod.sendChecked(new PropertyCheck(property), command);
-
-        assertTrue("Inserted property can not be received", PropertyMethod.propertyExist(property));
+        CommandMethod.send(command);
+        assertPropertyExisting("Inserted property can not be received", property);
     }
 }

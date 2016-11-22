@@ -1,14 +1,16 @@
 package com.axibase.tsd.api.model.series;
 
-import com.axibase.tsd.api.util.Util;
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SeriesQuery {
@@ -29,14 +31,14 @@ public class SeriesQuery {
     public SeriesQuery() {
     }
 
-    public SeriesQuery(Series series)  {
+    public SeriesQuery(Series series) {
         setEntity(series.getEntity());
         setTags(new HashMap<>(series.getTags()));
         setExactMatch(true);
         setMetric(series.getMetric());
         if (series.getData().size() == 0) {
-            setStartDate(BaseMethod.MIN_QUERYABLE_DATE);
-            setEndDate(BaseMethod.MAX_QUERYABLE_DATE);
+            setStartDate(MIN_QUERYABLE_DATE);
+            setEndDate(MAX_QUERYABLE_DATE);
         } else {
             setIntervalBasedOnSeriesDate(series);
         }
@@ -63,10 +65,10 @@ public class SeriesQuery {
         this.tags = tags;
     }
 
-    private void setIntervalBasedOnSeriesDate(final Series series) throws  IllegalArgumentException {
+    private void setIntervalBasedOnSeriesDate(final Series series) throws IllegalArgumentException {
         try {
-            Long minDate = Util.getMillis(BaseMethod.MAX_QUERYABLE_DATE);
-            Long maxDate = Util.getMillis(BaseMethod.MIN_QUERYABLE_DATE);
+            Long minDate = Util.getMillis(MAX_QUERYABLE_DATE);
+            Long maxDate = Util.getMillis(MIN_QUERYABLE_DATE);
 
             Long curDate;
             for (Sample sample : series.getData()) {

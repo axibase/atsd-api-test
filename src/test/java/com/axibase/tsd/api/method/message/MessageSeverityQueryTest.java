@@ -1,10 +1,10 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.model.message.SeverityAlias;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.axibase.tsd.api.model.message.Severity.*;
+import static com.axibase.tsd.api.util.Mocks.*;
 
 
 public class MessageSeverityQueryTest extends MessageMethod {

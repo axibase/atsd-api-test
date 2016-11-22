@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.message.command;
 
-import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.command.MessageCommand;
@@ -9,7 +8,7 @@ import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
 
 public class BackslashNoEscapeTest extends MessageMethod {
 
@@ -23,9 +22,8 @@ public class BackslashNoEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
-        CommandMethod.sendChecked(new MessageCheck(message), command);
-
-        assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
+        CommandMethod.send(command);
+        assertMessageExisting("Inserted message can not be received", message);
     }
 
     /**
@@ -38,9 +36,8 @@ public class BackslashNoEscapeTest extends MessageMethod {
         message.setDate(Util.getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
-        CommandMethod.sendChecked(new MessageCheck(message), command);
-
-        assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
+        CommandMethod.send(command);
+        assertMessageExisting("Inserted message can not be received", message);
     }
 
     /**
@@ -51,11 +48,9 @@ public class BackslashNoEscapeTest extends MessageMethod {
         Message message = new Message("message-command-test-e9", "message-command-test-t9");
         message.setMessage("mess\\age9");
         message.setDate(Util.getCurrentDate());
-
         PlainCommand command = new MessageCommand(message);
-        CommandMethod.sendChecked(new MessageCheck(message), command);
-
-        assertTrue("Inserted message can not be received", MessageMethod.messageExist(message));
+        CommandMethod.send(command);
+        assertMessageExisting("Inserted message can not be received", message);
     }
 
 }

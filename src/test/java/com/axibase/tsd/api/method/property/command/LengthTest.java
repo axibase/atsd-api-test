@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.property.command;
 
-import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
@@ -12,6 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
+import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.propertyType;
 import static org.testng.Assert.assertEquals;
@@ -50,8 +50,8 @@ public class LengthTest extends PropertyMethod {
         }
         command = new PropertyCommand(property);
         assertEquals(MAX_LENGTH, command.compose().length(), "Command length is not maximal");
-        CommandMethod.sendChecked(new PropertyCheck(property), command);
-        assertTrue(propertyExist(property));
+        CommandMethod.send(command);
+        assertPropertyExisting("Inserted property can not be received", property);
     }
 
     /**

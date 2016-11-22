@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.EntityCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
@@ -79,7 +78,7 @@ public class EntityCommandTest extends EntityTest {
         Entity storedEntityForTags = new Entity("e-for-test-add-tags");
         storedEntityForTags.addTag(E_TAG_1, E_VAL_1);
         PlainCommand command = new EntityCommand(storedEntityForTags);
-        CommandMethod.sendChecked(new EntityCheck(storedEntityForTags), command);
+        CommandMethod.send(command);
         String assertMessage = String.format(
                 "Failed to check entity with updated tags %s",
                 storedEntityForTags.getTags()

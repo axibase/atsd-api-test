@@ -22,6 +22,13 @@ public class Mocks {
     public static final String LABEL = "label";
     public static final String DESCRIPTION = "description";
     public static final Map<String, String> TAGS = Collections.singletonMap("tag", "value");
+    public static final String MIN_QUERYABLE_DATE = "1000-01-01T00:00:00.000Z";
+    public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
+    public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
+    public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
+    public static final String ALERT_OPEN_VALUE = "1";
+    public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
+
 
     public static Date date() {
         return parseDate(ISO_TIME);

@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.message.command;
 
-import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.command.MessageCommand;
@@ -10,6 +9,7 @@ import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.Test;
 
+import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -32,8 +32,9 @@ public class LengthTest extends MessageMethod {
         String newMessage = new String(new char[MAX_LENGTH - currentLength]).replace("\0", "m");
         message.setMessage(newMessage);
         command = new MessageCommand(message);
-        assertEquals(command.compose().length(), MAX_LENGTH);
-        CommandMethod.sendChecked(new MessageCheck(message), command);
+        assertEquals("Command length is not maximal", command.compose().length(), MAX_LENGTH);
+        CommandMethod.send(command);
+        assertMessageExisting("Inserted message can not be received", message);
     }
 
     /**

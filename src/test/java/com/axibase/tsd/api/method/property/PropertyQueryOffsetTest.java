@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.property.Property;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
@@ -11,6 +10,9 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_STORABLE_DATE;
 
 /**
  * @author Dmitry Korchagin.

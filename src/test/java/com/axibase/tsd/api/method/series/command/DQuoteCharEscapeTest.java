@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series.command;
 
-import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.command.SeriesCommand;
@@ -13,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
+import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 
 public class DQuoteCharEscapeTest extends SeriesMethod {
     private final static Map DEFAULT_PROPERTY_TAGS;
@@ -37,7 +36,8 @@ public class DQuoteCharEscapeTest extends SeriesMethod {
         seriesCommand.setEntityName(series.getEntity());
         seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
 
-        CommandMethod.sendChecked(new SeriesCheck(singletonList(series)), seriesCommand);
+        CommandMethod.send(seriesCommand);
+        assertSeriesExisting(series);
     }
 
     /**
@@ -54,6 +54,7 @@ public class DQuoteCharEscapeTest extends SeriesMethod {
         seriesCommand.setEntityName(series.getEntity());
         seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
 
-        CommandMethod.sendChecked(new SeriesCheck(singletonList(series)), seriesCommand);
+        CommandMethod.send(seriesCommand);
+        assertSeriesExisting(series);
     }
 }

@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 

@@ -1,22 +1,17 @@
 package com.axibase.tsd.api.method.csv;
 
-import com.axibase.tsd.api.Checker;
-import com.axibase.tsd.api.method.checks.AbstractCheck;
-import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
-import java.util.List;
 
+import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -57,34 +52,11 @@ public class ParserEncodingTest extends CSVUploadMethod {
 
     private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws Exception {
         Registry.Entity.registerPrefix(entityName);
-
         Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding, null);
-
         assertEquals(response.getStatus(), OK.getStatusCode());
-
-        final MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setEntity(entityName);
-        messageQuery.setStartDate(MIN_QUERYABLE_DATE);
-        messageQuery.setEndDate(MAX_QUERYABLE_DATE);
-
-
-        Checker.check(new AbstractCheck() {
-            @Override
-            public boolean isChecked() {
-                Response response = MessageMethod.queryMessage(messageQuery);
-                if (response.getStatus() != OK.getStatusCode()) {
-                    return false;
-                }
-                List<Message> storedMessageList = response.readEntity(new GenericType<List<Message>>() {
-                });
-                return storedMessageList.size() > 0;
-            }
-        });
-
-        List<Message> storedMessageList = MessageMethod.queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
-
-        assertEquals("Unexpected message body", controlSequence, storedMessageList.get(0).getMessage());
+        Message message = new Message();
+        message.setEntity(entityName);
+        message.setMessage("Unexpected message body");
+        assertMessageExisting(message);
     }
-
 }

@@ -61,7 +61,7 @@ public class SeriesTest extends SeriesMethod {
         }
     }
 
-    public void assertSeriesQueryDataSize(SeriesQuery seriesQuery, Integer size) {
+    public static void assertSeriesQueryDataSize(SeriesQuery seriesQuery, Integer size) {
         assertSeriesQueryDataSize(DefaultAssertMessages.SERIES_QUERY_DATA_SIZE, seriesQuery, size);
     }
 

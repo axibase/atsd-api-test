@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.csv;
 
-import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.version.VersionMethod;
@@ -26,6 +25,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
+import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.DEFAULT_TIMEZONE_NAME;
 import static com.axibase.tsd.api.util.Util.parseDate;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -210,7 +211,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
-        Checker.check(new SeriesQueryDataSizeCheck(seriesQuery, 2));
+        assertSeriesQueryDataSize(seriesQuery, 2);
 
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
         Series series = seriesList.get(0);
@@ -233,8 +234,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Checker.check(new SeriesQueryDataSizeCheck(seriesQuery, 2));
-
+        assertSeriesQueryDataSize(seriesQuery, 2);
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
         Series series = seriesList.get(0);
 
@@ -260,7 +260,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Checker.check(new SeriesQueryDataSizeCheck(seriesQuery, dataSize));
+        assertSeriesQueryDataSize(seriesQuery, dataSize);
 
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
         Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
@@ -283,7 +283,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Checker.check(new SeriesQueryDataSizeCheck(seriesQuery, 3));
+        assertSeriesQueryDataSize(seriesQuery, 3);
         Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
 
         Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
@@ -312,7 +312,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Checker.check(new SeriesQueryDataSizeCheck(seriesQuery, 1));
+        assertSeriesQueryDataSize(seriesQuery, 1);
         assertSeriesValue(
                 entityName,
                 metricName,
@@ -328,7 +328,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Response response = multipartCsvUpload(csvPath, SIMPLE_PARSER);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        Checker.check(new SeriesQueryDataSizeCheck(seriesQuery, 1));
+        assertSeriesQueryDataSize(seriesQuery, 1);
         assertSeriesValue(
                 entityName,
                 metricName,

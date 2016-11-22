@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series.command;
 
-import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.series.SeriesTest;
 import com.axibase.tsd.api.model.command.SeriesCommand;
@@ -12,8 +11,6 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Collections.singletonList;
 
 public class BackslashCharEscapeTest extends SeriesTest {
     private final static Map DEFAULT_PROPERTY_TAGS;
@@ -37,7 +34,8 @@ public class BackslashCharEscapeTest extends SeriesTest {
         seriesCommand.setEntityName(series.getEntity());
         seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
 
-        CommandMethod.sendChecked(new SeriesCheck(singletonList(series)), seriesCommand);
+        CommandMethod.send(seriesCommand);
+        assertSeriesExisting(series);
     }
 
     /**
@@ -54,6 +52,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
         seriesCommand.setEntityName(series.getEntity());
         seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
 
-        CommandMethod.sendChecked(new SeriesCheck(singletonList(series)), seriesCommand);
+        CommandMethod.send(seriesCommand);
+        assertSeriesExisting(series);
     }
 }

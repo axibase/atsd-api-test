@@ -2,10 +2,16 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.alert.Alert;
+import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.*;
+
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static javax.ws.rs.core.Response.Status.OK;
 
 public class AlertMethod extends BaseMethod {
     private static final String METHOD_ALERTS_QUERY = "/alerts/query";
@@ -15,7 +21,6 @@ public class AlertMethod extends BaseMethod {
 
     public static <T> Response queryAlerts(T... queries) {
         Entity<List<T>> json = Entity.json(Arrays.asList(queries));
-        System.out.println(json);
         Response response = httpApiResource
                 .path(METHOD_ALERTS_QUERY)
                 .request()
@@ -58,12 +63,34 @@ public class AlertMethod extends BaseMethod {
         return response;
     }
 
-    public static <T> Response queryAlertsHistory(T... queries) {
+    public static Response queryHistoryResponse(List<AlertHistoryQuery> queryList) {
         Response response = httpApiResource
                 .path(METHOD_ALERTS_HISTORY_QUERY)
                 .request()
-                .post(Entity.json(Arrays.asList(queries)));
+                .post(Entity.json(queryList));
         response.bufferEntity();
         return response;
+    }
+
+    public static Response queryHistoryResponse(AlertHistoryQuery... queries) {
+        return queryHistoryResponse(Arrays.asList(queries));
+    }
+
+    public static List<Alert> queryHistory(List<AlertHistoryQuery> queryList) {
+        Response response = queryHistoryResponse(queryList);
+        if (response.getStatus() != OK.getStatusCode()) {
+            String errorMessage = String.format(
+                    "Failed to execute alert history query. Query: %s",
+                    queryList
+            );
+            throw new IllegalStateException(errorMessage);
+        } else {
+            return response.readEntity(new GenericType<List<Alert>>() {
+            });
+        }
+    }
+
+    public static List<Alert> queryHistory(AlertHistoryQuery... queries) {
+        return queryHistory(Arrays.asList(queries));
     }
 }

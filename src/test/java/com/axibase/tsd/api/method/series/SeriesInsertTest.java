@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.*;
-import static com.axibase.tsd.api.util.Mocks.MILLS_TIME;
+import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.addOneMS;
 import static com.axibase.tsd.api.util.Util.getMillis;
 import static javax.ws.rs.core.Response.Status.*;

@@ -1,7 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.Checker;
-import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
@@ -18,8 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.axibase.tsd.api.util.Mocks.SAMPLE;
-import static com.axibase.tsd.api.util.Mocks.series;
+import static com.axibase.tsd.api.method.entity.EntityTest.assertEntityExisting;
+import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
+import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static com.axibase.tsd.api.util.Util.parseDate;
 import static java.util.Collections.singletonList;
@@ -51,7 +50,7 @@ public class CSVInsertTest extends CSVInsertMethod {
                 formatISODate(parseDate(SAMPLE.getD()), template), SAMPLE.getV()
         );
         csvInsert(expectedSeries.getEntity(), csvPayload, expectedSeries.getTags());
-        Checker.check(new SeriesCheck(singletonList(expectedSeries)));
+        assertSeriesExisting(expectedSeries);
     }
 
     /**
@@ -165,7 +164,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String assertMessage = String.format("Failed to insert entity with name: %s", entity);
         assertEquals(assertMessage, OK.getStatusCode(), response.getStatus());
         entity.setName(expectedName);
-        Checker.check(new EntityCheck(entity));
+        assertEntityExisting(entity);
     }
 
     private String formatISODate(Date isoDate, String pattern) {

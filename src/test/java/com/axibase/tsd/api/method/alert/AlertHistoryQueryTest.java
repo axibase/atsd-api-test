@@ -1,19 +1,23 @@
 package com.axibase.tsd.api.method.alert;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.AlertHistorySizeQueryCheck;
+import com.axibase.tsd.api.model.alert.Alert;
+import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
-import org.json.JSONArray;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.Response;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import static javax.ws.rs.core.Response.Status.OK;
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
+@Test(enabled = false)
 public class AlertHistoryQueryTest extends AlertTest {
     private final static String ALERTHISTORY_ENTITY_NAME = "alert-historyquery-entity-1";
 
@@ -21,68 +25,42 @@ public class AlertHistoryQueryTest extends AlertTest {
     public void generateAlertHistory() throws Exception {
         Registry.Entity.register(ALERTHISTORY_ENTITY_NAME);
         generateAlertForEntity(ALERTHISTORY_ENTITY_NAME);
+        AlertHistoryQuery query = templateQuery()
+                .setEntity(ALERTHISTORY_ENTITY_NAME)
+                .setLimit(1);
+        Checker.check(new AlertHistorySizeQueryCheck(query, 1));
     }
+
+    private AlertHistoryQuery templateQuery() {
+        AlertHistoryQuery query = new AlertHistoryQuery();
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
+        query.setMetric(RULE_METRIC_NAME);
+        return query;
+    }
+
+
+    @DataProvider(name = "alertEntityFiltersProvider")
+    public Object[][] provideEntityFilters() {
+        return new Object[][]{
+                {templateQuery().setEntity("alert-historyquery-entity*")},
+                {templateQuery().setEntities(Collections.singletonList("alert-historyquery-entity-?"))},
+                {templateQuery().setEntityExpression("name LIKE '*rt-historyquery-entity-1'")}
+        };
+    }
+
 
     /**
      * #2991
      */
-    @Test(enabled = false)
-    public void testEntityWildcardStarChar() throws Exception {
-        Map<String, String> query = new HashMap<>();
-        query.put("entity", "alert-historyquery-entity*");
-        query.put("startDate", MIN_QUERYABLE_DATE);
-        query.put("endDate", MAX_QUERYABLE_DATE);
-        Response response = queryAlertsHistory(query);
-
-
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
-    }
-
-    /**
-     * #2979
-     */
-    @Test(enabled = false)
-    public void testEntitiesWildcardStarChar() throws Exception {
-        Map<String, Object> query = new HashMap<>();
-        query.put("entities", Collections.singletonList("alert-historyquery-entity*"));
-        query.put("startDate", MIN_QUERYABLE_DATE);
-        query.put("endDate", MAX_QUERYABLE_DATE);
-        Response response = queryAlertsHistory(query);
-
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get any alerts by entity expression");
-    }
-
-    /**
-     * #2979
-     */
-    @Test(enabled = false)
-    public void testEntitiesWildcardQuestionChar() throws Exception {
-        Map<String, Object> query = new HashMap<>();
-        query.put("entities", Collections.singletonList("alert-historyquery-entity-?"));
-        query.put("startDate", MIN_QUERYABLE_DATE);
-        query.put("endDate", MAX_QUERYABLE_DATE);
-        Response response = queryAlertsHistory(query);
-
-
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get any alerts by entity expression");
-    }
-
-    /**
-     * #2981
-     */
-    @Test(enabled = false)
-    public void testEntityExpressionFilterExist() throws Exception {
-        Map<String, Object> query = new HashMap<>();
-        query.put("entityExpression", "name LIKE '*rt-historyquery-entity-1'");
-        query.put("startDate", MIN_QUERYABLE_DATE);
-        query.put("endDate", MAX_QUERYABLE_DATE);
-        Response response = queryAlertsHistory(query);
-
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
+    @Test(enabled = false, dataProvider = "alertEntityFiltersProvider")
+    public void testEntityFilter(AlertHistoryQuery query) throws Exception {
+        List<Alert> alertList = queryHistory(query);
+        String assertMessage = String.format(
+                "Query response must contain at least one alert. Query %s",
+                query
+        );
+        assertTrue(alertList.size() > 0, assertMessage);
     }
 
     /**
@@ -90,22 +68,10 @@ public class AlertHistoryQueryTest extends AlertTest {
      */
     @Test(enabled = false)
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
-        Map<String, Object> qExist = new HashMap<>();
-        qExist.put("entity", "alert-historyquery-entity-1");
-        qExist.put("startDate", MIN_QUERYABLE_DATE);
-        qExist.put("endDate", MAX_QUERYABLE_DATE);
-
-        Map<String, Object> qUnknown = new HashMap<>();
-        qUnknown.put("entity", "UNKNOWN");
-        qUnknown.put("startDate", MIN_QUERYABLE_DATE);
-        qUnknown.put("endDate", MAX_QUERYABLE_DATE);
-
-        Response response = queryAlertsHistory(qExist, qUnknown);
-        JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) == 2, "Fail to get alert history by queries with unknown entity");
-        Assert.assertEquals("ENTITY not found for name: 'unknown'", Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse), "Unexpected warning message");
-
+        AlertHistoryQuery qExist = templateQuery().setEntity("alert-historyquery-entity-1");
+        AlertHistoryQuery qUnknown = templateQuery().setEntity("UNKNOWN");
+        List<Alert> resultList = AlertMethod.queryHistory(qExist, qUnknown);
+        assertEquals(resultList.size(), 2, "Fail to get alert history by queries with unknown entity");
+        assertEquals("ENTITY not found for name: 'unknown'", resultList.get(1).getWarning(), "Unexpected warning message");
     }
 }

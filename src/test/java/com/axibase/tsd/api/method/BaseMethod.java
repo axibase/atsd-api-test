@@ -31,12 +31,6 @@ public abstract class BaseMethod {
     public static final Long REQUEST_INTERVAL = 200L;
     public static final Long DEFAULT_EXPECTED_PROCESSING_TIME = 2000L;
     public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
-    public static final String MIN_QUERYABLE_DATE = "1000-01-01T00:00:00.000Z";
-    public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
-    public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
-    public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
-    public static final String ALERT_OPEN_VALUE = "1";
-    public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
     protected final static TCPSender tcpSender;
     protected final static ObjectMapper jacksonMapper;
     protected final static WebTarget httpApiResource;
