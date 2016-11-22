@@ -41,7 +41,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -64,7 +64,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 
         Message msgResponse = storedMessageList.get(0);
@@ -86,7 +86,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
 
         Message msgResponse = storedMessageList.get(0);
@@ -123,7 +123,7 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -149,7 +149,7 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -175,7 +175,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -235,7 +235,7 @@ public class MessageInsertTest extends MessageMethod {
 
         @Override
         public boolean isChecked() {
-            Response response = queryMessage(query);
+            Response response = queryMessageResponse(query);
             if (response.getStatus() != OK.getStatusCode()) {
                 return false;
             }

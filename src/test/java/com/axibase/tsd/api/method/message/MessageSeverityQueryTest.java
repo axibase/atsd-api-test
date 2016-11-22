@@ -52,7 +52,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test(dataProvider = "unknownSeverities")
     public void testUnknownSeverityRaiseError(Object o) throws Exception {
         messageQuery.setSeverity(String.valueOf(o));
-        String response = queryMessage(messageQuery).readEntity(String.class);
+        String response = queryMessageResponse(messageQuery).readEntity(String.class);
         JSONObject error = new JSONObject(response);
         Assert.assertTrue(error.has("error"), "Error ir not raised");
     }
@@ -64,7 +64,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test(dataProvider = "aliases")
     public void testAliasProcessedCorrectly(SeverityAlias alias) throws Exception {
         messageQuery.setSeverity(alias.name());
-        List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         String severity = messages.get(0).getSeverity();
         Assert.assertEquals(alias.getSeverity().name(), severity, "Alias processed wrong");
@@ -77,7 +77,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test(dataProvider = "severities")
     public void testMinSeverityCaseInsensitive(Severity severity) throws Exception {
         messageQuery.setMinSeverity(properCase(severity.name()));
-        List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Integer minimumSeverity = severity.getNumVal();
         for (Message m : messages) {
@@ -93,7 +93,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test(dataProvider = "severities")
     public void testSeverityCaseInsensitive(Severity s) throws Exception {
         messageQuery.setSeverity(properCase(s.name()));
-        List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         String severity = messages.get(0).getSeverity();
         Assert.assertEquals(s.name(), severity, "Severity is case sensitive");
@@ -106,7 +106,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     @Test(dataProvider = "severities")
     public void testResponseSeverityNotNumeric(Severity s) throws Exception {
         messageQuery.setSeverity(s.name());
-        List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         String severity = messages.get(0).getSeverity();
 //            str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
@@ -122,7 +122,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         String key = severity.name();
         Integer minimumSeverity = severity.getNumVal();
         messageQuery.setMinSeverity(key);
-        List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         for (Message m : messages) {
             int actualSeverity = valueOf(m.getSeverity()).getNumVal();
@@ -138,7 +138,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     public void testActualSeveritiesCorrespondRequired() throws Exception {
         String[] allSeverities = names();
         messageQuery.setSeverities(Arrays.asList(allSeverities));
-        List<Message> messages = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Assert.assertEquals(messages.size(), allSeverities.length);
     }

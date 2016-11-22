@@ -19,7 +19,7 @@ public class MessageCheck extends AbstractCheck {
             throw new IllegalStateException(
                     String.format(
                             "Failed to check existence of message: %s",
-                            message
+                            e.getMessage()
                     )
             );
         }

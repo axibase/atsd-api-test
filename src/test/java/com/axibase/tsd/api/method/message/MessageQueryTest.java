@@ -40,7 +40,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2016-05-21T00:00:00Z");
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -57,7 +57,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2016-05-21T01:23:00+01:23");
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -74,7 +74,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2016-05-20T22:37:00-01:23");
 
-        List<Message> storedMessageList = queryMessage(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -91,7 +91,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2016-07-21 00:00:00");
 
-        Response response = queryMessage(messageQuery);
+        Response response = queryMessageResponse(messageQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-21 00:00:00\"}", response.readEntity(String.class), true);
@@ -106,7 +106,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2016-07-20T22:50:00-0110");
 
-        Response response = queryMessage(messageQuery);
+        Response response = queryMessageResponse(messageQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
@@ -120,7 +120,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("1469059200000");
 
-        Response response = queryMessage(messageQuery);
+        Response response = queryMessageResponse(messageQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1469059200000\"}", response.readEntity(String.class), true);
@@ -141,7 +141,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("startDate", message.getDate());
         query.put("endDate", Util.addOneMS(message.getDate()));
 
-        final String given = queryMessage(query).readEntity(String.class);
+        final String given = queryMessageResponse(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
@@ -161,7 +161,7 @@ public class MessageQueryTest extends MessageMethod {
         query.put("startDate", message.getDate());
         query.put("endDate", Util.addOneMS(message.getDate()));
 
-        final String given = queryMessage(query).readEntity(String.class);
+        final String given = queryMessageResponse(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
@@ -187,12 +187,12 @@ public class MessageQueryTest extends MessageMethod {
         query.put("startDate", message.getDate());
         query.put("endDate", Util.addOneMS(message.getDate()));
 
-        final String entitiesResponse = queryMessage(query).readEntity(String.class);
+        final String entitiesResponse = queryMessageResponse(query).readEntity(String.class);
 
         query.remove("entity");
         query.put("entities", Collections.singletonList(pattern));
 
-        final String entityResponse = queryMessage(query).readEntity(String.class);
+        final String entityResponse = queryMessageResponse(query).readEntity(String.class);
         assertEquals("Message in response does not match to inserted", entitiesResponse, entityResponse);
     }
 
