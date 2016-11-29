@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.util.Registry;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,6 +12,8 @@ import java.util.*;
 import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class AlertQueryAcknowledgedTest extends AlertTest {
     private static final String ENTITY_NAME = "alert-query-ack-entity-1";
@@ -90,7 +91,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
         });
         for (Alert alert : alertList) {
-            Assert.assertTrue(alert.getAcknowledged(), "Response should not contain acknowledged=false alerts");
+            assertTrue("Response should not contain acknowledged=false alerts", alert.getAcknowledged());
         }
     }
 
@@ -109,7 +110,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         });
 
         for (Alert alert : alertList) {
-            Assert.assertFalse(alert.getAcknowledged(), "Response should not contain acknowledged=true alerts");
+            assertFalse("Response should not contain acknowledged=true alerts", alert.getAcknowledged());
         }
     }
 

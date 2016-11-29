@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -14,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.USER_NOT_FOUND;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class AuthenticationTest extends BaseMethod {
     private static final String UNKNOWN_USER = "Unknown User";
@@ -27,9 +27,9 @@ public class AuthenticationTest extends BaseMethod {
         List<SeriesQuery> seriesQueryList = Collections.singletonList(new SeriesQuery());
         Response response = SeriesMethod.executeQueryRaw(seriesQueryList, UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
 
-        Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
+        assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
+        assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 
     /**
@@ -40,9 +40,9 @@ public class AuthenticationTest extends BaseMethod {
         List<Series> seriesQueryList = Collections.singletonList(new Series());
         Response response = SeriesMethod.insertSeries(seriesQueryList, UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
 
-        Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
+        assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
+        assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 
     /**
@@ -52,9 +52,9 @@ public class AuthenticationTest extends BaseMethod {
     public void seriesCSVInsertTest() throws Exception {
         Response response = CSVInsertMethod.csvInsert("entity", "some csv", new HashMap<String, String>(), UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
 
-        Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
+        assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
+        assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 
     /**
@@ -64,8 +64,8 @@ public class AuthenticationTest extends BaseMethod {
     public void seriesUrlQueryTest() throws Exception {
         Response response = SeriesMethod.urlQuerySeries("entity", "metric", OutputFormat.JSON, new HashMap < String, String > (), UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
 
-        Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
+        assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
+        assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 }

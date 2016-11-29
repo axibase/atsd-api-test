@@ -15,7 +15,7 @@ import com.axibase.tsd.api.util.Util;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.util.Mocks.ALERT_OPEN_VALUE;
-import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.fail;
 
 public class AlertTest extends AlertMethod {
     public static final String RULE_METRIC_NAME = "test_alert_metric_1";

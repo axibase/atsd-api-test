@@ -14,7 +14,7 @@ import java.util.Collections;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.Sql.DATETIME_IN_GROUP_CLAUSE;
 import static javax.ws.rs.core.Response.Status;
-import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class SqlUnGroupedColumnTest extends SqlTest {
@@ -40,7 +40,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals(getErrorMessageFromResponse(response), DATETIME_IN_GROUP_CLAUSE);
+        assertEquals(DATETIME_IN_GROUP_CLAUSE, getErrorMessageFromResponse(response));
     }
 
     @Test
@@ -53,7 +53,9 @@ public class SqlUnGroupedColumnTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals(getErrorMessageFromResponse(response), "SELECT expression cannot include both an aggregation function and a column not referenced in GROUP BY clause.");
+        String expected = "SELECT expression cannot include both an aggregation function " +
+                "and a column not referenced in GROUP BY clause.";
+        assertEquals(expected, getErrorMessageFromResponse(response));
     }
 
     private String getErrorMessageFromResponse(Response response) {

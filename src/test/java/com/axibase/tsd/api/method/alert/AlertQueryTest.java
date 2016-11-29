@@ -4,7 +4,6 @@ package com.axibase.tsd.api.method.alert;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import org.json.JSONArray;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -15,6 +14,8 @@ import java.util.Map;
 import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class AlertQueryTest extends AlertTest {
 
@@ -34,8 +35,8 @@ public class AlertQueryTest extends AlertTest {
         query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
+        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
     /**
@@ -53,8 +54,8 @@ public class AlertQueryTest extends AlertTest {
         query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
+        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
     /**
@@ -72,8 +73,8 @@ public class AlertQueryTest extends AlertTest {
         query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
+        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
     /**
@@ -91,8 +92,8 @@ public class AlertQueryTest extends AlertTest {
         query.put("endDate", MAX_QUERYABLE_DATE);
         Response response = queryAlerts(query);
 
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(calculateJsonArraySize(response.readEntity(String.class)) > 0, "Fail to get alerts by entity expression");
+        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
     /**
@@ -117,8 +118,9 @@ public class AlertQueryTest extends AlertTest {
         Response response = queryAlerts(qExist, qUnknown);
         JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
-        Assert.assertEquals(response.getStatus(), OK.getStatusCode());
-        Assert.assertTrue(jsonResponse.length() == 2, "Fail to get alerts by queries with unknown entity");
-        Assert.assertEquals("ENTITY not found for name: 'unknown'", Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse), "Unexpected warning message");
+        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertTrue("Fail to get alerts by queries with unknown entity", jsonResponse.length() == 2);
+        assertEquals("Unexpected warning message", "ENTITY not found for name: 'unknown'",
+                Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
     }
 }

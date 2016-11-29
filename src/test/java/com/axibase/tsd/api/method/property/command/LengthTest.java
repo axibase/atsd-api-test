@@ -14,7 +14,7 @@ import java.util.Collections;
 import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.propertyType;
-import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class LengthTest extends PropertyMethod {
@@ -49,7 +49,7 @@ public class LengthTest extends PropertyMethod {
             currentLength++;
         }
         command = new PropertyCommand(property);
-        assertEquals(MAX_LENGTH, command.compose().length(), "Command length is not maximal");
+        assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
         CommandMethod.send(command);
         assertPropertyExisting("Inserted property can not be received", property);
     }
@@ -75,7 +75,7 @@ public class LengthTest extends PropertyMethod {
         CommandSendingResult actualResult = CommandMethod.send(command);
         CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
         assertTrue("Command length is not greater than max", MAX_LENGTH < currentLength);
-        assertEquals(actualResult, expectedResult, "Managed to insert command that length is overflow max");
+        assertEquals("Managed to insert command that length is overflow max", expectedResult, actualResult);
     }
 
 

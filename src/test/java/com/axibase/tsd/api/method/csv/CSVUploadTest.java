@@ -11,7 +11,6 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
 import org.json.JSONException;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -31,6 +30,7 @@ import static com.axibase.tsd.api.util.Util.DEFAULT_TIMEZONE_NAME;
 import static com.axibase.tsd.api.util.Util.parseDate;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.fail;
 
 public class CSVUploadTest extends CSVUploadMethod {
     public static final String LINE_BREAKS_TEST_VALUE = "533.9";
@@ -51,7 +51,7 @@ public class CSVUploadTest extends CSVUploadMethod {
             File configPath = resolvePath(RESOURCE_DIR + File.separator + parserName + ".xml");
             boolean success = importParser(configPath);
             if (!success)
-                Assert.fail("Failed to import parser");
+                fail("Failed to import parser");
         }
 
         Version versionInfo = VersionMethod.queryVersion().readEntity(Version.class);

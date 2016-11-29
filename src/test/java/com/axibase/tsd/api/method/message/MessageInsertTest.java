@@ -6,7 +6,6 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -17,6 +16,7 @@ import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.addOneMS;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
+import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageInsertTest extends MessageMethod {
@@ -90,8 +90,8 @@ public class MessageInsertTest extends MessageMethod {
         });
 
         Message msgResponse = storedMessageList.get(0);
-        Assert.assertEquals(message.getDate(), msgResponse.getDate(), "Max storable date failed to save");
-        Assert.assertEquals(message.getMessage(), msgResponse.getMessage(), "Incorrect stored message");
+        assertEquals("Max storable date failed to save", message.getDate(), msgResponse.getDate());
+        assertEquals("Incorrect stored message", message.getMessage(), msgResponse.getMessage());
     }
 
     /* #2957 */
@@ -103,8 +103,9 @@ public class MessageInsertTest extends MessageMethod {
 
         Boolean success = insertMessage(message);
 
-        if (success)
-            Assert.fail("Managed to insert message with date out of range");
+        if (success) {
+            fail("Managed to insert message with date out of range");
+        }
     }
 
     /* #2850 */
@@ -123,8 +124,8 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        GenericType<List<Message>> generic = new GenericType<List<Message>>(){};
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(generic);
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -194,7 +195,8 @@ public class MessageInsertTest extends MessageMethod {
         Response response = insertMessageReturnResponse(message);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-21 00:00:00\"}", response.readEntity(String.class), true);
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-21 00:00:00\"}",
+                response.readEntity(String.class), true);
 
     }
 
@@ -208,7 +210,8 @@ public class MessageInsertTest extends MessageMethod {
         Response response = insertMessageReturnResponse(message);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2016-07-20T22:50:00-0110\"}",
+                response.readEntity(String.class), true);
     }
 
     /* #2850 */
@@ -221,7 +224,8 @@ public class MessageInsertTest extends MessageMethod {
         Response response = insertMessageReturnResponse(message);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 1469059200000\"}", response.readEntity(String.class), true);
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 1469059200000\"}",
+                response.readEntity(String.class), true);
     }
 
     private static class MessageQuerySizeCheck extends AbstractCheck {

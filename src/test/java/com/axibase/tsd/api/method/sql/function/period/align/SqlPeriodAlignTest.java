@@ -5,13 +5,14 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class SqlPeriodAlignTest extends SqlMethod {
@@ -58,7 +59,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:35:00.123Z", "6.0"),
                 Arrays.asList("2016-06-03T09:40:00.123Z", "19.0")
         );
-        Assert.assertEquals(expectedTableRows, resultTableRows);
+        assertEquals(expectedTableRows, resultTableRows);
     }
 
 
@@ -85,7 +86,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:35:00.124Z", "6.0"),
                 Arrays.asList("2016-06-03T09:40:00.124Z", "19.0")
         );
-        Assert.assertEquals(expectedTableRows, resultTableRows);
+        assertEquals(expectedTableRows, resultTableRows);
     }
 
 
@@ -111,7 +112,7 @@ public class SqlPeriodAlignTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:35:00.322Z", "6.0"),
                 Arrays.asList("2016-06-03T09:40:00.322Z", "19.0")
         );
-        Assert.assertEquals(expectedTableRows, resultTableRows);
+        assertEquals(expectedTableRows, resultTableRows);
     }
 
 
@@ -137,6 +138,6 @@ public class SqlPeriodAlignTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:35:00.324Z", "6.0"),
                 Arrays.asList("2016-06-03T09:40:00.324Z", "19.0")
         );
-        Assert.assertEquals(expectedTableRows, resultTableRows);
+        assertEquals(expectedTableRows, resultTableRows);
     }
 }

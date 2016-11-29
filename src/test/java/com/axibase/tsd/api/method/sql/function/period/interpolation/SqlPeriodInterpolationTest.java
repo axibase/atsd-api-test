@@ -5,11 +5,12 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.*;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class SqlPeriodInterpolationTest extends SqlMethod {
@@ -60,7 +61,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 
     /**
@@ -85,7 +86,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 
     /**
@@ -110,7 +111,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 
     /**
@@ -135,7 +136,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 
     /**
@@ -160,7 +161,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 
     /**
@@ -187,7 +188,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 
     /**
@@ -210,6 +211,6 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
 
-        Assert.assertEquals(expectedRows, resultRows);
+        assertEquals(expectedRows, resultRows);
     }
 }

@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
@@ -68,6 +69,15 @@ public class AlertMethod extends BaseMethod {
                 .path(METHOD_ALERTS_HISTORY_QUERY)
                 .request()
                 .post(Entity.json(queryList));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response queryHistoryResponseRawJSON(String json) {
+        Response response = httpApiResource
+                .path(METHOD_ALERTS_HISTORY_QUERY)
+                .request()
+                .post(Entity.entity(json, MediaType.APPLICATION_JSON));
         response.bufferEntity();
         return response;
     }

@@ -4,7 +4,6 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -239,9 +238,9 @@ public class PropertyInsertTest extends PropertyMethod {
         });
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
-        Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
     /**
@@ -266,9 +265,9 @@ public class PropertyInsertTest extends PropertyMethod {
         });
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
-        Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
     /**
@@ -293,9 +292,9 @@ public class PropertyInsertTest extends PropertyMethod {
         });
         Property storedProperty = storedPropertyList.get(0);
 
-        Assert.assertEquals(property.getEntity(), storedProperty.getEntity(), "Incorrect property entity");
-        Assert.assertEquals(property.getTags(), storedProperty.getTags(), "Incorrect property tags");
-        Assert.assertEquals(propertyQuery.getStartDate(), storedProperty.getDate(), "Incorrect property date");
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
     /**

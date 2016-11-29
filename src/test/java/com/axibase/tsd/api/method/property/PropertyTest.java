@@ -6,7 +6,7 @@ import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.util.NotCheckedException;
 
-import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.fail;
 
 public class PropertyTest extends PropertyMethod {
     public static void assertPropertyExisting(String assertProperty, Property property) {

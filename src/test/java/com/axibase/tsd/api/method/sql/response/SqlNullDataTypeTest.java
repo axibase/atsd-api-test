@@ -1,18 +1,19 @@
 package com.axibase.tsd.api.method.sql.response;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.testng.Assert;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class SqlNullDataTypeTest extends SqlTest {
@@ -64,7 +65,7 @@ public class SqlNullDataTypeTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("null", resultTable.getValueAt(2, 0));
+        assertEquals("null", resultTable.getValueAt(2, 0));
     }
 
     /**
@@ -79,7 +80,7 @@ public class SqlNullDataTypeTest extends SqlTest {
         );
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("NaN", resultTable.getValueAt(3, 0));
+        assertEquals("NaN", resultTable.getValueAt(3, 0));
     }
 
 
@@ -95,7 +96,7 @@ public class SqlNullDataTypeTest extends SqlTest {
         );
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("null", resultTable.getValueAt(2, 0));
+        assertEquals("null", resultTable.getValueAt(2, 0));
     }
 
     /**
@@ -111,7 +112,7 @@ public class SqlNullDataTypeTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
 
-        Assert.assertEquals("null", resultTable.getValueAt(2, 0));
+        assertEquals("null", resultTable.getValueAt(2, 0));
     }
 
 
@@ -127,7 +128,7 @@ public class SqlNullDataTypeTest extends SqlTest {
         );
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
-        Assert.assertEquals("null", resultTable.getValueAt(2, 0));
+        assertEquals("null", resultTable.getValueAt(2, 0));
     }
 
 

@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.fail;
 
 public class MessageTest extends MessageMethod {
     public static void assertMessageExisting(String assertMessage, Message message) {

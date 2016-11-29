@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,6 +14,8 @@ import java.util.Map;
 
 import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class SeriesQueryExactMatch extends SeriesMethod {
     private static final String exactMatchEntityName = "series-query-exactmatch-entity-1";
@@ -59,10 +60,10 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         Response response = querySeries(seriesQuery);
 
         final String given = response.readEntity(String.class);
-        Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
+        assertEquals("Response array contains wrong elements count", 1, calculateJsonArraySize(given));
 
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(seriesD));
-        Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
+        assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
     /**
@@ -76,10 +77,10 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         Response response = querySeries(seriesQuery);
 
         final String given = response.readEntity(String.class);
-        Assert.assertEquals(calculateJsonArraySize(given), 4, "Response array contains wrong elements count");
+        assertEquals("Response array contains wrong elements count", 4, calculateJsonArraySize(given));
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
-        Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
+        assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
     /**
@@ -95,10 +96,10 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         Response response = querySeries(seriesQuery);
 
         final String given = response.readEntity(String.class);
-        Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
+        assertEquals("Response array contains wrong elements count", 1, calculateJsonArraySize(given));
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesB));
-        Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
+        assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
     /**
@@ -114,10 +115,10 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         Response response = querySeries(seriesQuery);
 
         final String given = response.readEntity(String.class);
-        Assert.assertEquals(calculateJsonArraySize(given), 2, "Response array contains wrong elements count");
+        assertEquals("Response array contains wrong elements count", 2, calculateJsonArraySize(given));
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesA, seriesB));
-        Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
+        assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
     /*
@@ -130,10 +131,10 @@ public class SeriesQueryExactMatch extends SeriesMethod {
         Response response = querySeries(seriesQuery);
 
         final String given = response.readEntity(String.class);
-        Assert.assertEquals(calculateJsonArraySize(given), 1, "Response array contains wrong elements count");
+        assertEquals("Response array contains wrong elements count", calculateJsonArraySize(given), 1);
 
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(seriesD));
-        Assert.assertTrue(compareJsonString(expected, given), "Recieved series missmatch");
+        assertTrue("Recieved series missmatch", compareJsonString(expected, given));
 
     }
 }

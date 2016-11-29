@@ -7,8 +7,8 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.fail;
 
 
 public class VersionMethodTest extends VersionMethod {
@@ -18,7 +18,7 @@ public class VersionMethodTest extends VersionMethod {
         Response response;
         try {
             response = queryVersion();
-            assertEquals(response.getStatus(), OK.getStatusCode());
+            assertEquals(OK.getStatusCode(), response.getStatus());
             response.readEntity(Version.class);
         } catch (Exception e) {
             fail(e.getMessage());

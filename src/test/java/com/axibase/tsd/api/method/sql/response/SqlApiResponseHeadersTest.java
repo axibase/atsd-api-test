@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.sql.response;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -14,6 +13,8 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * @author Igor Shmagrinslkiy
@@ -46,7 +47,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .head();
         Set<String> responseAllowedMethods = parseResponseAllowedMethods(response);
         response.bufferEntity();
-        Assert.assertEquals(responseAllowedMethods, expectedAllowedMethods);
+        assertEquals(expectedAllowedMethods, responseAllowedMethods);
     }
 
 
@@ -57,7 +58,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .request()
                 .get();
         response.bufferEntity();
-        Assert.assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+        assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
     }
 
     @Test
@@ -68,7 +69,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .request()
                 .get();
         response.bufferEntity();
-        Assert.assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+        assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .post(Entity.entity(form,
                         MediaType.APPLICATION_FORM_URLENCODED));
         response.bufferEntity();
-        Assert.assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+        assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
 
     }
 

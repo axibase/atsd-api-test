@@ -19,9 +19,7 @@ import static com.axibase.tsd.api.util.ErrorTemplate.TAG_VALUE_ARRAY_PREFIX;
 import static com.axibase.tsd.api.util.ErrorTemplate.UNKNOWN_ENTITY_FIELD_PREFIX;
 import static com.axibase.tsd.api.util.Mocks.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.*;
-import static org.testng.Assert.fail;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class EntityCreateOrReplaceTest extends EntityMethod {
 

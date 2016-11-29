@@ -6,7 +6,6 @@ import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.model.message.SeverityAlias;
 import com.axibase.tsd.api.util.Util;
 import org.json.JSONObject;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -18,6 +17,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.model.message.Severity.*;
 import static com.axibase.tsd.api.util.Mocks.*;
+import static org.testng.AssertJUnit.*;
 
 
 public class MessageSeverityQueryTest extends MessageMethod {
@@ -54,7 +54,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         messageQuery.setSeverity(String.valueOf(o));
         String response = queryMessageResponse(messageQuery).readEntity(String.class);
         JSONObject error = new JSONObject(response);
-        Assert.assertTrue(error.has("error"), "Error ir not raised");
+        assertTrue("Error ir not raised", error.has("error"));
     }
 
     /*
@@ -67,7 +67,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         String severity = messages.get(0).getSeverity();
-        Assert.assertEquals(alias.getSeverity().name(), severity, "Alias processed wrong");
+        assertEquals("Alias processed wrong", alias.getSeverity().name(), severity);
     }
 
     /*
@@ -82,7 +82,9 @@ public class MessageSeverityQueryTest extends MessageMethod {
         Integer minimumSeverity = severity.getNumVal();
         for (Message m : messages) {
             int actualSeverity = valueOf(m.getSeverity()).getNumVal();
-            Assert.assertTrue(actualSeverity >= minimumSeverity, "Received severity (" + actualSeverity + ") should be greater than minSeverity (" + minimumSeverity + ")");
+            String errMessage = String.format("Received severity (%d) should be greater than minSeverity (%d)",
+                    actualSeverity, minimumSeverity);
+            assertTrue(errMessage, actualSeverity >= minimumSeverity);
         }
     }
 
@@ -96,7 +98,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
         String severity = messages.get(0).getSeverity();
-        Assert.assertEquals(s.name(), severity, "Severity is case sensitive");
+        assertEquals("Severity is case sensitive", s.name(), severity);
     }
 
     /*
@@ -110,7 +112,8 @@ public class MessageSeverityQueryTest extends MessageMethod {
         });
         String severity = messages.get(0).getSeverity();
 //            str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
-        Assert.assertTrue(!severity.matches("-?\\d+(\\.\\d+)?"), "Received severity (" + severity + ") should not be numeric");
+        String errMessage = String.format("Received severity (%s) should not be numeric", severity);
+        assertFalse(errMessage, severity.matches("-?\\d+(\\.\\d+)?"));
     }
 
     /*
@@ -126,7 +129,9 @@ public class MessageSeverityQueryTest extends MessageMethod {
         });
         for (Message m : messages) {
             int actualSeverity = valueOf(m.getSeverity()).getNumVal();
-            Assert.assertTrue(actualSeverity >= minimumSeverity, "Received severity (" + actualSeverity + ") should be greater than minSeverity (" + minimumSeverity + ")");
+            String errMessage = String.format("Received severity (%d) should be greater than minSeverity (%d)",
+                    actualSeverity, minimumSeverity);
+            assertTrue(errMessage, actualSeverity >= minimumSeverity);
         }
     }
 
@@ -140,7 +145,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         messageQuery.setSeverities(Arrays.asList(allSeverities));
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
-        Assert.assertEquals(messages.size(), allSeverities.length);
+        assertEquals(allSeverities.length, messages.size());
     }
 
     @DataProvider(name = "severities")

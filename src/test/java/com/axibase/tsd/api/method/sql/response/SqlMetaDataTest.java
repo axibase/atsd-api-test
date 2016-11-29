@@ -5,11 +5,12 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class SqlMetaDataTest extends SqlMethod {
@@ -43,7 +44,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String entityDataType = resultTable
                 .getColumnMetaData(0)
                 .getDataType();
-        Assert.assertEquals("string", entityDataType);
+        assertEquals("string", entityDataType);
     }
 
 
@@ -55,7 +56,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String entityPropertyUrl = resultTable
                 .getColumnMetaData(0)
                 .getPropertyUrl();
-        Assert.assertEquals("atsd:entity", entityPropertyUrl);
+        assertEquals("atsd:entity", entityPropertyUrl);
     }
 
 
@@ -67,7 +68,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String metricDataType = resultTable
                 .getColumnMetaData(1)
                 .getDataType();
-        Assert.assertEquals("string", metricDataType);
+        assertEquals("string", metricDataType);
     }
 
 
@@ -79,7 +80,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String metricPropertyUrl = resultTable
                 .getColumnMetaData(1)
                 .getPropertyUrl();
-        Assert.assertEquals("atsd:metric", metricPropertyUrl);
+        assertEquals("atsd:metric", metricPropertyUrl);
     }
 
 
@@ -91,7 +92,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String valueDataType = resultTable
                 .getColumnMetaData(2)
                 .getDataType();
-        Assert.assertEquals("float", valueDataType);
+        assertEquals("float", valueDataType);
     }
 
     /**
@@ -102,7 +103,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String valuePropertyUrl = resultTable
                 .getColumnMetaData(2)
                 .getPropertyUrl();
-        Assert.assertEquals("atsd:value", valuePropertyUrl);
+        assertEquals("atsd:value", valuePropertyUrl);
     }
 
     /**
@@ -113,7 +114,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String valueWithExpressionDataType = resultTable
                 .getColumnMetaData(3)
                 .getDataType();
-        Assert.assertEquals("double", valueWithExpressionDataType);
+        assertEquals("double", valueWithExpressionDataType);
     }
 
 
@@ -129,7 +130,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String valueWithExpressionPropertyUrl = resultTable
                 .getColumnMetaData(3)
                 .getPropertyUrl();
-        Assert.assertEquals("atsd:value", valueWithExpressionPropertyUrl);
+        assertEquals("atsd:value", valueWithExpressionPropertyUrl);
     }
 
     /**
@@ -140,7 +141,7 @@ public class SqlMetaDataTest extends SqlMethod {
         String dateTimeDataType = resultTable
                 .getColumnMetaData(4)
                 .getDataType();
-        Assert.assertEquals("xsd:dateTimeStamp", dateTimeDataType);
+        assertEquals("xsd:dateTimeStamp", dateTimeDataType);
     }
 
     /**
@@ -151,6 +152,6 @@ public class SqlMetaDataTest extends SqlMethod {
         String dateTimePropertyUrl = resultTable
                 .getColumnMetaData(4)
                 .getPropertyUrl();
-        Assert.assertEquals("atsd:datetime", dateTimePropertyUrl);
+        assertEquals("atsd:datetime", dateTimePropertyUrl);
     }
 }

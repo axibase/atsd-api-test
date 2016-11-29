@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.util.NotCheckedException;
 
-import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.fail;
 
 
 public class EntityTest extends EntityMethod {

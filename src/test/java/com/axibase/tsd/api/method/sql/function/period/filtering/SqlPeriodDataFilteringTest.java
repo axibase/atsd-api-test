@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class SqlPeriodDataFilteringTest extends SqlMethod {
@@ -60,7 +61,7 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
         /*
         Expected empty set, because period begin out of [start time; end time]
          */
-        Assert.assertEquals(expectedTableRows, resultTableRows);
+        assertEquals(expectedTableRows, resultTableRows);
     }
 
     /**
@@ -82,6 +83,6 @@ public class SqlPeriodDataFilteringTest extends SqlMethod {
         final List<List<String>> expectedTableRows = Collections.singletonList(
                 Arrays.asList("2016-06-27T14:22:00.000Z", "1")
         );
-        Assert.assertEquals(expectedTableRows, resultTableRows);
+        assertEquals(expectedTableRows, resultTableRows);
     }
 }
