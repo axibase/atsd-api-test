@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.ErrorTemplate.BAD_CREDENTIALS;
 import static com.axibase.tsd.api.util.ErrorTemplate.USER_NOT_FOUND;
 
 public class AuthenticationTest extends BaseMethod {
@@ -30,7 +29,7 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertTrue(errorMessage.equals(BAD_CREDENTIALS) || errorMessage.equals(USER_NOT_FOUND));
+        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
     }
 
     /**
@@ -43,7 +42,7 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertTrue(errorMessage.equals(BAD_CREDENTIALS) || errorMessage.equals(USER_NOT_FOUND));
+        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
     }
 
     /**
@@ -55,7 +54,7 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertTrue(errorMessage.equals(BAD_CREDENTIALS) || errorMessage.equals(USER_NOT_FOUND));
+        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
     }
 
     /**
@@ -67,6 +66,6 @@ public class AuthenticationTest extends BaseMethod {
 
         Assert.assertEquals(response.getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
         String errorMessage = extractErrorMessage(response);
-        Assert.assertTrue(errorMessage.equals(BAD_CREDENTIALS) || errorMessage.equals(USER_NOT_FOUND));
+        Assert.assertEquals(errorMessage, USER_NOT_FOUND, "Wrong error message");
     }
 }

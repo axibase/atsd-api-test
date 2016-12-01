@@ -11,8 +11,8 @@ public class ErrorTemplate {
 
     public static final String ENTITY_FILTER_REQUIRED = "IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty";
 
-    public static final String BAD_CREDENTIALS = "org.springframework.security.authentication.BadCredentialsException: Bad credentials";
-    public static final String USER_NOT_FOUND = "org.springframework.security.core.userdetails.UsernameNotFoundException: User 'Unknown User' not found";
+    public static final String BAD_CREDENTIALS ="code 03";
+    public static final String USER_NOT_FOUND ="code 02";
 
     public static final String EMPTY_TAG = "IllegalArgumentException: Tag \"%s\" has empty value";
 
