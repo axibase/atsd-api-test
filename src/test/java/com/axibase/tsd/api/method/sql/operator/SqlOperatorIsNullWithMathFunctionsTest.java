@@ -125,7 +125,9 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        List<List<String>> expectedRows = Collections.emptyList();
+        String[][] expectedRows = {
+                {"NaN"}
+        };
 
         assertTableRowsExist(expectedRows, resultTable);
     }
