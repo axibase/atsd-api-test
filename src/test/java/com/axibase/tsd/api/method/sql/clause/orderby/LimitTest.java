@@ -1,12 +1,12 @@
 package com.axibase.tsd.api.method.sql.clause.orderby;
 
 
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.DataProvider;
@@ -64,7 +64,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    @DataProvider(name = "entityOrderProvider", parallel = true)
+    @DataProvider(name = "entityOrderProvider")
     public Object[][] entityOrderProvider() {
         return new Object[][]{
                 {
@@ -112,7 +112,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    @DataProvider(name = "valueOrderProvider", parallel = true)
+    @DataProvider(name = "valueOrderProvider")
     public Object[][] valueOrderProvider() {
         return new Object[][]{
                 {
@@ -153,7 +153,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    @DataProvider(name = "datetimeOrderProvider", parallel = true)
+    @DataProvider(name = "datetimeOrderProvider")
     public Object[][] datetimeOrderProvider() {
         return new Object[][]{
                 {
@@ -200,7 +200,7 @@ public class LimitTest extends SqlTest {
     }
 
 
-    @DataProvider(name = "tagsOrderProvider", parallel = true)
+    @DataProvider(name = "tagsOrderProvider")
     public Object[][] tagsOrderProvider() {
         return new Object[][]{
                 {
@@ -215,7 +215,7 @@ public class LimitTest extends SqlTest {
     }
 
 
-    @DataProvider(name = "metricOrderProvider", parallel = true)
+    @DataProvider(name = "metricOrderProvider")
     public Object[][] metricOrderProvider() {
         return new Object[][]{
                 {

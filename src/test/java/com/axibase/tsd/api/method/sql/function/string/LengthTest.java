@@ -19,7 +19,7 @@ public class LengthTest extends SqlTest {
         prepareApplyTestData(TEST_METRIC);
     }
 
-    @DataProvider(name = "applyTestProvider", parallel = true)
+    @DataProvider(name = "applyTestProvider")
     public Object[][] provideApplyTestsData() {
         Integer size = POSSIBLE_FUNCTION_ARGS.size();
         Object[][] result = new Object[size][1];

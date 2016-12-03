@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.sql.function.interpolate;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.Interval;
@@ -11,6 +10,7 @@ import com.axibase.tsd.api.model.sql.function.interpolate.Alignment;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.sql.function.interpolate.Fill;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,7 +34,7 @@ public class ApplyTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(singletonList(series));
     }
 
-    @DataProvider(name = "interpolateVariantsProvider", parallel = true)
+    @DataProvider(name = "interpolateVariantsProvider")
     private static Object[][] interpolateParamVariants() {
         ArrayList<List<String>> params = new ArrayList<>();
         params.add(singletonList(new Interval(1, TimeUnit.MINUTE).toString()));
