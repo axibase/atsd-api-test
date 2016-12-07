@@ -303,9 +303,6 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         String[][] expectedRows = {
                 {TEST_ENTITY1_NAME},
-                {TEST_ENTITY2_NAME},
-                {TEST_ENTITY3_NAME},
-                {TEST_ENTITY4_NAME}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
