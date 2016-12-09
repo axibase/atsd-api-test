@@ -27,9 +27,7 @@
         <encoder>
 
             <!-- no colors -->
-            <pattern>%-5level %d{HH:mm:ss.SSS} [%thread]
-                %class{16}.%M\(%L\):%n%msg%n%n
-            </pattern>
+            <pattern>%-5level %d{HH:mm:ss.SSS} [%thread]%n%msg%n</pattern>
 
             <!-- colors -->
 

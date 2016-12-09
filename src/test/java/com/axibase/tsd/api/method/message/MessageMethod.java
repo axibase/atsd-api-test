@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Util;
-import com.sun.org.apache.regexp.internal.RE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,11 +117,6 @@ public class MessageMethod extends BaseMethod {
         Entity<T[]> json = Entity.json(messageQuery);
         Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(json);
         response.bufferEntity();
-        if (OK.getStatusCode() == response.getStatus()) {
-            logger.debug("Query looks succeeded");
-        } else {
-            logger.error("Failed to execute message query");
-        }
         return response;
     }
 

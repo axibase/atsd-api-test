@@ -2,12 +2,12 @@ package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
+import com.axibase.tsd.logging.LoggingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -52,11 +53,12 @@ public abstract class BaseMethod {
             ClientConfig clientConfig = new ClientConfig();
             clientConfig.connectorProvider(new ApacheConnectorProvider());
             clientConfig.register(MultiPartFeature.class);
-            clientConfig.register(new LoggingFeature());
             clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
             clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
             clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            httpRootResource = ClientBuilder.newClient(clientConfig).target(UriBuilder.fromPath("")
+            Client client = ClientBuilder.newClient(clientConfig);
+            client.register(new LoggingFilter());
+            httpRootResource = client.target(UriBuilder.fromPath("")
                     .scheme(config.getProtocol())
                     .host(config.getServerName())
                     .port(config.getHttpPort())
@@ -82,15 +84,12 @@ public abstract class BaseMethod {
     }
 
     public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
-        logger.debug("===Comparing Json String===\nStrict: {}\nExpected:\n{}\nReceived:\n{}", strict, expected, given);
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
-            logger.debug("===Json strings are equal===");
             return true;
         } catch (JSONException e) {
             throw new Exception("Can not deserialize response");
         } catch (AssertionError e) {
-            logger.debug("===Json strings are NOT equal===");
             return false;
         }
 

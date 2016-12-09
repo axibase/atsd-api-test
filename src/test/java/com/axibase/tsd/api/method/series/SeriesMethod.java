@@ -123,11 +123,6 @@ public class SeriesMethod extends BaseMethod {
 
     public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
         Response response = querySeries(seriesQuery);
-        if (OK.getStatusCode() == response.getStatus()) {
-            logger.debug("Query looks succeeded");
-        } else {
-            logger.error("Failed to execute series query");
-        }
         return response.readEntity(new GenericType<List<Series>>() {
         });
     }
@@ -154,12 +149,7 @@ public class SeriesMethod extends BaseMethod {
 
     public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws Exception {
         Response response = executeQueryRaw(seriesQueries);
-        if (OK.getStatusCode() == response.getStatus()) {
-            logger.debug("Query looks succeeded");
-        } else {
-            response.close();
-            throw new Exception("Failed to execute series query");
-        }
+        response.bufferEntity();
         return new JSONArray(response.readEntity(String.class));
     }
 
