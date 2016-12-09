@@ -2,6 +2,8 @@ package com.axibase.tsd.logging;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
@@ -9,17 +11,16 @@ import javax.ws.rs.client.ClientResponseFilter;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
 import static java.lang.String.format;
 
 public class LoggingFilter implements ClientResponseFilter {
-    private static final Logger LOG = Logger.getLogger(LoggingFilter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class.getName());
     private static final int maxEntitySize = 1024 * 8;
 
     @Override
     public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext) throws IOException {
-        LOG.info(buildRequestDescription(clientRequestContext) + buildResponseDescription(clientResponseContext));
+        LOG.debug(buildRequestDescription(clientRequestContext) + buildResponseDescription(clientResponseContext));
     }
 
     private static String prettyEntityStream(String entity) throws IOException {
