@@ -11,8 +11,8 @@ public class ErrorTemplate {
 
     public static final String ENTITY_FILTER_REQUIRED = "IllegalArgumentException: entity or entities or entityGroup or entityExpression must not be empty";
 
-    public static final String BAD_CREDENTIALS ="code 03";
-    public static final String USER_NOT_FOUND ="code 02";
+    public static final String BAD_CREDENTIALS = "code 03";
+    public static final String USER_NOT_FOUND = "code 02";
 
     public static final String EMPTY_TAG = "IllegalArgumentException: Tag \"%s\" has empty value";
 
@@ -26,4 +26,10 @@ public class ErrorTemplate {
     public static final String TAG_VALUE_ARRAY_PREFIX = "com.fasterxml.jackson.databind.JsonMappingException: Can not deserialize instance";
     public static final String INTERPOLATE_TYPE_REQUIRED = "IllegalArgumentException: Interpolation type is required";
     public static final String AGGREGATE_NON_DETAIL_REQUIRE_PERIOD = "IllegalArgumentException: Aggregation period is required for aggregation type '%s'";
+
+    public static class Sql {
+        public static final String DATETIME_IN_GROUP_CLAUSE = "Invalid grouping for column \"datetime\". Remove the " +
+                "column from the SELECT clause, apply an aggregation function to the column, or add the column to the " +
+                "GROUP BY clause.";
+    }
 }

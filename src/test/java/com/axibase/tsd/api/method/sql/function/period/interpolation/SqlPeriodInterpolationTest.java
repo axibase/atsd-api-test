@@ -203,14 +203,13 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
-                Arrays.asList("2016-06-03T09:30:00.000Z", "0.0"),//<-constant
-                Arrays.asList("2016-06-03T09:35:00.000Z", "0.0"),//<--instead not suitable value 6.0(>7)
                 Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
                 .readEntity(StringTable.class)
                 .filterRows(DEFAULT_ROW_FILTER);
+
         Assert.assertEquals(expectedRows, resultRows);
     }
 }

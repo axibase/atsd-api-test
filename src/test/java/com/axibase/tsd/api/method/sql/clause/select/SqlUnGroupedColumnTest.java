@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 
+import static com.axibase.tsd.api.util.ErrorTemplate.Sql.DATETIME_IN_GROUP_CLAUSE;
 import static javax.ws.rs.core.Response.Status;
 import static org.testng.Assert.assertEquals;
 
@@ -39,7 +40,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals(getErrorMessageFromResponse(response), "Include column \"datetime\" in the GROUP BY clause.");
+        assertEquals(getErrorMessageFromResponse(response), DATETIME_IN_GROUP_CLAUSE);
     }
 
     @Test
