@@ -140,13 +140,25 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testIncorrectSqlQueryGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT 1")
+                .queryParam("q", "SELECT FROM")
                 .queryParam("outputFormat", OutputFormat.CSV)
                 .request()
                 .get();
         response.bufferEntity();
         Assert.assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
 
+    }
+
+    @Test
+    public void testIncorrectSqlQueryPOST() {
+        Form form = new Form();
+        form.param("q", "SELECT FROM");
+        form.param("outputFormat", OutputFormat.JSON.toString());
+        final Response response = httpSqlApiResource
+                .request()
+                .post(Entity.form(form));
+        response.bufferEntity();
+        Assert.assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
 
