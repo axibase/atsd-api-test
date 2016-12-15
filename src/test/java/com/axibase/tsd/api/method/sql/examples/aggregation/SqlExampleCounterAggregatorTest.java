@@ -4,14 +4,11 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-
 
 public class SqlExampleCounterAggregatorTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-example-counter-aggregator-";
@@ -50,13 +47,10 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
                 "WHERE datetime >= '2015-09-30T09:00:05Z' AND datetime < '2015-09-30T09:00:07Z'  %n" +
                 "GROUP BY period(1 second)", TEST_METRIC_NAME);
 
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2015-09-30T09:00:05.000Z", "3", "3.0", "1.0", "2.0", "4.0", "1.0"),
-                Arrays.asList("2015-09-30T09:00:06.000Z", "5", "3.0", "3.0", "3.0", "1.0", "1.0")
-        );
-
-        assertTableRowsExist(expectedRows, resultTable);
+        String[][] expectedRows = {
+                {"2015-09-30T09:00:05.000Z", "3", "3.0", "1.0", "2.0", "4.0", "1.0"},
+                {"2015-09-30T09:00:06.000Z", "5", "3.0", "3.0", "3.0", "1.0", "1.0"}
+        };
+        assertSqlQueryRows(sqlQuery, expectedRows);
     }
 }
