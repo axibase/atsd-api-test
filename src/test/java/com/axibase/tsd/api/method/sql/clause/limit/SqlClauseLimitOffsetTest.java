@@ -132,7 +132,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
-                        "2", "6", "no viable alternative at input '-'"
+                        "2", "6", "extraneous input '-' expecting INTEGER_LITERAL"
                 )
         );
     }
@@ -200,7 +200,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
-                        "2", "6", "no viable alternative at input 'A'"
+                        "2", "6", "mismatched input 'A' expecting INTEGER_LITERAL"
                 )
         );
     }
@@ -223,8 +223,8 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
                 response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
-                        "2", "0", "mismatched input 'OFFSET' expecting {<EOF>, WHERE, ORDER, GROUP, LIMIT, " +
-                                "WITH, INNER, OUTER, JOIN, OPTION}"
+                        "2", "0", "mismatched input 'OFFSET' expecting {<EOF>, ID, WORD, STRING_LITERAL, " +
+                                "DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER, JOIN, OPTION}"
                 )
         );
     }
