@@ -7,72 +7,43 @@ import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 public class SqlClauseJoinUsingEntity extends SqlTest {
-    private static final String TEST_METRIC1_NAME = metric();
-    private static final String TEST_METRIC2_NAME = metric();
-    private static final String TEST_METRIC3_NAME = metric();
-    private static final String TEST_METRIC4_NAME = metric();
-    private static final String TEST_METRIC5_NAME = metric();
-    private static final String TEST_ENTITY_NAME = entity();
+    private static String[] testMetricNames = new String[5];
 
+    private static Series[] generateData(String[] tags) {
+        Series[] arraySeries = new Series[tags.length / 2];
+
+        for (int i = 0; i < tags.length / 2; i++) {
+            arraySeries[i] = new Series();
+            testMetricNames[i] = metric();
+            arraySeries[i].setMetric(testMetricNames[i]);
+            arraySeries[i].setEntity(entity());
+            arraySeries[i].setData(Collections.singletonList(
+                    new Sample("2016-06-03T09:20:00.000Z", (new Integer(i + 1)).toString())
+                    )
+            );
+            if (! tags[2* i].equals("")) {
+                arraySeries[i].addTag(tags[2 * i], tags[2 * i + 1]);
+            }
+        }
+
+        return arraySeries;
+    }
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series();
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
-                )
-        );
-        series1.addTag("tag1", "4");
+        String[] tags = {"tag1", "4", "tag1", "123", "tag1", "123", "", "", "tag2", "123"};
+        Series[] series = generateData(tags);
 
-
-        Series series2 = new Series();
-        series2.setMetric(TEST_METRIC2_NAME);
-        series2.setEntity(TEST_ENTITY_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "2")
-                )
-        );
-        series2.addTag("tag1", "123");
-
-
-        Series series3 = new Series();
-        series3.setMetric(TEST_METRIC3_NAME);
-        series3.setEntity(TEST_ENTITY_NAME);
-        series3.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "3")
-                )
-        );
-        series3.addTag("tag1", "123");
-
-
-        Series series4 = new Series();
-        series4.setMetric(TEST_METRIC4_NAME);
-        series4.setEntity(TEST_ENTITY_NAME);
-        series4.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "4")
-                )
-        );
-
-
-        Series series5 = new Series();
-        series5.setMetric(TEST_METRIC5_NAME);
-        series5.setEntity(TEST_ENTITY_NAME);
-        series5.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "5")
-                )
-        );
-        series5.addTag("tag2", "123");
-
-
-        SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3, series4, series5));
+        SeriesMethod.insertSeriesCheck(Arrays.asList(series[0], series[1], series[2], series[3], series[4]));
     }
 
     /**
@@ -82,8 +53,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     public void testJoin() {
         String sqlQuery = String.format(
                 "SELECT * FROM '%s' t1 JOIN '%s' t2",
-                TEST_METRIC1_NAME,
-                TEST_METRIC2_NAME
+                testMetricNames[0],
+                testMetricNames[1]
         );
 
         String[][] expectedRows = {
@@ -99,8 +70,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     public void testJoinUsingEntity() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
-                TEST_METRIC1_NAME,
-                TEST_METRIC2_NAME
+                testMetricNames[0],
+                testMetricNames[1]
         );
 
         String[][] expectedRows = {
@@ -117,8 +88,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     public void testJoinUsingEntitySameTags() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
-                TEST_METRIC2_NAME,
-                TEST_METRIC3_NAME
+                testMetricNames[1],
+                testMetricNames[2]
         );
 
         String[][] expectedRows = {
@@ -135,8 +106,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     public void testJoinUsingEntityOneWithoutTags() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
-                TEST_METRIC3_NAME,
-                TEST_METRIC4_NAME
+                testMetricNames[2],
+                testMetricNames[3]
         );
 
         String[][] expectedRows = {
@@ -153,8 +124,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     public void testJoinUsingEntityDifferentTags() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
-                TEST_METRIC3_NAME,
-                TEST_METRIC5_NAME
+                testMetricNames[2],
+                testMetricNames[4]
         );
 
         String[][] expectedRows = {
