@@ -14,13 +14,13 @@ import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 public class SqlClauseJoinUsingEntity extends SqlTest {
-    private static String[] testMetricNames = new String[5];
+    private static String[] testMetricNames;
     private static final String TEST_ENTITY_NAME = entity();
 
 
     private static Series[] generateData(String[][] tags) {
         Series[] arraySeries = new Series[tags.length];
-
+        testMetricNames = new String[tags.length];
 
         for (int i = 0; i < tags.length; i++) {
             arraySeries[i] = new Series();
