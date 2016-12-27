@@ -15,6 +15,7 @@ import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 public class SqlClauseJoinUsingEntity extends SqlTest {
     private static String[] testMetricNames = new String[5];
+    private static final String TEST_ENTITY_NAME = entity();
 
     private static Series[] generateData(String[] tags) {
         Series[] arraySeries = new Series[tags.length / 2];
@@ -23,7 +24,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
             arraySeries[i] = new Series();
             testMetricNames[i] = metric();
             arraySeries[i].setMetric(testMetricNames[i]);
-            arraySeries[i].setEntity(entity());
+            arraySeries[i].setEntity(TEST_ENTITY_NAME);
             arraySeries[i].setData(Collections.singletonList(
                     new Sample("2016-06-03T09:20:00.000Z", (new Integer(i + 1)).toString())
                     )
