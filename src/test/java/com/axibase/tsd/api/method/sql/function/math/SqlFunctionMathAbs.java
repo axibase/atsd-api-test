@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -33,11 +34,60 @@ public class SqlFunctionMathAbs extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
     }
 
+    @DataProvider
+    public Object[][] provideTestsDataForAbsTest() {
+        return new Object[][]{
+                {
+                        "avg(value)",
+                        "2"
+                },
+                {
+                        "abs(avg(value))",
+                        "2"
+                },
+                {
+                        "abs(max(value))",
+                        "3"
+                },
+                {
+                        "abs(avg(value)) * abs(max(value))",
+                        "6"
+                },
+                {
+                        "abs(max(value)*avg(value))",
+                        "6"
+                },
+                {
+                        "abs(abs(max(abs(value))) * -3 * abs(abs(max(abs(value)) * abs(delta(abs(value)) * " +
+                        "count(value) * min(value)) * abs(avg(abs(value))))))",
+                        "648"
+                }
+        };
+    }
+
+    /**
+     * #3738
+     */
+    @Test(dataProvider = "provideTestsDataForAbsTest")
+    public void testAbsWithAggregateExpressionsInside(String query, String value) {
+        String sqlQuery = String.format(
+                "SELECT %s FROM '%s'",
+                query, TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {value}
+        };
+
+        String assertMessage = String.format("Wrong result of following expression %s", query);
+        assertSqlQueryRows(sqlQuery, expectedRows, assertMessage);
+    }
+
     /**
      * #3738
      */
     @Test
-    public void testAbsSimple() {
+    public void testAbsWithOneAggregateExpressionInside() {
         String sqlQuery = String.format(
                 "SELECT avg(value), abs(avg(value)), abs(max(value)), abs(avg(value)) * abs(max(value)) FROM '%s'",
                 TEST_METRIC1_NAME
@@ -47,31 +97,31 @@ public class SqlFunctionMathAbs extends SqlTest {
                 {"2", "2", "3", "6"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Abs function gives wrong result");
+        assertSqlQueryRows(sqlQuery, expectedRows, "Abs function with one aggregate expression gives wrong result");
     }
 
     /**
      * #3738
      */
     @Test
-    public void testAbs() {
+    public void testAbsWithTwoAggregateExpressionsInside() {
         String sqlQuery = String.format(
-                "SELECT avg(value), abs(avg(value)), abs(max(value)), abs(avg(value)) * abs(max(value)), abs(max(value)*avg(value)) FROM '%s'",
+                "SELECT abs(max(value)*avg(value)) FROM '%s'",
                 TEST_METRIC1_NAME
         );
 
         String[][] expectedRows = {
-                {"2", "2", "3", "6", "6"}
+                {"6"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Abs function gives wrong result");
+        assertSqlQueryRows(sqlQuery, expectedRows, "Abs function with two aggregate expressions gives wrong result");
     }
 
     /**
      * #3738
      */
     @Test
-    public void testAbsСomplex() {
+    public void testAbsWithMultipleAggregateExpressionsInside() {
         String sqlQuery = String.format(
                 "SELECT abs(abs(max(abs(value))) * -3 * abs(abs(max(abs(value)) * abs(delta(abs(value)) * count(value) * min(value)) * abs(avg(abs(value)))))) FROM '%s'",
                 TEST_METRIC1_NAME
