@@ -12,8 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 /**
  * Created by Aleksandr Veselov.
@@ -76,21 +75,21 @@ public class OptionsMethodTest extends BaseMethod {
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
 
         Response response = builder.options();
-        assertEquals("Bad response status", Response.Status.OK, response.getStatus());
-        assertValidHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
-        assertValidHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
-        assertValidHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
+        assertResponseHasValidStatusAndHeaders(response);
     }
 
     @Test
     public static void testOptionsRequestForSQL() throws Exception {
-        Invocation.Builder builder = httpRootResource.path("/api/sql").request();
+        Response response = httpRootResource.path("/api/sql").request().options();
+        assertResponseHasValidStatusAndHeaders(response);
+//
+//        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
+//        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
 
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
+    }
 
-        Response response = builder.options();
-        assertEquals("Bad response status", Response.Status.OK, response.getStatus());
+    private static void assertResponseHasValidStatusAndHeaders(Response response) throws Exception {
+        assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
         assertValidHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
         assertValidHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
         assertValidHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
@@ -119,6 +118,7 @@ public class OptionsMethodTest extends BaseMethod {
 
     private static void assertValidHeaderSet(Set<String> expectedSet, Response response, String header, boolean strict)  throws Exception {
         String got = response.getHeaderString(header);
+        assertNotNull("No such header: " + header, got);
         Set<String> gotSet = splitStringToSet(got, ", ");
         boolean acceptable = strict ? expectedSet.equals(gotSet)
                                     : gotSet.containsAll(gotSet);
