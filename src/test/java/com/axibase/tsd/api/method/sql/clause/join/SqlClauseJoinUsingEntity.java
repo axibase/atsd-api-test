@@ -17,20 +17,22 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     private static String[] testMetricNames = new String[5];
     private static final String TEST_ENTITY_NAME = entity();
 
-    private static Series[] generateData(String[] tags) {
-        Series[] arraySeries = new Series[tags.length / 2];
 
-        for (int i = 0; i < tags.length / 2; i++) {
+    private static Series[] generateData(String[][] tags) {
+        Series[] arraySeries = new Series[tags.length];
+
+
+        for (int i = 0; i < tags.length; i++) {
             arraySeries[i] = new Series();
             testMetricNames[i] = metric();
             arraySeries[i].setMetric(testMetricNames[i]);
             arraySeries[i].setEntity(TEST_ENTITY_NAME);
             arraySeries[i].setData(Collections.singletonList(
-                    new Sample("2016-06-03T09:20:00.000Z", (new Integer(i + 1)).toString())
+                    new Sample("2016-06-03T09:20:00.000Z", i + 1)
                     )
             );
-            if (! tags[2* i].equals("")) {
-                arraySeries[i].addTag(tags[2 * i], tags[2 * i + 1]);
+            if (tags[i][0] != null) {
+                arraySeries[i].addTag(tags[i][0], tags[i][1]);
             }
         }
 
@@ -39,10 +41,16 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        String[] tags = {"tag1", "4", "tag1", "123", "tag1", "123", "", "", "tag2", "123"};
+        String[][] tags = {
+                {"tag1", "4"},
+                {"tag1", "123"},
+                {"tag1", "123"},
+                {null},
+                {"tag2", "123"}
+        };
         Series[] series = generateData(tags);
 
-        SeriesMethod.insertSeriesCheck(Arrays.asList(series[0], series[1], series[2], series[3], series[4]));
+        SeriesMethod.insertSeriesCheck(Arrays.asList(series));
     }
 
     /**
