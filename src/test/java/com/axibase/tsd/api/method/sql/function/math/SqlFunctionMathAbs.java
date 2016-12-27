@@ -9,6 +9,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
@@ -31,7 +32,7 @@ public class SqlFunctionMathAbs extends SqlTest {
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series1));
     }
 
     @DataProvider
@@ -60,7 +61,7 @@ public class SqlFunctionMathAbs extends SqlTest {
                 {
                         "abs(abs(max(abs(value))) * -3 * abs(abs(max(abs(value)) * abs(delta(abs(value)) * " +
                         "count(value) * min(value)) * abs(avg(abs(value))))))",
-                        "648"
+                        "324"
                 }
         };
     }
@@ -81,56 +82,5 @@ public class SqlFunctionMathAbs extends SqlTest {
 
         String assertMessage = String.format("Wrong result of following expression %s", query);
         assertSqlQueryRows(sqlQuery, expectedRows, assertMessage);
-    }
-
-    /**
-     * #3738
-     */
-    @Test
-    public void testAbsWithOneAggregateExpressionInside() {
-        String sqlQuery = String.format(
-                "SELECT avg(value), abs(avg(value)), abs(max(value)), abs(avg(value)) * abs(max(value)) FROM '%s'",
-                TEST_METRIC1_NAME
-        );
-
-        String[][] expectedRows = {
-                {"2", "2", "3", "6"}
-        };
-
-        assertSqlQueryRows(sqlQuery, expectedRows, "Abs function with one aggregate expression gives wrong result");
-    }
-
-    /**
-     * #3738
-     */
-    @Test
-    public void testAbsWithTwoAggregateExpressionsInside() {
-        String sqlQuery = String.format(
-                "SELECT abs(max(value)*avg(value)) FROM '%s'",
-                TEST_METRIC1_NAME
-        );
-
-        String[][] expectedRows = {
-                {"6"}
-        };
-
-        assertSqlQueryRows(sqlQuery, expectedRows, "Abs function with two aggregate expressions gives wrong result");
-    }
-
-    /**
-     * #3738
-     */
-    @Test
-    public void testAbsWithMultipleAggregateExpressionsInside() {
-        String sqlQuery = String.format(
-                "SELECT abs(abs(max(abs(value))) * -3 * abs(abs(max(abs(value)) * abs(delta(abs(value)) * count(value) * min(value)) * abs(avg(abs(value)))))) FROM '%s'",
-                TEST_METRIC1_NAME
-        );
-
-        String[][] expectedRows = {
-                {"648"}
-        };
-
-        assertSqlQueryRows(sqlQuery, expectedRows, "Abs complex function with many compounds gives wrong result");
     }
 }
