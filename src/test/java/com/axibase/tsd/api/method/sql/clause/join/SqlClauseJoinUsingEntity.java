@@ -24,11 +24,6 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series();
-        Series series2 = new Series();
-        Series series3 = new Series();
-        Series series4 = new Series();
-        Series series5 = new Series();
-
         series1.setMetric(TEST_METRIC1_NAME);
         series1.setEntity(TEST_ENTITY_NAME);
         series1.setData(Arrays.asList(
@@ -37,6 +32,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
         );
         series1.addTag("tag1", "4");
 
+
+        Series series2 = new Series();
         series2.setMetric(TEST_METRIC2_NAME);
         series2.setEntity(TEST_ENTITY_NAME);
         series2.setData(Arrays.asList(
@@ -45,6 +42,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
         );
         series2.addTag("tag1", "123");
 
+
+        Series series3 = new Series();
         series3.setMetric(TEST_METRIC3_NAME);
         series3.setEntity(TEST_ENTITY_NAME);
         series3.setData(Arrays.asList(
@@ -53,6 +52,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
         );
         series3.addTag("tag1", "123");
 
+
+        Series series4 = new Series();
         series4.setMetric(TEST_METRIC4_NAME);
         series4.setEntity(TEST_ENTITY_NAME);
         series4.setData(Arrays.asList(
@@ -60,6 +61,8 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
                 )
         );
 
+
+        Series series5 = new Series();
         series5.setMetric(TEST_METRIC5_NAME);
         series5.setEntity(TEST_ENTITY_NAME);
         series5.setData(Arrays.asList(
@@ -67,6 +70,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
                 )
         );
         series5.addTag("tag2", "123");
+
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3, series4, series5));
     }
