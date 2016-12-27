@@ -35,16 +35,27 @@ public class SqlParseTimeCheck extends SqlTest {
      * #3711
      */
     @Test(timeOut = 10000)
-    public void testLongParseTime() {
+    public void testIfParseTimeIsAppropriate() {
+        Integer numberOfTimes = 27;
+
         String sqlQuery = String.format(
-                "SELECT value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value+value FROM '%s'",
+                "SELECT " + sumNTimes(numberOfTimes, "value") + " FROM '%s'",
                 TEST_METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {"27"}
+                {numberOfTimes.toString()}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join without Group by gives wrong result");
+        assertSqlQueryRows(sqlQuery, expectedRows, "Query gives wrong result");
+    }
+
+    private String sumNTimes(int numberOfTimes, String expression){
+        StringBuilder stringbuilder = new StringBuilder(expression);
+
+        for (int i = 0; i < numberOfTimes - 1; i++) {
+            stringbuilder.append("+" + expression);
+        }
+        return stringbuilder.toString();
     }
 }
