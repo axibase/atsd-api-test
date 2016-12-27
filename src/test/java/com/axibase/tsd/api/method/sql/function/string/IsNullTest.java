@@ -56,7 +56,7 @@ public class IsNullTest extends SqlTest {
     }
 
     /**
-     * @issue 3675
+     * #3675
      */
     @DataProvider(name = "typeCheckTestProvider")
     public Object[][] provideCheckTestData() {
@@ -98,7 +98,7 @@ public class IsNullTest extends SqlTest {
     }
 
     /**
-     * @issue 3675
+     * #3675
      */
     @Test(dataProvider = "typeCheckTestProvider")
     public void testTypePreserved(String from, String to, String type) throws Exception {
