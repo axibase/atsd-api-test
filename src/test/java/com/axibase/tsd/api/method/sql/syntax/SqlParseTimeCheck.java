@@ -47,7 +47,7 @@ public class SqlParseTimeCheck extends SqlTest {
                 {numberOfTimes.toString()}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Query gives wrong result");
+        assertSqlQueryRows(sqlQuery, expectedRows, "Summation gives wrong result");
     }
 
     private String sumNTimes(int numberOfTimes, String expression){
