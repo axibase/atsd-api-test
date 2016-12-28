@@ -12,84 +12,49 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.lang.invoke.MethodHandles;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
-import static com.axibase.tsd.api.method.series.SeriesQueryEntityExpressionTest.FormatEntityExpression.*;
 import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 /**
- * @author Aleksandr Veselov
- * @issue 3612
+ * #3612
  */
 public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
-    private static final String METRIC_NAME = "m-test-entity-expression-asdef001";
-    private static final String PROPERTY_TYPE = "test-entity-expression-asdef001";
+    private static final String METRIC_NAME = "m-test-entity-expression-001";
+    private static final String PROPERTY_TYPE = "test-entity-expression-001";
     private static final String ENTITY_NAME_PREFIX = "e-test-entity-expression-";
-    private static final String ENTITY_GROUP_NAME = "test-entity-expression-asdef001";
+    private static final String ENTITY_GROUP_NAME = "test-entity-expression-001";
+    private static final String FIXED_ENTITY_NAME = entityNameWithPrefix("asdef001");
 
     private static final Metric METRIC = new Metric(METRIC_NAME);
-    private static final List<Property> PROPERTIES = new LinkedList<>();
-
-    private static final EntityNameSet ALL_ENTITIES = new EntityNameSet();
-    private static final EntityNameSet NO_ENTITY = null;
-    private static final EntityNameSet ENTITIES_IN_GROUP;
-
-    private static class EntityNameSet extends HashSet<String> {
-        public EntityNameSet() {
-            super();
-        }
-
-        public EntityNameSet(Collection<? extends String> collection) {
-            super(collection);
-        }
-
-    }
-
     static {
         METRIC.setDataType(DataType.INTEGER);
-
-        Property property;
-
-        property = createAndAppendDummyProperty("asdef001");
-        property.addTag("group", "hello");
-        property.addTag("multitag", "one");
-        property.addKey("testkey", "test");
-        property.addKey("otherkey", "other");
-
-        property = createAndAppendDummyProperty("asdef002");
-        property.addTag("group", "hell");
-        property.addKey("testkey", "test");
-
-        property = createAndAppendDummyProperty("asdef003");
-        property.addKey("otherkey", "other");
-
-        property = createAndAppendDummyProperty("asdef004");
-        property.addTag("group", "main");
-        property.addTag("multitag", "other");
-
-        property = createAndAppendDummyProperty("asdef005");
-        property.addTag("group", "foo");
-        property.addKey("testkey", "test");
-
-        for (Property prop: PROPERTIES) {
-            ALL_ENTITIES.add(prop.getEntity());
-        }
-
-        ENTITIES_IN_GROUP = getPrefixedSet("asdef001", "asdef002", "asdef003");
     }
+
+    private static final List<Property> PROPERTIES = new LinkedList<>();
+    private static final HashSet<String> ALL_ENTITIES = new HashSet<>();
+    private static final HashSet<String> ENTITIES_IN_GROUP = new HashSet<>();
+
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @BeforeClass
     public static void createTestData() throws Exception {
         MetricMethod.createOrReplaceMetricCheck(METRIC);
+        populateProperties();
         for (Property property: PROPERTIES) {
             String entityName = property.getEntity();
             Entity entity = new Entity(entityName);
@@ -111,116 +76,334 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         EntityGroupMethod.createOrReplaceEntityGroupCheck(group);
     }
 
+    public static void populateProperties() {
+        {
+            Property property = createTestProperty("asdef001");
+            property.addTag("group", "hello");
+            property.addTag("multitag", "one");
+            property.addKey("testkey", "test");
+            property.addKey("otherkey", "other");
+            PROPERTIES.add(property);
+            ENTITIES_IN_GROUP.add(property.getEntity());
+        }
+
+        {
+            Property property = createTestProperty("asdef002");
+            property.addTag("group", "hell");
+            property.addKey("testkey", "test");
+            PROPERTIES.add(property);
+            ENTITIES_IN_GROUP.add(property.getEntity());
+        }
+
+        {
+            Property property = createTestProperty("asdef003");
+            property.addKey("otherkey", "other");
+            PROPERTIES.add(property);
+            ENTITIES_IN_GROUP.add(property.getEntity());
+        }
+
+        {
+            Property property = createTestProperty("asdef004");
+            property.addTag("group", "main");
+            property.addTag("multitag", "other");
+            PROPERTIES.add(property);
+        }
+
+        {
+            Property property = createTestProperty("asdef005");
+            property.addTag("group", "foo");
+            property.addKey("testkey", "test");
+            PROPERTIES.add(property);
+        }
+
+        for (Property prop: PROPERTIES) {
+            ALL_ENTITIES.add(prop.getEntity());
+        }
+    }
+
     /*
      * Correct data test cases
      */
     @DataProvider(name = "entityExpressionProvider")
     public static Object[][] provideEntityExpression() {
         return new Object[][] {
-            /**
-             * Test case signature: { entityExpression: String, expectedEntities: EntityNameSet}
-             * @param entityExpression Queried entity expression string
-             * @param expectedEntities Max subset of ALL_ENTITIES set, all of which satisfy entityExpression
-             */
             // Contains method
-            {expr(propertyValues("name"), contains("asdef001")), getPrefixedSet("asdef001")},
-            {expr(propertyValues("name", "testkey=test"), contains("asdef003")), NO_ENTITY},
-            {expr(propertyValues("group"), contains("hell")), getPrefixedSet("asdef002")},
-            {expr(propertyValues("name"), contains("lolololololololo002")), NO_ENTITY},
+            {"property_values('" + PROPERTY_TYPE + "::name').contains('asdef001')", getPrefixedSet("asdef001")},
+            {"property_values('" + PROPERTY_TYPE + "::group').contains('hell')", getPrefixedSet("asdef002")},
+
             // Matches method
-            {matches("asdef*", propertyValues("name")), ALL_ENTITIES},
-            {matches("*", propertyValues("name")), ALL_ENTITIES},
-            {matches("*def0*", propertyValues("name")), ALL_ENTITIES},
-            {matches("de", propertyValues("name")), NO_ENTITY},
-            {matches("*001", propertyValues("name", "testkey=test")), getPrefixedSet("asdef001")},
-            {matches("*", propertyValues("name", "testkey=test,otherkey=other")), getPrefixedSet("asdef001")},
-            {matches("*", propertyValues("name", "otherkey=other")), getPrefixedSet("asdef001", "asdef003")},
-            {matches("hel*", propertyValues("group")), getPrefixedSet("asdef001", "asdef002")},
+            {"matches('asdef*', property_values('" + PROPERTY_TYPE + "::name'))", ALL_ENTITIES},
+            {"matches('*', property_values('" + PROPERTY_TYPE + "::name'))", ALL_ENTITIES},
+            {"matches('*def0*', property_values('" + PROPERTY_TYPE + "::name'))", ALL_ENTITIES},
+            {"matches('*001', property_values('" + PROPERTY_TYPE + ":testkey=test:name'))", getPrefixedSet("asdef001")},
+            {"matches('*', property_values('" + PROPERTY_TYPE + ":testkey=test,otherkey=other:name'))", getPrefixedSet("asdef001")},
+            {"matches('*', property_values('" + PROPERTY_TYPE + ":otherkey=other:name'))", getPrefixedSet("asdef001", "asdef003")},
+            {"matches('hel*', property_values('" + PROPERTY_TYPE + "::group'))", getPrefixedSet("asdef001", "asdef002")},
+
             // IsEmpty method
-            {expr(propertyValues("badtag"), isEmpty()), ALL_ENTITIES},
-            {expr(propertyValues("name"), isEmpty()), NO_ENTITY},
-            {expr(propertyValues("name", "testkey=test"), isEmpty()), getPrefixedSet("asdef003", "asdef004")},
-            {expr(propertyValues("group"), isEmpty()), getPrefixedSet("asdef003")},
+            {"property_values('" + PROPERTY_TYPE + "::badtag').isEmpty()", ALL_ENTITIES},
+            {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').isEmpty()", getPrefixedSet("asdef003", "asdef004")},
+            {"property_values('" + PROPERTY_TYPE + "::group').isEmpty()", getPrefixedSet("asdef003")},
+
             // Property method
-            {"property('not-"+ PROPERTY_TYPE +"::badtag') = ''", ALL_ENTITIES},
-            {property("badtag")+ " = ''", ALL_ENTITIES},
-            {property("name", "testkey=test") + " = ''", getPrefixedSet("asdef003", "asdef004")},
-            {property("name") + " = 'asdef001'", getPrefixedSet("asdef001")},
-            {property("multitag") + " = 'other'", getPrefixedSet("asdef004")},
-            {property("group") + " LIKE 'hel*'", getPrefixedSet("asdef001", "asdef002")},
-            {null, ALL_ENTITIES}
+            {"property('not-"+ PROPERTY_TYPE +"::name') = ''", ALL_ENTITIES},
+            {"property('" + PROPERTY_TYPE + "::badtag') = ''", ALL_ENTITIES},
+            {"property('"+ PROPERTY_TYPE +":testkey=test:name') = ''", getPrefixedSet("asdef003", "asdef004")},
+            {"property('"+ PROPERTY_TYPE +"::name') = 'asdef001'", getPrefixedSet("asdef001")},
+            {"property('"+ PROPERTY_TYPE +"::multitag') = 'other'", getPrefixedSet("asdef004")},
+            {"property('"+ PROPERTY_TYPE +"::group') LIKE 'hel*'", getPrefixedSet("asdef001", "asdef002")}
         };
     }
 
+    /**
+     * #3612
+     */
     @Test(dataProvider = "entityExpressionProvider")
-    public static void testEntityExpressionWithWildcardEntity(String expression, EntityNameSet expected) throws Exception {
+    public static void testEntityExpressionWithWildcardEntity(String expression, HashSet<String> expected) throws Exception {
         SeriesQuery query = createDummyQuery("*");
         query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity expression: {}", query.getEntityExpression());
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        if (expected == NO_ENTITY) {
-            assertEquals("dummy result is not present", 1, result.size());
-            Series series = result.get(0);
-            assertEquals("dummy result entity name", query.getEntity(), series.getEntity());
-            assertEquals("dummy result data size", 0, series.getData().size());
-        } else {
-            EntityNameSet expectedResultSet = new EntityNameSet(ALL_ENTITIES);
-            expectedResultSet.retainAll(expected);
-            EntityNameSet gotResultSet = new EntityNameSet();
-            for (Series series: result) {
-                gotResultSet.add(series.getEntity());
-            }
-            assertEquals("invalid result entity set", expectedResultSet, gotResultSet);
-        }
-    }
-
-    @Test(dataProvider = "entityExpressionProvider")
-    public static void testEntityExpressionWithFixedEntity(String expression, EntityNameSet expected) throws Exception {
-        SeriesQuery query = createDummyQuery("e-test-entity-expression-asdef001");
-        query.setEntityExpression(expression);
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        if (expected == NO_ENTITY || !expected.contains(query.getEntity())) {
-            assertEquals("dummy result is not present", 1, result.size());
-            Series series = result.get(0);
-            assertEquals("dummy result entity name", query.getEntity(), series.getEntity());
-            assertEquals("dummy result data size", 0, series.getData().size());
-        } else {
-            EntityNameSet expectedResultSet = new EntityNameSet();
-            expectedResultSet.add(query.getEntity());
-            EntityNameSet gotResultSet = new EntityNameSet();
-            for (Series series: result) {
-                gotResultSet.add(series.getEntity());
-            }
-            assertEquals("invalid result entity set", expectedResultSet, gotResultSet);
-        }
-    }
-
-    @Test(dataProvider = "entityExpressionProvider")
-    public static void testEntityExpressionWithEntityGroup(String expression, EntityNameSet expected) throws Exception {
-        SeriesQuery query = createDummyQuery(null);
-        query.setEntityGroup(ENTITY_GROUP_NAME);
-        query.setEntityExpression(expression);
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        // No dummy series !!!
-        if (expected == NO_ENTITY) {
-            expected = new EntityNameSet();
-        }
-        EntityNameSet expectedResultSet = new EntityNameSet(ALL_ENTITIES);
-        expectedResultSet.retainAll(expected);
-        expectedResultSet.retainAll(ENTITIES_IN_GROUP);
-        EntityNameSet gotResultSet = new EntityNameSet();
+        HashSet<String> gotResultSet = new HashSet<>();
         for (Series series: result) {
             gotResultSet.add(series.getEntity());
         }
-        assertEquals("invalid result entity set", expectedResultSet, gotResultSet);
+        assertEquals("invalid result entity set", expected, gotResultSet);
     }
 
+    /*
+     * Correct data test cases
+     */
+    @DataProvider(name = "falseEntityExpressionProvider")
+    public static Object[][] provideFalseEntityExpression() {
+        return new Object[][] {
+                // Contains method
+                {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').contains('asdef003')"},
+                {"property_values('" + PROPERTY_TYPE + "::name').contains('lolololololololo002')"},
 
+                // Matches method
+                {"matches('de', property_values('" + PROPERTY_TYPE + "::name'))"},
+
+                // IsEmpty method
+                {"property_values('" + PROPERTY_TYPE + "::name').isEmpty()"},
+
+                // Property method
+                {"property('"+ PROPERTY_TYPE +"::name') = ''"},
+
+                {"null"}
+        };
+    }
+
+    /**
+     * #3612
+     */
+    @Test(dataProvider = "falseEntityExpressionProvider")
+    public static void testFalseEntityExpressionWithWildcardEntity(String expression) throws Exception {
+        SeriesQuery query = createDummyQuery("*");
+        query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity expression: {}", query.getEntityExpression());
+
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        assertEquals("dummy result is not present", 1, result.size());
+
+        Series series = result.get(0);
+        assertEquals("dummy result entity name", query.getEntity(), series.getEntity());
+        assertEquals("dummy result data size", 0, series.getData().size());
+    }
+
+    /*
+     * Correct data test cases
+     */
+    @DataProvider(name = "entityExpressionProviderForFixedEntity")
+    public static Object[][] provideEntityExpressionForFixedEntity() {
+        return new Object[][] {
+                // Contains method
+                {"property_values('" + PROPERTY_TYPE + "::name').contains('asdef001')"},
+
+                // Matches method
+                {"matches('asdef*', property_values('" + PROPERTY_TYPE + "::name'))"},
+                {"matches('*', property_values('" + PROPERTY_TYPE + "::name'))"},
+                {"matches('*def0*', property_values('" + PROPERTY_TYPE + "::name'))"},
+                {"matches('*001', property_values('" + PROPERTY_TYPE + ":testkey=test:name'))"},
+                {"matches('*', property_values('" + PROPERTY_TYPE + ":testkey=test,otherkey=other:name'))"},
+                {"matches('hel*', property_values('" + PROPERTY_TYPE + "::group'))"},
+
+                // IsEmpty method
+                {"property_values('" + PROPERTY_TYPE + "::badtag').isEmpty()"},
+
+                // Property method
+                {"property('not-"+ PROPERTY_TYPE +"::name') = ''"},
+                {"property('" + PROPERTY_TYPE + "::badtag') = ''"},
+                {"property('"+ PROPERTY_TYPE +"::name') = 'asdef001'"},
+                {"property('"+ PROPERTY_TYPE +"::group') LIKE 'hel*'"}
+        };
+    }
+
+    /**
+     * #3612
+     */
+    @Test(dataProvider = "entityExpressionProviderForFixedEntity")
+    public static void testEntityExpressionWithFixedEntity(String expression) throws Exception {
+        SeriesQuery query = createDummyQuery(FIXED_ENTITY_NAME);
+        query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity expression: {}", query.getEntityExpression());
+
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        assertEquals("Wrong number of results", 1, result.size());
+        assertEquals("Wrong entity selected", FIXED_ENTITY_NAME, result.get(0).getEntity());
+    }
+
+    /*
+     * Correct data test cases
+     */
+    @DataProvider(name = "falseEntityExpressionProviderForFixedEntity")
+    public static Object[][] provideFalseEntityExpressionForFixedEntity() {
+        return new Object[][] {
+                // Contains method
+                {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').contains('asdef003')"},
+                {"property_values('" + PROPERTY_TYPE + "::name').contains('lolololololololo002')"},
+                {"property_values('" + PROPERTY_TYPE + "::group').contains('hell')"},
+
+                // Matches method
+                {"matches('de', property_values('" + PROPERTY_TYPE + "::name'))"},
+                {"matches('*', property_values('" + PROPERTY_TYPE + ":foo=other:name'))"},
+
+                // IsEmpty method
+                {"property_values('" + PROPERTY_TYPE + "::name').isEmpty()"},
+                {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').isEmpty()"},
+                {"property_values('" + PROPERTY_TYPE + "::group').isEmpty()"},
+
+                // Property method
+                {"property('"+ PROPERTY_TYPE +"::name') = ''"},
+                {"property('"+ PROPERTY_TYPE +":testkey=test:name') = ''"},
+                {"property('"+ PROPERTY_TYPE +"::multitag') = 'other'"},
+
+
+                {"null"}
+        };
+    }
+
+    /**
+     * #3612
+     */
+    @Test(dataProvider = "falseEntityExpressionProviderForFixedEntity")
+    public static void testFalseEntityExpressionWithFixedEntity(String expression) throws Exception {
+        SeriesQuery query = createDummyQuery(FIXED_ENTITY_NAME);
+        query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity expression: {}", query.getEntityExpression());
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        assertEquals("dummy result should be the one present", 1, result.size());
+        Series series = result.get(0);
+        assertEquals("dummy result entity name should be preserved", FIXED_ENTITY_NAME, series.getEntity());
+        assertTrue("dummy result data should be empty", series.getData().isEmpty());
+    }
+
+    /*
+    * Correct data test cases
+    */
+    @DataProvider(name = "entityExpressionProviderForEntityGroup")
+    public static Object[][] provideEntityExpressionForEntityGroup() {
+        return new Object[][] {
+                // Contains method
+                {"property_values('" + PROPERTY_TYPE + "::name').contains('asdef001')", getPrefixedSet("asdef001")},
+                {"property_values('" + PROPERTY_TYPE + "::group').contains('hell')", getPrefixedSet("asdef002")},
+
+                // Matches method
+                {"matches('asdef*', property_values('" + PROPERTY_TYPE + "::name'))", ENTITIES_IN_GROUP},
+                {"matches('*', property_values('" + PROPERTY_TYPE + "::name'))", ENTITIES_IN_GROUP},
+                {"matches('*def0*', property_values('" + PROPERTY_TYPE + "::name'))", ENTITIES_IN_GROUP},
+                {"matches('*001', property_values('" + PROPERTY_TYPE + ":testkey=test:name'))", getPrefixedSet("asdef001")},
+                {"matches('*', property_values('" + PROPERTY_TYPE + ":testkey=test,otherkey=other:name'))", getPrefixedSet("asdef001")},
+                {"matches('*', property_values('" + PROPERTY_TYPE + ":otherkey=other:name'))", getPrefixedSet("asdef001", "asdef003")},
+                {"matches('hel*', property_values('" + PROPERTY_TYPE + "::group'))", getPrefixedSet("asdef001", "asdef002")},
+
+                // IsEmpty method
+                {"property_values('" + PROPERTY_TYPE + "::badtag').isEmpty()", ENTITIES_IN_GROUP},
+                {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').isEmpty()", getPrefixedSet("asdef003")},
+                {"property_values('" + PROPERTY_TYPE + "::group').isEmpty()", getPrefixedSet("asdef003")},
+
+                // Property method
+                {"property('not-"+ PROPERTY_TYPE +"::name') = ''", ENTITIES_IN_GROUP},
+                {"property('" + PROPERTY_TYPE + "::badtag') = ''", ENTITIES_IN_GROUP},
+                {"property('"+ PROPERTY_TYPE +":testkey=test:name') = ''", getPrefixedSet("asdef003")},
+                {"property('"+ PROPERTY_TYPE +"::name') = 'asdef001'", getPrefixedSet("asdef001")},
+                {"property('"+ PROPERTY_TYPE +"::group') LIKE 'hel*'", getPrefixedSet("asdef001", "asdef002")}
+        };
+    }
+
+    /**
+     * #3612
+     */
+    @Test(dataProvider = "entityExpressionProviderForEntityGroup")
+    public static void testEntityExpressionWithEntityGroup(String expression, HashSet<String> expected) throws Exception {
+        SeriesQuery query = createDummyQuery(null);
+        query.setEntityGroup(ENTITY_GROUP_NAME);
+        query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity group: {}", query.getEntityGroup());
+        logger.info("Entity expression: {}", query.getEntityExpression());
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        HashSet<String> gotResultSet = new HashSet<>();
+        for (Series series: result) {
+            gotResultSet.add(series.getEntity());
+        }
+        assertEquals("wrong result entity set", expected, gotResultSet);
+    }
+
+    /*
+     * Correct data test cases
+     */
+    @DataProvider(name = "falseEntityExpressionProviderForEntityGroup")
+    public static Object[][] provideFalseEntityExpressionForEntityGroup() {
+        return new Object[][] {
+                // Contains method
+                {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').contains('asdef003')"},
+                {"property_values('" + PROPERTY_TYPE + "::name').contains('lolololololololo002')"},
+
+                // Matches method
+                {"matches('de', property_values('" + PROPERTY_TYPE + "::name'))"},
+
+                // IsEmpty method
+                {"property_values('" + PROPERTY_TYPE + "::name').isEmpty()"},
+
+                // Property method
+                {"property('"+ PROPERTY_TYPE +"::name') = ''"},
+                {"property('"+ PROPERTY_TYPE +"::multitag') = 'other'"},
+
+                {"null"}
+        };
+    }
+
+    /**
+     * #3612
+     */
+    @Test(dataProvider = "falseEntityExpressionProviderForEntityGroup")
+    public static void testEntityExpressionWithEntityGroup(String expression) throws Exception {
+        SeriesQuery query = createDummyQuery(null);
+        query.setEntityGroup(ENTITY_GROUP_NAME);
+        query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity group: {}", query.getEntityGroup());
+        logger.info("Entity expression: {}", query.getEntityExpression());
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        HashSet<String> gotResultSet = new HashSet<>();
+        for (Series series: result) {
+            gotResultSet.add(series.getEntity());
+        }
+        assertEquals("result set should be empty", new HashSet<>(), gotResultSet);
+    }
+    
     /*
      * Bad data test cases
      */
     @DataProvider(name = "errorEntityExpressionProvider")
     public static Object[][] provideErrorEntityExpression() {
         return new Object[][] {
+                {""},
                 {"foo"},
 
                 {"property_values(foo).isEmpty()"},
@@ -236,10 +419,15 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
+    /**
+     * #3612
+     */
     @Test(dataProvider = "errorEntityExpressionProvider")
     public static void testErrorOnBadEntityExpression(String expression) throws Exception {
         SeriesQuery query = createDummyQuery("*");
         query.setEntityExpression(expression);
+        logger.info("Entity: {}", query.getEntity());
+        logger.info("Entity expression: {}", query.getEntityExpression());
         Response response = SeriesMethod.executeQueryRaw(Collections.singletonList(query));
         Response.Status.Family statusFamily = response.getStatusInfo().getFamily();
         if (statusFamily != Response.Status.Family.CLIENT_ERROR) {
@@ -247,69 +435,24 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         }
     }
 
-    /**
-     * Contains methods to format entity expression functions as strings.
-     * Each method, except expr(String, String...) refers to same for
-     * entity expression syntax
-     */
-    public static class FormatEntityExpression {
-
-        /**
-         * Formats whole expression by chaining arguments with . (dot)
-         * @param base Required initial object
-         * @param others Optional method calls
-         * @return Chained entity expression string
-         */
-        public static String expr(String base, String... others) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(base);
-            for (String cmd : others) {
-                builder.append('.');
-                builder.append(cmd);
-            }
-            return builder.toString();
-        }
-
-        public static String propertyValues(String tag) {
-            return propertyValues(tag, "");
-        }
-
-        public static String propertyValues(String tag, String keys) {
-            return String.format("property_values('%s:%s:%s')", PROPERTY_TYPE, keys, tag);
-        }
-
-        public static String contains(String value) {
-            return String.format("contains('%s')", value);
-        }
-
-        public static String matches(String pattern, String expr) {
-            return String.format("matches('%s', %s)", pattern, expr);
-        }
-
-        public static String property(String tag) {
-            return property(tag, "");
-        }
-
-        public static String property(String tag, String keys) {
-            return String.format("property('%s:%s:%s')", PROPERTY_TYPE, keys, tag);
-        }
-
-        public static String isEmpty() {
-            return "isEmpty()";
-        }
-
-    }
-
-    private static String withPrefix(String entityName) {
-        return ENTITY_NAME_PREFIX + entityName;
-    }
-
-    private static EntityNameSet getPrefixedSet(String... entityNames) {
-        EntityNameSet result = new EntityNameSet();
+    private static HashSet<String> getPrefixedSet(String... entityNames) {
+        HashSet<String> result = new HashSet<>();
         for (String name: entityNames) {
-            result.add(withPrefix(name));
+            result.add(entityNameWithPrefix(name));
         }
         return result;
+    }
+
+    private static Property createTestProperty(String shortEntityName) {
+        Property property = new Property();
+        property.setType(PROPERTY_TYPE);
+        property.setEntity(entityNameWithPrefix(shortEntityName));
+        property.addTag("name", shortEntityName);
+        return property;
+    }
+
+    private static String entityNameWithPrefix(String entityName) {
+        return ENTITY_NAME_PREFIX + entityName;
     }
 
     private static SeriesQuery createDummyQuery(String entityName) {
@@ -317,24 +460,5 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setStartDate(MIN_QUERYABLE_DATE);
         query.setEndDate(MAX_QUERYABLE_DATE);
         return query;
-    }
-
-    /**
-     * Creates test-standard property (with test-standard type,
-     * entity, prefixed with test-standard entity prefix
-     * and "name tag", set to given name).
-     *
-     * After creation property is appended to PROPERTIES.
-     * @param shortEntityName Short name for entity (without prefix)
-     * @return Created standard property
-     * @issue 3612
-     */
-    private static Property createAndAppendDummyProperty(String shortEntityName) {
-        Property property = new Property();
-        property.setType(PROPERTY_TYPE);
-        property.setEntity(withPrefix(shortEntityName));
-        property.addTag("name", shortEntityName);
-        PROPERTIES.add(property);
-        return property;
     }
 }
