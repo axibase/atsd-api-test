@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
-public class SqlParseTimeCheck extends SqlTest {
+public class SqlParseTimeTest extends SqlTest {
     private static final String TEST_METRIC_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
 

@@ -39,10 +39,6 @@ public class SqlFunctionMathAbs extends SqlTest {
     public Object[][] provideTestsDataForAbsTest() {
         return new Object[][]{
                 {
-                        "avg(value)",
-                        "2"
-                },
-                {
                         "abs(avg(value))",
                         "2"
                 },
