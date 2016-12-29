@@ -39,11 +39,11 @@ public class SqlFunctionMathAbs extends SqlTest {
     public Object[][] provideTestsDataForAbsTest() {
         return new Object[][]{
                 {
-                        "abs(avg(value))",
+                        "avg(value)",
                         "2"
                 },
                 {
-                        "abs(max(value))",
+                        "max(value)",
                         "3"
                 },
                 {
@@ -51,12 +51,12 @@ public class SqlFunctionMathAbs extends SqlTest {
                         "6"
                 },
                 {
-                        "abs(max(value)*avg(value))",
+                        "max(value) * avg(value)",
                         "6"
                 },
                 {
-                        "abs(abs(max(abs(value))) * -3 * abs(abs(max(abs(value)) * abs(delta(abs(value)) * " +
-                        "count(value) * min(value)) * abs(avg(abs(value))))))",
+                        "abs(max(abs(value))) * -3 * abs(abs(max(abs(value)) * abs(delta(abs(value)) * " +
+                        "count(value) * min(value)) * abs(avg(abs(value)))))",
                         "324"
                 }
         };
@@ -68,7 +68,7 @@ public class SqlFunctionMathAbs extends SqlTest {
     @Test(dataProvider = "provideTestsDataForAbsTest")
     public void testAbsWithAggregateExpressionsInside(String query, String value) {
         String sqlQuery = String.format(
-                "SELECT %s FROM '%s'",
+                "SELECT abs( %s ) FROM '%s'",
                 query, TEST_METRIC1_NAME
         );
 
