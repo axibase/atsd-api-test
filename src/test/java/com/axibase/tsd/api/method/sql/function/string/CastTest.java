@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.function.cast;
+package com.axibase.tsd.api.method.sql.function.string;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
-public class SqlCastTest extends SqlTest {
+public class CastTest extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_METRIC3_NAME = metric();
