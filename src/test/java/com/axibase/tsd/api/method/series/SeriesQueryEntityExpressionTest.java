@@ -191,14 +191,14 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     public static void testEntityExpressionWithWildcardEntity(String expression, HashSet<String> expectedEntities) throws Exception {
         SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
 
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
         HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
             receivedEntities.add(series.getEntity());
         }
-        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, receivedEntities);
 
+        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, receivedEntities);
         for (Series series: result) {
             List<Sample> seriesData = series.getData();
             assertEquals(formatErrorMsg("Wrong number of data entries", expression), 1, seriesData.size());
@@ -238,8 +238,8 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setEntityExpression(expression);
 
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        assertEquals(formatErrorMsg("Dummy result is not present", expression), 1, result.size());
 
+        assertEquals(formatErrorMsg("Dummy result is not present", expression), 1, result.size());
         Series series = result.get(0);
         assertEquals(formatErrorMsg("Dummy result entity name", expression), query.getEntity(), series.getEntity());
         assertEquals(formatErrorMsg("Dummy result data size", expression), 0, series.getData().size());
@@ -282,11 +282,10 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setEntityExpression(expression);
 
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        assertEquals(formatErrorMsg("Wrong number of results", expression), 1, result.size());
 
+        assertEquals(formatErrorMsg("Wrong number of results", expression), 1, result.size());
         Series series = result.get(0);
         assertEquals(formatErrorMsg("Wrong entity selected", expression), FIXED_ENTITY_NAME, series.getEntity());
-
         List<Sample> seriesData = series.getData();
         assertEquals(formatErrorMsg("Wrong number of data entries", expression), 1, seriesData.size());
         assertEquals(formatErrorMsg("Wrong data received", expression), Mocks.SAMPLE, seriesData.get(0));
@@ -329,7 +328,9 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     public static void testEmptyResultEntityExpressionWithFixedEntity(String expression) throws Exception {
         SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
         query.setEntityExpression(expression);
+
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+
         assertEquals(formatErrorMsg("Dummy result should be the one present", expression), 1, result.size());
         Series series = result.get(0);
         assertEquals(formatErrorMsg("Dummy result entity name should be preserved", expression),
@@ -378,13 +379,14 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         SeriesQuery query = createTestQuery(null);
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
+
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
         HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
             receivedEntities.add(series.getEntity());
         }
-        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, receivedEntities);
 
+        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, receivedEntities);
         for (Series series: result) {
             List<Sample> seriesData = series.getData();
             assertEquals(formatErrorMsg("Wrong number of data entries", expression), 1, seriesData.size());
@@ -424,11 +426,13 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         SeriesQuery query = createTestQuery(null);
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
+
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
         HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
             receivedEntities.add(series.getEntity());
         }
+
         assertTrue(formatErrorMsg("Result set should be empty", expression), receivedEntities.isEmpty());
     }
 
@@ -461,10 +465,12 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     public static void testErrorOnBadEntityExpression(String expression) throws Exception {
         SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
+
         Response response = SeriesMethod.executeQueryRaw(Collections.singletonList(query));
         Response.Status.Family statusFamily = response.getStatusInfo().getFamily();
         String errMsg = "Wrong result status code, expected 4**, got " + response.getStatus();
         errMsg = formatErrorMsg(errMsg, expression);
+
         assertEquals(errMsg, Response.Status.Family.CLIENT_ERROR, statusFamily);
     }
 
