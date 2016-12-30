@@ -21,7 +21,8 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * #3612
@@ -152,8 +153,8 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     /*
      * Correct data test cases
      */
-    @DataProvider(name = "entityExpressionProvider")
-    public static Object[][] provideEntityExpression() {
+    @DataProvider(name = "entityExpressionProviderForWildcardEntity")
+    public static Object[][] provideEntityExpressionForWildcardEntity() {
         return new Object[][] {
             // Contains method
             {"property_values('" + PROPERTY_TYPE + "::name').contains('asdef001')", getPrefixedSet("asdef001")},
@@ -186,17 +187,17 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     /**
      * #3612
      */
-    @Test(dataProvider = "entityExpressionProvider")
+    @Test(dataProvider = "entityExpressionProviderForWildcardEntity")
     public static void testEntityExpressionWithWildcardEntity(String expression, HashSet<String> expectedEntities) throws Exception {
         SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
 
-        HashSet<String> gotResultSet = new HashSet<>();
+        HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
-            gotResultSet.add(series.getEntity());
+            receivedEntities.add(series.getEntity());
         }
-        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, gotResultSet);
+        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, receivedEntities);
 
         for (Series series: result) {
             List<Sample> seriesData = series.getData();
@@ -424,11 +425,11 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        HashSet<String> gotResultSet = new HashSet<>();
+        HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
-            gotResultSet.add(series.getEntity());
+            receivedEntities.add(series.getEntity());
         }
-        assertTrue(formatErrorMsg("Result set should be empty", expression), gotResultSet.isEmpty());
+        assertTrue(formatErrorMsg("Result set should be empty", expression), receivedEntities.isEmpty());
     }
 
     /*
@@ -462,9 +463,9 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setEntityExpression(expression);
         Response response = SeriesMethod.executeQueryRaw(Collections.singletonList(query));
         Response.Status.Family statusFamily = response.getStatusInfo().getFamily();
-        if (statusFamily != Response.Status.Family.CLIENT_ERROR) {
-            fail(formatErrorMsg("Wrong result status code, expected 4**, got " + response.getStatus(), expression));
-        }
+        String errMsg = "Wrong result status code, expected 4**, got " + response.getStatus();
+        errMsg = formatErrorMsg(errMsg, expression);
+        assertEquals(errMsg, Response.Status.Family.CLIENT_ERROR, statusFamily);
     }
 
 
