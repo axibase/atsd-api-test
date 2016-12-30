@@ -1,10 +1,8 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
-import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
@@ -12,18 +10,15 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
@@ -40,6 +35,8 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     private static final String ENTITY_GROUP_NAME = "test-entity-expression-001";
     private static final String FIXED_ENTITY_NAME = entityNameWithPrefix("asdef001");
 
+    private static String TEST_DATASET_DESCRIPTION = "";
+
     private static final Metric METRIC = new Metric(METRIC_NAME);
     static {
         METRIC.setDataType(DataType.INTEGER);
@@ -48,35 +45,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     private static final List<Property> PROPERTIES = new LinkedList<>();
     private static final HashSet<String> ALL_ENTITIES = new HashSet<>();
     private static final HashSet<String> ENTITIES_IN_GROUP = new HashSet<>();
-
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    @BeforeClass
-    public static void createTestData() throws Exception {
-        MetricMethod.createOrReplaceMetricCheck(METRIC);
-        populateProperties();
-        for (Property property: PROPERTIES) {
-            String entityName = property.getEntity();
-            Entity entity = new Entity(entityName);
-            if (ENTITIES_IN_GROUP.contains(entityName)) {
-                entity.addTag("group", "append");
-            }
-            EntityMethod.createOrReplaceEntityCheck(entity);
-            PropertyMethod.insertPropertyCheck(property);
-
-            Series series = new Series();
-            series.setEntity(entityName);
-            series.setMetric(METRIC_NAME);
-            series.addData(new Sample("2026-11-15T12:23:49.520Z", 1));
-            SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
-        }
-
-        EntityGroup group = new EntityGroup(ENTITY_GROUP_NAME);
-        group.setExpression("tags.group = 'append'");
-        EntityGroupMethod.createOrReplaceEntityGroupCheck(group);
-    }
-
-    public static void populateProperties() {
+    static {
         {
             Property property = createTestProperty("asdef001");
             property.addTag("group", "hello");
@@ -84,6 +53,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             property.addKey("testkey", "test");
             property.addKey("otherkey", "other");
             PROPERTIES.add(property);
+            
             ENTITIES_IN_GROUP.add(property.getEntity());
         }
 
@@ -92,6 +62,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             property.addTag("group", "hell");
             property.addKey("testkey", "test");
             PROPERTIES.add(property);
+            
             ENTITIES_IN_GROUP.add(property.getEntity());
         }
 
@@ -99,6 +70,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             Property property = createTestProperty("asdef003");
             property.addKey("otherkey", "other");
             PROPERTIES.add(property);
+            
             ENTITIES_IN_GROUP.add(property.getEntity());
         }
 
@@ -106,6 +78,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             Property property = createTestProperty("asdef004");
             property.addTag("group", "main");
             property.addTag("multitag", "other");
+            
             PROPERTIES.add(property);
         }
 
@@ -113,12 +86,56 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             Property property = createTestProperty("asdef005");
             property.addTag("group", "foo");
             property.addKey("testkey", "test");
+            
             PROPERTIES.add(property);
         }
 
         for (Property prop: PROPERTIES) {
             ALL_ENTITIES.add(prop.getEntity());
         }
+
+    }
+
+    @BeforeClass
+    public static void createTestData() throws Exception {
+        StringBuilder testDatasetDescriptionBuilder = new StringBuilder();
+        testDatasetDescriptionBuilder.append("\n=====================================");
+        testDatasetDescriptionBuilder.append("\n              Test data              ");
+        testDatasetDescriptionBuilder.append("\n=====================================\n");
+
+        // Create metric
+        testDatasetDescriptionBuilder.append(String.format("Metric:%n"));
+        MetricMethod.createOrReplaceMetricCheck(METRIC);
+        testDatasetDescriptionBuilder.append(String.format("%s%n%n", Util.prettyPrint(METRIC)));
+
+        // Create series
+        testDatasetDescriptionBuilder.append(String.format("Series: [%n"));
+        for (String entityName: ALL_ENTITIES) {
+            Series series = createTestSeries(entityName);
+            SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+            testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(series)));
+        }
+        testDatasetDescriptionBuilder.append(String.format("]%n%n"));
+
+        // Create properties
+        testDatasetDescriptionBuilder.append(String.format("Properties: [%n"));
+        for (Property property: PROPERTIES) {
+            PropertyMethod.insertPropertyCheck(property);
+            testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(property)));
+        }
+        testDatasetDescriptionBuilder.append(String.format("]%n%n"));
+
+        // Create entity group
+        testDatasetDescriptionBuilder.append(String.format("Entities in group %s: [%n", ENTITY_GROUP_NAME));
+        EntityGroup group = new EntityGroup(ENTITY_GROUP_NAME);
+        EntityGroupMethod.createOrReplaceEntityGroupCheck(group);
+        EntityGroupMethod.addEntities(ENTITY_GROUP_NAME, false, new ArrayList<>(ENTITIES_IN_GROUP));
+        for (String entity: ENTITIES_IN_GROUP) {
+            testDatasetDescriptionBuilder.append(String.format("  %s,%n", entity));
+        }
+        testDatasetDescriptionBuilder.append(String.format("]%n%n"));
+
+        TEST_DATASET_DESCRIPTION = testDatasetDescriptionBuilder.toString();
     }
 
     /*
@@ -159,24 +176,29 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
      * #3612
      */
     @Test(dataProvider = "entityExpressionProvider")
-    public static void testEntityExpressionWithWildcardEntity(String expression, HashSet<String> expected) throws Exception {
-        SeriesQuery query = createDummyQuery("*");
+    public static void testEntityExpressionWithWildcardEntity(String expression, HashSet<String> expectedEntities) throws Exception {
+        SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity expression: {}", query.getEntityExpression());
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+
         HashSet<String> gotResultSet = new HashSet<>();
         for (Series series: result) {
             gotResultSet.add(series.getEntity());
         }
-        assertEquals("invalid result entity set", expected, gotResultSet);
+        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, gotResultSet);
+
+        for (Series series: result) {
+            List<Sample> seriesData = series.getData();
+            assertEquals(formatErrorMsg("Wrong number of data entries", expression), 1, seriesData.size());
+            assertEquals(formatErrorMsg("Wrong data received", expression), Mocks.SAMPLE, seriesData.get(0));
+        }
     }
 
     /*
      * Correct data test cases
      */
-    @DataProvider(name = "falseEntityExpressionProvider")
-    public static Object[][] provideFalseEntityExpression() {
+    @DataProvider(name = "emptyResultEntityExpressionProvider")
+    public static Object[][] provideEmptyResultEntityExpression() {
         return new Object[][] {
                 // Contains method
                 {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').contains('asdef003')"},
@@ -198,19 +220,17 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     /**
      * #3612
      */
-    @Test(dataProvider = "falseEntityExpressionProvider")
-    public static void testFalseEntityExpressionWithWildcardEntity(String expression) throws Exception {
-        SeriesQuery query = createDummyQuery("*");
+    @Test(dataProvider = "emptyResultEntityExpressionProvider")
+    public static void testEmptyResultEntityExpressionWithWildcardEntity(String expression) throws Exception {
+        SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity expression: {}", query.getEntityExpression());
 
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        assertEquals("dummy result is not present", 1, result.size());
+        assertEquals(formatErrorMsg("Dummy result is not present", expression), 1, result.size());
 
         Series series = result.get(0);
-        assertEquals("dummy result entity name", query.getEntity(), series.getEntity());
-        assertEquals("dummy result data size", 0, series.getData().size());
+        assertEquals(formatErrorMsg("Dummy result entity name", expression), query.getEntity(), series.getEntity());
+        assertEquals(formatErrorMsg("Dummy result data size", expression), 0, series.getData().size());
     }
 
     /*
@@ -246,21 +266,25 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
      */
     @Test(dataProvider = "entityExpressionProviderForFixedEntity")
     public static void testEntityExpressionWithFixedEntity(String expression) throws Exception {
-        SeriesQuery query = createDummyQuery(FIXED_ENTITY_NAME);
+        SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity expression: {}", query.getEntityExpression());
 
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        assertEquals("Wrong number of results", 1, result.size());
-        assertEquals("Wrong entity selected", FIXED_ENTITY_NAME, result.get(0).getEntity());
+        assertEquals(formatErrorMsg("Wrong number of results", expression), 1, result.size());
+
+        Series series = result.get(0);
+        assertEquals(formatErrorMsg("Wrong entity selected", expression), FIXED_ENTITY_NAME, series.getEntity());
+
+        List<Sample> seriesData = series.getData();
+        assertEquals(formatErrorMsg("Wrong number of data entries", expression), 1, seriesData.size());
+        assertEquals(formatErrorMsg("Wrong data received", expression), Mocks.SAMPLE, seriesData.get(0));
     }
 
     /*
      * Correct data test cases
      */
-    @DataProvider(name = "falseEntityExpressionProviderForFixedEntity")
-    public static Object[][] provideFalseEntityExpressionForFixedEntity() {
+    @DataProvider(name = "emptyResultEntityExpressionProviderForFixedEntity")
+    public static Object[][] provideEmptyResultEntityExpressionForFixedEntity() {
         return new Object[][] {
                 // Contains method
                 {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').contains('asdef003')"},
@@ -289,17 +313,16 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     /**
      * #3612
      */
-    @Test(dataProvider = "falseEntityExpressionProviderForFixedEntity")
-    public static void testFalseEntityExpressionWithFixedEntity(String expression) throws Exception {
-        SeriesQuery query = createDummyQuery(FIXED_ENTITY_NAME);
+    @Test(dataProvider = "emptyResultEntityExpressionProviderForFixedEntity")
+    public static void testEmptyResultEntityExpressionWithFixedEntity(String expression) throws Exception {
+        SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity expression: {}", query.getEntityExpression());
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        assertEquals("dummy result should be the one present", 1, result.size());
+        assertEquals(formatErrorMsg("Dummy result should be the one present", expression), 1, result.size());
         Series series = result.get(0);
-        assertEquals("dummy result entity name should be preserved", FIXED_ENTITY_NAME, series.getEntity());
-        assertTrue("dummy result data should be empty", series.getData().isEmpty());
+        assertEquals(formatErrorMsg("Dummy result entity name should be preserved", expression),
+                FIXED_ENTITY_NAME, series.getEntity());
+        assertTrue(formatErrorMsg("Dummy result data should be empty", expression), series.getData().isEmpty());
     }
 
     /*
@@ -339,26 +362,29 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
      * #3612
      */
     @Test(dataProvider = "entityExpressionProviderForEntityGroup")
-    public static void testEntityExpressionWithEntityGroup(String expression, HashSet<String> expected) throws Exception {
-        SeriesQuery query = createDummyQuery(null);
+    public static void testEntityExpressionWithEntityGroup(String expression, HashSet<String> expectedEntities) throws Exception {
+        SeriesQuery query = createTestQuery(null);
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity group: {}", query.getEntityGroup());
-        logger.info("Entity expression: {}", query.getEntityExpression());
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-        HashSet<String> gotResultSet = new HashSet<>();
+        HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
-            gotResultSet.add(series.getEntity());
+            receivedEntities.add(series.getEntity());
         }
-        assertEquals("wrong result entity set", expected, gotResultSet);
+        assertEquals(formatErrorMsg("Wrong result entity set", expression), expectedEntities, receivedEntities);
+
+        for (Series series: result) {
+            List<Sample> seriesData = series.getData();
+            assertEquals(formatErrorMsg("Wrong number of data entries", expression), 1, seriesData.size());
+            assertEquals(formatErrorMsg("Wrong data received", expression), Mocks.SAMPLE, seriesData.get(0));
+        }
     }
 
     /*
      * Correct data test cases
      */
-    @DataProvider(name = "falseEntityExpressionProviderForEntityGroup")
-    public static Object[][] provideFalseEntityExpressionForEntityGroup() {
+    @DataProvider(name = "emptyResultEntityExpressionProviderForEntityGroup")
+    public static Object[][] provideEmptyResultEntityExpressionForEntityGroup() {
         return new Object[][] {
                 // Contains method
                 {"property_values('" + PROPERTY_TYPE + ":testkey=test:name').contains('asdef003')"},
@@ -381,22 +407,19 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     /**
      * #3612
      */
-    @Test(dataProvider = "falseEntityExpressionProviderForEntityGroup")
+    @Test(dataProvider = "emptyResultEntityExpressionProviderForEntityGroup")
     public static void testEntityExpressionWithEntityGroup(String expression) throws Exception {
-        SeriesQuery query = createDummyQuery(null);
+        SeriesQuery query = createTestQuery(null);
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity group: {}", query.getEntityGroup());
-        logger.info("Entity expression: {}", query.getEntityExpression());
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
         HashSet<String> gotResultSet = new HashSet<>();
         for (Series series: result) {
             gotResultSet.add(series.getEntity());
         }
-        assertEquals("result set should be empty", new HashSet<>(), gotResultSet);
+        assertTrue(formatErrorMsg("Result set should be empty", expression), gotResultSet.isEmpty());
     }
-    
+
     /*
      * Bad data test cases
      */
@@ -424,16 +447,15 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
      */
     @Test(dataProvider = "errorEntityExpressionProvider")
     public static void testErrorOnBadEntityExpression(String expression) throws Exception {
-        SeriesQuery query = createDummyQuery("*");
+        SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
-        logger.info("Entity: {}", query.getEntity());
-        logger.info("Entity expression: {}", query.getEntityExpression());
         Response response = SeriesMethod.executeQueryRaw(Collections.singletonList(query));
         Response.Status.Family statusFamily = response.getStatusInfo().getFamily();
         if (statusFamily != Response.Status.Family.CLIENT_ERROR) {
-            fail("Wrong result status code, expected 4**, got " + response.getStatus());
+            fail(formatErrorMsg("Wrong result status code, expected 4**, got " + response.getStatus(), expression));
         }
     }
+
 
     private static HashSet<String> getPrefixedSet(String... entityNames) {
         HashSet<String> result = new HashSet<>();
@@ -455,10 +477,23 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         return ENTITY_NAME_PREFIX + entityName;
     }
 
-    private static SeriesQuery createDummyQuery(String entityName) {
+    private static SeriesQuery createTestQuery(String entityName) {
         SeriesQuery query = new SeriesQuery(entityName, METRIC_NAME);
         query.setStartDate(MIN_QUERYABLE_DATE);
         query.setEndDate(MAX_QUERYABLE_DATE);
         return query;
+    }
+
+    private static Series createTestSeries(String entityName) {
+        Series series = new Series();
+        Registry.Entity.register(entityName);
+        series.setEntity(entityName);
+        series.setMetric(METRIC_NAME);
+        series.addData(Mocks.SAMPLE);
+        return series;
+    }
+
+    private static String formatErrorMsg(String msg, String expression) {
+        return String.format("%s for expression %s%n%s", msg, expression, TEST_DATASET_DESCRIPTION);
     }
 }
