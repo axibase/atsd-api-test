@@ -6,7 +6,6 @@ import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
@@ -35,16 +34,13 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     private static final String ENTITY_GROUP_NAME = "test-entity-expression-001";
     private static final String FIXED_ENTITY_NAME = entityNameWithPrefix("asdef001");
 
-    private static String TEST_DATASET_DESCRIPTION = "";
 
     private static final Metric METRIC = new Metric(METRIC_NAME);
-    static {
-        METRIC.setDataType(DataType.INTEGER);
-    }
-
     private static final List<Property> PROPERTIES = new LinkedList<>();
     private static final HashSet<String> ALL_ENTITIES = new HashSet<>();
     private static final HashSet<String> ENTITIES_IN_GROUP = new HashSet<>();
+    private static final List<Series> SERIES_LIST = new ArrayList<>();
+
     static {
         {
             Property property = createTestProperty("asdef001");
@@ -94,48 +90,63 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             ALL_ENTITIES.add(prop.getEntity());
         }
 
+        for (String entityName: ALL_ENTITIES) {
+            SERIES_LIST.add(createTestSeries(entityName));
+        }
+
     }
 
-    @BeforeClass
-    public static void createTestData() throws Exception {
+    private static final String TEST_DATASET_DESCRIPTION;
+    static {
         StringBuilder testDatasetDescriptionBuilder = new StringBuilder();
         testDatasetDescriptionBuilder.append("\n=====================================");
         testDatasetDescriptionBuilder.append("\n              Test data              ");
         testDatasetDescriptionBuilder.append("\n=====================================\n");
 
-        // Create metric
         testDatasetDescriptionBuilder.append(String.format("Metric:%n"));
-        MetricMethod.createOrReplaceMetricCheck(METRIC);
         testDatasetDescriptionBuilder.append(String.format("%s%n%n", Util.prettyPrint(METRIC)));
 
-        // Create series
         testDatasetDescriptionBuilder.append(String.format("Series: [%n"));
-        for (String entityName: ALL_ENTITIES) {
-            Series series = createTestSeries(entityName);
-            SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+        for (Series series: SERIES_LIST) {
             testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(series)));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 
-        // Create properties
         testDatasetDescriptionBuilder.append(String.format("Properties: [%n"));
         for (Property property: PROPERTIES) {
-            PropertyMethod.insertPropertyCheck(property);
             testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(property)));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 
-        // Create entity group
         testDatasetDescriptionBuilder.append(String.format("Entities in group %s: [%n", ENTITY_GROUP_NAME));
-        EntityGroup group = new EntityGroup(ENTITY_GROUP_NAME);
-        EntityGroupMethod.createOrReplaceEntityGroupCheck(group);
-        EntityGroupMethod.addEntities(ENTITY_GROUP_NAME, false, new ArrayList<>(ENTITIES_IN_GROUP));
         for (String entity: ENTITIES_IN_GROUP) {
             testDatasetDescriptionBuilder.append(String.format("  %s,%n", entity));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 
         TEST_DATASET_DESCRIPTION = testDatasetDescriptionBuilder.toString();
+    }
+
+    @BeforeClass
+    public static void createTestData() throws Exception {
+        // Create metric
+        MetricMethod.createOrReplaceMetricCheck(METRIC);
+
+        // Create series
+        for (Series series: SERIES_LIST) {
+            SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+        }
+
+        // Create properties
+        for (Property property: PROPERTIES) {
+            PropertyMethod.insertPropertyCheck(property);
+        }
+
+        // Create entity group
+        EntityGroup group = new EntityGroup(ENTITY_GROUP_NAME);
+        EntityGroupMethod.createOrReplaceEntityGroupCheck(group);
+        EntityGroupMethod.addEntities(ENTITY_GROUP_NAME, false, new ArrayList<>(ENTITIES_IN_GROUP));
+
     }
 
     /*
