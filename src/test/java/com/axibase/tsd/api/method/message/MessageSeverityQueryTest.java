@@ -54,7 +54,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         messageQuery.setSeverity(String.valueOf(o));
         String response = queryMessageResponse(messageQuery).readEntity(String.class);
         JSONObject error = new JSONObject(response);
-        assertTrue("Error ir not raised", error.has("error"));
+        assertTrue("Error if not raised", error.has("error"));
     }
 
     /*

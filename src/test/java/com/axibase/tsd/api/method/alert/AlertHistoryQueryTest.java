@@ -111,8 +111,10 @@ public class AlertHistoryQueryTest extends AlertTest {
     @Test(dataProvider = "rawJsonWithNullsProvider")
     public void testQueryWithNullFieldsSuccess(String json) throws Exception {
         Response resp = AlertMethod.queryHistoryResponseRawJSON(json);
-        assertEquals("Bad request\n" + json, Response.Status.Family.SUCCESSFUL, resp.getStatusInfo().getFamily());
-        assertTrue(resp.readEntity(new GenericType<List<Alert>>(){}).isEmpty());
+        assertEquals("Bad request status code\n" + json,
+                Response.Status.Family.SUCCESSFUL, resp.getStatusInfo().getFamily());
+        assertTrue("Responded alert collection should be empty",
+                resp.readEntity(new GenericType<List<Alert>>(){}).isEmpty());
     }
 
 }
