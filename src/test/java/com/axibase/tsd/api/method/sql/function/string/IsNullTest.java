@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,9 +30,9 @@ public class IsNullTest extends SqlTest {
     @DataProvider(name = "applyTestProvider")
     public Iterator<Object[]> provideApplyTestsData() {
         List<Object[]> list = new ArrayList<>();
-        for (String argLeft: POSSIBLE_FUNCTION_ARGS) {
-            for (String argRight: POSSIBLE_FUNCTION_ARGS) {
-                list.add(new String[]{ String.format("%s, %s",argLeft, argRight) });
+        for (String argLeft : POSSIBLE_FUNCTION_ARGS) {
+            for (String argRight : POSSIBLE_FUNCTION_ARGS) {
+                list.add(new String[]{String.format("%s, %s", argLeft, argRight)});
             }
         }
         return list.iterator();
@@ -51,7 +52,7 @@ public class IsNullTest extends SqlTest {
     @BeforeClass
     public void beforeTestTypePreserved() throws Exception {
         Series series = new Series("e-test-type-preserve-1", "m-test-type-preserve-1");
-        series.addData(CommonData.DEFAULT_SAMPLE);
+        series.addData(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(series);
     }
 
@@ -105,5 +106,32 @@ public class IsNullTest extends SqlTest {
         String sqlQuery = String.format("SELECT ISNULL(%s, %s) FROM \"m-test-type-preserve-1\"", from, to);
         StringTable table = queryTable(sqlQuery, 1);
         assertEquals("wrong ISNULL result data type", type, table.getColumnMetaData(0).getDataType());
+    }
+
+
+    @DataProvider(name = "functionResultProvider")
+    public Object[][] provideSelectTestsData() {
+        return new Object[][]{
+                {"'','VaLuE'", ""},
+                {"text,'VaLuE'", "VaLuE"},
+                {"text,text", "null"},
+                {"tags.a,'text'", "text"},
+                {"tags.a, metric", TEST_METRIC},
+                {"tags.a, CONCAT('text-', metric)", "text-" + TEST_METRIC}
+
+        };
+    }
+
+    @Test(dataProvider = "functionResultProvider")
+    public void testFunctionResult(String text, String expectedValue) throws Exception {
+        String sqlQuery = String.format(
+                "SELECT ISNULL(%s) FROM '%s'",
+                text, TEST_METRIC
+        );
+        String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
+        String assertMessage = String.format("Incorrect result of ISNULL function with params (%s) .%n\tQuery: %s%n",
+                text, sqlQuery
+        );
+        assertEquals(assertMessage, actualValue, expectedValue);
     }
 }

@@ -1,18 +1,16 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util.TestNames;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-
 
 class CommonData {
-    public final static Sample DEFAULT_SAMPLE = new Sample("2016-06-03T09:23:00.000Z", 0);
     public final static List<String> POSSIBLE_FUNCTION_ARGS = Arrays.asList(
             "entity",
             "metric",
@@ -37,11 +35,11 @@ class CommonData {
             "'a'"
     );
 
-    static void prepareApplyTestData(final String testMetric) throws Exception {
-        final String entityName = entity();
+    static void prepareApplyTestData(String testMetric) throws Exception {
+        String entityName = TestNames.entity();
         Series series = new Series(entityName, testMetric);
         series.setEntity(entityName);
-        series.addData(DEFAULT_SAMPLE);
+        series.addData(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 }

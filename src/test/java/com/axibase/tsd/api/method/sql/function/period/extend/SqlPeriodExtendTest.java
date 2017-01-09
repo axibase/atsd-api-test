@@ -1,11 +1,11 @@
 package com.axibase.tsd.api.method.sql.function.period.extend;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class SqlPeriodExtendTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-period-extend-";
+    private static final String TEST_PREFIX = "sql-period-extended-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY1_NAME = TEST_PREFIX + "entity-1";
     private static final String TEST_ENTITY2_NAME = TEST_PREFIX + "entity-2";
