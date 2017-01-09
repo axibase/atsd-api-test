@@ -38,7 +38,11 @@ public class SeriesMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
-    public static Response insertSeries(final List<Series> seriesList, String user, String password, boolean sleepEnabled) {
+//    public static Response insertSeries(final List<Series> seriesList, String user, String password, boolean sleepEnabled) {
+//        return insertSeries((Object) seriesList, user, password, sleepEnabled);
+//    }
+
+    public static <T> Response insertSeries(final T seriesList, String user, String password, boolean sleepEnabled) {
         Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
 
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
@@ -55,35 +59,17 @@ public class SeriesMethod extends BaseMethod {
         return response;
     }
 
-    public static Response insertSeries(final List<Series> seriesList, String user, String password) {
+    public static <T> Response insertSeries(final T seriesList, String user, String password) {
         return insertSeries(seriesList, user, password, true);
     }
 
-    public static Response insertSeries(final List<Series> seriesList, boolean sleepEnabled) throws FileNotFoundException {
+    public static <T> Response insertSeries(final T seriesList, boolean sleepEnabled) throws FileNotFoundException {
         return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword(), sleepEnabled);
     }
 
-    public static Response insertSeries(final List<Series> seriesList) throws FileNotFoundException {
+    public static <T> Response insertSeries(final T seriesList) throws FileNotFoundException {
         return insertSeries(seriesList, false);
     }
-
-
-    public static Response insertSeriesJson(String jsonString) throws FileNotFoundException {
-        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
-
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
-
-        Response response = builder.post(Entity.entity(jsonString, MediaType.APPLICATION_JSON_TYPE));
-        response.bufferEntity();
-        try {
-            Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
 
     public static <T> Response querySeries(T... queries) {
         return querySeries(Arrays.asList(queries));

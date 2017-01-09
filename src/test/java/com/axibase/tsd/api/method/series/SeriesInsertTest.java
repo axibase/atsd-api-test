@@ -1,5 +1,7 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
@@ -736,7 +738,7 @@ public class SeriesInsertTest extends SeriesTest {
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
         assertEquals("Only one series should be responded", 1, seriesList.size());
-        final List<Sample> respondedData = seriesList.get(0).getData();
+        List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
         assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getX());
     }
@@ -746,16 +748,15 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test
     public void testXTextFieldInsertedTwiceWithVersioning() throws Exception {
-        String testId = "twice-versioning-1";
 
-        String metricName = "m-text-" + testId;
+        String metricName = "m-text-twice-versioning-1";
         Metric metric = new Metric(metricName);
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series();
         series.setMetric(metricName);
-        String entityName = "e-text-" + testId;
+        String entityName = "e-text-twice-versioning-1";
         Registry.Entity.register(entityName);
         series.setEntity(entityName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
@@ -771,7 +772,7 @@ public class SeriesInsertTest extends SeriesTest {
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
         assertEquals("Only one series should be responded", 1, seriesList.size());
-        final List<Sample> respondedData = seriesList.get(0).getData();
+        List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
         assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getX());
     }
@@ -798,7 +799,7 @@ public class SeriesInsertTest extends SeriesTest {
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals("Only one series should be responded", 1, seriesList.size());
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
-        final List<Sample> respondedData = seriesList.get(0).getData();
+        List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
         assertEquals("Stored text value incorrect", xText, respondedData.get(0).getX().toString());
     }
@@ -818,8 +819,9 @@ public class SeriesInsertTest extends SeriesTest {
         commandJsonFormat = commandJsonFormat.replace('\'', '"');
         String json = String.format(commandJsonFormat, series.getEntity(), series.getMetric(),
                 sample.getD(), sample.getV());
-        Response response = insertSeriesJson(json);
+        Response response = insertSeries(json);
         assertEquals("Bad insertion request status code", OK.getStatusCode(), response.getStatus());
+        Checker.check(new SeriesCheck(Collections.singletonList(series)));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
