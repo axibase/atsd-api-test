@@ -13,8 +13,20 @@ public class Sample {
     private String d;
     private Long t;
     private BigDecimal v;
-
+    private String text;
     public Sample() {
+    }
+
+    public Sample(String d, BigDecimal v, String text) {
+        this.d = d;
+        this.v = v;
+        this.text = text;
+    }
+
+    public Sample(Sample sourceSample) {
+        this(sourceSample.getT(), sourceSample.getV());
+        setD(sourceSample.getD());
+        setText(sourceSample.getText());
     }
 
     public Sample(long t, String v) {
@@ -48,16 +60,19 @@ public class Sample {
         this.v = new BigDecimal(String.valueOf(v));
     }
 
-
     public Long getT() {
         return t;
+    }
+
+    protected void setT(Long t) {
+        this.t = t;
     }
 
     public String getD() {
         return d;
     }
 
-    public void setD(String d) {
+    protected void setD(String d) {
         this.d = d;
     }
 
@@ -65,7 +80,7 @@ public class Sample {
         return v;
     }
 
-    public void setV(BigDecimal v) {
+    protected void setV(BigDecimal v) {
         this.v = v;
     }
 
@@ -80,6 +95,20 @@ public class Sample {
         if (t != null ? !t.equals(sample.t) : sample.t != null) return false;
         return v != null ? v.equals(sample.v) : sample.v == null;
 
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    @JsonProperty("x")
+    protected void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return Util.prettyPrint(this);
     }
 
     @Override

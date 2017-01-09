@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Alignment;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
-import com.axibase.tsd.api.model.sql.function.interpolate.Fill;
+import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
@@ -40,7 +40,7 @@ public class ApplyTest extends SqlTest {
         params.add(singletonList(new Interval(1, TimeUnit.MINUTE).toString()));
         params.add(enumStringLists(InterpolateFunction.class));
         params.add(enumStringLists(Boundary.class));
-        params.add(enumStringLists(Fill.class));
+        params.add(enumStringLists(FillMode.class));
         params.add(enumStringLists(Alignment.class));
         Set<ArrayList<String>> variants = generateSetOfParams(params);
         StringBuilder builder = new StringBuilder();

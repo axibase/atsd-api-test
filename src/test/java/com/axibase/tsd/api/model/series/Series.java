@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -83,8 +80,8 @@ public class Series {
         return data;
     }
 
-    public void setData(List<Sample> data) {
-        this.data = data;
+    public void setData(Collection<Sample> data) {
+        this.data = new ArrayList<>(data);
     }
 
     public void addTag(String key, String value) {

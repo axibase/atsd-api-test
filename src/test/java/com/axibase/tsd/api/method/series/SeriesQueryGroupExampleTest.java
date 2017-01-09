@@ -1,9 +1,9 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

@@ -1,17 +1,14 @@
 package com.axibase.tsd.api.method.sql;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -64,22 +61,27 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     private static Boolean isEqualCells(String expectedValue, String actualValue, String dataType) {
-        try {
-            switch (dataType) {
-                case "double":
-                    Double actualDoubleValue = Double.parseDouble(actualValue);
-                    Double expectedDoubleValue = Double.parseDouble(expectedValue);
-                    return actualDoubleValue.equals(expectedDoubleValue);
-                case "float":
-                    Float actualFloatValue = Float.parseFloat(actualValue);
-                    Float expectedFloatValue = Float.parseFloat(expectedValue);
-                    return actualFloatValue.equals(expectedFloatValue);
-                default:
-                    return expectedValue.equals(actualValue);
+        if (expectedValue == null) {
+            return (actualValue == null || Objects.equals(actualValue, "null"));
+        } else {
+            try {
+                switch (dataType) {
+                    case "double":
+                        Double actualDoubleValue = Double.parseDouble(actualValue);
+                        Double expectedDoubleValue = Double.parseDouble(expectedValue);
+                        return actualDoubleValue.equals(expectedDoubleValue);
+                    case "float":
+                        Float actualFloatValue = Float.parseFloat(actualValue);
+                        Float expectedFloatValue = Float.parseFloat(expectedValue);
+                        return actualFloatValue.equals(expectedFloatValue);
+                    default:
+                        return expectedValue.equals(actualValue);
+                }
+            } catch (NumberFormatException nfe) {
+                return expectedValue.equals(actualValue);
             }
-        } catch (NumberFormatException nfe) {
-            return expectedValue.equals(actualValue);
         }
+
     }
 
     private static void failNotEquals(String message, Object expected, Object actual) {
@@ -91,8 +93,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String sqlQuery, List<List<String>> expectedRows, String message) {
-        Response response = queryResponse(sqlQuery);
-        StringTable resultTable = response.readEntity(StringTable.class);
+        StringTable resultTable = queryTable(sqlQuery);
         assertTableRowsExist(expectedRows,
                 resultTable,
                 String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery));
