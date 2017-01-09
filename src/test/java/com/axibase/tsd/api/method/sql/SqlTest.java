@@ -62,7 +62,7 @@ public abstract class SqlTest extends SqlMethod {
 
     private static Boolean isEqualCells(String expectedValue, String actualValue, String dataType) {
         if (expectedValue == null) {
-            return (actualValue == null || Objects.equals(actualValue, "null"));
+            return Objects.equals(actualValue, "null");
         } else {
             try {
                 switch (dataType) {
