@@ -5,7 +5,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
-import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -512,24 +512,24 @@ public class SeriesQueryTest extends SeriesMethod {
     @DataProvider(name = "dataTextProvider")
     Object[][] provideDataText() {
         return new Object[][]{
-                {1, "hello"},
-                {2, "HelLo"},
-                {3, "Hello World"},
-                {4, "spaces      \t\t\t afeqf everywhere"},
-                {5, "Кириллица"},
-                {6, "猫"},
-                {7, "Multi\nline"},
-                {8,  null },
-                {9, "null"},
-                {10, "\"null\""},
-                {11, "true"},
-                {12, "\"true\""},
-                {13, "11"},
-                {14, "0"},
-                {15, "0.1"},
-                {16, "\"0.1\""},
-                {17, "\"+0.1\""},
-                {18, ""}
+                {"hello"},
+                {"HelLo"},
+                {"Hello World"},
+                {"spaces      \t\t\t afeqf everywhere"},
+                {"Кириллица"},
+                {"猫"},
+                {"Multi\nline"},
+                {null},
+                {"null"},
+                {"\"null\""},
+                {"true"},
+                {"\"true\""},
+                {"11"},
+                {"0"},
+                {"0.1"},
+                {"\"0.1\""},
+                {"\"+0.1\""},
+                {""}
         };
     }
 
@@ -537,9 +537,9 @@ public class SeriesQueryTest extends SeriesMethod {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(int testN, String x) throws Exception {
-        String entityName = "e-series-query-text-insert-"+testN;
-        String metricName = "m-series-query-text-insert-"+testN;
+    public void testXTextField(String x) throws Exception {
+        String entityName = Util.TestNames.entity();
+        String metricName = Util.TestNames.metric();
 
         String largeNumber = "10.1";
         Series series = new Series(entityName, metricName);
@@ -548,29 +548,13 @@ public class SeriesQueryTest extends SeriesMethod {
         series.addData(sample);
         insertSeriesCheck(Collections.singletonList(series));
 
-        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
-        List<Sample> samples = executeQueryReturnSeries(seriesQuery).get(0).getData();
-        if (x == null) {
-            assertNull("Stored text value incorrect", samples.get(0).getX());
-        } else {
-            assertEquals("Stored text value incorrect", x.toString(), samples.get(0).getX().toString());
-        }
-    }
+        SeriesQuery seriesQuery = new SeriesQuery(series);
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
-    /**
-     * #3480
-     **/
-    @Test
-    public void testXTextFieldFailsOnNoValue() throws Exception {
-        String entityName = "e-series-query-text-null-1";
-        Registry.Entity.register(entityName);
-
-        String metricName = "m-series-query-text-null-1";
-        Registry.Metric.register(metricName);
-
-        String json = String.format("[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':%s}]}]".replace('\'', '"'),
-                entityName, metricName, "2016-10-11T13:00:00.000Z", "1.0", "");
-        assertEquals("Wrong status code", 400, querySeriesJson(json).getStatus());
+        assertEquals("Only one series should be responded", 1, seriesList.size());
+        final List<Sample> respondedData = seriesList.get(0).getData();
+        assertEquals("Only one sample should be responded", 1, respondedData.size());
+        assertEquals("Stored text value incorrect", x, respondedData.get(0).getX());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

@@ -74,8 +74,13 @@ public class SeriesMethod extends BaseMethod {
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
 
-        Response response = builder.post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
+        Response response = builder.post(Entity.entity(jsonString, MediaType.APPLICATION_JSON_TYPE));
         response.bufferEntity();
+        try {
+            Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 

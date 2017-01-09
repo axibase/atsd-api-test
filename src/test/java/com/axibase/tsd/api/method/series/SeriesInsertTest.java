@@ -666,27 +666,27 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
     }
 
-    @DataProvider(name = "dataTextProvider", parallel = true)
+    @DataProvider(name = "dataTextProvider", parallel = false)
     public Object[][] provideDataText() {
         return new Object[][]{
-                {1, "hello"},
-                {2, "HelLo"},
-                {3, "Hello World"},
-                {4, "spaces      \t\t\t afeqf everywhere"},
-                {5, "Кириллица"},
-                {6, "猫"},
-                {7, "Multi\nline"},
-                {8,  (String)null },
-                {9, "null"},
-                {10, "\"null\""},
-                {11, "true"},
-                {12, "\"true\""},
-                {13, "11"},
-                {14, "0"},
-                {15, "0.1"},
-                {16, "\"0.1\""},
-                {17, "\"+0.1\""},
-                {18, ""}
+                {"hello"},
+                {"HelLo"},
+                {"Hello World"},
+                {"spaces      \t\t\t afeqf everywhere"},
+                {"Кириллица"},
+                {"猫"},
+                {"Multi\nline"},
+                {null},
+                {"null"},
+                {"\"null\""},
+                {"true"},
+                {"\"true\""},
+                {"11"},
+                {"0"},
+                {"0.1"},
+                {"\"0.1\""},
+                {"\"+0.1\""},
+                {""}
         };
     }
 
@@ -694,9 +694,9 @@ public class SeriesInsertTest extends SeriesTest {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(int testId, String x) throws Exception {
-        String entityName = "e-text-"+testId;
-        String metricName = "m-text-"+testId;
+    public void testXTextField(String x) throws Exception {
+        String entityName = Util.TestNames.entity();
+        String metricName = Util.TestNames.metric();
 
         Series series = new Series(entityName, metricName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
@@ -719,15 +719,15 @@ public class SeriesInsertTest extends SeriesTest {
     @Test
     public void testXTextFieldInsertedTwice() throws Exception {
         String testId = "twice-1";
-        String entityName = "e-text-"+testId;
-        String metricName = "m-text-"+testId;
+        String entityName = "e-text-" + testId;
+        String metricName = "m-text-" + testId;
 
         Series series = new Series(entityName, metricName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
         series.addData(sample);
 
-        String[] data = new String[] {"1", "2"};
-        for (String x: data) {
+        String[] data = new String[]{"1", "2"};
+        for (String x : data) {
             sample.setX(x);
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -748,21 +748,21 @@ public class SeriesInsertTest extends SeriesTest {
     public void testXTextFieldInsertedTwiceWithVersioning() throws Exception {
         String testId = "twice-versioning-1";
 
-        String metricName = "m-text-"+testId;
+        String metricName = "m-text-" + testId;
         Metric metric = new Metric(metricName);
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series();
         series.setMetric(metricName);
-        String entityName = "e-text-"+testId;
+        String entityName = "e-text-" + testId;
         Registry.Entity.register(entityName);
         series.setEntity(entityName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
         series.addData(sample);
 
-        String[] data = new String[] {"1", "2"};
-        for (String x: data) {
+        String[] data = new String[]{"1", "2"};
+        for (String x : data) {
             sample.setX(x);
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -781,9 +781,8 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test
     public void testXTextFieldPreservedFromTagsModifications() throws Exception {
-        String testId = "modify-tags-1";
-        String entityName = "e-text-"+testId;
-        String metricName = "m-text-"+testId;
+        String entityName = "e-text-modify-tags-1";
+        String metricName = "m-text-modify-tags-1";
 
         Series series = new Series(entityName, metricName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
@@ -808,19 +807,25 @@ public class SeriesInsertTest extends SeriesTest {
      * #3480
      **/
     @Test
-    public void testXTextFieldFailsOnNoValue() throws Exception {
-        String testId = "null-1";
-        String entityName = "e-text-"+testId;
-        Registry.Entity.register(entityName);
+    public void testXTextFieldExplicitNull() throws Exception {
+        String entityName = "e-series-insert-text-null-1";
+        String metricName = "m-series-insert-text-null-1";
+        Series series = new Series(entityName, metricName);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
+        series.addData(sample);
 
-        String metricName = "m-text-"+testId;
-        Registry.Metric.register(metricName);
-
-        String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':%s}]}]";
+        String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':null}]}]";
         commandJsonFormat = commandJsonFormat.replace('\'', '"');
-        String json = String.format(commandJsonFormat, entityName, metricName, "2016-10-11T13:00:00.000Z", "1.0", "");
+        String json = String.format(commandJsonFormat, series.getEntity(), series.getMetric(),
+                sample.getD(), sample.getV());
         Response response = insertSeriesJson(json);
+        assertEquals("Bad insertion request status code", OK.getStatusCode(), response.getStatus());
 
-        assertEquals("Wrong status code", BAD_REQUEST.getStatusCode(), response.getStatus());
+        SeriesQuery seriesQuery = new SeriesQuery(series);
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        assertEquals("Only one series should be responded", 1, seriesList.size());
+        final List<Sample> respondedData = seriesList.get(0).getData();
+        assertEquals("Only one sample should be responded", 1, respondedData.size());
+        assertNull("Stored text value incorrect", respondedData.get(0).getX());
     }
 }
