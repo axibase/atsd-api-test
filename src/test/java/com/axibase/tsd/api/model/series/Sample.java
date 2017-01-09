@@ -85,16 +85,6 @@ public class Sample {
     }
 
     @Override
-    public String toString() {
-        return "Sample{" +
-                "d='" + d + '\'' +
-                ", t=" + t +
-                ", v=" + v +
-                ", x=" + x +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -103,7 +93,7 @@ public class Sample {
 
         if (d != null ? !d.equals(sample.d) : sample.d != null) return false;
         if (t != null ? !t.equals(sample.t) : sample.t != null) return false;
-        if (x != null ? !x.equals(sample.x) : sample.x != null) return false;
+        if (text != null ? !text.equals(sample.text) : sample.text != null) return false;
         return v != null ? v.equals(sample.v) : sample.v == null;
 
     }
@@ -127,7 +117,7 @@ public class Sample {
         int result = d != null ? d.hashCode() : 0;
         result = 31 * result + (t != null ? t.hashCode() : 0);
         result = 31 * result + (v != null ? v.hashCode() : 0);
-        result = 31 * result + (x != null ? x.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
     }
 }

@@ -537,14 +537,13 @@ public class SeriesQueryTest extends SeriesMethod {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(String x) throws Exception {
+    public void testXTextField(String text) throws Exception {
         String entityName = Util.TestNames.entity();
         String metricName = Util.TestNames.metric();
 
         String largeNumber = "10.1";
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample(MIN_STORABLE_DATE, largeNumber);
-        sample.setX(x);
+        Sample sample = new Sample(MIN_STORABLE_DATE, new BigDecimal(largeNumber), text);
         series.addData(sample);
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -554,7 +553,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Only one series should be responded", 1, seriesList.size());
         final List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", x, respondedData.get(0).getX());
+        assertEquals("Stored text value incorrect", text, respondedData.get(0).getText());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

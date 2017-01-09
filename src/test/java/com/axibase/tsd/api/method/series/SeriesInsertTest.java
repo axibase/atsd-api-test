@@ -665,10 +665,13 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series("nulltag-entity-1", "nulltag-metric-1");
         series.addData(new Sample(1, "1"));
         series.addTag("t1", null);
-        assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+
+        Response response = insertSeries(Collections.singletonList(series));
+
+        assertEquals("Null in tag value should fail the query", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    @DataProvider(name = "dataTextProvider", parallel = false)
+    @DataProvider(name = "dataTextProvider")
     public Object[][] provideDataText() {
         return new Object[][]{
                 {"hello"},
@@ -696,13 +699,12 @@ public class SeriesInsertTest extends SeriesTest {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(String x) throws Exception {
+    public void testXTextField(String text) throws Exception {
         String entityName = Util.TestNames.entity();
         String metricName = Util.TestNames.metric();
 
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
-        sample.setX(x);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), text);
         series.addData(sample);
 
         insertSeriesCheck(Collections.singletonList(series));
@@ -712,7 +714,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Only one series should be responded", 1, seriesList.size());
         final List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", x, respondedData.get(0).getX());
+        assertEquals("Stored text value incorrect", text, respondedData.get(0).getText());
     }
 
     /**
@@ -720,17 +722,15 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test
     public void testXTextFieldInsertedTwice() throws Exception {
-        String testId = "twice-1";
-        String entityName = "e-text-" + testId;
-        String metricName = "m-text-" + testId;
+        String entityName = "e-text-twice-1";
+        String metricName = "m-text-twice-1";
 
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
-        series.addData(sample);
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
-            sample.setX(x);
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            series.setData(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
 
@@ -740,7 +740,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Only one series should be responded", 1, seriesList.size());
         List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getX());
+        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getText());
     }
 
     /**
@@ -759,12 +759,11 @@ public class SeriesInsertTest extends SeriesTest {
         String entityName = "e-text-twice-versioning-1";
         Registry.Entity.register(entityName);
         series.setEntity(entityName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
-        series.addData(sample);
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
-            sample.setX(x);
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            series.setData(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
 
@@ -774,7 +773,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Only one series should be responded", 1, seriesList.size());
         List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getX());
+        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getText());
     }
 
     /**
@@ -786,9 +785,8 @@ public class SeriesInsertTest extends SeriesTest {
         String metricName = "m-text-modify-tags-1";
 
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
         String xText = "text";
-        sample.setX(xText);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), xText);
         series.addData(sample);
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -801,7 +799,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
         List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", xText, respondedData.get(0).getX().toString());
+        assertEquals("Stored text value incorrect", xText, respondedData.get(0).getText());
     }
 
     /**
@@ -828,6 +826,6 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Only one series should be responded", 1, seriesList.size());
         final List<Sample> respondedData = seriesList.get(0).getData();
         assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertNull("Stored text value incorrect", respondedData.get(0).getX());
+        assertNull("Stored text value incorrect", respondedData.get(0).getText());
     }
 }
