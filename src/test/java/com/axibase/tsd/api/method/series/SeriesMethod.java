@@ -76,11 +76,6 @@ public class SeriesMethod extends BaseMethod {
 
         Response response = builder.post(Entity.entity(jsonString, MediaType.APPLICATION_JSON));
         response.bufferEntity();
-        try {
-            Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return response;
     }
 

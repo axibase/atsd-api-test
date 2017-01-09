@@ -537,7 +537,7 @@ public class SeriesQueryTest extends SeriesMethod {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(int testN, Object x) throws Exception {
+    public void testXTextField(int testN, String x) throws Exception {
         String entityName = "e-series-query-text-insert-"+testN;
         String metricName = "m-series-query-text-insert-"+testN;
 

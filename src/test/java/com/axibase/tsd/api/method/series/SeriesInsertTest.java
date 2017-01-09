@@ -667,7 +667,7 @@ public class SeriesInsertTest extends SeriesTest {
     }
 
     @DataProvider(name = "dataTextProvider", parallel = true)
-    Object[][] provideDataText() {
+    public Object[][] provideDataText() {
         return new Object[][]{
                 {1, "hello"},
                 {2, "HelLo"},
@@ -694,7 +694,7 @@ public class SeriesInsertTest extends SeriesTest {
      * #3480
      **/
     @Test(dataProvider = "dataTextProvider")
-    public void testXTextField(int testId, Object x) throws Exception {
+    public void testXTextField(int testId, String x) throws Exception {
         String entityName = "e-text-"+testId;
         String metricName = "m-text-"+testId;
 
@@ -704,14 +704,13 @@ public class SeriesInsertTest extends SeriesTest {
         series.addData(sample);
 
         insertSeriesCheck(Collections.singletonList(series));
-
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        if (x == null) {
-            assertNull("Stored text value incorrect", seriesList.get(0).getData().get(0).getX());
-        } else {
-            assertEquals("Stored text value incorrect", x.toString(), seriesList.get(0).getData().get(0).getX().toString());
-        }
+
+        assertEquals("Only one series should be responded", 1, seriesList.size());
+        final List<Sample> respondedData = seriesList.get(0).getData();
+        assertEquals("Only one sample should be responded", 1, respondedData.size());
+        assertEquals("Stored text value incorrect", x, respondedData.get(0).getX());
     }
 
     /**
@@ -735,7 +734,11 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored text value incorrect", data[data.length - 1], seriesList.get(0).getData().get(0).getX().toString());
+
+        assertEquals("Only one series should be responded", 1, seriesList.size());
+        final List<Sample> respondedData = seriesList.get(0).getData();
+        assertEquals("Only one sample should be responded", 1, respondedData.size());
+        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getX());
     }
 
     /**
@@ -766,7 +769,11 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored text value incorrect", data[data.length - 1], seriesList.get(0).getData().get(0).getX().toString());
+
+        assertEquals("Only one series should be responded", 1, seriesList.size());
+        final List<Sample> respondedData = seriesList.get(0).getData();
+        assertEquals("Only one sample should be responded", 1, respondedData.size());
+        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getX());
     }
 
     /**
@@ -790,8 +797,11 @@ public class SeriesInsertTest extends SeriesTest {
         insertSeriesCheck(Collections.singletonList(series));
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        assertEquals("Only one series should be responded", 1, seriesList.size());
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
-        assertEquals("Stored text value incorrect", xText, seriesList.get(0).getData().get(0).getX().toString());
+        final List<Sample> respondedData = seriesList.get(0).getData();
+        assertEquals("Only one sample should be responded", 1, respondedData.size());
+        assertEquals("Stored text value incorrect", xText, respondedData.get(0).getX().toString());
     }
 
     /**
@@ -806,8 +816,11 @@ public class SeriesInsertTest extends SeriesTest {
         String metricName = "m-text-"+testId;
         Registry.Metric.register(metricName);
 
-        String json = String.format("[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':%s}]}]".replace('\'', '"'),
-                entityName, metricName, "2016-10-11T13:00:00.000Z", "1.0", "");
-        assertEquals("Wrong status code", 400, insertSeriesJson(json).getStatus());
+        String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':%s}]}]";
+        commandJsonFormat = commandJsonFormat.replace('\'', '"');
+        String json = String.format(commandJsonFormat, entityName, metricName, "2016-10-11T13:00:00.000Z", "1.0", "");
+        Response response = insertSeriesJson(json);
+
+        assertEquals("Wrong status code", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 }
