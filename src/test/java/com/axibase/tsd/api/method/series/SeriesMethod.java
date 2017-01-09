@@ -37,11 +37,6 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-
-//    public static Response insertSeries(final List<Series> seriesList, String user, String password, boolean sleepEnabled) {
-//        return insertSeries((Object) seriesList, user, password, sleepEnabled);
-//    }
-
     public static <T> Response insertSeries(final T seriesList, String user, String password, boolean sleepEnabled) {
         Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
 
