@@ -310,7 +310,7 @@ public class MetricCommandTest extends MetricTest {
         String metricName = "m-metric-command-raw-enabled-" + enabled;
         Registry.Metric.register(metricName);
         String command = String.format("metric m:%s b:%s", metricName, enabled);
-        tcpSender.send(command);
+        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
         assertEquals("Failed to set enabled (raw)", enabled, actualMetric.getEnabled().toString());
     }

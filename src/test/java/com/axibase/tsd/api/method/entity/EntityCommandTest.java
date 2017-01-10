@@ -188,7 +188,7 @@ public class EntityCommandTest extends EntityTest {
         String entityName = "e-entity-command-raw-enabled-" + enabled;
         Registry.Entity.register(entityName);
         String command = String.format("entity  e:%s b:%s", entityName, enabled);
-        tcpSender.send(command);
+        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
         Entity actualEntity = EntityMethod.getEntity(entityName);
         assertEquals("Failed to set enabled (raw)", enabled, actualEntity.getEnabled().toString());
     }
