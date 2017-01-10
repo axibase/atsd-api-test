@@ -711,10 +711,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals("Only one series should be responded", 1, seriesList.size());
-        final List<Sample> respondedData = seriesList.get(0).getData();
-        assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", text, respondedData.get(0).getText());
+        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
 
     /**
@@ -737,10 +734,8 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals("Only one series should be responded", 1, seriesList.size());
-        List<Sample> respondedData = seriesList.get(0).getData();
-        assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getText());
+        Series lastInsertedSeries = series;
+        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
     }
 
     /**
@@ -770,10 +765,8 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals("Only one series should be responded", 1, seriesList.size());
-        List<Sample> respondedData = seriesList.get(0).getData();
-        assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", data[data.length - 1], respondedData.get(0).getText());
+        Series lastInsertedSeries = series;
+        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
     }
 
     /**
@@ -795,11 +788,9 @@ public class SeriesInsertTest extends SeriesTest {
         insertSeriesCheck(Collections.singletonList(series));
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Only one series should be responded", 1, seriesList.size());
+
+        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
-        List<Sample> respondedData = seriesList.get(0).getData();
-        assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", xText, respondedData.get(0).getText());
     }
 
     /**
@@ -810,7 +801,7 @@ public class SeriesInsertTest extends SeriesTest {
         String entityName = "e-series-insert-text-null-1";
         String metricName = "m-series-insert-text-null-1";
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", "1.0");
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0));
         series.addData(sample);
 
         String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':null}]}]";
@@ -823,9 +814,6 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Only one series should be responded", 1, seriesList.size());
-        final List<Sample> respondedData = seriesList.get(0).getData();
-        assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertNull("Stored text value incorrect", respondedData.get(0).getText());
+        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
 }

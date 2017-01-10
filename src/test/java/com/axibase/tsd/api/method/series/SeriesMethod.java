@@ -20,7 +20,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
@@ -72,12 +71,6 @@ public class SeriesMethod extends BaseMethod {
 
     public static <T> Response querySeries(List<T> queries) {
         Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
-        response.bufferEntity();
-        return response;
-    }
-
-    public static Response querySeriesJson(String json) {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.entity(json, MediaType.APPLICATION_JSON));
         response.bufferEntity();
         return response;
     }

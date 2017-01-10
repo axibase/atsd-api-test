@@ -550,10 +550,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals("Only one series should be responded", 1, seriesList.size());
-        final List<Sample> respondedData = seriesList.get(0).getData();
-        assertEquals("Only one sample should be responded", 1, respondedData.size());
-        assertEquals("Stored text value incorrect", text, respondedData.get(0).getText());
+        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
