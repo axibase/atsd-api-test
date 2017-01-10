@@ -114,6 +114,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(true);
         EntityCommand command = new EntityCommand(entity);
         tcpSender.send(command);
+        Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to set enabled", actualEntity.getEnabled());
     }
@@ -127,6 +128,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(false);
         EntityCommand command = new EntityCommand(entity);
         tcpSender.send(command);
+        Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertFalse("Failed to set disabled", actualEntity.getEnabled());
     }
@@ -140,6 +142,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(null);
         EntityCommand command = new EntityCommand(entity);
         tcpSender.send(command);
+        Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to omit enabled", actualEntity.getEnabled());
     }
@@ -171,7 +174,6 @@ public class EntityCommandTest extends EntityTest {
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
         String entityName = entity();
-        Registry.Entity.register(entityName);
         String command = String.format("entity  e:%s b:%s", entityName, enabled);
         tcpSender.send(command);
         Response serverResponse = EntityMethod.getEntityResponse(entityName);

@@ -232,10 +232,11 @@ public class MetricCommandTest extends MetricTest {
     @Test
     public void testEnabled() throws Exception {
         String metricName = metric();
-        Registry.Metric.register(metricName);
-        MetricCommand command = new MetricCommand(metricName);
+        Metric metric = new Metric(metricName);
+        MetricCommand command = new MetricCommand(metric);
         command.setEnabled(true);
         tcpSender.send(command);
+        Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
         assertTrue("Failed to set enabled", actualMetric.getEnabled());
     }
@@ -246,10 +247,11 @@ public class MetricCommandTest extends MetricTest {
     @Test
     public void testDisabled() throws Exception {
         String metricName = metric();
-        Registry.Metric.register(metricName);
-        MetricCommand command = new MetricCommand(metricName);
+        Metric metric = new Metric(metricName);
+        MetricCommand command = new MetricCommand(metric);
         command.setEnabled(false);
         tcpSender.send(command);
+        Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
         assertFalse("Failed to set disabled", actualMetric.getEnabled());
     }
@@ -260,10 +262,11 @@ public class MetricCommandTest extends MetricTest {
     @Test
     public void testNullEnabled() throws Exception {
         String metricName = metric();
-        Registry.Metric.register(metricName);
+        Metric metric = new Metric(metricName);
         MetricCommand command = new MetricCommand(metricName);
         command.setEnabled(null);
         tcpSender.send(command);
+        Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
         assertTrue("Failed to omit enabled", actualMetric.getEnabled());
     }
@@ -292,7 +295,6 @@ public class MetricCommandTest extends MetricTest {
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
         String metricName = metric();
-        Registry.Metric.register(metricName);
         String command = String.format("metric m:%s b:%s", metricName, enabled);
         tcpSender.send(command);
         Response serverResponse = MetricMethod.queryMetric(metricName);
