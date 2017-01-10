@@ -1,6 +1,8 @@
 package com.axibase.tsd.api.method.metric;
 
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.MetricCommand;
 import com.axibase.tsd.api.model.common.InterpolationMode;
@@ -276,7 +278,11 @@ public class MetricCommandTest extends MetricTest {
                 {"non"},
                 {"1"},
                 {"+"},
-                {"azazaz"}
+                {"azazaz"},
+                {"'true'"},
+                {"'false'"},
+                {"\"true\""},
+                {"\"false\""}
         };
     }
 
@@ -308,9 +314,10 @@ public class MetricCommandTest extends MetricTest {
     @Test(dataProvider = "correctEnabledProvider")
     public void testRawEnabled(String enabled) throws Exception {
         String metricName = "m-metric-command-raw-enabled-" + enabled;
-        Registry.Metric.register(metricName);
+        Metric metric = new Metric(metricName);
         String command = String.format("metric m:%s b:%s", metricName, enabled);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        tcpSender.send(command);
+        Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
         assertEquals("Failed to set enabled (raw)", enabled, actualMetric.getEnabled().toString());
     }

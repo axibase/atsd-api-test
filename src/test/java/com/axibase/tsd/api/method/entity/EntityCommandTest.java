@@ -1,5 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.EntityCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
@@ -155,7 +157,11 @@ public class EntityCommandTest extends EntityTest {
                 {"azazaz"},
                 {"longvalue"},
                 {"tr\tue"},
-                {"tr\u0775ue"}
+                {"tr\u0775ue"},
+                {"'true'"},
+                {"'false'"},
+                {"\"true\""},
+                {"\"false\""}
         };
     }
 
@@ -186,9 +192,10 @@ public class EntityCommandTest extends EntityTest {
     @Test(dataProvider = "correctEnabledProvider")
     public void testRawEnabled(String enabled) throws Exception {
         String entityName = "e-entity-command-raw-enabled-" + enabled;
-        Registry.Entity.register(entityName);
+        Entity entity = new Entity(entityName);
         String command = String.format("entity  e:%s b:%s", entityName, enabled);
-        tcpSender.send(command, DEFAULT_EXPECTED_PROCESSING_TIME);
+        tcpSender.send(command);
+        Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entityName);
         assertEquals("Failed to set enabled (raw)", enabled, actualEntity.getEnabled().toString());
     }
