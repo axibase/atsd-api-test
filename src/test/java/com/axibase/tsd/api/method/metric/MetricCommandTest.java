@@ -295,10 +295,11 @@ public class MetricCommandTest extends MetricTest {
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
         String metricName = metric();
+        Registry.Metric.register(metricName);
         String command = String.format("metric m:%s b:%s", metricName, enabled);
         tcpSender.send(command);
         Response serverResponse = MetricMethod.queryMetric(metricName);
-        assertTrue("Bad metric was accepted :: b:" + enabled, serverResponse.getStatus() >= 400);
+        assertTrue("Bad metric was accepted :: " + command, serverResponse.getStatus() >= 400);
     }
 
     @DataProvider(name = "correctEnabledProvider")

@@ -174,10 +174,11 @@ public class EntityCommandTest extends EntityTest {
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
         String entityName = entity();
+        Registry.Entity.register(entityName);
         String command = String.format("entity  e:%s b:%s", entityName, enabled);
         tcpSender.send(command);
         Response serverResponse = EntityMethod.getEntityResponse(entityName);
-        assertEquals("Bad entity was accepted :: b:" + enabled, NOT_FOUND.getStatusCode(), serverResponse.getStatus());
+        assertEquals("Bad entity was accepted :: " + command, NOT_FOUND.getStatusCode(), serverResponse.getStatus());
     }
 
     @DataProvider(name = "correctEnabledProvider")
