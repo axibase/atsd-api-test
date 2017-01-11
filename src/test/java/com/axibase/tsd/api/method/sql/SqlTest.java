@@ -143,7 +143,7 @@ public abstract class SqlTest extends SqlMethod {
         try {
             response.readEntity(StringTable.class);
         } catch (ProcessingException e) {
-            fail("Failed to read table from respone!");
+            fail("Failed to read table from response!");
         }
     }
 
