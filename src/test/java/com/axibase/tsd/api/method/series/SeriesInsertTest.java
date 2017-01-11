@@ -720,41 +720,11 @@ public class SeriesInsertTest extends SeriesTest {
      * #3480
      **/
     @Test
-    public void testXTextFieldInsertedTwice() throws Exception {
-        String entityName = "e-text-twice-1";
-        String metricName = "m-text-twice-1";
+    public void testXTextFieldOverwritten() throws Exception {
+        String entityName = "e-text-overwritten-1";
+        String metricName = "m-text-overwritten-1";
 
         Series series = new Series(entityName, metricName);
-
-        String[] data = new String[]{"1", "2"};
-        for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
-            series.setData(Collections.singleton(sample));
-            insertSeriesCheck(Collections.singletonList(series));
-        }
-
-        SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-
-        Series lastInsertedSeries = series;
-        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
-    }
-
-    /**
-     * #3480
-     **/
-    @Test
-    public void testXTextFieldInsertedTwiceWithVersioning() throws Exception {
-        String metricName = "m-text-twice-versioning-1";
-        Metric metric = new Metric(metricName);
-        metric.setVersioned(true);
-        MetricMethod.createOrReplaceMetricCheck(metric);
-
-        Series series = new Series();
-        series.setMetric(metricName);
-        String entityName = "e-text-twice-versioning-1";
-        Registry.Entity.register(entityName);
-        series.setEntity(entityName);
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
@@ -775,14 +745,14 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test
     public void testXTextFieldVersioned() throws Exception {
-        String metricName = "m-text-twice-versioning-2";
+        String metricName = "m-text-versioning-2";
         Metric metric = new Metric(metricName);
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series series = new Series();
         series.setMetric(metricName);
-        String entityName = "e-text-twice-versioning-2";
+        String entityName = "e-text-versioning-2";
         Registry.Entity.register(entityName);
         series.setEntity(entityName);
 

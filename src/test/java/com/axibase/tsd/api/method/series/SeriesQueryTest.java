@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -551,6 +552,38 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
         assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+    }
+
+    /**
+     * #3480
+     **/
+    @Test
+    public void testXTextFieldLastVersion() throws Exception {
+        String metricName = "m-text-overwritten-versioning-1";
+        Metric metric = new Metric(metricName);
+        metric.setVersioned(true);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        Series series = new Series();
+        series.setMetric(metricName);
+        String entityName = "e-text-overwritten-versioning-1";
+        Registry.Entity.register(entityName);
+        series.setEntity(entityName);
+
+        String[] data = new String[]{"1", "2"};
+        for (String x : data) {
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            series.setData(Collections.singleton(sample));
+            insertSeriesCheck(Collections.singletonList(series));
+        }
+
+        SeriesQuery seriesQuery = new SeriesQuery(series);
+        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+
+        assertFalse("No series", seriesList.isEmpty());
+        assertFalse("No series data", seriesList.get(0).getData().isEmpty());
+        String received = seriesList.get(0).getData().get(0).getText();
+        assertEquals("Last version of text field incorrect", data[data.length-1], received);
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
