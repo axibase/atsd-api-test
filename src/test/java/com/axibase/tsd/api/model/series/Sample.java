@@ -99,7 +99,6 @@ public class Sample {
         if (version != null ? !version.equals(sample.version) : sample.version != null) return false;
 
         return v != null ? v.equals(sample.v) : sample.v == null;
-
     }
 
     public String getText() {

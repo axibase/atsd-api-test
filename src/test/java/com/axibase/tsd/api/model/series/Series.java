@@ -109,7 +109,6 @@ public class Series {
         if (metric != null ? !metric.equals(series.metric) : series.metric != null) return false;
         if (data != null ? !data.equals(series.data) : series.data != null) return false;
         return tags != null ? tags.equals(series.tags) : series.tags == null;
-
     }
 
     @Override

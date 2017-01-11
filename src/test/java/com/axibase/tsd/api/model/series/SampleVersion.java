@@ -23,6 +23,5 @@ public class SampleVersion {
 
         SampleVersion other = (SampleVersion) o;
         return timestamp == null && other.timestamp == null || other.timestamp.equals(timestamp);
-
     }
 }

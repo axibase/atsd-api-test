@@ -745,7 +745,6 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test
     public void testXTextFieldInsertedTwiceWithVersioning() throws Exception {
-
         String metricName = "m-text-twice-versioning-1";
         Metric metric = new Metric(metricName);
         metric.setVersioned(true);
@@ -767,6 +766,33 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
+        Series lastInsertedSeries = series;
+        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
+    }
+
+    /**
+     * #3740
+     **/
+    @Test
+    public void testXTextFieldVersioned() throws Exception {
+        String metricName = "m-text-twice-versioning-2";
+        Metric metric = new Metric(metricName);
+        metric.setVersioned(true);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        Series series = new Series();
+        series.setMetric(metricName);
+        String entityName = "e-text-twice-versioning-2";
+        Registry.Entity.register(entityName);
+        series.setEntity(entityName);
+
+        String[] data = new String[]{"1", "2", "3", "4"};
+        for (String x : data) {
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            series.setData(Collections.singleton(sample));
+            insertSeriesCheck(Collections.singletonList(series));
+        }
+
         SeriesQuery seriesQueryVersioned = new SeriesQuery(series);
         seriesQueryVersioned.setVersioned(true);
         seriesQueryVersioned.setExactMatch(false);
@@ -776,10 +802,7 @@ public class SeriesInsertTest extends SeriesTest {
             textValuesVersioned.add(s.getText());
         }
 
-        Series lastInsertedSeries = series;
-        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
-        assertEquals("Versioning is corrupted", Arrays.asList(data), textValuesVersioned);
-
+        assertEquals("Text field versioning is corrupted", Arrays.asList(data), textValuesVersioned);
     }
 
     /**
