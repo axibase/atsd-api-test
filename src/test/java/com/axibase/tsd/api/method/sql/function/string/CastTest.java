@@ -7,7 +7,10 @@ import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
@@ -21,35 +24,22 @@ public class CastTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series();
-        Series series2 = new Series();
-        Series series3 = new Series();
+        List<Series> seriesList = new ArrayList<>();
+        String[] metricNames = {TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME};
+        String[] tags = {"4", "123", "text12a3a"};
 
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
-                )
-        );
-        series1.addTag("numeric_tag", "4");
+        for (int i = 0; i < 3; i++) {
+            Series series = new Series();
+            series.setMetric(metricNames[i]);
+            series.setEntity(TEST_ENTITY_NAME);
+            series.setData(Collections.singletonList(
+                    new Sample("2016-06-03T09:20:00.000Z", "1")));
+            series.addTag("numeric_tag", tags[i]);
 
-        series2.setMetric(TEST_METRIC2_NAME);
-        series2.setEntity(TEST_ENTITY_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
-                )
-        );
-        series2.addTag("numeric_tag", "123");
+            seriesList.add(series);
+        }
 
-        series3.setMetric(TEST_METRIC3_NAME);
-        series3.setEntity(TEST_ENTITY_NAME);
-        series3.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
-                )
-        );
-        series3.addTag("numeric_tag", "text12a3a");
-
-        SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3));
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
     /**
