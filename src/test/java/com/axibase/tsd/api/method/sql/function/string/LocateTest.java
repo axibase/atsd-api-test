@@ -9,6 +9,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
@@ -17,25 +18,23 @@ import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 
 public class LocateTest extends SqlTest {
-    private static final String TEST_METRIC = metric();
     private static final String TEST_METRIC1_NAME = metric();
+    private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
 
     @BeforeClass
     public void prepareData() throws Exception {
-        prepareApplyTestData(TEST_METRIC);
+        prepareApplyTestData(TEST_METRIC1_NAME);
 
-        Series series1 = new Series();
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
 
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
+        series.setData(Collections.singletonList(
                 new Sample("2016-06-03T09:20:00.000Z", "1")
                 )
         );
-        series1.addTag("tag1", "Word word WORD worD");
+        series.addTag("tag1", "Word word WORD worD");
 
-        SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     @DataProvider(name = "applyTestProvider")
@@ -85,7 +84,7 @@ public class LocateTest extends SqlTest {
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
         String sqlQuery = String.format("SELECT LOCATE(%s) FROM '%s'",
-                param, TEST_METRIC
+                param, TEST_METRIC1_NAME
         );
         assertOkRequest(String.format("Can't apply LOCATE function to %s", param), queryResponse(sqlQuery));
     }
@@ -98,7 +97,7 @@ public class LocateTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT LOCATE(\"%s\", tags.tag1) FROM '%s' t1",
                 word,
-                TEST_METRIC1_NAME
+                TEST_METRIC2_NAME
         );
 
         String[][] expectedRows = {
@@ -115,7 +114,7 @@ public class LocateTest extends SqlTest {
     public void testLocateInWhere(String word, String position) {
         String sqlQuery = String.format(
                 "SELECT value FROM '%s' t1 WHERE LOCATE(\"%s\", tags.tag1) = %s",
-                TEST_METRIC1_NAME,
+                TEST_METRIC2_NAME,
                 word,
                 position
         );
@@ -136,7 +135,7 @@ public class LocateTest extends SqlTest {
                 "SELECT tags.tag1, count(value) FROM '%s' t1 " +
                         "GROUP BY tags.tag1 " +
                         "HAVING count(LOCATE(\"%s\", tags.tag1)) > 0",
-                TEST_METRIC1_NAME,
+                TEST_METRIC2_NAME,
                 word
         );
 
