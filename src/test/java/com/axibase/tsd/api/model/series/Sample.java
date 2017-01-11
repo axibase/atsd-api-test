@@ -14,6 +14,8 @@ public class Sample {
     private Long t;
     private BigDecimal v;
     private String text;
+    private SampleVersion version;
+
     public Sample() {
     }
 
@@ -94,6 +96,8 @@ public class Sample {
         if (d != null ? !d.equals(sample.d) : sample.d != null) return false;
         if (t != null ? !t.equals(sample.t) : sample.t != null) return false;
         if (text != null ? !text.equals(sample.text) : sample.text != null) return false;
+        if (version != null ? !version.equals(sample.version) : sample.version != null) return false;
+
         return v != null ? v.equals(sample.v) : sample.v == null;
 
     }
@@ -119,5 +123,9 @@ public class Sample {
         result = 31 * result + (v != null ? v.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
+    }
+
+    public SampleVersion getVersion() {
+        return version;
     }
 }

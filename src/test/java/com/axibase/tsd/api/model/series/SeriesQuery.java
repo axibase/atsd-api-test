@@ -29,6 +29,7 @@ public class SeriesQuery {
     private Boolean exactMatch;
     private Integer limit;
     private Integer seriesLimit;
+    private Boolean versioned;
 
     public SeriesQuery() {
     }
@@ -177,12 +178,7 @@ public class SeriesQuery {
 
     @Override
     public String toString() {
-        return "Query{" +
-                "entity='" + entity + '\'' +
-                ", metric='" + metric + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                '}';
+        return Util.prettyPrint(this);
     }
 
     public String getTimeFormat() {
@@ -223,5 +219,13 @@ public class SeriesQuery {
 
     public void setEntityGroup(String entityGroup) {
         this.entityGroup = entityGroup;
+    }
+
+    public Boolean getVersioned() {
+        return versioned;
+    }
+
+    public void setVersioned(Boolean versioned) {
+        this.versioned = versioned;
     }
 }

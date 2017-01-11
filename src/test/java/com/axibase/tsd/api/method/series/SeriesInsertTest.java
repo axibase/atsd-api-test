@@ -17,6 +17,8 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -765,8 +767,19 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
 
+        SeriesQuery seriesQueryVersioned = new SeriesQuery(series);
+        seriesQueryVersioned.setVersioned(true);
+        seriesQueryVersioned.setExactMatch(false);
+        List<Series> seriesListVersioned = executeQueryReturnSeries(seriesQueryVersioned);
+        List<String> textValuesVersioned = new ArrayList<>();
+        for (Sample s: seriesListVersioned.get(0).getData()) {
+            textValuesVersioned.add(s.getText());
+        }
+
         Series lastInsertedSeries = series;
         assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
+        assertEquals("Versioning is corrupted", Arrays.asList(data), textValuesVersioned);
+
     }
 
     /**
