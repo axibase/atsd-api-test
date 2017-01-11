@@ -27,10 +27,15 @@ public class CastTest extends SqlTest {
         String[] metricNames = {TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME};
         String[] tags = {"4", "123", "text12a3a"};
 
-        for (int i = 0; i < 3; i++) {
-            Series series = new Series();
-            series.setMetric(metricNames[i]);
-            series.setEntity(TEST_ENTITY_NAME);
+        for (int i = 0; i < metricNames.length; i++) {
+            Series series;
+            if (i == 0) {
+                series = new Series(TEST_ENTITY_NAME , metricNames[i]);
+            }
+            else {
+                series = new Series(null, metricNames[i]);
+                series.setEntity(TEST_ENTITY_NAME);
+            }
             series.setData(Collections.singletonList(
                     new Sample("2016-06-03T09:20:00.000Z", "1")));
             series.addTag("numeric_tag", tags[i]);
