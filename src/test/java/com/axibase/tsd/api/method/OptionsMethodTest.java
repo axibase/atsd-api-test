@@ -19,7 +19,7 @@ public class OptionsMethodTest extends BaseMethod {
     private static final String ALLOWED_METHODS = "GET, POST, PUT, PATCH, DELETE";
     private static final Set<String> ALLOWED_METHODS_SET = splitStringToHeaderValueSet(ALLOWED_METHODS, ", ");
     private static final String ALLOWED_ORIGIN = "*";
-    public static final String ALLOWED_HEADERS = "Origin, X-Requested-With, Content-Type, Accept, Authorization";
+    private static final String ALLOWED_HEADERS = "Origin, X-Requested-With, Content-Type, Accept, Authorization";
     private static final Set<String> ALLOWED_HEADERS_SET = splitStringToHeaderValueSet(ALLOWED_HEADERS, ", ");
     private static final boolean STRICT = true;
 
