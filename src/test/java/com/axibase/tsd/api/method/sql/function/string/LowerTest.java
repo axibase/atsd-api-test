@@ -1,13 +1,19 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
+import java.util.Collections;
+
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static org.testng.Assert.assertEquals;
 
 
 public class LowerTest extends SqlTest {
@@ -26,10 +32,10 @@ public class LowerTest extends SqlTest {
 
     @DataProvider(name = "applyTestProvider")
     public Object[][] provideApplyTestsData() {
-        Integer size = POSSIBLE_FUNCTION_ARGS.size();
+        Integer size = POSSIBLE_STRING_FUNCTION_ARGS.size();
         Object[][] result = new Object[size][1];
         for (int i = 0; i < size; i++) {
-            result[i][0] = POSSIBLE_FUNCTION_ARGS.get(i);
+            result[i][0] = POSSIBLE_STRING_FUNCTION_ARGS.get(i);
         }
         return result;
     }
@@ -54,5 +60,21 @@ public class LowerTest extends SqlTest {
                 {"aBc12@", "abc12@"},
                 {"Кириллица", "кириллица"}
         };
+    }
+
+    @Test(dataProvider = "selectTestProvider")
+    public void testFunctionResult(String text, String expectedValue) throws Exception {
+        Series series = Mocks.series();
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+        String sqlQuery = String.format(
+                "SELECT LOWER(\"%s\") FROM '%s'",
+                text, series.getMetric()
+        );
+
+        String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
+        String assertMessage = String.format("Incorrect result of lower function with.%n\tQuery: %s",
+                sqlQuery
+        );
+        assertEquals(actualValue, expectedValue, assertMessage);
     }
 }

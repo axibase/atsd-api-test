@@ -6,7 +6,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
@@ -20,12 +20,12 @@ public class ConcatTest extends SqlTest {
 
     @DataProvider(name = "applyTestProvider")
     public Object[][] provideApplyTestsData() {
-        Integer size = POSSIBLE_FUNCTION_ARGS.size();
+        Integer size = POSSIBLE_STRING_FUNCTION_ARGS.size();
         Object[][] result = new Object[size * size][1];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 result[i * size + j][0] = String.format("%s, %s",
-                        POSSIBLE_FUNCTION_ARGS.get(i), POSSIBLE_FUNCTION_ARGS.get(j)
+                        POSSIBLE_STRING_FUNCTION_ARGS.get(i), POSSIBLE_STRING_FUNCTION_ARGS.get(j)
                 );
             }
 

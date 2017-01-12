@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static org.testng.AssertJUnit.assertEquals;
@@ -30,8 +30,8 @@ public class IsNullTest extends SqlTest {
     @DataProvider(name = "applyTestProvider")
     public Iterator<Object[]> provideApplyTestsData() {
         List<Object[]> list = new ArrayList<>();
-        for (String argLeft : POSSIBLE_FUNCTION_ARGS) {
-            for (String argRight : POSSIBLE_FUNCTION_ARGS) {
+        for (String argLeft : POSSIBLE_STRING_FUNCTION_ARGS) {
+            for (String argRight : POSSIBLE_STRING_FUNCTION_ARGS) {
                 list.add(new String[]{String.format("%s, %s", argLeft, argRight)});
             }
         }

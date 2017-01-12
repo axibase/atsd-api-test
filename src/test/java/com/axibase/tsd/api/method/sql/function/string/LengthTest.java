@@ -6,7 +6,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
@@ -21,10 +21,10 @@ public class LengthTest extends SqlTest {
 
     @DataProvider(name = "applyTestProvider")
     public Object[][] provideApplyTestsData() {
-        Integer size = POSSIBLE_FUNCTION_ARGS.size();
+        Integer size = POSSIBLE_STRING_FUNCTION_ARGS.size();
         Object[][] result = new Object[size][1];
         for (int i = 0; i < size; i++) {
-            result[i][0] = POSSIBLE_FUNCTION_ARGS.get(i);
+            result[i][0] = POSSIBLE_STRING_FUNCTION_ARGS.get(i);
         }
         return result;
     }

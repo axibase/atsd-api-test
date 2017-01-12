@@ -10,16 +10,17 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_FUNCTION_ARGS;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static org.testng.AssertJUnit.assertEquals;
 
 
 public class LocateTest extends SqlTest {
+    private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
-    private static final String TEST_ENTITY_NAME = entity();
 
     @BeforeClass
     public void prepareData() throws Exception {
@@ -38,12 +39,12 @@ public class LocateTest extends SqlTest {
 
     @DataProvider(name = "applyTestProvider")
     public Object[][] provideApplyTestsData() {
-        Integer size = POSSIBLE_FUNCTION_ARGS.size();
+        Integer size = POSSIBLE_STRING_FUNCTION_ARGS.size();
         Object[][] result = new Object[size * size][1];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 result[i * size + j][0] = String.format("%s, %s",
-                        POSSIBLE_FUNCTION_ARGS.get(i), POSSIBLE_FUNCTION_ARGS.get(j)
+                        POSSIBLE_STRING_FUNCTION_ARGS.get(i), POSSIBLE_STRING_FUNCTION_ARGS.get(j)
                 );
             }
 
@@ -76,6 +77,33 @@ public class LocateTest extends SqlTest {
                 }
         };
     }
+
+    @DataProvider(name = "selectTestProvider")
+    public Object[][] provideSelectTestsData() {
+        return new Object[][]{
+                {"'VaLuE', 'Lu'", "0"},
+                {"'Lu', 'VaLuE'", "3"},
+                {"'Lu', 'VaLuE', 4", "0"},
+                {"'Lu', 'VaLuELu', 4", "6"}
+        };
+    }
+
+    /**
+     * #2910
+     */
+    @Test(dataProvider = "selectTestProvider")
+    public void testFunctionResult(String param, String expectedValue) {
+        String sqlQuery = String.format(
+                "SELECT LOCATE(%s) FROM '%s'",
+                param, TEST_METRIC1_NAME
+        );
+        String assertMessage = String.format("Incorrect result of LOCATE function with param '%s'.%n\tQuery: %s",
+                param, sqlQuery
+        );
+        String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
+        assertEquals(assertMessage, expectedValue, actualValue);
+    }
+
 
     /**
      * #2920
