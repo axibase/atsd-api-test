@@ -1,0 +1,87 @@
+package com.axibase.tsd.api.method.sql.function.aggregation;
+
+import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+/**
+ * CountTest
+ */
+public class CountTest extends SqlTest {
+    private static final String TEST_ENTITY_NAME = "e-test-sql-aggregation-count-1";
+    private static final String TEST_METRIC_NAME = "m-test-sql-aggregation-count-1";
+    
+    private int total;
+    private String minDateTime;
+    private String maxDateTime;
+    
+    @BeforeClass
+    public void prepareTestSeries() throws Exception {
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        series.addData(new Sample("2016-10-12T00:00:00.000Z", 1));
+        series.addData(new Sample("2016-10-13T00:00:00.000Z", 2));
+        series.addData(new Sample("2016-10-14T00:00:00.000Z", 3));
+        series.addData(new Sample("2016-10-15T00:00:00.000Z", 4));
+        series.addData(new Sample("2016-10-16T00:00:00.000Z", 5));
+        series.addData(new Sample("2016-10-17T00:00:00.000Z", 6));
+        series.addData(new Sample("2016-10-18T00:00:00.000Z", 7));
+        total = series.getData().size();
+        minDateTime = series.getData().get(0).getD();
+        maxDateTime = series.getData().get(total - 1).getD();
+        SeriesMethod.insertSeriesCheck(series);
+    }
+
+    /**
+     * #3325
+     */
+    @Test
+    public void testCountValue() {
+        String sqlQuery = selectCount("value");
+
+        String[][] expectedRows = {
+                {String.valueOf(total)}
+        };
+
+        assertSqlQueryRows(sqlQuery, expectedRows);
+    }
+
+    /**
+     * #3325
+     */
+    @Test
+    public void testCountWildcard() {
+        String sqlQuery = selectCount("*");
+
+        String[][] expectedRows = {
+                {String.valueOf(total)}
+        };
+
+        assertSqlQueryRows(sqlQuery, expectedRows);
+    }
+
+    /**
+     * #3325
+     */
+    @Test
+    public void testCountEntity() {
+        String sqlQuery = selectCount("entity");
+
+        String[][] expectedRows = {
+                {String.valueOf(total)}
+        };
+
+        assertSqlQueryRows(sqlQuery, expectedRows);
+    }
+
+    private String selectCount(String argument) {
+        String formatString = "SELECT COUNT(%s) %n" + 
+                "FROM '%s' %n" +
+                "WHERE datetime >= '%s' AND datetime <= '%s' %n";
+
+        return String.format(formatString, argument,
+                TEST_METRIC_NAME, minDateTime, maxDateTime);
+    }
+}
