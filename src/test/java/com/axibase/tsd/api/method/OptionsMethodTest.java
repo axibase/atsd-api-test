@@ -1,29 +1,27 @@
 package com.axibase.tsd.api.method;
 
-import com.axibase.tsd.api.Config;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
 
 /**
- * Created by Aleksandr Veselov.
+ * #3616
  */
 public class OptionsMethodTest extends BaseMethod {
 
     private static final String ALLOWED_METHODS = "GET, POST, PUT, PATCH, DELETE";
-    private static final Set<String> ALLOWED_METHODS_SET = splitStringToSet(ALLOWED_METHODS, ", ");
+    private static final Set<String> ALLOWED_METHODS_SET = splitStringToHeaderValueSet(ALLOWED_METHODS, ", ");
     private static final String ALLOWED_ORIGIN = "*";
     public static final String ALLOWED_HEADERS = "Origin, X-Requested-With, Content-Type, Accept, Authorization";
-    private static final Set<String> ALLOWED_HEADERS_SET = splitStringToSet(ALLOWED_HEADERS, ", ");
+    private static final Set<String> ALLOWED_HEADERS_SET = splitStringToHeaderValueSet(ALLOWED_HEADERS, ", ");
+    private static final boolean STRICT = true;
 
     @DataProvider(name = "availablePathProvider")
     Object[][] provideAvailablePaths() {
@@ -67,63 +65,60 @@ public class OptionsMethodTest extends BaseMethod {
         };
     }
 
+    /**
+     * #3616
+     */
     @Test(dataProvider = "availablePathProvider")
-    public static void testOptionsRequest(String path) throws Exception {
-        Invocation.Builder builder = httpApiResource.path(path).request();
-
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
-
-        Response response = builder.options();
+    public static void testResponseHeadersForAPI(String path) throws Exception {
+        Response response = httpApiResource.path(path).request().options();
         assertResponseHasValidStatusAndHeaders(response);
     }
 
+    /**
+     * #3616
+     */
     @Test
-    public static void testOptionsRequestForSQL() throws Exception {
+    public static void testResponseHeadersForSQL() throws Exception {
         Response response = httpRootResource.path("/api/sql").request().options();
         assertResponseHasValidStatusAndHeaders(response);
-//
-//        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, Config.getInstance().getLogin());
-//        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, Config.getInstance().getPassword());
-
     }
 
     private static void assertResponseHasValidStatusAndHeaders(Response response) throws Exception {
         assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
-        assertValidHeaderSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", true);
-        assertValidHeaderSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", true);
-        assertValidHeader(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
+        assertHeaderProvisionedWithValueSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", STRICT);
+        assertHeaderProvisionedWithValueSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", STRICT);
+        assertHeaderProvisionedWithValue(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
     }
 
-    private static Set<String> splitStringToSet(String str, String splitter) {
+    private static Set<String> splitStringToHeaderValueSet(String str, String splitter) {
         return new HashSet<>(Arrays.asList(str.split(splitter)));
     }
 
-    private static void assertValidHeader(String expected, Response response, String header) throws Exception {
+    private static void assertHeaderProvisionedWithValue(String expected, Response response, String header) throws Exception {
         String got = response.getHeaderString(header);
-        assertEquals(String.format("Invalid %s header set", header), expected, got);
+        assertEquals(String.format("Invalid %s header value", header), expected, got);
     }
 
-    private static void assertValidHeaderSet(String expected, Response response, String header) throws Exception {
-        assertValidHeaderSet(expected, response, header, false);
+    private static void assertHeaderProvisionedWithValueSet(String expected, Response response, String header) throws Exception {
+        assertHeaderProvisionedWithValueSet(expected, response, header, !STRICT);
     }
 
-    private static void assertValidHeaderSet(Set<String> expectedSet, Response response, String header)  throws Exception {
-        assertValidHeaderSet(expectedSet, response, header, false);
+    private static void assertHeaderProvisionedWithValueSet(Set<String> expectedSet, Response response, String header) throws Exception {
+        assertHeaderProvisionedWithValueSet(expectedSet, response, header, !STRICT);
     }
 
-    private static void assertValidHeaderSet(String expected, Response response, String header, boolean strict) throws Exception {
-        assertValidHeaderSet(splitStringToSet(expected, ", "), response, header, strict);
+    private static void assertHeaderProvisionedWithValueSet(String expected, Response response, String header, boolean strict) throws Exception {
+        assertHeaderProvisionedWithValueSet(splitStringToHeaderValueSet(expected, ", "), response, header, strict);
     }
 
-    private static void assertValidHeaderSet(Set<String> expectedSet, Response response, String header, boolean strict)  throws Exception {
+    private static void assertHeaderProvisionedWithValueSet(Set<String> expectedSet, Response response, String header, boolean strict)  throws Exception {
         String got = response.getHeaderString(header);
         assertNotNull("No such header: " + header, got);
-        Set<String> gotSet = splitStringToSet(got, ", ");
-        boolean acceptable = strict ? expectedSet.equals(gotSet)
-                                    : gotSet.containsAll(gotSet);
-        String errMsg = String.format("Invalid %s header set, expected %s, got %s",
-                header, StringUtils.join(expectedSet), StringUtils.join(gotSet));
-        assertTrue(errMsg, acceptable);
+        Set<String> gotSet = splitStringToHeaderValueSet(got, ", ");
+        if (!strict && gotSet != null) {
+            // Check gotSet contains all of expected set
+            gotSet.retainAll(expectedSet);
+        }
+        assertEquals(String.format("Invalid %s header value set", header), expectedSet, gotSet);
     }
 }
