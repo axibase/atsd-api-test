@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import org.json.JSONArray;
@@ -584,6 +585,34 @@ public class SeriesQueryTest extends SeriesMethod {
         assertFalse("No series data", seriesList.get(0).getData().isEmpty());
         String received = seriesList.get(0).getData().get(0).getText();
         assertEquals("Last version of text field incorrect", data[data.length-1], received);
+    }
+
+    /**
+     * #3770
+     */
+    @Test
+    public void testExactMatchIgnoresReservedVersioningTags() throws Exception {
+        Metric metric = new Metric(Util.TestNames.metric());
+        metric.setVersioned(true);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        final int insertedVersionsCount = 3;
+        Series series = new Series();
+        series.setMetric(metric.getName());
+        series.setEntity(Util.TestNames.entity());
+        Registry.Entity.register(series.getEntity());
+        for (int i = 0; i < insertedVersionsCount; i++) {
+            series.setData(Collections.singleton(new Sample(Mocks.ISO_TIME, i)));
+            SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+        }
+
+        SeriesQuery query = new SeriesQuery(series);
+        query.setVersioned(true);
+        query.setExactMatch(true);
+        List<Series> receivedSeries = executeQueryReturnSeries(query);
+        int receivedVersionsCount = receivedSeries.get(0).getData().size();
+
+        assertEquals("Number of received versions mismatched", insertedVersionsCount, receivedVersionsCount);
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
