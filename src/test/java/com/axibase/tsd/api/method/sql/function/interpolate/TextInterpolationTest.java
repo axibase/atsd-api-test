@@ -72,7 +72,7 @@ public class TextInterpolationTest extends SqlTest {
         };
 
 
-        assertSqlQueryRows(sqlQuery, expectedRows);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
 
@@ -208,7 +208,7 @@ public class TextInterpolationTest extends SqlTest {
                 "Wrong interpolated points.%n%nSource points: %s%n%nTime Period: %s%n%nInterpolation Params: %s%n",
                 sourcePoints, period, interpolationParams
         );
-        assertSqlQueryRows(sqlQuery, expectedRows, assertMessage);
+        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
     /**
@@ -229,7 +229,7 @@ public class TextInterpolationTest extends SqlTest {
                 sqlQuery
         );
 
-        assertSqlQueryRows(sqlQuery, expectedRows, assertMessage);
+        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
 

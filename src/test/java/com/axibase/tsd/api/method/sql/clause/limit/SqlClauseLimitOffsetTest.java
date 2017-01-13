@@ -129,11 +129,10 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
-                response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
                         "2", "6", "extraneous input '-' expecting INTEGER_LITERAL"
-                )
+                ), response
         );
     }
 
@@ -152,11 +151,10 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
-                response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
                         "2", "15", "extraneous input '-' expecting INTEGER_LITERAL"
-                )
+                ), response
         );
     }
 
@@ -174,11 +172,10 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
-                response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
                         "2", "15", "mismatched input 'A' expecting INTEGER_LITERAL"
-                )
+                ), response
         );
     }
 
@@ -197,11 +194,10 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
-                response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
                         "2", "6", "mismatched input 'A' expecting INTEGER_LITERAL"
-                )
+                ), response
         );
     }
 
@@ -220,12 +216,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
-                response,
                 String.format(
                         ERROR_MESSAGE_TEMPLATE,
                         "2", "0", "mismatched input 'OFFSET' expecting {<EOF>, ID, WORD, STRING_LITERAL, " +
                                 "DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER, JOIN, OPTION}"
-                )
+                ), response
         );
     }
 }

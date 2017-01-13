@@ -71,7 +71,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
         String limitSqlQuery = sqlQuery.concat("LIMIT 1");
-        assertSqlQueryRows(limitSqlQuery, tableWithoutLimit.getRows().subList(0, 1));
+        assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 1), limitSqlQuery);
     }
 
     /**
@@ -85,7 +85,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
         String limitSqlQuery = sqlQuery.concat("LIMIT 1");
-        assertSqlQueryRows(limitSqlQuery, tableWithoutLimit.getRows().subList(0, 1));
+        assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 1), limitSqlQuery);
     }
 
     /**
@@ -99,6 +99,6 @@ public class LimitAggregationFunctionTest extends SqlTest {
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
         String limitSqlQuery = sqlQuery.concat("LIMIT 2");
-        assertSqlQueryRows(limitSqlQuery, tableWithoutLimit.getRows().subList(0, 2));
+        assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 2), limitSqlQuery);
     }
 }

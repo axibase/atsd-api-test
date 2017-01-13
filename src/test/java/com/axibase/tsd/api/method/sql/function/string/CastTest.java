@@ -64,7 +64,7 @@ public class CastTest extends SqlTest {
         String[][] expectedRows = {
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Sum of CASTs with Join gives wrong result");
+        assertSqlQueryRows("Sum of CASTs with Join gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -82,7 +82,7 @@ public class CastTest extends SqlTest {
                 {"127"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Sum of CASTs with Join Using Entity gives wrong result");
+        assertSqlQueryRows("Sum of CASTs with Join Using Entity gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -102,7 +102,7 @@ public class CastTest extends SqlTest {
                 {"8", "246", "NaN"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Multiplication of CASTs gives wrong result");
+        assertSqlQueryRows("Multiplication of CASTs gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -120,7 +120,7 @@ public class CastTest extends SqlTest {
                 {"8246"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "CAST of CONCAT gives wrong result");
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -141,7 +141,7 @@ public class CastTest extends SqlTest {
                 {"0", "null"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "CAST in GROUP BY gives wrong result");
+        assertSqlQueryRows("CAST in GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -161,7 +161,7 @@ public class CastTest extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "CAST in WHERE gives wrong result");
+        assertSqlQueryRows("CAST in WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -181,7 +181,7 @@ public class CastTest extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "CAST in WHERE with CONCAT gives wrong result");
+        assertSqlQueryRows("CAST in WHERE with CONCAT gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -204,7 +204,7 @@ public class CastTest extends SqlTest {
                 {"0", "null"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "CAST in HAVING gives wrong result");
+        assertSqlQueryRows("CAST in HAVING gives wrong result", expectedRows, sqlQuery);
     }
 
 }

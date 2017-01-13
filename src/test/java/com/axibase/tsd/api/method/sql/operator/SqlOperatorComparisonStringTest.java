@@ -142,7 +142,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(response, String.format(SQL_SYNTAX_COMPARISON_TPL, '2', "19", "'-1'"));
+        assertBadRequest(String.format(SQL_SYNTAX_COMPARISON_TPL, '2', "19", "'-1'"), response);
     }
 
     /**
@@ -320,7 +320,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(response, String.format(SQL_SYNTAX_COMPARISON_TPL, "2", "13", "metric >="));
+        assertBadRequest(String.format(SQL_SYNTAX_COMPARISON_TPL, "2", "13", "metric >="), response);
     }
 
     /**
@@ -335,7 +335,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(response, "Invalid date value");
+        assertBadRequest("Invalid date value", response);
     }
 
 }

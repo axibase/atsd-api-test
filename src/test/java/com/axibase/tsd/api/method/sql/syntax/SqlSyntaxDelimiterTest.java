@@ -172,7 +172,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(response, String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, 'a'));
+        assertBadRequest(String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, 'a'), response);
     }
 
 
@@ -189,7 +189,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Query must return correct table",
-                response, String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, '1')
+                String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, '1'), response
         );
     }
 
@@ -229,8 +229,8 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Query must return correct table",
-                response, "Syntax error at line 2 position 42: extraneous input ';123' " +
-                        "expecting {<EOF>, AND, OR, ORDER, GROUP, LIMIT, WITH, OPTION}");
+                "Syntax error at line 2 position 42: extraneous input ';123' " +
+                        "expecting {<EOF>, AND, OR, ORDER, GROUP, LIMIT, WITH, OPTION}", response);
     }
 
     /**
@@ -246,6 +246,6 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertBadRequest("Query must return correct table",
-                response, "Syntax error at line 2 position 46: no viable alternative at input '<EOF>'");
+                "Syntax error at line 2 position 46: no viable alternative at input '<EOF>'", response);
     }
 }

@@ -67,7 +67,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
         String[][] expectedRows = {
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Query gives some result, but should give none");
+        assertSqlQueryRows("Query gives some result, but should give none", expectedRows, sqlQuery);
     }
 
     /**
@@ -85,7 +85,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
                 {"1", "2"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join Using Entity gives wrong result");
+        assertSqlQueryRows("Join Using Entity gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -103,7 +103,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
                 {"2", "3"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join Using Entity with same tags gives wrong result");
+        assertSqlQueryRows("Join Using Entity with same tags gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -121,7 +121,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
                 {"3", "4"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join Using Entity (one metric has no tags) gives wrong result");
+        assertSqlQueryRows("Join Using Entity (one metric has no tags) gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -139,6 +139,6 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
                 {"3", "5"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join Using Entity with different tags gives wrong result");
+        assertSqlQueryRows("Join Using Entity with different tags gives wrong result", expectedRows, sqlQuery);
     }
 }

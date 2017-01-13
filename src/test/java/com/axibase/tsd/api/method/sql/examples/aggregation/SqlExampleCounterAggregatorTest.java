@@ -51,6 +51,6 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
                 {"2015-09-30T09:00:05.000Z", "3", "3.0", "1.0", "2.0", "4.0", "1.0"},
                 {"2015-09-30T09:00:06.000Z", "5", "3.0", "3.0", "3.0", "1.0", "1.0"}
         };
-        assertSqlQueryRows(sqlQuery, expectedRows);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 }

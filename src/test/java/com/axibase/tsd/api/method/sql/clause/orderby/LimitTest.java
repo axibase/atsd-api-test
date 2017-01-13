@@ -92,7 +92,7 @@ public class LimitTest extends SqlTest {
     @Test(groups = {ENTITY_ORDER_TEST_GROUP}, dataProvider = "entityOrderProvider")
     public void testEntityOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, ENTITY_ORDER_METRIC);
-        assertQueryLimit(sqlQuery, limit);
+        assertQueryLimit(limit, sqlQuery);
     }
 
 
@@ -137,7 +137,7 @@ public class LimitTest extends SqlTest {
     @Test(groups = {VALUE_ORDER_TEST_GROUP}, dataProvider = "valueOrderProvider")
     public void testValueOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, VALUE_ORDER_METRIC);
-        assertQueryLimit(sqlQuery, limit);
+        assertQueryLimit(limit, sqlQuery);
     }
 
     @BeforeGroups(groups = {DATETIME_ORDER_TEST_GROUP})
@@ -196,7 +196,7 @@ public class LimitTest extends SqlTest {
         String sqlQuery = String.format("SELECT datetime FROM '%s'%nORDER BY datetime",
                 DATETIME_ORDER_METRIC
         );
-        assertQueryLimit(sqlQuery, limit);
+        assertQueryLimit(limit, sqlQuery);
     }
 
 
@@ -235,14 +235,14 @@ public class LimitTest extends SqlTest {
     @Test(groups = {TAGS_ORDER_TEST_GROUP}, dataProvider = "tagsOrderProvider")
     public void testTagsOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, TAGS_ORDER_METRIC);
-        assertQueryLimit(sqlQuery, limit);
+        assertQueryLimit(limit, sqlQuery);
     }
 
-    private void assertQueryLimit(String sqlQuery, Integer limit) {
+    private void assertQueryLimit(Integer limit, String sqlQuery) {
         List<List<String>> rows = queryTable(sqlQuery).getRows();
         String limitedSqlQuery = String.format("%s%nLIMIT %d", sqlQuery, limit);
         List<List<String>> expectedRows = (rows.size() > limit) ? rows.subList(0, limit) : rows;
         String errorMessage = String.format("SQL query with limit doesn't return first %d rows of query without limit!", limit);
-        assertSqlQueryRows(limitedSqlQuery, expectedRows, errorMessage);
+        assertSqlQueryRows(errorMessage, expectedRows, limitedSqlQuery);
     }
 }

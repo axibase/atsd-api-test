@@ -103,7 +103,7 @@ public class LocateTest extends SqlTest {
                 {position}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Locate in SELECT gives wrong result");
+        assertSqlQueryRows("Locate in SELECT gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -122,7 +122,7 @@ public class LocateTest extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Locate in WHERE gives wrong result");
+        assertSqlQueryRows("Locate in WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -142,6 +142,6 @@ public class LocateTest extends SqlTest {
                 {"Word word WORD worD", "1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Locate in HAVING gives wrong result");
+        assertSqlQueryRows("Locate in HAVING gives wrong result", expectedRows, sqlQuery);
     }
 }

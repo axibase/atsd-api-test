@@ -77,6 +77,6 @@ public class SqlFunctionMathAbs extends SqlTest {
         };
 
         String assertMessage = String.format("Wrong result of following expression %s", query);
-        assertSqlQueryRows(sqlQuery, expectedRows, assertMessage);
+        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 }

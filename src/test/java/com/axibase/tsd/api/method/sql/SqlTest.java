@@ -21,7 +21,7 @@ public abstract class SqlTest extends SqlMethod {
     private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
 
 
-    private static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table, String errorMessage) {
+    private static void assertTableRowsExist(String errorMessage, List<List<String>> expectedRows, StringTable table) {
         List<List<String>> actualRows = table.getRows();
         if (actualRows.size() != expectedRows.size()) {
             failNotEquals(errorMessage, expectedRows, actualRows);
@@ -47,8 +47,8 @@ public abstract class SqlTest extends SqlMethod {
 
     }
 
-    public static void assertTableRowsExist(String[][] expectedRowsArray, StringTable table, String errorMessage) {
-        assertTableRowsExist(Util.twoDArrayToList(expectedRowsArray), table, errorMessage);
+    public static void assertTableRowsExist(String errorMessage, String[][] expectedRowsArray, StringTable table) {
+        assertTableRowsExist(errorMessage, Util.twoDArrayToList(expectedRowsArray), table);
     }
 
 
@@ -57,7 +57,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table) {
-        assertTableRowsExist(expectedRows, table, "Table rows must be equals");
+        assertTableRowsExist("Table rows must be equals", expectedRows, table);
     }
 
     private static Boolean isEqualCells(String expectedValue, String actualValue, String dataType) {
@@ -92,27 +92,27 @@ public abstract class SqlTest extends SqlMethod {
         return String.format("%s expected:<%s> but was:<%s>", message, expected, actual);
     }
 
-    public void assertSqlQueryRows(String sqlQuery, List<List<String>> expectedRows, String message) {
+    public void assertSqlQueryRows(String message, List<List<String>> expectedRows, String sqlQuery) {
         StringTable resultTable = queryTable(sqlQuery);
-        assertTableRowsExist(expectedRows,
-                resultTable,
-                String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery));
+        assertTableRowsExist(String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery), expectedRows,
+                resultTable
+        );
     }
 
-    public void assertSqlQueryRows(String sqlQuery, String[][] expectedRows, String message) {
-        assertSqlQueryRows(sqlQuery, Util.twoDArrayToList(expectedRows), message);
+    public void assertSqlQueryRows(String message, String[][] expectedRows, String sqlQuery) {
+        assertSqlQueryRows(message, Util.twoDArrayToList(expectedRows), sqlQuery);
     }
 
-    public void assertSqlQueryRows(String sqlQuery, List<List<String>> expectedRows) {
-        assertSqlQueryRows(sqlQuery, expectedRows, "");
+    public void assertSqlQueryRows(List<List<String>> expectedRows, String sqlQuery) {
+        assertSqlQueryRows("", expectedRows, sqlQuery);
     }
 
-    public void assertSqlQueryRows(String sqlQuery, String[][] expectedRows) {
-        assertSqlQueryRows(sqlQuery, Util.twoDArrayToList(expectedRows));
+    public void assertSqlQueryRows(String[][] expectedRows, String sqlQuery) {
+        assertSqlQueryRows(Util.twoDArrayToList(expectedRows), sqlQuery);
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
-        assertEquals(String.format("Values of columns with names: %s are not equal to expected", columnNames), table.filterRows(columnNames), values);
+        assertEquals(String.format("Values of columns with names: %s are not equal to expected", columnNames), values, table.filterRows(columnNames));
     }
 
     public void assertTableContainsColumnValues(List<String> values, StringTable table, String columnName) {
@@ -147,11 +147,11 @@ public abstract class SqlTest extends SqlMethod {
         }
     }
 
-    public void assertBadRequest(Response response, String expectedMessage) {
-        assertBadRequest(DEFAULT_ASSERT_BAD_REQUEST_MESSAGE, response, expectedMessage);
+    public void assertBadRequest(String expectedMessage, Response response) {
+        assertBadRequest(DEFAULT_ASSERT_BAD_REQUEST_MESSAGE, expectedMessage, response);
     }
 
-    public void assertBadRequest(String assertMessage, Response response, String expectedMessage) {
+    public void assertBadRequest(String assertMessage, String expectedMessage, Response response) {
         assertEquals(assertMessage, BAD_REQUEST.getStatusCode(), response.getStatus());
         String responseMessage = extractSqlErrorMessage(response);
         assertEquals("Error message is different form expected", expectedMessage, responseMessage);

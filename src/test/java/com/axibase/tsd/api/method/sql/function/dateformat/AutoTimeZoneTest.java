@@ -49,7 +49,7 @@ public class AutoTimeZoneTest extends SqlTest {
                 {formatDate(parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN, getTimeZone(metric.getTimeZoneID()))}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Failed to define metric timezone by AUTO param");
+        assertSqlQueryRows("Failed to define metric timezone by AUTO param", expectedRows, sqlQuery);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class AutoTimeZoneTest extends SqlTest {
                 {formatDate(parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN, getTimeZone(entity.getTimeZoneID()))}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Failed to define entity timezone by AUTO param");
+        assertSqlQueryRows("Failed to define entity timezone by AUTO param", expectedRows, sqlQuery);
     }
 
 
@@ -106,7 +106,7 @@ public class AutoTimeZoneTest extends SqlTest {
                         parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN, getTimeZone(entity.getTimeZoneID()))}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Failed to define entity timezone as priority by AUTO param");
+        assertSqlQueryRows("Failed to define entity timezone as priority by AUTO param", expectedRows, sqlQuery);
     }
 
     @Test
@@ -128,6 +128,6 @@ public class AutoTimeZoneTest extends SqlTest {
                         )}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Failed to define server timezone by AUTO param");
+        assertSqlQueryRows("Failed to define server timezone by AUTO param", expectedRows, sqlQuery);
     }
 }

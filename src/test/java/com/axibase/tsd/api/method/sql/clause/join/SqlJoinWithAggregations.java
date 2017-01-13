@@ -59,7 +59,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"6.0", "12.0"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join without Group by gives wrong result");
+        assertSqlQueryRows("Join without Group by gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -79,7 +79,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"3", "5"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join with Group by gives wrong result");
+        assertSqlQueryRows("Join with Group by gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -97,7 +97,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"3", "3"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Count Join without Group by gives wrong result");
+        assertSqlQueryRows("Count Join without Group by gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -116,7 +116,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"1", "1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Count Join with Group by gives wrong result");
+        assertSqlQueryRows("Count Join with Group by gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -134,7 +134,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"2", "1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Delta and Stddev with Join without Group by gives wrong result");
+        assertSqlQueryRows("Delta and Stddev with Join without Group by gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -152,7 +152,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"2", "1"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Delta and Stddev with Join with Group by gives wrong result");
+        assertSqlQueryRows("Delta and Stddev with Join with Group by gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -170,7 +170,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"3", "5"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join with Group by and Having gives wrong result");
+        assertSqlQueryRows("Join with Group by and Having gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -188,7 +188,7 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"3.0", "5.0"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join with Group by and Where gives wrong result");
+        assertSqlQueryRows("Join with Group by and Where gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -206,6 +206,6 @@ public class SqlJoinWithAggregations extends SqlTest {
                 {"3.0", "5.0"}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows, "Join with Where gives wrong result");
+        assertSqlQueryRows("Join with Where gives wrong result", expectedRows, sqlQuery);
     }
 }
