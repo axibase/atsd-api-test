@@ -5,11 +5,9 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-/**
- * CountTest
- */
 public class CountTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = "e-test-sql-aggregation-count-1";
     private static final String TEST_METRIC_NAME = "m-test-sql-aggregation-count-1";
@@ -34,54 +32,35 @@ public class CountTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3325
-     */
-    @Test
-    public void testCountValue() {
-        String sqlQuery = selectCount("value");
-
-        String[][] expectedRows = {
-                {String.valueOf(total)}
+    @DataProvider(name = "countAggregationArgumentsProvider")
+    private Object[][] provideArgumentsForCountAggregation() {
+        return new String[][]{
+            {"*"},
+            {"value"},
+            {"entity"}
         };
-
-        assertSqlQueryRows(sqlQuery, expectedRows);
     }
 
     /**
      * #3325
      */
-    @Test
-    public void testCountWildcard() {
-        String sqlQuery = selectCount("*");
+    @Test(dataProvider = "countAggregationArgumentsProvider")
+    public void testCountValue(String countArg) {
+        String sqlQuery = selectCount(countArg);
 
         String[][] expectedRows = {
                 {String.valueOf(total)}
         };
 
-        assertSqlQueryRows(sqlQuery, expectedRows);
-    }
-
-    /**
-     * #3325
-     */
-    @Test
-    public void testCountEntity() {
-        String sqlQuery = selectCount("entity");
-
-        String[][] expectedRows = {
-                {String.valueOf(total)}
-        };
-
-        assertSqlQueryRows(sqlQuery, expectedRows);
+        assertSqlQueryRows("Wrong result of COUNT() in query:\n" + sqlQuery, expectedRows, sqlQuery);
     }
 
     private String selectCount(String argument) {
-        String formatString = "SELECT COUNT(%s) %n" + 
+        String queryTemplate = "SELECT COUNT(%s) %n" +
                 "FROM '%s' %n" +
                 "WHERE datetime >= '%s' AND datetime <= '%s' %n";
 
-        return String.format(formatString, argument,
+        return String.format(queryTemplate, argument,
                 TEST_METRIC_NAME, minDateTime, maxDateTime);
     }
 }
