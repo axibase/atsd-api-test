@@ -38,8 +38,7 @@
         3. run all tests on clear latest ATSD installation
     b. After your have received a `change request` submit a new single commit corresponding to requested changes 
     with a commit message `code review #number` where `number` is corresponding to a code review commit order.
-    c. After your commit has been approved rebase your remote branch on actual master with a force push.
-    d. If tests fail because of some unfixed ATSD bugs mark pull request with label `pending`, add message with issue numbers related to bugs and wait until all unfixed bugs will be fixed.
+    c. If tests fail because of some unfixed ATSD bugs mark pull request with label `pending`, add message with issue numbers related to bugs and wait until all unfixed bugs will be fixed.
 
 ### Code style
 Use [standard](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf) java code style.
