@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum Registry {
-    Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup");
+    Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup"), ReplacementTable("ReplacementTable");
     final static String ERROR_ALREADY_REGISTRED_TPL = "REGISTRY ERROR: %s=%s already registered.";
     final static String ERROR_HAS_REGISTRED_PREFIX_TPL = "REGISTRY ERROR: %s=%s has registered prefix.";
     final static String ERROR_PREFIX_ALREADY_REGISTRED_TPL = "REGISTRY ERROR: %s prefix \"%s\" already registered.";
