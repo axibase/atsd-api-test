@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method;
 
+import jersey.repackaged.com.google.common.collect.Sets;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -16,52 +17,51 @@ import static org.testng.AssertJUnit.assertNotNull;
  */
 public class OptionsMethodTest extends BaseMethod {
 
-    private static final String ALLOWED_METHODS = "GET, POST, PUT, PATCH, DELETE";
-    private static final Set<String> ALLOWED_METHODS_SET = splitStringToHeaderValueSet(ALLOWED_METHODS, ", ");
-    private static final String ALLOWED_ORIGIN = "*";
-    private static final String ALLOWED_HEADERS = "Origin, X-Requested-With, Content-Type, Accept, Authorization";
-    private static final Set<String> ALLOWED_HEADERS_SET = splitStringToHeaderValueSet(ALLOWED_HEADERS, ", ");
-    private static final boolean STRICT = true;
+    private static final Set<String> ALLOWED_ORIGINS_SET = Sets.newHashSet("*");
+    private static final Set<String> ALLOWED_METHODS_SET = Sets.newHashSet("GET", "POST", "PUT", "PATCH", "DELETE");
+    private static final Set<String> ALLOWED_HEADERS_SET = Sets.newHashSet("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization");
 
     @DataProvider(name = "availablePathProvider")
     Object[][] provideAvailablePaths() {
         return new Object[][] {
                 // Data API
-                {"/series/query"},
-                {"/series/insert"},
-                {"/series/csv/entity"},
-                {"/series/format/entity/metric"},
-                {"/properties/query"},
-                {"/properties/insert"},
-                {"/properties/delete"},
-                {"/properties/entity/types/type"},
-                {"/properties/entity/types"},
-                {"/messages/query"},
-                {"/messages/insert"},
-                {"/messages/stats/query"},
-                {"/alerts/query"},
-                {"/alerts/update"},
-                {"/alerts/delete"},
-                {"/alerts/history/query"},
-                {"/csv"},
-                {"/nmon"},
-                {"/command"},
+                {"/api/v1/series/query"},
+                {"/api/v1/series/insert"},
+                {"/api/v1/series/csv/entity"},
+                {"/api/v1/series/format/entity/metric"},
+                {"/api/v1/properties/query"},
+                {"/api/v1/properties/insert"},
+                {"/api/v1/properties/delete"},
+                {"/api/v1/properties/entity/types/type"},
+                {"/api/v1/properties/entity/types"},
+                {"/api/v1/messages/query"},
+                {"/api/v1/messages/insert"},
+                {"/api/v1/messages/stats/query"},
+                {"/api/v1/alerts/query"},
+                {"/api/v1/alerts/update"},
+                {"/api/v1/alerts/delete"},
+                {"/api/v1/alerts/history/query"},
+                {"/api/v1/csv"},
+                {"/api/v1/nmon"},
+                {"/api/v1/command"},
                 // Meta API
-                {"/metrics"},
-                {"/metrics/metric"},
-                {"/metrics/metric/series"},
-                {"/entities"},
-                {"/entities/entity"},
-                {"/entities/entity/groups"},
-                {"/entities/entity/metrics"},
-                {"/entities/entity/property-types"},
-                {"/entity-groups/"},
-                {"/entity-groups/group"},
-                {"/entity-groups/group/entities"},
-                {"/entity-groups/group/entities/add"},
-                {"/entity-groups/group/entities/set"},
-                {"/entity-groups/group/entities/delete"},
-                {"/version"}
+                {"/api/v1/metrics"},
+                {"/api/v1/metrics/metric"},
+                {"/api/v1/metrics/metric/series"},
+                {"/api/v1/entities"},
+                {"/api/v1/entities/entity"},
+                {"/api/v1/entities/entity/groups"},
+                {"/api/v1/entities/entity/metrics"},
+                {"/api/v1/entities/entity/property-types"},
+                {"/api/v1/entity-groups/"},
+                {"/api/v1/entity-groups/group"},
+                {"/api/v1/entity-groups/group/entities"},
+                {"/api/v1/entity-groups/group/entities/add"},
+                {"/api/v1/entity-groups/group/entities/set"},
+                {"/api/v1/entity-groups/group/entities/delete"},
+                {"/api/v1/version"},
+                // SQL
+                {"/api/sql"}
         };
     }
 
@@ -69,56 +69,26 @@ public class OptionsMethodTest extends BaseMethod {
      * #3616
      */
     @Test(dataProvider = "availablePathProvider")
-    public static void testResponseHeadersForAPI(String path) throws Exception {
-        Response response = httpApiResource.path(path).request().options();
-        assertResponseHasValidStatusAndHeaders(response);
-    }
+    public static void testResponseOptionsHeadersForURLs(String path) throws Exception {
+        Response response = httpRootResource.path(path).request().options();
 
-    /**
-     * #3616
-     */
-    @Test
-    public static void testResponseHeadersForSQL() throws Exception {
-        Response response = httpRootResource.path("/api/sql").request().options();
-        assertResponseHasValidStatusAndHeaders(response);
-    }
-
-    private static void assertResponseHasValidStatusAndHeaders(Response response) throws Exception {
         assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
-        assertHeaderProvisionedWithValueSet(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods", STRICT);
-        assertHeaderProvisionedWithValueSet(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers", STRICT);
-        assertHeaderProvisionedWithValue(ALLOWED_ORIGIN, response, "Access-Control-Allow-Origin");
+
+        assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
+        assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");
+        assertResponseContainsHeaderWithValues(ALLOWED_ORIGINS_SET, response, "Access-Control-Allow-Origin");
+
     }
 
-    private static Set<String> splitStringToHeaderValueSet(String str, String splitter) {
-        return new HashSet<>(Arrays.asList(str.split(splitter)));
+    private static void assertResponseContainsHeaderWithValues(Set<String> expected, Response response, String headerName) {
+        String headerValue = response.getHeaderString(headerName);
+        assertNotNull("No such header: " + headerName, headerValue);
+        assertEquals(String.format("Invalid %s header value", headerName), expected, splitByComma(headerValue));
+
     }
 
-    private static void assertHeaderProvisionedWithValue(String expected, Response response, String header) throws Exception {
-        String got = response.getHeaderString(header);
-        assertEquals(String.format("Invalid %s header value", header), expected, got);
+    private static Set<String> splitByComma(String str) {
+        return new HashSet<>(Arrays.asList(str.split(", ")));
     }
 
-    private static void assertHeaderProvisionedWithValueSet(String expected, Response response, String header) throws Exception {
-        assertHeaderProvisionedWithValueSet(expected, response, header, !STRICT);
-    }
-
-    private static void assertHeaderProvisionedWithValueSet(Set<String> expectedSet, Response response, String header) throws Exception {
-        assertHeaderProvisionedWithValueSet(expectedSet, response, header, !STRICT);
-    }
-
-    private static void assertHeaderProvisionedWithValueSet(String expected, Response response, String header, boolean strict) throws Exception {
-        assertHeaderProvisionedWithValueSet(splitStringToHeaderValueSet(expected, ", "), response, header, strict);
-    }
-
-    private static void assertHeaderProvisionedWithValueSet(Set<String> expectedSet, Response response, String header, boolean strict)  throws Exception {
-        String got = response.getHeaderString(header);
-        assertNotNull("No such header: " + header, got);
-        Set<String> gotSet = splitStringToHeaderValueSet(got, ", ");
-        if (!strict && gotSet != null) {
-            // Check gotSet contains all of expected set
-            gotSet.retainAll(expectedSet);
-        }
-        assertEquals(String.format("Invalid %s header value set", header), expectedSet, gotSet);
-    }
 }
