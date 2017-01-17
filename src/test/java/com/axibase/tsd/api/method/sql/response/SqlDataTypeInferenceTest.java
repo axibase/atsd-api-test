@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -20,18 +21,14 @@ import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
 
-public class SqlDataTypeTest extends SqlMethod {
-
-    private static final String ENTITY_NAME = "tst-type";
-    private static final String QUERY_TEMPLATE =
-            "SELECT value FROM atsd_series WHERE metric IN (%s)";
-    private static final int VALUE_COLUMN = 0;
+public class SqlDataTypeInferenceTest extends SqlMethod {
 
     private static Map<DataType, String> typeToName = new HashMap<>();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(ENTITY_NAME);
+        final String entityName = Util.TestNames.entity();
+        Registry.Entity.register(entityName);
 
         List<Series> seriesList = new ArrayList<>();
         for (DataType type : DataType.values()) {
@@ -43,7 +40,7 @@ public class SqlDataTypeTest extends SqlMethod {
 
             Series s = new Series();
             s.setMetric(metric.getName());
-            s.setEntity(ENTITY_NAME);
+            s.setEntity(entityName);
             s.addData(Mocks.SAMPLE);
             seriesList.add(s);
         }
@@ -51,8 +48,8 @@ public class SqlDataTypeTest extends SqlMethod {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    @DataProvider(name = "testSqlType")
-    public static Object[][] metricsType() {
+    @DataProvider(name = "dataTypeInferenceProvider")
+    public static Object[][] provideTypeInferenceTestData() {
         return new Object[][]{
                 {new DataTypeArray(DataType.SHORT, DataType.INTEGER, DataType.LONG),
                         "bigint"},
@@ -83,29 +80,31 @@ public class SqlDataTypeTest extends SqlMethod {
     /**
      * #3773
      */
-    @Test(dataProvider = "testSqlType")
-    public void testDataType(DataTypeArray selectedTypes, String expectedType) {
-        String sqlQuery = String.format(QUERY_TEMPLATE, selectedTypes.toString());
+    @Test(dataProvider = "dataTypeInferenceProvider")
+    public void testSqlDataTypeInference(DataTypeArray selectedTypes, String expectedType) {
+        String queryTemplate = "SELECT value FROM atsd_series WHERE metric IN (%s)";
+        String sqlQuery = String.format(queryTemplate, selectedTypes.toString());
         StringTable table = queryTable(sqlQuery);
-        String actualType = table.getColumnMetaData(VALUE_COLUMN).getDataType();
+        String actualType = table.getColumnMetaData(0).getDataType();
 
-        assertEquals("Inferred type expected to be " + expectedType + ", but got " + actualType,
+        String assertMessageTemplate = "Inferred type expected to be %s, but got %s for types [%s] ";
+        assertEquals(String.format(assertMessageTemplate, expectedType, actualType, selectedTypes.toString()),
                 expectedType, actualType);
     }
 
     private static class DataTypeArray {
-        private DataType[] array;
+        private DataType[] dataTypes;
 
-        DataTypeArray(DataType... array) {
-            this.array = array;
+        DataTypeArray(DataType... dataTypes) {
+            this.dataTypes = dataTypes;
         }
 
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < array.length; i++) {
+            for (int i = 0; i < dataTypes.length; i++) {
                 if (i > 0)
                     sb.append(", ");
-                sb.append("'").append(typeToName.get(array[i])).append("'");
+                sb.append("'").append(typeToName.get(dataTypes[i])).append("'");
             }
             return sb.toString();
         }
