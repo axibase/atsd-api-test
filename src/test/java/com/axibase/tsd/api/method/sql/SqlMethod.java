@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.sql.AtsdExceptionDescription;
 import com.axibase.tsd.api.model.sql.Error;
 import com.axibase.tsd.api.model.sql.StringTable;
-import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +18,6 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
     protected static final WebTarget httpSqlApiResource = httpRootResource
-            .property(ClientProperties.CONNECT_TIMEOUT, 1000)
-            .property(ClientProperties.READ_TIMEOUT, 1000)
             .path(METHOD_SQL_API);
     private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
 
