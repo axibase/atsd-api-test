@@ -25,7 +25,7 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
     public static void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         String[] metricNames = {TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME};
-        String[] tags = {"123", "123", "text12a3a"};
+        String[] tags = {"123", "123", "abc4"};
 
         Registry.Entity.register(TEST_ENTITY_NAME);
 
@@ -57,17 +57,35 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
     public void testJoinWithEntityFilter() {
         String sqlQuery = String.format(
                     "SELECT t1.value, t2.value " +
-                    "FROM '%s' t1 JOIN '%s' t2 " +
-                    "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL AND t1.entity = '%s' AND t2.entity = '%s'",
-                TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME, TEST_ENTITY_NAME
+                    "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                    "WHERE t1.entity = '%3$s' AND t2.entity = '%3$s'",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
 
         String[][] expectedRows = {
                 {"1", "2"}
         };
 
-        String assertMessage = "JOIN with Entity filter gives wrong result";
-        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
+        assertSqlQueryRows("JOIN with Entity filter gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3756
+     */
+    @Test
+    public void testJoinWithEntityNotNullFilter() {
+        String sqlQuery = String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                        "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1", "2"}
+        };
+
+        assertSqlQueryRows("JOIN with Entity NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -76,19 +94,36 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
     @Test
     public void testJoinUsingEntityWithEntityFilter() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, t3.value " +
-                "FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3 " +
-                "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL AND t3.entity IS NOT NULL AND t1.entity = '%s' " +
-                        "AND t2.entity = '%s' AND t3.entity = '%s'",
-                TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME, TEST_ENTITY_NAME, TEST_ENTITY_NAME, TEST_ENTITY_NAME
+                "SELECT t1.value, t2.value " +
+                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "WHERE t1.entity = '%3$s' AND t2.entity = '%3$s'",
+                TEST_METRIC1_NAME, TEST_METRIC3_NAME, TEST_ENTITY_NAME
         );
 
         String[][] expectedRows = {
-                {"1", "2", "3"}
+                {"1", "3"}
         };
 
-        String assertMessage = "JOIN USING ENTITY with Entity filter gives wrong result";
-        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
+        assertSqlQueryRows("JOIN USING ENTITY with Entity filter gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3756
+     */
+    @Test
+    public void testJoinUsingEntityWithEntityNotNullFilter() {
+        String sqlQuery = String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL",
+                TEST_METRIC1_NAME, TEST_METRIC3_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1", "3"}
+        };
+
+        assertSqlQueryRows("JOIN USING ENTITY with Entity NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -98,8 +133,8 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
     public void testJoinWithTagFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                "FROM '%s' t1 JOIN '%s' t2 " +
-                "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL AND t1.tags.tag = '123' AND t2.tags.tag = '123'",
+                        "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                        "WHERE t1.tags.tag = '123' AND t2.tags.tag = '123'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -107,8 +142,26 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
                 {"1", "2"}
         };
 
-        String assertMessage = "JOIN with Tag filter gives wrong result";
-        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
+        assertSqlQueryRows("JOIN with Tag filter gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3756
+     */
+    @Test
+    public void testJoinWithTagNotNullFilter() {
+        String sqlQuery = String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                        "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1", "2"}
+        };
+
+        assertSqlQueryRows("JOIN with Tag NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -117,18 +170,35 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
     @Test
     public void testJoinUsingEntityWithTagFilter() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, t3.value " +
-                "FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3 " +
-                "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL AND t3.tags.tag IS NOT NULL " +
-                        "AND t1.tags.tag = '123' AND t2.tags.tag = '123' AND t3.tags.tag = 'text12a3a'",
-                TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME
+                "SELECT t1.value, t2.value " +
+                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "WHERE t1.tags.tag = '123' AND t2.tags.tag = 'abc4'",
+                TEST_METRIC1_NAME, TEST_METRIC3_NAME
         );
 
         String[][] expectedRows = {
-                {"1", "2", "3"}
+                {"1", "3"}
         };
 
-        String assertMessage = "JOIN USING ENTITY with Tag filter gives wrong result";
-        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
+        assertSqlQueryRows("JOIN USING ENTITY with Tag filter gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3756
+     */
+    @Test
+    public void testJoinUsingEntityWithTagNotNullFilter() {
+        String sqlQuery = String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL",
+                TEST_METRIC1_NAME, TEST_METRIC3_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1", "3"}
+        };
+
+        assertSqlQueryRows("JOIN USING ENTITY with Tag NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 }
