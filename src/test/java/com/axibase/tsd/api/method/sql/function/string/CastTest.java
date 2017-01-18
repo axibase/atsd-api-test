@@ -1,25 +1,34 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class CastTest extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_METRIC3_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
+
+    private Series castNumberAsStringSeries;
 
 
     @BeforeClass
@@ -205,6 +214,126 @@ public class CastTest extends SqlTest {
         };
 
         assertSqlQueryRows("CAST in HAVING gives wrong result", expectedRows, sqlQuery);
+    }
+
+    @BeforeClass
+    public void createCastNumberAsStringTestData() throws Exception {
+        castNumberAsStringSeries = Mocks.series();
+        castNumberAsStringSeries.setData(Collections.singleton(new Sample(Mocks.ISO_TIME, "12345.6789")));
+        SeriesMethod.insertSeriesCheck(castNumberAsStringSeries);
+    }
+
+    @DataProvider(name = "castNumberArgumentsProvider")
+    public Object[][] provideCastNumberArguments() {
+        return new Object[][] {
+                {"value"},
+                {"value * 2"},
+                {"value + 2"},
+                {"2"},
+                {"0"},
+                {"-1"},
+                {"30e4"},
+                {"5e-2"},
+                {"0.3456789"},
+                {"-0.23456789"},
+                {"MIN(value)"},
+                {"MAX(value)"},
+                {"FIRST(value)"},
+                {"LAST(value)"},
+                {"COUNT(value)"},
+                {"CAST('1.23756' as number)"},
+                {"AVG(value)"},
+                {"MIN(value)"},
+                {"SQRT(value)"},
+        };
+    }
+
+    /**
+     * #3770
+     */
+     @Test(dataProvider = "castNumberArgumentsProvider")
+     public void testCastNumberAsStringApplied(String castArgument) throws Exception {
+         Series series = castNumberAsStringSeries;
+         String sqlQuery = "SELECT CAST("+castArgument+" AS string) FROM '" + series.getMetric() + "'";
+
+         StringTable resultTable = SqlMethod.queryTable(sqlQuery);
+
+         assertEquals("string", resultTable.getColumnMetaData(0).getDataType());
+     }
+
+    /**
+     * #3770
+     */
+    @Test(dataProvider = "castNumberArgumentsProvider")
+    public void testCastNumberAsStringPassedToStringFunction(String castArgument) throws Exception {
+        Series series = castNumberAsStringSeries;
+        String sqlQuery = "SELECT CONCAT('foo', CAST("+castArgument+" AS string)) FROM '" + series.getMetric() + "'";
+
+        StringTable resultTable = SqlMethod.queryTable(sqlQuery);
+
+        assertEquals("foo", resultTable.getValueAt(0, 0).substring(0, 3));
+    }
+
+    @DataProvider(name = "constNumbersWithFormatProvider")
+    Object[][] provideNumericConstantsWithFormat() {
+        return new String[][] {
+            {"0", "0"},
+            {"1", "1"},
+            {"-1", "-1"},
+            {"1.00", "1"},
+            {"0.00", "0"},
+            {"-1.00", "-1"},
+            {"1.000003", "1"},
+            {"-1.000003", "-1"},
+            {"1231243124", "1231243124"},
+            {"1.23", "1.23"},
+            {"-1.23", "-1.23"},
+            {"1.235", "1.24"},
+            {"-1.235", "-1.24"},
+            {"0/0", "null"},
+        };
+    }
+
+    /**
+     * #3770
+     */
+    @Test(dataProvider = "constNumbersWithFormatProvider")
+    public void testCastConstantAsStringAppliesFormat(String castArgument, String expected) throws Exception {
+        /**
+         * Proper format of number is #.##
+         */
+        Series series = castNumberAsStringSeries;
+        String sqlQuery = String.format("SELECT CAST(%s AS string) FROM '%s'", castArgument, series.getMetric());
+
+        StringTable resultTable = SqlMethod.queryTable(sqlQuery);
+
+        String castValue = resultTable.getValueAt(0, 0);
+
+        assertEquals("Inproper format applied", expected, castValue);
+    }
+
+    /**
+     * #3770
+     */
+    @Test(dataProvider = "castNumberArgumentsProvider")
+    public void testCastNumberAsStringAppliesFormat(String castArgument) throws Exception {
+        /**
+         * Proper format of number is #.##
+         */
+        Series series = castNumberAsStringSeries;
+        String sqlQuery = String.format("SELECT %1$s, CAST(%1$s AS string) FROM '%2$s'", castArgument, series.getMetric());
+
+        StringTable resultTable = SqlMethod.queryTable(sqlQuery);
+
+        BigDecimal rawValue = new BigDecimal(resultTable.getValueAt(0, 0));
+        BigDecimal castValue = new BigDecimal(resultTable.getValueAt(1, 0));
+
+        // assertTrue used instead of assertEquals to prevent meaningless comparision in failure message
+        assertTrue(
+                "Inproper format (" + castValue + ") applied to " + rawValue,
+                // Check value is rounded to 0.01
+                rawValue.subtract(castValue).abs().compareTo(new BigDecimal("0.01")) < 0
+        );
     }
 
 }
