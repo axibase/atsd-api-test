@@ -15,7 +15,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
-public class SqlClauseJoinWithTagFilter extends SqlTest {
+public class JoinWithTagOrEntityFilter extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_METRIC3_NAME = metric();
@@ -56,8 +56,9 @@ public class SqlClauseJoinWithTagFilter extends SqlTest {
     @Test
     public void testJoinWithEntityFilter() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value FROM '%s' t1 JOIN '%s' t2 WHERE t1.entity IS NOT NULL " +
-                        "AND t2.entity IS NOT NULL AND t1.entity = '%s' AND t2.entity = '%s'",
+                    "SELECT t1.value, t2.value " +
+                    "FROM '%s' t1 JOIN '%s' t2 " +
+                    "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL AND t1.entity = '%s' AND t2.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME, TEST_ENTITY_NAME
         );
 
@@ -75,9 +76,9 @@ public class SqlClauseJoinWithTagFilter extends SqlTest {
     @Test
     public void testJoinUsingEntityWithEntityFilter() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, t3.value FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3 " +
-                        "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL " +
-                        "AND t3.entity IS NOT NULL AND t1.entity = '%s' " +
+                "SELECT t1.value, t2.value, t3.value " +
+                "FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3 " +
+                "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL AND t3.entity IS NOT NULL AND t1.entity = '%s' " +
                         "AND t2.entity = '%s' AND t3.entity = '%s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME, TEST_ENTITY_NAME, TEST_ENTITY_NAME, TEST_ENTITY_NAME
         );
@@ -96,8 +97,9 @@ public class SqlClauseJoinWithTagFilter extends SqlTest {
     @Test
     public void testJoinWithTagFilter() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value FROM '%s' t1 JOIN '%s' t2 WHERE t1.tags.tag IS NOT NULL " +
-                        "AND t2.tags.tag IS NOT NULL AND t1.tags.tag = \'123\' AND t2.tags.tag = \'123\'",
+                "SELECT t1.value, t2.value " +
+                "FROM '%s' t1 JOIN '%s' t2 " +
+                "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL AND t1.tags.tag = '123' AND t2.tags.tag = '123'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -115,10 +117,10 @@ public class SqlClauseJoinWithTagFilter extends SqlTest {
     @Test
     public void testJoinUsingEntityWithTagFilter() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, t3.value FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3 " +
-                        "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL " +
-                        "AND t3.tags.tag IS NOT NULL AND t1.tags.tag = \'123\' " +
-                        "AND t2.tags.tag = \'123\' AND t3.tags.tag = \'text12a3a\'",
+                "SELECT t1.value, t2.value, t3.value " +
+                "FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3 " +
+                "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL AND t3.tags.tag IS NOT NULL " +
+                        "AND t1.tags.tag = '123' AND t2.tags.tag = '123' AND t3.tags.tag = 'text12a3a'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME
         );
 
