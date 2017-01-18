@@ -9,7 +9,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
@@ -37,8 +36,7 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
             series.setEntity(TEST_ENTITY_NAME);
             series.setMetric(metricName);
 
-            series.setData(Collections.singletonList(
-                    new Sample("2016-06-03T09:20:00.000Z", i + 1)));
+            series.addData(new Sample("2016-06-03T09:20:00.000Z", i + 1));
 
             String tag = tags[i];
             series.addTag("tag", tag);
