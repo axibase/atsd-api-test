@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
-
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
