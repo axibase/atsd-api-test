@@ -101,8 +101,8 @@ public class SqlLookupFunctionTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    @DataProvider(name = "lookupTestTestProvider")
-    public Object[][] provideTestsDataForLookupTest() {
+    @DataProvider(name = "lookupWithTagsTestProvider")
+    public Object[][] provideTestsDataForLookupWithTagsTest() {
         return new Object[][]{
                 {
                         "1", "negative"
@@ -394,7 +394,7 @@ public class SqlLookupFunctionTest extends SqlTest {
     /**
      * #3769
      */
-    @Test(dataProvider = "lookupTestTestProvider")
+    @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithEntityTags(String key, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('table', t1.entity.tags.'%s') " +
@@ -413,7 +413,7 @@ public class SqlLookupFunctionTest extends SqlTest {
     /**
      * #3769
      */
-    @Test(dataProvider = "lookupTestTestProvider")
+    @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithMetricTags(String key, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('table', t1.metric.tags.'%s') " +
@@ -432,7 +432,7 @@ public class SqlLookupFunctionTest extends SqlTest {
     /**
      * #3769
      */
-    @Test(dataProvider = "lookupTestTestProvider")
+    @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithSeriesTags(String key, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('table', t1.tags.'%s') " +
