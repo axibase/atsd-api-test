@@ -11,7 +11,6 @@ import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.TextSample;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -33,8 +32,6 @@ public class SqlLookupFunctionTest extends SqlTest {
 
     private static void prepareReplacementTable(String name) throws IOException {
         ReplacementTable table = new ReplacementTable(name);
-
-        Registry.ReplacementTable.register(name);
 
         table.addValue("-1", "negative");
         table.addValue("1", "positive");
