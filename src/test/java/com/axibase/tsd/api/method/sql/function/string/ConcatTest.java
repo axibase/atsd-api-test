@@ -11,8 +11,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
@@ -36,13 +34,10 @@ public class ConcatTest extends SqlTest {
 
         {
             Series series = new Series(TEST_ENTITY, TEST_METRIC1);
-            series.setData(Arrays.asList(
-                    new Sample("2016-06-03T09:20:18.000Z", "3.0"),
-                    new Sample("2016-06-03T09:21:18.000Z", "3.10"),
-                    new Sample("2016-06-03T09:22:18.000Z", "3.14"),
-                    new Sample("2016-06-03T09:23:18.000Z", "3.1415")
-                    )
-            );
+            series.addData(new Sample("2016-06-03T09:20:18.000Z", "3.0"));
+            series.addData(new Sample("2016-06-03T09:21:18.000Z", "3.10"));
+            series.addData(new Sample("2016-06-03T09:22:18.000Z", "3.14"));
+            series.addData(new Sample("2016-06-03T09:23:18.000Z", "3.1415"));
             seriesList.add(series);
         }
         {
@@ -50,10 +45,7 @@ public class ConcatTest extends SqlTest {
             Registry.Metric.register(TEST_METRIC2);
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC2);
-            series.setData(Collections.singletonList(
-                    new Sample("2016-06-03T09:23:18.000Z", "5.555")
-                    )
-            );
+            series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.555"));
             seriesList.add(series);
         }
         {
@@ -61,10 +53,7 @@ public class ConcatTest extends SqlTest {
             Registry.Metric.register(TEST_METRIC3);
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC3);
-            series.setData(Collections.singletonList(
-                    new Sample("2016-06-03T09:23:18.000Z", "5.0")
-                    )
-            );
+            series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.0"));
             seriesList.add(series);
         }
 
@@ -121,9 +110,9 @@ public class ConcatTest extends SqlTest {
      */
     @Test
     public void testConcatWordAndTwoNumbers() throws Exception {
-        String sqlQuery = String.format("SELECT CONCAT('a:', t1.value, ':', t2.value), " +
-                                               "CONCAT('a:', t1.value, ':', t3.value) " +
-                                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
+        String sqlQuery = String.format(
+                "SELECT CONCAT('a:', t1.value, ':', t2.value), CONCAT('a:', t1.value, ':', t3.value) " +
+                "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
                 TEST_METRIC1,
                 TEST_METRIC2,
                 TEST_METRIC3
