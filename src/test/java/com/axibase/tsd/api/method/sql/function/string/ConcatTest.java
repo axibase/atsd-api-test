@@ -100,7 +100,7 @@ public class ConcatTest extends SqlTest {
     /**
      * #3768
      */
-    @Test//(dataProvider = "applyTestProvider")
+    @Test
     public void testConcatWordAndNumber() throws Exception {
         String sqlQuery = String.format("SELECT CONCAT('a:', value) FROM '%s'",
                 TEST_METRIC1
@@ -119,7 +119,7 @@ public class ConcatTest extends SqlTest {
     /**
      * #3768
      */
-    @Test//(dataProvider = "applyTestProvider")
+    @Test
     public void testConcatWordAndTwoNumbers() throws Exception {
         String sqlQuery = String.format("SELECT CONCAT('a:', t1.value, ':', t2.value), " +
                                                "CONCAT('a:', t1.value, ':', t3.value) " +
