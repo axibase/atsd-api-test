@@ -20,18 +20,16 @@ import static com.axibase.tsd.api.util.Util.TestNames.metric;
 public class ConcatTest extends SqlTest {
     private static final String TEST_METRIC = metric();
 
-    private static final String TEST_ENTITY = entity();
     private static final String TEST_METRIC1 = metric();
     private static final String TEST_METRIC2 = metric();
     private static final String TEST_METRIC3 = metric();
 
-    @BeforeClass
-    public void prepareData() throws Exception {
-        prepareApplyTestData(TEST_METRIC);
+    private static void prepareFunctionalConcatTestData() throws Exception {
+        String testEntity = entity();
 
         List<Series> seriesList = new ArrayList<>();
         {
-            Series series = new Series(TEST_ENTITY, TEST_METRIC1);
+            Series series = new Series(testEntity, TEST_METRIC1);
             series.addData(new Sample("2016-06-03T09:20:18.000Z", "3.0"));
             series.addData(new Sample("2016-06-03T09:21:18.000Z", "3.10"));
             series.addData(new Sample("2016-06-03T09:22:18.000Z", "3.14"));
@@ -41,7 +39,7 @@ public class ConcatTest extends SqlTest {
         {
             Series series = new Series();
             Registry.Metric.register(TEST_METRIC2);
-            series.setEntity(TEST_ENTITY);
+            series.setEntity(testEntity);
             series.setMetric(TEST_METRIC2);
             series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.555"));
             seriesList.add(series);
@@ -49,13 +47,20 @@ public class ConcatTest extends SqlTest {
         {
             Series series = new Series();
             Registry.Metric.register(TEST_METRIC3);
-            series.setEntity(TEST_ENTITY);
+            series.setEntity(testEntity);
             series.setMetric(TEST_METRIC3);
             series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.0"));
             seriesList.add(series);
         }
 
         SeriesMethod.insertSeriesCheck(seriesList);
+    }
+
+    @BeforeClass
+    public void prepareData() throws Exception {
+        prepareApplyTestData(TEST_METRIC);
+
+        prepareFunctionalConcatTestData();
     }
 
     @DataProvider(name = "applyTestProvider")
