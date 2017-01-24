@@ -15,7 +15,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,22 +26,10 @@ import static com.axibase.tsd.api.util.Util.TestNames.metric;
 public class SqlLookupFunctionTest extends SqlTest {
     private static final String TEST_METRIC_NAME_BASE_LOOKUP_CASE = metric();
     private static final String TEST_METRIC_NAME_TAGS_CASE = metric();
-    private static final ReplacementTable TABLE_BASE_LOOKUP_TEST;
-    private static final ReplacementTable TABLE_TAGS_CASE;
-    static {
-        ReplacementTable table1;
-        ReplacementTable table2;
-        try {
-            table1 = prepareReplacementTable("tableForLookupTest1");
-            table2 = prepareReplacementTable("tableForLookupTest2");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        TABLE_BASE_LOOKUP_TEST = table1;
-        TABLE_TAGS_CASE = table2;
-    }
+    private static final ReplacementTable TABLE_BASE_LOOKUP_TEST = prepareReplacementTable("tableForLookupTest1");
+    private static final ReplacementTable TABLE_TAGS_CASE = prepareReplacementTable("tableForLookupTest2");
 
-    private static ReplacementTable prepareReplacementTable(String name) throws IOException {
+    private static ReplacementTable prepareReplacementTable(String name) {
         ReplacementTable table = new ReplacementTable(name);
 
         table.addValue("-1", "negative");

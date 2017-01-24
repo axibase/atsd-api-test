@@ -12,7 +12,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public class ReplacementTableMethod extends BaseMethod {
@@ -36,7 +35,7 @@ public class ReplacementTableMethod extends BaseMethod {
         return response;
     }
 
-    public static void createCheck(ReplacementTable table) throws UnsupportedEncodingException {
+    public static void createCheck(ReplacementTable table) {
         Response response = createResponse(table);
 
         // Table is created iif we get code 302 -- FOUND - Redirect
