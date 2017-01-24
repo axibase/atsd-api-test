@@ -39,6 +39,7 @@ public class ReplacementTableMethod extends BaseMethod {
     public static void createCheck(ReplacementTable table) throws UnsupportedEncodingException {
         Response response = createResponse(table);
 
+        // Table is created iif we get code 302 -- FOUND - Redirect
         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
             String errorMessage = "Wasn't able to create a replacement table, Status Info is " + response.getStatusInfo();
             logger.error(errorMessage);
