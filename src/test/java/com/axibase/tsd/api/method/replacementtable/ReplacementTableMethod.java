@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.replacementtable;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
+import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,9 @@ import java.util.Map;
 public class ReplacementTableMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
     private static final String PATH = "/entities/lookup";
-    private static final WebTarget resource = httpRootResource.path(PATH);
+    private static final WebTarget resource = httpRootResource.path(PATH).property(ClientProperties.FOLLOW_REDIRECTS, false);
 
-    public static void create(ReplacementTable table) throws UnsupportedEncodingException {
+    protected static Response createResponse(ReplacementTable table) {
         MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
         parameters.add("lookupName", table.getName());
         parameters.add("items", squashMapIntoString(table.getMap()));
@@ -32,9 +33,13 @@ public class ReplacementTableMethod extends BaseMethod {
                 .post(Entity.form(form));
         response.bufferEntity();
 
-        if (!((response.getStatusInfo().getFamily() == Response.Status.Family.SUCCESSFUL) ||
-                (response.getStatus() == Response.Status.FOUND.getStatusCode())))
-        {
+        return response;
+    }
+
+    public static void createCheck(ReplacementTable table) throws UnsupportedEncodingException {
+        Response response = createResponse(table);
+
+        if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
             String errorMessage = "Wasn't able to create a replacement table, Status Info is " + response.getStatusInfo();
             logger.error(errorMessage);
             throw new IllegalStateException(errorMessage);
