@@ -20,6 +20,7 @@ import static com.axibase.tsd.api.util.Util.TestNames.metric;
 public class ConcatTest extends SqlTest {
     private static final String TEST_METRIC = metric();
 
+    private static final String TEST_ENTITY = entity();
     private static final String TEST_METRIC1 = metric();
     private static final String TEST_METRIC2 = metric();
     private static final String TEST_METRIC3 = metric();
@@ -28,7 +29,6 @@ public class ConcatTest extends SqlTest {
     public void prepareData() throws Exception {
         prepareApplyTestData(TEST_METRIC);
 
-        String TEST_ENTITY = entity();
         List<Series> seriesList = new ArrayList<>();
         {
             Series series = new Series(TEST_ENTITY, TEST_METRIC1);
