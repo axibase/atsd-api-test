@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.replacementtable;
 
-
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-public class ReplacementTableMethod extends BaseMethod{
+public class ReplacementTableMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
     private static final String PATH = "/entities/lookup";
     private static final WebTarget resource = httpRootResource.path(PATH);
@@ -33,14 +32,16 @@ public class ReplacementTableMethod extends BaseMethod{
                 .post(Entity.form(form));
         response.bufferEntity();
 
-        if (!(response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == Response.Status.FOUND.getStatusCode())) {
-            String errorMessage = "Wasn't able to create a replacement table, Status Code is " + response.getStatusInfo();
+        if (!((response.getStatusInfo().getFamily() == Response.Status.Family.SUCCESSFUL) ||
+                (response.getStatus() == Response.Status.FOUND.getStatusCode())))
+        {
+            String errorMessage = "Wasn't able to create a replacement table, Status Info is " + response.getStatusInfo();
             logger.error(errorMessage);
             throw new IllegalStateException(errorMessage);
         }
     }
 
-    private static String squashMapIntoString(Map<String, String> map){
+    private static String squashMapIntoString(Map<String, String> map) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
