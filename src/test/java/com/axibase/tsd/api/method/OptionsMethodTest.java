@@ -23,43 +23,53 @@ public class OptionsMethodTest extends BaseMethod {
 
     @DataProvider(name = "availablePathProvider")
     Object[][] provideAvailablePaths() {
-        return new Object[][] {
+        return new Object[][]{
                 // Data API
-                {"/series/query",                           new String[]{"POST"}},
-                {"/series/insert",                          new String[]{"POST"}},
-                {"/series/csv/entity",                      new String[]{"POST"}},
-                {"/series/format/entity/metric",            new String[]{"GET"}},
-                {"/properties/query",                       new String[]{"POST"}},
-                {"/properties/insert",                      new String[]{"POST"}},
-                {"/properties/delete",                      new String[]{"POST"}},
-                {"/properties/entity/types/type",           new String[]{"GET"}},
-                {"/properties/entity/types",                new String[]{"GET"}},
-                {"/messages/query",                         new String[]{"POST"}},
-                {"/messages/insert",                        new String[]{"POST"}},
-                {"/messages/stats/query",                   new String[]{"POST"}},
-                {"/alerts/query",                           new String[]{"POST"}},
-                {"/alerts/update",                          new String[]{"POST"}},
-                {"/alerts/delete",                          new String[]{"POST"}},
-                {"/alerts/history/query",                   new String[]{"POST"}},
-                {"/csv",                                    new String[]{"POST"}},
-                {"/nmon",                                   new String[]{"POST"}},
-                {"/command",                                new String[]{"POST"}},
+                {"/series/query", "POST"},
+                {"/series/insert", "POST"},
+                {"/series/csv/entity", "POST"},
+                {"/series/format/entity/metric", "GET"},
+                {"/properties/query", "POST"},
+                {"/properties/insert", "POST"},
+                {"/properties/delete", "POST"},
+                {"/properties/entity/types/type", "GET"},
+                {"/properties/entity/types", "GET"},
+                {"/messages/query", "POST"},
+                {"/messages/insert", "POST"},
+                {"/messages/stats/query", "POST"},
+                {"/alerts/query", "POST"},
+                {"/alerts/update", "POST"},
+                {"/alerts/delete", "POST"},
+                {"/alerts/history/query", "POST"},
+                {"/csv", "POST"},
+                {"/nmon", "POST"},
+                {"/command", "POST"},
                 // Meta API
-                {"/metrics",                                new String[]{"GET"}},
-                {"/metrics/metric",                         new String[]{"GET", "PUT", "PATCH", "DELETE"}},
-                {"/metrics/metric/series",                  new String[]{"GET"}},
-                {"/entities",                               new String[]{"GET", "POST"}},
-                {"/entities/entity",                        new String[]{"GET", "PUT", "PATCH", "DELETE"}},
-                {"/entities/entity/groups",                 new String[]{"GET"}},
-                {"/entities/entity/metrics",                new String[]{"GET"}},
-                {"/entities/entity/property-types",         new String[]{"GET"}},
-                {"/entity-groups",                          new String[]{"GET"}},
-                {"/entity-groups/group",                    new String[]{"GET", "PUT", "PATCH", "DELETE"}},
-                {"/entity-groups/group/entities",           new String[]{"GET",}},
-                {"/entity-groups/group/entities/add",       new String[]{"POST"}},
-                {"/entity-groups/group/entities/set",       new String[]{"POST"}},
-                {"/entity-groups/group/entities/delete",    new String[]{"POST"}},
-                {"/version",                                new String[]{"GET"}}
+                {"/metrics", "GET"},
+                {"/metrics/metric", "GET"},
+                {"/metrics/metric", "PUT"},
+                {"/metrics/metric", "PATCH"},
+                {"/metrics/metric", "DELETE"},
+                {"/metrics/metric/series", "GET"},
+                {"/entities", "GET"},
+                {"/entities", "POST"},
+                {"/entities/entity", "GET"},
+                {"/entities/entity", "PUT"},
+                {"/entities/entity", "PATCH"},
+                {"/entities/entity", "DELETE"},
+                {"/entities/entity/groups", "GET"},
+                {"/entities/entity/metrics", "GET"},
+                {"/entities/entity/property-types", "GET"},
+                {"/entity-groups", "GET"},
+                {"/entity-groups/group", "GET"},
+                {"/entity-groups/group", "PUT"},
+                {"/entity-groups/group", "PATCH"},
+                {"/entity-groups/group", "DELETE"},
+                {"/entity-groups/group/entities", "GET"},
+                {"/entity-groups/group/entities/add", "POST"},
+                {"/entity-groups/group/entities/set", "POST"},
+                {"/entity-groups/group/entities/delete", "POST"},
+                {"/version", "GET"}
         };
     }
 
@@ -67,27 +77,25 @@ public class OptionsMethodTest extends BaseMethod {
      * #3616
      */
     @Test(dataProvider = "availablePathProvider")
-    public static void testResponseOptionsHeadersForURLs(String path, String[] methods) throws Exception {
-        for (String method: methods) {
-            Response response = httpApiResource.path(path)
-                    .request()
-                    .header("Access-Control-Request-Method", method)
-                    .header("Access-Control-Request-Headers", StringUtils.join(ALLOWED_HEADERS_SET, ","))
-                    .header("Origin", "itdoesntmatter")
-                    .options();
+    public static void testResponseOptionsHeadersForURLs(String path, String method) throws Exception {
+        Response response = httpApiResource.path(path)
+                .request()
+                .header("Access-Control-Request-Method", method)
+                .header("Access-Control-Request-Headers", StringUtils.join(ALLOWED_HEADERS_SET, ","))
+                .header("Origin", "itdoesntmatter")
+                .options();
 
-            assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
 
-            assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
-            assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");
-            assertResponseContainsHeaderWithValues(ALLOWED_ORIGINS_SET, response, "Access-Control-Allow-Origin");
-        }
+        assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
+        assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");
+        assertResponseContainsHeaderWithValues(ALLOWED_ORIGINS_SET, response, "Access-Control-Allow-Origin");
     }
 
     /**
      * #3616
      */
-    @Test(dataProvider = "availablePathProvider")
+    @Test
     public static void testResponseOptionsHeadersForSQL() throws Exception {
         Response response = httpRootResource.path("/api/sql")
                 .queryParam("q", "")
@@ -112,7 +120,7 @@ public class OptionsMethodTest extends BaseMethod {
 
     private static Set<String> splitByComma(String str) {
         Set<String> values = new HashSet<>();
-        for (String value: str.split(",")) {
+        for (String value : str.split(",")) {
             values.add(value.trim());
         }
         return values;
