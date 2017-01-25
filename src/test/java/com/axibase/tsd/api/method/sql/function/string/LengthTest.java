@@ -7,7 +7,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 public class LengthTest extends SqlTest {
@@ -16,7 +16,7 @@ public class LengthTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        prepareApplyTestData(TEST_METRIC);
+        insertSeriesWithMetric(TEST_METRIC);
     }
 
     @DataProvider(name = "applyTestProvider")

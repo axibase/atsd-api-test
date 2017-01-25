@@ -37,7 +37,7 @@ public class CommonData {
             )
     );
 
-    static void prepareApplyTestData(String testMetric) throws Exception {
+    static void insertSeriesWithMetric(String testMetric) throws Exception {
         String entityName = TestNames.entity();
         Series series = new Series(entityName, testMetric);
         series.addData(Mocks.SAMPLE);

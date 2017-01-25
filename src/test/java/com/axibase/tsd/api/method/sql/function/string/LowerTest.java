@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
-import static com.axibase.tsd.api.method.sql.function.string.CommonData.prepareApplyTestData;
+import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static org.testng.Assert.assertEquals;
 
@@ -27,7 +27,7 @@ public class LowerTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         generateNames();
-        prepareApplyTestData(TEST_METRIC);
+        insertSeriesWithMetric(TEST_METRIC);
     }
 
     @DataProvider(name = "applyTestProvider")
