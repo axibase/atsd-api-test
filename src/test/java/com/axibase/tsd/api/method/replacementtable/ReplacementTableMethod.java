@@ -38,7 +38,7 @@ public class ReplacementTableMethod extends BaseMethod {
     public static void createCheck(ReplacementTable table) {
         Response response = createResponse(table);
 
-        // Table is created iif we get code 302 -- FOUND - Redirect
+        // It's confusing, but we get code 302 -- FOUND - Redirect, only if table was created
         if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
             String errorMessage = "Wasn't able to create a replacement table, Status Info is " + response.getStatusInfo();
             logger.error(errorMessage);
