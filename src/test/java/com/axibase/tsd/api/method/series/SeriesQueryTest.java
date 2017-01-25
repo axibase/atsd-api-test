@@ -616,7 +616,7 @@ public class SeriesQueryTest extends SeriesMethod {
     }
 
     @Test
-    public void testSeriesQueryWithSampleWithoutValue() throws Exception {
+    public void testSeriesQueryWithTextSample() throws Exception {
         Series series = Mocks.series();
         series.setData(Collections.singleton(Mocks.TEXT_SAMPLE));
         SeriesMethod.insertSeriesCheck(series);
