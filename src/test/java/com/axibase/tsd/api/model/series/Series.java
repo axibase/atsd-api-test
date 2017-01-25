@@ -105,23 +105,26 @@ public class Series {
 
         Series series = (Series) o;
 
-        if (entity != null ? !entity.equals(series.entity) : series.entity != null) return false;
-        if (metric != null ? !metric.equals(series.metric) : series.metric != null) return false;
-        if (data != null ? !data.equals(series.data) : series.data != null) return false;
-        return tags != null ? tags.equals(series.tags) : series.tags == null;
+        if (!entity.equals(series.entity))
+            return false;
+        if (!metric.equals(series.metric))
+            return false;
+        if (!data.equals(series.data))
+            return false;
+        return tags.equals(series.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = entity.hashCode();
+        result = 31 * result + metric.hashCode();
+        result = 31 * result + data.hashCode();
+        result = 31 * result + tags.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
         return Util.prettyPrint(this);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = entity != null ? entity.hashCode() : 0;
-        result = 31 * result + (metric != null ? metric.hashCode() : 0);
-        result = 31 * result + (data != null ? data.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        return result;
     }
 }

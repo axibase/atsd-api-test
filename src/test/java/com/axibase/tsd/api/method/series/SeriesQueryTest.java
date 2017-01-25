@@ -584,7 +584,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertFalse("No series", seriesList.isEmpty());
         assertFalse("No series data", seriesList.get(0).getData().isEmpty());
         String received = seriesList.get(0).getData().get(0).getText();
-        assertEquals("Last version of text field incorrect", data[data.length-1], received);
+        assertEquals("Last version of text field incorrect", data[data.length - 1], received);
     }
 
     /**
@@ -613,6 +613,15 @@ public class SeriesQueryTest extends SeriesMethod {
         int receivedVersionsCount = receivedSeries.get(0).getData().size();
 
         assertEquals("Number of received versions mismatched", insertedVersionsCount, receivedVersionsCount);
+    }
+
+    @Test
+    public void testSeriesQueryWithSampleWithoutValue() throws Exception {
+        Series series = Mocks.series();
+        series.setData(Collections.singleton(Mocks.TEXT_SAMPLE));
+        SeriesMethod.insertSeriesCheck(series);
+        List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
+        assertEquals(Collections.singletonList(series), resultSeriesList);
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
