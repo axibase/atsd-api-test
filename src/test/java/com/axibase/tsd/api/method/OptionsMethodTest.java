@@ -25,44 +25,41 @@ public class OptionsMethodTest extends BaseMethod {
     Object[][] provideAvailablePaths() {
         return new Object[][] {
                 // Data API
-                {"/api/v1/series/query"},
-                {"/api/v1/series/insert"},
-                {"/api/v1/series/csv/entity"},
-                {"/api/v1/series/format/entity/metric"},
-                {"/api/v1/properties/query"},
-                {"/api/v1/properties/insert"},
-                {"/api/v1/properties/delete"},
-                {"/api/v1/properties/entity/types/type"},
-                {"/api/v1/properties/entity/types"},
-                {"/api/v1/messages/query"},
-                {"/api/v1/messages/insert"},
-                {"/api/v1/messages/stats/query"},
-                {"/api/v1/alerts/query"},
-                {"/api/v1/alerts/update"},
-                {"/api/v1/alerts/delete"},
-                {"/api/v1/alerts/history/query"},
-                {"/api/v1/csv"},
-                {"/api/v1/nmon"},
-                {"/api/v1/command"},
+                {"/series/query",                           new String[]{"POST"}},
+                {"/series/insert",                          new String[]{"POST"}},
+                {"/series/csv/entity",                      new String[]{"POST"}},
+                {"/series/format/entity/metric",            new String[]{"GET"}},
+                {"/properties/query",                       new String[]{"POST"}},
+                {"/properties/insert",                      new String[]{"POST"}},
+                {"/properties/delete",                      new String[]{"POST"}},
+                {"/properties/entity/types/type",           new String[]{"GET"}},
+                {"/properties/entity/types",                new String[]{"GET"}},
+                {"/messages/query",                         new String[]{"POST"}},
+                {"/messages/insert",                        new String[]{"POST"}},
+                {"/messages/stats/query",                   new String[]{"POST"}},
+                {"/alerts/query",                           new String[]{"POST"}},
+                {"/alerts/update",                          new String[]{"POST"}},
+                {"/alerts/delete",                          new String[]{"POST"}},
+                {"/alerts/history/query",                   new String[]{"POST"}},
+                {"/csv",                                    new String[]{"POST"}},
+                {"/nmon",                                   new String[]{"POST"}},
+                {"/command",                                new String[]{"POST"}},
                 // Meta API
-                {"/api/v1/metrics"},
-                {"/api/v1/metrics/metric"},
-                {"/api/v1/metrics/metric/series"},
-                {"/api/v1/entities"},
-                {"/api/v1/entities/entity"},
-                {"/api/v1/entities/entity/groups"},
-                {"/api/v1/entities/entity/metrics"},
-                {"/api/v1/entities/entity/property-types"},
-                {"/api/v1/entity-groups/"},
-                {"/api/v1/entity-groups/group"},
-                {"/api/v1/entity-groups/group/entities"},
-                {"/api/v1/entity-groups/group/entities/add"},
-                {"/api/v1/entity-groups/group/entities/set"},
-                {"/api/v1/entity-groups/group/entities/delete"},
-                {"/api/v1/version"},
-                // SQL
-                // Parameter stub is required (LOL :D)
-                {"/api/sql?q="}
+                {"/metrics",                                new String[]{"GET"}},
+                {"/metrics/metric",                         new String[]{"GET", "PUT", "PATCH", "DELETE"}},
+                {"/metrics/metric/series",                  new String[]{"GET"}},
+                {"/entities",                               new String[]{"GET", "POST"}},
+                {"/entities/entity",                        new String[]{"GET", "PUT", "PATCH", "DELETE"}},
+                {"/entities/entity/groups",                 new String[]{"GET"}},
+                {"/entities/entity/metrics",                new String[]{"GET"}},
+                {"/entities/entity/property-types",         new String[]{"GET"}},
+                {"/entity-groups",                          new String[]{"GET"}},
+                {"/entity-groups/group",                    new String[]{"GET", "PUT", "PATCH", "DELETE"}},
+                {"/entity-groups/group/entities",           new String[]{"GET",}},
+                {"/entity-groups/group/entities/add",       new String[]{"POST"}},
+                {"/entity-groups/group/entities/set",       new String[]{"POST"}},
+                {"/entity-groups/group/entities/delete",    new String[]{"POST"}},
+                {"/version",                                new String[]{"GET"}}
         };
     }
 
@@ -70,9 +67,32 @@ public class OptionsMethodTest extends BaseMethod {
      * #3616
      */
     @Test(dataProvider = "availablePathProvider")
-    public static void testResponseOptionsHeadersForURLs(String path) throws Exception {
-        Response response = httpRootResource.path(path).request()
-                .header("Access-Control-Request-Method", "GET")
+    public static void testResponseOptionsHeadersForURLs(String path, String[] methods) throws Exception {
+        for (String method: methods) {
+            Response response = httpApiResource.path(path)
+                    .request()
+                    .header("Access-Control-Request-Method", method)
+                    .header("Access-Control-Request-Headers", StringUtils.join(ALLOWED_HEADERS_SET, ","))
+                    .header("Origin", "itdoesntmatter")
+                    .options();
+
+            assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
+
+            assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
+            assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");
+            assertResponseContainsHeaderWithValues(ALLOWED_ORIGINS_SET, response, "Access-Control-Allow-Origin");
+        }
+    }
+
+    /**
+     * #3616
+     */
+    @Test(dataProvider = "availablePathProvider")
+    public static void testResponseOptionsHeadersForSQL() throws Exception {
+        Response response = httpRootResource.path("/api/sql")
+                .queryParam("q", "")
+                .request()
+                .header("Access-Control-Request-Method", "POST")
                 .header("Access-Control-Request-Headers", StringUtils.join(ALLOWED_HEADERS_SET, ","))
                 .header("Origin", "itdoesntmatter")
                 .options();
