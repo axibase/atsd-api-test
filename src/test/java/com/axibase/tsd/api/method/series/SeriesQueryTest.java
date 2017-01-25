@@ -620,8 +620,11 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = Mocks.series();
         series.setData(Collections.singleton(Mocks.TEXT_SAMPLE));
         SeriesMethod.insertSeriesCheck(series);
+
         List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
-        assertEquals(Collections.singletonList(series), resultSeriesList);
+
+        String assertMessage = "SeriesList serialized as not expected!";
+        assertEquals(assertMessage, Collections.singletonList(series), resultSeriesList);
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
