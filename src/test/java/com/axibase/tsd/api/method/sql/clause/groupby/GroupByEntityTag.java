@@ -38,8 +38,8 @@ public class GroupByEntityTag extends SqlTest {
             Series series = new Series();
             series.setEntity(testEntityNameTagsCase);
             series.setMetric(TEST_METRIC_NAME);
-            series.addData(new Sample(Util.ISOFormat(1485525209086L + i), Integer.toString(i)));
-            series.addData(new Sample(Util.ISOFormat(1485525289086L + i), Integer.toString(i + 1)));
+            series.addData(new Sample(Util.ISOFormat(1485525209086L + i), i));
+            series.addData(new Sample(Util.ISOFormat(1485525289086L + i), i + 1));
             seriesList.add(series);
         }
 
