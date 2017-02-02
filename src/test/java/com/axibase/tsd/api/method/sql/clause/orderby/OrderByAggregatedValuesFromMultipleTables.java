@@ -1,0 +1,104 @@
+package com.axibase.tsd.api.method.sql.clause.orderby;
+
+import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.Util.TestNames.metric;
+
+public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
+    private static final String TEST_ENTITY = entity();
+    private static final String TEST_METRIC_1 = metric();
+    private static final String TEST_METRIC_2 = metric();
+
+    @BeforeClass
+    public static void prepareData() throws Exception {
+        Registry.Entity.register(TEST_ENTITY);
+        Registry.Metric.register(TEST_METRIC_1);
+        Registry.Metric.register(TEST_METRIC_2);
+
+        List<Series> seriesList = new ArrayList<>();
+        {
+            Series series = new Series();
+            series.setEntity(TEST_ENTITY);
+            series.setMetric(TEST_METRIC_1);
+            for (int i = 0; i < 10; i++) {
+                series.addData(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), i));
+            }
+            seriesList.add(series);
+        }
+        {
+            Series series = new Series();
+            series.setEntity(TEST_ENTITY);
+            series.setMetric(TEST_METRIC_2);
+            for (int i = 0; i < 10; i++) {
+                series.addData(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
+            }
+            seriesList.add(series);
+        }
+
+        SeriesMethod.insertSeriesCheck(seriesList);
+    }
+
+    /**
+     * #3840
+     */
+    @Test
+    public void testOrderByColumnWithAggregationsOfDifferentMetrics() {
+        String sqlQuery = String.format(
+                "SELECT SUM(t2.value)-SUM(t1.value) AS col " +
+                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "GROUP BY t1.PERIOD(2 MILLISECOND) " +
+                        "ORDER BY col DESC",
+                TEST_METRIC_1,
+                TEST_METRIC_2
+        );
+
+        String[][] expectedRows = {
+                {"17"},
+                {"13"},
+                {"9"},
+                {"5"},
+                {"1"}
+        };
+
+        assertSqlQueryRows("ORDER BY doesn't sort column with aggregations of different metrics",
+                            expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3840
+     */
+    @Test
+    public void testOrderByColumnWithOneAggregationOfDifferentMetrics() {
+        String sqlQuery = String.format(
+                "SELECT SUM(t2.value-t1.value) AS col " +
+                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "GROUP BY t1.PERIOD(2 MILLISECOND) " +
+                        "ORDER BY col DESC",
+                TEST_METRIC_1,
+                TEST_METRIC_2
+        );
+
+        String[][] expectedRows = {
+                {"17"},
+                {"13"},
+                {"9"},
+                {"5"},
+                {"1"}
+        };
+
+        assertSqlQueryRows("ORDER BY doesn't sort column with one aggregation of different metrics",
+                            expectedRows, sqlQuery);
+    }
+}
