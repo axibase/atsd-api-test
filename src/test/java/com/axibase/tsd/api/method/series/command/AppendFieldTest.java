@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
+import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static java.util.Collections.singletonMap;
@@ -127,6 +127,51 @@ public class AppendFieldTest {
         }
         String expected = series.getData().get(0).getText();
         Assert.assertTrue(checked, "Append with erase doesn't work, expected result was\n" + expected +
+                "\nbut actual result is:\n" + actualData.toString());
+    }
+
+    /**
+     * #3874
+     */
+    @Test
+    public void testDecimalFieldToTextField() throws Exception {
+        String metricName = metric();
+
+        Series series = new Series();
+        series.setEntity(ENTITY_NAME);
+        series.setMetric(metricName);
+        series.addData(new Sample(ISO_TIME, DECIMAL_VALUE));
+
+        SeriesCommand seriesCommand = new SeriesCommand();
+        seriesCommand.setEntityName(ENTITY_NAME);
+        seriesCommand.setTags(null);
+        seriesCommand.setAppend(true);
+        seriesCommand.setTimeISO(ISO_TIME);
+        seriesCommand.setTexts(singletonMap(metricName, TEXT_VALUE));
+        CommandMethod.send(seriesCommand);
+
+        seriesCommand.setAppend(false);
+        seriesCommand.setValues(singletonMap(metricName, DECIMAL_VALUE));
+        seriesCommand.setTexts(null);
+        CommandMethod.send(seriesCommand);
+
+        boolean checked = true;
+        try {
+            Checker.check(new SeriesCheck(Collections.singletonList(series)));
+        }
+        catch (NotCheckedException e) {
+            checked = false;
+        }
+
+        List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
+        List<String> actualData = new ArrayList<>();
+        for (Series actualSeries : actualSeriesList) {
+            for (Sample sample : actualSeries.getData()) {
+                actualData.add(sample.getText());
+            }
+        }
+        String expected = series.getData().get(0).getText();
+        Assert.assertTrue(checked, "Addition decimal field to text field failed, expected result was\n" + expected +
                 "\nbut actual result is:\n" + actualData.toString());
     }
 }
