@@ -11,7 +11,6 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.NotCheckedException;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 import static java.util.Collections.singletonMap;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class AppendFieldTest {
     private static final String ENTITY_NAME = entity();
@@ -69,8 +69,8 @@ public class AppendFieldTest {
             }
         }
         String expected = series.getData().get(0).getText();
-        Assert.assertTrue(checked, "Append with erase doesn't work, expected result was\n" + expected +
-                "\nbut actual result is:\n" + actualData.toString());
+        assertTrue(String.format("Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s",
+                expected,  actualData.toString()), checked);
     }
 
     /**
@@ -127,8 +127,8 @@ public class AppendFieldTest {
             }
         }
         String expected = series.getData().get(0).getText();
-        Assert.assertTrue(checked, "Append with erase doesn't work, expected result was\n" + expected +
-                "\nbut actual result is:\n" + actualData.toString());
+        assertTrue(String.format("Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s",
+                expected, actualData.toString()), checked);
     }
 
     /**
@@ -179,7 +179,8 @@ public class AppendFieldTest {
             }
         }
         String expected = series.getData().get(0).getText();
-        Assert.assertTrue(checked, "Addition decimal field to text field failed, expected result was\n" + expected +
-                "\nbut actual result is:\n" + actualData.toString());
+        assertTrue(String.format("Addition decimal field to text field failed, " +
+                        "expected result was%n%s%nbut actual result is:%n%s",
+                expected, actualData.toString()), checked);
     }
 }
