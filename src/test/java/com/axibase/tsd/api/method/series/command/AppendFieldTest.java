@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -142,18 +143,25 @@ public class AppendFieldTest {
         series.setMetric(metricName);
         series.addData(new Sample(ISO_TIME, DECIMAL_VALUE));
 
-        SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setEntityName(ENTITY_NAME);
-        seriesCommand.setTags(null);
-        seriesCommand.setAppend(true);
-        seriesCommand.setTimeISO(ISO_TIME);
-        seriesCommand.setTexts(singletonMap(metricName, TEXT_VALUE));
-        CommandMethod.send(seriesCommand);
+        List<PlainCommand> seriesCommandList = new ArrayList<>();
 
-        seriesCommand.setAppend(false);
-        seriesCommand.setValues(singletonMap(metricName, DECIMAL_VALUE));
-        seriesCommand.setTexts(null);
-        CommandMethod.send(seriesCommand);
+        SeriesCommand seriesCommandText = new SeriesCommand();
+        seriesCommandText.setEntityName(ENTITY_NAME);
+        seriesCommandText.setTags(null);
+        seriesCommandText.setAppend(true);
+        seriesCommandText.setTimeISO(ISO_TIME);
+        seriesCommandText.setTexts(singletonMap(metricName, TEXT_VALUE));
+        seriesCommandList.add(seriesCommandText);
+
+        SeriesCommand seriesCommandDecimal = new SeriesCommand();
+        seriesCommandDecimal.setEntityName(ENTITY_NAME);
+        seriesCommandDecimal.setTags(null);
+        seriesCommandDecimal.setAppend(false);
+        seriesCommandDecimal.setTimeISO(ISO_TIME);
+        seriesCommandDecimal.setValues(singletonMap(metricName, DECIMAL_VALUE));
+        seriesCommandList.add(seriesCommandDecimal);
+
+        CommandMethod.send(seriesCommandList);
 
         boolean checked = true;
         try {
