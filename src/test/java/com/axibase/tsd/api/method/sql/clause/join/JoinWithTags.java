@@ -14,7 +14,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
-public class JoinWithTagOrEntityFilter extends SqlTest {
+public class JoinWithTags extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_METRIC3_NAME = metric();
@@ -198,5 +198,61 @@ public class JoinWithTagOrEntityFilter extends SqlTest {
         };
 
         assertSqlQueryRows("JOIN USING ENTITY with Tag NOT NULL filter gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3873
+     */
+    @Test
+    public void testTagsAfterJoin() {
+        String sqlQuery = String.format(
+                "SELECT t1.tags, t2.tags " +
+                        "FROM '%1$s' t1 JOIN '%2$s' t2 ",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
+
+        String[][] expectedRows = {
+                {"tag=123", "tag=123"}
+        };
+
+        assertSqlQueryRows("List of tags is malformed after JOIN", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3873
+     */
+    @Test
+    public void testSameTagsAfterJoinUsingEntity() {
+        String sqlQuery = String.format(
+                "SELECT t1.tags, t2.tags " +
+                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 ",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME
+        );
+
+        String[][] expectedRows = {
+                {"tag=123", "tag=123"}
+        };
+
+        assertSqlQueryRows("List of tags (with same value) is malformed after JOIN USING ENTITY",
+                expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3873
+     */
+    @Test
+    public void testDifferentTagsAfterJoinUsingEntity() {
+        String sqlQuery = String.format(
+                "SELECT t1.tags, t2.tags " +
+                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 ",
+                TEST_METRIC1_NAME, TEST_METRIC3_NAME
+        );
+
+        String[][] expectedRows = {
+                {"tag=123", "tag=abc4"}
+        };
+
+        assertSqlQueryRows("List of tags (with different value) is malformed after JOIN USING ENTITY",
+                expectedRows, sqlQuery);
     }
 }
