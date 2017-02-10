@@ -15,28 +15,26 @@ import static com.axibase.tsd.api.util.Util.TestNames.entity;
 import static com.axibase.tsd.api.util.Util.TestNames.metric;
 
 public class OuterJoinMergeTest extends SqlTest {
-    private static final String TEST_METRIC1_NAME = metric();
-    private static final String TEST_METRIC2_NAME = metric();
-
-    private static final String TEST_ENTITY1_NAME = entity();
-    private static final String TEST_ENTITY2_NAME = entity();
-    private static final String TEST_ENTITY3_NAME = entity();
+    private static final String[] metricNames = new String[2];
+    private static final String[] entityNames = new String[3];
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        List<Series> seriesList = new ArrayList<>();
-        String[] metricNames = {TEST_METRIC1_NAME, TEST_METRIC2_NAME};
-        String[] entityNames = {TEST_ENTITY1_NAME, TEST_ENTITY2_NAME, TEST_ENTITY3_NAME};
 
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Entity.register(TEST_ENTITY3_NAME);
+        for (int i = 0; i < metricNames.length; i++) {
+            metricNames[i] = metric();
+            Registry.Metric.register(metricNames[i]);
+        }
+
+        for (int i = 0; i < entityNames.length; i++) {
+            entityNames[i] = entity();
+            Registry.Entity.register(entityNames[i]);
+        }
+
+        List<Series> seriesList = new ArrayList<>();
 
         for (String metricName : metricNames) {
-            Registry.Metric.register(metricName);
-
             for (String entityName : entityNames) {
-
                 for (int i = 1; i < 4; i++) {
                     Series series = new Series();
                     series.setEntity(entityName);
@@ -58,23 +56,23 @@ public class OuterJoinMergeTest extends SqlTest {
     public void testOuterJoin() {
         String sqlQuery = String.format(
                 "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s'",
-                TEST_METRIC1_NAME,
-                TEST_METRIC2_NAME
+                metricNames[0],
+                metricNames[1]
         );
 
         String[][] expectedRows = {
-                { TEST_ENTITY1_NAME, "1", "1" },
-                { TEST_ENTITY1_NAME, "2", "2" },
-                { TEST_ENTITY1_NAME, "3", "3" },
-                { TEST_ENTITY2_NAME, "1", "1" },
-                { TEST_ENTITY2_NAME, "2", "2" },
-                { TEST_ENTITY2_NAME, "3", "3" },
-                { TEST_ENTITY3_NAME, "1", "1" },
-                { TEST_ENTITY3_NAME, "2", "2" },
-                { TEST_ENTITY3_NAME, "3", "3" },
+                { entityNames[0], "1", "1" },
+                { entityNames[0], "2", "2" },
+                { entityNames[0], "3", "3" },
+                { entityNames[1], "1", "1" },
+                { entityNames[1], "2", "2" },
+                { entityNames[1], "3", "3" },
+                { entityNames[2], "1", "1" },
+                { entityNames[2], "2", "2" },
+                { entityNames[2], "3", "3" }
         };
 
-        assertSqlQueryRows("OUTER JOIN query gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
     }
 
 
@@ -85,18 +83,19 @@ public class OuterJoinMergeTest extends SqlTest {
     public void testOuterJoinWhereClause() {
         String sqlQuery = String.format(
                 "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s' WHERE '%1$s'.entity = '%3$s'",
-                TEST_METRIC1_NAME,
-                TEST_METRIC2_NAME,
-                TEST_ENTITY1_NAME
+                metricNames[0],
+                metricNames[1],
+
+                entityNames[0]
         );
 
         String[][] expectedRows = {
-                { TEST_ENTITY1_NAME, "1", "1" },
-                { TEST_ENTITY1_NAME, "2", "2" },
-                { TEST_ENTITY1_NAME, "3", "3" },
+                { entityNames[0], "1", "1" },
+                { entityNames[0], "2", "2" },
+                { entityNames[0], "3", "3" },
         };
 
-        assertSqlQueryRows("OUTER JOIN query gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
     }
 
 
@@ -107,16 +106,16 @@ public class OuterJoinMergeTest extends SqlTest {
     public void testOuterJoinGroupClause() {
         String sqlQuery = String.format(
                 "SELECT '%1$s'.entity, LAST('%1$s'.value), LAST('%2$s'.value) FROM '%1$s' OUTER JOIN USING entity '%2$s' GROUP BY '%1$s'.entity",
-                TEST_METRIC1_NAME,
-                TEST_METRIC2_NAME
+                metricNames[0],
+                metricNames[1]
         );
 
         String[][] expectedRows = {
-                { TEST_ENTITY1_NAME, "3", "3" },
-                { TEST_ENTITY2_NAME, "3", "3" },
-                { TEST_ENTITY3_NAME, "3", "3" },
+                {  entityNames[0], "3", "3" },
+                {  entityNames[1], "3", "3" },
+                {  entityNames[2], "3", "3" },
         };
 
-        assertSqlQueryRows("OUTER JOIN query gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
     }
 }
