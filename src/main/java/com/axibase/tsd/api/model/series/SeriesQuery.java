@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
+
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SeriesQuery {

@@ -10,7 +10,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 
 import java.util.Collections;
 
@@ -42,7 +42,7 @@ public class AlertTest extends AlertMethod {
         series.setEntity(entityName);
         series.setMetric(RULE_METRIC_NAME);
         String date = VersionMethod.queryVersion().readEntity(Version.class).getDate().getCurrentDate();
-        series.addData(new Sample(Util.parseDate(date), ALERT_OPEN_VALUE));
+        series.addData(new Sample(TestUtil.parseDate(date), ALERT_OPEN_VALUE));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 }

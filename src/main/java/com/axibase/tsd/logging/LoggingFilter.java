@@ -18,11 +18,6 @@ public class LoggingFilter implements ClientResponseFilter {
     private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class.getName());
     private static final int maxEntitySize = 1024 * 8;
 
-    @Override
-    public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext) throws IOException {
-        LOG.debug(buildRequestDescription(clientRequestContext) + buildResponseDescription(clientResponseContext));
-    }
-
     private static String prettyEntityStream(String entity) throws IOException {
 
         try {
@@ -75,5 +70,10 @@ public class LoggingFilter implements ClientResponseFilter {
         } catch (IOException e) {
         }
         return descBuilder.toString();
+    }
+
+    @Override
+    public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext) throws IOException {
+        LOG.debug(buildRequestDescription(clientRequestContext) + buildResponseDescription(clientResponseContext));
     }
 }

@@ -93,10 +93,6 @@ public class Property {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = Util.ISOFormat(date);
-    }
-
     @JsonProperty
     public void setDate(String date) {
         this.date = date;
@@ -104,5 +100,9 @@ public class Property {
 
     public void setDate(Long millis) {
         this.date = Util.ISOFormat(new Date(millis));
+    }
+
+    public void setDate(Date date) {
+        this.date = Util.ISOFormat(date);
     }
 }

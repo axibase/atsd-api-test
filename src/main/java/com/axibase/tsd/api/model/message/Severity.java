@@ -15,10 +15,6 @@ public enum Severity {
         this.numVal = numVal;
     }
 
-    public int getNumVal() {
-        return numVal;
-    }
-
     public static String[] names() {
         Severity[] severities = values();
         String[] names = new String[severities.length];
@@ -27,6 +23,10 @@ public enum Severity {
             names[i] = severities[i].name();
         }
         return names;
+    }
+
+    public int getNumVal() {
+        return numVal;
     }
 }
 

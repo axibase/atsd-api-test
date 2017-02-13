@@ -14,10 +14,10 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
-import static com.axibase.tsd.api.util.Util.formatDate;
-import static com.axibase.tsd.api.util.Util.parseDate;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.formatDate;
+import static com.axibase.tsd.api.util.TestUtil.parseDate;
 import static java.util.TimeZone.getTimeZone;
 
 

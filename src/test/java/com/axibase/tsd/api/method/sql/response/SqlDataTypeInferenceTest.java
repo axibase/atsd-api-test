@@ -9,7 +9,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -27,7 +27,7 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final String entityName = Util.TestNames.entity();
+        final String entityName = TestUtil.TestNames.entity();
         Registry.Entity.register(entityName);
 
         List<Series> seriesList = new ArrayList<>();

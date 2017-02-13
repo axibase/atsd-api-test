@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class PropertyMethod extends BaseMethod {

@@ -10,8 +10,8 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
-import com.axibase.tsd.api.util.Util.TestNames;
+import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -25,8 +25,8 @@ import java.util.List;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.*;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.Util.addOneMS;
-import static com.axibase.tsd.api.util.Util.getMillis;
+import static com.axibase.tsd.api.util.TestUtil.addOneMS;
+import static com.axibase.tsd.api.util.TestUtil.getMillis;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.AssertJUnit.*;
 
@@ -45,7 +45,7 @@ public class SeriesInsertTest extends SeriesTest {
         final long t = MILLS_TIME;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(Util.ISOFormat(t), largeNumber));
+        series.addData(new Sample(TestUtil.ISOFormat(t), largeNumber));
         Metric metric = new Metric();
         metric.setName(metricName);
         metric.setDataType(DataType.FLOAT);
@@ -96,7 +96,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
-            String isoDate = Util.ISOFormat(t + i * 5000);
+            String isoDate = TestUtil.ISOFormat(t + i * 5000);
             series.addData(new Sample(isoDate, number));
         }
         assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
@@ -126,7 +126,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
-            String isoDate = Util.ISOFormat(t + i * 5000);
+            String isoDate = TestUtil.ISOFormat(t + i * 5000);
             series.addData(new Sample(isoDate, number));
         }
         assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
@@ -161,7 +161,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series();
         series.setEntity(TestNames.entity());
         series.setMetric(metric.getName());
-        series.addData(new Sample(Util.ISOFormat(time), valueBefore));
+        series.addData(new Sample(TestUtil.ISOFormat(time), valueBefore));
         SeriesMethod.insertSeriesCheck(series);
         CompactionMethod.performCompaction("2016-06-15", true);
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, time + 1);
@@ -297,7 +297,7 @@ public class SeriesInsertTest extends SeriesTest {
         final long t = MILLS_TIME;
 
         Series series = new Series("e___underscore", "m___underscore");
-        series.addData(new Sample(Util.ISOFormat(t), "0"));
+        series.addData(new Sample(TestUtil.ISOFormat(t), "0"));
 
         assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
         assertSeriesExisting(series);
@@ -311,7 +311,7 @@ public class SeriesInsertTest extends SeriesTest {
         Long time = 0L;
         Long endTime = 1L;
         Series series = new Series("e-time-range-1", "m-time-range-1");
-        series.addData(new Sample(Util.ISOFormat(time), "0"));
+        series.addData(new Sample(TestUtil.ISOFormat(time), "0"));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
@@ -342,7 +342,7 @@ public class SeriesInsertTest extends SeriesTest {
         Long time = 1L;
         Long endTime = 2L;
         Series series = new Series("e-time-range-3", "m-time-range-3");
-        series.addData(new Sample(Util.ISOFormat(time), "1"));
+        series.addData(new Sample(TestUtil.ISOFormat(time), "1"));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
@@ -359,7 +359,7 @@ public class SeriesInsertTest extends SeriesTest {
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-5", "m-time-range-5");
-        series.addData(new Sample(Util.ISOFormat(t), v));
+        series.addData(new Sample(TestUtil.ISOFormat(t), v));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
@@ -702,8 +702,8 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
-        String entityName = Util.TestNames.entity();
-        String metricName = Util.TestNames.metric();
+        String entityName = TestUtil.TestNames.entity();
+        String metricName = TestUtil.TestNames.metric();
 
         Series series = new Series(entityName, metricName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), text);
@@ -768,7 +768,7 @@ public class SeriesInsertTest extends SeriesTest {
         seriesQueryVersioned.setExactMatch(false);
         List<Series> seriesListVersioned = executeQueryReturnSeries(seriesQueryVersioned);
         List<String> textValuesVersioned = new ArrayList<>();
-        for (Sample s: seriesListVersioned.get(0).getData()) {
+        for (Sample s : seriesListVersioned.get(0).getData()) {
             textValuesVersioned.add(s.getText());
         }
 

@@ -31,5 +31,5 @@ public class ReplacementTable {
 
     public void addValue(String key, String value){
         map.put(key, value);
-    };
+    }
 }

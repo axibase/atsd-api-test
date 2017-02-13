@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.Config;
-import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.logging.LoggingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
@@ -32,7 +31,6 @@ public abstract class BaseMethod {
     public static final Long REQUEST_INTERVAL = 200L;
     public static final Long DEFAULT_EXPECTED_PROCESSING_TIME = 2000L;
     public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
-    protected final static TCPSender tcpSender;
     protected final static ObjectMapper jacksonMapper;
     protected final static WebTarget httpApiResource;
     protected final static WebTarget httpRootResource;
@@ -64,7 +62,6 @@ public abstract class BaseMethod {
                     .port(config.getHttpPort())
                     .build());
             httpApiResource = httpRootResource.path(config.getApiPath());
-            tcpSender = new TCPSender(config.getServerName(), config.getTcpPort());
 
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));

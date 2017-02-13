@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.Mocks.DECIMAL_VALUE;
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class GroupByCaseExpression extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();

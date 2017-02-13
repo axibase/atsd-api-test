@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,12 +48,12 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public static void assertTableRowsExist(String errorMessage, String[][] expectedRowsArray, StringTable table) {
-        assertTableRowsExist(errorMessage, Util.twoDArrayToList(expectedRowsArray), table);
+        assertTableRowsExist(errorMessage, TestUtil.twoDArrayToList(expectedRowsArray), table);
     }
 
 
     public static void assertTableRowsExist(String[][] expectedRowsArray, StringTable table) {
-        assertTableRowsExist(Util.twoDArrayToList(expectedRowsArray), table);
+        assertTableRowsExist(TestUtil.twoDArrayToList(expectedRowsArray), table);
     }
 
     public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table) {
@@ -100,7 +100,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String message, String[][] expectedRows, String sqlQuery) {
-        assertSqlQueryRows(message, Util.twoDArrayToList(expectedRows), sqlQuery);
+        assertSqlQueryRows(message, TestUtil.twoDArrayToList(expectedRows), sqlQuery);
     }
 
     public void assertSqlQueryRows(List<List<String>> expectedRows, String sqlQuery) {
@@ -108,7 +108,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String[][] expectedRows, String sqlQuery) {
-        assertSqlQueryRows(Util.twoDArrayToList(expectedRows), sqlQuery);
+        assertSqlQueryRows(TestUtil.twoDArrayToList(expectedRows), sqlQuery);
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {

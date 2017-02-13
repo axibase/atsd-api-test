@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.propertyType;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.propertyType;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 

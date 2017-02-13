@@ -10,7 +10,7 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MetricCommandTest extends MetricTest {

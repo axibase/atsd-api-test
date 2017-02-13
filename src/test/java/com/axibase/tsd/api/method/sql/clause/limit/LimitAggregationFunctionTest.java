@@ -8,8 +8,8 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Util;
-import com.axibase.tsd.api.util.Util.TestNames;
+import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -33,7 +33,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
             series.setMetric(testMetric.getName());
             series.setEntity(TestNames.entity());
             for (int j = 0; j < (i + 1); j++) {
-                series.addData(new Sample(Util.ISOFormat(time), j));
+                series.addData(new Sample(TestUtil.ISOFormat(time), j));
                 time += 1000L;
             }
             seriesList.add(series);

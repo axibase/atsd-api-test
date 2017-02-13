@@ -15,7 +15,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Util {
+public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;

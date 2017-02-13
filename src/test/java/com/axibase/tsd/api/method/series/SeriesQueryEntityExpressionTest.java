@@ -11,7 +11,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -41,6 +41,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     private static final HashSet<String> ALL_ENTITIES = new HashSet<>();
     private static final HashSet<String> ENTITIES_IN_GROUP = new HashSet<>();
     private static final List<Series> SERIES_LIST = new ArrayList<>();
+    private static final String TEST_DATASET_DESCRIPTION;
 
     static {
         {
@@ -50,7 +51,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             property.addKey("testkey", "test");
             property.addKey("otherkey", "other");
             PROPERTIES.add(property);
-            
+
             ENTITIES_IN_GROUP.add(property.getEntity());
         }
 
@@ -59,7 +60,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             property.addTag("group", "hell");
             property.addKey("testkey", "test");
             PROPERTIES.add(property);
-            
+
             ENTITIES_IN_GROUP.add(property.getEntity());
         }
 
@@ -67,7 +68,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             Property property = createTestProperty("asdef003");
             property.addKey("otherkey", "other");
             PROPERTIES.add(property);
-            
+
             ENTITIES_IN_GROUP.add(property.getEntity());
         }
 
@@ -75,7 +76,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             Property property = createTestProperty("asdef004");
             property.addTag("group", "main");
             property.addTag("multitag", "other");
-            
+
             PROPERTIES.add(property);
         }
 
@@ -83,7 +84,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
             Property property = createTestProperty("asdef005");
             property.addTag("group", "foo");
             property.addKey("testkey", "test");
-            
+
             PROPERTIES.add(property);
         }
 
@@ -97,7 +98,6 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
     }
 
-    private static final String TEST_DATASET_DESCRIPTION;
     static {
         StringBuilder testDatasetDescriptionBuilder = new StringBuilder();
         testDatasetDescriptionBuilder.append("\n=====================================");
@@ -105,17 +105,17 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         testDatasetDescriptionBuilder.append("\n=====================================\n");
 
         testDatasetDescriptionBuilder.append(String.format("Metric:%n"));
-        testDatasetDescriptionBuilder.append(String.format("%s%n%n", Util.prettyPrint(METRIC)));
+        testDatasetDescriptionBuilder.append(String.format("%s%n%n", TestUtil.prettyPrint(METRIC)));
 
         testDatasetDescriptionBuilder.append(String.format("Series: [%n"));
         for (Series series: SERIES_LIST) {
-            testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(series)));
+            testDatasetDescriptionBuilder.append(String.format("%s%n", TestUtil.prettyPrint(series)));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 
         testDatasetDescriptionBuilder.append(String.format("Properties: [%n"));
         for (Property property: PROPERTIES) {
-            testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(property)));
+            testDatasetDescriptionBuilder.append(String.format("%s%n", TestUtil.prettyPrint(property)));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 

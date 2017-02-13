@@ -19,7 +19,7 @@ import static org.glassfish.jersey.media.multipart.file.DefaultMediaTypePredicto
 
 public class CSVUploadMethod extends BaseMethod {
     public static File resolvePath(String path) throws URISyntaxException, FileNotFoundException {
-        URL url = CSVUploadTest.class.getResource(path);
+        URL url = CSVUploadMethod.class.getResource(path);
         if (url == null) {
             throw new FileNotFoundException("File " + path + " not found");
         }

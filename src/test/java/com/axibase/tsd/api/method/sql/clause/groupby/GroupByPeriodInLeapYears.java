@@ -8,8 +8,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.DECIMAL_VALUE;
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class GroupByPeriodInLeapYears extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();

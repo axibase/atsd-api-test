@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.metric;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;

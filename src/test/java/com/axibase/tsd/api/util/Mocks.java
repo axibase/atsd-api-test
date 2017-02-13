@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Util.parseDate;
-
 public class Mocks {
     public static final String ISO_TIME = "2016-06-03T09:23:00.000Z";
     public static final Long MILLS_TIME = date().getTime();
@@ -34,11 +32,11 @@ public class Mocks {
 
 
     public static Date date() {
-        return parseDate(ISO_TIME);
+        return TestUtil.parseDate(ISO_TIME);
     }
 
     public static Entity entity() {
-        Entity resultEntity = new Entity(Util.TestNames.entity());
+        Entity resultEntity = new Entity(TestUtil.TestNames.entity());
         resultEntity.setTags(TAGS);
         resultEntity.setEnabled(false);
         resultEntity.setTimeZoneID(TIMEZONE_ID);
@@ -48,7 +46,7 @@ public class Mocks {
     }
 
     public static Metric metric() {
-        Metric resultMetric = new Metric(Util.TestNames.metric());
+        Metric resultMetric = new Metric(TestUtil.TestNames.metric());
         resultMetric.setLabel(LABEL);
         resultMetric.setTags(TAGS);
         resultMetric.setTimeZoneID(TIMEZONE_ID);
@@ -60,7 +58,7 @@ public class Mocks {
     }
 
     public static Series series() {
-        Series resultSeries = new Series(Util.TestNames.entity(), Util.TestNames.metric());
+        Series resultSeries = new Series(TestUtil.TestNames.entity(), TestUtil.TestNames.metric());
         resultSeries.setTags(TAGS);
         resultSeries.addData(SAMPLE);
         return resultSeries;

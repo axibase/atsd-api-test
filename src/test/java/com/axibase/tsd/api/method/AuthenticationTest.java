@@ -62,7 +62,7 @@ public class AuthenticationTest extends BaseMethod {
      */
     @Test
     public void seriesUrlQueryTest() throws Exception {
-        Response response = SeriesMethod.urlQuerySeries("entity", "metric", OutputFormat.JSON, new HashMap < String, String > (), UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
+        Response response = SeriesMethod.urlQuerySeries("entity", "metric", OutputFormat.JSON, new HashMap<String, String>(), UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
 
         assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         String errorMessage = extractErrorMessage(response);
