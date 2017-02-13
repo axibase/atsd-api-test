@@ -627,6 +627,23 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals(assertMessage, Collections.singletonList(series), resultSeriesList);
     }
 
+    /**
+     * #3860
+     */
+    @Test
+    public void testLastSeriesWithText() throws Exception {
+
+        Series series = Mocks.series();
+        series.setData(Collections.singleton(Mocks.TEXT_SAMPLE));
+        SeriesMethod.insertSeriesCheck(series);
+
+        SeriesQuery query = new SeriesQuery(series);
+        query.setLast(true);
+
+        List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(query);
+        assertEquals("Response doesn't match the expected", Collections.singletonList(series), resultSeriesList);
+    }
+
     private void setRandomTimeDuringNextDay(Calendar calendar) {
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         calendar.set(Calendar.HOUR_OF_DAY, random.nextInt(24));
