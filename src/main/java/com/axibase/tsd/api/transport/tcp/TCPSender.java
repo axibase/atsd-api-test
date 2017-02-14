@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +18,6 @@ import java.util.Collections;
 
 public class TCPSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(TCPSender.class);
-    private static final String DEFAULT_CHARSET_ENCODING = "UTF-8";
     private static final String DEBUG_PREFIX = "debug ";
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static Config config;
@@ -33,8 +33,7 @@ public class TCPSender {
         try {
             config = Config.getInstance();
         } catch (FileNotFoundException e) {
-            LOGGER.error("Config file not found!");
-            throw new IllegalStateException(e);
+            LOGGER.error("Config file not found! Reason: {}", e);
         }
     }
 
@@ -42,7 +41,7 @@ public class TCPSender {
         try (Socket socket = new Socket(config.getServerName(), config.getTcpPort());
              DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
              BufferedReader responseStream = new BufferedReader(
-                     new InputStreamReader(socket.getInputStream(), DEFAULT_CHARSET_ENCODING)
+                     new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8)
              )) {
             String request = isDebugMode ? DEBUG_PREFIX.concat(command) : command;
             IOUtils.write(request, requestStream);
@@ -56,7 +55,7 @@ public class TCPSender {
     }
 
     public static void send(String request) throws IOException {
-        send(request, false);
+        send(request, Boolean.FALSE);
     }
 
     public static String send(PlainCommand command, Boolean isDebugMode) throws IOException {
@@ -64,7 +63,7 @@ public class TCPSender {
     }
 
     public static void send(PlainCommand... commands) throws IOException {
-        send(Arrays.asList(commands), false);
+        send(Arrays.asList(commands), Boolean.FALSE);
     }
 
     public static String send(Collection<? extends PlainCommand> commands, Boolean isDebugMode) throws IOException {
@@ -81,16 +80,17 @@ public class TCPSender {
     }
 
     public static void send(Collection<? extends PlainCommand> commands) throws IOException {
-        send(commands, false);
+        send(commands, Boolean.FALSE);
     }
 
     public static String sendChecked(AbstractCheck check, String request) throws IOException {
-        String response = send(request, false);
+        String response = send(request, Boolean.FALSE);
         Checker.check(check);
         return response;
     }
 
     public static String sendChecked(AbstractCheck check, Collection<? extends PlainCommand> commands) throws IOException {
-        return sendChecked(check, buildRequest(commands));
+        String request = buildRequest(commands);
+        return sendChecked(check, request);
     }
 }
