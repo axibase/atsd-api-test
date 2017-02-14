@@ -10,11 +10,10 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-
 public class SqlLargeDataTest  extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
+    private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
     @BeforeClass
@@ -22,12 +21,11 @@ public class SqlLargeDataTest  extends SqlTest {
 
         List<Series> seriesList = new ArrayList<>(ENTITIES_COUNT);
 
-        String entity = entity();
         for (int i = 0; i < ENTITIES_COUNT; i++) {
             Series series = new Series();
 
             // manually creating entity name and tags due to performance issues
-            series.setEntity(entity + i);
+            series.setEntity(ENTITY_NAME + i);
             series.setMetric(METRIC_NAME);
             series.addTag("tag", String.valueOf(i));
             series.addData(Mocks.SAMPLE);
