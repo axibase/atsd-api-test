@@ -6,7 +6,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import java.util.Map;
 
 public class EntityCommand extends AbstractCommand {
-    private final static String ENTITY_COMMAND_TEXT = "entity";
+    private static final String ENTITY_COMMAND_TEXT = "entity";
     private String name;
     private String label;
     private String timeZoneID;
@@ -68,7 +68,7 @@ public class EntityCommand extends AbstractCommand {
     }
 
     @Override
-    public String compose() {
+    public String toString() {
         StringBuilder stringBuilder = commandBuilder();
         if (this.name != null) {
             stringBuilder.append(FieldFormat.quoted("e", name));

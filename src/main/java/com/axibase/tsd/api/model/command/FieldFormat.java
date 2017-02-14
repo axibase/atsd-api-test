@@ -2,6 +2,10 @@ package com.axibase.tsd.api.model.command;
 
 
 public class FieldFormat {
+    private FieldFormat() {
+
+    }
+
     private static String simple(String field, String value) {
         return String.format(" %s:%s", field, value);
     }
@@ -15,15 +19,19 @@ public class FieldFormat {
     }
 
     private static String escape(String s) {
-        if (s.contains("\"")) {
-            s = s.replaceAll("\"", "\"\"");
+        String result = s;
+        if (result == null) {
+            return null;
+        }
+        if (result.contains("\"")) {
+            result = result.replaceAll("\"", "\"\"");
         }
         char[] escapeChars = {'=', '"', ' ', '\r', '\n', '\t'};
         for (char c : escapeChars) {
-            if (s.indexOf(c) >= 0) {
-                return String.format("\"%s\"", s);
+            if (result.indexOf(c) >= 0) {
+                return String.format("\"%s\"", result);
             }
         }
-        return s;
+        return result;
     }
 }
