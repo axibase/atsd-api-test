@@ -13,6 +13,7 @@ import java.util.List;
 public class SqlLargeDataTest  extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
+    private final static int EXPECTED_ALL_ENTITIES_PROCESSING_TIME_MS = 20000;
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
@@ -35,6 +36,9 @@ public class SqlLargeDataTest  extends SqlTest {
 
         // inserting without check due to performance issues
         SeriesMethod.insertSeries(seriesList);
+
+        // wait until all entities processed
+        Thread.sleep(EXPECTED_ALL_ENTITIES_PROCESSING_TIME_MS);
     }
 
     /**
