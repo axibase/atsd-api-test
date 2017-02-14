@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class SqlLargeDataTest  extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
-    private final static int ENTITIES_COUNT_PER_REQUEST = 100;
+    private final static int ENTITIES_COUNT_PER_REQUEST = 10000;
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
