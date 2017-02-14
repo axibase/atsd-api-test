@@ -8,19 +8,19 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SqlLargeDataTest  extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
-    private final static int EXPECTED_ALL_ENTITIES_PROCESSING_TIME_MS = 20000;
+    private final static int ENTITIES_COUNT_PER_REQUEST = 100;
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
     @BeforeClass
     public static void initialize() throws Exception {
 
-        List<Series> seriesList = new ArrayList<>(ENTITIES_COUNT);
+        ArrayList<ArrayList<Series>> seriesRequests = new ArrayList<>(ENTITIES_COUNT / ENTITIES_COUNT_PER_REQUEST);
+        seriesRequests.add(new ArrayList<Series>(ENTITIES_COUNT_PER_REQUEST));
 
         for (int i = 0; i < ENTITIES_COUNT; i++) {
             Series series = new Series();
@@ -31,14 +31,20 @@ public class SqlLargeDataTest  extends SqlTest {
             series.addTag("tag", String.valueOf(i));
             series.addData(Mocks.SAMPLE);
 
-            seriesList.add(series);
+            ArrayList<Series> currentRequest = seriesRequests.get(seriesRequests.size() - 1);
+            if (currentRequest.size() < ENTITIES_COUNT_PER_REQUEST) {
+                currentRequest.add(series);
+                continue;
+            }
+
+            currentRequest = new ArrayList<>(ENTITIES_COUNT_PER_REQUEST);
+            currentRequest.add(series);
+            seriesRequests.add(currentRequest);
         }
 
-        // inserting without check due to performance issues
-        SeriesMethod.insertSeries(seriesList);
-
-        // wait until all entities processed
-        Thread.sleep(EXPECTED_ALL_ENTITIES_PROCESSING_TIME_MS);
+        for (ArrayList<Series> request : seriesRequests) {
+            SeriesMethod.insertSeriesCheck(request);
+        }
     }
 
     /**
