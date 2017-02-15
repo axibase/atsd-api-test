@@ -23,21 +23,26 @@ public class TCPSender {
     private static Config config;
 
     static {
-        initialize();
+        if (!initialize()) {
+            throw new IllegalStateException("Can't initialize TCPSender");
+        }
     }
 
     private TCPSender() {
     }
 
-    private static void initialize() {
+    private static Boolean initialize() {
+        Boolean result = Boolean.FALSE;
         try {
             config = Config.getInstance();
+            result = Boolean.TRUE;
         } catch (FileNotFoundException e) {
             LOGGER.error("Config file not found! Reason: {}", e);
         }
+        return result;
     }
 
-    private static synchronized String send(String command, Boolean isDebugMode) throws IOException {
+    private static String send(String command, Boolean isDebugMode) throws IOException {
         try (Socket socket = new Socket(config.getServerName(), config.getTcpPort());
              DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
              BufferedReader responseStream = new BufferedReader(
