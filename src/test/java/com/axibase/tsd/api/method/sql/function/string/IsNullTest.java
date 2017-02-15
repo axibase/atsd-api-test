@@ -134,4 +134,18 @@ public class IsNullTest extends SqlTest {
         );
         assertEquals(assertMessage, actualValue, expectedValue);
     }
+
+    /**
+     *  #3844
+     */
+    @Test
+    public void testIsNullInExpression() throws Exception {
+        String sqlQuery = String.format("SELECT ROUND(100 - ISNULL(value, 0)) FROM '%s'", TEST_METRIC);
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        String[][] expectedRows = {{"-23.0"}};
+
+        assertTableRowsExist(expectedRows, resultTable);
+    }
 }
