@@ -94,4 +94,25 @@ public class GroupByCaseExpression extends SqlTest {
 
         assertSqlQueryRows("CASE in SELECT and GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
+
+    /**
+     * #3912
+     */
+    @Test
+    public void testGroupByColumnAlias() {
+        String sqlQuery = String.format(
+                "SELECT CASE WHEN date_format(time, 'u') > '5' THEN 'weekend' ELSE 'workday' END AS \"Day type\"," +
+                        "count(value) AS \"Value\"" +
+                        "FROM '%s'" +
+                        "GROUP BY \"Day type\"",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"weekend", "2"},
+                {"workday", "2"}
+        };
+
+        assertSqlQueryRows("CASE in SELECT and GROUP BY gives wrong result", expectedRows, sqlQuery);
+    }
 }
