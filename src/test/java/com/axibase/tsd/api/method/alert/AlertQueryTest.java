@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONArray;
 import org.testng.annotations.Test;
 
@@ -121,6 +121,6 @@ public class AlertQueryTest extends AlertTest {
         assertEquals(OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to get alerts by queries with unknown entity", jsonResponse.length() == 2);
         assertEquals("Unexpected warning message", "ENTITY not found for name: 'unknown'",
-                Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
+                TestUtil.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
     }
 }

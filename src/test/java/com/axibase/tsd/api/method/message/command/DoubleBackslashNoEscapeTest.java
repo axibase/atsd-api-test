@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
@@ -19,7 +19,7 @@ public class DoubleBackslashNoEscapeTest extends MessageMethod {
     public void testEntity() throws Exception {
         Message message = new Message("message-command-test\\\\-e10", "message-command-test-t10");
         message.setMessage("message10");
-        message.setDate(Util.getCurrentDate());
+        message.setDate(TestUtil.getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
         CommandMethod.send(command);
@@ -33,7 +33,7 @@ public class DoubleBackslashNoEscapeTest extends MessageMethod {
     public void testType() throws Exception {
         Message message = new Message("message-command-test-e11", "message-command-\\\\test-t11");
         message.setMessage("message11");
-        message.setDate(Util.getCurrentDate());
+        message.setDate(TestUtil.getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
         CommandMethod.send(command);
@@ -47,7 +47,7 @@ public class DoubleBackslashNoEscapeTest extends MessageMethod {
     public void testText() throws Exception {
         Message message = new Message("message-command-test-e12", "message-command-test-t12");
         message.setMessage("mess\\\\age12");
-        message.setDate(Util.getCurrentDate());
+        message.setDate(TestUtil.getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
         CommandMethod.send(command);

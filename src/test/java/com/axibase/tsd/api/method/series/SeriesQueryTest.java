@@ -7,7 +7,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -22,7 +22,7 @@ import java.util.*;
 import static com.axibase.tsd.api.util.ErrorTemplate.AGGREGATE_NON_DETAIL_REQUIRE_PERIOD;
 import static com.axibase.tsd.api.util.ErrorTemplate.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.Util.*;
+import static com.axibase.tsd.api.util.TestUtil.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 
@@ -540,8 +540,8 @@ public class SeriesQueryTest extends SeriesMethod {
      **/
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
-        String entityName = Util.TestNames.entity();
-        String metricName = Util.TestNames.metric();
+        String entityName = TestUtil.TestNames.entity();
+        String metricName = TestUtil.TestNames.metric();
 
         String largeNumber = "10.1";
         Series series = new Series(entityName, metricName);
@@ -592,14 +592,14 @@ public class SeriesQueryTest extends SeriesMethod {
      */
     @Test
     public void testExactMatchIgnoresReservedVersioningTags() throws Exception {
-        Metric metric = new Metric(Util.TestNames.metric());
+        Metric metric = new Metric(TestUtil.TestNames.metric());
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         final int insertedVersionsCount = 3;
         Series series = new Series();
         series.setMetric(metric.getName());
-        series.setEntity(Util.TestNames.entity());
+        series.setEntity(TestUtil.TestNames.entity());
         Registry.Entity.register(series.getEntity());
         for (int i = 0; i < insertedVersionsCount; i++) {
             series.setData(Collections.singleton(new Sample(Mocks.ISO_TIME, i)));

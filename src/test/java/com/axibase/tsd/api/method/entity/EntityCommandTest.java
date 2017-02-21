@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class EntityCommandTest extends EntityTest {

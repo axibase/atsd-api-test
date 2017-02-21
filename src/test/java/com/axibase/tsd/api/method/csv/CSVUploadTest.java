@@ -26,8 +26,8 @@ import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.Util.DEFAULT_TIMEZONE_NAME;
-import static com.axibase.tsd.api.util.Util.parseDate;
+import static com.axibase.tsd.api.util.TestUtil.DEFAULT_TIMEZONE_NAME;
+import static com.axibase.tsd.api.util.TestUtil.parseDate;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;

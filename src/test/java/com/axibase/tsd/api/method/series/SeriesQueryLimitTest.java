@@ -4,7 +4,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -110,7 +110,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         String date = START_SAMPLE_DATE;
         for (int k = 0; k < SAMPLES_COUNT; k++) {
             series.addData(new Sample(date, k));
-            date = Util.addOneMS(date);
+            date = TestUtil.addOneMS(date);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;

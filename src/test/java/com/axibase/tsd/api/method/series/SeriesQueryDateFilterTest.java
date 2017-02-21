@@ -5,7 +5,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -114,7 +114,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     public void testStartGreaterEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setEndDate(MIN_QUERYABLE_DATE);
-        query.setStartDate(Util.addOneMS(MIN_QUERYABLE_DATE));
+        query.setStartDate(TestUtil.addOneMS(MIN_QUERYABLE_DATE));
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", BAD_REQUEST.getStatusCode(), response.getStatus());

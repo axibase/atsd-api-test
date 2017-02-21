@@ -15,8 +15,8 @@ import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
-import com.axibase.tsd.api.util.Util.TestNames;
+import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -259,7 +259,7 @@ public class TextInterpolationTest extends SqlTest {
         Long delta = 60000L;
         Long startTime = Mocks.MILLS_TIME - delta;
         Long endTime = Mocks.MILLS_TIME + delta;
-        queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", Util.ISOFormat(startTime), Util.ISOFormat(endTime)));
+        queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", TestUtil.ISOFormat(startTime), TestUtil.ISOFormat(endTime)));
         queryBuilder.append("WITH INTERPOLATE(1 MINUTE, AUTO, OUTER, EXTEND, START_TIME)");
         return queryBuilder.toString();
     }

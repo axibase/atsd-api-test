@@ -10,13 +10,12 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class SqlClauseJoinUsingEntity extends SqlTest {
-    private static String[] testMetricNames;
     private static final String TEST_ENTITY_NAME = entity();
-
+    private static String[] testMetricNames;
 
     private static Series[] generateData(String[][] tags) {
         Series[] arraySeries = new Series[tags.length];

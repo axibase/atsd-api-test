@@ -9,8 +9,8 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class SqlParseTimeTest extends SqlTest {
     private static final String TEST_METRIC_NAME = metric();

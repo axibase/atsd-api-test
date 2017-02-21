@@ -4,7 +4,7 @@ import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.model.message.SeverityAlias;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -32,7 +32,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         for (Severity severity : values()) {
             message.setSeverity(severity.name());
             insertMessageCheck(message);
-            message.setDate(Util.addOneMS(message.getDate()));
+            message.setDate(TestUtil.addOneMS(message.getDate()));
         }
     }
 
