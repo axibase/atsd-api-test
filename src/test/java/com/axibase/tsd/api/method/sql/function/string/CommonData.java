@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.sql.function.string;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Util.TestNames;
+import com.axibase.tsd.api.util.TestUtil.TestNames;
 
 import java.util.Arrays;
 import java.util.Collections;

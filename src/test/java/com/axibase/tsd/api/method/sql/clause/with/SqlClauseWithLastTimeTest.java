@@ -1,12 +1,12 @@
 package com.axibase.tsd.api.method.sql.clause.with;
 
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -49,7 +49,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
         //Required for last_time computing
-        Thread.sleep(Util.LAST_INSERT_WRITE_PERIOD);
+        Thread.sleep(TestUtil.LAST_INSERT_WRITE_PERIOD);
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.axibase.tsd.api.method.sql.function.period.align;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.Util.ISOFormat;
-import static com.axibase.tsd.api.util.Util.parseDate;
+import static com.axibase.tsd.api.util.TestUtil.ISOFormat;
+import static com.axibase.tsd.api.util.TestUtil.parseDate;
 
 public class SqlPeriodDayAlignTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-day-align-";
@@ -62,10 +62,10 @@ public class SqlPeriodDayAlignTest extends SqlTest {
 
     private List<List<String>> generateExpectedRows() {
         List<List<String>> resultRows = new ArrayList<>();
-        final String LOCAL_START_DATE = Util.formatDate(Util.parseDate(START_TIME), ISO_PATTERN);
-        final String LOCAL_END_DATE = Util.formatDate(Util.parseDate(END_TIME), ISO_PATTERN);
-        Long startTime = Util.parseDate(LOCAL_START_DATE).getTime();
-        Long endTime = Util.parseDate(LOCAL_END_DATE).getTime();
+        final String LOCAL_START_DATE = TestUtil.formatDate(TestUtil.parseDate(START_TIME), ISO_PATTERN);
+        final String LOCAL_END_DATE = TestUtil.formatDate(TestUtil.parseDate(END_TIME), ISO_PATTERN);
+        Long startTime = TestUtil.parseDate(LOCAL_START_DATE).getTime();
+        Long endTime = TestUtil.parseDate(LOCAL_END_DATE).getTime();
         Long time = startTime;
 
         int daySeriesCount = 0;

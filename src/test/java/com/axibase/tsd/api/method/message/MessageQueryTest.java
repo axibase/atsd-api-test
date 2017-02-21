@@ -4,7 +4,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -139,7 +139,7 @@ public class MessageQueryTest extends MessageMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Arrays.asList("message-query-wildcard-2*"));
         query.put("startDate", message.getDate());
-        query.put("endDate", Util.addOneMS(message.getDate()));
+        query.put("endDate", TestUtil.addOneMS(message.getDate()));
 
         final String given = queryMessageResponse(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
@@ -159,7 +159,7 @@ public class MessageQueryTest extends MessageMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("entities", Arrays.asList("message-query-wildcard-3-?"));
         query.put("startDate", message.getDate());
-        query.put("endDate", Util.addOneMS(message.getDate()));
+        query.put("endDate", TestUtil.addOneMS(message.getDate()));
 
         final String given = queryMessageResponse(query).readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Arrays.asList(message));
@@ -185,7 +185,7 @@ public class MessageQueryTest extends MessageMethod {
         Map<String, Object> query = new HashMap<>();
         query.put("entity", pattern);
         query.put("startDate", message.getDate());
-        query.put("endDate", Util.addOneMS(message.getDate()));
+        query.put("endDate", TestUtil.addOneMS(message.getDate()));
 
         final String entitiesResponse = queryMessageResponse(query).readEntity(String.class);
 
