@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -22,11 +23,16 @@ public class SqlLargeDataTest  extends SqlTest {
         ArrayList<ArrayList<Series>> seriesRequests = new ArrayList<>(ENTITIES_COUNT / ENTITIES_COUNT_PER_REQUEST);
         seriesRequests.add(new ArrayList<Series>(ENTITIES_COUNT_PER_REQUEST));
 
+        Registry.Metric.register(METRIC_NAME);
+
         for (int i = 0; i < ENTITIES_COUNT; i++) {
             Series series = new Series();
 
             // manually creating entity name and tags due to performance issues
-            series.setEntity(ENTITY_NAME + i);
+            String entityName = ENTITY_NAME + i;
+            Registry.Entity.register(entityName);
+
+            series.setEntity(entityName);
             series.setMetric(METRIC_NAME);
             series.addTag("tag", String.valueOf(i));
             series.addData(Mocks.SAMPLE);
