@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -16,8 +17,12 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class OuterJoinMergeTest extends SqlTest {
-    private static final List<String> METRIC_NAMES = Arrays.asList(metric(), metric());
-    private static final List<String> ENTITY_NAMES = Arrays.asList(entity(), entity(), entity());
+    private static final int METRIC_COUNT = 2;
+    private static final List<String> METRIC_NAMES = new ArrayList<>(METRIC_COUNT);
+
+    private static final int ENTITY_COUNT = 3;
+    private static final List<String> ENTITY_NAMES = new ArrayList<>(ENTITY_COUNT);
+
     private static final int VALUES_COUNT = 3;
 
     @BeforeClass
@@ -25,7 +30,20 @@ public class OuterJoinMergeTest extends SqlTest {
 
         List<Series> seriesList = new ArrayList<>();
 
+        for (int i = 0; i < METRIC_COUNT; i++) {
+            String metric = metric();
+            Registry.Metric.register(metric);
+            METRIC_NAMES.add(metric);
+        }
+
+        for (int i = 0; i < ENTITY_COUNT; i++) {
+            String entity = entity();
+            Registry.Entity.register(entity);
+            ENTITY_NAMES.add(entity);
+        }
+
         for (String metricName : METRIC_NAMES) {
+
             for (String entityName : ENTITY_NAMES) {
 
                 Series series = new Series();
