@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 class TestNameGenerator {
-    private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api.method";
+    private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api";
     private Map<String, Integer> dictionary;
-    private Class TEST_ANNOTATION = org.testng.annotations.Test.class;
+    private Class<org.testng.annotations.Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
 
-    public TestNameGenerator() {
+    TestNameGenerator() {
         this.dictionary = new HashMap<>();
     }
 

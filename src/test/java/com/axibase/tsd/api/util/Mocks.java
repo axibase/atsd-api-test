@@ -38,7 +38,6 @@ public class Mocks {
     public static Entity entity() {
         Entity resultEntity = new Entity(TestUtil.TestNames.entity());
         resultEntity.setTags(TAGS);
-        resultEntity.setEnabled(false);
         resultEntity.setTimeZoneID(TIMEZONE_ID);
         resultEntity.setInterpolationMode(InterpolationMode.LINEAR);
         resultEntity.setLabel(LABEL);
@@ -50,7 +49,6 @@ public class Mocks {
         resultMetric.setLabel(LABEL);
         resultMetric.setTags(TAGS);
         resultMetric.setTimeZoneID(TIMEZONE_ID);
-        resultMetric.setEnabled(false);
         resultMetric.setDescription(DESCRIPTION);
         resultMetric.setDataType(DataType.DOUBLE);
         resultMetric.setVersioned(true);

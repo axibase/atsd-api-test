@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.model.series;
 
+import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -100,8 +101,12 @@ public class Series {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Series series = (Series) o;
 
@@ -120,6 +125,21 @@ public class Series {
         result = 31 * result + metric.hashCode();
         result = 31 * result + data.hashCode();
         result = 31 * result + tags.hashCode();
+        return result;
+    }
+
+    public Collection<SeriesCommand> toCommands() {
+        Collection<SeriesCommand> result = new LinkedList<>();
+        for (Sample s : data) {
+            SeriesCommand seriesCommand = new SeriesCommand();
+            seriesCommand.setEntityName(entity);
+            seriesCommand.setValues(Collections.singletonMap(metric, s.getV().toPlainString()));
+            seriesCommand.setTexts(Collections.singletonMap(metric, s.getText()));
+            seriesCommand.setTags(tags);
+            seriesCommand.setTimeISO(s.getD());
+            seriesCommand.setTimeMills(s.getT());
+            result.add(seriesCommand);
+        }
         return result;
     }
 
