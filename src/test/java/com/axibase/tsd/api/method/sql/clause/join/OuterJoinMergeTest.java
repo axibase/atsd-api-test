@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Util.TestNames.*;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class OuterJoinMergeTest extends SqlTest {
     private static final List<String> METRIC_NAMES = Arrays.asList(metric(), metric());
