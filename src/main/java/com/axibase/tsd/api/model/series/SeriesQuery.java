@@ -31,7 +31,6 @@ public class SeriesQuery {
     private Integer limit;
     private Integer seriesLimit;
     private Boolean versioned;
-    private Boolean last;
 
     public SeriesQuery() {
     }
@@ -230,8 +229,4 @@ public class SeriesQuery {
     public void setVersioned(Boolean versioned) {
         this.versioned = versioned;
     }
-
-    public Boolean getLast() { return last; }
-
-    public void setLast(Boolean last) { this.last = last; }
 }

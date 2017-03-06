@@ -638,7 +638,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesMethod.insertSeriesCheck(series);
 
         SeriesQuery query = new SeriesQuery(series);
-        query.setLast(true);
+        query.setLimit(1);
 
         List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(query);
         assertEquals("Response doesn't match the expected", Collections.singletonList(series), resultSeriesList);
