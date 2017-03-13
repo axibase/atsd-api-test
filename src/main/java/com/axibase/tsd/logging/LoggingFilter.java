@@ -80,7 +80,7 @@ public class LoggingFilter implements ClientResponseFilter {
                 descBuilder.append(format("%s%n%n", entityBody));
             }
         } catch (IOException e) {
-            LOG.error("{}", e);
+            LOG.debug("Failed to get Entity Descrption, use body instead");
         }
         return descBuilder.toString();
     }
