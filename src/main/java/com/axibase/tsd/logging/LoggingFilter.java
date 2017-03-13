@@ -109,7 +109,7 @@ public class LoggingFilter implements ClientResponseFilter {
             Object jsonMap = BaseMethod.getJacksonMapper().readValue(entity, Object.class);
             return Util.prettyPrint(jsonMap);
         } catch (IOException e) {
-            LOG.error("Failed to print stream for entity. {}", e);
+            LOG.debug("Failed to print stream for entity.");
             throw e;
         }
     }
