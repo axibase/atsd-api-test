@@ -1,21 +1,22 @@
 sudo: required
 language: java
-
 jdk:
   - openjdk7
 services:
   - docker
 before_install:
 install:
-  - docker run -d --name="atsd-api-test" -e axiname="$travisLogin" -e axipass="$travisPassword" -e timezone="Asia/Kathmandu" axibase/atsd:api_test
+  - export ATSD_LOGIN=axibase
+  - export ATSD_PASSWORD=axibase
+  - docker run -d --name="atsd-api-test" -e axiname="$ATSD_LOGIN" -e axipass="$ATSD_PASSWORD" -e timezone="Asia/Kathmandu" axibase/atsd:api_test
   - export ATSD_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atsd-api-test)
-  - while [[ $(curl --user $travisLogin:$travisPassword --write-out %{http_code} --silent --output /dev/null http://$ATSD_HOST:8088/version) != 200 ]]; do  echo "waiting to start $name server ..."; sleep 3; done
+  - while [[ $(curl --user $ATSD_LOGIN:$ATSD_PASSWORD --write-out %{http_code} --silent --output /dev/null http://$ATSD_HOST:8088/version) != 200 ]]; do  echo "waiting to start $name server ..."; sleep 3; done
 cache:
   directories:
     - $HOME/.m2
 script:
-  - curl --user $travisLogin:$travisPassword http://$ATSD_HOST:8088/version
-  - mvn clean test -Dmaven.test.failure.ignore=false -DserverName=$ATSD_HOST -Dlogin=$travisLogin -Dpassword=$travisPassword -DloggerLevel=info
+  - curl --user $ATSD_LOGIN:$ATSD_PASSWORD http://$ATSD_HOST:8088/version
+  - mvn clean test -Dmaven.test.failure.ignore=false -DserverName=$ATSD_HOST -Dlogin=$ATSD_LOGIN -Dpassword=$ATSD_PASSWORD -DloggerLevel=info
 branches:
   only:
     - master
