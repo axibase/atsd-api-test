@@ -27,7 +27,7 @@
         <encoder>
 
             <!-- no colors -->
-            <pattern>%-5level %d{HH:mm:ss.SSS} [%thread]%n%msg%n</pattern>
+            <pattern>%-5level %d{HH:mm:ss.SSS} [%thread] [%class] %n%msg%n</pattern>
 
             <!-- colors -->
 
@@ -37,6 +37,8 @@
 
         </encoder>
     </appender>
+
+
 
     <root level="${loggerLevel}">
         <!--<root level="info">-->

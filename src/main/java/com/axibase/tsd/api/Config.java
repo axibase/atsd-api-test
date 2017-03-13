@@ -1,5 +1,6 @@
 package com.axibase.tsd.api;
 
+import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class Config {
     private int tcpPort;
     private String apiPath;
     private String loggerLevel;
+    private Boolean isCheckLoggingEnable;
 
     private Config(String configPath) {
         logger.debug("Load client properties from file: {}", configPath);
@@ -32,8 +34,7 @@ public class Config {
         try (InputStream stream = new FileInputStream(configPath)) {
             clientProperties.load(stream);
         } catch (Exception e) {
-            logger.error("Fail to load client properties");
-            e.printStackTrace();
+            logger.error("Fail to load client properties. {}", e);
         }
 
         login = load("login", clientProperties, null);
@@ -44,13 +45,18 @@ public class Config {
         tcpPort = Integer.parseInt(load("tcpPort", clientProperties, null));
         apiPath = load("apiPath", clientProperties, null);
         loggerLevel = load("loggerLevel", clientProperties, "debug");
+        isCheckLoggingEnable = Boolean.valueOf(load("isCheckLoggingEnable", clientProperties, "false"));
         System.setProperty("loggerLevel", loggerLevel);
     }
 
     public static Config getInstance() throws FileNotFoundException {
         if (null == instance) {
-            if (tryInitConfig(DEV_CONFIG_FILE)) return instance;
-            if (tryInitConfig(DEFAULT_CONFIG_FILE)) return instance;
+            if (tryInitConfig(DEV_CONFIG_FILE)) {
+                return instance;
+            }
+            if (tryInitConfig(DEFAULT_CONFIG_FILE)) {
+                return instance;
+            }
             throw new FileNotFoundException("*client.properties not found");
         }
         return instance;
@@ -116,15 +122,10 @@ public class Config {
 
     @Override
     public String toString() {
-        return "Config{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", protocol='" + protocol + '\'' +
-                ", serverName='" + serverName + '\'' +
-                ", httpPort=" + httpPort +
-                ", tcpPort=" + tcpPort +
-                ", apiPath='" + apiPath + '\'' +
-                ", loggerLevel='" + loggerLevel + '\'' +
-                '}';
+        return Util.prettyPrint(this);
+    }
+
+    public Boolean getCheckLoggingEnable() {
+        return isCheckLoggingEnable;
     }
 }
