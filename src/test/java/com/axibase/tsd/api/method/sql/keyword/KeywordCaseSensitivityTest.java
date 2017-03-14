@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.sql.keyword;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -67,13 +68,13 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                         "from '%1$s' t1 outer join using entity '%2$s' t2 " +
                         "where t1.entity in ('" + ENTITY_NAME + "') " +
                         "and t1.value > 0 or t1.value < 500 " +
-                        "and t1.value is not null     and lookup('a', value) is null " +
+                        "and t1.value is not null     and lookup('a', t1.value) is null " +
                         "and cast(\"5\") = 5 " +
                         "and t1.entity like '*' " +
                         "and t1.entity regex '.*' " +
                         "and t1.datetime between '2000-01-01T00:00:00.000Z' and '2020-01-01T00:00:00.000Z' " +
                         "with time >= last_time - 10 * YEAR, interpolate (1 YEAR, linear, inner, nan, start_time) " +
-                        "group by period(1 YEAR), t1.value " +
+                        "group by t1.period(1 YEAR), t1.value " +
                         "having count(t1.value) >= 1 " +
                         "with row_number(t1.entity order by t1.time desc) <= 100 " +
                         "order by t1.value asc " +
@@ -83,11 +84,8 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                 METRIC2_NAME
         );
 
-        String[][] expectedRows = {
-                {"1", "1"}
-        };
 
-        assertSqlQueryRows("There's a problem with keywords in lowercase", expectedRows, sqlQuery);
+        assertOkRequest(queryResponse(sqlQuery));
     }
 
     /**
@@ -100,13 +98,13 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                         "from '%1$s' t1 outer join using entity '%2$s' t2 " +
                         "where t1.entity in ('" + ENTITY_NAME + "') " +
                         "and t1.value > 0 or t1.value < 500 " +
-                        "and t1.value is not null     and lookup('a', value) is null " +
+                        "and t1.value is not null     and lookup('a', t1.value) is null " +
                         "and cast(\"5\") = 5 " +
                         "and t1.entity like '*' " +
                         "and t1.entity regex '.*' " +
                         "and t1.datetime between '2000-01-01T00:00:00.000Z' and '2020-01-01T00:00:00.000Z' " +
                         "with time >= last_time - 10 * YEAR, interpolate (1 YEAR, linear, inner, nan, start_time) " +
-                        "group by period(1 YEAR), t1.value " +
+                        "group by t1.period(1 YEAR), t1.value " +
                         "having count(t1.value) >= 1 " +
                         "with row_number(t1.entity order by t1.time desc) <= 100 " +
                         "order by t1.value asc " +
@@ -116,11 +114,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                 METRIC2_NAME
         ).replaceAll(keyword.toLowerCase(), keyword);
 
-        String[][] expectedRows = {
-                {"1", "1"}
-        };
-
-        assertSqlQueryRows("Keyword " + keyword + " is case sensitive", expectedRows, sqlQuery);
+        assertOkRequest(queryResponse(sqlQuery));
     }
 
     @DataProvider(name = "aggregationsKeywordTestProvider")

@@ -77,7 +77,7 @@ public class IsNullTest extends SqlTest {
                 {"value", "metric", "java_object"},
                 {"value", "value+1", "double"},
                 {"1", "\"2\"", "java_object"},
-                {"1", "2", "double"},
+                {"1", "2", "bigint"},
                 {"1", "metric", "java_object"},
                 {"1", "value+1", "double"},
 

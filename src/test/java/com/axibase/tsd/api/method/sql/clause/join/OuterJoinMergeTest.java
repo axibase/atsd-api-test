@@ -52,7 +52,7 @@ public class OuterJoinMergeTest extends SqlTest {
                 series.setTags(Mocks.TAGS);
 
                 for (int i = 0; i < VALUES_COUNT; i++) {
-                    series.addData(new Sample(String.format("2017-01-0%1sT00:00:00.000Z", i+1), i+1));
+                    series.addData(new Sample(String.format("2017-01-0%1sT00:00:00.000Z", i + 1), i + 1));
                 }
 
                 seriesList.add(series);
@@ -68,21 +68,21 @@ public class OuterJoinMergeTest extends SqlTest {
     @Test
     public void testOuterJoin() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s'",
+                "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s' ORDER BY '%1$s'.entity",
                 METRIC_NAMES.get(0),
                 METRIC_NAMES.get(1)
         );
 
         String[][] expectedRows = {
-                { ENTITY_NAMES.get(0), "1", "1" },
-                { ENTITY_NAMES.get(0), "2", "2" },
-                { ENTITY_NAMES.get(0), "3", "3" },
-                { ENTITY_NAMES.get(1), "1", "1" },
-                { ENTITY_NAMES.get(1), "2", "2" },
-                { ENTITY_NAMES.get(1), "3", "3" },
-                { ENTITY_NAMES.get(2), "1", "1" },
-                { ENTITY_NAMES.get(2), "2", "2" },
-                { ENTITY_NAMES.get(2), "3", "3" }
+                {ENTITY_NAMES.get(0), "1", "1"},
+                {ENTITY_NAMES.get(0), "2", "2"},
+                {ENTITY_NAMES.get(0), "3", "3"},
+                {ENTITY_NAMES.get(1), "1", "1"},
+                {ENTITY_NAMES.get(1), "2", "2"},
+                {ENTITY_NAMES.get(1), "3", "3"},
+                {ENTITY_NAMES.get(2), "1", "1"},
+                {ENTITY_NAMES.get(2), "2", "2"},
+                {ENTITY_NAMES.get(2), "3", "3"}
         };
 
         assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
@@ -103,9 +103,9 @@ public class OuterJoinMergeTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                { ENTITY_NAMES.get(0), "1", "1" },
-                { ENTITY_NAMES.get(0), "2", "2" },
-                { ENTITY_NAMES.get(0), "3", "3" },
+                {ENTITY_NAMES.get(0), "1", "1"},
+                {ENTITY_NAMES.get(0), "2", "2"},
+                {ENTITY_NAMES.get(0), "3", "3"},
         };
 
         assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
@@ -124,9 +124,9 @@ public class OuterJoinMergeTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {  ENTITY_NAMES.get(0), "3", "3" },
-                {  ENTITY_NAMES.get(1), "3", "3" },
-                {  ENTITY_NAMES.get(2), "3", "3" },
+                {ENTITY_NAMES.get(0), "3", "3"},
+                {ENTITY_NAMES.get(1), "3", "3"},
+                {ENTITY_NAMES.get(2), "3", "3"},
         };
 
         assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.ErrorTemplate;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,8 +18,6 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     private static final String TEST_METRIC1_NAME = TEST_PREFIX + "metric-1";
     private static final String TEST_METRIC2_NAME = TEST_PREFIX + "metric-2";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
-    private static final String METRIC_NOT_FOUND_MESSAGE_TEMPLATE = "Metric '%s' not found in from or join clauses";
-    private static final String INVALID_IDENTIFIER_MESSAGE_TEMPLATE = "Invalid identifier '%s'";
 
 
     @BeforeClass
@@ -53,8 +52,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t1");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -71,8 +71,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t1");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(INVALID_IDENTIFIER_MESSAGE_TEMPLATE, "t1"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -89,8 +90,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t1");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -107,8 +109,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t1");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t1"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -124,8 +127,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t2");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -141,8 +145,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t2");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(INVALID_IDENTIFIER_MESSAGE_TEMPLATE, "t2"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -158,8 +163,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t2");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2"), response
+                expectedErrorMessage, response
         );
     }
 
@@ -176,8 +182,9 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidIdentifier("t2");
         assertBadRequest("Alias shouldn't be recognized",
-                String.format(METRIC_NOT_FOUND_MESSAGE_TEMPLATE, "t2"), response
+                expectedErrorMessage, response
         );
     }
 }

@@ -18,7 +18,6 @@ public class ErrorTemplate {
 
     public static final String SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL = "Column '%s' ambiguously defined";
     public static final String SQL_SYNTAX_COMPARISON_TPL = "Syntax error at line %s position %s: no viable alternative at input '%s'";
-    public static final String SQL_SYNTAX_DELIMITER_TPL = "Syntax error at line %d position %d: extraneous input '%s' expecting {<EOF>, AND, OR, ORDER, GROUP, LIMIT, WITH, OPTION}";
 
     public static final String CANNOT_MODIFY_ENTITY_TPL = "IllegalArgumentException: Can not modify entities for entity group '%s'. Please reset expression field first.";
 
@@ -28,8 +27,30 @@ public class ErrorTemplate {
     public static final String AGGREGATE_NON_DETAIL_REQUIRE_PERIOD = "IllegalArgumentException: Aggregation period is required for aggregation type '%s'";
 
     public static class Sql {
+        private static final String SYNTAX_ERROR = "Syntax error at line %d position %d: %s";
+        private static final String INVALID_IDENTIFIER = "Invalid identifier '%s'";
+        private static final String INVALID_DATE_VALUE = "Invalid date value: '%s'";
+        private static final String AMBIGUOUS_COLUMN = "Column '%s' ambiguously defined";
+        public static final String MISSING_METRIC_EXPRESSION = "Missing metric expression";
+        public static final String AMBIGIOUSLY_CONDITION = "Condition in where clause ambiguously defined";
         public static final String DATETIME_IN_GROUP_CLAUSE = "Invalid grouping for column \"datetime\". Remove the " +
                 "column from the SELECT clause, apply an aggregation function to the column, or add the column to the " +
                 "GROUP BY clause.";
+
+        public static String syntaxError(int line, int position, String message) {
+            return String.format(SYNTAX_ERROR, line, position, message);
+        }
+
+        public static String ambigiouslyColumn(String columnName) {
+            return String.format(AMBIGUOUS_COLUMN, columnName);
+        }
+
+        public static String invalidIdentifier(String alias) {
+            return String.format(INVALID_IDENTIFIER, alias);
+        }
+
+        public static String invalidDateValue(String value) {
+            return String.format(INVALID_DATE_VALUE, value);
+        }
     }
 }

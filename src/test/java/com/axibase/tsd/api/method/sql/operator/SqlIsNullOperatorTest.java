@@ -100,11 +100,10 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-06-19T11:00:00.000Z", "1", "val1", "null", "null"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-06-19T11:05:00.000Z", "2", "val2", "val2", "null"),
-                Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-06-19T11:00:00.000Z", "1", "val1", "null"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-06-19T11:05:00.000Z", "2", "val2", "val2"),
+                Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3")
         );
-
         assertTableRowsExist(expectedRows, resultTable);
     }
 
@@ -144,7 +143,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY4_NAME, "2016-06-19T11:15:00.000Z", "4", "null", "null", "val4")
+                Arrays.asList(TEST_ENTITY4_NAME, "2016-06-19T11:15:00.000Z", "4", "val4")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -212,7 +211,6 @@ public class SqlIsNullOperatorTest extends SqlTest {
                 Arrays.asList(TEST_ENTITY2_NAME, "2016-06-19T11:05:00.000Z", "2", "val2", "val2", "null"),
                 Arrays.asList(TEST_ENTITY3_NAME, "2016-06-19T11:10:00.000Z", "3", "null", "val3", "null")
         );
-
         assertTableRowsExist(expectedRows, resultTable);
     }
 }

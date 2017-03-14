@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.ErrorTemplate;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -54,8 +55,9 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.ambigiouslyColumn("value");
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
-                String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "value"), response);
+                expectedErrorMessage, response);
     }
 
     /**
@@ -218,8 +220,9 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.ambigiouslyColumn("value");
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column ABS(value)"),
-                String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "ABS(value)"), response);
+                expectedErrorMessage, response);
     }
 
     /**
@@ -234,8 +237,9 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.ambigiouslyColumn("value");
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column value"),
-                String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "AVG(value)"), response);
+                expectedErrorMessage, response);
     }
 
     /**
@@ -250,8 +254,9 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.ambigiouslyColumn("value");
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "where clause"),
-                "Condition in where clause ambiguously defined", response);
+                expectedErrorMessage, response);
     }
 
     /**

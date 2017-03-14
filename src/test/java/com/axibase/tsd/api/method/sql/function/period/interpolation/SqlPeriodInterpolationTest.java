@@ -18,7 +18,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
 
-    private static final Set<String> DEFAULT_ROW_FILTER = new HashSet<>(Arrays.asList("datetime", "AVG(value)"));
+    private static final Set<String> DEFAULT_ROW_FILTER = new HashSet<>(Arrays.asList("datetime", "avg(value)"));
 
     @BeforeClass
     public static void prepareDataSet() throws Exception {

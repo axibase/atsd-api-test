@@ -186,7 +186,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     /**
      * #3283
      */
-    @Test
+    @Test(enabled = false)
     public void testOverflow() {
         String sqlQuery = String.format(
                 "SELECT date_format(time + %s - %s) FROM '%s' ORDER BY datetime",
