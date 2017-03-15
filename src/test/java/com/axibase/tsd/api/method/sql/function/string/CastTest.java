@@ -254,11 +254,17 @@ public class CastTest extends SqlTest {
      @Test(dataProvider = "castNumberArgumentsProvider")
      public void testCastNumberAsStringApplied(String castArgument) throws Exception {
          Series series = castNumberAsStringSeries;
-         String sqlQuery = "SELECT CAST("+castArgument+" AS string) FROM '" + series.getMetric() + "'";
+         String sqlQuery = String.format(
+                 "SELECT CAST(%s AS string) FROM '%s'",
+                 castArgument, series.getMetric()
+         );
 
          StringTable resultTable = SqlMethod.queryTable(sqlQuery);
 
-         assertEquals("string", resultTable.getColumnMetaData(0).getDataType());
+         assertEquals(
+                 "Bad column type for CAST as string column",
+                 "string", resultTable.getColumnMetaData(0).getDataType()
+         );
      }
 
     /**
@@ -267,11 +273,17 @@ public class CastTest extends SqlTest {
     @Test(dataProvider = "castNumberArgumentsProvider")
     public void testCastNumberAsStringPassedToStringFunction(String castArgument) throws Exception {
         Series series = castNumberAsStringSeries;
-        String sqlQuery = "SELECT CONCAT('foo', CAST("+castArgument+" AS string)) FROM '" + series.getMetric() + "'";
+        String sqlQuery = String.format(
+                "SELECT CONCAT('foo', CAST(%s AS string)) FROM '%s'",
+                castArgument, series.getMetric()
+        );
 
         StringTable resultTable = SqlMethod.queryTable(sqlQuery);
 
-        assertEquals("foo", resultTable.getValueAt(0, 0).substring(0, 3));
+        assertEquals(
+                "'foo' has not been concatenated with casted number",
+                "foo", resultTable.getValueAt(0, 0).substring(0, 3)
+        );
     }
 
     @DataProvider(name = "constNumbersWithFormatProvider")
@@ -303,7 +315,10 @@ public class CastTest extends SqlTest {
          * Proper format of number is #.##
          */
         Series series = castNumberAsStringSeries;
-        String sqlQuery = String.format("SELECT CAST(%s AS string) FROM '%s'", castArgument, series.getMetric());
+        String sqlQuery = String.format(
+                "SELECT CAST(%s AS string) FROM '%s'",
+                castArgument, series.getMetric()
+        );
 
         StringTable resultTable = SqlMethod.queryTable(sqlQuery);
 
@@ -321,7 +336,10 @@ public class CastTest extends SqlTest {
          * Proper format of number is #.##
          */
         Series series = castNumberAsStringSeries;
-        String sqlQuery = String.format("SELECT %1$s, CAST(%1$s AS string) FROM '%2$s'", castArgument, series.getMetric());
+        String sqlQuery = String.format(
+                "SELECT %1$s, CAST(%1$s AS string) FROM '%2$s'",
+                castArgument, series.getMetric()
+        );
 
         StringTable resultTable = SqlMethod.queryTable(sqlQuery);
 
