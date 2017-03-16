@@ -1,90 +1,133 @@
 package com.axibase.tsd.api.method.series.command;
 
+import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
-import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.model.series.TextSample;
+import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class LineBreakInsideSeriesCommandTest extends CommandMethod {
-    private static String entityName, metricName;
-    private static SeriesCommand ordinarySeriesCommand;
+    private static Series ordinarySeries;
+    private static Sample testSample = new Sample(Mocks.ISO_TIME, 1234);
 
     @BeforeClass
     public static void initializeFields() {
-        entityName = Util.TestNames.entity();
-        Registry.Entity.register(entityName);
-
-        metricName = Util.TestNames.metric();
-        Registry.Metric.register(metricName);
-
-        ordinarySeriesCommand = new SeriesCommand();
-        ordinarySeriesCommand.setEntityName(entityName);
-        ordinarySeriesCommand.setValues(Collections.singletonMap(metricName, "1234"));
+        ordinarySeries = new Series(Util.TestNames.entity(), Util.TestNames.metric());
+        ordinarySeries.addData(testSample);
     }
 
     enum TestType {
         NETWORK_API, DATA_API
     }
 
-    @DataProvider(name = "testType")
-    public static Object[][] provideTestType() {
-        return new Object[][]{
-                {TestType.NETWORK_API},
-                {TestType.DATA_API}
+    @DataProvider(name = "testTypeAndValue")
+    public static Object[][] provideTestTypeAndValue() {
+        String[] values = new String[]{
+                "test\ntest",
+                "test\ntest\ntest",
+                "test\rtest\rtest",
+                "test\ntest\rtest",
+                "test\rtest\ntest",
+                "test\r\ntest\n\rtest",
+                "test\n",
+                "test\r",
+                "test\r\n",
+                "\ntest",
+                "\rtest",
+                "\n\rtest",
+                "\n",
+                "\r",
+                "\n\n",
+                "\r\n",
+                "\n\r",
         };
+
+        List<Object[]> parameters = new ArrayList<>();
+
+        for (TestType type : TestType.values()) {
+            for (String value : values) {
+                parameters.add(new Object[]{type, value});
+            }
+        }
+
+        Object[][] result = new Object[parameters.size()][];
+        parameters.toArray(result);
+
+        return result;
     }
 
     /**
      * #3878
      */
-    @Test
-    public void testTagLineBreak() throws Exception {
-        SeriesCommand firstCommand = new SeriesCommand();
-        firstCommand.setEntityName(entityName);
-        firstCommand.setValues(Collections.singletonMap(metricName, "1234"));
-        firstCommand.setTags(Collections.singletonMap("test-tag", "test\ntest\ntest"));
+    @Test(dataProvider = "testTypeAndValue")
+    public void testTagLineBreak(TestType type, String value) throws Exception {
+        Series seriesWithBreak = new Series(Util.TestNames.entity(), Util.TestNames.metric());
+        seriesWithBreak.addTag("test-tag", value);
+        seriesWithBreak.addData(testSample);
 
-        List<PlainCommand> commandList = new ArrayList<>();
-        commandList.add(firstCommand);
-        commandList.add(ordinarySeriesCommand);
-        CommandSendingResult res = send(commandList);
-
-        assertEquals(0, (int) res.getFail());
-        assertEquals(2, (int) res.getSuccess());
-        assertEquals(2, (int) res.getTotal());
+        sendAndCheck(Arrays.asList(seriesWithBreak, ordinarySeries), type);
     }
 
     /**
      * #3878
      */
-    @Test
-    public void testMetricTextLineBreak() throws Exception {
-        SeriesCommand firstCommand = new SeriesCommand();
-        firstCommand.setEntityName(entityName);
-        firstCommand.setTexts(Collections.singletonMap(metricName, "test\ntest\ntest"));
+    @Test(dataProvider = "testTypeAndValue")
+    public void testMetricTextLineBreak(TestType type, String value) {
+        Series seriesWithBreak = new Series(Util.TestNames.entity(), Util.TestNames.metric());
+        seriesWithBreak.addData(new TextSample(Mocks.ISO_TIME, value));
 
-        List<PlainCommand> commandList = new ArrayList<>();
-        commandList.add(firstCommand);
-        commandList.add(ordinarySeriesCommand);
-        CommandSendingResult res = send(commandList);
+        sendAndCheck(Arrays.asList(seriesWithBreak, ordinarySeries), type);
+    }
 
-        assertEquals(0, (int) res.getFail());
-        assertEquals(2, (int) res.getSuccess());
-        assertEquals(2, (int) res.getTotal());
+    private void sendAndCheck(List<Series> seriesList, TestType type) {
+        List<PlainCommand> commands = new ArrayList<>();
+        for (Series series : seriesList) {
+            commands.addAll(seriesToCommands(series));
+        }
+
+        boolean checked;
+        switch (type) {
+            case DATA_API:
+                try {
+                    sendChecked(new SeriesCheck(seriesList), commands);
+                    checked = true;
+                } catch (NotCheckedException e) {
+                    checked = false;
+                }
+                break;
+            case NETWORK_API:
+                /*
+                StringBuilder gatheredCommands = new StringBuilder();
+                for (PlainCommand command : commands) {
+                    gatheredCommands.append("debug ").append(command.toString()).append("\n");
+                }
+
+                tcpSender.setCommand(gatheredCommands.toString());
+                try {
+                    checked = tcpSender.sendDebugMode();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                */
+                checked = true;
+                break;
+            default:
+                checked = false;
+        }
+        assertTrue(checked);
     }
 
     private List<PlainCommand> seriesToCommands(Series series) {
@@ -99,10 +142,16 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
 
             command.setEntityName(entity);
             command.setTags(new HashMap<>(series.getTags()));
-            command.setValues(Collections.singletonMap(metric, sample.getV().toString()));
-            command.setTexts(Collections.singletonMap(metric, sample.getText()));
-            command.setTimeISO(sample.getD());
             command.setTimeMills(sample.getT());
+            command.setTimeISO(sample.getD());
+
+            BigDecimal v = sample.getV();
+            if (v != null)
+                command.setValues(Collections.singletonMap(metric, v.toString()));
+
+            String text = sample.getText();
+            if (text != null)
+                command.setTexts(Collections.singletonMap(metric, text));
 
             seriesList.add(command);
         }
