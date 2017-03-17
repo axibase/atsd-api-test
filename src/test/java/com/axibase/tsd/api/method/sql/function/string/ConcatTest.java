@@ -18,6 +18,8 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class ConcatTest extends SqlTest {
+    private static final String TEST_ENTITY = entity();
+
     private static final String TEST_METRIC = metric();
 
     private static final String TEST_METRIC1 = metric();
@@ -25,11 +27,9 @@ public class ConcatTest extends SqlTest {
     private static final String TEST_METRIC3 = metric();
 
     private static void prepareFunctionalConcatTestData() throws Exception {
-        String testEntity = entity();
-
         List<Series> seriesList = new ArrayList<>();
         {
-            Series series = new Series(testEntity, TEST_METRIC1);
+            Series series = new Series(TEST_ENTITY, TEST_METRIC1);
             series.addData(new Sample("2016-06-03T09:20:18.000Z", "3.0"));
             series.addData(new Sample("2016-06-03T09:21:18.000Z", "3.10"));
             series.addData(new Sample("2016-06-03T09:22:18.000Z", "3.14"));
@@ -39,7 +39,7 @@ public class ConcatTest extends SqlTest {
         {
             Series series = new Series();
             Registry.Metric.register(TEST_METRIC2);
-            series.setEntity(testEntity);
+            series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC2);
             series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.555"));
             seriesList.add(series);
@@ -47,7 +47,7 @@ public class ConcatTest extends SqlTest {
         {
             Series series = new Series();
             Registry.Metric.register(TEST_METRIC3);
-            series.setEntity(testEntity);
+            series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC3);
             series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.0"));
             seriesList.add(series);
@@ -126,5 +126,24 @@ public class ConcatTest extends SqlTest {
         };
 
         assertSqlQueryRows("CONCAT word and two numbers gives wrong result", expectedRows, sqlQuery);
+    }
+
+
+    /**
+     * #4017
+     */
+    @Test
+    public void testConcatInWhere() {
+        String sqlQuery = String.format(
+                "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', '')",
+                TEST_METRIC2,
+                TEST_ENTITY
+        );
+
+        String[][] expectedRows = {
+                {TEST_ENTITY}
+        };
+
+        assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
     }
 }
