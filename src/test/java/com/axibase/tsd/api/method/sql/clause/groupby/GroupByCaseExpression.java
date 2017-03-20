@@ -1,9 +1,12 @@
 package com.axibase.tsd.api.method.sql.clause.groupby;
 
+import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,6 +22,12 @@ public class GroupByCaseExpression extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
+
+        Entity testEntity = new Entity();
+        testEntity.setName(TEST_ENTITY_NAME);
+        testEntity.setLabel(Mocks.LABEL);
+        EntityMethod.createOrReplaceEntity(testEntity);
+
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.setData(Arrays.asList(
@@ -115,4 +124,24 @@ public class GroupByCaseExpression extends SqlTest {
 
         assertSqlQueryRows("CASE in SELECT and GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
+
+    /**
+     * #3912
+     */
+    @Test
+    public void testGroupByEntityLabel() {
+        String sqlQuery = String.format(
+                "SELECT entity.label AS \"Label\"" +
+                        "FROM '%s'" +
+                        "GROUP BY \"Label\"",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {Mocks.LABEL}
+        };
+
+        assertSqlQueryRows("GROUP BY entity label gives wrong result", expectedRows, sqlQuery);
+    }
+
 }
