@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.response;
 
+import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Series;
@@ -11,9 +12,9 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.testng.Assert.fail;
+import static com.axibase.tsd.api.util.CommonAssertions.assertCheck;
 
-public class SqlLargeDataTest  extends SqlTest {
+public class SqlLargeDataTest extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
     private final static int ENTITIES_COUNT_PER_REQUEST = 500;
@@ -58,29 +59,40 @@ public class SqlLargeDataTest  extends SqlTest {
             TCPSender.send(request);
         }
 
-        // wait for atsd insert series
-        Thread.sleep(30000);
+        assertCheck(new LargeDataCheck(METRIC_NAME, ENTITIES_COUNT));
+    }
 
-        String sqlQuery = String.format("SELECT COUNT(value) FROM '%s'", METRIC_NAME);
-        String[][] expectedRows = { { String.valueOf(ENTITIES_COUNT) } };
 
-        // some series may be not inserted yet, so trying to execute request several times
-        int triesCount = 5;
-        boolean success = false;
-        AssertionError lastError = null;
+    private class LargeDataCheck extends AbstractCheck {
 
-        for (int i = 0; i < triesCount; i++) {
-            try {
-                assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
-                success = true;
-                break;
-            } catch (AssertionError ex) {
-                lastError = ex;
-            }
+        private final String ERROR_TEXT = "Large data query error";
+        private final String metricName;
+        private final int entitiesCount;
+
+        public LargeDataCheck(String metricName, int entitiesCount) {
+            this.metricName = metricName;
+            this.entitiesCount = entitiesCount;
         }
 
-        if (!success) {
-            fail("Large data query error", lastError);
+        @Override
+        public boolean isChecked() {
+
+            String sqlQuery = String.format("SELECT COUNT(value) FROM '%s'", metricName);
+            String[][] expectedRows = {{String.valueOf(entitiesCount)}};
+
+            try {
+                assertSqlQueryRows(ERROR_TEXT, expectedRows, sqlQuery);
+            } catch (Error e) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public String getErrorMessage() {
+            return ERROR_TEXT;
         }
     }
 }
+
