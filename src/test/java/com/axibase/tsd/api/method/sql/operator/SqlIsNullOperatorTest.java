@@ -114,7 +114,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3515
+     * #3515
      */
     @Test
     public void testIsNullMetricTags() {
@@ -156,7 +156,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3515
+     * #3515
      */
     @Test
     public void testNotIsNullMetricTags() {
@@ -201,7 +201,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3515
+     * #3515
      */
     @Test
     public void testIsNotNullMetricTags() {
@@ -247,7 +247,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3515
+     * #3515
      */
     @Test
     public void testNotIsNotNullMetricTags() {
@@ -289,7 +289,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3515
+     * #3515
      */
     @Test
     public void testIsNotNullEntityTags() throws Exception {
@@ -331,7 +331,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3515
+     * #3515
      */
     @Test
     public void testIsNullEntityTags() throws Exception {
@@ -354,7 +354,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3516
+     * #3516
      */
     @Test
     public void testIsNullMetricLabel() throws Exception {
@@ -385,7 +385,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
     }
 
     /**
-     * @issue 3516
+     * #3516
      */
     @Test
     public void testIsNotNullMetricLabel() throws Exception {
