@@ -20,7 +20,6 @@ public class SqlOrderByNullValuesTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-
         Series testSeries = new Series();
         testSeries.setEntity(TEST_ENTITY);
         testSeries.setMetric(TEST_METRIC);
@@ -37,7 +36,6 @@ public class SqlOrderByNullValuesTest extends SqlTest {
      */
     @Test
     public void testNullTags() {
-
         String sqlQuery = String.format(
                 "SELECT tags.tag FROM '%s' ORDER BY tags.tag",
                 TEST_METRIC
