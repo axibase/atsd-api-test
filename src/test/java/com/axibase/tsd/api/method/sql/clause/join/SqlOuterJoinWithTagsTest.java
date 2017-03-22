@@ -8,7 +8,6 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +34,6 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         for (String tagName : allTags) {
-
             for (String metricName : allMetrics) {
                 Series series = new Series();
                 series.setEntity(TEST_ENTITY_NAME);
@@ -60,7 +58,7 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
     public void testJoinUsingEntityWithTags() {
         String sqlQuery = String.format(
                 "SELECT t1.tags, t2.tags " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY'%2$s' t2 ",
+                "FROM '%1$s' t1 JOIN USING ENTITY'%2$s' t2 ",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
