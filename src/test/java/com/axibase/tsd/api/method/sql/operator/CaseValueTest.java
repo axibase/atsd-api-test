@@ -24,7 +24,6 @@ public class CaseValueTest extends SqlTest {
         s1.addData(new Sample("2017-01-04T09:30:00.000Z", 4));
         s1.addData(new Sample("2017-01-05T09:30:00.000Z", 5));
         s1.addData(new Sample("2017-01-06T09:30:00.000Z", 6));
-        SeriesMethod.insertSeriesCheck(s1);
 
         Series s2 = new Series(entity(), METRIC_NAME_B);
         s2.addData(new TextSample("2017-01-01T09:30:00.000Z", "a"));
@@ -33,7 +32,9 @@ public class CaseValueTest extends SqlTest {
         s2.addData(new TextSample("2017-01-04T09:30:00.000Z", "d"));
         s2.addData(new TextSample("2017-01-05T09:30:00.000Z", "e"));
         s2.addData(new TextSample("2017-01-06T09:30:00.000Z", "f"));
-        SeriesMethod.insertSeriesCheck(s2);
+
+
+        SeriesMethod.insertSeriesCheck(s1, s2);
     }
 
     /**
@@ -167,12 +168,12 @@ public class CaseValueTest extends SqlTest {
      */
     @Test
     public void testCaseNoFrom() {
-        String sqlQuery = "SELECT CASE WHEN 0 < 1 THEN 1 ELSE 0 END\n";
+        String sqlQuery = "SELECT CASE WHEN 0 < 1 THEN 1 ELSE 0 END";
 
         String[][] expectedRows = {
                 {"1"}
         };
 
-        assertSqlQueryRows("CASE <value> without FROM doesn't work", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE WHEN <condition> without FROM doesn't work", expectedRows, sqlQuery);
     }
 }
