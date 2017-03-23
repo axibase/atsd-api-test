@@ -40,7 +40,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT count(value) FROM '%s' " +
                         "GROUP BY period(1 day) " +
-                        "HAVING date_format(time, 'u') = '4'",
+                        "HAVING date_format(time, 'u', 'PST') = '4'",
                 METRIC_NAME
         );
 
