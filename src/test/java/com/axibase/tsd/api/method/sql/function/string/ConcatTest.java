@@ -14,11 +14,13 @@ import java.util.List;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class ConcatTest extends SqlTest {
-    private static final String TEST_ENTITY = entity();
+    private static final String TEST_ENTITY_LEFT = "test-concat";
+    private static final String TEST_ENTITY_RIGHT = "-entity";
+    private static final int TEST_ENTITY_INDEX = 0;
+    private static final String TEST_ENTITY = TEST_ENTITY_LEFT + TEST_ENTITY_RIGHT + TEST_ENTITY_INDEX;
 
     private static final String TEST_METRIC = metric();
 
@@ -138,6 +140,45 @@ public class ConcatTest extends SqlTest {
                 "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', '')",
                 TEST_METRIC2,
                 TEST_ENTITY
+        );
+
+        String[][] expectedRows = {
+                {TEST_ENTITY}
+        };
+
+        assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4017
+     */
+    @Test
+    public void testConcatInWhereNonEmpty() {
+        String sqlQuery = String.format(
+                "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', '%s')",
+                TEST_METRIC2,
+                TEST_ENTITY_LEFT,
+                TEST_ENTITY_RIGHT + TEST_ENTITY_INDEX
+        );
+
+        String[][] expectedRows = {
+                {TEST_ENTITY}
+        };
+
+        assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
+    }
+
+
+    /**
+     * #4017
+     */
+    @Test
+    public void testConcatInWhereNumber() {
+        String sqlQuery = String.format(
+                "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', %d)",
+                TEST_METRIC2,
+                TEST_ENTITY_LEFT + TEST_ENTITY_RIGHT,
+                TEST_ENTITY_INDEX
         );
 
         String[][] expectedRows = {
