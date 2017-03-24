@@ -26,11 +26,16 @@ public class SqlCaseOperatorTest extends SqlTest {
      */
     @Test
     public void testCaseInExpression() throws Exception {
-        String sqlQuery = String.format("SELECT 100 - CASE WHEN value IS NULL THEN 0 ELSE 100 END FROM '%s'", TEST_METRIC_NAME);
+        String sqlQuery = String.format(
+                "SELECT 100 - CASE WHEN value IS NULL THEN 0 ELSE 100 END FROM '%s'",
+                TEST_METRIC_NAME);
 
         String[][] expectedRows = {{"0"}};
 
-        assertSqlQueryRows("Incorrect query result with CASE operator in expression", expectedRows, sqlQuery);
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in expression",
+                expectedRows,
+                sqlQuery);
     }
 
     /**
@@ -38,11 +43,16 @@ public class SqlCaseOperatorTest extends SqlTest {
      */
     @Test
     public void testCaseInAggregationFunction() throws Exception {
-        String sqlQuery = String.format("SELECT SUM(100 - CASE WHEN value IS NULL THEN 0 ELSE 100 END) FROM '%s'", TEST_METRIC_NAME);
+        String sqlQuery = String.format(
+                "SELECT SUM(100 - CASE WHEN value IS NULL THEN 0 ELSE 100 END) FROM '%s'",
+                TEST_METRIC_NAME);
 
         String[][] expectedRows = {{"0"}};
 
-        assertSqlQueryRows("Incorrect query result with CASE operator in aggregation function", expectedRows, sqlQuery);
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in aggregation function",
+                expectedRows,
+                sqlQuery);
     }
 
     /**
@@ -50,10 +60,15 @@ public class SqlCaseOperatorTest extends SqlTest {
      */
     @Test
     public void testCaseInCastFunction() throws Exception {
-        String sqlQuery = String.format("SELECT CAST(100 - CASE WHEN value IS NULL THEN 0 ELSE 100 END AS STRING) FROM '%s'", TEST_METRIC_NAME);
+        String sqlQuery = String.format(
+                "SELECT CAST(100 - CASE WHEN value IS NULL THEN 0 ELSE 100 END AS STRING) FROM '%s'",
+                TEST_METRIC_NAME);
 
         String[][] expectedRows = {{"0"}};
 
-        assertSqlQueryRows("Incorrect query result with CASE operator in cast function", expectedRows, sqlQuery);
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in cast function",
+                expectedRows,
+                sqlQuery);
     }
 }
