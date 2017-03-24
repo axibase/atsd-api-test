@@ -23,13 +23,12 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
     @DataProvider(name = "metricFieldsProvider")
     private Object[][] provideMetricFields() {
         return new Object[][] {
-                {"id"},
                 {"name"},
                 {"label"},
                 {"timeZone"},
                 {"interpolate"},
                 {"description"},
-                {"dataType",},
+                {"dataType"},
                 {"timePrecision"},
                 {"enabled"},
                 {"persistent"},
