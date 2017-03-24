@@ -37,15 +37,15 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                         "m.metric.versioning,\n" +
                         "m.metric.minValue,\n" +
                         "m.metric.maxValue,\n" +
-                        "m.metric.invalidValueAction\n" +
+                        "m.metric.invalidValueAction,\n" +
+                        "m.metric.counter\n" +
                  "FROM '%1s' m",
                 TEST_SERIES.getMetric()
         );
 
         String[][] expectedRows = {
-                {
-                    "null", "null", "LINEAR", "null", "FLOAT", "MILLISECONDS",
-                    "true", "true", "null", "null", "0", "false", "null", "null", "NONE"}
+                { "null", "null", "LINEAR", "null", "FLOAT", "MILLISECONDS",
+                    "true", "true", "null", "null", "0", "false", "null", "null", "NONE", "false" }
         };
 
         assertSqlQueryRows("JOIN with Entity filter gives wrong result", expectedRows, sqlQuery);
