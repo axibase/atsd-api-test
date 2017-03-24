@@ -288,7 +288,7 @@ public class JoinWithTags extends SqlTest {
                 {"foo", "foobar=foo"}
         };
 
-        assertSqlQueryRows(expected, sql);
+        assertSqlQueryRows("Metric tags are absent or corrupted in JOIN", expected, sql);
     }
 
     /**
@@ -311,6 +311,6 @@ public class JoinWithTags extends SqlTest {
                 {"LINEAR", "LINEAR"}
         };
 
-        assertSqlQueryRows(expected, sql);
+        assertSqlQueryRows("Metric interpolate field is absent or corrupted in JOIN", expected, sql);
     }
 }
