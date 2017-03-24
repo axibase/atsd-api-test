@@ -5,6 +5,8 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 
 public class SqlSelectMetricFieldsTest extends SqlTest {
@@ -16,38 +18,43 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(TEST_SERIES);
     }
 
+    @DataProvider(name = "metricFieldsProvider")
+    private Object[][] provideMetricFields() {
+        return new Object[][] {
+                {"label",                   "null"},
+                {"timeZone",                "null"},
+                {"interpolate",             "LINEAR"},
+                {"description",             "null"},
+                {"dataType",                "FLOAT"},
+                {"timePrecision",           "MILLISECONDS"},
+                {"enabled",                 "true"},
+                {"persistent",              "true"},
+                {"filter",                  "null"},
+                {"lastInsertTime",          "null"},
+                {"retentionIntervalDays",   "0"},
+                {"versioning",              "false"},
+                {"minValue",                "null"},
+                {"maxValue",                "null"},
+                {"invalidValueAction",      "NONE"},
+                {"counter",                 "false"}
+        };
+    }
+
     /**
      * #3882
      */
-    @Test
-    public void testQueryMetricFields() {
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testQueryMetricFields(String field, String expectedResult) {
         String sqlQuery = String.format(
-                "SELECT\n" +
-                        "m.metric.label,\n" +
-                        "m.metric.timeZone,\n" +
-                        "m.metric.interpolate,\n" +
-                        "m.metric.description,\n" +
-                        "m.metric.dataType,\n" +
-                        "m.metric.timePrecision,\n" +
-                        "m.metric.enabled,\n" +
-                        "m.metric.persistent,\n" +
-                        "m.metric.filter,\n" +
-                        "m.metric.lastInsertTime,\n" +
-                        "m.metric.retentionIntervalDays,\n" +
-                        "m.metric.versioning,\n" +
-                        "m.metric.minValue,\n" +
-                        "m.metric.maxValue,\n" +
-                        "m.metric.invalidValueAction,\n" +
-                        "m.metric.counter\n" +
-                 "FROM '%1s' m",
-                TEST_SERIES.getMetric()
-        );
+                "SELECT m.metric.%s FROM '%s' m",
+                field,
+                TEST_SERIES.getMetric());
 
-        String[][] expectedRows = {
-                { "null", "null", "LINEAR", "null", "FLOAT", "MILLISECONDS",
-                    "true", "true", "null", "null", "0", "false", "null", "null", "NONE", "false" }
-        };
+        String errorMessage = String.format("Error in metric field query (%s)", field);
 
-        assertSqlQueryRows("JOIN with Entity filter gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(
+                errorMessage,
+                new String[][] {{expectedResult}},
+                sqlQuery);
     }
 }
