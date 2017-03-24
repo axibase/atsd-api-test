@@ -7,21 +7,16 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class SqlCaseOperatorTest extends SqlTest {
-    private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series = new Series();
-        series.setEntity(TEST_ENTITY_NAME);
-        series.setMetric(TEST_METRIC_NAME);
-        series.setData(Collections.singletonList(Mocks.SAMPLE));
+        Series series = new Series(entity(), TEST_METRIC_NAME);
+        series.addData(Mocks.SAMPLE);
 
         SeriesMethod.insertSeriesCheck(series);
     }
