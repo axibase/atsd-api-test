@@ -13,13 +13,13 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class DateFormatInsideClausesTest extends SqlTest {
-    private static final String ENTITY_NAME = entity();
-    private static final String METRIC_NAME = metric();
+    private static final String METRIC_NAME1 = metric();
+    private static final String METRIC_NAME2 = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = new Series(ENTITY_NAME, METRIC_NAME);
-        series.setData(Arrays.asList(
+        Series series1 = new Series(entity(), METRIC_NAME1);
+        series1.setData(Arrays.asList(
                 new Sample("2017-02-09T13:00:00.000Z", "10"),
                 new Sample("2017-02-10T12:00:00.000Z", "11"),
                 new Sample("2017-02-10T07:00:00.000Z", "12"),
@@ -29,7 +29,17 @@ public class DateFormatInsideClausesTest extends SqlTest {
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(series);
+        Series series2 = new Series(entity(), METRIC_NAME2);
+        series2.setData(Arrays.asList(
+                new Sample("2017-02-09T12:00:00.000Z", "0"),
+                new Sample("2017-02-09T13:00:00.000Z", "0"),
+                new Sample("2017-02-10T12:00:00.000Z", "0"),
+                new Sample("2017-02-11T12:00:00.000Z", "0"),
+                new Sample("2017-02-12T12:00:00.000Z", "0")
+                )
+        );
+
+        SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
     /**
@@ -40,8 +50,8 @@ public class DateFormatInsideClausesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT count(value) FROM '%s' " +
                         "GROUP BY period(1 day) " +
-                        "HAVING date_format(time, 'u', 'PST') = '4'",
-                METRIC_NAME
+                        "HAVING date_format(time, 'u') = '4'",
+                METRIC_NAME2
         );
 
         String[][] expectedRows = {
@@ -60,7 +70,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
                 "SELECT value FROM '%s' " +
                         "WHERE date_format(time, 'E', 'PST') = 'Thu' " +
                         "ORDER BY value",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -81,7 +91,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
                 "SELECT value FROM '%s' " +
                         "WHERE date_format(time, 'u', 'PST') = 4 " +
                         "ORDER BY value",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -102,7 +112,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
                 "SELECT count(*) AS k FROM '%s' " +
                         "GROUP BY date_format(time, 'E', 'PST') " +
                         "ORDER BY k",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -123,7 +133,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value FROM '%s' " +
                         "ORDER BY date_format(time, 'E', 'PST'), value",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -146,7 +156,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value FROM '%s' " +
                         "ORDER BY date_format(time, 'u', 'PST'), value",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
