@@ -23,6 +23,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
     @DataProvider(name = "metricFieldsProvider")
     private Object[][] provideMetricFields() {
         return new Object[][] {
+                {"id"},
                 {"name"},
                 {"label"},
                 {"timeZone"},
@@ -39,12 +40,14 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 {"minValue"},
                 {"maxValue"},
                 {"invalidValueAction"},
-                {"counter"}
+                {"counter"},
+                {"units"},
+                {"tags"}
         };
     }
 
     /**
-     * #3882
+     * #3882, #3658
      */
     @Test(dataProvider = "metricFieldsProvider")
     public void testQueryMetricFields(String field) {
