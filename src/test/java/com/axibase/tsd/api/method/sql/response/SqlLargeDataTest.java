@@ -17,7 +17,6 @@ import static com.axibase.tsd.api.util.CommonAssertions.assertCheck;
 public class SqlLargeDataTest extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
-    private final static int ENTITIES_COUNT_PER_REQUEST = 500;
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
@@ -27,8 +26,7 @@ public class SqlLargeDataTest extends SqlTest {
     @Test
     public void testQueryLargeData() throws IOException, InterruptedException {
 
-        ArrayList<ArrayList<SeriesCommand>> seriesRequests = new ArrayList<>(ENTITIES_COUNT / ENTITIES_COUNT_PER_REQUEST);
-        seriesRequests.add(new ArrayList<SeriesCommand>(ENTITIES_COUNT_PER_REQUEST));
+        ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
 
         Registry.Metric.register(METRIC_NAME);
 
@@ -44,24 +42,11 @@ public class SqlLargeDataTest extends SqlTest {
             series.addTag("tag", String.valueOf(i));
             series.addData(Mocks.SAMPLE);
 
-            ArrayList<SeriesCommand> currentRequest = seriesRequests.get(seriesRequests.size() - 1);
-            if (currentRequest.size() < ENTITIES_COUNT_PER_REQUEST) {
-                currentRequest.addAll(series.toCommands());
-                continue;
-            }
-
-            currentRequest = new ArrayList<>(ENTITIES_COUNT_PER_REQUEST);
-            currentRequest.addAll(series.toCommands());
-            seriesRequests.add(currentRequest);
+            seriesRequests.addAll(series.toCommands());
         }
 
-        for (ArrayList<SeriesCommand> request : seriesRequests) {
-            TCPSender.send(request);
-        }
-
-        assertCheck(new LargeDataCheck(METRIC_NAME, ENTITIES_COUNT));
+        TCPSender.sendChecked(new LargeDataCheck(METRIC_NAME, ENTITIES_COUNT), seriesRequests);
     }
-
 
     private class LargeDataCheck extends AbstractCheck {
 
