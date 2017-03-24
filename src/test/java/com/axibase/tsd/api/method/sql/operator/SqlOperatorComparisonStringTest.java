@@ -318,7 +318,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(ErrorTemplate.Sql.MISSING_METRIC_EXPRESSION, response);
+        assertBadRequest(ErrorTemplate.Sql.MISSING_METRIC_EXPRESSION_IN_THE_WHERE_CLAUSE, response);
     }
 
     /**
