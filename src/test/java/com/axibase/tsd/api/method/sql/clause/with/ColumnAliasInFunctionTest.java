@@ -51,7 +51,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
      * 3842
      */
     @Test
-    public void testAliasInRowNumber() {
+    public void testAliasInsideCast() {
         String sqlQuery = String.format(
                 "SELECT value AS v " +
                 "FROM '%s' " +
@@ -63,6 +63,6 @@ public class ColumnAliasInFunctionTest extends SqlTest {
                 {"1"}, {"2"}, {"3"}, {"4"}, {"5"}
         };
 
-        assertSqlQueryRows("Wrong result with alias inside ROW_NUMBER", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result with alias inside CAST", expectedRows, sqlQuery);
     }
 }
