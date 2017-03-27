@@ -18,6 +18,7 @@ public class SeriesQuery {
     private String entity;
     private String entityGroup;
     private String entityExpression;
+    private String tagExpression;
     private List<String> entities;
     private String metric;
     private String startDate;
@@ -228,5 +229,13 @@ public class SeriesQuery {
 
     public void setVersioned(Boolean versioned) {
         this.versioned = versioned;
+    }
+
+    public String getTagExpression() {
+        return tagExpression;
+    }
+
+    public void setTagExpression(String tagExpression) {
+        this.tagExpression = tagExpression;
     }
 }
