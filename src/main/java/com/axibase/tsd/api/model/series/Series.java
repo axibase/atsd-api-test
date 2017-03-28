@@ -81,6 +81,10 @@ public class Series {
         return data;
     }
 
+    public void setData(Sample data) {
+        this.setData(Collections.singletonList(data));
+    }
+
     public void setData(Collection<Sample> data) {
         this.data = new ArrayList<>(data);
     }
