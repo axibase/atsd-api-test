@@ -29,6 +29,10 @@ public class Sample {
         this.text = text;
     }
 
+    public Sample(String d, String v, String text) {
+        this(d, new BigDecimal(v), text);
+    }
+
     public Sample(Sample sourceSample) {
         this(sourceSample.getT(), sourceSample.getV());
         setD(sourceSample.getD());
