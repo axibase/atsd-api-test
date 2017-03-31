@@ -43,15 +43,13 @@ public class EntityRecreateTest extends SqlTest {
     }
 
     /**
-     * 4037
+     * #4037
      */
     @Test
     public void testRecreateEntity() throws Exception {
         String sqlQuery = String.format("SELECT entity FROM '%s' ORDER BY entity", METRIC_NAME);
 
-        String[][] expectedRows = new String[][]{
-                {ENTITY_NAME2}
-        };
+        String[][] expectedRows = {{ENTITY_NAME2}};
 
         assertSqlQueryRows("Entity recreation gives wrong result", expectedRows, sqlQuery);
     }
