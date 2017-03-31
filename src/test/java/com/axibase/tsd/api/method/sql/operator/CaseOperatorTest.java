@@ -54,26 +54,6 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad CASE... result", expected, sql);
     }
 
-    /**
-     * #3981
-     */
-    @Test
-    public void testCaseOperator() {
-        final String sql = String.format(
-                "SELECT CASE WHEN value > 0 THEN 'high' ELSE 'low' END%n" +
-                "FROM '%s'%n" +
-                "ORDER BY datetime ASC",
-                DEFAULT_SERIES.getMetric()
-        );
-
-        final String[][] expected = {
-                { "high" }, // 10
-                { "low" },  // 0
-                { "low" }   // -5
-        };
-
-        assertSqlQueryRows("Bad CASE... result", expected, sql);
-    }
 
     /**
      * #3981
