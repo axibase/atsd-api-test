@@ -28,7 +28,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
     }
 
     /**
-     * 3842
+     * #3842
      */
     @Test
     public void testAliasInsideRowNumber() {
@@ -39,7 +39,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
+        String[][] expectedRows = {
                 {ENTITY_NAME, "1"},
                 {ENTITY_NAME, "2"}
         };
@@ -48,7 +48,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
     }
 
     /**
-     * 3842
+     * #3842
      */
     @Test
     public void testAliasInsideCast() {
@@ -59,7 +59,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
+        String[][] expectedRows = {
                 {"1"}, {"2"}, {"3"}, {"4"}, {"5"}
         };
 
