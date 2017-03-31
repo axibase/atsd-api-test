@@ -33,7 +33,7 @@ public class LagLeadTest extends SqlTest {
     }
 
     /**
-     * 4032
+     * #4032
      */
     @Test
     public void testLagLeadInSelectClause() {
@@ -42,7 +42,7 @@ public class LagLeadTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
+        String[][] expectedRows = {
                 {"1", "null",    "2"},
                 {"2",    "1",    "4"},
                 {"4",    "2",    "7"},
@@ -58,23 +58,22 @@ public class LagLeadTest extends SqlTest {
     }
 
     /**
-     * 4032
+     * #4032
      */
     @Test
     public void testLagLeadInSelectExpression() {
         String sqlQuery = String.format(
-                "SELECT text, " +
-                        "isnull(lag(sum(value)) - sum(value), 0), " +
-                        "isnull(lead(sum(value)) - sum(value), 0) " +
+                "SELECT isnull(lag(sum(value)) - sum(value), 0), " +
+                       "isnull(lead(sum(value)) - sum(value), 0) " +
                 "FROM '%s' " +
                 "GROUP BY text",
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
-                {"a",   "0", "27"},
-                {"b", "-27", "60"},
-                {"c", "-60",  "0"},
+        String[][] expectedRows = {
+                {"0",   "27"},
+                {"-27", "60"},
+                {"-60",  "0"},
         };
 
         assertSqlQueryRows("Wrong result for LAG/LEAD functions in SELECT expression", expectedRows, sqlQuery);
