@@ -38,7 +38,7 @@ public class CaseValueTest extends SqlTest {
     }
 
     /**
-     * 4021
+     * #4021
      */
     @Test
     public void testCaseValueSelf() {
@@ -58,7 +58,7 @@ public class CaseValueTest extends SqlTest {
     }
 
     /**
-     * 4021
+     * #4021
      */
     @Test
     public void testCaseValueWithElse() {
@@ -84,7 +84,7 @@ public class CaseValueTest extends SqlTest {
     }
 
     /**
-     * 4021
+     * #4021
      */
     @Test
     public void testCaseValueWithoutElse() {
@@ -109,7 +109,7 @@ public class CaseValueTest extends SqlTest {
     }
 
     /**
-     * 4021
+     * #4021
      */
     @Test
     public void testCaseValueExpr() {
@@ -139,7 +139,7 @@ public class CaseValueTest extends SqlTest {
     }
 
     /**
-     * 4021
+     * #4021
      */
     @Test
     public void testCaseValueText() {
@@ -164,7 +164,7 @@ public class CaseValueTest extends SqlTest {
     }
 
     /**
-     * 4021
+     * #4021
      */
     @Test
     public void testCaseNoFrom() {
