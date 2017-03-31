@@ -28,7 +28,7 @@ public class SumExpressionTest extends SqlTest {
     }
 
     /**
-     * 3950
+     * #3950
      */
     @Test
     public void testSumInExpression() {
@@ -36,9 +36,7 @@ public class SumExpressionTest extends SqlTest {
                 "SELECT sum(value * value) * sum(value * 2) FROM '%s'",
                 METRIC_NAME);
 
-        String[][] expectedRows = new String[][]{
-                {"1650"}
-        };
+        String[][] expectedRows = {{"1650"}};
 
         assertSqlQueryRows("Wrong result for SUM aggregation function inside expressions", expectedRows, sqlQuery);
     }
