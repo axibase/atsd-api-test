@@ -32,7 +32,7 @@ public class SqlBetweenStringTest extends SqlTest {
     }
 
     /**
-     * 3991
+     * #3991
      */
     @Test
     public void testBetweenEqualStringLimits() {
@@ -41,13 +41,13 @@ public class SqlBetweenStringTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {{"3", "a"}};
+        String[][] expectedRows = {{"3", "a"}};
 
         assertSqlQueryRows("Wrong result with equal string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
     /**
-     * 3991
+     * #3991
      */
     @Test
     public void testBetweenAllString() {
@@ -56,7 +56,7 @@ public class SqlBetweenStringTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
+        String[][] expectedRows = {
                 {"1", "b"},
                 {"2", "c"},
                 {"3", "a"},
@@ -72,7 +72,7 @@ public class SqlBetweenStringTest extends SqlTest {
     }
 
     /**
-     * 3991
+     * #3991
      */
     @Test
     public void testBetweenSimpleString() {
@@ -81,7 +81,7 @@ public class SqlBetweenStringTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
+        String[][] expectedRows = {
                 {"1", "b"},
                 {"3", "a"},
                 {"8", "az"},
@@ -92,7 +92,7 @@ public class SqlBetweenStringTest extends SqlTest {
     }
 
     /**
-     * 3991
+     * #3991
      */
     @Test
     public void testBetweenNullString() {
@@ -101,7 +101,7 @@ public class SqlBetweenStringTest extends SqlTest {
                 METRIC_NAME
         );
 
-        String[][] expectedRows = new String[][] {
+        String[][] expectedRows = {
                 {"5", "null"},
                 {"6", "z"},
                 {"7", "x"},
