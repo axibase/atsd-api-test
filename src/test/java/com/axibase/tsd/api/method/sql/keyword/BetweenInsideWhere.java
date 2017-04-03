@@ -32,6 +32,9 @@ public class BetweenInsideWhere extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
+    /**
+     * #4014
+     */
     @Test
     public void checkIfBetweenSuccededByAndWorks() {
         String sqlQuery = String.format(
