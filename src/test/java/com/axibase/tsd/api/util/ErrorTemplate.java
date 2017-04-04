@@ -31,7 +31,7 @@ public class ErrorTemplate {
         private static final String INVALID_IDENTIFIER = "Invalid identifier '%s'";
         private static final String INVALID_DATE_VALUE = "Invalid date value: '%s'";
         private static final String AMBIGUOUS_COLUMN = "Column '%s' ambiguously defined";
-        public static final String MISSING_METRIC_EXPRESSION = "Missing metric expression";
+        public static final String MISSING_METRIC_EXPRESSION_IN_THE_WHERE_CLAUSE = "Missing metric expression in the where clause";
         public static final String AMBIGIOUSLY_CONDITION = "Condition in where clause ambiguously defined";
         public static final String DATETIME_IN_GROUP_CLAUSE = "Invalid grouping for column \"datetime\". Remove the " +
                 "column from the SELECT clause, apply an aggregation function to the column, or add the column to the " +

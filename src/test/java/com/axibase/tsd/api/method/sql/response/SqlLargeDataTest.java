@@ -1,27 +1,32 @@
 package com.axibase.tsd.api.method.sql.response;
 
-import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class SqlLargeDataTest  extends SqlTest {
+import static com.axibase.tsd.api.util.CommonAssertions.assertCheck;
+
+public class SqlLargeDataTest extends SqlTest {
 
     private final static int ENTITIES_COUNT = 70000;
-    private final static int ENTITIES_COUNT_PER_REQUEST = 10000;
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
-    @BeforeClass
-    public static void initialize() throws Exception {
+    /**
+     * #3890
+     */
+    @Test
+    public void testQueryLargeData() throws IOException, InterruptedException {
 
-        ArrayList<ArrayList<Series>> seriesRequests = new ArrayList<>(ENTITIES_COUNT / ENTITIES_COUNT_PER_REQUEST);
-        seriesRequests.add(new ArrayList<Series>(ENTITIES_COUNT_PER_REQUEST));
+        ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
 
         Registry.Metric.register(METRIC_NAME);
 
@@ -37,31 +42,42 @@ public class SqlLargeDataTest  extends SqlTest {
             series.addTag("tag", String.valueOf(i));
             series.addData(Mocks.SAMPLE);
 
-            ArrayList<Series> currentRequest = seriesRequests.get(seriesRequests.size() - 1);
-            if (currentRequest.size() < ENTITIES_COUNT_PER_REQUEST) {
-                currentRequest.add(series);
-                continue;
+            seriesRequests.addAll(series.toCommands());
+        }
+
+        TCPSender.sendChecked(new LargeDataCheck(METRIC_NAME, ENTITIES_COUNT), seriesRequests);
+    }
+
+    private class LargeDataCheck extends AbstractCheck {
+
+        private final String ERROR_TEXT = "Large data query error";
+        private final String metricName;
+        private final int entitiesCount;
+
+        public LargeDataCheck(String metricName, int entitiesCount) {
+            this.metricName = metricName;
+            this.entitiesCount = entitiesCount;
+        }
+
+        @Override
+        public boolean isChecked() {
+
+            String sqlQuery = String.format("SELECT COUNT(value) FROM '%s'", metricName);
+            String[][] expectedRows = {{String.valueOf(entitiesCount)}};
+
+            try {
+                assertSqlQueryRows(ERROR_TEXT, expectedRows, sqlQuery);
+            } catch (Error e) {
+                return false;
             }
 
-            currentRequest = new ArrayList<>(ENTITIES_COUNT_PER_REQUEST);
-            currentRequest.add(series);
-            seriesRequests.add(currentRequest);
+            return true;
         }
 
-        for (ArrayList<Series> request : seriesRequests) {
-            SeriesMethod.insertSeriesCheck(request);
+        @Override
+        public String getErrorMessage() {
+            return ERROR_TEXT;
         }
-    }
-
-    /**
-     * #3890
-     */
-    @Test
-    public void testQueryLargeData() {
-        String sqlQuery = String.format("SELECT COUNT(value) FROM '%s'", METRIC_NAME);
-
-        String[][] expectedRows = { { String.valueOf(ENTITIES_COUNT) } };
-
-        assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
     }
 }
+

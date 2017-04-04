@@ -200,17 +200,16 @@ public class CastTest extends SqlTest {
     public void testCastHaving() {
         String sqlQuery = String.format(
                 "SELECT count(t1.value), CAST(t1.tags.numeric_tag) FROM '%s' t1 OUTER JOIN '%s' t2 " +
-                        "OUTER JOIN '%s' t3 " +
-                        "GROUP BY CAST(t1.tags.numeric_tag) " +
-                        "HAVING SUM(CAST(t1.tags.numeric_tag)) != 0",
+                "OUTER JOIN '%s' t3 " +
+                "GROUP BY CAST(t1.tags.numeric_tag) " +
+                "HAVING SUM(CAST(t1.tags.numeric_tag)) != 0",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME,
                 TEST_METRIC3_NAME
         );
 
         String[][] expectedRows = {
-                {"1", "4"},
-                {"0", "NaN"}
+                {"1", "4.0"}
         };
 
         assertSqlQueryRows("CAST in HAVING gives wrong result", expectedRows, sqlQuery);
