@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
@@ -35,7 +36,7 @@ public class SqlLargeDataTest extends SqlTest {
             series.setEntity(ENTITY_NAME);
             series.setMetric(METRIC_NAME);
             series.addTag("tag", String.valueOf(i));
-            series.addData(new Sample(1464945780000L + i * 1000, String.valueOf(i)));
+            series.addData(createTestSample(i));
 
             seriesRequests.addAll(series.toCommands());
         }
@@ -53,6 +54,10 @@ public class SqlLargeDataTest extends SqlTest {
         String[][] expectedRows = {{String.valueOf(ENTITIES_COUNT)}};
 
         assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
+    }
+
+    private static Sample createTestSample(int value) {
+        return new Sample(Mocks.MILLS_TIME + value * 1000, String.valueOf(value));
     }
 
     private class LargeDataCheck extends AbstractCheck {
