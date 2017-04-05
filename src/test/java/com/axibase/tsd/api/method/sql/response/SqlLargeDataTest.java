@@ -43,6 +43,16 @@ public class SqlLargeDataTest extends SqlTest {
         TCPSender.sendChecked(
                 new LargeDataCheck(ENTITY_NAME, METRIC_NAME, ENTITIES_COUNT),
                 seriesRequests);
+
+        String sqlQuery = String.format(
+                "SELECT COUNT(*) " +
+                "FROM '%s' " +
+                "GROUP BY entity",
+                METRIC_NAME);
+
+        String[][] expectedRows = {{String.valueOf(ENTITIES_COUNT)}};
+
+        assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
     }
 
     private class LargeDataCheck extends AbstractCheck {
