@@ -19,6 +19,7 @@ public class SqlLargeDataTest extends SqlTest {
     private final static int ENTITIES_COUNT = 70000;
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
+    private final static int CHECK_START_DELAY_MS = 40000;
 
     /**
      * #3890
@@ -45,7 +46,10 @@ public class SqlLargeDataTest extends SqlTest {
             seriesRequests.addAll(series.toCommands());
         }
 
-        TCPSender.sendChecked(new LargeDataCheck(METRIC_NAME, ENTITIES_COUNT), seriesRequests);
+        TCPSender.sendChecked(
+                new LargeDataCheck(METRIC_NAME, ENTITIES_COUNT),
+                seriesRequests,
+                CHECK_START_DELAY_MS);
     }
 
     private class LargeDataCheck extends AbstractCheck {
