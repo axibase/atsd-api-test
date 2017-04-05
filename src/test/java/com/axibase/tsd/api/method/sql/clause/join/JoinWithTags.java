@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -253,6 +254,67 @@ public class JoinWithTags extends SqlTest {
         };
 
         assertSqlQueryRows("List of tags (with different value) is malformed after JOIN USING ENTITY",
+                expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3939
+     */
+    @Test
+    public void testJoinSeriesWithChangedMetrics() throws Exception {
+        String entity = entity();
+        String[] metrics = { metric(), metric(), metric() };
+
+        Registry.Entity.register(entity);
+        for (String metric : metrics) {
+            Registry.Metric.register(metric);
+        }
+
+        List<Series> initialSeries = new ArrayList<>(metrics.length);
+        for (String metric : metrics) {
+            Series series = new Series();
+            series.setEntity(entity);
+            series.setMetric(metric);
+            series.addTag("tag", "value");
+            series.addData(Mocks.SAMPLE);
+
+            initialSeries.add(series);
+        }
+
+        SeriesMethod.insertSeriesCheck(initialSeries);
+
+        String sqlQuery = String.format(
+                "SELECT t1.tags " +
+                "FROM '%s' t1 " +
+                "JOIN USING ENTITY '%s' t2 " +
+                "JOIN USING ENTITY '%s' t3 " +
+                "WHERE t1.tags.tag = 'value' AND " +
+                "t2.tags.tag = 'value' AND " +
+                "t3.tags.tag = 'value'",
+                metrics[0], metrics[1], metrics[2]
+        );
+
+        String[][] expectedRows = {
+                {"tag=value"}
+        };
+
+        assertSqlQueryRows("JOIN USING ENTITY query by series with changed tags gives wrong result",
+                expectedRows, sqlQuery);
+
+        List<Series> changedSeries = new ArrayList<>(metrics.length);
+        for (String metric : metrics) {
+            Series series = new Series();
+            series.setEntity(entity);
+            series.setMetric(metric);
+            series.addTag("tag1", "value");
+            series.addData(Mocks.SAMPLE);
+
+            changedSeries.add(series);
+        }
+
+        SeriesMethod.insertSeriesCheck(changedSeries);
+
+        assertSqlQueryRows("JOIN USING ENTITY query by series with changed tags gives wrong result",
                 expectedRows, sqlQuery);
     }
 }
