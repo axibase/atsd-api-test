@@ -94,26 +94,8 @@ public class TCPSender {
         return response;
     }
 
-    public static String sendChecked(
-            AbstractCheck check,
-            String request,
-            int checkStartDelayMs) throws IOException, InterruptedException {
-        String response = send(request, Boolean.FALSE);
-        Thread.sleep(checkStartDelayMs);
-        Checker.check(check);
-        return response;
-    }
-
     public static String sendChecked(AbstractCheck check, Collection<? extends PlainCommand> commands) throws IOException {
         String request = buildRequest(commands);
         return sendChecked(check, request);
-    }
-
-    public static String sendChecked(
-            AbstractCheck check,
-            Collection<? extends PlainCommand> commands,
-            int checkStartDelayMs) throws IOException, InterruptedException {
-        String request = buildRequest(commands);
-        return sendChecked(check, request, checkStartDelayMs);
     }
 }
