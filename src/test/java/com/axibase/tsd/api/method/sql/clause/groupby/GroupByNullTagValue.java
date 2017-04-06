@@ -37,7 +37,7 @@ public class GroupByNullTagValue extends SqlTest {
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(Arrays.asList(series, seriesWithoutTag));
+        SeriesMethod.insertSeriesCheck(series, seriesWithoutTag);
     }
 
     /**
@@ -46,7 +46,7 @@ public class GroupByNullTagValue extends SqlTest {
     @Test
     public void testGroupingByTagnameThatHasNullValues() {
         String sqlQuery = String.format(
-                "SELECT tags.tag1, avg(value) " +
+                        "SELECT tags.tag1, avg(value) " +
                         "FROM '%s' " +
                         "GROUP BY tags.tag1",
                 TEST_METRIC_NAME
