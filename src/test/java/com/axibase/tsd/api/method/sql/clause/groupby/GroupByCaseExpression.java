@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,30 +20,54 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class GroupByCaseExpression extends SqlTest {
-    private static final String TEST_ENTITY_NAME = entity();
+    private static final String TEST_ENTITY1_NAME = entity();
+    private static final String TEST_ENTITY1_LABEL = Mocks.LABEL + "1";
+
+    private static final String TEST_ENTITY2_NAME = entity();
+    private static final String TEST_ENTITY2_LABEL = Mocks.LABEL + "2";
+
     private static final String TEST_METRIC_NAME = metric();
+
     private static final String TEXT_VALUE_1 = TEXT_VALUE + "1";
     private static final String TEXT_VALUE_2 = TEXT_VALUE + "2";
 
     @BeforeClass
     public static void prepareData() throws Exception {
+        Registry.Entity.register(TEST_ENTITY1_NAME);
+        Registry.Entity.register(TEST_ENTITY2_NAME);
+        Registry.Metric.register(TEST_METRIC_NAME);
 
-        Entity testEntity = new Entity();
-        testEntity.setName(TEST_ENTITY_NAME);
-        testEntity.setLabel(Mocks.LABEL);
-        EntityMethod.createOrReplaceEntity(testEntity);
+        Entity testEntity1 = new Entity();
+        testEntity1.setName(TEST_ENTITY1_NAME);
+        testEntity1.setLabel(TEST_ENTITY1_LABEL);
+        EntityMethod.createOrReplaceEntity(testEntity1);
 
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        Entity testEntity2 = new Entity();
+        testEntity2.setName(TEST_ENTITY2_NAME);
+        testEntity2.setLabel(TEST_ENTITY2_LABEL);
+        EntityMethod.createOrReplaceEntity(testEntity2);
 
-        series.setData(Arrays.asList(
+        Series series1 = new Series();
+        series1.setEntity(TEST_ENTITY1_NAME);
+        series1.setMetric(TEST_METRIC_NAME);
+
+        series1.setData(Arrays.asList(
                 new Sample("2017-02-09T12:00:00.000Z", new BigDecimal(DECIMAL_VALUE), TEXT_VALUE_1),
-                new Sample("2017-02-10T12:00:00.000Z", new BigDecimal(DECIMAL_VALUE), TEXT_VALUE_1),
+                new Sample("2017-02-10T12:00:00.000Z", new BigDecimal(DECIMAL_VALUE), TEXT_VALUE_1)
+                )
+        );
+
+        Series series2 = new Series();
+        series2.setEntity(TEST_ENTITY2_NAME);
+        series2.setMetric(TEST_METRIC_NAME);
+
+        series2.setData(Arrays.asList(
                 new Sample("2017-02-11T12:00:00.000Z", new BigDecimal(DECIMAL_VALUE), TEXT_VALUE_2),
                 new Sample("2017-02-12T12:00:00.000Z", new BigDecimal(DECIMAL_VALUE), TEXT_VALUE_2)
                 )
         );
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
     /**
@@ -135,14 +160,15 @@ public class GroupByCaseExpression extends SqlTest {
     @Test
     public void testGroupByEntityLabel() {
         String sqlQuery = String.format(
-                "SELECT entity.label " +
+                "SELECT entity.label, COUNT(value) " +
                         "FROM '%s' " +
                         "GROUP BY entity.label",
                 TEST_METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {Mocks.LABEL}
+                {TEST_ENTITY1_LABEL, "2"},
+                {TEST_ENTITY2_LABEL, "2"}
         };
 
         assertSqlQueryRows("GROUP BY entity label gives wrong result", expectedRows, sqlQuery);
@@ -154,14 +180,15 @@ public class GroupByCaseExpression extends SqlTest {
     @Test
     public void testGroupByEntityLabelAlias() {
         String sqlQuery = String.format(
-                "SELECT entity.label AS \"Label\" " +
+                "SELECT entity.label AS \"Label\", COUNT(value)" +
                 "FROM '%s' " +
                 "GROUP BY \"Label\"",
                 TEST_METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {Mocks.LABEL}
+                {TEST_ENTITY1_LABEL, "2"},
+                {TEST_ENTITY2_LABEL, "2"}
         };
 
         assertSqlQueryRows("GROUP BY entity label alias gives wrong result", expectedRows, sqlQuery);
@@ -173,15 +200,15 @@ public class GroupByCaseExpression extends SqlTest {
     @Test
     public void testGroupByTextField() {
         String sqlQuery = String.format(
-                "SELECT text " +
+                "SELECT text, COUNT(value) " +
                 "FROM '%s' " +
                 "GROUP BY text",
                 TEST_METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {TEXT_VALUE_1},
-                {TEXT_VALUE_2}
+                {TEXT_VALUE_1, "2"},
+                {TEXT_VALUE_2, "2"}
         };
 
         assertSqlQueryRows("GROUP BY text field gives wrong result", expectedRows, sqlQuery);
@@ -193,37 +220,17 @@ public class GroupByCaseExpression extends SqlTest {
     @Test
     public void testGroupByTextFieldAlias() {
         String sqlQuery = String.format(
-                "SELECT text AS \"Text field\" " +
+                "SELECT text AS \"Text field\", COUNT(value) " +
                 "FROM '%s' " +
                 "GROUP BY \"Text field\"",
                 TEST_METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {TEXT_VALUE_1},
-                {TEXT_VALUE_2}
+                {TEXT_VALUE_1, "2"},
+                {TEXT_VALUE_2, "2"}
         };
 
         assertSqlQueryRows("GROUP BY text field alias gives wrong result", expectedRows, sqlQuery);
-    }
-
-    /**
-     * #3855
-     */
-    @Test
-    public void testGroupByTextAggregationFunction() {
-        String sqlQuery = String.format(
-                "SELECT CONCAT(text, \"2\") AS \"Text field\" " +
-                        "FROM '%s' " +
-                        "GROUP BY \"Text field\"",
-                TEST_METRIC_NAME
-        );
-
-        String[][] expectedRows = {
-                {TEXT_VALUE_1 + "2"},
-                {TEXT_VALUE_2 + "2"}
-        };
-
-        assertSqlQueryRows("GROUP BY text aggregation function gives wrong result", expectedRows, sqlQuery);
     }
 }
