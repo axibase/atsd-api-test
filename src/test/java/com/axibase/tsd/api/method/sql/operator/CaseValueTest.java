@@ -12,29 +12,19 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class CaseValueTest extends SqlTest {
-    private static final String METRIC_NAME_A = metric();
-    private static final String METRIC_NAME_B = metric();
+    private static final String METRIC_NAME = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series s1 = new Series(entity(), METRIC_NAME_A);
-        s1.addData(new Sample("2017-01-01T09:30:00.000Z", 1));
-        s1.addData(new Sample("2017-01-02T09:30:00.000Z", 2));
-        s1.addData(new Sample("2017-01-03T09:30:00.000Z", 3));
-        s1.addData(new Sample("2017-01-04T09:30:00.000Z", 4));
-        s1.addData(new Sample("2017-01-05T09:30:00.000Z", 5));
-        s1.addData(new Sample("2017-01-06T09:30:00.000Z", 6));
+        Series s = new Series(entity(), METRIC_NAME);
+        s.addData(new Sample("2017-01-01T09:30:00.000Z", "1", "a"));
+        s.addData(new Sample("2017-01-02T09:30:00.000Z", "2", "b"));
+        s.addData(new Sample("2017-01-03T09:30:00.000Z", "3", "c"));
+        s.addData(new Sample("2017-01-04T09:30:00.000Z", "4", "d"));
+        s.addData(new Sample("2017-01-05T09:30:00.000Z", "5", "e"));
+        s.addData(new Sample("2017-01-06T09:30:00.000Z", "6", "f"));
 
-        Series s2 = new Series(entity(), METRIC_NAME_B);
-        s2.addData(new TextSample("2017-01-01T09:30:00.000Z", "a"));
-        s2.addData(new TextSample("2017-01-02T09:30:00.000Z", "b"));
-        s2.addData(new TextSample("2017-01-03T09:30:00.000Z", "c"));
-        s2.addData(new TextSample("2017-01-04T09:30:00.000Z", "d"));
-        s2.addData(new TextSample("2017-01-05T09:30:00.000Z", "e"));
-        s2.addData(new TextSample("2017-01-06T09:30:00.000Z", "f"));
-
-
-        SeriesMethod.insertSeriesCheck(s1, s2);
+        SeriesMethod.insertSeriesCheck(s);
     }
 
     /**
@@ -47,7 +37,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN value THEN value END " +
                         "FROM '%s' " +
                         "ORDER BY value",
-                METRIC_NAME_A
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -73,7 +63,7 @@ public class CaseValueTest extends SqlTest {
                         "END " +
                         "FROM '%s' " +
                         "ORDER BY value",
-                METRIC_NAME_A
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -98,7 +88,7 @@ public class CaseValueTest extends SqlTest {
                         "END " +
                         "FROM '%s' " +
                         "ORDER BY value",
-                METRIC_NAME_A
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -123,7 +113,7 @@ public class CaseValueTest extends SqlTest {
                         "END, value " +
                         "FROM '%s' " +
                         "ORDER BY 1,2",
-                METRIC_NAME_A
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -153,7 +143,7 @@ public class CaseValueTest extends SqlTest {
                         "END " +
                         "FROM '%s' " +
                         "ORDER BY text",
-                METRIC_NAME_B
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -175,5 +165,101 @@ public class CaseValueTest extends SqlTest {
         };
 
         assertSqlQueryRows("CASE WHEN <condition> without FROM doesn't work", expectedRows, sqlQuery);
+    }
+
+    /**
+     * 4057
+     */
+    @Test
+    public void testCaseMultipleCompare() {
+        String sqlQuery = String.format(
+                "SELECT CASE value " +
+                        "WHEN 1 OR 2 THEN 'a' " +
+                        "WHEN 2 OR 3 OR 4 THEN 'b' " +
+                        "WHEN 5 THEN 'c' " +
+                        "END " +
+                        "FROM '%s' " +
+                        "ORDER BY value",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"a"}, {"a"}, {"b"}, {"b"}, {"c"}, {"null"}
+        };
+
+        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * 4057
+     */
+    @Test
+    public void testCaseNestedWhen() {
+        String sqlQuery = String.format(
+                "SELECT CASE value " +
+                        "WHEN 1 OR 2 THEN 'a' " +
+                        "WHEN 2 OR 3 OR (CASE text WHEN 'd' THEN 4 END) THEN 'b' " +
+                        "WHEN 5 THEN 'c' " +
+                        "END " +
+                        "FROM '%s' " +
+                        "ORDER BY value",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"a"}, {"a"}, {"b"}, {"b"}, {"c"}, {"null"}
+        };
+
+        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * 4057
+     */
+    @Test
+    public void testCaseNestedThen() {
+        String sqlQuery = String.format(
+                "SELECT CASE value " +
+                        "WHEN 1 OR 2 THEN 'a' " +
+                        "WHEN 2 OR 3 OR 4 THEN " +
+                            "(CASE text WHEN 'c' OR 'd' THEN 'x' END) " +
+                        "WHEN 5 THEN 'c' " +
+                        "END " +
+                        "FROM '%s' " +
+                        "ORDER BY value",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"a"}, {"a"}, {"x"}, {"x"}, {"c"}, {"null"}
+        };
+
+        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * 4057
+     */
+    @Test
+    public void testCaseNestedCase() {
+        String sqlQuery = String.format(
+                "SELECT CASE CASE text " +
+                        "WHEN 'a' OR 'b' THEN 2 " +
+                        "WHEN 'c' OR 'd' OR 'e' THEN 1 " +
+                        "END " +
+                        "WHEN 1 THEN 'a' " +
+                        "WHEN 2 THEN 'b' " +
+                        "ELSE 'c'" +
+                        "END " +
+                        "FROM '%s' " +
+                        "ORDER BY value",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"b"}, {"b"}, {"a"}, {"a"}, {"a"}, {"c"}
+        };
+
+        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
     }
 }
