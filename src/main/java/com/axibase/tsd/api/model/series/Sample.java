@@ -5,12 +5,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
+    private static final String[] DATE_FORMATS = {
+            "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
+            "yyyy-MM-dd'T'HH:mm:ss.XXX"
+
+    };
+
     private String d;
     private Long t;
 
@@ -24,7 +32,7 @@ public class Sample {
     }
 
     public Sample(String d, BigDecimal v, String text) {
-        this.d = d;
+        this.d = convertDateToISO(d);
         this.v = v;
         this.text = text;
     }
@@ -34,18 +42,13 @@ public class Sample {
     }
 
     public Sample(Sample sourceSample) {
-        this(sourceSample.getT(), sourceSample.getV());
-        setD(sourceSample.getD());
+        this(sourceSample.getD(), sourceSample.getV());
+        setT(sourceSample.getT());
         setText(sourceSample.getText());
     }
 
-    public Sample(long t, String v) {
-        this.t = t;
-        this.v = new BigDecimal(String.valueOf(v));
-    }
-
     public Sample(String d, int v) {
-        this.d = d;
+        this.d = convertDateToISO(d);
         this.v = new BigDecimal(String.valueOf(v));
     }
 
@@ -54,19 +57,24 @@ public class Sample {
         this.v = new BigDecimal(String.valueOf(v));
     }
 
-    public Sample(Long t, BigDecimal v) {
-        this.t = t;
-        this.v = v;
-    }
-
     public Sample(String d, BigDecimal v) {
-        this.d = d;
+        this.d = convertDateToISO(d);
         this.v = v;
     }
 
     public Sample(String d, String v) {
-        this.d = d;
+        this.d = convertDateToISO(d);
         this.v = new BigDecimal(String.valueOf(v));
+    }
+
+    private String convertDateToISO(String dateString) {
+        Date date;
+        try {
+            date = DateUtils.parseDate(dateString, DATE_FORMATS);
+        } catch (ParseException ex) {
+            return null;
+        }
+        return Util.ISOFormat(date, true, Util.DEFAULT_TIMEZONE_NAME);
     }
 
     public Long getT() {
@@ -82,7 +90,7 @@ public class Sample {
     }
 
     protected void setD(String d) {
-        this.d = d;
+        this.d = convertDateToISO(d);
     }
 
     public BigDecimal getV() {
@@ -116,7 +124,7 @@ public class Sample {
 
         Sample sample = (Sample) o;
 
-        if (d != null ? !d.equals(sample.d) : sample.d != null)
+        if (d != null ? !d.equals(convertDateToISO(sample.d)) : sample.d != null)
             return false;
         if (t != null ? !t.equals(sample.t) : sample.t != null)
             return false;

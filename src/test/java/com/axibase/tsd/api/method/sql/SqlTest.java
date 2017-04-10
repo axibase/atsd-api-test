@@ -66,16 +66,28 @@ public abstract class SqlTest extends SqlMethod {
         } else {
             try {
                 switch (dataType) {
-                    case "double":
+                    case "double": {
                         Double actualDoubleValue = Double.parseDouble(actualValue);
                         Double expectedDoubleValue = Double.parseDouble(expectedValue);
                         return actualDoubleValue.equals(expectedDoubleValue);
-                    case "float":
+                    }
+                    case "float": {
                         Float actualFloatValue = Float.parseFloat(actualValue);
                         Float expectedFloatValue = Float.parseFloat(expectedValue);
                         return actualFloatValue.equals(expectedFloatValue);
-                    default:
+                    }
+                    case "java_object": {
+                        try {
+                            Float actualFloatValue = Float.parseFloat(actualValue);
+                            Float expectedFloatValue = Float.parseFloat(expectedValue);
+                            return actualFloatValue.equals(expectedFloatValue);
+                        } catch (NumberFormatException ex) {
+                            return expectedValue.equals(actualValue);
+                        }
+                    }
+                    default: {
                         return expectedValue.equals(actualValue);
+                    }
                 }
             } catch (NumberFormatException nfe) {
                 return expectedValue.equals(actualValue);

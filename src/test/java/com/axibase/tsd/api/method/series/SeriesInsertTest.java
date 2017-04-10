@@ -17,10 +17,7 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.*;
@@ -66,10 +63,9 @@ public class SeriesInsertTest extends SeriesTest {
         String entityName = "e-decimal-1";
         String metricName = "m-decimal-1";
         String largeNumber = "10.121212121212121212212121212121212121212121";
-        final long t = MILLS_TIME;
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(t, largeNumber));
+        series.addData(new Sample(Mocks.ISO_TIME, largeNumber));
 
         Metric metric = new Metric();
         metric.setName(metricName);
@@ -397,7 +393,8 @@ public class SeriesInsertTest extends SeriesTest {
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-7", "m-time-range-7");
-        series.addData(new Sample(t, v));
+        Sample sample = new Sample(new Date(t), v.toString());
+        series.addData(sample);
 
         assertEquals("Managed to insert series with t out of range", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
@@ -591,7 +588,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Test
     public void testEmptyTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-1", "m-empty-tag-1");
-        series.addData(new Sample(Mocks.MILLS_TIME, "1"));
+        series.addData(new Sample(ISO_TIME, "1"));
         String emptyTagName = "empty-tag";
 
         series.addTag(emptyTagName, "");
@@ -609,7 +606,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Test
     public void testNullTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-2", "m-empty-tag-2");
-        series.addData(new Sample(Mocks.MILLS_TIME, "1"));
+        series.addData(new Sample(ISO_TIME, "1"));
         String emptyTagName = "empty-tag";
 
         series.addTag(emptyTagName, null);
@@ -627,7 +624,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Test
     public void testNullTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-3", "m-empty-tag-3");
-        series.addData(new Sample(Mocks.MILLS_TIME, "1"));
+        series.addData(new Sample(ISO_TIME, "1"));
         String emptyTagName = "empty-tag";
 
         series.addTag("nonempty-tag", "value");
@@ -646,7 +643,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Test
     public void testEmptyTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-4", "m-empty-tag-4");
-        series.addData(new Sample(Mocks.MILLS_TIME, "1"));
+        series.addData(new Sample(ISO_TIME, "1"));
         String emptyTagName = "empty-tag";
 
         series.addTag("nonempty-tag", "value");
@@ -665,7 +662,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Test
     public void testTagValueNullRaiseError() throws Exception {
         Series series = new Series("nulltag-entity-1", "nulltag-metric-1");
-        series.addData(new Sample(1, "1"));
+        series.addData(new Sample(ISO_TIME, "1"));
         series.addTag("t1", null);
 
         Response response = insertSeries(Collections.singletonList(series));
