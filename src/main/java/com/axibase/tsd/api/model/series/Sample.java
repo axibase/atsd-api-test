@@ -15,8 +15,7 @@ import java.util.Date;
 public class Sample {
     private static final String[] DATE_FORMATS = {
             "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
-            "yyyy-MM-dd'T'HH:mm:ss.XXX"
-
+            "yyyy-MM-dd'T'HH:mm:ssXXX"
     };
 
     private String d;
