@@ -36,8 +36,8 @@ public class AggregationEmptyValueTest extends SqlTest {
     @Test
     public void testMinMaxValueTimeNegavtives() {
         String sqlQuery = String.format(
-                "SELECT min_value_time(value), max_value_time(value)" +
-                        "FROM '%s'" +
+                "SELECT min_value_time(value), max_value_time(value) " +
+                        "FROM '%s' " +
                         "GROUP BY entity",
                 METRIC_NAME1
         );
@@ -56,8 +56,8 @@ public class AggregationEmptyValueTest extends SqlTest {
     @Test
     public void testMinMaxValueTimeNaN() {
         String sqlQuery = String.format(
-                "SELECT min_value_time(value), max_value_time(value)" +
-                        "FROM '%s'" +
+                "SELECT min_value_time(value), max_value_time(value) " +
+                        "FROM '%s' " +
                         "GROUP BY entity",
                 METRIC_NAME2
         );
@@ -76,8 +76,8 @@ public class AggregationEmptyValueTest extends SqlTest {
     @Test
     public void testMinMaxValueTimeNull() {
         String sqlQuery = String.format(
-                "SELECT min_value_time(text), max_value_time(text)" +
-                        "FROM '%s'" +
+                "SELECT min_value_time(text), max_value_time(text) " +
+                        "FROM '%s' " +
                         "GROUP BY entity",
                 METRIC_NAME1
         );
@@ -93,5 +93,37 @@ public class AggregationEmptyValueTest extends SqlTest {
     /**
      * #4000
      */
+    /**
+     * #4000
+     */
+    @Test
+    public void testAggregationNaN() {
+        String[] testFunctions = {
+                "min", "max", "avg", "sum", "last", "first",
+                "stddev", "delta", "counter"
+        };
+        String[][] expectedRows = {new String[testFunctions.length]};
 
+        StringBuilder testColumns = new StringBuilder();
+        for (int i = 0; i < testFunctions.length; i++) {
+            if (i > 0)
+                testColumns.append(", ");
+            testColumns.append(testFunctions[i]);
+            testColumns.append("(value)");
+            expectedRows[0][i] = "NaN";
+        }
+
+        String sqlQuery = String.format(
+                "SELECT %s " +
+                        "FROM '%s' " +
+                        "GROUP BY entity",
+                testColumns.toString(),
+                METRIC_NAME2
+        );
+
+        assertSqlQueryRows(
+                "Incorrect result for min/max_value_time with NaNs",
+                expectedRows, sqlQuery
+        );
+    }
 }
