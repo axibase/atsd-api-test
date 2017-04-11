@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.commons.lang3.time.DateUtils;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -13,10 +13,7 @@ import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
-    private static final String[] DATE_FORMATS = {
-            "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
-            "yyyy-MM-dd'T'HH:mm:ssXXX"
-    };
+    private static final ISO8601DateFormat isoDateFormat = new ISO8601DateFormat();
 
     private String d;
     private Long t;
@@ -69,7 +66,7 @@ public class Sample {
     private String convertDateToISO(String dateString) {
         Date date;
         try {
-            date = DateUtils.parseDate(dateString, DATE_FORMATS);
+            date = isoDateFormat.parse(dateString);
         } catch (ParseException ex) {
             return null;
         }
