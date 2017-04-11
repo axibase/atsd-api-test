@@ -19,13 +19,13 @@ public class AggregationEmptyValueTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(entity(), METRIC_NAME1);
-        series1.addData(new Sample(Util.ISOFormat(1000000000000L), "-2"));
-        series1.addData(new Sample(Util.ISOFormat(1000000000001L), "-1"));
+        series1.addData(new Sample(Util.ISOFormat(1), "-2"));
+        series1.addData(new Sample(Util.ISOFormat(2), "-1"));
 
         Series series2 = new Series(entity(), METRIC_NAME2);
         /* NaN value field */
-        series2.addData(new TextSample(Util.ISOFormat(1000000000000L), "text"));
-        series2.addData(new TextSample(Util.ISOFormat(1000000000001L), "text"));
+        series2.addData(new TextSample(Util.ISOFormat(1), "text"));
+        series2.addData(new TextSample(Util.ISOFormat(2), "text"));
 
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
@@ -42,7 +42,7 @@ public class AggregationEmptyValueTest extends SqlTest {
                 METRIC_NAME1
         );
 
-        String[][] expextedRows = {{"1000000000000", "1000000000001"}};
+        String[][] expextedRows = {{"1", "2"}};
 
         assertSqlQueryRows(
                 "Incorrect result for min/max_value_time with negatives",
@@ -90,17 +90,11 @@ public class AggregationEmptyValueTest extends SqlTest {
         );
     }
 
-    /**
-     * #4000
-     */
-    /**
-     * #4000
-     */
-    @Test
-    public void testAggregationNaN() {
+    private void testAggregationByColumn(String column, String message) {
         String[] testFunctions = {
                 "min", "max", "avg", "sum", "last", "first",
-                "stddev", "delta", "counter"
+                "stddev", "delta", "counter", "correl", "median", "percentile",
+                "wavg"
         };
         String[][] expectedRows = {new String[testFunctions.length]};
 
@@ -109,7 +103,17 @@ public class AggregationEmptyValueTest extends SqlTest {
             if (i > 0)
                 testColumns.append(", ");
             testColumns.append(testFunctions[i]);
-            testColumns.append("(value)");
+            switch (testFunctions[i]) {
+                case "correl":
+                    testColumns.append(String.format("(%s,%s)", column, column));
+                    break;
+                case "percentile":
+                    testColumns.append(String.format("(90.5,%s)", column));
+                    break;
+                default:
+                    testColumns.append(String.format("(%s)", column));
+                    break;
+            }
             expectedRows[0][i] = "NaN";
         }
 
@@ -121,9 +125,22 @@ public class AggregationEmptyValueTest extends SqlTest {
                 METRIC_NAME2
         );
 
-        assertSqlQueryRows(
-                "Incorrect result for min/max_value_time with NaNs",
-                expectedRows, sqlQuery
-        );
+        assertSqlQueryRows(message, expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4000
+     */
+    @Test
+    public void testAggregationNaN() {
+        testAggregationByColumn("value", "Incorrect result for one of aggregation functions with NaN");
+    }
+
+    /**
+     * #4000
+     */
+    @Test
+    public void testAggregationNull() {
+        testAggregationByColumn("text", "Incorrect result for one of aggregation functions with null");
     }
 }
