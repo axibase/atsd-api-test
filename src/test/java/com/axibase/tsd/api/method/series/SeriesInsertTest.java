@@ -515,6 +515,21 @@ public class SeriesInsertTest extends SeriesTest {
 
     /**
      * #2850
+     */
+    private class UncheckedSample extends Sample {
+
+        UncheckedSample(String d, String v) {
+            super(d, v);
+        }
+
+        @Override
+        public void setDUnsafe(String d) {
+            super.setDUnsafe(d);
+        }
+    }
+
+    /**
+     * #2850
      **/
     @Test
     public void testLocalTimeUnsupported() throws Exception {
@@ -523,7 +538,10 @@ public class SeriesInsertTest extends SeriesTest {
         String value = "0";
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample("2016-06-09 20:00:00", value));
+        String date = "2016-06-09 20:00:00";
+        UncheckedSample sample = new UncheckedSample(date, value);
+        sample.setDUnsafe(date);
+        series.addData(sample);
 
         Response response = insertSeries(Collections.singletonList(series));
 
@@ -547,7 +565,11 @@ public class SeriesInsertTest extends SeriesTest {
         String value = "0";
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample("2016-06-09T09:50:00-1010", value));
+
+        String date = "2016-06-09T09:50:00-1010";
+        UncheckedSample sample = new UncheckedSample(date, value);
+        sample.setDUnsafe(date);
+        series.addData(sample);
 
         Response response = insertSeries(Collections.singletonList(series));
 
@@ -568,7 +590,11 @@ public class SeriesInsertTest extends SeriesTest {
         String value = "0";
 
         Series series = new Series(entityName, metricName);
-        series.addData(new Sample(Mocks.MILLS_TIME.toString(), value));
+
+        String date = Mocks.MILLS_TIME.toString();
+        UncheckedSample sample = new UncheckedSample(date, value);
+        sample.setDUnsafe(date);
+        series.addData(sample);
 
         Response response = insertSeries(Collections.singletonList(series));
 

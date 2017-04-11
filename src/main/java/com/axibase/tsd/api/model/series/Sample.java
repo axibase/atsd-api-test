@@ -89,6 +89,10 @@ public class Sample {
         this.d = convertDateToISO(d);
     }
 
+    protected void setDUnsafe(String d) {
+        this.d = d;
+    }
+
     public BigDecimal getV() {
         return v;
     }
