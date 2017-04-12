@@ -33,7 +33,7 @@ public class ConcatTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
         {
             Series series = new Series(TEST_ENTITY, TEST_METRIC1);
-            series.addData(new TextSample("2016-06-03T09:19:18.000Z", ""));
+            series.addData(new TextSample("2016-06-03T09:19:18.000Z", "")); // NaN value
             series.addData(new Sample("2016-06-03T09:20:18.000Z", "3.0"));
             series.addData(new Sample("2016-06-03T09:21:18.000Z", "3.10"));
             series.addData(new Sample("2016-06-03T09:22:18.000Z", "3.14"));
@@ -94,7 +94,7 @@ public class ConcatTest extends SqlTest {
     }
 
     /**
-     * #3768
+     * #3768, #4000
      */
     @Test
     public void testConcatWordAndNumber() throws Exception {
