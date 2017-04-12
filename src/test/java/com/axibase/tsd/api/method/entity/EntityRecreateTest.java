@@ -12,44 +12,42 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class EntityRecreateTest extends SqlTest {
-    private static final String METRIC_NAME = metric();
-    private static final String ENTITY_NAME1 = entity();
-    private static final String ENTITY_NAME2 = entity();
-
-    @BeforeClass
-    private void prepareData() throws Exception {
-        Registry.Entity.register(ENTITY_NAME1);
-        Registry.Entity.register(ENTITY_NAME2);
-        Registry.Metric.register(METRIC_NAME);
-
-        Series series1 = new Series();
-        series1.setEntity(ENTITY_NAME1);
-        series1.setMetric(METRIC_NAME);
-        series1.addData(Mocks.SAMPLE);
-
-        Series series2 = new Series();
-        series2.setEntity(ENTITY_NAME2);
-        series2.setMetric(METRIC_NAME);
-        series2.addData(Mocks.SAMPLE);
-
-        /* Insert first entity*/
-        SeriesMethod.insertSeriesCheck(series1);
-
-        /* Remove first entity*/
-        EntityMethod.deleteEntity(ENTITY_NAME1);
-
-        /* Insert second series */
-        SeriesMethod.insertSeriesCheck(series2);
-    }
 
     /**
      * #4037
      */
     @Test
     public void testRecreateEntity() throws Exception {
-        String sqlQuery = String.format("SELECT entity FROM '%s' ORDER BY entity", METRIC_NAME);
+        final String metricName = metric();
+        final String entityName1 = entity();
+        final String entityName2 = entity();
 
-        String[][] expectedRows = {{ENTITY_NAME2}};
+        Registry.Entity.register(entityName1);
+        Registry.Entity.register(entityName2);
+        Registry.Metric.register(metricName);
+
+        Series series1 = new Series();
+        series1.setEntity(entityName1);
+        series1.setMetric(metricName);
+        series1.addData(Mocks.SAMPLE);
+
+        Series series2 = new Series();
+        series2.setEntity(entityName2);
+        series2.setMetric(metricName);
+        series2.addData(Mocks.SAMPLE);
+
+        /* Insert first entity*/
+        SeriesMethod.insertSeriesCheck(series1);
+
+        /* Remove first entity*/
+        EntityMethod.deleteEntity(entityName1);
+
+        /* Insert second series */
+        SeriesMethod.insertSeriesCheck(series2);
+
+        String sqlQuery = String.format("SELECT entity FROM '%s' ORDER BY entity", metricName);
+
+        String[][] expectedRows = {{entityName2}};
 
         assertSqlQueryRows("Entity recreation gives wrong result", expectedRows, sqlQuery);
     }
