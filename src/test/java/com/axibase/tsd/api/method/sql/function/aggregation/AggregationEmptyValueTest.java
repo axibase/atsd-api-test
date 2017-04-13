@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
@@ -90,57 +91,63 @@ public class AggregationEmptyValueTest extends SqlTest {
         );
     }
 
-    private void testAggregationByColumn(String column, String message) {
-        String[] testFunctions = {
-                "min", "max", "avg", "sum", "last", "first",
-                "stddev", "delta", "counter", "correl", "median", "percentile",
-                "wavg"
+    @DataProvider(name = "aggregationFunctionFormats")
+    Object[][] provideAgregationFunctionFormat() {
+        return new Object[][]{
+                {"min(%s)"},
+                {"max(%s)"},
+                {"avg(%s)"},
+                {"sum(%s)"},
+                {"last(%s)"},
+                {"first(%s)"},
+                {"stddev(%s)"},
+                {"delta(%s)"},
+                {"counter(%s)"},
+                {"correl(%1$s,%1$s)"},
+                {"median(%s)"},
+                {"percentile(90,%s)"},
+                {"wavg(%s)"},
+                {"wtavg(%s)"},
         };
-        String[][] expectedRows = {new String[testFunctions.length]};
+    }
 
-        StringBuilder testColumns = new StringBuilder();
-        for (int i = 0; i < testFunctions.length; i++) {
-            if (i > 0)
-                testColumns.append(", ");
-            testColumns.append(testFunctions[i]);
-            switch (testFunctions[i]) {
-                case "correl":
-                    testColumns.append(String.format("(%s,%s)", column, column));
-                    break;
-                case "percentile":
-                    testColumns.append(String.format("(90.5,%s)", column));
-                    break;
-                default:
-                    testColumns.append(String.format("(%s)", column));
-                    break;
-            }
-            expectedRows[0][i] = "NaN";
-        }
+    /**
+     * #4000
+     */
+    @Test(dataProvider = "aggregationFunctionFormats")
+    public void testAggregationNaN(String functionFormat) {
+        String functionWithArgument = String.format(functionFormat, "value");
 
         String sqlQuery = String.format(
                 "SELECT %s " +
                         "FROM '%s' " +
                         "GROUP BY entity",
-                testColumns.toString(),
+                functionWithArgument,
                 METRIC_NAME2
         );
 
-        assertSqlQueryRows(message, expectedRows, sqlQuery);
+        String[][] expectedRows = {{"NaN"}};
+
+        assertSqlQueryRows("Incorrect result for one of aggregation functions with NaN", expectedRows, sqlQuery);
     }
 
     /**
      * #4000
      */
-    @Test
-    public void testAggregationNaN() {
-        testAggregationByColumn("value", "Incorrect result for one of aggregation functions with NaN");
-    }
+    @Test(dataProvider = "aggregationFunctionFormats")
+    public void testAggregationNull(String functionFormat) {
+        String functionWithArgument = String.format(functionFormat, "text");
 
-    /**
-     * #4000
-     */
-    @Test
-    public void testAggregationNull() {
-        testAggregationByColumn("text", "Incorrect result for one of aggregation functions with null");
+        String sqlQuery = String.format(
+                "SELECT %s " +
+                        "FROM '%s' " +
+                        "GROUP BY entity",
+                functionWithArgument,
+                METRIC_NAME2
+        );
+
+        String[][] expectedRows = {{"NaN"}};
+
+        assertSqlQueryRows("Incorrect result for one of aggregation functions with null", expectedRows, sqlQuery);
     }
 }
