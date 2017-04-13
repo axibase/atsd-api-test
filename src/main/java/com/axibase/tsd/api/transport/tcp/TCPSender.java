@@ -19,7 +19,7 @@ import java.util.Collections;
 public class TCPSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(TCPSender.class);
     private static final String DEBUG_PREFIX = "debug ";
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = "\n";
     private static Config config;
 
     static {
