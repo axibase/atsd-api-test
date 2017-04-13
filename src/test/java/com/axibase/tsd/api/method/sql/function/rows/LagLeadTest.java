@@ -20,6 +20,7 @@ public class LagLeadTest extends SqlTest {
         Series series = new Series(entity(), METRIC_NAME);
 
         series.addData(new Sample("2017-01-01T12:00:00.000Z", BigDecimal.valueOf(1), "a"));
+        series.addData(new Sample("2017-01-01T13:00:00.000Z", BigDecimal.valueOf(0), "a"));
         series.addData(new Sample("2017-01-02T12:00:00.000Z", BigDecimal.valueOf(2), "a"));
         series.addData(new Sample("2017-01-03T12:00:00.000Z", BigDecimal.valueOf(4), "a"));
         series.addData(new Sample("2017-01-04T12:00:00.000Z", BigDecimal.valueOf(7), "b"));
@@ -38,20 +39,23 @@ public class LagLeadTest extends SqlTest {
     @Test
     public void testLagLeadInSelectClause() {
         String sqlQuery = String.format(
-                "SELECT value, lag(value), lead(value) FROM '%s'",
+                "SELECT CASE WHEN value > 0 THEN value END, " +
+                        "lag(CASE WHEN value > 0 THEN value END), " +
+                        "lead(CASE WHEN value > 0 THEN value END) FROM '%s'",
                 METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {"1", "null",    "2"},
-                {"2",    "1",    "4"},
-                {"4",    "2",    "7"},
-                {"7",    "4",   "11"},
-                {"11",   "7",   "16"},
-                {"16",  "11",   "23"},
-                {"23",  "16",   "31"},
-                {"31",  "23",   "40"},
-                {"40",  "31", "null"}
+                {"1",    "null", "null"},
+                {"null",    "1",    "2"},
+                {"2",    "null",    "4"},
+                {"4",       "2",    "7"},
+                {"7",       "4",   "11"},
+                {"11",      "7",   "16"},
+                {"16",     "11",   "23"},
+                {"23",     "16",   "31"},
+                {"31",     "23",   "40"},
+                {"40",     "31", "null"}
         };
 
         assertSqlQueryRows("Wrong result for LAG/LEAD functions in SELECT clause", expectedRows, sqlQuery);
@@ -77,5 +81,22 @@ public class LagLeadTest extends SqlTest {
         };
 
         assertSqlQueryRows("Wrong result for LAG/LEAD functions in SELECT expression", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4032
+     */
+    @Test
+    public void testLagLeadInEmptyResult() {
+        String sqlQuery = String.format(
+                "SELECT lag(value), lead(value) " +
+                        "FROM '%s' " +
+                        "WHERE text < 'a'",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {};
+
+        assertSqlQueryRows("Wrong result for LAG/LEAD functions for empty result set", expectedRows, sqlQuery);
     }
 }
