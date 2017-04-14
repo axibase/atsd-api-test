@@ -15,11 +15,11 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class WhereTagInListTest extends SqlTest {
+    private static final String ENTITY_NAME = entity();
     private static final String METRIC_NAME = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        String entityName = entity();
         List<Series> seriesList = new ArrayList<>();
         String[][] tags = {
                 {"t1", "a"},
@@ -30,12 +30,12 @@ public class WhereTagInListTest extends SqlTest {
                 {null, null},
         };
 
-        Registry.Entity.register(entityName);
+        Registry.Entity.register(ENTITY_NAME);
         Registry.Metric.register(METRIC_NAME);
 
         for (int i = 0; i < tags.length; i++) {
             Series series = new Series();
-            series.setEntity(entityName);
+            series.setEntity(ENTITY_NAME);
             series.setMetric(METRIC_NAME);
             series.addData(new Sample(String.format("2017-01-0%dT12:00:00.000Z", i + 1),
                     Integer.toString(i + 1)));
@@ -85,6 +85,6 @@ public class WhereTagInListTest extends SqlTest {
                 {"5"}
         };
 
-        assertSqlQueryRows("Wrong result with WHERE <tag> IN <list>", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result with WHERE <tag> NOT IN <list>", expectedRows, sqlQuery);
     }
 }
