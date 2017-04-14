@@ -1,8 +1,6 @@
 package com.axibase.tsd.api.method.sql.function.dateparse;
 
-import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.util.Mocks;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -20,8 +18,6 @@ public class DateParseFunctionTest extends SqlTest {
         String res = queryATSDVersion().readEntity(String.class);
         JSONObject obj = new JSONObject(res);
         tzName = obj.getJSONObject("date").getJSONObject("timeZone").getString("name");
-
-        SeriesMethod.insertSeriesCheck(Mocks.series());
     }
 
     /**
@@ -29,16 +25,12 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseISODefault() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "1970-01-01T01:00:00.000Z";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
-        runner.tz = TimeZone.getTimeZone(tzName);
+        String sqlQuery = "SELECT date_parse('1970-01-01T01:00:00.000Z')";
 
-        runner.runTest();
+        String[][] expectedRows = {{"3600000"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -46,33 +38,33 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseISOFormat() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "1970-01-01T01:00:00.000Z";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s', \"yyyy-MM-dd'T'HH:mm:ss.SSSZZ\")",
-                runner.dateToParse
-        );
-        runner.sdFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
-        runner.tz = TimeZone.getTimeZone(tzName);
+        String sqlQuery = "SELECT date_parse('1970-01-01T01:00:00.000Z', " +
+                "\"yyyy-MM-dd'T'HH:mm:ss.SSS ZZ\")";
 
-        runner.runTest();
+        String[][] expectedRows = {{"3600000"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
      * #4050
      */
     @Test
-    public void testDateParseCustomFormat() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "31.03.2017 12:36:03.283";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s', 'dd.MM.yyyy HH:mm:ss.SSS')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "dd.MM.yyyy HH:mm:ss.SSS";
-        runner.tz = TimeZone.getTimeZone(tzName);
+    public void testDateParseCustomFormat() throws ParseException {
+        String strDate = "31.03.2017 12:36:03.283";
+        String sqlQuery = String.format("SELECT date_parse('%s', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS')", strDate);
 
-        runner.runTest();
+
+        TimeZone tz = TimeZone.getTimeZone(tzName);
+        DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+        format.setTimeZone(tz);
+
+        String[][] expectedRows = {{Long.toString(format.parse(strDate).getTime())}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -80,16 +72,14 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseTimezoneAndCustomFormat() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "31.03.2017 12:36:03.283 -08:00";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s', 'dd.MM.yyyy HH:mm:ss.SSS ZZ')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "dd.MM.yyyy HH:mm:ss.SSS X";
-        runner.tz = TimeZone.getTimeZone(tzName);
+        //1490992563283
+        String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 -08:00', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS ZZ')";
 
-        runner.runTest();
+        String[][] expectedRows = {{"1490992563283"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -97,16 +87,14 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseLongTimezoneAndCustomFormat() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "31.03.2017 12:36:03.283";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s Europe/Berlin', 'dd.MM.yyyy HH:mm:ss.SSS ZZZ')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "dd.MM.yyyy HH:mm:ss.SSS";
-        runner.tz = TimeZone.getTimeZone("Europe/Berlin");
+        //1490956563283
+        String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 Europe/Berlin', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS ZZZ')";
 
-        runner.runTest();
+        String[][] expectedRows = {{"1490956563283"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -114,16 +102,13 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseCustomFormatWithLongTimezone() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "31.03.2017 12:36:03.283";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s', 'dd.MM.yyyy HH:mm:ss.SSS', 'Europe/Berlin')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "dd.MM.yyyy HH:mm:ss.SSS";
-        runner.tz = TimeZone.getTimeZone("Europe/Berlin");
+        String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS', 'Europe/Berlin')";
 
-        runner.runTest();
+        String[][] expectedRows = {{"1490956563283"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -131,16 +116,13 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseCustomFormatWithNumericTimezone() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "31.03.2017 12:36:03.283";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s', 'dd.MM.yyyy HH:mm:ss.SSS', '+01:00')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "dd.MM.yyyy HH:mm:ss.SSS";
-        runner.tz = TimeZone.getTimeZone("GMT+01:00");
+        String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS', '+01:00')";
 
-        runner.runTest();
+        String[][] expectedRows = {{"1490960163283"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -148,38 +130,13 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseTimezoneBoth() {
-        TestRunner runner = new TestRunner();
-        runner.dateToParse = "31.03.2017 12:36:03.283";
-        runner.sqlQuery = String.format(
-                "SELECT date_parse('%s Europe/Berlin', 'dd.MM.yyyy HH:mm:ss.SSS ZZZ', 'Europe/Berlin')",
-                runner.dateToParse
-        );
-        runner.sdFormat = "dd.MM.yyyy HH:mm:ss.SSS";
-        runner.tz = TimeZone.getTimeZone("Europe/Berlin");
+        //1490956563283
+        String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 Europe/Berlin', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS ZZZ', 'Europe/Berlin')";
 
-        runner.runTest();
-    }
+        String[][] expectedRows = {{"1490956563283"}};
 
-    private class TestRunner {
-        String dateToParse;
-        String sqlQuery;
-        String sdFormat;
-        TimeZone tz;
-
-        void runTest() {
-            DateFormat format = new SimpleDateFormat(sdFormat);
-            format.setTimeZone(tz);
-
-            String[][] expectedRows;
-            try {
-                expectedRows = new String[][]{{
-                        Long.toString(format.parse(dateToParse).getTime())
-                }};
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-
-            assertSqlQueryRows("Incorrect result for date_parse in " + sqlQuery, expectedRows, sqlQuery);
-        }
+        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+                expectedRows, sqlQuery);
     }
 }
