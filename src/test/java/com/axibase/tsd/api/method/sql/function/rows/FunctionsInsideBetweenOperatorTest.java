@@ -54,7 +54,7 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
 
         String[][] expectedRows = {{"1"}, {"2"}, {"4"}, {"3"}, {"5"}, {"6"}};
 
-        assertSqlQueryRows("Incorrect result with lag/lead in BETWEEN operator",
+        assertSqlQueryRows("Incorrect result with sqrt in BETWEEN operator",
                 expectedRows, sqlQuery);
     }
 }
