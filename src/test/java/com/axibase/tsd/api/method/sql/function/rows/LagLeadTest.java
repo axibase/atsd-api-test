@@ -19,16 +19,16 @@ public class LagLeadTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(entity(), METRIC_NAME);
 
-        series.addData(new Sample("2017-01-01T12:00:00.000Z", BigDecimal.valueOf(1), "a"));
-        series.addData(new Sample("2017-01-01T13:00:00.000Z", BigDecimal.valueOf(0), "a"));
-        series.addData(new Sample("2017-01-02T12:00:00.000Z", BigDecimal.valueOf(2), "a"));
-        series.addData(new Sample("2017-01-03T12:00:00.000Z", BigDecimal.valueOf(4), "a"));
-        series.addData(new Sample("2017-01-04T12:00:00.000Z", BigDecimal.valueOf(7), "b"));
-        series.addData(new Sample("2017-01-05T12:00:00.000Z", BigDecimal.valueOf(11), "b"));
-        series.addData(new Sample("2017-01-06T12:00:00.000Z", BigDecimal.valueOf(16), "b"));
-        series.addData(new Sample("2017-01-07T12:00:00.000Z", BigDecimal.valueOf(23), "c"));
-        series.addData(new Sample("2017-01-08T12:00:00.000Z", BigDecimal.valueOf(31), "c"));
-        series.addData(new Sample("2017-01-09T12:00:00.000Z", BigDecimal.valueOf(40), "c"));
+        series.addData(new Sample("2017-01-01T12:00:00.000Z", "1", "a"));
+        series.addData(new Sample("2017-01-01T13:00:00.000Z", "0", "a"));
+        series.addData(new Sample("2017-01-02T12:00:00.000Z", "2", "a"));
+        series.addData(new Sample("2017-01-03T12:00:00.000Z", "4", "a"));
+        series.addData(new Sample("2017-01-04T12:00:00.000Z", "7", "b"));
+        series.addData(new Sample("2017-01-05T12:00:00.000Z", "11", "b"));
+        series.addData(new Sample("2017-01-06T12:00:00.000Z", "16", "b"));
+        series.addData(new Sample("2017-01-07T12:00:00.000Z", "23", "c"));
+        series.addData(new Sample("2017-01-08T12:00:00.000Z", "31", "c"));
+        series.addData(new Sample("2017-01-09T12:00:00.000Z", "40", "c"));
 
         SeriesMethod.insertSeriesCheck(series);
     }
@@ -37,50 +37,140 @@ public class LagLeadTest extends SqlTest {
      * #4032
      */
     @Test
-    public void testLagLeadInSelectClause() {
+    public void testLagInSelectClause() {
         String sqlQuery = String.format(
-                "SELECT CASE WHEN value > 0 THEN value END, " +
-                        "lag(CASE WHEN value > 0 THEN value END), " +
-                        "lead(CASE WHEN value > 0 THEN value END) FROM '%s'",
+                "SELECT value, lag(value) FROM '%s'",
                 METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {"1",    "null", "null"},
-                {"null",    "1",    "2"},
-                {"2",    "null",    "4"},
-                {"4",       "2",    "7"},
-                {"7",       "4",   "11"},
-                {"11",      "7",   "16"},
-                {"16",     "11",   "23"},
-                {"23",     "16",   "31"},
-                {"31",     "23",   "40"},
-                {"40",     "31", "null"}
+                {"1", "null"},
+                {"0",    "1"},
+                {"2",    "0"},
+                {"4",    "2"},
+                {"7",    "4"},
+                {"11",   "7"},
+                {"16",  "11"},
+                {"23",  "16"},
+                {"31",  "23"},
+                {"40",  "31"}
         };
 
-        assertSqlQueryRows("Wrong result for LAG/LEAD functions in SELECT clause", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for LAG function in SELECT clause", expectedRows, sqlQuery);
     }
 
     /**
      * #4032
      */
     @Test
-    public void testLagLeadInSelectExpression() {
+    public void testLeadInSelectClause() {
         String sqlQuery = String.format(
-                "SELECT isnull(lag(sum(value)) - sum(value), 0), " +
-                       "isnull(lead(sum(value)) - sum(value), 0) " +
-                "FROM '%s' " +
-                "GROUP BY text",
+                "SELECT value, lead(value) FROM '%s'",
                 METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {"0",   "27"},
-                {"-27", "60"},
-                {"-60",  "0"},
+                {"1",     "0"},
+                {"0",     "2"},
+                {"2",     "4"},
+                {"4",     "7"},
+                {"7",    "11"},
+                {"11",   "16"},
+                {"16",   "23"},
+                {"23",   "31"},
+                {"31",   "40"},
+                {"40", "null"}
         };
 
-        assertSqlQueryRows("Wrong result for LAG/LEAD functions in SELECT expression", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for LEAD function in SELECT clause", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4032
+     */
+    @Test
+    public void testLagInSelectClauseWithNull() {
+        String sqlQuery = String.format(
+                "SELECT CASE WHEN value > 0 THEN value END, " +
+                        "lag(CASE WHEN value > 0 THEN value END) FROM '%s'",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1",    "null"},
+                {"null",    "1"},
+                {"2",    "null"},
+                {"4",       "2"},
+                {"7",       "4"},
+                {"11",      "7"},
+                {"16",     "11"},
+                {"23",     "16"},
+                {"31",     "23"},
+                {"40",     "31"}
+        };
+
+        assertSqlQueryRows("Wrong result for LAG function in SELECT clause with null", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4032
+     */
+    @Test
+    public void testLeadInSelectClauseWithNull() {
+        String sqlQuery = String.format(
+                "SELECT CASE WHEN value > 0 THEN value END, " +
+                        "lead(CASE WHEN value > 0 THEN value END) FROM '%s'",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1",    "null"},
+                {"null",    "2"},
+                {"2",       "4"},
+                {"4",       "7"},
+                {"7",      "11"},
+                {"11",     "16"},
+                {"16",     "23"},
+                {"23",     "31"},
+                {"31",     "40"},
+                {"40",   "null"}
+        };
+
+        assertSqlQueryRows("Wrong result for LEAD function in SELECT clause with null", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4032
+     */
+    @Test
+    public void testLagInSelectExpression() {
+        String sqlQuery = String.format(
+                "SELECT isnull(lag(sum(value)) - sum(value), 0) " +
+                        "FROM '%s' " +
+                        "GROUP BY text",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {{"0"}, {"-27"}, {"-60"}};
+
+        assertSqlQueryRows("Wrong result for LAG function in SELECT expression", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4032
+     */
+    @Test
+    public void testLeadInSelectExpression() {
+        String sqlQuery = String.format(
+                "SELECT isnull(lead(sum(value)) - sum(value), 0) " +
+                        "FROM '%s' " +
+                        "GROUP BY text",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {{"27"}, {"60"}, {"0"}};
+
+        assertSqlQueryRows("Wrong result for LEAD function in SELECT expression", expectedRows, sqlQuery);
     }
 
     /**
