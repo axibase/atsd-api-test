@@ -12,47 +12,77 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class OuterJoinTagsExternalTest extends SqlTest {
-    private static final String METRIC_NAME1 = metric();
-    private static final String METRIC_NAME2 = metric();
+    private static final String METRIC_NO_TAGS_1 = metric();
+    private static final String METRIC_NO_TAGS_2 = metric();
+    private static final String METRIC_WITH_TAGS = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
         String entityName = entity();
 
         Registry.Entity.register(entityName);
-        Registry.Metric.register(METRIC_NAME1);
-        Registry.Metric.register(METRIC_NAME2);
+        Registry.Metric.register(METRIC_NO_TAGS_1);
+        Registry.Metric.register(METRIC_NO_TAGS_2);
+        Registry.Metric.register(METRIC_WITH_TAGS);
 
+        /* Create two metrics, because self-join is disallowed*/
         Series series1 = new Series();
         series1.setEntity(entityName);
-        series1.setMetric(METRIC_NAME1);
+        series1.setMetric(METRIC_NO_TAGS_1);
         series1.addData(Mocks.SAMPLE);
 
         Series series2 = new Series();
         series2.setEntity(entityName);
-        series2.setMetric(METRIC_NAME2);
+        series2.setMetric(METRIC_NO_TAGS_2);
         series2.addData(Mocks.SAMPLE);
 
-        SeriesMethod.insertSeriesCheck(series1, series2);
+        Series series3 = new Series();
+        series3.setEntity(entityName);
+        series3.setMetric(METRIC_WITH_TAGS);
+        series3.addTag("tag1", "abc");
+        series3.addData(Mocks.SAMPLE);
+
+        SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
     /**
      * #4058
      */
     @Test
-    public void testOuterJoinTagsExternal() {
+    public void testOuterJoinEmptyTagsExternal() {
         String sqlQuery = String.format(
-                "SELECT '%s'.tags FROM '%s' OUTER JOIN '%s' " +
+                "SELECT '%1$s'.tags FROM '%1$s' OUTER JOIN '%2$s' " +
                         "OPTION (ROW_MEMORY_THRESHOLD 0)",
-                METRIC_NAME1,
-                METRIC_NAME1,
-                METRIC_NAME2
+                METRIC_NO_TAGS_1,
+                METRIC_NO_TAGS_2
         );
 
         String[][] expectedRows = {{"null"}};
 
         assertSqlQueryRows(
-                "Incorrect result for metric.tags in outer join (external memory)",
+                "Incorrect result for metric.tags in outer join with empty tags (external memory)",
+                expectedRows,
+                sqlQuery
+        );
+    }
+
+
+    /**
+     * #4058
+     */
+    @Test
+    public void testOuterJoinPartiallyEmptyTagsExternal() {
+        String sqlQuery = String.format(
+                "SELECT '%1$s'.tags FROM '%1$s' OUTER JOIN '%2$s' " +
+                        "OPTION (ROW_MEMORY_THRESHOLD 0)",
+                METRIC_WITH_TAGS,
+                METRIC_NO_TAGS_1
+        );
+
+        String[][] expectedRows = {{"null"}, {"tag1=abc"}};
+
+        assertSqlQueryRows(
+                "Incorrect result for metric.tags in outer join with empty and non-empty tags (external memory)",
                 expectedRows,
                 sqlQuery
         );
