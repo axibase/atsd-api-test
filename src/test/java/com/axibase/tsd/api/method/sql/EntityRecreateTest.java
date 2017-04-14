@@ -1,11 +1,10 @@
-package com.axibase.tsd.api.method.entity;
+package com.axibase.tsd.api.method.sql;
 
+import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
