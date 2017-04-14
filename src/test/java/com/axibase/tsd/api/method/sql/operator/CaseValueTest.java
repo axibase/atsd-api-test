@@ -44,7 +44,7 @@ public class CaseValueTest extends SqlTest {
                 {"1"}, {"2"}, {"3"}, {"4"}, {"5"}, {"6"}
         };
 
-        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... (simple case) without ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -70,7 +70,7 @@ public class CaseValueTest extends SqlTest {
                 {"a"}, {"b"}, {"c"}, {"d"}, {"e"}, {"x"}
         };
 
-        assertSqlQueryRows("CASE <value> with ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... (alternatives) with ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -95,7 +95,7 @@ public class CaseValueTest extends SqlTest {
                 {"a"}, {"b"}, {"c"}, {"d"}, {"e"}, {"null"}
         };
 
-        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... (alternatives) without ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -125,7 +125,7 @@ public class CaseValueTest extends SqlTest {
                 {"d", "3"}
         };
 
-        assertSqlQueryRows("CASE <value> with ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... (WHEN <expression>) with ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -150,7 +150,7 @@ public class CaseValueTest extends SqlTest {
                 {"1"}, {"2"}, {"3"}, {"4"}, {"5"}, {"null"}
         };
 
-        assertSqlQueryRows("CASE <value> for strings gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... for strings gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -164,7 +164,7 @@ public class CaseValueTest extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows("CASE WHEN <condition> without FROM doesn't work", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE WHEN <condition> ... without FROM doesn't work", expectedRows, sqlQuery);
     }
 
     /**
@@ -187,7 +187,7 @@ public class CaseValueTest extends SqlTest {
                 {"a"}, {"a"}, {"b"}, {"b"}, {"c"}, {"null"}
         };
 
-        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... with WHEN alternatives gives wrong result", expectedRows, sqlQuery);
     }
 
     /**
@@ -210,7 +210,8 @@ public class CaseValueTest extends SqlTest {
                 {"a"}, {"a"}, {"b"}, {"b"}, {"c"}, {"null"}
         };
 
-        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... with WHEN alternatives (nested OR CASE...) without ELSE gives wrong result",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -234,7 +235,8 @@ public class CaseValueTest extends SqlTest {
                 {"a"}, {"a"}, {"x"}, {"x"}, {"c"}, {"null"}
         };
 
-        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE <value> ... with WHEN alternatives (nested THEN CASE...) without ELSE gives wrong result",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -260,6 +262,6 @@ public class CaseValueTest extends SqlTest {
                 {"b"}, {"b"}, {"a"}, {"a"}, {"a"}, {"c"}
         };
 
-        assertSqlQueryRows("CASE <value> without ELSE gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows("CASE CASE <value> ... with ELSE gives wrong result", expectedRows, sqlQuery);
     }
 }
