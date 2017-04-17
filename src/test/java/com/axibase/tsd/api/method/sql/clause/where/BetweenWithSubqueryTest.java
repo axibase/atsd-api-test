@@ -1,0 +1,131 @@
+package com.axibase.tsd.api.method.sql.clause.where;
+
+import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+
+public class BetweenWithSubqueryTest extends SqlTest {
+    private static final String DATA_METRIC_NAME = metric();
+    private static final String RANGE_METRIC_NAME = metric();
+
+    @BeforeClass
+    public static void prepareData() throws Exception {
+        Series dataSeries = new Series(entity(), DATA_METRIC_NAME);
+        dataSeries.addData(new Sample("2017-01-01T12:00:00.000Z", "1", "a"));
+        dataSeries.addData(new Sample("2017-01-02T12:00:00.000Z", "2", "b"));
+        dataSeries.addData(new Sample("2017-01-03T12:00:00.000Z", "3", "c"));
+        dataSeries.addData(new Sample("2017-01-04T12:00:00.000Z", "4", "d"));
+        dataSeries.addData(new Sample("2017-01-05T12:00:00.000Z", "5", "e"));
+        dataSeries.addData(new Sample("2017-01-06T12:00:00.000Z", "6", "f"));
+        dataSeries.addData(new Sample("2017-01-07T12:00:00.000Z", "7", "g"));
+
+        SeriesMethod.insertSeriesCheck(dataSeries);
+    }
+
+    @Test
+    public void testBetweenSubqueryEmpty() {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%1$s' " +
+                        "WHERE datetime BETWEEN " +
+                        "(SELECT datetime FROM '%1$s' WHERE value > 6)",
+                DATA_METRIC_NAME
+        );
+
+        String[][] expectedRows = {};
+
+        assertSqlQueryRows("Wrong result for WHERE ... BETWEEN when result of subquery is empty",
+                expectedRows, sqlQuery);
+    }
+
+    @Test
+    public void testBetweenSubqueryLeftBound() {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%1$s' " +
+                        "WHERE datetime BETWEEN " +
+                        "(SELECT datetime FROM '%1$s' WHERE value = 4)",
+                DATA_METRIC_NAME
+        );
+
+        String[][] expectedRows = {{"4"}, {"5"}, {"6"}, {"7"}};
+
+        assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with single row from subquery",
+                expectedRows, sqlQuery);
+    }
+
+
+    @Test
+    public void testBetweenSubqueryBothBounds() {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%1$s' " +
+                        "WHERE datetime BETWEEN " +
+                        "(SELECT datetime FROM '%1$s' WHERE value = 2 OR value = 4)",
+                DATA_METRIC_NAME
+        );
+
+        String[][] expectedRows = {{"2"}, {"3"}, {"4"}};
+
+        assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with two rows from subquery",
+                expectedRows, sqlQuery);
+    }
+
+    @Test
+    public void testBetweenSubqueryMultipleRanges() {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%1$s' " +
+                        "WHERE datetime BETWEEN " +
+                        "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
+                DATA_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"}, {"2"}, {"3"},
+                {"5"}, {"6"}, {"7"}
+        };
+
+        assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with multiple ranges from subquery",
+                expectedRows, sqlQuery);
+    }
+
+    @Test
+    public void testBetweenSubqueryAggregation() {
+        String sqlQuery = String.format(
+                "SELECT avg(value), first(value), last(value), count(value) FROM '%1$s' " +
+                        "WHERE datetime BETWEEN " +
+                        "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
+                DATA_METRIC_NAME
+        );
+
+        String[][] expectedRows = {{"4", "1", "7", "6"}};
+
+        assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with subquery and further aggregation",
+                expectedRows, sqlQuery);
+    }
+
+    @Test
+    public void testBetweenSubquerySelectText() {
+        String sqlQuery = String.format(
+                "SELECT datetime, text FROM '%1$s' " +
+                        "WHERE datetime BETWEEN " +
+                        "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
+                DATA_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2017-01-01T12:00:00.000Z", "a"},
+                {"2017-01-02T12:00:00.000Z", "b"},
+                {"2017-01-03T12:00:00.000Z", "c"},
+                {"2017-01-05T12:00:00.000Z", "e"},
+                {"2017-01-06T12:00:00.000Z", "f"},
+                {"2017-01-07T12:00:00.000Z", "g"},
+        };
+
+        assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with subquery when selecting text",
+                expectedRows, sqlQuery);
+    }
+}
