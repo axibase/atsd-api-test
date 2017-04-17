@@ -39,7 +39,7 @@ public class TestUtil {
         try {
             return formatDate(date, pattern, getServerTimeZone());
         } catch (JSONException e) {
-            throw new IllegalStateException("Unknow timezone");
+            throw new IllegalStateException("Unknown timezone");
         }
     }
 
