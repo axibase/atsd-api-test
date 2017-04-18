@@ -33,7 +33,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value > 6)",
+                        "(SELECT datetime FROM '%1$s' WHERE value > 7)",
                 DATA_METRIC_NAME
         );
 
@@ -52,7 +52,12 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 DATA_METRIC_NAME
         );
 
-        String[][] expectedRows = {{"4"}, {"5"}, {"6"}, {"7"}};
+        String[][] expectedRows = {
+                {"4"},
+                {"5"},
+                {"6"},
+                {"7"}
+        };
 
         assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with single row from subquery",
                 expectedRows, sqlQuery);
@@ -68,7 +73,11 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 DATA_METRIC_NAME
         );
 
-        String[][] expectedRows = {{"2"}, {"3"}, {"4"}};
+        String[][] expectedRows = {
+                {"2"},
+                {"3"},
+                {"4"}
+        };
 
         assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with two rows from subquery",
                 expectedRows, sqlQuery);
@@ -84,8 +93,14 @@ public class BetweenWithSubqueryTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"1"}, {"2"}, {"3"},
-                {"5"}, {"6"}, {"7"}
+                /* first range */
+                {"1"},
+                {"2"},
+                {"3"},
+                /* second range */
+                {"5"},
+                {"6"},
+                {"7"}
         };
 
         assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with multiple ranges from subquery",
@@ -101,7 +116,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 DATA_METRIC_NAME
         );
 
-        String[][] expectedRows = {{"4", "1", "7", "6"}};
+        String[][] expectedRows = {
+                {"4", "1", "7", "6"}
+        };
 
         assertSqlQueryRows("Wrong result for WHERE ... BETWEEN with subquery and further aggregation",
                 expectedRows, sqlQuery);
