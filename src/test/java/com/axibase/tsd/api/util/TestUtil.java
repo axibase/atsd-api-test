@@ -84,7 +84,7 @@ public class TestUtil {
         return d;
     }
 
-    private static String timeTranslate(String date, TimeZone timeZone, TimeTranslation mode) {
+    public static String timeTranslate(String date, TimeZone timeZone, TimeTranslation mode) {
         Date parsed = parseDate(date);
         long time = parsed.getTime();
         long offset = timeZone.getOffset(time);
@@ -98,7 +98,7 @@ public class TestUtil {
         return ISOFormat(time);
     }
 
-    private static String timeTranslateDefault(String date, TimeTranslation mode) {
+    public static String timeTranslateDefault(String date, TimeTranslation mode) {
         TimeZone timeZone;
         try {
             timeZone = getServerTimeZone();
