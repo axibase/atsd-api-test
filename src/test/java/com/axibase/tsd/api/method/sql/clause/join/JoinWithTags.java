@@ -298,7 +298,7 @@ public class JoinWithTags extends SqlTest {
                 {"tag=value"}
         };
 
-        assertSqlQueryRows("JOIN USING ENTITY query by series with changed tags gives wrong result",
+        assertSqlQueryRows("Initial series query gives wrong result",
                 expectedRows, sqlQuery);
 
         List<Series> changedSeries = new ArrayList<>(metrics.length);
@@ -314,7 +314,7 @@ public class JoinWithTags extends SqlTest {
 
         SeriesMethod.insertSeriesCheck(changedSeries);
 
-        assertSqlQueryRows("JOIN USING ENTITY query by series with changed tags gives wrong result",
+        assertSqlQueryRows("Query after series change gives wrong result",
                 expectedRows, sqlQuery);
     }
 }
