@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.method.version.VersionMethod;
-import com.axibase.tsd.api.model.version.Version;
+import com.axibase.tsd.api.model.version.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -14,6 +14,10 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+import java.util.TimeZone;
+
+import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOCAL;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
@@ -80,30 +84,28 @@ public class TestUtil {
         return d;
     }
 
-    public static String translateLocalToUniversal(String date) {
+    private static String timeTranslate(String date, TimeZone timeZone, TimeTranslation mode) {
         Date parsed = parseDate(date);
         long time = parsed.getTime();
+        long offset = timeZone.getOffset(time);
 
-        try {
-            time -= getServerTimeZone().getOffset(time);
-        } catch (JSONException e) {
-            throw new IllegalStateException(e);
+        if (mode == UNIVERSAL_TO_LOCAL) {
+            time += offset;
+        } else {
+            time -= offset;
         }
 
         return ISOFormat(time);
     }
 
-    public static String translateUniversalToLocal(String date) {
-        Date parsed = parseDate(date);
-        long time = parsed.getTime();
-
+    private static String timeTranslateDefault(String date, TimeTranslation mode) {
+        TimeZone timeZone;
         try {
-            time += getServerTimeZone().getOffset(time);
+            timeZone = getServerTimeZone();
         } catch (JSONException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Unknown timezone");
         }
-
-        return ISOFormat(time);
+        return timeTranslate(date, timeZone, mode);
     }
 
     public static String prettyPrint(Object o) {
@@ -168,5 +170,9 @@ public class TestUtil {
         public static String propertyType() {
             return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY_TYPE);
         }
+    }
+
+    public static enum TimeTranslation {
+        LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
     }
 }
