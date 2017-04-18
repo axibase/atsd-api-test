@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames;
+import static com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 
 public class PeriodYearsTest extends SqlTest {
     private static final String ENTITY_NAME1 = TestNames.entity();
@@ -47,13 +48,18 @@ public class PeriodYearsTest extends SqlTest {
                 METRIC_NAME
         );
 
+        final int DATE_COLUMN = 2;
         String[][] expectedRows = {
-                {ENTITY_NAME1, "1", TestUtil.translateLocalToUniversal("1970-01-01T00:00:00.000Z")},
-                {ENTITY_NAME1, "2", TestUtil.translateLocalToUniversal("2006-01-01T00:00:00.000Z")},
-                {ENTITY_NAME1, "1", TestUtil.translateLocalToUniversal("2018-01-01T00:00:00.000Z")},
+                {ENTITY_NAME1, "1", "1970-01-01T00:00:00.000Z"},
+                {ENTITY_NAME1, "2", "2006-01-01T00:00:00.000Z"},
+                {ENTITY_NAME1, "1", "2018-01-01T00:00:00.000Z"},
 
-                {ENTITY_NAME2, "1", TestUtil.translateLocalToUniversal("2006-01-01T00:00:00.000Z")},
+                {ENTITY_NAME2, "1", "2006-01-01T00:00:00.000Z"},
         };
+
+        for (int i = 0; i < expectedRows.length; i++)
+            expectedRows[i][DATE_COLUMN] = TestUtil.timeTranslateDefault(expectedRows[i][DATE_COLUMN],
+                    TimeTranslation.LOCAL_TO_UNIVERSAL);
 
         assertSqlQueryRows("Wrong result with grouping by multiple years period",
                 expectedRows, sqlQuery);
