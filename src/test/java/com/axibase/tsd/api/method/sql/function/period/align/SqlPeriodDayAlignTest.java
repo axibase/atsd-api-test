@@ -47,7 +47,8 @@ public class SqlPeriodDayAlignTest extends SqlTest {
                 DAY_FORMAT_PATTERN, TEST_METRIC_NAME
         );
 
-        assertSqlQueryRows(generateExpectedRows(null), sqlQuery);
+        assertSqlQueryRows("Wrong result when grouping by 1 day (default timezone)",
+                generateExpectedRows(null), sqlQuery);
     }
 
     /**
@@ -65,7 +66,8 @@ public class SqlPeriodDayAlignTest extends SqlTest {
                 timeZone.getID()
         );
 
-        assertSqlQueryRows(generateExpectedRows(timeZone), sqlQuery);
+        assertSqlQueryRows("Wrong result when grouping by 1 day (custom timezone)",
+                generateExpectedRows(timeZone), sqlQuery);
     }
 
 
