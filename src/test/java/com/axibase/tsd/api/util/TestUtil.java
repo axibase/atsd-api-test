@@ -17,7 +17,7 @@ import java.util.*;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
-    public static final String DEFAULT_TIMEZONE_NAME = "UTC";
+    public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
     private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
@@ -56,7 +56,7 @@ public class TestUtil {
     }
 
     public static String ISOFormat(Date date) {
-        return ISOFormat(date, true, DEFAULT_TIMEZONE_NAME);
+        return ISOFormat(date, true, UNIVERSAL_TIMEZONE_NAME);
     }
 
     public static String ISOFormat(long t) {
@@ -78,6 +78,32 @@ public class TestUtil {
             throw new RuntimeException(e);
         }
         return d;
+    }
+
+    public static String translateLocalToUniversal(String date) {
+        Date parsed = parseDate(date);
+        long time = parsed.getTime();
+
+        try {
+            time -= getServerTimeZone().getOffset(time);
+        } catch (JSONException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return ISOFormat(time);
+    }
+
+    public static String translateUniversalToLocal(String date) {
+        Date parsed = parseDate(date);
+        long time = parsed.getTime();
+
+        try {
+            time += getServerTimeZone().getOffset(time);
+        } catch (JSONException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return ISOFormat(time);
     }
 
     public static String prettyPrint(Object o) {

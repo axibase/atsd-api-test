@@ -26,7 +26,7 @@ import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.DEFAULT_TIMEZONE_NAME;
+import static com.axibase.tsd.api.util.TestUtil.UNIVERSAL_TIMEZONE_NAME;
 import static com.axibase.tsd.api.util.TestUtil.parseDate;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -42,7 +42,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    private static String timezone = DEFAULT_TIMEZONE_NAME;
+    private static String timezone = UNIVERSAL_TIMEZONE_NAME;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {
