@@ -65,6 +65,11 @@ public class SeriesMethod extends BaseMethod {
         return insertSeries(seriesList, false);
     }
 
+    public static Response insertSeries(final Series ...series) throws FileNotFoundException {
+        return insertSeries(Arrays.asList(series), false);
+    }
+
+
     public static <T> Response querySeries(T... queries) {
         return querySeries(Arrays.asList(queries));
     }

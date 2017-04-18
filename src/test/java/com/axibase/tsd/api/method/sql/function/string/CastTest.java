@@ -13,9 +13,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
@@ -353,4 +351,157 @@ public class CastTest extends SqlTest {
         );
     }
 
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastToNumber() throws Exception {
+        Series series = Mocks.series();
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT metric%n" +
+                "FROM '%s'%n" +
+                "WHERE value = '%s'",
+                series.getMetric(), series.getData().get(0).getV()
+        );
+
+        String[][] expected = {
+                { series.getMetric() }
+        };
+
+        assertSqlQueryRows("String constant was not implicitly casted to number", expected, sql);
+    }
+
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastStringColumnToNumber() throws Exception {
+        Series series = Mocks.series();
+        series.setTags(new HashMap<String, String>());
+        series.addTag("value", "10");
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT metric%n" +
+                "FROM '%s'%n" +
+                "WHERE tags.'value' = 10",
+                series.getMetric()
+        );
+
+        String[][] expected = {
+                { series.getMetric() }
+        };
+
+        assertSqlQueryRows("String column was not implicitly casted to number", expected, sql);
+    }
+
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastToNumberInFunction() throws Exception {
+        Series series = Mocks.series();
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT ABS('10')%n" +
+                "FROM '%s'",
+                series.getMetric()
+        );
+
+        String[][] expected = {
+                { "10" }
+        };
+
+        assertSqlQueryRows("String constant argument was not implicitly casted to number", expected, sql);
+    }
+
+
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastOfNonNumericReturnsNaN() throws Exception {
+        Series series = Mocks.series();
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT ABS('foo')%n" +
+                        "FROM '%s'",
+                series.getMetric()
+        );
+
+        String[][] expected = {
+                { "NaN" }
+        };
+
+        assertSqlQueryRows("Non-numeric string 'foo' was implicitly casted to number with bad result", expected, sql);
+    }
+
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastStringColumnToNumberInFunction() throws Exception {
+        Series series = Mocks.series();
+        series.setTags(new HashMap<String, String>());
+        series.addTag("value", "10");
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT ABS(tags.'value')%n" +
+                "FROM '%s'",
+                series.getMetric()
+        );
+
+        String[][] expected = {
+                { "10" }
+        };
+
+        assertSqlQueryRows("String column argument was not implicitly casted to number", expected, sql);
+    }
+
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastOfStringFunctionResult() throws Exception {
+        Series series = Mocks.series();
+        series.setData(Arrays.asList(new Sample(Mocks.ISO_TIME, 10)));
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT ABS(CONCAT(value, ''))%n" +
+                "FROM '%s'",
+                series.getMetric()
+        );
+
+        String[][] expected = {
+                { "10" }
+        };
+
+        assertSqlQueryRows("String function result was not implicitly casted to number", expected, sql);
+    }
+
+    /**
+     * #4020
+     */
+    @Test
+    public void testImplicitCastInMathExpressionsRizesError() throws Exception {
+        Series series = Mocks.series();
+        SeriesMethod.insertSeriesCheck(series);
+
+        String sql = String.format(
+                "SELECT CONCAT(value, '')+10%n" +
+                "FROM '%s'",
+                series.getMetric()
+        );
+
+        assertBadRequest(
+                "Math expression with string variable applied",
+                "Invalid expression: 'concat(value, '') + 10'", queryResponse(sql)
+        );
+    }
 }

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -32,6 +33,7 @@ public class ConcatTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
         {
             Series series = new Series(TEST_ENTITY, TEST_METRIC1);
+            series.addData(new TextSample("2016-06-03T09:19:18.000Z", "")); // NaN value
             series.addData(new Sample("2016-06-03T09:20:18.000Z", "3.0"));
             series.addData(new Sample("2016-06-03T09:21:18.000Z", "3.10"));
             series.addData(new Sample("2016-06-03T09:22:18.000Z", "3.14"));
@@ -92,7 +94,7 @@ public class ConcatTest extends SqlTest {
     }
 
     /**
-     * #3768
+     * #3768, #4000
      */
     @Test
     public void testConcatWordAndNumber() throws Exception {
@@ -101,6 +103,7 @@ public class ConcatTest extends SqlTest {
         );
 
         String[][] expectedRows = {
+                {"a:"},
                 {"a:3"},
                 {"a:3.1"},
                 {"a:3.14"},

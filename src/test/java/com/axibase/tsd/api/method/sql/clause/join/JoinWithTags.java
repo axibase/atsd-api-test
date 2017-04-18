@@ -1,7 +1,9 @@
 package com.axibase.tsd.api.method.sql.clause.join;
 
+import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
@@ -10,7 +12,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
@@ -255,6 +259,59 @@ public class JoinWithTags extends SqlTest {
 
         assertSqlQueryRows("List of tags (with different value) is malformed after JOIN USING ENTITY",
                 expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4027
+     */
+    @Test
+    public void testJoinKeepsMetricTags() throws Exception {
+        Series series = Mocks.series();
+        Metric metric = new Metric();
+        metric.setName(series.getMetric());
+        Map<String, String> tags = new HashMap<>();
+        tags.put("foobar", "foo");
+        metric.setTags(tags);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        Series otherSeries = Mocks.series();
+        otherSeries.setEntity(series.getEntity());
+        SeriesMethod.insertSeriesCheck(series, otherSeries);
+
+        String sql = String.format(
+                "SELECT t1.metric.tags.foobar, t1.metric.tags%n" +
+                "FROM '%s' as t1%n" +
+                "JOIN '%s' as t2",
+                metric.getName(), otherSeries.getMetric()
+        );
+        String[][] expected = {
+                {"foo", "foobar=foo"}
+        };
+
+        assertSqlQueryRows("Metric tags are absent or corrupted in JOIN", expected, sql);
+    }
+
+    /**
+     * #4027
+     */
+    @Test
+    public void testJoinKeepsMetricFields() throws Exception {
+        Series series = Mocks.series();
+        Series otherSeries = Mocks.series();
+        otherSeries.setEntity(series.getEntity());
+        SeriesMethod.insertSeriesCheck(series, otherSeries);
+
+        String sql = String.format(
+                "SELECT t1.metric.interpolate, t2.metric.interpolate%n" +
+                "FROM '%s' as t1%n" +
+                "JOIN '%s' as t2",
+                series.getMetric(), otherSeries.getMetric()
+        );
+        String[][] expected = {
+                {"LINEAR", "LINEAR"}
+        };
+
+        assertSqlQueryRows("Metric interpolate field is absent or corrupted in JOIN", expected, sql);
     }
 
     /**

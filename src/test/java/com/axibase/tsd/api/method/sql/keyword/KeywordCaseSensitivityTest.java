@@ -141,7 +141,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"1", "1", "1", "1", "1", "0", "0", "1", "1", "1464945618000", "1464945618000", "1", "0", "1", "1"}
+                {"1", "1", "1", "1", "1", "NaN", "0", "1", "1", "1464945618000", "1464945618000", "1", "0", "1", "1"}
         };
 
         assertSqlQueryRows("There's a problem with aggregations keywords in lowercase", expectedRows, sqlQuery);
@@ -162,7 +162,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         ).replaceAll(keyword.toLowerCase(), keyword);
 
         String[][] expectedRows = {
-                {"1", "1", "1", "1", "1", "0", "0", "1", "1", "1464945618000", "1464945618000", "1", "0", "1", "1"}
+                {"1", "1", "1", "1", "1", "NaN", "0", "1", "1", "1464945618000", "1464945618000", "1", "0", "1", "1"}
         };
 
         assertSqlQueryRows("Aggregation keyword " + keyword + " is case sensitive", expectedRows, sqlQuery);
