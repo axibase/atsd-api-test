@@ -12,13 +12,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames;
+import static com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 
 public class SqlPeriodDayAlignTest extends SqlTest {
     private static final String TEST_METRIC_NAME = TestNames.metric();
     private static final String DAY_FORMAT_PATTERN = "yyyy-MM-dd";
     private static final String START_TIME = "2016-06-19T00:00:00.000Z";
     private static final String END_TIME = "2016-06-23T00:00:00.000Z";
-    private static final String ISO_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.ssS'Z'";
     private static final long DELTA = 900000L;
     private static final long DAY_LENGTH = 86400000L;
 
@@ -76,11 +76,11 @@ public class SqlPeriodDayAlignTest extends SqlTest {
         final String localStartDate, localEndDate;
 
         if (timeZone == null) {
-            localStartDate = TestUtil.formatDate(TestUtil.parseDate(START_TIME), ISO_PATTERN);
-            localEndDate = TestUtil.formatDate(TestUtil.parseDate(END_TIME), ISO_PATTERN);
+            localStartDate = TestUtil.timeTranslateDefault(START_TIME, TimeTranslation.UNIVERSAL_TO_LOCAL);
+            localEndDate = TestUtil.timeTranslateDefault(END_TIME, TimeTranslation.UNIVERSAL_TO_LOCAL);
         } else {
-            localStartDate = TestUtil.formatDate(TestUtil.parseDate(START_TIME), ISO_PATTERN, timeZone);
-            localEndDate = TestUtil.formatDate(TestUtil.parseDate(END_TIME), ISO_PATTERN, timeZone);
+            localStartDate = TestUtil.timeTranslate(START_TIME, timeZone, TimeTranslation.UNIVERSAL_TO_LOCAL);
+            localEndDate = TestUtil.timeTranslate(END_TIME, timeZone, TimeTranslation.UNIVERSAL_TO_LOCAL);
         }
 
         long startTime = TestUtil.parseDate(localStartDate).getTime();
