@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class SqlGroupByDatetime extends SqlTest {
+public class GroupByDatetime extends SqlTest {
     private static final String TEST_PREFIX = "sql-group-by-datetime-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TESTS_ENTITY1_NAME = TEST_PREFIX + "entity-1";
@@ -66,9 +66,6 @@ public class SqlGroupByDatetime extends SqlTest {
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
-    /*
-    #3102 issue
-     */
 
     /**
      * #3102
