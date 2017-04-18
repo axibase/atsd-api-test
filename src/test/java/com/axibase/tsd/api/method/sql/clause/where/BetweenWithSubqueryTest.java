@@ -11,12 +11,11 @@ import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class BetweenWithSubqueryTest extends SqlTest {
-    private static final String DATA_METRIC_NAME = metric();
-    private static final String RANGE_METRIC_NAME = metric();
+    private static final String METRIC_NAME = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series dataSeries = new Series(entity(), DATA_METRIC_NAME);
+        Series dataSeries = new Series(entity(), METRIC_NAME);
         dataSeries.addData(new Sample("2017-01-01T12:00:00.000Z", "1", "a"));
         dataSeries.addData(new Sample("2017-01-02T12:00:00.000Z", "2", "b"));
         dataSeries.addData(new Sample("2017-01-03T12:00:00.000Z", "3", "c"));
@@ -34,7 +33,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 "SELECT value FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
                         "(SELECT datetime FROM '%1$s' WHERE value > 7)",
-                DATA_METRIC_NAME
+                METRIC_NAME
         );
 
         String[][] expectedRows = {};
@@ -49,7 +48,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 "SELECT value FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
                         "(SELECT datetime FROM '%1$s' WHERE value = 4)",
-                DATA_METRIC_NAME
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -70,7 +69,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 "SELECT value FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
                         "(SELECT datetime FROM '%1$s' WHERE value = 2 OR value = 4)",
-                DATA_METRIC_NAME
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -89,7 +88,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 "SELECT value FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
                         "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
-                DATA_METRIC_NAME
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -113,7 +112,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 "SELECT avg(value), first(value), last(value), count(value) FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
                         "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
-                DATA_METRIC_NAME
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
@@ -130,7 +129,7 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 "SELECT datetime, text FROM '%1$s' " +
                         "WHERE datetime BETWEEN " +
                         "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
-                DATA_METRIC_NAME
+                METRIC_NAME
         );
 
         String[][] expectedRows = {
