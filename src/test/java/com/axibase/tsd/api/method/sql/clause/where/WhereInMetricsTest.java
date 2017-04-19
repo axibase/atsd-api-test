@@ -48,13 +48,17 @@ public class WhereInMetricsTest extends SqlTest {
     @Test
     public void testMetricsBasic() {
         String sqlQuery = String.format(
-                "SELECT metric FROM atsd_series WHERE metric IN metrics('%s') ORDER BY metric",
+                "SELECT metric " +
+                        "FROM atsd_series " +
+                        "WHERE metric IN metrics('%s') " +
+                        "ORDER BY metric",
                 ENTITY_NAME
         );
 
         String[][] expectedRows = new String[METRIC_COUNT][];
-        for (int i = 0; i < METRIC_COUNT; i++)
+        for (int i = 0; i < METRIC_COUNT; i++) {
             expectedRows[i] = new String[]{METRIC_NAMES[i]};
+        }
 
         assertSqlQueryRows("Wrong result for WHERE metric in metrics()", expectedRows, sqlQuery);
     }
