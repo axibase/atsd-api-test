@@ -46,7 +46,7 @@ public class TestUtil {
         return format.format(date);
     }
 
-    private static TimeZone getServerTimeZone() throws JSONException {
+    public static TimeZone getServerTimeZone() throws JSONException {
         Version version = VersionMethod.queryVersion().readEntity(Version.class);
         return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
     }
