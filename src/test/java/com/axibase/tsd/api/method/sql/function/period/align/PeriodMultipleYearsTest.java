@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import static com.axibase.tsd.api.util.TestUtil.TestNames;
 import static com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 
-public class PeriodYearsTest extends SqlTest {
+public class PeriodMultipleYearsTest extends SqlTest {
     private static final String ENTITY_NAME1 = TestNames.entity();
     private static final String ENTITY_NAME2 = TestNames.entity();
     private static final String METRIC_NAME = TestNames.metric();
@@ -34,13 +34,17 @@ public class PeriodYearsTest extends SqlTest {
         Series series2 = new Series();
         series2.setEntity(ENTITY_NAME2);
         series2.setMetric(METRIC_NAME);
+        series2.addData(new Sample("2012-06-01T12:00:00.000Z", 0));
         series2.addData(new Sample("2016-06-01T12:00:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
+    /**
+     * #4101
+     */
     @Test
-    public void testPeriodYears() {
+    public void testPeriodYearsBoth() {
         String sqlQuery = String.format(
                 "SELECT entity, count(*), datetime FROM '%s' " +
                         "GROUP BY entity, period(12 year) " +
@@ -54,7 +58,34 @@ public class PeriodYearsTest extends SqlTest {
                 {ENTITY_NAME1, "2", "2006-01-01T00:00:00.000Z"},
                 {ENTITY_NAME1, "1", "2018-01-01T00:00:00.000Z"},
 
-                {ENTITY_NAME2, "1", "2006-01-01T00:00:00.000Z"},
+                {ENTITY_NAME2, "2", "2006-01-01T00:00:00.000Z"},
+        };
+
+        for (int i = 0; i < expectedRows.length; i++)
+            expectedRows[i][DATE_COLUMN] = TestUtil.timeTranslateDefault(expectedRows[i][DATE_COLUMN],
+                    TimeTranslation.LOCAL_TO_UNIVERSAL);
+
+        assertSqlQueryRows("Wrong result with grouping by multiple years period",
+                expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4101
+     */
+    @Test
+    public void testPeriodYears() {
+        String sqlQuery = String.format(
+                "SELECT entity, count(*), datetime FROM '%s' " +
+                        "WHERE entity = '%s' " +
+                        "GROUP BY entity, period(12 year) " +
+                        "ORDER BY entity, time",
+                METRIC_NAME,
+                ENTITY_NAME2
+        );
+
+        final int DATE_COLUMN = 2;
+        String[][] expectedRows = {
+                {ENTITY_NAME2, "2", "2006-01-01T00:00:00.000Z"},
         };
 
         for (int i = 0; i < expectedRows.length; i++)
