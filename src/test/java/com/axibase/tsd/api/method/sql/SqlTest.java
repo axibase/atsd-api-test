@@ -111,6 +111,11 @@ public abstract class SqlTest extends SqlMethod {
         assertSqlQueryRows(TestUtil.twoDArrayToList(expectedRows), sqlQuery);
     }
 
+    public static void assertTableRows(List<List<String>> row1, StringTable table) {
+        List<List<String>> row2 = table.getRows();
+        assertEquals("Table rows  must  be identical", row1, row2);
+    }
+
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
         assertEquals(String.format("Values of columns with names: %s are not equal to expected", columnNames), values, table.filterRows(columnNames));
     }
