@@ -19,13 +19,14 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
 
         Series series = new Series(entity, TEST_METRIC);
 
-        series.addData(new Sample("2012-01-01T00:00:00.000Z", 1));
-        series.addData(new Sample("2012-01-02T00:00:00.000Z", 2));
-        series.addData(new Sample("2012-01-03T00:00:00.000Z", 3));
+        series.addData(new Sample("2017-01-01T07:30:00.000Z", 0));
+        series.addData(new Sample("2017-01-01T10:30:00.000Z", 1));
+        series.addData(new Sample("2017-01-01T11:30:00.000Z", 2));
+        series.addData(new Sample("2017-01-01T12:30:00.000Z", 3));
 
-        series.addData(new Sample("2012-01-07T00:00:00.000Z", 7));
-        series.addData(new Sample("2012-01-08T00:00:00.000Z", 8));
-        series.addData(new Sample("2012-01-09T00:00:00.000Z", 9));
+        series.addData(new Sample("2017-01-01T17:30:00.000Z", 7));
+        series.addData(new Sample("2017-01-01T18:30:00.000Z", 8));
+        series.addData(new Sample("2017-01-01T19:30:00.000Z", 9));
 
         SeriesMethod.insertSeriesCheck(series);
     }
@@ -38,13 +39,24 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value " +
                 "FROM '%s' " +
-                "WHERE datetime BETWEEN '2011-12-31T00:00:00Z' AND '2012-01-03T00:00:00Z' " +
-                "      OR datetime BETWEEN '2012-01-06T00:00:00Z' AND '2012-01-10T00:00:00Z' " +
-                "WITH INTERPOLATE(1 DAY, PREVIOUS, INNER, NAN)",
+                "WHERE datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                "      OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z' " +
+                "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
+                "ORDER BY datetime",
                 TEST_METRIC);
 
         String[][] expectedRows = {
-                {"NaN"}, {"1"}, {"2"}, {"3"}, {"NaN"}, {"7"}, {"8"}, {"9"}, {"9"}
+                {"NaN"},
+                {"NaN"},
+                {"1"},
+                {"2"},
+                {"3"},
+                {"NaN"},
+                {"NaN"},
+                {"7"},
+                {"8"},
+                {"9"},
+                {"9"}
         };
 
         assertSqlQueryRows("Incorrect inner interpolation", expectedRows, sqlQuery);
@@ -58,14 +70,25 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value " +
                 "FROM '%s' " +
-                "WHERE datetime BETWEEN '2011-12-31T00:00:00Z' AND '2012-01-10T00:00:00Z' " +
-                 "     AND (datetime BETWEEN '2011-12-31T00:00:00Z' AND '2012-01-03T00:00:00Z' " +
-                 "     OR datetime BETWEEN '2012-01-06T00:00:00Z' AND '2012-01-10T00:00:00Z') " +
-                 "WITH INTERPOLATE(1 DAY, PREVIOUS, INNER, NAN)",
+                "WHERE datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T21:00:00Z' " +
+                 "     AND (datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                 "     OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z') " +
+                 "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
+                 "ORDER BY datetime",
                 TEST_METRIC);
 
         String[][] expectedRows = {
-                {"NaN"}, {"1"}, {"2"}, {"3"}, {"NaN"}, {"7"}, {"8"}, {"9"}, {"9"}
+                {"NaN"},
+                {"NaN"},
+                {"1"},
+                {"2"},
+                {"3"},
+                {"NaN"},
+                {"NaN"},
+                {"7"},
+                {"8"},
+                {"9"},
+                {"9"}
         };
 
         assertSqlQueryRows("Incorrect inner interpolation with period intersection", expectedRows, sqlQuery);
@@ -75,20 +98,61 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testOuterInterpolation() {
+    public void testOuterInterpolationEntirePeriod() {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
-                        "WHERE datetime BETWEEN '2011-12-31T00:00:00Z' AND '2012-01-03T00:00:00Z' " +
-                        "      OR datetime BETWEEN '2012-01-06T00:00:00Z' AND '2012-01-10T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, NAN)",
+                        "WHERE datetime BETWEEN '2017-01-01T10:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                        "      OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
+                        "ORDER BY datetime",
                 TEST_METRIC);
 
         String[][] expectedRows = {
-                {"NaN"}, {"1"}, {"2"}, {"3"}, {"3"}, {"7"}, {"8"}, {"9"}, {"9"}
+                {"NaN"},
+                {"1"},
+                {"2"},
+                {"3"},
+                {"NaN"},
+                {"NaN"},
+                {"7"},
+                {"8"},
+                {"9"},
+                {"9"}
         };
 
-        assertSqlQueryRows("Incorrect inner interpolation", expectedRows, sqlQuery);
+        assertSqlQueryRows("Incorrect outer interpolation by entire period", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4069
+     */
+    @Test
+    public void testOuterInterpolationWithOuterValue() {
+        String sqlQuery = String.format(
+                "SELECT value " +
+                        "FROM '%s' " +
+                        "WHERE datetime BETWEEN '2017-01-01T10:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                        "      OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
+                        "ORDER BY datetime",
+                TEST_METRIC);
+
+        String[][] expectedRows = {
+                {"NaN"},
+                {"NaN"},
+                {"1"},
+                {"2"},
+                {"3"},
+                {"NaN"},
+                {"NaN"},
+                {"7"},
+                {"8"},
+                {"9"},
+                {"9"}
+        };
+
+        assertSqlQueryRows("Incorrect outer interpolation by entire period", expectedRows, sqlQuery);
     }
 
     /**
@@ -99,14 +163,24 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
-                        "WHERE datetime BETWEEN '2011-12-31T00:00:00Z' AND '2012-01-10T00:00:00Z' " +
-                        "     AND (datetime BETWEEN '2011-12-31T00:00:00Z' AND '2012-01-03T00:00:00Z' " +
-                        "     OR datetime BETWEEN '2012-01-06T00:00:00Z' AND '2012-01-10T00:00:00Z') " +
-                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, NAN)",
+                        "WHERE datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T21:00:00Z' " +
+                        "     AND (datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                        "     OR datetime BETWEEN '2017-01-01T17:00:00Z' AND '2017-01-01T21:00:00Z') " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
+                        "ORDER BY datetime",
                 TEST_METRIC);
 
         String[][] expectedRows = {
-                {"NaN"}, {"1"}, {"2"}, {"3"}, {"3"}, {"7"}, {"8"}, {"9"}, {"9"}
+                {"NaN"},
+                {"NaN"},
+                {"1"},
+                {"2"},
+                {"3"},
+                {"NaN"},
+                {"7"},
+                {"8"},
+                {"9"},
+                {"9"}
         };
 
         assertSqlQueryRows("Incorrect inner interpolation with period intersection", expectedRows, sqlQuery);
