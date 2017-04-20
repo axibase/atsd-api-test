@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-public class WhereTagsLikeAnyOf extends SqlTest {
+public class WhereTagsLikeAnyOfTest extends SqlTest {
     private static final String METRIC_NAME = TestNames.metric();
 
     @BeforeClass
