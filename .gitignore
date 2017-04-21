@@ -1,4 +1,4 @@
 .idea
 target
-atsd-api-test.iml
+*.iml
 src/test/resources/dev.client.properties
