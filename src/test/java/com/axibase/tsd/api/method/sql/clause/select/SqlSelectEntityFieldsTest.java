@@ -56,7 +56,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
     }
 
     /**
-     * #4079
+     * #3882, #4079
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testQueryEntityFields(String field, String value) {
@@ -75,5 +75,107 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         String[][] expectedRows = {{value}};
 
         assertSqlQueryRows("Error in entity field query (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "entityFieldsProvider")
+    public void testEntityFieldsInWhere(String field, String value) {
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            String sqlQuery = String.format(
+                    "SELECT m.entity.%1$s FROM '%2$s' m WHERE m.entity.%1$s IS NOT NULL",
+                    field,
+                    TEST_METRIC,
+                    value);
+
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in entity field query with WHERE (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String sqlQuery = String.format(
+                "SELECT m.entity.%1$s FROM '%2$s' m WHERE m.entity.%1$s = '%3$s'",
+                field,
+                TEST_METRIC,
+                value);
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in entity field query with WHERE (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "entityFieldsProvider")
+    public void testEntityFieldsInGroupBy(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s",
+                field,
+                TEST_METRIC);
+
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in entity field query with GROUP BY (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "entityFieldsProvider")
+    public void testEntityFieldsInOrderBy(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.entity.%1$s FROM '%2$s' m ORDER BY m.entity.%1$s",
+                field,
+                TEST_METRIC);
+
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in entity field query with ORDER BY (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "entityFieldsProvider")
+    public void testEntityFieldsInHaving(String field, String value) {
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            String sqlQuery = String.format(
+                    "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s HAVING m.entity.%1$s IS NOT NULL",
+                    field,
+                    TEST_METRIC,
+                    value);
+
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in entity field query with HAVING (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String sqlQuery = String.format(
+                "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s HAVING m.entity.%1$s = '%3$s'",
+                field,
+                TEST_METRIC,
+                value);
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in entity field query with HAVING (%s)", expectedRows, sqlQuery);
     }
 }

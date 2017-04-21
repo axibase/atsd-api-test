@@ -17,7 +17,6 @@ import org.testng.annotations.Test;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
 
 public class SqlSelectMetricFieldsTest extends SqlTest {
 
@@ -106,17 +105,104 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
     }
 
     /**
-     * #4035
+     * #3888
      */
-    @Test
-    public void testMetricLastInsertTimeNotNull() {
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInWhere(String field, String value) {
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            String sqlQuery = String.format(
+                    "SELECT m.metric.%1$s FROM '%2$s' m WHERE m.metric.%1$s IS NOT NULL",
+                    field,
+                    TEST_METRIC,
+                    value);
+
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in metric field query with WHERE (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
         String sqlQuery = String.format(
-                "SELECT date_format(metric.lastInsertTime) FROM '%s'",
-                TEST_SERIES.getMetric()
-        );
+                "SELECT m.metric.%1$s FROM '%2$s' m WHERE m.metric.%1$s = '%3$s'",
+                field,
+                TEST_METRIC,
+                value);
 
-        String[][] expectedRows = {{Mocks.ISO_TIME}};
+        String[][] expectedRows = {{value}};
 
-        assertSqlQueryRows("Metric field 'lastInsertTime' has incorrect value", expectedRows, sqlQuery);
+        assertSqlQueryRows("Error in metric field query with WHERE (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInGroupBy(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s",
+                field,
+                TEST_METRIC);
+
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in metric field query with GROUP BY (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in metric field query with GROUP BY (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInOrderBy(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM '%2$s' m ORDER BY m.metric.%1$s",
+                field,
+                TEST_METRIC);
+
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in entity field query with ORDER BY (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3888
+     */
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInHaving(String field, String value) {
+        // cannot predefine last insert time value - just check for existence
+        if (field.equals("lastInsertTime")) {
+            String sqlQuery = String.format(
+                    "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s HAVING m.metric.%1$s IS NOT NULL",
+                    field,
+                    TEST_METRIC,
+                    value);
+
+            StringTable resultTable = queryTable(sqlQuery);
+            assertEquals(String.format("Error in metric field query with HAVING (%s)", field), resultTable.getRows().size(), 1);
+            return;
+        }
+
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s HAVING m.metric.%1$s = '%3$s'",
+                field,
+                TEST_METRIC,
+                value);
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in metric field query with HAVING (%s)", expectedRows, sqlQuery);
     }
 }
