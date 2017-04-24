@@ -10,8 +10,9 @@ import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SqlLargeDataTest extends SqlTest {
 
@@ -23,7 +24,7 @@ public class SqlLargeDataTest extends SqlTest {
      * #3890
      */
     @Test
-    public void testQueryLargeData() throws IOException, InterruptedException {
+    public void testQueryLargeData() throws Exception {
 
         ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
 
@@ -56,8 +57,9 @@ public class SqlLargeDataTest extends SqlTest {
         assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
     }
 
-    private static Sample createTestSample(int value) {
-        return new Sample(Mocks.MILLS_TIME + value * 1000, String.valueOf(value));
+    private static Sample createTestSample(int value) throws ParseException {
+        Long millisTime = Mocks.MILLS_TIME + value * 1000;
+        return new Sample(new Date(millisTime), String.valueOf(value));
     }
 
     private class LargeDataCheck extends AbstractCheck {
