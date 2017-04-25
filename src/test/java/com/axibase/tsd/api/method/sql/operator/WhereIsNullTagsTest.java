@@ -19,19 +19,19 @@ public class WhereIsNullTagsTest extends SqlTest {
         Series series1 = new Series();
         series1.setEntity(TestNames.entity());
         series1.setMetric(METRIC_NAME);
-        series1.addData(new Sample("2017-01-01T12:00:00Z", 0));
+        series1.addData(new Sample("2017-01-01T12:00:00.000Z", 0));
         series1.addTag("t1", "z");
 
         Series series2 = new Series();
         series2.setEntity(TestNames.entity());
         series2.setMetric(METRIC_NAME);
-        series2.addData(new Sample("2017-01-02T12:00:00Z", 0));
+        series2.addData(new Sample("2017-01-02T12:00:00.000Z", 0));
         series2.addTag("t2", "y");
 
         Series series3 = new Series();
         series3.setEntity(TestNames.entity());
         series3.setMetric(METRIC_NAME);
-        series3.addData(new Sample("2017-01-03T12:00:00Z", 0));
+        series3.addData(new Sample("2017-01-03T12:00:00.000Z", 0));
         series3.addTag("t1", "a");
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
