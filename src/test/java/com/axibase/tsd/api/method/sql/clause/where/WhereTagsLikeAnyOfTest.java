@@ -33,6 +33,9 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
+    /**
+     * #4034
+     */
     @Test
     public void testWhereTagsAny() {
         String sqlQuery = String.format(
@@ -52,6 +55,9 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
+    /**
+     * #4034
+     */
     @Test
     public void testWhereTagsAnyOrAny() {
         String sqlQuery = String.format(
@@ -72,6 +78,9 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
+    /**
+     * #4034
+     */
     @Test
     public void testWhereTagsAnyOrAnyOf() {
         String sqlQuery = String.format(
