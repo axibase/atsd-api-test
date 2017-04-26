@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.method.version.VersionMethod;
-import com.axibase.tsd.api.model.version.Version;
+import com.axibase.tsd.api.model.version.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -14,10 +14,14 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+import java.util.TimeZone;
+
+import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOCAL;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
-    public static final String DEFAULT_TIMEZONE_NAME = "UTC";
+    public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
     private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
@@ -35,7 +39,7 @@ public class TestUtil {
         try {
             return formatDate(date, pattern, getServerTimeZone());
         } catch (JSONException e) {
-            throw new IllegalStateException("Unknow timezone");
+            throw new IllegalStateException("Unknown timezone");
         }
     }
 
@@ -56,7 +60,7 @@ public class TestUtil {
     }
 
     public static String ISOFormat(Date date) {
-        return ISOFormat(date, true, DEFAULT_TIMEZONE_NAME);
+        return ISOFormat(date, true, UNIVERSAL_TIMEZONE_NAME);
     }
 
     public static String ISOFormat(long t) {
@@ -78,6 +82,30 @@ public class TestUtil {
             throw new RuntimeException(e);
         }
         return d;
+    }
+
+    public static String timeTranslate(String date, TimeZone timeZone, TimeTranslation mode) {
+        Date parsed = parseDate(date);
+        long time = parsed.getTime();
+        long offset = timeZone.getOffset(time);
+
+        if (mode == UNIVERSAL_TO_LOCAL) {
+            time += offset;
+        } else {
+            time -= offset;
+        }
+
+        return ISOFormat(time);
+    }
+
+    public static String timeTranslateDefault(String date, TimeTranslation mode) {
+        TimeZone timeZone;
+        try {
+            timeZone = getServerTimeZone();
+        } catch (JSONException e) {
+            throw new IllegalStateException("Unknown timezone");
+        }
+        return timeTranslate(date, timeZone, mode);
     }
 
     public static String prettyPrint(Object o) {
@@ -142,5 +170,9 @@ public class TestUtil {
         public static String propertyType() {
             return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY_TYPE);
         }
+    }
+
+    public static enum TimeTranslation {
+        LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
     }
 }
