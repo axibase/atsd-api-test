@@ -243,4 +243,62 @@ public class SqlCaseTest extends SqlTest {
 
         assertSqlQueryRows("CASE in HAVING gives wrong result", expectedRows, sqlQuery);
     }
+
+    /**
+     *  #3913
+     */
+    @Test
+    public void testCaseInExpression() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT 100 - CASE WHEN value < 30 THEN value ELSE 100 END FROM '%s'",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {
+                {"99"},
+                {"85"},
+                {"0"}
+        };
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in expression",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     *  #3913
+     */
+    @Test
+    public void testCaseInAggregationFunction() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT SUM(100 - CASE WHEN value < 30 THEN value ELSE 100 END) FROM '%s'",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {{"184"}};
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in aggregation function",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     *  #3913
+     */
+    @Test
+    public void testCaseInCastFunction() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT CAST(100 - CASE WHEN value < 30 THEN 0 ELSE 100 END AS STRING) FROM '%s'",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {
+                {"100"},
+                {"100"},
+                {"0"}};
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in cast function",
+                expectedRows,
+                sqlQuery);
+    }
 }
