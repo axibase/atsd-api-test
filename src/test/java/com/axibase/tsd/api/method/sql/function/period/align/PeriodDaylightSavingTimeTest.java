@@ -17,7 +17,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
     private static final String QUERY_TEMPLATE =
             "SELECT count(*), " +
             "date_format(time, 'yyyy-MM-dd HH:mm', '%1$s'), " +
-            "date_format(time, 'yyyy-MM-dd HH:mm') " +
+            "date_format(time, 'yyyy-MM-dd HH:mm', 'UTC') " +
             "FROM '%2$s' " +
             "GROUP BY PERIOD(1 DAY, '%1$s')";
 
