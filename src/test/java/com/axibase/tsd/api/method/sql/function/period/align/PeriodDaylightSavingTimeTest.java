@@ -76,7 +76,8 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
                 {"23", "2017-10-30 00:00", "2017-10-29 23:00"},
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for GROUP BY PERIOD(1 day) in positive offset timezone with DST",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -97,7 +98,8 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
                 {"23", "2017-11-06 00:00", "2017-11-06 08:00"},
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for GROUP BY PERIOD(1 day) in negative offset timezone with DST",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -122,6 +124,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
                 {"24", "2017-03-27 00:00", "2017-03-26 21:00"},
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for GROUP BY PERIOD(1 day) when changing timezone",
+                expectedRows, sqlQuery);
     }
 }
