@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ReplacementTableMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
-    private static final String PATH = "/entities/lookup";
+    private static final String PATH = "/replacement-tables/new";
     private static final WebTarget resource = httpRootResource.path(PATH).property(ClientProperties.FOLLOW_REDIRECTS, false);
 
     protected static Response createResponse(ReplacementTable table) {
