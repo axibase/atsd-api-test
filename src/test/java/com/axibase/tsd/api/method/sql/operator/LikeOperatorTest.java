@@ -7,6 +7,9 @@ import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+
 public class LikeOperatorTest extends SqlTest {
     /**
      * #4030
@@ -37,4 +40,49 @@ public class LikeOperatorTest extends SqlTest {
 
         assertSqlQueryRows(expected, sql);
     }
+
+    /**
+     * #4130
+     */
+    @Test
+    public void testAggregationForSeveralMetrics() throws Exception {
+        String entity = entity();
+        Registry.Entity.register(entity);
+
+        String[] metrics = new String[3];
+        for (int i = 0; i < metrics.length; i++) {
+            String metric = metric();
+            metrics[i] = metric;
+            Registry.Metric.register(metric);
+        }
+
+        Series[] seriesArray = new Series[3];
+        for (int i = 0; i < seriesArray.length; i++) {
+            Series series = new Series();
+            series.setEntity(entity);
+            series.setMetric(metrics[i]);
+            series.addData(Mocks.SAMPLE);
+
+            seriesArray[i] = series;
+        }
+
+        SeriesMethod.insertSeriesCheck(seriesArray);
+
+        String sql = String.format(
+                "SELECT " +
+                    "COUNT(value), " +
+                    "SUM(value), " +
+                    "AVG(value) " +
+                "FROM atsd_series " +
+                "WHERE metric LIKE 'method-sql-operator-like-operator-test-test-aggregation-for-several-metrics-metric*'"
+        );
+
+        String[][] expected = {
+                { "3", "370.3701", "123.4567" }
+        };
+
+        assertSqlQueryRows(expected, sql);
+    }
+
+
 }
