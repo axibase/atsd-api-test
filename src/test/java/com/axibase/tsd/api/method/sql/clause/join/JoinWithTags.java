@@ -313,4 +313,65 @@ public class JoinWithTags extends SqlTest {
 
         assertSqlQueryRows("Metric interpolate field is absent or corrupted in JOIN", expected, sql);
     }
+
+    /**
+     * #3939
+     */
+    @Test
+    public void testJoinSeriesWithChangedMetrics() throws Exception {
+        String entity = entity();
+        String[] metrics = { metric(), metric(), metric() };
+
+        Registry.Entity.register(entity);
+        for (String metric : metrics) {
+            Registry.Metric.register(metric);
+        }
+
+        List<Series> initialSeries = new ArrayList<>(metrics.length);
+        for (String metric : metrics) {
+            Series series = new Series();
+            series.setEntity(entity);
+            series.setMetric(metric);
+            series.addTag("tag", "value");
+            series.addData(Mocks.SAMPLE);
+
+            initialSeries.add(series);
+        }
+
+        SeriesMethod.insertSeriesCheck(initialSeries);
+
+        String sqlQuery = String.format(
+                "SELECT t1.tags " +
+                "FROM '%s' t1 " +
+                "JOIN USING ENTITY '%s' t2 " +
+                "JOIN USING ENTITY '%s' t3 " +
+                "WHERE t1.tags.tag = 'value' AND " +
+                "t2.tags.tag = 'value' AND " +
+                "t3.tags.tag = 'value'",
+                metrics[0], metrics[1], metrics[2]
+        );
+
+        String[][] expectedRows = {
+                {"tag=value"}
+        };
+
+        assertSqlQueryRows("Initial series query gives wrong result",
+                expectedRows, sqlQuery);
+
+        List<Series> changedSeries = new ArrayList<>(metrics.length);
+        for (String metric : metrics) {
+            Series series = new Series();
+            series.setEntity(entity);
+            series.setMetric(metric);
+            series.addTag("tag1", "value");
+            series.addData(Mocks.SAMPLE);
+
+            changedSeries.add(series);
+        }
+
+        SeriesMethod.insertSeriesCheck(changedSeries);
+
+        assertSqlQueryRows("Query after series change gives wrong result",
+                expectedRows, sqlQuery);
+    }
 }
