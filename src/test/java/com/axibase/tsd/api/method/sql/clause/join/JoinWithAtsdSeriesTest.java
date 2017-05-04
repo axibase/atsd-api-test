@@ -93,4 +93,77 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
 
         assertSqlQueryRows("", expectedRows, sqlQuery);
     }
+
+    /**
+     * #4089
+     */
+    @Test
+    public void testOuterJoinFromAtsdSeries() {
+        String sqlQuery= String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM atsd_series t1 " +
+                        "OUTER JOIN '%2$s' t2 " +
+                        "WHERE t1.metric = '%1$s'",
+                METRIC_NAME1,
+                METRIC_NAME2
+        );
+
+        String[][] expectedRows = {
+                {   "1",    "null"},
+                {   "2",    "null"},
+                {   "3",       "5"},
+                {"null",       "5"},
+                {   "4",       "6"},
+                {"null",       "7"},
+                {"null",       "8"},
+        };
+
+        assertSqlQueryRows("", expectedRows, sqlQuery);
+    }
+
+
+
+    /**
+     * #4089
+     */
+    @Test
+    public void testOuterJoinFromAtsdSeriesUsingEntity() {
+        String sqlQuery= String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM atsd_series t1 " +
+                        "OUTER JOIN USING ENTITY '%2$s' t2 " +
+                        "WHERE t1.metric = '%1$s'",
+                METRIC_NAME1,
+                METRIC_NAME2
+        );
+
+        String[][] expectedRows = {
+                {   "1",    "null"},
+                {   "2",    "null"},
+                {   "3",       "5"},
+                {   "4",       "6"},
+                {"null",       "7"},
+                {"null",       "8"},
+        };
+
+        assertSqlQueryRows("", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4089
+     */
+    @Test
+    public void testSelfJoinFromAtsdSeries() {
+        String sqlQuery= String.format(
+                "SELECT t1.value, t2.value " +
+                        "FROM atsd_series t1 " +
+                        "JOIN '%1$s' t2 " +
+                        "WHERE t1.metric = '%1$s'",
+                METRIC_NAME1
+        );
+
+        String expectedMessage = String.format("Self join is not supported (metric: %s)", METRIC_NAME1);
+
+        assertBadRequest("", expectedMessage, queryResponse(sqlQuery));
+    }
 }
