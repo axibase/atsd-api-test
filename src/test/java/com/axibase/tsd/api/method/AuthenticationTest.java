@@ -15,6 +15,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.ErrorTemplate.USER_NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 
+@Test(enabled=false)
 public class AuthenticationTest extends BaseMethod {
     private static final String UNKNOWN_USER = "Unknown User";
     private static final String UNKNOWN_USER_PASSWORD = "Unknown User Password";
