@@ -10,6 +10,7 @@ import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +25,7 @@ public class SqlLargeDataTest extends SqlTest {
      * #3890
      */
     @Test
-    public void testQueryLargeData() throws Exception {
+    public void testQueryLargeData() throws IOException, ParseException {
 
         ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
 
