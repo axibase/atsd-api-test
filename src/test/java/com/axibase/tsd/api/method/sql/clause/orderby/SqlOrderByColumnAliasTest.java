@@ -62,7 +62,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @Test
     public void testOrderByColumnAliasWithoutQuotes() {
         String sqlQuery = String.format(
-                "SELECT value as 'ValueColumn' FROM '%s' ORDER BY 'ValueColumn'",
+                "SELECT value as 'ValueColumn' FROM '%s' ORDER BY ValueColumn",
                 TEST_METRIC
         );
 
@@ -72,7 +72,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
                 { "3" }
         };
 
-        assertSqlQueryRows("ORDER BY column alias error", expectedRows, sqlQuery);
+        assertSqlQueryRows("ORDER BY column alias without quotes error", expectedRows, sqlQuery);
     }
 
     /**
@@ -91,7 +91,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
                 { "1.5" }
         };
 
-        assertSqlQueryRows("ORDER BY column alias error", expectedRows, sqlQuery);
+        assertSqlQueryRows("ORDER BY column alias expression error", expectedRows, sqlQuery);
     }
 
     /**
@@ -110,7 +110,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
                 { "1.5" }
         };
 
-        assertSqlQueryRows("ORDER BY column alias error", expectedRows, sqlQuery);
+        assertSqlQueryRows("ORDER BY column alias expression without quotes error", expectedRows, sqlQuery);
     }
 
     /**
