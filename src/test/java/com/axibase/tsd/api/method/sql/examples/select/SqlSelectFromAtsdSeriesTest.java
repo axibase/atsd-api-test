@@ -70,7 +70,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testExample2() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric IN ('%s','%s') %n",
+                "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric IN ('%s','%s') order by datetime %n",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 

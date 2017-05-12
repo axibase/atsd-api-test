@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
+import com.axibase.tsd.api.method.admin.SystemInformationMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -126,8 +127,9 @@ public class ConcatTest extends SqlTest {
                 TEST_METRIC3
         );
 
+        String javaVersion = SystemInformationMethod.getJavaVersion();
         String[][] expectedRows = {
-                {"a:3.14:5.56", "a:3.14:5"}
+                {javaVersion.startsWith("1.8") ? "a:3.14:5.55" : "a:3.14:5.56", "a:3.14:5"}
         };
 
         assertSqlQueryRows("CONCAT word and two numbers gives wrong result", expectedRows, sqlQuery);
