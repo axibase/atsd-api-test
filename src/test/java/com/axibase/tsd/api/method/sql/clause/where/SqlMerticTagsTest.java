@@ -124,6 +124,23 @@ public class SqlMerticTagsTest extends SqlTest {
      * #4180
      */
     @Test
+    public void testLikeTagFilterAsterisk() {
+        String sqlQuery = String.format(
+                "SELECT tags.tag FROM '%s' WHERE tags.tag LIKE '*2'",
+                TEST_METRIC
+        );
+
+        String[][] expectedRows = {
+                {"value2"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4180
+     */
+    @Test
     public void testNotLikeTagFilter() {
         String sqlQuery = String.format(
                 "SELECT tags.tag FROM '%s' WHERE tags.tag NOT LIKE 'value?'",
@@ -132,6 +149,26 @@ public class SqlMerticTagsTest extends SqlTest {
 
         String[][] expectedRows = {
                 {"null"},
+                {"otherValue"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4180
+     */
+    @Test
+    public void testNotLikeTagFilterAsterisk() {
+        String sqlQuery = String.format(
+                "SELECT tags.tag FROM '%s' WHERE tags.tag NOT LIKE '*2'",
+                TEST_METRIC
+        );
+
+        String[][] expectedRows = {
+                {"null"},
+                {"value1"},
+                {"value3"},
                 {"otherValue"}
         };
 
