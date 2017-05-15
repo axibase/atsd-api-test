@@ -504,4 +504,259 @@ public class CastTest extends SqlTest {
                 "Invalid expression: 'concat(value, '') + 10'", queryResponse(sql)
         );
     }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullString() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL('5', '3') AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"5"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullEmptyString() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(text, '3') AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullStringExpression() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(CONCAT('5', '8'), '3') AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"58"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullLookup() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), '3') AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNumeric() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(value, 3) AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNumericNaN() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(NaN, 3) AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNumericExpression() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(5 + SQRT(9), 3) AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"8"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullStringNumericAsString() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL('5', 3) AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"5"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullEmptyStringNumericAsString() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(text, 3) AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNumericStringAsString() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(5, '3') AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"5"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNaNNumericStringAsString() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(NaN, '3') AS STRING) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullStringNumericAsNumber() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL('5', 3) AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"5"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullEmptyStringNumericAsNumber() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(text, 3) AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNumericStringAsNumber() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(5, '3') AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"5"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4182
+     */
+    @Test
+    public void testCastIsNullNaNNumericStringAsNumber() {
+        String sqlQuery = String.format(
+                "SELECT CAST(ISNULL(NaN, '3') AS NUMBER) FROM '%s' ",
+                TEST_METRIC1_NAME
+        );
+
+        String[][] expectedRows = {
+                {"3"}
+        };
+
+        assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
+    }
 }
