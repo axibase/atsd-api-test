@@ -519,7 +519,7 @@ public class CastTest extends SqlTest {
                 {"5"}
         };
 
-        assertSqlQueryRows("CAST from string with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -536,7 +536,7 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from string with ISNULL and empty string gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -553,7 +553,7 @@ public class CastTest extends SqlTest {
                 {"58"}
         };
 
-        assertSqlQueryRows("CAST from string with ISNULL expression gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -570,7 +570,7 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from string with LOOKUP gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -587,7 +587,7 @@ public class CastTest extends SqlTest {
                 {"7"}
         };
 
-        assertSqlQueryRows("CAST from string with LOOKUP expression gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -604,7 +604,7 @@ public class CastTest extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows("CAST from number with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -621,7 +621,7 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from number with ISNULL and NaN gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -638,7 +638,7 @@ public class CastTest extends SqlTest {
                 {"8"}
         };
 
-        assertSqlQueryRows("CAST from number with ISNULL expression gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -655,7 +655,7 @@ public class CastTest extends SqlTest {
                 {"5"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -672,7 +672,7 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -689,7 +689,7 @@ public class CastTest extends SqlTest {
                 {"5"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -706,7 +706,7 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -723,7 +723,7 @@ public class CastTest extends SqlTest {
                 {"5"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -740,7 +740,7 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -757,7 +757,7 @@ public class CastTest extends SqlTest {
                 {"5"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -774,6 +774,6 @@ public class CastTest extends SqlTest {
                 {"3"}
         };
 
-        assertSqlQueryRows("CAST from different types with ISNULL gives wrong result", expectedRows, sqlQuery);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 }
