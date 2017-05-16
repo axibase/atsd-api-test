@@ -533,6 +533,6 @@ public class SqlPeriodAlignTest extends SqlTest {
                 align
         );
 
-        assertSqlQueryRows("Failed to define entity timezone by AUTO param", expectedRows, sqlQuery);
+        assertSqlQueryRows(String.format("Incorrect grouping by %s and align by %s", period, align), expectedRows, sqlQuery);
     }
 }
