@@ -2,10 +2,12 @@ package com.axibase.tsd.api.method.sql.function.period.align;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -15,7 +17,7 @@ import java.util.List;
 import static org.testng.AssertJUnit.assertEquals;
 
 
-public class SqlPeriodAlignTest extends SqlMethod {
+public class SqlPeriodAlignTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-align";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
@@ -24,7 +26,52 @@ public class SqlPeriodAlignTest extends SqlMethod {
     @BeforeClass
     public static void prepareDataSet() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-            setSamples(Arrays.asList(
+            setData(Arrays.asList(
+                    //millisecond interval
+                    new Sample("2000-01-01T00:00:00.001Z", "1"),
+                    new Sample("2000-01-01T00:00:00.002Z", "2"),
+                    new Sample("2000-01-01T00:00:00.003Z", "3"),
+
+                    //second interval
+                    new Sample("2001-01-01T00:00:01.005Z", "1"),
+                    new Sample("2001-01-01T00:00:02.005Z", "2"),
+                    new Sample("2001-01-01T00:00:03.005Z", "3"),
+
+                    //minute interval
+                    new Sample("2002-01-01T00:01:00.005Z", "1"),
+                    new Sample("2002-01-01T00:02:00.005Z", "2"),
+                    new Sample("2002-01-01T00:03:00.005Z", "3"),
+
+                    //hour interval
+                    new Sample("2003-01-01T01:00:00.005Z", "1"),
+                    new Sample("2003-01-01T02:00:00.005Z", "2"),
+                    new Sample("2003-01-01T03:00:00.005Z", "3"),
+
+                    //day interval
+                    new Sample("2004-01-01T00:00:00.005Z", "1"),
+                    new Sample("2004-01-02T00:00:00.005Z", "2"),
+                    new Sample("2004-01-03T00:00:00.005Z", "3"),
+
+                    //week interval
+                    new Sample("2005-01-01T00:00:00.005Z", "1"),
+                    new Sample("2005-01-08T00:00:00.005Z", "2"),
+                    new Sample("2005-01-15T00:00:00.005Z", "3"),
+
+                    //month interval
+                    new Sample("2006-01-01T00:00:00.005Z", "1"),
+                    new Sample("2006-02-01T00:00:00.005Z", "2"),
+                    new Sample("2006-03-01T00:00:00.005Z", "3"),
+
+                    //quarter interval
+                    new Sample("2007-01-01T00:00:00.005Z", "1"),
+                    new Sample("2007-04-01T00:00:00.005Z", "2"),
+                    new Sample("2007-07-01T00:00:00.005Z", "3"),
+
+                    //year interval
+                    new Sample("2008-01-01T00:00:00.005Z", "1"),
+                    new Sample("2009-01-01T00:00:00.005Z", "2"),
+                    new Sample("2010-01-01T00:00:00.005Z", "3"),
+
                     new Sample("2016-06-03T09:20:00.124Z", "16.0"),
                     new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                     new Sample("2016-06-03T09:36:00.000Z", "6.0"),
@@ -139,5 +186,353 @@ public class SqlPeriodAlignTest extends SqlMethod {
                 Arrays.asList("2016-06-03T09:40:00.324Z", "19.0")
         );
         assertEquals(expectedTableRows, resultTableRows);
+    }
+
+
+    @DataProvider(name = "periodsQueryParametersProvider")
+    public Object[][] providePeriodsQueryParameters() {
+        return new Object[][]{
+                //<editor-fold desc="MILLISECOND">
+                {
+                    "2000-01-01T00:00:00.001Z",
+                    "2000-01-01T00:00:00.004Z",
+                    "MILLISECOND",
+                    "START_TIME",
+                    new String[][] {
+                            {"2000-01-01T00:00:00.001Z", "1"},
+                            {"2000-01-01T00:00:00.002Z", "2"},
+                            {"2000-01-01T00:00:00.003Z", "3"}
+                    }
+                },
+                {
+                    "2000-01-01T00:00:00.001Z",
+                    "2000-01-01T00:00:00.004Z",
+                    "MILLISECOND",
+                    "END_TIME",
+                    new String[][] {
+                            {"2000-01-01T00:00:00.001Z", "1"},
+                            {"2000-01-01T00:00:00.002Z", "2"},
+                            {"2000-01-01T00:00:00.003Z", "3"}
+                    }
+                },
+                {
+                    "2000-01-01T00:00:00.001Z",
+                    "2000-01-01T00:00:00.004Z",
+                    "MILLISECOND",
+                    "FIRST_VALUE_TIME",
+                    new String[][] {
+                            {"2000-01-01T00:00:00.001Z", "1"},
+                            {"2000-01-01T00:00:00.002Z", "2"},
+                            {"2000-01-01T00:00:00.003Z", "3"}
+                    }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="SECOND">
+                {
+                    "2001-01-01T00:00:01.000Z",
+                    "2001-01-01T00:00:04.007Z",
+                    "SECOND",
+                    "START_TIME",
+                    new String[][] {
+                            {"2001-01-01T00:00:01.000Z", "1"},
+                            {"2001-01-01T00:00:02.000Z", "2"},
+                            {"2001-01-01T00:00:03.000Z", "3"}
+                    }
+                },
+                {
+                    "2001-01-01T00:00:01.000Z",
+                    "2001-01-01T00:00:04.007Z",
+                    "SECOND",
+                    "END_TIME",
+                    new String[][] {
+                            {"2001-01-01T00:00:01.007Z", "2"},
+                            {"2001-01-01T00:00:02.007Z", "3"}
+                    }
+                },
+                {
+                    "2001-01-01T00:00:01.000Z",
+                    "2001-01-01T00:00:04.007Z",
+                    "SECOND",
+                    "FIRST_VALUE_TIME",
+                    new String[][] {
+                            {"2001-01-01T00:00:01.005Z", "1"},
+                            {"2001-01-01T00:00:02.005Z", "2"},
+                            {"2001-01-01T00:00:03.005Z", "3"}
+                    }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="MINUTE">
+                {
+                        "2002-01-01T00:01:00.000Z",
+                        "2002-01-01T00:04:00.007Z",
+                        "MINUTE",
+                        "START_TIME",
+                        new String[][] {
+                                {"2002-01-01T00:01:00.000Z", "1"},
+                                {"2002-01-01T00:02:00.000Z", "2"},
+                                {"2002-01-01T00:03:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2002-01-01T00:01:00.000Z",
+                        "2002-01-01T00:04:00.007Z",
+                        "MINUTE",
+                        "END_TIME",
+                        new String[][] {
+                                {"2002-01-01T00:01:00.007Z", "2"},
+                                {"2002-01-01T00:02:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2002-01-01T00:01:00.000Z",
+                        "2002-01-01T00:04:00.007Z",
+                        "MINUTE",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2002-01-01T00:01:00.005Z", "1"},
+                                {"2002-01-01T00:02:00.005Z", "2"},
+                                {"2002-01-01T00:03:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="HOUR">
+                {
+                        "2003-01-01T01:00:00.000Z",
+                        "2003-01-01T04:00:00.007Z",
+                        "HOUR",
+                        "START_TIME",
+                        new String[][] {
+                                {"2003-01-01T01:00:00.000Z", "1"},
+                                {"2003-01-01T02:00:00.000Z", "2"},
+                                {"2003-01-01T03:00:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2003-01-01T01:00:00.000Z",
+                        "2003-01-01T04:00:00.007Z",
+                        "HOUR",
+                        "END_TIME",
+                        new String[][] {
+                                {"2003-01-01T01:00:00.007Z", "2"},
+                                {"2003-01-01T02:00:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2003-01-01T01:00:00.000Z",
+                        "2003-01-01T04:00:00.007Z",
+                        "HOUR",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2003-01-01T01:00:00.005Z", "1"},
+                                {"2003-01-01T02:00:00.005Z", "2"},
+                                {"2003-01-01T03:00:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="DAY">
+                {
+                        "2004-01-01T00:00:00.000Z",
+                        "2004-01-04T00:00:00.007Z",
+                        "DAY",
+                        "START_TIME",
+                        new String[][] {
+                                {"2004-01-01T00:00:00.000Z", "1"},
+                                {"2004-01-02T00:00:00.000Z", "2"},
+                                {"2004-01-03T00:00:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2004-01-01T00:00:00.000Z",
+                        "2004-01-04T00:00:00.007Z",
+                        "DAY",
+                        "END_TIME",
+                        new String[][] {
+                                {"2004-01-01T00:00:00.007Z", "2"},
+                                {"2004-01-02T00:00:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2004-01-01T00:00:00.000Z",
+                        "2004-01-04T00:00:00.007Z",
+                        "DAY",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2004-01-01T00:00:00.005Z", "1"},
+                                {"2004-01-02T00:00:00.005Z", "2"},
+                                {"2004-01-03T00:00:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="WEEK">
+                {
+                        "2005-01-01T00:00:00.000Z",
+                        "2005-01-15T00:00:00.007Z",
+                        "WEEK",
+                        "START_TIME",
+                        new String[][] {
+                                {"2005-01-01T00:00:00.000Z", "1"},
+                                {"2005-01-08T00:00:00.000Z", "2"},
+                                {"2005-01-15T00:00:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2005-01-01T00:00:00.000Z",
+                        "2005-01-15T00:00:00.007Z",
+                        "WEEK",
+                        "END_TIME",
+                        new String[][] {
+                                {"2005-01-01T00:00:00.007Z", "2"},
+                                {"2005-01-08T00:00:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2005-01-01T00:00:00.000Z",
+                        "2005-01-15T00:00:00.007Z",
+                        "WEEK",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2005-01-01T00:00:00.005Z", "1"},
+                                {"2005-01-08T00:00:00.005Z", "2"},
+                                {"2005-01-15T00:00:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="MONTH">
+                {
+                        "2006-01-01T00:00:00.000Z",
+                        "2006-04-01T00:00:00.007Z",
+                        "MONTH",
+                        "START_TIME",
+                        new String[][] {
+                                {"2006-01-01T00:00:00.000Z", "1"},
+                                {"2006-02-01T00:00:00.000Z", "2"},
+                                {"2006-03-01T00:00:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2006-01-01T00:00:00.000Z",
+                        "2006-04-01T00:00:00.007Z",
+                        "MONTH",
+                        "END_TIME",
+                        new String[][] {
+                                {"2006-01-01T00:00:00.007Z", "2"},
+                                {"2006-02-01T00:00:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2006-01-01T00:00:00.000Z",
+                        "2006-04-01T00:00:00.007Z",
+                        "MONTH",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2006-01-01T00:00:00.005Z", "1"},
+                                {"2006-02-01T00:00:00.005Z", "2"},
+                                {"2006-03-01T00:00:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="QUARTER">
+                {
+                        "2007-01-01T00:00:00.000Z",
+                        "2007-07-01T00:00:00.007Z",
+                        "QUARTER",
+                        "START_TIME",
+                        new String[][] {
+                                {"2007-01-01T00:00:00.000Z", "1"},
+                                {"2007-04-01T00:00:00.000Z", "2"},
+                                {"2007-07-01T00:00:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2007-01-01T00:00:00.000Z",
+                        "2007-07-01T00:00:00.007Z",
+                        "QUARTER",
+                        "END_TIME",
+                        new String[][] {
+                                {"2007-01-01T00:00:00.007Z", "2"},
+                                {"2007-04-01T00:00:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2007-01-01T00:00:00.000Z",
+                        "2007-07-01T00:00:00.007Z",
+                        "QUARTER",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2007-01-01T00:00:00.005Z", "1"},
+                                {"2007-04-01T00:00:00.005Z", "2"},
+                                {"2007-07-01T00:00:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+
+                //<editor-fold desc="YEAR">
+                {
+                        "2008-01-01T00:00:00.000Z",
+                        "2010-01-01T00:00:00.007Z",
+                        "YEAR",
+                        "START_TIME",
+                        new String[][] {
+                                {"2008-01-01T00:00:00.000Z", "1"},
+                                {"2009-01-01T00:00:00.000Z", "2"},
+                                {"2010-01-01T00:00:00.000Z", "3"}
+                        }
+                },
+                {
+                        "2008-01-01T00:00:00.000Z",
+                        "2010-01-01T00:00:00.007Z",
+                        "YEAR",
+                        "END_TIME",
+                        new String[][] {
+                                {"2008-01-01T00:00:00.007Z", "2"},
+                                {"2009-01-01T00:00:00.007Z", "3"}
+                        }
+                },
+                {
+                        "2008-01-01T00:00:00.000Z",
+                        "2010-01-01T00:00:00.007Z",
+                        "YEAR",
+                        "FIRST_VALUE_TIME",
+                        new String[][] {
+                                {"2008-01-01T00:00:00.005Z", "1"},
+                                {"2009-01-01T00:00:00.005Z", "2"},
+                                {"2010-01-01T00:00:00.005Z", "3"}
+                        }
+                },
+                //</editor-fold>
+        };
+    }
+
+
+    /**
+     * #4175
+     */
+    @Test(dataProvider = "periodsQueryParametersProvider")
+    public void testPeriodsTimeGrouping(
+            String beginTime,
+            String endTime,
+            String period,
+            String align,
+            String[][] expectedRows) {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                "FROM '%s' " +
+                "WHERE datetime >= '%s' AND datetime < '%s' " +
+                "GROUP BY PERIOD(1 %s, %s)",
+                TEST_METRIC_NAME,
+                beginTime,
+                endTime,
+                period,
+                align
+        );
+
+        assertSqlQueryRows("Failed to define entity timezone by AUTO param", expectedRows, sqlQuery);
     }
 }
