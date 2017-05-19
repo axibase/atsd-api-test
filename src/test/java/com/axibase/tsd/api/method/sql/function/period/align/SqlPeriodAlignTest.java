@@ -52,6 +52,13 @@ public class SqlPeriodAlignTest extends SqlTest {
                     new Sample("2004-01-02T00:00:00.005Z", "2"),
                     new Sample("2004-01-03T00:00:00.005Z", "3"),
 
+                    new Sample("2004-03-26T00:00:00.005Z", "26"),
+                    new Sample("2004-03-27T00:00:00.005Z", "27"),
+                    new Sample("2004-03-28T00:00:00.005Z", "28"),
+                    new Sample("2004-03-29T00:00:00.005Z", "29"),
+                    new Sample("2004-03-30T00:00:00.005Z", "30"),
+                    new Sample("2004-03-31T00:00:00.005Z", "31"),
+
                     //week interval
                     new Sample("2005-01-01T00:00:00.005Z", "1"),
                     new Sample("2005-01-08T00:00:00.005Z", "2"),
@@ -534,5 +541,77 @@ public class SqlPeriodAlignTest extends SqlTest {
         );
 
         assertSqlQueryRows(String.format("Incorrect grouping by %s and align by %s", period, align), expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4175
+     */
+    @Test
+    public void testPeriodsTimeGroupingDSTChangedStartTime() {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM '%s' " +
+                        "WHERE datetime >= '2004-03-26T00:00:00Z' AND datetime < '2004-03-31T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 DAY, START_TIME, 'Europe/Moscow')",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2004-03-26T00:00:00.000Z", "26"},
+                {"2004-03-27T00:00:00.000Z", "27"},
+                {"2004-03-27T23:00:00.000Z", "28"},
+                {"2004-03-28T23:00:00.000Z", "29"},
+                {"2004-03-29T23:00:00.000Z", "30"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4175
+     */
+    @Test
+    public void testPeriodsTimeGroupingDSTChangedEndTime() {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM '%s' " +
+                        "WHERE datetime >= '2004-03-26T00:00:00Z' AND datetime < '2004-03-31T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 DAY, END_TIME, 'Europe/Moscow')",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2004-03-26T00:00:00.000Z", "26"},
+                {"2004-03-27T00:00:00.000Z", "27"},
+                {"2004-03-27T23:00:00.000Z", "28"},
+                {"2004-03-28T23:00:00.000Z", "29"},
+                {"2004-03-29T23:00:00.000Z", "30"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4175
+     */
+    @Test
+    public void testPeriodsTimeGroupingDSTChangedFirstValueTime() {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM '%s' " +
+                        "WHERE datetime >= '2004-03-26T00:00:00Z' AND datetime < '2004-03-31T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 DAY, FIRST_VALUE_TIME, 'Europe/Moscow')",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2004-03-26T00:00:00.005Z", "26"},
+                {"2004-03-27T00:00:00.005Z", "27"},
+                {"2004-03-27T23:00:00.005Z", "28"},
+                {"2004-03-28T23:00:00.005Z", "29"},
+                {"2004-03-29T23:00:00.005Z", "30"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 }
