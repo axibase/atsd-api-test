@@ -134,7 +134,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorExactMatch() {
+    public void testLikeMetricOperatorExactMatch() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -151,7 +151,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorWildcards() {
+    public void testLikeMetricOperatorWildcards() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -171,7 +171,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorQuestionWildcardsNoMatch() {
+    public void testLikeMetricOperatorQuestionWildcardsNoMatch() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -187,7 +187,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorQuestionWildcardsMatch() {
+    public void testLikeMetricOperatorQuestionWildcardsMatch() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -203,7 +203,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorAsteriskWildcardsZeroLength() {
+    public void testLikeMetricOperatorAsteriskWildcardsZeroLength() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -219,7 +219,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testMultipleLikeOperatorsOr() {
+    public void testMultipleLikeMetricOperatorsOr() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -235,7 +235,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testMultipleLikeOperatorsAnd() {
+    public void testMultipleLikeMetricOperatorsAnd() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -251,7 +251,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorOrEquals() {
+    public void testLikeMetricOperatorOrEquals() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -267,7 +267,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorAndNotEquals() {
+    public void testLikeMetricOperatorAndNotEquals() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -283,7 +283,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorAndNotNull() {
+    public void testLikeMetricOperatorAndNotNull() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -299,7 +299,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorAndIn() {
+    public void testLikeMetricOperatorAndIn() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -315,7 +315,7 @@ public class LikeOperatorTest extends SqlTest {
      * #4083
      */
     @Test
-    public void testLikeOperatorOrIn() {
+    public void testLikeMetricOperatorOrIn() {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
@@ -325,5 +325,53 @@ public class LikeOperatorTest extends SqlTest {
 
         StringTable table = SqlMethod.queryTable(sqlQuery);
         assertTableContainsColumnValues(TEST_METRICS.subList(10, 22), table, "metric");
+    }
+
+    /**
+     * #4152
+     */
+    @Test
+    public void testMultipleLikeMetricOperatorNoMetricFitsCondition() {
+        String sqlQuery = String.format(
+                "SELECT metric " +
+                        "FROM atsd_series " +
+                        "WHERE metric LIKE '%1$s-first-1?' AND metric LIKE '%1$s-non-existing-*?' " +
+                        "ORDER BY metric ",
+                TEST_METRIC_PREFIX);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+        assertBadRequest("No matching metrics found", response);
+    }
+
+    /**
+     * #4152
+     */
+    @Test
+    public void testLikeMetricOperatorAndLess() {
+        String sqlQuery = String.format(
+                "SELECT metric " +
+                        "FROM atsd_series " +
+                        "WHERE metric LIKE '%1$s-first-*' AND metric < '%1$s-first-10' " +
+                        "ORDER BY metric ",
+                TEST_METRIC_PREFIX);
+
+        StringTable table = SqlMethod.queryTable(sqlQuery);
+        assertTableContainsColumnValues(TEST_METRICS.subList(0, 10), table, "metric");
+    }
+
+    /**
+     * #4152
+     */
+    @Test
+    public void testLikeMetricOperatorAndGreaterOrEquals() {
+        String sqlQuery = String.format(
+                "SELECT metric " +
+                        "FROM atsd_series " +
+                        "WHERE metric LIKE '%1$s-first-*' AND metric >= '%1$s-first-40' " +
+                        "ORDER BY metric ",
+                TEST_METRIC_PREFIX);
+
+        StringTable table = SqlMethod.queryTable(sqlQuery);
+        assertTableContainsColumnValues(TEST_METRICS.subList(40, 50), table, "metric");
     }
 }
