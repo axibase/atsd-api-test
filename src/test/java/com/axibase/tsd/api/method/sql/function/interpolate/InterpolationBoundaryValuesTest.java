@@ -399,7 +399,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithMinDateNoneCalendar() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -408,10 +408,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -423,7 +423,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithMinDateNanCalendar() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -432,11 +432,11 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1970-01-01T00:00:00.000Z", "0", "1970-01-01T00:00:00.000Z", "NaN"},
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "NaN"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -448,7 +448,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithMinDateExtendCalendar() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -457,11 +457,11 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1970-01-01T00:00:00.000Z", "0", "1970-01-01T00:00:00.000Z", "1"},
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "1"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -473,7 +473,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithMinDateNoneStartTime() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -482,10 +482,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -497,7 +497,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithMinDateNanStartTime() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -506,11 +506,11 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1970-01-01T00:00:00.000Z", "0", "1970-01-01T00:00:00.000Z", "NaN"},
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "NaN"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -522,7 +522,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithMinDateExtendStartTime() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -531,11 +531,11 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1970-01-01T00:00:00.000Z", "0", "1970-01-01T00:00:00.000Z", "1"},
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "1"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -547,7 +547,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @Test
     public void testJoinWithDateBeforeMin() {
         String sqlQuery = String.format(
-                "SELECT m1.datetime, m1.value, m2.datetime, m2.value " +
+                "SELECT m1.value, m2.value " +
                         "FROM '%s' m1 " +
                         "JOIN '%s' m2 " +
                         "WHERE m1.datetime >= '1969-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
@@ -556,11 +556,11 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"1970-01-01T00:00:00.000Z", "0", "1970-01-01T00:00:00.000Z", "1"},
-                {"1971-01-01T00:00:00.000Z", "0", "1971-01-01T00:00:00.000Z", "1"},
-                {"1972-01-01T00:00:00.000Z", "2", "1972-01-01T00:00:00.000Z", "1"},
-                {"1973-01-01T00:00:00.000Z", "2", "1973-01-01T00:00:00.000Z", "3"},
-                {"1974-01-01T00:00:00.000Z", "4", "1974-01-01T00:00:00.000Z", "3"},
+                {"0", "1"},
+                {"0", "1"},
+                {"2", "1"},
+                {"2", "3"},
+                {"4", "3"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
