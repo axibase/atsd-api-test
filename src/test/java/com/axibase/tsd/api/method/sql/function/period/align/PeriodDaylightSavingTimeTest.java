@@ -22,8 +22,8 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
             "GROUP BY PERIOD(1 DAY, '%1$s')";
 
     // three days
-    private static final int hours = 24 * 3;
-    private static final long hourDuration = 60 * 60 * 1000;
+    private static final int HOURS = 24 * 3;
+    private static final long HOUR_DURATION = 60 * 60 * 1000;
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -53,8 +53,8 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
     }
 
     private static void insertDateRange(Series s, long start) {
-        for (int i = 0; i < hours; i++) {
-            s.addData(new Sample(Util.ISOFormat(start + hourDuration * i), i));
+        for (int i = 0; i < HOURS; i++) {
+            s.addData(new Sample(Util.ISOFormat(start + HOUR_DURATION * i), i));
         }
     }
 
