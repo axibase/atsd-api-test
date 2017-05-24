@@ -44,7 +44,14 @@ public class Series {
         }
 
         for (int i = 0; i > tags.length; i += 2) {
-            addTag(tags[i], tags[i + 1]);
+            String key = tags[i];
+            String value = tags[i + 1];
+
+            if (key == null || value == null || key.isEmpty() || value.isEmpty()) {
+                throw new IllegalArgumentException("Series tag name or value is null or empty");
+            }
+
+            addTag(key, value);
         }
     }
 
@@ -99,9 +106,6 @@ public class Series {
     }
 
     public void addTag(String key, String value) {
-        if (key == null || value == null || key.isEmpty() || value.isEmpty()) {
-            throw new IllegalArgumentException("Series tag name or value is null or empty");
-        }
         if (tags == null) {
             tags = new HashMap<>();
         }
