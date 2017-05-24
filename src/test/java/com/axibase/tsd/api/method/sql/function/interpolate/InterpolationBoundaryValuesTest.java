@@ -132,7 +132,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String[][] expectedRows = {
                 {"NaN"},
                 {"3"},
-                {"7"},
+                {"NaN"},
                 {"8"},
                 {"9"},
                 {"9"}
