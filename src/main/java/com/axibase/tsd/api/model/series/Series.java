@@ -99,8 +99,8 @@ public class Series {
     }
 
     public void addTag(String key, String value) {
-        if (key == null || value == null) {
-            throw new IllegalArgumentException("Series tag name or value is null");
+        if (key == null || value == null || key.isEmpty() || value.isEmpty()) {
+            throw new IllegalArgumentException("Series tag name or value is null or empty");
         }
         if (tags == null) {
             tags = new HashMap<>();
