@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.util.NotCheckedException;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -15,16 +16,12 @@ import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class EntityMethod extends BaseMethod {
     public static final String METHOD_ENTITY_LIST = "/entities/";
     public static final String METHOD_ENTITY = "/entities/{entity}";
     public static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
     public static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     public static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
-
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
         Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(json(query));
@@ -127,9 +124,17 @@ public class EntityMethod extends BaseMethod {
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class), strict);
     }
 
-    public static boolean entityExist(String value){
-        return EntityMethod.getEntityResponse(value).getStatus() != NOT_FOUND.getStatusCode();
+    public static boolean entityExist(String entity) throws NotCheckedException {
+        final Response response = EntityMethod.getEntityResponse(entity);
+        if (response.getStatus() == OK.getStatusCode()) {
+            return true;
+        } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            return false;
+        }
+        if (entity.contains(" ")){
+            return entityExist(entity.replace(" ", "_"));
+        }
 
+        throw new NotCheckedException("Fail to execute entity query");
     }
-
 }

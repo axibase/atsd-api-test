@@ -5,6 +5,9 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.model.property.PropertyQuery;
+import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,4 +138,24 @@ public class PropertyMethod extends BaseMethod {
         return sb.toString();
     }
 
+    public static boolean propertyTypeExist(String propertyType) {
+        final PropertyQuery q = new PropertyQuery();
+        q.setEntity("*");
+        q.setType(propertyType);
+        q.setStartDate(Util.MIN_STORABLE_DATE);
+        q.setEndDate(Util.MAX_STORABLE_DATE);
+
+        q.setLimit(1);
+
+        final Response response = queryProperty(q);
+        if (response.getStatus() != OK.getStatusCode()) {
+            throw new NotCheckedException("Fail to execute property query");
+        }
+
+        String given = response.readEntity(String.class);
+        if ("[]".equals(given)){
+            return false;
+        } else
+            return true;
+    }
 }

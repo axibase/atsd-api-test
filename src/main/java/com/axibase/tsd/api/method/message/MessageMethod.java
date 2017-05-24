@@ -7,6 +7,7 @@ import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,14 +90,21 @@ public class MessageMethod extends BaseMethod {
         return compareJsonString(expected, given);
     }
 
-    public static boolean messageTypeExist(String type){
+    public static boolean messageTypeExist(String type) throws NotCheckedException {
         MessageQuery q = new MessageQuery();
         q.setEntity("*");
         q.setType(type);
         q.setStartDate(Util.MIN_STORABLE_DATE);
         q.setEndDate(Util.MAX_STORABLE_DATE);
         q.setLimit(1);
-        return  queryMessageResponse(q).getStatus() != NOT_FOUND.getStatusCode();
+
+        final Response response = queryMessageResponse(q);
+        if (response.getStatus() == OK.getStatusCode()) {
+            return true;
+        }
+        else if (response.getStatus() == NOT_FOUND.getStatusCode())
+            return false;
+        throw new NotCheckedException("Fail to execute message query");
     }
 
 

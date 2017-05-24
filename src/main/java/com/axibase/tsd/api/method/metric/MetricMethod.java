@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.util.NotCheckedException;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -40,7 +41,7 @@ public class MetricMethod extends BaseMethod {
         return updateMetric(metric.getName(), metric);
     }
 
-    public static Response queryMetric(String metricName){
+    public static Response queryMetric(String metricName) {
         Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
         response.bufferEntity();
         return response;
@@ -93,8 +94,18 @@ public class MetricMethod extends BaseMethod {
         return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
     }
 
-    public static boolean metricExist(String metric){
-        return MetricMethod.queryMetric(metric).getStatus() != NOT_FOUND.getStatusCode();
+    public static boolean metricExist(String metric) throws NotCheckedException {
+        final Response response = MetricMethod.queryMetric(metric);
+        if (response.getStatus() == OK.getStatusCode()) {
+            return true;
+        } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            return false;
+        }
+        if (metric.contains(" ")){
+            return metricExist(metric.replace(" ", "_"));
+        }
+
+        throw new NotCheckedException("Fail to execute metric query");
     }
 
 }

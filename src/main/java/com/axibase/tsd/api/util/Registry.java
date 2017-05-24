@@ -2,8 +2,8 @@ package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
-import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
+import com.axibase.tsd.api.method.property.PropertyMethod;
 
 public enum Registry {
     Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup"), ReplacementTable("ReplacementTable");
@@ -24,7 +24,7 @@ public enum Registry {
                 exists = MetricMethod.metricExist(value);
                 break;
             case "Type":
-                exists = MessageMethod.messageTypeExist(value);
+                exists = PropertyMethod.propertyTypeExist(value);
                 break;
             case "EntityGroup":
                 exists = EntityGroupMethod.entityGroupExist(value);

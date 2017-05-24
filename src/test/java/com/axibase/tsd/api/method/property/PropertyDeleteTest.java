@@ -556,7 +556,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
     @Test
     public void testEntityTooLong() throws Exception {
-        final Property property = new Property("delete-type-18", TestUtil.appendChar(new StringBuilder(), 'a', 10000).append("type-18").toString());
+        final Property property = new Property("delete-type-18", TestUtil.appendChar(new StringBuilder(), 'a', 5875).append("type-18").toString());
 
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");

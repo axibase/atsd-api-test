@@ -2,7 +2,6 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -18,9 +17,6 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class SeriesUrlQueryTest extends SeriesMethod {
 
     /**
@@ -29,7 +25,6 @@ public class SeriesUrlQueryTest extends SeriesMethod {
     @Test
     public void testEntityContainsWhitespace() throws Exception {
         final String entityName = "seriesurlquery entityname-1";
-        Registry.Entity.register(entityName);
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
         parameters.put("endDate", MAX_QUERYABLE_DATE);
@@ -43,7 +38,6 @@ public class SeriesUrlQueryTest extends SeriesMethod {
     @Test
     public void testMetricContainsWhitespace() {
         final String metricName = "seriesurlquery metricname-2";
-        Registry.Metric.register(metricName);
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
         parameters.put("endDate", MAX_QUERYABLE_DATE);
