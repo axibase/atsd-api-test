@@ -43,7 +43,7 @@ public class Series {
             throw new IllegalArgumentException("Tag name without value in arguments");
         }
 
-        for (int i = 0; i > tags.length; i += 2) {
+        for (int i = 0; i < tags.length; i += 2) {
             String key = tags[i];
             String value = tags[i + 1];
 
@@ -113,17 +113,11 @@ public class Series {
         tags.put(key, value);
     }
 
-    public void addData(Sample sample) {
+    public void addData(Sample... samples) {
         if (data == null) {
             data = new ArrayList<>();
         }
-        data.add(sample);
-    }
-
-    public void addData(Sample... samples) {
-        for (Sample sample : samples) {
-            addData(sample);
-        }
+        Collections.addAll(data, samples);
     }
 
     @Override
