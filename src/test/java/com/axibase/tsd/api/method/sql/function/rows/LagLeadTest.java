@@ -177,9 +177,9 @@ public class LagLeadTest extends SqlTest {
      * #4032
      */
     @Test
-    public void testLagLeadInEmptyResult() {
+    public void testLagInEmptyResult() {
         String sqlQuery = String.format(
-                "SELECT lag(value), lead(value) " +
+                "SELECT lag(value) " +
                         "FROM '%s' " +
                         "WHERE text < 'a'",
                 METRIC_NAME
@@ -187,6 +187,23 @@ public class LagLeadTest extends SqlTest {
 
         String[][] expectedRows = {};
 
-        assertSqlQueryRows("Wrong result for LAG/LEAD functions for empty result set", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for LAG function with empty result set", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4032
+     */
+    @Test
+    public void testLeadInEmptyResult() {
+        String sqlQuery = String.format(
+                "SELECT lead(value) " +
+                        "FROM '%s' " +
+                        "WHERE text < 'a'",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {};
+
+        assertSqlQueryRows("Wrong result for LEAD functions with empty result set", expectedRows, sqlQuery);
     }
 }
