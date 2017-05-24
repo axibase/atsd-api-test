@@ -20,6 +20,15 @@ public class MessageQuery {
     private String source;
     private Map<String, String> tags;
     private Interval interval;
+    private Integer limit;
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
 
     public String getMetric() {
         return metric;

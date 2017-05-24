@@ -89,6 +89,16 @@ public class MessageMethod extends BaseMethod {
         return compareJsonString(expected, given);
     }
 
+    public static boolean messageTypeExist(String type){
+        MessageQuery q = new MessageQuery();
+        q.setEntity("*");
+        q.setType(type);
+        q.setStartDate(Util.MIN_STORABLE_DATE);
+        q.setEndDate(Util.MAX_STORABLE_DATE);
+        q.setLimit(1);
+        return  queryMessageResponse(q).getStatus() != NOT_FOUND.getStatusCode();
+    }
+
 
     public static void insertMessageCheck(final Message message, AbstractCheck check) throws Exception {
         Response response = insertMessageReturnResponse(message);

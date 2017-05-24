@@ -304,8 +304,8 @@ public class CSVUploadTest extends CSVUploadMethod {
     }
 
     private void checkBinaryFileUpload(String entityName, String metricName, File csvPath) throws Exception {
-        Registry.Entity.registerPrefix(entityName);
-        Registry.Metric.registerPrefix(metricName);
+        Registry.Entity.register(entityName);
+        Registry.Metric.register(metricName);
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER);
 
@@ -323,8 +323,8 @@ public class CSVUploadTest extends CSVUploadMethod {
     }
 
     private void checkMultipartFileUpload(String entityName, String metricName, File csvPath) throws Exception {
-        Registry.Entity.registerPrefix(entityName);
-        Registry.Metric.registerPrefix(metricName);
+        Registry.Entity.register(entityName);
+        Registry.Metric.register(metricName);
         Response response = multipartCsvUpload(csvPath, SIMPLE_PARSER);
         assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);

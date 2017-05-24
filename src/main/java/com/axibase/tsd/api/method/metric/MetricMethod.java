@@ -40,7 +40,7 @@ public class MetricMethod extends BaseMethod {
         return updateMetric(metric.getName(), metric);
     }
 
-    public static Response queryMetric(String metricName) throws Exception {
+    public static Response queryMetric(String metricName){
         Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
         response.bufferEntity();
         return response;
@@ -91,6 +91,10 @@ public class MetricMethod extends BaseMethod {
             throw new Exception("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
+    }
+
+    public static boolean metricExist(String metric){
+        return MetricMethod.queryMetric(metric).getStatus() != NOT_FOUND.getStatusCode();
     }
 
 }

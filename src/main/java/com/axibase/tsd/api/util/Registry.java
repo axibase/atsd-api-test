@@ -1,68 +1,42 @@
 package com.axibase.tsd.api.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
+import com.axibase.tsd.api.method.message.MessageMethod;
+import com.axibase.tsd.api.method.metric.MetricMethod;
 
 public enum Registry {
     Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup"), ReplacementTable("ReplacementTable");
     final static String ERROR_ALREADY_REGISTRED_TPL = "REGISTRY ERROR: %s=%s already registered.";
-    final static String ERROR_HAS_REGISTRED_PREFIX_TPL = "REGISTRY ERROR: %s=%s has registered prefix.";
-    final static String ERROR_PREFIX_ALREADY_REGISTRED_TPL = "REGISTRY ERROR: %s prefix \"%s\" already registered.";
-    final static String ERROR_VALUE_WITH_PREFIX_EXIST_TPL = "REGISTRY ERROR: %s registry has already values with prefix \"%s\".";
-
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private String registryType;
-    private Set<String> registeredSet = new HashSet<>();
-    private Set<String> registeredPrefixSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     Registry(String registryType) {
         this.registryType = registryType;
     }
 
     public synchronized void register(String value) {
-        if (registeredSet.contains(value)) {
+        boolean exists;
+        switch (registryType) {
+            case "Entity":
+                exists = EntityMethod.entityExist(value);
+                break;
+            case "Metric":
+                exists = MetricMethod.metricExist(value);
+                break;
+            case "Type":
+                exists = MessageMethod.messageTypeExist(value);
+                break;
+            case "EntityGroup":
+                exists = EntityGroupMethod.entityGroupExist(value);
+                break;
+            case "ReplacementTable":
+                // todo
+            default:
+                exists = true;
+        }
+
+        if (exists) {
             throw new IllegalArgumentException(String.format(ERROR_ALREADY_REGISTRED_TPL, registryType, value));
         }
-        if (hasRegisteredPrefix(value)) {
-            throw new IllegalArgumentException(String.format(ERROR_HAS_REGISTRED_PREFIX_TPL, registryType, value));
-        }
-        registeredSet.add(value);
     }
-
-    public synchronized void registerPrefix(String valuePrefix) {
-        if (registeredPrefixSet.contains(valuePrefix)) {
-            throw new IllegalArgumentException(String.format(ERROR_PREFIX_ALREADY_REGISTRED_TPL, registryType, valuePrefix));
-        }
-        if (hasRegisteredValueWithPrefix(valuePrefix)) {
-            throw new IllegalArgumentException(String.format(ERROR_VALUE_WITH_PREFIX_EXIST_TPL, registryType, valuePrefix));
-        }
-        registeredPrefixSet.add(valuePrefix);
-    }
-
-    private synchronized boolean hasRegisteredValueWithPrefix(String prefix) {
-        for (String value : registeredSet) {
-            if (value.startsWith(prefix)) {
-                logger.debug("value \"{}\" starts with prefix \"{}\"", value, prefix);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private synchronized boolean hasRegisteredPrefix(String value) {
-        for (String prefix : registeredPrefixSet) {
-            if (value.startsWith(prefix)) {
-                logger.debug("value \"{}\" starts with prefix \"{}\"", value, prefix);
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

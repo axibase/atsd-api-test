@@ -126,4 +126,10 @@ public class EntityMethod extends BaseMethod {
         }
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class), strict);
     }
+
+    public static boolean entityExist(String value){
+        return EntityMethod.getEntityResponse(value).getStatus() != NOT_FOUND.getStatusCode();
+
+    }
+
 }

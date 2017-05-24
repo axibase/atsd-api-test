@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -22,17 +21,12 @@ public class WhereInMetricsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(ENTITY_NAME);
 
         List<Series> seriesList = new ArrayList<>();
 
         for (int i = 0; i < METRIC_COUNT; i++) {
             METRIC_NAMES[i] = metric();
-            Registry.Metric.register(METRIC_NAMES[i]);
-
-            Series series = new Series();
-            series.setEntity(ENTITY_NAME);
-            series.setMetric(METRIC_NAMES[i]);
+            Series series = new Series(ENTITY_NAME, METRIC_NAMES[i]);
             series.addData(Mocks.SAMPLE);
 
             seriesList.add(series);

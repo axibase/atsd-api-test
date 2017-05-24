@@ -145,6 +145,10 @@ public class EntityGroupMethod extends BaseMethod {
         return compareJsonString(expected, given, true);
     }
 
+    public static boolean entityGroupExist(String entityGroup) {
+        return EntityGroupMethod.getEntityGroup(entityGroup).getStatus() != NOT_FOUND.getStatusCode();
+    }
+
 
 }
 
