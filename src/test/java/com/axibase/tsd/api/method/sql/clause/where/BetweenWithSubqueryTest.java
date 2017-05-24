@@ -27,6 +27,10 @@ public class BetweenWithSubqueryTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(dataSeries);
     }
 
+    /**
+     * 4086
+     *
+     */
     @Test
     public void testBetweenSubqueryEmpty() {
         String sqlQuery = String.format(
@@ -42,6 +46,10 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
+    /**
+     * 4086
+     *
+     */
     @Test
     public void testBetweenSubqueryLeftBound() {
         String sqlQuery = String.format(
@@ -62,7 +70,10 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-
+    /**
+     * 4086
+     *
+     */
     @Test
     public void testBetweenSubqueryBothBounds() {
         String sqlQuery = String.format(
@@ -82,6 +93,10 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
+    /**
+     * 4086
+     *
+     */
     @Test
     public void testBetweenSubqueryMultipleRanges() {
         String sqlQuery = String.format(
@@ -106,6 +121,10 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
+    /**
+     * 4086
+     *
+     */
     @Test
     public void testBetweenSubqueryAggregation() {
         String sqlQuery = String.format(
@@ -123,6 +142,10 @@ public class BetweenWithSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
+    /**
+     * 4086
+     *
+     */
     @Test
     public void testBetweenSubquerySelectText() {
         String sqlQuery = String.format(
