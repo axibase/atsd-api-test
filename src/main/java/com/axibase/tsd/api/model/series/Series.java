@@ -35,6 +35,19 @@ public class Series {
         this.tags = new HashMap<>();
     }
 
+    public Series(String entity, String metric, String... tags) {
+        this(entity, metric);
+
+        /* Tag name-value pairs */
+        if (tags.length % 2 != 0) {
+            throw new IllegalArgumentException("Tag name without value in arguments");
+        }
+
+        for (int i = 0; i > tags.length; i += 2) {
+            addTag(tags[i], tags[i + 1]);
+        }
+    }
+
     public Series copy() {
         Series copy = new Series();
         copy.setEntity(entity);
@@ -99,6 +112,12 @@ public class Series {
         data.add(sample);
     }
 
+    public void addData(Sample... samples) {
+        for (Sample sample : samples) {
+            addData(sample);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -110,13 +129,8 @@ public class Series {
 
         Series series = (Series) o;
 
-        if (!entity.equals(series.entity))
-            return false;
-        if (!metric.equals(series.metric))
-            return false;
-        if (!data.equals(series.data))
-            return false;
-        return tags.equals(series.tags);
+        return entity.equals(series.entity) && metric.equals(series.metric) &&
+                data.equals(series.data) && tags.equals(series.tags);
     }
 
     @Override
