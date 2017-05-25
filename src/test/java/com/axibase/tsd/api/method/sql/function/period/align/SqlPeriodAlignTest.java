@@ -22,6 +22,9 @@ public class SqlPeriodAlignTest extends SqlTest {
 
     @BeforeClass
     public void prepareDataSet() throws Exception {
+        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Metric.register(TEST_METRIC_NAME);
+
         insertSamples(
                 new Sample("2016-06-03T09:20:00.124Z", 16.0),
                 new Sample("2016-06-03T09:26:00.000Z", 8.1),
