@@ -28,7 +28,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"3600000"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for default date_parse",
                 expectedRows, sqlQuery);
     }
 
@@ -42,7 +42,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"3600000"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with ISO (as custom) format",
                 expectedRows, sqlQuery);
     }
 
@@ -51,6 +51,7 @@ public class DateParseFunctionTest extends SqlTest {
      */
     @Test
     public void testDateParseCustomFormat() throws ParseException {
+        /* Use server local time */
         String strDate = "31.03.2017 12:36:03.283";
         String sqlQuery = String.format("SELECT date_parse('%s', " +
                 "'dd.MM.yyyy HH:mm:ss.SSS')", strDate);
@@ -60,7 +61,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{Long.toString(format.parse(strDate).getTime())}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with custom format",
                 expectedRows, sqlQuery);
     }
 
@@ -74,7 +75,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"1490992563283"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with custom format with timezone",
                 expectedRows, sqlQuery);
     }
 
@@ -88,7 +89,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"1490956563283"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with custom format with long timezone",
                 expectedRows, sqlQuery);
     }
 
@@ -102,7 +103,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"1490956563283"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with long timezone argument",
                 expectedRows, sqlQuery);
     }
 
@@ -116,7 +117,7 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"1490960163283"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with numeric timezone argument",
                 expectedRows, sqlQuery);
     }
 
@@ -130,7 +131,21 @@ public class DateParseFunctionTest extends SqlTest {
 
         String[][] expectedRows = {{"1490956563283"}};
 
-        assertSqlQueryRows("Incorrect result for date_parse in: " + sqlQuery,
+        assertSqlQueryRows("Incorrect result for date_parse with with long timezone in format and argument" + sqlQuery,
+                expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4050
+     */
+    @Test
+    public void testDateParseTimezoneBothNumeric() {
+        String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 +01:00', " +
+                "'dd.MM.yyyy HH:mm:ss.SSS ZZ', '+01:00')";
+
+        String[][] expectedRows = {{"1490960163283"}};
+
+        assertSqlQueryRows("Incorrect result for date_parse with with numeric timezone in format and argument" + sqlQuery,
                 expectedRows, sqlQuery);
     }
 }
