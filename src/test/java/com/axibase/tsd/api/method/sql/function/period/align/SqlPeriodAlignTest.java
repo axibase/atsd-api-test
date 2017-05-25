@@ -23,24 +23,21 @@ public class SqlPeriodAlignTest extends SqlTest {
 
     @BeforeClass
     public void prepareDataSet() throws Exception {
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
-
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2016-06-03T09:20:00.124Z", "16.0"),
                 new Sample("2016-06-03T09:26:00.000Z", "8.1"),
                 new Sample("2016-06-03T09:36:00.000Z", "6.0"),
                 new Sample("2016-06-03T09:41:00.321Z", "19.0"),
                 new Sample("2016-06-03T09:45:00.126Z", "19.0"),
                 new Sample("2016-06-03T09:45:00.400Z", "17.0")
-        ));
+        );
     }
 
-    private void insertSamples(List<Sample> samples) throws Exception {
+    private void insertSamples(Sample... samples) throws Exception {
         Series series = new Series();
         series.setEntity(TEST_ENTITY_NAME);
         series.setMetric(TEST_METRIC_NAME);
-        series.setData(samples);
+        series.addSamples(samples);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
@@ -153,13 +150,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMillisecondStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2000-01-01T00:00:00.000Z", "0"),
                 new Sample("2000-01-01T00:00:00.001Z", "1"),
                 new Sample("2000-01-01T00:00:00.002Z", "2"),
                 new Sample("2000-01-01T00:00:00.003Z", "3"),
                 new Sample("2000-01-01T00:00:00.004Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -183,13 +180,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMillisecondEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2000-01-01T00:00:00.000Z", "0"),
                 new Sample("2000-01-01T00:00:00.001Z", "1"),
                 new Sample("2000-01-01T00:00:00.002Z", "2"),
                 new Sample("2000-01-01T00:00:00.003Z", "3"),
                 new Sample("2000-01-01T00:00:00.004Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -213,13 +210,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMillisecondFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2000-01-01T00:00:00.000Z", "0"),
                 new Sample("2000-01-01T00:00:00.001Z", "1"),
                 new Sample("2000-01-01T00:00:00.002Z", "2"),
                 new Sample("2000-01-01T00:00:00.003Z", "3"),
                 new Sample("2000-01-01T00:00:00.004Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -243,13 +240,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodSecondStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2001-01-01T00:00:00.005Z", "0"),
                 new Sample("2001-01-01T00:00:01.005Z", "1"),
                 new Sample("2001-01-01T00:00:02.005Z", "2"),
                 new Sample("2001-01-01T00:00:03.005Z", "3"),
                 new Sample("2001-01-01T00:00:04.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -273,13 +270,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodSecondEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2001-01-01T00:00:00.005Z", "0"),
                 new Sample("2001-01-01T00:00:01.005Z", "1"),
                 new Sample("2001-01-01T00:00:02.005Z", "2"),
                 new Sample("2001-01-01T00:00:03.005Z", "3"),
                 new Sample("2001-01-01T00:00:04.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -302,13 +299,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodSecondFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2001-01-01T00:00:00.005Z", "0"),
                 new Sample("2001-01-01T00:00:01.005Z", "1"),
                 new Sample("2001-01-01T00:00:02.005Z", "2"),
                 new Sample("2001-01-01T00:00:03.005Z", "3"),
                 new Sample("2001-01-01T00:00:04.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -332,13 +329,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMinuteStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2002-01-01T00:00:00.005Z", "0"),
                 new Sample("2002-01-01T00:01:00.005Z", "1"),
                 new Sample("2002-01-01T00:02:00.005Z", "2"),
                 new Sample("2002-01-01T00:03:00.005Z", "3"),
                 new Sample("2002-01-01T00:04:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -362,13 +359,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMinuteEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2002-01-01T00:00:00.005Z", "0"),
                 new Sample("2002-01-01T00:01:00.005Z", "1"),
                 new Sample("2002-01-01T00:02:00.005Z", "2"),
                 new Sample("2002-01-01T00:03:00.005Z", "3"),
                 new Sample("2002-01-01T00:04:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -391,13 +388,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMinuteFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2002-01-01T00:00:00.005Z", "0"),
                 new Sample("2002-01-01T00:01:00.005Z", "1"),
                 new Sample("2002-01-01T00:02:00.005Z", "2"),
                 new Sample("2002-01-01T00:03:00.005Z", "3"),
                 new Sample("2002-01-01T00:04:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -421,13 +418,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodHourStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2003-01-01T00:00:00.005Z", "0"),
                 new Sample("2003-01-01T01:00:00.005Z", "1"),
                 new Sample("2003-01-01T02:00:00.005Z", "2"),
                 new Sample("2003-01-01T03:00:00.005Z", "3"),
                 new Sample("2003-01-01T04:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -451,13 +448,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodHourEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2003-01-01T00:00:00.005Z", "0"),
                 new Sample("2003-01-01T01:00:00.005Z", "1"),
                 new Sample("2003-01-01T02:00:00.005Z", "2"),
                 new Sample("2003-01-01T03:00:00.005Z", "3"),
                 new Sample("2003-01-01T04:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -480,13 +477,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodHourFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2003-01-01T00:00:00.005Z", "0"),
                 new Sample("2003-01-01T01:00:00.005Z", "1"),
                 new Sample("2003-01-01T02:00:00.005Z", "2"),
                 new Sample("2003-01-01T03:00:00.005Z", "3"),
                 new Sample("2003-01-01T04:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -510,13 +507,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodDayStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2003-12-31T00:00:00.005Z", "0"),
                 new Sample("2004-01-01T00:00:00.005Z", "1"),
                 new Sample("2004-01-02T00:00:00.005Z", "2"),
                 new Sample("2004-01-03T00:00:00.005Z", "3"),
                 new Sample("2004-01-04T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -540,13 +537,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodDayEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2003-12-31T00:00:00.005Z", "0"),
                 new Sample("2004-01-01T00:00:00.005Z", "1"),
                 new Sample("2004-01-02T00:00:00.005Z", "2"),
                 new Sample("2004-01-03T00:00:00.005Z", "3"),
                 new Sample("2004-01-04T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -569,13 +566,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodDayFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2003-12-31T00:00:00.005Z", "0"),
                 new Sample("2004-01-01T00:00:00.005Z", "1"),
                 new Sample("2004-01-02T00:00:00.005Z", "2"),
                 new Sample("2004-01-03T00:00:00.005Z", "3"),
                 new Sample("2004-01-04T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -599,7 +596,7 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testPeriodsTimeGroupingDSTChangedStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2004-03-25T00:00:00.005Z", "25"),
                 new Sample("2004-03-26T00:00:00.005Z", "26"),
                 new Sample("2004-03-27T00:00:00.005Z", "27"),
@@ -607,7 +604,7 @@ public class SqlPeriodAlignTest extends SqlTest {
                 new Sample("2004-03-29T00:00:00.005Z", "29"),
                 new Sample("2004-03-30T00:00:00.005Z", "30"),
                 new Sample("2004-03-31T00:00:00.005Z", "31")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -633,7 +630,7 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testPeriodsTimeGroupingDSTChangedEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2004-03-25T00:00:00.005Z", "25"),
                 new Sample("2004-03-26T00:00:00.005Z", "26"),
                 new Sample("2004-03-27T00:00:00.005Z", "27"),
@@ -641,7 +638,7 @@ public class SqlPeriodAlignTest extends SqlTest {
                 new Sample("2004-03-29T00:00:00.005Z", "29"),
                 new Sample("2004-03-30T00:00:00.005Z", "30"),
                 new Sample("2004-03-31T00:00:00.005Z", "31")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -667,7 +664,7 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testPeriodsTimeGroupingDSTChangedFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2004-03-25T00:00:00.005Z", "25"),
                 new Sample("2004-03-26T00:00:00.005Z", "26"),
                 new Sample("2004-03-27T00:00:00.005Z", "27"),
@@ -675,7 +672,7 @@ public class SqlPeriodAlignTest extends SqlTest {
                 new Sample("2004-03-29T00:00:00.005Z", "29"),
                 new Sample("2004-03-30T00:00:00.005Z", "30"),
                 new Sample("2004-03-31T00:00:00.005Z", "31")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -701,13 +698,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodWeekStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2004-12-31T00:00:00.005Z", "0"),
                 new Sample("2005-01-01T00:00:00.005Z", "1"),
                 new Sample("2005-01-08T00:00:00.005Z", "2"),
                 new Sample("2005-01-15T00:00:00.005Z", "3"),
                 new Sample("2005-01-16T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -731,13 +728,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodWeekEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2004-12-31T00:00:00.005Z", "0"),
                 new Sample("2005-01-01T00:00:00.005Z", "1"),
                 new Sample("2005-01-08T00:00:00.005Z", "2"),
                 new Sample("2005-01-15T00:00:00.005Z", "3"),
                 new Sample("2005-01-16T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -760,13 +757,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodWeekFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2004-12-31T00:00:00.005Z", "0"),
                 new Sample("2005-01-01T00:00:00.005Z", "1"),
                 new Sample("2005-01-08T00:00:00.005Z", "2"),
                 new Sample("2005-01-15T00:00:00.005Z", "3"),
                 new Sample("2005-01-16T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -790,13 +787,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMonthStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2005-12-31T00:00:00.005Z", "0"),
                 new Sample("2006-01-01T00:00:00.005Z", "1"),
                 new Sample("2006-02-01T00:00:00.005Z", "2"),
                 new Sample("2006-03-01T00:00:00.005Z", "3"),
                 new Sample("2006-04-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -820,13 +817,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMonthEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2005-12-31T00:00:00.005Z", "0"),
                 new Sample("2006-01-01T00:00:00.005Z", "1"),
                 new Sample("2006-02-01T00:00:00.005Z", "2"),
                 new Sample("2006-03-01T00:00:00.005Z", "3"),
                 new Sample("2006-04-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -849,13 +846,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodMonthFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2005-12-31T00:00:00.005Z", "0"),
                 new Sample("2006-01-01T00:00:00.005Z", "1"),
                 new Sample("2006-02-01T00:00:00.005Z", "2"),
                 new Sample("2006-03-01T00:00:00.005Z", "3"),
                 new Sample("2006-04-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -879,13 +876,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodQuarterStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2006-12-31T00:00:00.005Z", "0"),
                 new Sample("2007-01-01T00:00:00.005Z", "1"),
                 new Sample("2007-04-01T00:00:00.005Z", "2"),
                 new Sample("2007-07-01T00:00:00.005Z", "3"),
                 new Sample("2007-08-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -909,13 +906,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodQuarterEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2006-12-31T00:00:00.005Z", "0"),
                 new Sample("2007-01-01T00:00:00.005Z", "1"),
                 new Sample("2007-04-01T00:00:00.005Z", "2"),
                 new Sample("2007-07-01T00:00:00.005Z", "3"),
                 new Sample("2007-08-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -938,13 +935,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodQuarterFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2006-12-31T00:00:00.005Z", "0"),
                 new Sample("2007-01-01T00:00:00.005Z", "1"),
                 new Sample("2007-04-01T00:00:00.005Z", "2"),
                 new Sample("2007-07-01T00:00:00.005Z", "3"),
                 new Sample("2007-08-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -968,13 +965,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodYearStartTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2007-12-31T00:00:00.005Z", "0"),
                 new Sample("2008-01-01T00:00:00.005Z", "1"),
                 new Sample("2009-01-01T00:00:00.005Z", "2"),
                 new Sample("2010-01-01T00:00:00.005Z", "3"),
                 new Sample("2011-01-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -998,13 +995,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodYearEndTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2007-12-31T00:00:00.005Z", "0"),
                 new Sample("2008-01-01T00:00:00.005Z", "1"),
                 new Sample("2009-01-01T00:00:00.005Z", "2"),
                 new Sample("2010-01-01T00:00:00.005Z", "3"),
                 new Sample("2011-01-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
@@ -1027,13 +1024,13 @@ public class SqlPeriodAlignTest extends SqlTest {
      */
     @Test
     public void testGroupByPeriodYearFirstValueTime() throws Exception {
-        insertSamples(Arrays.asList(
+        insertSamples(
                 new Sample("2007-12-31T00:00:00.005Z", "0"),
                 new Sample("2008-01-01T00:00:00.005Z", "1"),
                 new Sample("2009-01-01T00:00:00.005Z", "2"),
                 new Sample("2010-01-01T00:00:00.005Z", "3"),
                 new Sample("2011-01-01T00:00:00.005Z", "4")
-        ));
+        );
 
         String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
