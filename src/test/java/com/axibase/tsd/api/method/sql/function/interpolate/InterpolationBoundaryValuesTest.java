@@ -6,9 +6,9 @@ import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.version.*;
-import com.axibase.tsd.api.util.Registry;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.testng.annotations.BeforeClass;
@@ -29,7 +29,6 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     private static final List<SeriesItem> calendarInterpolationTestSeries = new ArrayList<>();
     private final DateTimeZone serverTimezone;
 
-    // It is necessary to insert values with server timezone because interpolation works only by server local time
     public InterpolationBoundaryValuesTest() {
         Version version = VersionMethod.queryVersion().readEntity(Version.class);
         serverTimezone = DateTimeZone.forID(version.getDate().getTimeZone().getName());
@@ -38,40 +37,33 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         String entity = entity();
-        Registry.Entity.register(entity);
-
-        Registry.Metric.register(TEST_METRIC_1);
-        Registry.Metric.register(TEST_METRIC_2);
-
-        Series series1 = new Series();
-        series1.setEntity(entity);
-        series1.setMetric(TEST_METRIC_1);
-
-        series1.addData(new Sample("1970-01-01T00:00:00Z", 0));
-        series1.addData(new Sample("1972-01-01T00:00:00Z", 2));
-        series1.addData(new Sample("1974-01-01T00:00:00Z", 4));
+        Series series1 = new Series(entity, TEST_METRIC_1);
+        series1.addSamples(
+                new Sample("1970-01-01T00:00:00Z", 0),
+                new Sample("1972-01-01T00:00:00Z", 2),
+                new Sample("1974-01-01T00:00:00Z", 4)
+        );
 
         calendarInterpolationTestSeries.addAll(
                 Arrays.asList(
-                        new SeriesItem("2017-01-01T07:30:00.000Z", 0),
-                        new SeriesItem("2017-01-01T10:30:00.000Z", 1),
-                        new SeriesItem("2017-01-01T11:30:00.000Z", 2),
-                        new SeriesItem("2017-01-01T12:30:00.000Z", 3),
-                        new SeriesItem("2017-01-01T17:30:00.000Z", 7),
-                        new SeriesItem("2017-01-01T18:30:00.000Z", 8),
-                        new SeriesItem("2017-01-01T19:30:00.000Z", 9))
+                        new SeriesItem("2017-01-01T07:50:00.000Z", 0),
+                        new SeriesItem("2017-01-01T10:50:00.000Z", 1),
+                        new SeriesItem("2017-01-01T11:50:00.000Z", 2),
+                        new SeriesItem("2017-01-01T12:50:00.000Z", 3),
+                        new SeriesItem("2017-01-01T17:50:00.000Z", 7),
+                        new SeriesItem("2017-01-01T18:50:00.000Z", 8),
+                        new SeriesItem("2017-01-01T19:50:00.000Z", 9))
         );
 
         for (SeriesItem seriesItem : calendarInterpolationTestSeries) {
-            series1.addData(new Sample(seriesItem.date.toString(), seriesItem.value));
+            series1.addSamples(new Sample(seriesItem.date.toString(), seriesItem.value));
         }
 
-        Series series2 = new Series();
-        series2.setEntity(entity);
-        series2.setMetric(TEST_METRIC_2);
-
-        series2.addData(new Sample("1971-01-01T00:00:00Z", 1));
-        series2.addData(new Sample("1973-01-01T00:00:00Z", 3));
+        Series series2 = new Series(entity, TEST_METRIC_2);
+        series2.addSamples(
+                new Sample("1971-01-01T00:00:00Z", 1),
+                new Sample("1973-01-01T00:00:00Z", 3)
+        );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
@@ -82,13 +74,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         public final DateTime date;
         public final int value;
 
-        public SeriesItem(String date, int value) {
+        SeriesItem(String date, int value) {
             this.date = isoDateFormat.parseDateTime(date);
-            this.value = value;
-        }
-
-        public SeriesItem(DateTime date, int value) {
-            this.date = date;
             this.value = value;
         }
     }
@@ -108,6 +95,21 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
             this.startDate = startDate;
             this.endDate = endDate;
         }
+
+        @Override
+        public int hashCode() {
+            return startDate.hashCode() ^ endDate.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == null) return false;
+            if (other == this) return true;
+            if (!(other instanceof DateRange))return false;
+            DateRange otherRange = (DateRange)other;
+            return this.startDate.equals(otherRange.startDate) &&
+                    this.endDate.equals(otherRange.endDate);
+        }
     }
 
     private String[][] generateCalendarInterpolationOutput(String mode, DateRange... ranges) {
@@ -115,7 +117,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
 
         for (DateRange range : ranges) {
             DateTime startHour = range.startDate.toDateTime(serverTimezone).withMinuteOfHour(0);
-            startHour = startHour.plusHours(1);
+            if (serverTimezone.getOffset(startHour) % (1000 * 3600) != 0) {
+                startHour = startHour.plusHours(1);
+            }
+
             DateTime lastHour = range.endDate.toDateTime(serverTimezone).withMinuteOfHour(0);
             lastHour = lastHour.plusHours(1);
             while (startHour.plusHours(1).compareTo(lastHour) <= 0) {
@@ -124,37 +129,77 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
             }
         }
 
-        List<String> values = new ArrayList<>();
-        String previousValue = "NaN";
-        DateTime previousEndDate = null;
-        for (DateRange hourlyRange : serverLocalHourlyRanges) {
+        Map<DateRange, String> rangeValues = new TreeMap<>(new Comparator<DateRange>() {
+            @Override
+            public int compare(DateRange o1, DateRange o2) {
+                return o1.startDate.compareTo(o2.startDate);
+            }
+        });
+
+        for (int i = 0; i < serverLocalHourlyRanges.size(); i++) {
+            DateRange hourlyRange = serverLocalHourlyRanges.get(i);
             String value = null;
             for (SeriesItem seriesItem : calendarInterpolationTestSeries) {
-                if (hourlyRange.startDate.compareTo(seriesItem.date) <= 0 &&
-                    hourlyRange.endDate.compareTo(seriesItem.date) >= 0) {
-                    value = previousValue;
-                    previousValue = Integer.toString(seriesItem.value);
+                if (mode.equals("INNER")) {
+                    if (i == 0) {
+                        break;
+                    }
+
+                    DateRange previousRange = serverLocalHourlyRanges.get(i - 1);
+                    Period timeDifferenceToPrevRange = new Period(previousRange.endDate, hourlyRange.startDate);
+                    if (timeDifferenceToPrevRange.getHours() >= 1) {
+                        break;
+                    }
+
+                    if (seriesItem.date.isBefore(previousRange.startDate)) {
+                        continue;
+                    }
+                }
+
+                if (seriesItem.date.isAfter(hourlyRange.startDate)) {
                     break;
                 }
+
+                Period timeDifference = new Period(seriesItem.date, hourlyRange.startDate);
+                if (timeDifference.getHours() >= 1) {
+                    continue;
+                }
+
+                value = String.valueOf(seriesItem.value);
             }
 
             if (value != null) {
-                values.add(value);
-            } else {
-                if (previousEndDate != null && previousEndDate.compareTo(hourlyRange.startDate) == 0) {
-                    values.add(previousValue);
-                } else {
-                    previousValue = "NaN";
-                    values.add(previousValue);
-                }
+                rangeValues.put(hourlyRange, value);
+                continue;
             }
 
-            previousEndDate = hourlyRange.endDate;
+            if (i == 0) {
+                rangeValues.put(hourlyRange, "NaN");
+                continue;
+            }
+
+            DateRange previousRange = serverLocalHourlyRanges.get(i - 1);
+            Period timeDifferenceToPrevRange = new Period(previousRange.endDate, hourlyRange.startDate);
+            if (timeDifferenceToPrevRange.getHours() >= 1) {
+                rangeValues.put(hourlyRange, "NaN");
+                continue;
+            }
+
+            value = rangeValues.get(previousRange);
+            if (value == null) {
+                rangeValues.put(hourlyRange, "NaN");
+                continue;
+            }
+
+            rangeValues.put(hourlyRange, value);
         }
 
-        String[][] result = new String[values.size()][];
-        for (int i = 0; i < values.size(); i++) {
-            result[i] = new String[] { values.get(i) };
+        int resultLength = rangeValues.size();
+        String[][] result = new String[resultLength][1];
+        int i = 0;
+        for (Map.Entry<DateRange, String> entry : rangeValues.entrySet()) {
+            result[i][0] = entry.getValue();
+            i++;
         }
 
         return result;
@@ -224,15 +269,6 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 new DateRange("2017-01-01T12:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T21:00:00Z"));
 
-//        String[][] expectedRows = {
-//                {"NaN"},
-//                {"3"},
-//                {"7"},
-//                {"8"},
-//                {"9"},
-//                {"9"}
-//        };
-
         assertSqlQueryRows(
                 "Incorrect inner interpolation with single value in period",
                 expectedRows,
@@ -243,7 +279,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testInnerInterpolationWithNoValueInPeriod() {
+    public void testInnerInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
@@ -253,11 +289,9 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        String[][] expectedRows = {
-                {"NaN"},
-                {"8"},
-                {"9"}
-        };
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                "INNER",
+                new DateRange("2017-01-01T18:00:00Z", "2017-01-01T20:00:00Z"));
 
         assertSqlQueryRows(
                 "Incorrect inner interpolation with single value in period",
@@ -269,7 +303,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testOuterInterpolationEntirePeriod() {
+    public void testOuterInterpolationEntirePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
@@ -279,18 +313,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        String[][] expectedRows = {
-                {"NaN"},
-                {"1"},
-                {"2"},
-                {"3"},
-                {"NaN"},
-                {"NaN"},
-                {"7"},
-                {"8"},
-                {"9"},
-                {"9"}
-        };
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                "OUTER",
+                new DateRange("2017-01-01T10:00:00Z", "2017-01-01T13:00:00Z"),
+                new DateRange("2017-01-01T16:00:00Z", "2017-01-01T21:00:00Z"));
 
         assertSqlQueryRows("Incorrect outer interpolation by entire period", expectedRows, sqlQuery);
     }
@@ -299,37 +325,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testOuterInterpolationWithOuterValue() {
-        String sqlQuery = String.format(
-                "SELECT value " +
-                        "FROM '%s' " +
-                        "WHERE datetime BETWEEN '2017-01-01T10:00:00Z' AND '2017-01-01T13:00:00Z' " +
-                        "      OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z' " +
-                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
-                        "ORDER BY datetime",
-                TEST_METRIC_1);
-
-        String[][] expectedRows = {
-                {"NaN"},
-                {"1"},
-                {"2"},
-                {"3"},
-                {"NaN"},
-                {"NaN"},
-                {"7"},
-                {"8"},
-                {"9"},
-                {"9"}
-        };
-
-        assertSqlQueryRows("Incorrect outer interpolation by entire period", expectedRows, sqlQuery);
-    }
-
-    /**
-     * #4069
-     */
-    @Test
-    public void testOuterInterpolationWithPeriodIntersection() {
+    public void testOuterInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
@@ -340,18 +336,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        String[][] expectedRows = {
-                {"NaN"},
-                {"NaN"},
-                {"1"},
-                {"2"},
-                {"3"},
-                {"NaN"},
-                {"7"},
-                {"8"},
-                {"9"},
-                {"9"}
-        };
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                "OUTER",
+                new DateRange("2017-01-01T09:00:00Z", "2017-01-01T13:00:00Z"),
+                new DateRange("2017-01-01T17:00:00Z", "2017-01-01T21:00:00Z"));
 
         assertSqlQueryRows("Incorrect inner interpolation with period intersection", expectedRows, sqlQuery);
     }
@@ -360,7 +348,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testOuterInterpolationWithSingleValueInPeriod() {
+    public void testOuterInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
@@ -370,14 +358,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        String[][] expectedRows = {
-                {"2"},
-                {"3"},
-                {"7"},
-                {"8"},
-                {"9"},
-                {"9"}
-        };
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                "OUTER",
+                new DateRange("2017-01-01T12:00:00Z", "2017-01-01T13:00:00Z"),
+                new DateRange("2017-01-01T18:00:00Z", "2017-01-01T21:00:00Z"));
 
         assertSqlQueryRows(
                 "Incorrect inner interpolation with single value in period",
@@ -389,7 +373,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testOuterInterpolationWithNoValueInPeriod() {
+    public void testOuterInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
@@ -399,11 +383,9 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        String[][] expectedRows = {
-                {"7"},
-                {"8"},
-                {"9"}
-        };
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                "OUTER",
+                new DateRange("2017-01-01T18:00:00Z", "2017-01-01T20:00:00Z"));
 
         assertSqlQueryRows(
                 "Incorrect inner interpolation with single value in period",
@@ -415,7 +397,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
      * #4069
      */
     @Test
-    public void testOuterInterpolationWithOuterBoundValue() {
+    public void testOuterInterpolationWithOuterBoundValue() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
@@ -425,13 +407,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        String[][] expectedRows = {
-                {"3"},
-                {"3"},
-                {"3"},
-                {"7"},
-                {"8"}
-        };
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                "OUTER",
+                new DateRange("2017-01-01T13:00:00Z", "2017-01-01T15:00:00Z"),
+                new DateRange("2017-01-01T18:00:00Z", "2017-01-01T19:00:00Z"));
 
         assertSqlQueryRows(
                 "Incorrect inner interpolation with single value in period",
