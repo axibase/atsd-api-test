@@ -78,13 +78,13 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         Series series1 = new Series();
         series1.setEntity(TEST_ENTITY_NAME);
         series1.setMetric(TEST_METRIC1_NAME);
-        series1.addData(new Sample("2017-01-03T12:00:00.000Z", "3"));
+        series1.addSamples(new Sample("2017-01-03T12:00:00.000Z", "3"));
         series1.addTag("t1", "tag");
 
         Series series2 = new Series();
         series2.setEntity(TEST_ENTITY_NAME);
         series2.setMetric(TEST_METRIC1_NAME);
-        series2.addData(
+        series2.addSamples(
                 new Sample("2017-01-02T12:00:00.000Z", "2"),
                 new Sample("2017-01-04T12:00:00.000Z", "4")
         );
@@ -92,13 +92,13 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         Series series3 = new Series();
         series3.setEntity(TEST_ENTITY_NAME);
         series3.setMetric(TEST_METRIC2_NAME);
-        series3.addData(new Sample("2017-01-03T12:00:00.000Z", "5"));
+        series3.addSamples(new Sample("2017-01-03T12:00:00.000Z", "5"));
         series3.addTag("t2", "tag");
 
         Series series4 = new Series();
         series4.setEntity(TEST_ENTITY_NAME);
         series4.setMetric(TEST_METRIC2_NAME);
-        series4.addData(
+        series4.addSamples(
                 new Sample("2017-01-04T12:00:00.000Z", "6"),
                 new Sample("2017-01-05T12:00:00.000Z", "7")
         );
