@@ -19,13 +19,8 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
     @BeforeTest
     public void prepareData() throws Exception {
         String entity = entity();
-        Registry.Entity.register(entity);
 
-        Registry.Metric.register(TEST_METRIC);
-
-        Series series = new Series();
-        series.setEntity(entity);
-        series.setMetric(TEST_METRIC);
+        Series series = new Series(entity, TEST_METRIC);
         series.setData(Arrays.asList(
                 new Sample("2017-01-01T00:00:00Z", "0", "zero"),
                 new Sample("2017-01-01T00:00:01Z", "1"),
