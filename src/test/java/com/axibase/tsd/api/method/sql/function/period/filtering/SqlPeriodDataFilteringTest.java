@@ -33,7 +33,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
 
 
         Series seriesSeconds = new Series(TestNames.entity(), TEST_METRIC_SECONDS);
-        seriesMillis.addData(
+        seriesSeconds.addData(
                 new Sample("2017-01-01T00:00:00.000Z", 1),
                 new Sample("2017-01-01T00:00:00.500Z", 2),
                 new Sample("2017-01-01T00:00:01.000Z", 3),
@@ -43,7 +43,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         );
 
         Series seriesMinutes = new Series(TestNames.entity(), TEST_METRIC_MINUTES);
-        seriesMillis.addData(
+        seriesMinutes.addData(
                 new Sample("2017-01-01T00:00:00.000Z", 1),
                 new Sample("2017-01-01T00:00:30.000Z", 2),
                 new Sample("2017-01-01T00:01:00.000Z", 3),
@@ -53,7 +53,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         );
 
         Series seriesHours = new Series(TestNames.entity(), TEST_METRIC_HOURS);
-        seriesMillis.addData(
+        seriesHours.addData(
                 new Sample("2017-01-01T00:00:00.000Z", 1),
                 new Sample("2017-01-01T00:01:00.000Z", 2),
                 new Sample("2017-01-01T01:00:00.000Z", 3),
@@ -62,7 +62,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         );
 
         Series seriesDays = new Series(TestNames.entity(), TEST_METRIC_DAYS);
-        seriesMillis.addData(
+        seriesDays.addData(
                 new Sample("2017-01-01T00:00:00.000Z", 1),
                 new Sample("2017-01-01T12:00:00.000Z", 2),
                 new Sample("2017-01-02T00:00:00.000Z", 3),
@@ -71,7 +71,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         );
 
         Series seriesWeeks = new Series(TestNames.entity(), TEST_METRIC_WEEKS);
-        seriesMillis.addData(
+        seriesWeeks.addData(
                 new Sample("2016-12-31T00:00:00.000Z", 0),
                 new Sample("2017-01-01T00:00:00.000Z", 1),
                 new Sample("2017-01-02T00:00:00.000Z", 2),
@@ -80,7 +80,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         );
 
         Series seriesMonths = new Series(TestNames.entity(), TEST_METRIC_MONTHS);
-        seriesMillis.addData(
+        seriesMonths.addData(
                 new Sample("2017-01-01T00:00:00.000Z", 1),
                 new Sample("2017-01-15T00:00:00.000Z", 2),
                 new Sample("2017-02-01T00:00:00.000Z", 3),
@@ -89,7 +89,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         );
 
         Series seriesYears = new Series(TestNames.entity(), TEST_METRIC_YEARS);
-        seriesMillis.addData(
+        seriesYears.addData(
                 new Sample("1970-01-01T00:00:00.000Z", 1),
                 new Sample("1970-05-01T00:00:00.000Z", 2),
                 new Sample("1970-09-01T00:00:00.000Z", 3),
