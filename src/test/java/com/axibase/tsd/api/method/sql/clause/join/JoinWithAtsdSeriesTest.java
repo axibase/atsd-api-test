@@ -45,6 +45,14 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
      */
     @Test
     public void testJoinFromAtsdSeries() {
+        /*
+        SELECT t1.value, t2.value FROM atsd_series t1 JOIN m2 t2 WHERE t1.metric = m1
+
+        | t1.value | t2.value |
+        |----------|----------|
+        | 4        | 6        |
+         */
+
         String sqlQuery= String.format(
                 "SELECT t1.value, t2.value " +
                         "FROM atsd_series t1 " +
@@ -66,6 +74,15 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
      */
     @Test
     public void testJoinFromAtsdSeriesUsingEntity() {
+        /*
+        SELECT t1.value, t2.value FROM atsd_series t1 JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
+
+        | t1.value | t2.value |
+        |----------|----------|
+        | 3        | 5        |
+        | 4        | 6        |
+         */
+
         String sqlQuery= String.format(
                 "SELECT t1.value, t2.value " +
                         "FROM atsd_series t1 " +
@@ -88,6 +105,20 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
      */
     @Test
     public void testOuterJoinFromAtsdSeries() {
+        /*
+        SELECT t1.value, t2.value FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
+
+        | t1.value | t2.value |
+        |----------|----------|
+        | 1        | null     |
+        | 2        | null     |
+        | 3        | null     |
+        | null     | 5        |
+        | 4        | 6        |
+        | null     | 7        |
+        | null     | 8        |
+         */
+
         String sqlQuery= String.format(
                 "SELECT t1.value, t2.value " +
                         "FROM atsd_series t1 " +
@@ -117,6 +148,19 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
      */
     @Test
     public void testOuterJoinFromAtsdSeriesUsingEntity() {
+        /*
+        SELECT t1.value, t2.value FROM atsd_series t1 OUTER JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
+
+        | t1.value | t2.value |
+        |----------|----------|
+        | 1        | null     |
+        | 2        | null     |
+        | 3        | 5        |
+        | 4        | 6        |
+        | null     | 7        |
+        | null     | 8        |
+         */
+
         String sqlQuery= String.format(
                 "SELECT t1.value, t2.value " +
                         "FROM atsd_series t1 " +
@@ -143,6 +187,12 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
      */
     @Test
     public void testSelfJoinFromAtsdSeries() {
+        /*
+        SELECT t1.value, t2.value FROM atsd_series t1 OUTER JOIN m1 t2 WHERE t1.metric = m1
+
+        Self-join, error expected
+         */
+
         String sqlQuery= String.format(
                 "SELECT t1.value, t2.value " +
                         "FROM atsd_series t1 " +
