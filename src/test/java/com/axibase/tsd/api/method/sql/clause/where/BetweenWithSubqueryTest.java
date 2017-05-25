@@ -16,13 +16,15 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series dataSeries = new Series(entity(), METRIC_NAME);
-        dataSeries.addData(new Sample("2017-01-01T12:00:00.000Z", "1", "a"));
-        dataSeries.addData(new Sample("2017-01-02T12:00:00.000Z", "2", "b"));
-        dataSeries.addData(new Sample("2017-01-03T12:00:00.000Z", "3", "c"));
-        dataSeries.addData(new Sample("2017-01-04T12:00:00.000Z", "4", "d"));
-        dataSeries.addData(new Sample("2017-01-05T12:00:00.000Z", "5", "e"));
-        dataSeries.addData(new Sample("2017-01-06T12:00:00.000Z", "6", "f"));
-        dataSeries.addData(new Sample("2017-01-07T12:00:00.000Z", "7", "g"));
+        dataSeries.addSamples(
+                new Sample("2017-01-01T12:00:00.000Z", "1", "a"),
+                new Sample("2017-01-02T12:00:00.000Z", "2", "b"),
+                new Sample("2017-01-03T12:00:00.000Z", "3", "c"),
+                new Sample("2017-01-04T12:00:00.000Z", "4", "d"),
+                new Sample("2017-01-05T12:00:00.000Z", "5", "e"),
+                new Sample("2017-01-06T12:00:00.000Z", "6", "f"),
+                new Sample("2017-01-07T12:00:00.000Z", "7", "g"))
+        ;
 
         SeriesMethod.insertSeriesCheck(dataSeries);
     }
