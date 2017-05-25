@@ -21,13 +21,11 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @BeforeTest
     public static void prepareData() throws Exception {
         String testEntity = entity();
-        Registry.Entity.register(testEntity);
-        Registry.Metric.register(TEST_METRIC);
 
         List<Series> seriesList = new ArrayList<>();
         for (int i = 1; i < 4; i++) {
             Series series = new Series(testEntity, TEST_METRIC);
-            series.addData(new Sample(String.format("2017-01-01T00:0%s:00Z", i), i));
+            series.addSamples(new Sample(String.format("2017-01-01T00:0%s:00Z", i), i));
 
             seriesList.add(series);
         }
