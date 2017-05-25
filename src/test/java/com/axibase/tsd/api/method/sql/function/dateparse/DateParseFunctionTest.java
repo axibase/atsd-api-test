@@ -15,7 +15,7 @@ public class DateParseFunctionTest extends SqlTest {
     private static TimeZone timeZone;
 
     @BeforeClass
-    public static void prepareData() throws Exception {
+    public static void requestTimeZone() throws Exception {
         timeZone = TestUtil.getServerTimeZone();
     }
 
