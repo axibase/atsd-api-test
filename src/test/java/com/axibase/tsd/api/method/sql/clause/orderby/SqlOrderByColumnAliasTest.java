@@ -26,9 +26,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
 
         List<Series> seriesList = new ArrayList<>();
         for (int i = 1; i < 4; i++) {
-            Series series = new Series();
-            series.setEntity(testEntity);
-            series.setMetric(TEST_METRIC);
+            Series series = new Series(testEntity, TEST_METRIC);
             series.addData(new Sample(String.format("2017-01-01T00:0%s:00Z", i), i));
 
             seriesList.add(series);
