@@ -25,7 +25,6 @@ public class LikeOperatorTest extends SqlTest {
     @BeforeTest
     public static void prepareData() throws Exception {
         String entity = entity();
-        Registry.Entity.register(entity);
 
         for (int i = 0; i < METRICS_COUNT / 2; i++) {
             String metric = String.format("%s-first-%02d", TEST_METRIC_PREFIX, i);
