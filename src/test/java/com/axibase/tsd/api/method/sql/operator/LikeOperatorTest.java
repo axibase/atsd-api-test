@@ -29,20 +29,18 @@ public class LikeOperatorTest extends SqlTest {
 
         for (int i = 0; i < METRICS_COUNT / 2; i++) {
             String metric = String.format("%s-first-%02d", TEST_METRIC_PREFIX, i);
-            Registry.Metric.register(metric);
             TEST_METRICS.add(metric);
         }
 
         for (int i = METRICS_COUNT / 2; i < METRICS_COUNT; i++) {
             String metric = String.format("%s-second-%02d", TEST_METRIC_PREFIX, i - METRICS_COUNT / 2);
-            Registry.Metric.register(metric);
             TEST_METRICS.add(metric);
         }
 
         ArrayList<Series> seriesList = new ArrayList<>(METRICS_COUNT);
         for (String metric : TEST_METRICS) {
             Series series = new Series(entity, metric);
-            series.addData(Mocks.SAMPLE);
+            series.addSamples(Mocks.SAMPLE);
 
             seriesList.add(series);
         }
