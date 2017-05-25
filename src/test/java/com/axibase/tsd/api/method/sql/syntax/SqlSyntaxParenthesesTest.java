@@ -4,11 +4,8 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
@@ -21,12 +18,12 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
         String entity = entity();
 
         Series series = new Series(entity, TEST_METRIC);
-        series.setData(Arrays.asList(
-                new Sample("2017-01-01T00:00:00Z", "0", "zero"),
-                new Sample("2017-01-01T00:00:01Z", "1"),
-                new Sample("2017-01-01T00:00:02Z", "2"),
-                new Sample("2017-01-01T00:00:03Z", "3")
-        ));
+        series.addSamples(
+                new Sample("2017-01-01T00:00:00Z", 0, "zero"),
+                new Sample("2017-01-01T00:00:01Z", 1),
+                new Sample("2017-01-01T00:00:02Z", 2),
+                new Sample("2017-01-01T00:00:03Z", 3)
+        );
         SeriesMethod.insertSeriesCheck(series);
     }
 
