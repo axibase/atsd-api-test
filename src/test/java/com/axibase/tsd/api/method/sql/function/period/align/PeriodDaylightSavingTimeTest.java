@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,32 +30,25 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
     public static void prepareData() throws Exception {
 
         Series series1 = new Series(TestNames.entity(), METRIC_NAME1);
-        // 24 Mar 2017 23:00 in UTC
-        insertDateRange(series1, 1490396400000L);
-        // 27 Oct 2017 22:00 in UTC
-        insertDateRange(series1, 1509141600000L);
+        insertDateRange(series1, TestUtil.getMillis("2017-03-24T23:00Z"));
+        insertDateRange(series1, TestUtil.getMillis("2017-10-27T22:00Z"));
 
 
         Series series2 = new Series(TestNames.entity(), METRIC_NAME2);
-        // 11 Mar 2017 8:00 in UTC
-        insertDateRange(series2, 1489219200000L);
-        //  4 Nov 2017 7:00 in UTC
-        insertDateRange(series2, 1509778800000L);
+        insertDateRange(series2, TestUtil.getMillis("2017-03-11T08:00Z"));
+        insertDateRange(series2, TestUtil.getMillis("2017-11-04T07:00Z"));
 
         Series series3 = new Series(TestNames.entity(), METRIC_NAME3);
-        // 27 Mar 2011 21:00 in UTC
-        insertDateRange(series3, 1301086800000L);
-        // 24 Oct 2014 20:00 in UTC
-        insertDateRange(series3, 1414180800000L);
-        // 24 Mar 2017 21:00 in UTC
-        insertDateRange(series3, 1490389200000L);
+        insertDateRange(series3, TestUtil.getMillis("2011-03-25T21:00Z"));
+        insertDateRange(series3, TestUtil.getMillis("2014-10-24T20:00Z"));
+        insertDateRange(series3, TestUtil.getMillis("2017-03-24T21:00Z"));
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
     private static void insertDateRange(Series s, long start) {
         for (int i = 0; i < HOURS; i++) {
-            s.addData(new Sample(Util.ISOFormat(start + HOUR_DURATION * i), i));
+            s.addSamples(new Sample(Util.ISOFormat(start + HOUR_DURATION * i), i));
         }
     }
 
