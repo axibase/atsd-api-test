@@ -39,6 +39,12 @@ public class Sample {
         this.text = text;
     }
 
+    public Sample(String d, double v, String text) {
+        this.d = convertDateToISO(d);
+        this.v = new BigDecimal(v);
+        this.text = text;
+    }
+
     public Sample(String d, String v, String text) {
         this(d, new BigDecimal(v), text);
     }
@@ -54,9 +60,14 @@ public class Sample {
         this.v = new BigDecimal(v);
     }
 
+    public Sample(String d, double v) {
+        this.d = convertDateToISO(d);
+        this.v = new BigDecimal(v);
+    }
+
     public Sample(Date d, String v) {
         this.d = Util.ISOFormat(d);
-        this.v = new BigDecimal(String.valueOf(v));
+        this.v = new BigDecimal(v);
     }
 
     public Sample(String d, BigDecimal v) {
@@ -66,7 +77,7 @@ public class Sample {
 
     public Sample(String d, String v) {
         this.d = convertDateToISO(d);
-        this.v = new BigDecimal(String.valueOf(v));
+        this.v = new BigDecimal(v);
     }
 
     private String convertDateToISO(String dateString) {
