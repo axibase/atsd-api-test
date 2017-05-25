@@ -84,10 +84,10 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         Series series2 = new Series();
         series2.setEntity(TEST_ENTITY_NAME);
         series2.setMetric(TEST_METRIC1_NAME);
-        series2.setData(Arrays.asList(
+        series2.addData(
                 new Sample("2017-01-02T12:00:00.000Z", "2"),
                 new Sample("2017-01-04T12:00:00.000Z", "4")
-        ));
+        );
 
         Series series3 = new Series();
         series3.setEntity(TEST_ENTITY_NAME);
@@ -98,10 +98,10 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         Series series4 = new Series();
         series4.setEntity(TEST_ENTITY_NAME);
         series4.setMetric(TEST_METRIC2_NAME);
-        series4.setData(Arrays.asList(
+        series4.addData(
                 new Sample("2017-01-04T12:00:00.000Z", "6"),
                 new Sample("2017-01-05T12:00:00.000Z", "7")
-        ));
+        );
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3, series4);
 
