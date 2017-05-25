@@ -19,18 +19,13 @@ public class SqlMerticTagsTest extends SqlTest {
 
     @BeforeTest
     public void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC);
-
         String entity = entity();
-        Registry.Entity.register(entity);
 
         String[] tagValues = new String[] { null, "value1", "value2", "value3", "otherValue" };
 
         List<Series> seriesList = new ArrayList<>();
         for (int i = 0; i < tagValues.length; i++) {
-            Series series = new Series();
-            series.setEntity(entity);
-            series.setMetric(TEST_METRIC);
+            Series series = new Series(entity, TEST_METRIC);
             String tagValue = tagValues[i];
             if (tagValue != null) {
                 series.addTag("tag", tagValue);
