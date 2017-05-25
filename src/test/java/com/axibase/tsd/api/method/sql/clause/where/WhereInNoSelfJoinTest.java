@@ -58,7 +58,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(ENTITY_NAME, METRIC_NAME1);
-        series1.addData(
+        series1.addSamples(
                 new Sample("2016-10-04T01:58:12.000Z", "90.4"),
                 new Sample("2016-10-04T02:00:05.000Z", "97.7"),
                 new Sample("2016-10-04T02:00:35.000Z", "77.1"),
@@ -72,7 +72,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         );
 
         Series series2 = new Series(ENTITY_NAME, METRIC_NAME2);
-        series2.addData(
+        series2.addSamples(
                 new Sample("2016-10-04T02:00:14.000Z", "47.7"),
                 new Sample("2016-10-04T02:00:55.000Z", "37.1"),
                 new Sample("2016-10-04T02:02:18.000Z", "44.2"),
@@ -85,7 +85,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         );
 
         Series series3 = new Series(ENTITY_NAME, METRIC_NAME3);
-        series3.addData(
+        series3.addSamples(
                 new Sample("2016-10-04T01:59:12.000Z", "20.0"),
                 new Sample("2016-10-04T02:00:14.000Z", "27.7"),
                 new Sample("2016-10-04T02:01:55.000Z", "17.1"),
@@ -99,7 +99,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         );
 
         Series series4 = new Series(ENTITY_NAME, METRIC_NAME4);
-        series4.addData(
+        series4.addSamples(
                 new TextSample("2016-10-04T02:00:00.000Z", "475.0"),
                 new TextSample("2016-10-04T02:01:00.000Z", "26.0"),
                 new TextSample("2016-10-04T02:02:00.000Z", "35.0"),
@@ -114,7 +114,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         );
 
         Series series5 = new Series(ENTITY_NAME, METRIC_NAME5);
-        series5.addData(
+        series5.addSamples(
                 new TextSample("2016-10-04T01:52:05.000Z", "700"),
                 new TextSample("2016-10-04T02:00:34.000Z", "Inactive"),
                 new TextSample("2016-10-04T02:01:20.000Z", "800"),
@@ -126,7 +126,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         );
 
         Series series6 = new Series(ENTITY_NAME, METRIC_NAME6);
-        series6.addData(
+        series6.addSamples(
             new TextSample("2016-10-04T01:57:08.000Z", "Proc3"),
             new TextSample("2016-10-04T02:00:34.000Z", "Inactive"),
             new TextSample("2016-10-04T02:01:20.000Z", "Proc1"),
