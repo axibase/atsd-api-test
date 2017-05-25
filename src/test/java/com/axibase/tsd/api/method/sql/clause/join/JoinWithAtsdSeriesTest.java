@@ -66,7 +66,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
                 {"4", "6"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for join from atsd_series", expectedRows, sqlQuery);
     }
 
     /**
@@ -97,7 +97,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
                 {"4", "6"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for join using entity from atsd_series", expectedRows, sqlQuery);
     }
 
     /**
@@ -138,7 +138,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
                 {"null",       "8"},
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for outer join from atsd_series", expectedRows, sqlQuery);
     }
 
 
@@ -179,7 +179,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
                 {"null",       "8"},
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for outer join using entity from atsd_series", expectedRows, sqlQuery);
     }
 
     /**
@@ -203,6 +203,6 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
 
         String expectedMessage = String.format("Self join is not supported (metric: %s)", METRIC_NAME1);
 
-        assertBadRequest("", expectedMessage, queryResponse(sqlQuery));
+        assertBadRequest("Wrong result for self join with atsd_series", expectedMessage, queryResponse(sqlQuery));
     }
 }
