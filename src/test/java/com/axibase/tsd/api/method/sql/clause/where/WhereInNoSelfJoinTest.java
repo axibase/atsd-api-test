@@ -57,98 +57,89 @@ public class WhereInNoSelfJoinTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(ENTITY_NAME);
+        Series series1 = new Series(ENTITY_NAME, METRIC_NAME1);
+        series1.addData(
+                new Sample("2016-10-04T01:58:12.000Z", "90.4"),
+                new Sample("2016-10-04T02:00:05.000Z", "97.7"),
+                new Sample("2016-10-04T02:00:35.000Z", "77.1"),
+                new Sample("2016-10-04T02:02:28.000Z", "84.2"),
+                new Sample("2016-10-04T02:04:15.000Z", "65.2"),
+                new Sample("2016-10-04T02:05:28.000Z", "50.3"),
+                new Sample("2016-10-04T02:07:42.000Z", "60.1"),
+                new Sample("2016-10-04T02:08:28.000Z", "80.3"),
+                new Sample("2016-10-04T02:09:16.000Z", "87.1"),
+                new Sample("2016-10-04T02:11:11.000Z", "99.9")
+        );
 
-        Registry.Metric.register(METRIC_NAME1);
-        Series series1 = new Series();
-        series1.setEntity(ENTITY_NAME);
-        series1.setMetric(METRIC_NAME1);
-        series1.addData(new Sample("2016-10-04T01:58:12.000Z", "90.4"));
-        series1.addData(new Sample("2016-10-04T02:00:05.000Z", "97.7"));
-        series1.addData(new Sample("2016-10-04T02:00:35.000Z", "77.1"));
-        series1.addData(new Sample("2016-10-04T02:02:28.000Z", "84.2"));
-        series1.addData(new Sample("2016-10-04T02:04:15.000Z", "65.2"));
-        series1.addData(new Sample("2016-10-04T02:05:28.000Z", "50.3"));
-        series1.addData(new Sample("2016-10-04T02:07:42.000Z", "60.1"));
-        series1.addData(new Sample("2016-10-04T02:08:28.000Z", "80.3"));
-        series1.addData(new Sample("2016-10-04T02:09:16.000Z", "87.1"));
-        series1.addData(new Sample("2016-10-04T02:11:11.000Z", "99.9"));
+        Series series2 = new Series(ENTITY_NAME, METRIC_NAME2);
+        series2.addData(
+                new Sample("2016-10-04T02:00:14.000Z", "47.7"),
+                new Sample("2016-10-04T02:00:55.000Z", "37.1"),
+                new Sample("2016-10-04T02:02:18.000Z", "44.2"),
+                new Sample("2016-10-04T02:04:25.000Z", "35.2"),
+                new Sample("2016-10-04T02:05:18.000Z", "40.3"),
+                new Sample("2016-10-04T02:07:22.000Z", "42.1"),
+                new Sample("2016-10-04T02:08:28.000Z", "46.3"),
+                new Sample("2016-10-04T02:09:26.000Z", "27.1"),
+                new Sample("2016-10-04T02:10:11.000Z", "49.9")
+        );
 
-        Registry.Metric.register(METRIC_NAME2);
-        Series series2 = new Series();
-        series2.setEntity(ENTITY_NAME);
-        series2.setMetric(METRIC_NAME2);
-        series2.addData(new Sample("2016-10-04T02:00:14.000Z", "47.7"));
-        series2.addData(new Sample("2016-10-04T02:00:55.000Z", "37.1"));
-        series2.addData(new Sample("2016-10-04T02:02:18.000Z", "44.2"));
-        series2.addData(new Sample("2016-10-04T02:04:25.000Z", "35.2"));
-        series2.addData(new Sample("2016-10-04T02:05:18.000Z", "40.3"));
-        series2.addData(new Sample("2016-10-04T02:07:22.000Z", "42.1"));
-        series2.addData(new Sample("2016-10-04T02:08:28.000Z", "46.3"));
-        series2.addData(new Sample("2016-10-04T02:09:26.000Z", "27.1"));
-        series2.addData(new Sample("2016-10-04T02:10:11.000Z", "49.9"));
+        Series series3 = new Series(ENTITY_NAME, METRIC_NAME3);
+        series3.addData(
+                new Sample("2016-10-04T01:59:12.000Z", "20.0"),
+                new Sample("2016-10-04T02:00:14.000Z", "27.7"),
+                new Sample("2016-10-04T02:01:55.000Z", "17.1"),
+                new Sample("2016-10-04T02:02:38.000Z", "24.2"),
+                new Sample("2016-10-04T02:04:45.000Z", "25.2"),
+                new Sample("2016-10-04T02:05:08.000Z", "20.3"),
+                new Sample("2016-10-04T02:07:52.000Z", "22.1"),
+                new Sample("2016-10-04T02:08:18.000Z", "26.3"),
+                new Sample("2016-10-04T02:09:46.000Z", "17.1"),
+                new Sample("2016-10-04T02:10:21.000Z", "19.9")
+        );
 
-        Registry.Metric.register(METRIC_NAME3);
-        Series series3 = new Series();
-        series3.setEntity(ENTITY_NAME);
-        series3.setMetric(METRIC_NAME3);
-        series3.addData(new Sample("2016-10-04T01:59:12.000Z", "20.0"));
-        series3.addData(new Sample("2016-10-04T02:00:14.000Z", "27.7"));
-        series3.addData(new Sample("2016-10-04T02:01:55.000Z", "17.1"));
-        series3.addData(new Sample("2016-10-04T02:02:38.000Z", "24.2"));
-        series3.addData(new Sample("2016-10-04T02:04:45.000Z", "25.2"));
-        series3.addData(new Sample("2016-10-04T02:05:08.000Z", "20.3"));
-        series3.addData(new Sample("2016-10-04T02:07:52.000Z", "22.1"));
-        series3.addData(new Sample("2016-10-04T02:08:18.000Z", "26.3"));
-        series3.addData(new Sample("2016-10-04T02:09:46.000Z", "17.1"));
-        series3.addData(new Sample("2016-10-04T02:10:21.000Z", "19.9"));
-        SeriesMethod.insertSeriesCheck(series3);
+        Series series4 = new Series(ENTITY_NAME, METRIC_NAME4);
+        series4.addData(
+                new TextSample("2016-10-04T02:00:00.000Z", "475.0"),
+                new TextSample("2016-10-04T02:01:00.000Z", "26.0"),
+                new TextSample("2016-10-04T02:02:00.000Z", "35.0"),
+                new TextSample("2016-10-04T02:03:00.000Z", "95.0"),
+                new TextSample("2016-10-04T02:04:00.000Z", "155.0"),
+                new TextSample("2016-10-04T02:05:00.000Z", "215.0"),
+                new TextSample("2016-10-04T02:06:00.000Z", "275.0"),
+                new TextSample("2016-10-04T02:07:00.000Z", "335.0"),
+                new TextSample("2016-10-04T02:08:00.000Z", "395.0"),
+                new TextSample("2016-10-04T02:09:00.000Z", "455.0"),
+                new TextSample("2016-10-04T02:10:00.000Z", "51.0")
+        );
 
-        Registry.Metric.register(METRIC_NAME4);
-        Series series4 = new Series();
-        series4.setEntity(ENTITY_NAME);
-        series4.setMetric(METRIC_NAME4);
-        series4.addData(new TextSample("2016-10-04T02:00:00.000Z", "475.0"));
-        series4.addData(new TextSample("2016-10-04T02:01:00.000Z", "26.0"));
-        series4.addData(new TextSample("2016-10-04T02:02:00.000Z", "35.0"));
-        series4.addData(new TextSample("2016-10-04T02:03:00.000Z", "95.0"));
-        series4.addData(new TextSample("2016-10-04T02:04:00.000Z", "155.0"));
-        series4.addData(new TextSample("2016-10-04T02:05:00.000Z", "215.0"));
-        series4.addData(new TextSample("2016-10-04T02:06:00.000Z", "275.0"));
-        series4.addData(new TextSample("2016-10-04T02:07:00.000Z", "335.0"));
-        series4.addData(new TextSample("2016-10-04T02:08:00.000Z", "395.0"));
-        series4.addData(new TextSample("2016-10-04T02:09:00.000Z", "455.0"));
-        series4.addData(new TextSample("2016-10-04T02:10:00.000Z", "51.0"));
+        Series series5 = new Series(ENTITY_NAME, METRIC_NAME5);
+        series5.addData(
+                new TextSample("2016-10-04T01:52:05.000Z", "700"),
+                new TextSample("2016-10-04T02:00:34.000Z", "Inactive"),
+                new TextSample("2016-10-04T02:01:20.000Z", "800"),
+                new TextSample("2016-10-04T02:03:05.000Z", "Inactive"),
+                new TextSample("2016-10-04T02:03:10.000Z", "800"),
+                new TextSample("2016-10-04T02:07:05.000Z", "Inactive"),
+                new TextSample("2016-10-04T02:09:09.000Z", "900"),
+                new TextSample("2016-10-04T02:12:30.000Z", "Inactive")
+        );
 
-        Registry.Metric.register(METRIC_NAME5);
-        Series series5 = new Series();
-        series5.setEntity(ENTITY_NAME);
-        series5.setMetric(METRIC_NAME5);
-        series5.addData(new TextSample("2016-10-04T01:52:05.000Z", "700"));
-        series5.addData(new TextSample("2016-10-04T02:00:34.000Z", "Inactive"));
-        series5.addData(new TextSample("2016-10-04T02:01:20.000Z", "800"));
-        series5.addData(new TextSample("2016-10-04T02:03:05.000Z", "Inactive"));
-        series5.addData(new TextSample("2016-10-04T02:03:10.000Z", "800"));
-        series5.addData(new TextSample("2016-10-04T02:07:05.000Z", "Inactive"));
-        series5.addData(new TextSample("2016-10-04T02:09:09.000Z", "900"));
-        series5.addData(new TextSample("2016-10-04T02:12:30.000Z", "Inactive"));
-
-        Registry.Metric.register(METRIC_NAME6);
-        Series series6 = new Series();
-        series6.setEntity(ENTITY_NAME);
-        series6.setMetric(METRIC_NAME6);
-        series6.addData(new TextSample("2016-10-04T01:57:08.000Z", "Proc3"));
-        series6.addData(new TextSample("2016-10-04T02:00:34.000Z", "Inactive"));
-        series6.addData(new TextSample("2016-10-04T02:01:20.000Z", "Proc1"));
-        series6.addData(new TextSample("2016-10-04T02:01:59.000Z", "Proc2"));
-        series6.addData(new TextSample("2016-10-04T02:02:20.000Z", "Proc3"));
-        series6.addData(new TextSample("2016-10-04T02:03:05.000Z", "Inactive"));
-        series6.addData(new TextSample("2016-10-04T02:03:10.000Z", "Proc1"));
-        series6.addData(new TextSample("2016-10-04T02:04:59.000Z", "Proc2"));
-        series6.addData(new TextSample("2016-10-04T02:06:20.000Z", "Proc3"));
-        series6.addData(new TextSample("2016-10-04T02:07:05.000Z", "Inactive"));
-        series6.addData(new TextSample("2016-10-04T02:09:09.000Z", "Proc1"));
-        series6.addData(new TextSample("2016-10-04T02:12:30.000Z", "Inactive"));
+        Series series6 = new Series(ENTITY_NAME, METRIC_NAME6);
+        series6.addData(
+            new TextSample("2016-10-04T01:57:08.000Z", "Proc3"),
+            new TextSample("2016-10-04T02:00:34.000Z", "Inactive"),
+            new TextSample("2016-10-04T02:01:20.000Z", "Proc1"),
+            new TextSample("2016-10-04T02:01:59.000Z", "Proc2"),
+            new TextSample("2016-10-04T02:02:20.000Z", "Proc3"),
+            new TextSample("2016-10-04T02:03:05.000Z", "Inactive"),
+            new TextSample("2016-10-04T02:03:10.000Z", "Proc1"),
+            new TextSample("2016-10-04T02:04:59.000Z", "Proc2"),
+            new TextSample("2016-10-04T02:06:20.000Z", "Proc3"),
+            new TextSample("2016-10-04T02:07:05.000Z", "Inactive"),
+            new TextSample("2016-10-04T02:09:09.000Z", "Proc1"),
+            new TextSample("2016-10-04T02:12:30.000Z", "Inactive")
+        );
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3,
                 series4, series5, series6);
