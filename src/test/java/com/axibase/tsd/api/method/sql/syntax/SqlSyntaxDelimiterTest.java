@@ -254,11 +254,23 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        String expectedMessage = ErrorTemplate.Sql.syntaxError(2, 46,
+        String expectedMessageWithoutMemoryThreshold = ErrorTemplate.Sql.syntaxError(2, 46,
                 "no viable alternative at input '<EOF>'"
         );
+
+        String expectedMessageWithMemoryThreshold = ErrorTemplate.Sql.syntaxError(2, 47,
+        "extraneous input 'OPTION' expecting {'-', '(', INTEGER_LITERAL, REAL_LITERAL, ID, WORD, METRIC_NAME, STRING_LITERAL, DQ_STRING_LITERAL, NOT, METRIC, METRICS, TIME, DATETIME, TAGS, ENTITY, TEXT, VALUE, PERIOD, PERCENTILE, COUNT, MIN, MAX, AVG, SUM, STDDEV, FIRST, LAST, DELTA, WAVG, WTAVG, MAX_VALUE_TIME, MIN_VALUE_TIME, COUNTER, CORREL, DATE_FORMAT, DATE_PARSE, MEDIAN, THRESHOLD_COUNT, THRESHOLD_DURATION, THRESHOLD_PERCENT, NAN, ABS, CEIL, EXP, FLOOR, LN, LOG, MOD, POWER, ROUND, SQRT, UPPER, LOWER, CONCAT, REPLACE, LENGTH, LOCATE, SUBSTR, ISNULL, LOOKUP, CAST, LEAD, LAG, TRUE, FALSE, CASE, MILLISECOND_KEYWORD, SECOND_KEYWORD, MINUTE_KEYWORD, HOUR_KEYWORD, DAY_KEYWORD, WEEK_KEYWORD, MONTH_KEYWORD, QUARTER_KEYWORD, YEAR_KEYWORD, DATE_KEYWORD, LAST_TIME, DATE_EXPRESSION_KEYWORD}");
+
+        try {
+            assertBadRequest("Query must return correct table",
+                    expectedMessageWithoutMemoryThreshold, response);
+            return;
+        } catch (Error e) {
+
+        }
+
         assertBadRequest("Query must return correct table",
-                expectedMessage, response);
+                expectedMessageWithMemoryThreshold, response);
     }
 
     private String tokenRecognitionError(String token) {
