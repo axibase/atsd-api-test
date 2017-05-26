@@ -232,7 +232,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
                         "OUTER JOIN '%2$s' t2 " +
                         "WHERE t1.metric = '%1$s'",
                 METRIC_NAME1,
-                METRIC_NAME3
+                METRIC_NAME4
         );
 
         String[][] expectedRows = {
@@ -265,12 +265,14 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery= String.format(
-                "SELECT t1.value, t2.value " +
+                "SELECT t1.value, t2.value, t3.value " +
                         "FROM atsd_series t1 " +
                         "OUTER JOIN '%2$s' t2 " +
+                        "OUTER JOIN '%3$s' t3 " +
                         "WHERE t1.metric = '%1$s'",
                 METRIC_NAME1,
-                METRIC_NAME2
+                METRIC_NAME2,
+                METRIC_NAME3
         );
 
         String[][] expectedRows = {
