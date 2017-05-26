@@ -19,11 +19,13 @@ public class SqlLimitParamTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-06-29T08:00:00.000Z", "0"));
-        series.addSamples(new Sample("2016-06-29T08:00:01.000Z", "1"));
-        series.addSamples(new Sample("2016-06-29T08:00:02.000Z", "2"));
-        series.addSamples(new Sample("2016-06-29T08:00:03.000Z", "3"));
-        series.addSamples(new Sample("2016-06-29T08:00:04.000Z", "4"));
+        series.addSamples(
+                new Sample("2016-06-29T08:00:00.000Z", "0"),
+                new Sample("2016-06-29T08:00:01.000Z", "1"),
+                new Sample("2016-06-29T08:00:02.000Z", "2"),
+                new Sample("2016-06-29T08:00:03.000Z", "3"),
+                new Sample("2016-06-29T08:00:04.000Z", "4")
+        );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

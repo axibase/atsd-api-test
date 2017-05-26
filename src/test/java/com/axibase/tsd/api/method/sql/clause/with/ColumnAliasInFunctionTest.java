@@ -18,11 +18,13 @@ public class ColumnAliasInFunctionTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(ENTITY_NAME, METRIC_NAME);
 
-        series.addSamples(new Sample("2017-01-01T12:00:00.000Z", "2"));
-        series.addSamples(new Sample("2017-01-02T12:00:00.000Z", "4"));
-        series.addSamples(new Sample("2017-01-03T12:00:00.000Z", "1"));
-        series.addSamples(new Sample("2017-01-04T12:00:00.000Z", "3"));
-        series.addSamples(new Sample("2017-01-05T12:00:00.000Z", "5"));
+        series.addSamples(
+                new Sample("2017-01-01T12:00:00.000Z", "2"),
+                new Sample("2017-01-02T12:00:00.000Z", "4"),
+                new Sample("2017-01-03T12:00:00.000Z", "1"),
+                new Sample("2017-01-04T12:00:00.000Z", "3"),
+                new Sample("2017-01-05T12:00:00.000Z", "5")
+        );
 
         SeriesMethod.insertSeriesCheck(series);
     }
