@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.version.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -107,69 +108,30 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         }
     }
 
-    private String[][] generateCalendarInterpolationOutput(String mode, DateRange... ranges) {
-        List<DateRange> serverLocalHourlyRanges = new ArrayList<>();
-
-        for (DateRange range : ranges) {
-            ZonedDateTime startHour = range.startDate.withZoneSameInstant(serverTimezone).withMinute(0);
-
-            if (serverTimezone.getRules().getOffset(range.startDate.toLocalDateTime()).getTotalSeconds() % (1000 * 3600) != 0) {
-                startHour = startHour.plusHours(1);
-            }
-
-            ZonedDateTime lastHour = range.endDate.withZoneSameInstant(serverTimezone).withMinute(0);
-
-            lastHour = lastHour.plusHours(1);
-            while (startHour.plusHours(1).compareTo(lastHour) <= 0) {
-                serverLocalHourlyRanges.add(new DateRange(startHour, startHour.plusHours(1)));
-                startHour = startHour.plusHours(1);
-            }
-        }
+    private String[][] generateCalendarInterpolationOutput(Boundary boundary, DateRange... ranges) {
+        List<DateRange> serverLocalHourlyRanges = getHourlyRanges(serverTimezone, ranges);
 
         Map<DateRange, String> rangeValues = new TreeMap<>(Comparator.comparing(o -> o.startDate));
 
         for (int i = 0; i < serverLocalHourlyRanges.size(); i++) {
             DateRange hourlyRange = serverLocalHourlyRanges.get(i);
-            String value = null;
-            for (SeriesItem seriesItem : calendarInterpolationTestSeries) {
-                if (mode.equals("INNER")) {
-                    if (i == 0) {
-                        break;
-                    }
-
-
-                    DateRange previousRange = serverLocalHourlyRanges.get(i - 1);
-                    if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
-                        break;
-                    }
-
-                    if (seriesItem.date.isBefore(previousRange.startDate)) {
-                        continue;
-                    }
-                }
-
-                if (seriesItem.date.isAfter(hourlyRange.startDate)) {
-                    break;
-                }
-
-                if (ChronoUnit.HOURS.between(seriesItem.date, hourlyRange.startDate) >= 1) {
-                    continue;
-                }
-
-                value = String.valueOf(seriesItem.value);
+            DateRange previousRange = null;
+            if (i > 0) {
+                previousRange = serverLocalHourlyRanges.get(i - 1);
             }
+
+            String value = searchHourlyRangeValue(hourlyRange, previousRange, boundary, calendarInterpolationTestSeries);
 
             if (value != null) {
                 rangeValues.put(hourlyRange, value);
                 continue;
             }
 
-            if (i == 0) {
+            if (previousRange == null) {
                 rangeValues.put(hourlyRange, "NaN");
                 continue;
             }
 
-            DateRange previousRange = serverLocalHourlyRanges.get(i - 1);
             if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
                 rangeValues.put(hourlyRange, "NaN");
                 continue;
@@ -195,6 +157,63 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         return result;
     }
 
+    private static List<DateRange> getHourlyRanges(ZoneId serverTimezone, DateRange... ranges) {
+        List<DateRange> serverLocalHourlyRanges = new ArrayList<>();
+
+        for (DateRange range : ranges) {
+            ZonedDateTime startHour = range.startDate.withZoneSameInstant(serverTimezone).withMinute(0);
+
+            if (serverTimezone.getRules().getOffset(range.startDate.toLocalDateTime()).getTotalSeconds() % (1000 * 3600) != 0) {
+                startHour = startHour.plusHours(1);
+            }
+
+            ZonedDateTime lastHour = range.endDate.withZoneSameInstant(serverTimezone).withMinute(0);
+
+            lastHour = lastHour.plusHours(1);
+            while (startHour.plusHours(1).compareTo(lastHour) <= 0) {
+                serverLocalHourlyRanges.add(new DateRange(startHour, startHour.plusHours(1)));
+                startHour = startHour.plusHours(1);
+            }
+        }
+
+        return serverLocalHourlyRanges;
+    }
+
+    private static String searchHourlyRangeValue(
+            DateRange hourlyRange,
+            DateRange previousRange,
+            Boundary boundary,
+            List<SeriesItem> calendarInterpolationTestSeries) {
+        String value = null;
+        for (SeriesItem seriesItem : calendarInterpolationTestSeries) {
+            if (boundary == Boundary.INNER) {
+                if (previousRange == null) {
+                    break;
+                }
+
+                if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
+                    break;
+                }
+
+                if (seriesItem.date.isBefore(previousRange.startDate)) {
+                    continue;
+                }
+            }
+
+            if (seriesItem.date.isAfter(hourlyRange.startDate)) {
+                break;
+            }
+
+            if (ChronoUnit.HOURS.between(seriesItem.date, hourlyRange.startDate) >= 1) {
+                continue;
+            }
+
+            value = String.valueOf(seriesItem.value);
+        }
+
+        return value;
+    }
+
     /**
      * #4069
      */
@@ -210,7 +229,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "INNER",
+                Boundary.INNER,
                 new DateRange("2017-01-01T09:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T16:00:00Z", "2017-01-01T21:00:00Z"));
 
@@ -233,7 +252,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "INNER",
+                Boundary.INNER,
                 new DateRange("2017-01-01T09:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T16:00:00Z", "2017-01-01T21:00:00Z"));
 
@@ -255,7 +274,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "INNER",
+                Boundary.INNER,
                 new DateRange("2017-01-01T12:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T21:00:00Z"));
 
@@ -280,7 +299,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "INNER",
+                Boundary.INNER,
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T20:00:00Z"));
 
         assertSqlQueryRows(
@@ -304,7 +323,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "OUTER",
+                Boundary.OUTER,
                 new DateRange("2017-01-01T10:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T16:00:00Z", "2017-01-01T21:00:00Z"));
 
@@ -327,7 +346,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "OUTER",
+                Boundary.OUTER,
                 new DateRange("2017-01-01T09:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T17:00:00Z", "2017-01-01T21:00:00Z"));
 
@@ -349,7 +368,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "OUTER",
+                Boundary.OUTER,
                 new DateRange("2017-01-01T12:00:00Z", "2017-01-01T13:00:00Z"),
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T21:00:00Z"));
 
@@ -374,7 +393,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "OUTER",
+                Boundary.OUTER,
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T20:00:00Z"));
 
         assertSqlQueryRows(
@@ -398,7 +417,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = generateCalendarInterpolationOutput(
-                "OUTER",
+                Boundary.OUTER,
                 new DateRange("2017-01-01T13:00:00Z", "2017-01-01T15:00:00Z"),
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T19:00:00Z"));
 
