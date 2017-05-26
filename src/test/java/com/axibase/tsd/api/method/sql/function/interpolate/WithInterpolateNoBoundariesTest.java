@@ -7,7 +7,7 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class WitnInterpolateNoBoundariesTest extends SqlTest {
+public class WithInterpolateNoBoundariesTest extends SqlTest {
     private static String metricName;
 
     @BeforeClass
@@ -23,6 +23,10 @@ public class WitnInterpolateNoBoundariesTest extends SqlTest {
      */
     @Test
     public void testWitnInterpolateNoBoundaries() {
+        /*
+            If there are no date limits by WHERE statement,
+            then interpolation should be limited by min/max time in scan
+         */
         String sqlQuery = String.format(
                 "SELECT count(*) " +
                         "FROM '%s' " +
