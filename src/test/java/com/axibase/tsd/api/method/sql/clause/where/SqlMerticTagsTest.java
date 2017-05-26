@@ -30,7 +30,7 @@ public class SqlMerticTagsTest extends SqlTest {
             if (tagValue != null) {
                 series.addTag("tag", tagValue);
             }
-            series.addData(new Sample(String.format("2017-01-01T00:0%S:00Z", i), i));
+            series.addSamples(new Sample(String.format("2017-01-01T00:0%S:00Z", i), i));
 
             seriesList.add(series);
         }
