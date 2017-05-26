@@ -6,17 +6,16 @@ import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.version.*;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
 import java.text.ParseException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
@@ -27,11 +26,11 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     private static final String TEST_METRIC_2 = metric();
 
     private static final List<SeriesItem> calendarInterpolationTestSeries = new ArrayList<>();
-    private final DateTimeZone serverTimezone;
+    private final ZoneId serverTimezone;
 
     public InterpolationBoundaryValuesTest() {
         Version version = VersionMethod.queryVersion().readEntity(Version.class);
-        serverTimezone = DateTimeZone.forID(version.getDate().getTimeZone().getName());
+        serverTimezone = ZoneId.of(version.getDate().getTimeZone().getName());
     }
 
     @BeforeClass
@@ -69,29 +68,25 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     private static class SeriesItem {
-        private static final DateTimeFormatter isoDateFormat = ISODateTimeFormat.dateTimeParser();
-
-        public final DateTime date;
+        public final ZonedDateTime date;
         public final int value;
 
-        SeriesItem(String date, int value) {
-            this.date = isoDateFormat.parseDateTime(date);
+        SeriesItem(String date, int value) throws ParseException {
+            this.date = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
             this.value = value;
         }
     }
 
     private static class DateRange {
-        private static final DateTimeFormatter isoDateFormat = ISODateTimeFormat.dateTimeParser();
-
-        private final DateTime startDate;
-        private final DateTime endDate;
+        private final ZonedDateTime startDate;
+        private final ZonedDateTime endDate;
 
         private DateRange(String startDate, String endDate) throws ParseException {
-            this.startDate = isoDateFormat.parseDateTime(startDate);
-            this.endDate = isoDateFormat.parseDateTime(endDate);
+            this.startDate = ZonedDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
+            this.endDate = ZonedDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
         }
 
-        private DateRange(DateTime startDate, DateTime endDate) {
+        private DateRange(ZonedDateTime startDate, ZonedDateTime endDate) {
             this.startDate = startDate;
             this.endDate = endDate;
         }
@@ -116,12 +111,14 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         List<DateRange> serverLocalHourlyRanges = new ArrayList<>();
 
         for (DateRange range : ranges) {
-            DateTime startHour = range.startDate.toDateTime(serverTimezone).withMinuteOfHour(0);
-            if (serverTimezone.getOffset(startHour) % (1000 * 3600) != 0) {
+            ZonedDateTime startHour = range.startDate.withZoneSameInstant(serverTimezone).withMinute(0);
+
+            if (serverTimezone.getRules().getOffset(range.startDate.toLocalDateTime()).getTotalSeconds() % (1000 * 3600) != 0) {
                 startHour = startHour.plusHours(1);
             }
 
-            DateTime lastHour = range.endDate.toDateTime(serverTimezone).withMinuteOfHour(0);
+            ZonedDateTime lastHour = range.endDate.withZoneSameInstant(serverTimezone).withMinute(0);
+
             lastHour = lastHour.plusHours(1);
             while (startHour.plusHours(1).compareTo(lastHour) <= 0) {
                 serverLocalHourlyRanges.add(new DateRange(startHour, startHour.plusHours(1)));
@@ -129,12 +126,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
             }
         }
 
-        Map<DateRange, String> rangeValues = new TreeMap<>(new Comparator<DateRange>() {
-            @Override
-            public int compare(DateRange o1, DateRange o2) {
-                return o1.startDate.compareTo(o2.startDate);
-            }
-        });
+        Map<DateRange, String> rangeValues = new TreeMap<>(Comparator.comparing(o -> o.startDate));
 
         for (int i = 0; i < serverLocalHourlyRanges.size(); i++) {
             DateRange hourlyRange = serverLocalHourlyRanges.get(i);
@@ -145,9 +137,9 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         break;
                     }
 
+
                     DateRange previousRange = serverLocalHourlyRanges.get(i - 1);
-                    Period timeDifferenceToPrevRange = new Period(previousRange.endDate, hourlyRange.startDate);
-                    if (timeDifferenceToPrevRange.getHours() >= 1) {
+                    if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
                         break;
                     }
 
@@ -160,8 +152,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                     break;
                 }
 
-                Period timeDifference = new Period(seriesItem.date, hourlyRange.startDate);
-                if (timeDifference.getHours() >= 1) {
+                if (ChronoUnit.HOURS.between(seriesItem.date, hourlyRange.startDate) >= 1) {
                     continue;
                 }
 
@@ -179,8 +170,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
             }
 
             DateRange previousRange = serverLocalHourlyRanges.get(i - 1);
-            Period timeDifferenceToPrevRange = new Period(previousRange.endDate, hourlyRange.startDate);
-            if (timeDifferenceToPrevRange.getHours() >= 1) {
+            if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
                 rangeValues.put(hourlyRange, "NaN");
                 continue;
             }
