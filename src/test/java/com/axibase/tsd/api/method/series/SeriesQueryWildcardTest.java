@@ -33,26 +33,23 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         insertSeriesWithSimilarTags();
     }
 
-    private static void insertSeriesWithSimilarEntity() throws FileNotFoundException {
+    private static void insertSeriesWithSimilarEntity() throws Exception {
         Series seriesA = new Series("e-wc-val1", METRIC_FOR_ENTITY);
-        seriesA.addSamples(new Sample(MIN_STORABLE_DATE, "0"));
+        seriesA.addSamples(new Sample(MIN_STORABLE_DATE, 0));
 
         Series seriesB = new Series("e-wc-val2", null);
         seriesB.setMetric(METRIC_FOR_ENTITY);
-        seriesB.addSamples(new Sample(MIN_STORABLE_DATE, "1"));
+        seriesB.addSamples(new Sample(MIN_STORABLE_DATE, 1));
 
         Series seriesC = new Series("e-wc-?al1", null);
         seriesC.setMetric(METRIC_FOR_ENTITY);
-        seriesC.addSamples(new Sample(MIN_STORABLE_DATE, "2"));
+        seriesC.addSamples(new Sample(MIN_STORABLE_DATE, 2));
 
         Series seriesD = new Series("e-wc-Value2", null);
         seriesD.setMetric(METRIC_FOR_ENTITY);
-        seriesD.addSamples(new Sample(MIN_STORABLE_DATE, "3"));
+        seriesD.addSamples(new Sample(MIN_STORABLE_DATE, 3));
 
-        Response response = insertSeries(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
-        if (OK.getStatusCode() != response.getStatus()) {
-            fail("Series insert failed");
-        }
+        insertSeriesCheck(seriesA, seriesB, seriesC, seriesD);
     }
 
     private static void insertSeriesWithSimilarTags() throws Exception {
