@@ -20,10 +20,10 @@ public class OuterJoinTagsExternalTest extends SqlTest {
     public static void prepareData() throws Exception {
         String entityName = entity();
 
-        Registry.Entity.register(entityName);
-        Registry.Metric.register(METRIC_NO_TAGS_1);
-        Registry.Metric.register(METRIC_NO_TAGS_2);
-        Registry.Metric.register(METRIC_WITH_TAGS);
+        Registry.Entity.checkExists(entityName);
+        Registry.Metric.checkExists(METRIC_NO_TAGS_1);
+        Registry.Metric.checkExists(METRIC_NO_TAGS_2);
+        Registry.Metric.checkExists(METRIC_WITH_TAGS);
 
         /* Create two metrics, because self-join is disallowed*/
         Series series1 = new Series();

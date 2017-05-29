@@ -31,11 +31,11 @@ public class JoinWithTags extends SqlTest {
         String[] metricNames = {TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME};
         String[] tags = {"123", "123", "abc4"};
 
-        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
 
         for (int i = 0; i < metricNames.length; i++) {
             String metricName = metricNames[i];
-            Registry.Metric.register(metricName);
+            Registry.Metric.checkExists(metricName);
 
             Series series = new Series();
             series.setEntity(TEST_ENTITY_NAME);
@@ -322,9 +322,9 @@ public class JoinWithTags extends SqlTest {
         String entity = entity();
         String[] metrics = { metric(), metric(), metric() };
 
-        Registry.Entity.register(entity);
+        Registry.Entity.checkExists(entity);
         for (String metric : metrics) {
-            Registry.Metric.register(metric);
+            Registry.Metric.checkExists(metric);
         }
 
         List<Series> initialSeries = new ArrayList<>(metrics.length);

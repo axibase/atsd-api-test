@@ -24,7 +24,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         entity.addTag("numeric_tag", "123");
         EntityMethod.createOrReplaceEntityCheck(entity);
 
-        Registry.Metric.register(TEST_METRIC);
+        Registry.Metric.checkExists(TEST_METRIC);
 
         Series series = new Series();
         series.setEntity(testEntity);

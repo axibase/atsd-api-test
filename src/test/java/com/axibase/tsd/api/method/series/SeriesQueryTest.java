@@ -568,7 +568,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series();
         series.setMetric(metricName);
         String entityName = "e-text-overwritten-versioning-1";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         series.setEntity(entityName);
 
         String[] data = new String[]{"1", "2"};
@@ -600,7 +600,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series();
         series.setMetric(metric.getName());
         series.setEntity(TestUtil.TestNames.entity());
-        Registry.Entity.register(series.getEntity());
+        Registry.Entity.checkExists(series.getEntity());
         for (int i = 0; i < insertedVersionsCount; i++) {
             series.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, i)));
             SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

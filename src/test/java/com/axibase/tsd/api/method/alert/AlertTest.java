@@ -21,7 +21,7 @@ public class AlertTest extends AlertMethod {
     public static final String RULE_METRIC_NAME = "test_alert_metric_1";
 
     static {
-        Registry.Metric.register(RULE_METRIC_NAME);
+        Registry.Metric.checkExists(RULE_METRIC_NAME);
     }
 
 

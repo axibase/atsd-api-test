@@ -15,7 +15,7 @@ public enum Registry {
         this.registryType = registryType;
     }
 
-    public synchronized void register(String value) {
+    public synchronized void checkExists(String value) {
         boolean exists;
         switch (registryType) {
             case "Entity":

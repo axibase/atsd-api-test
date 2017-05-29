@@ -14,7 +14,7 @@ public class WhereIsNullTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(METRIC_NAME);
+        Registry.Metric.checkExists(METRIC_NAME);
 
         Series series1 = new Series();
         series1.setEntity(TestNames.entity());

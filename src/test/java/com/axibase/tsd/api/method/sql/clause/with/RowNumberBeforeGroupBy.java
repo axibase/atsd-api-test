@@ -25,8 +25,8 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public static void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();;
 
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
 
         for (int i = 0; i < 20; i++) {
             Series series = new Series();

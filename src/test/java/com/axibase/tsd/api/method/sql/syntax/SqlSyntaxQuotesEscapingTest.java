@@ -21,8 +21,8 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
 
         Map<String, String> tags = new HashMap<>();
         tags.put("double\"quote", "tv1");

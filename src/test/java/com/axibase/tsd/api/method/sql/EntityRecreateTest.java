@@ -21,9 +21,9 @@ public class EntityRecreateTest extends SqlTest {
         final String entityName1 = entity();
         final String entityName2 = entity();
 
-        Registry.Entity.register(entityName1);
-        Registry.Entity.register(entityName2);
-        Registry.Metric.register(metricName);
+        Registry.Entity.checkExists(entityName1);
+        Registry.Entity.checkExists(entityName2);
+        Registry.Metric.checkExists(metricName);
 
         Series series1 = new Series();
         series1.setEntity(entityName1);

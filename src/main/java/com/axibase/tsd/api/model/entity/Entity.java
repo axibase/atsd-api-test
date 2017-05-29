@@ -32,7 +32,7 @@ public class Entity {
 
     public Entity(String name) {
         if (null != name) {
-            Registry.Entity.register(name);
+            Registry.Entity.checkExists(name);
         }
         this.name = name;
     }

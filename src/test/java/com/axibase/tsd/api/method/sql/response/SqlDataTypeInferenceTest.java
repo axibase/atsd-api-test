@@ -28,7 +28,7 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
     @BeforeClass
     public static void prepareData() throws Exception {
         final String entityName = TestUtil.TestNames.entity();
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
 
         List<Series> seriesList = new ArrayList<>();
         for (DataType type : DataType.values()) {

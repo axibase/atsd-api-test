@@ -25,8 +25,8 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
 
         List<Series> seriesList = new ArrayList<>();
         Series nullSeries = new Series();

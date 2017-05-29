@@ -30,8 +30,8 @@ public class WhereTagInListTest extends SqlTest {
                 {null, null},
         };
 
-        Registry.Entity.register(ENTITY_NAME);
-        Registry.Metric.register(METRIC_NAME);
+        Registry.Entity.checkExists(ENTITY_NAME);
+        Registry.Metric.checkExists(METRIC_NAME);
 
         for (int i = 0; i < tags.length; i++) {
             Series series = new Series();

@@ -33,7 +33,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     private static List<String> entities = new ArrayList<>();
 
     static {
-        Registry.Metric.register(DEFAULT_QUERY_LIMIT_METRIC);
+        Registry.Metric.checkExists(DEFAULT_QUERY_LIMIT_METRIC);
     }
 
     @DataProvider(name = "seriesQueryProvider")
@@ -64,7 +64,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         String entityName;
         for (int i = 0; i < ENTITY_COUNT - 1; i++) {
             entityName = DEFAULT_QUERY_LIMIT_ENTITY_PREFIX.concat(String.valueOf(i));
-            Registry.Entity.register(entityName);
+            Registry.Entity.checkExists(entityName);
             entities.add(entityName);
 
             seriesList.addAll(makeSeriesWithTagList(entityName, DEFAULT_QUERY_LIMIT_METRIC, SERIES_WITH_TAGS_COUNT));
@@ -75,7 +75,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
         //require to insert in two step to define latest inserted entity
         entityName = DEFAULT_QUERY_LIMIT_ENTITY_PREFIX.concat(String.valueOf(ENTITY_COUNT - 1));
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         entities.add(entityName);
 
         seriesList.addAll(makeSeriesWithTagList(entityName, DEFAULT_QUERY_LIMIT_METRIC, SERIES_WITH_TAGS_COUNT));

@@ -43,7 +43,7 @@ public class ConcatTest extends SqlTest {
         }
         {
             Series series = new Series();
-            Registry.Metric.register(TEST_METRIC2);
+            Registry.Metric.checkExists(TEST_METRIC2);
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC2);
             series.addSamples(new Sample("2016-06-03T09:23:18.000Z", "5.555"));
@@ -51,7 +51,7 @@ public class ConcatTest extends SqlTest {
         }
         {
             Series series = new Series();
-            Registry.Metric.register(TEST_METRIC3);
+            Registry.Metric.checkExists(TEST_METRIC3);
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC3);
             series.addSamples(new Sample("2016-06-03T09:23:18.000Z", "5.0"));

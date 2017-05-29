@@ -776,7 +776,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series();
         series.setMetric(metricName);
         String entityName = "e-text-versioning-2";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         series.setEntity(entityName);
 
         String[] data = new String[]{"1", "2", "3", "4"};

@@ -28,8 +28,8 @@ public class SqlLargeDataTest extends SqlTest {
 
         ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
 
-        Registry.Metric.register(METRIC_NAME);
-        Registry.Metric.register(ENTITY_NAME);
+        Registry.Metric.checkExists(METRIC_NAME);
+        Registry.Metric.checkExists(ENTITY_NAME);
 
         for (int i = 1; i <= ENTITIES_COUNT; i++) {
             Series series = new Series();

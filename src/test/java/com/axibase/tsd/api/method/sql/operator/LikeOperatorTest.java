@@ -56,7 +56,7 @@ public class LikeOperatorTest extends SqlTest {
 
         Series series = Mocks.series();
         series.setMetric(uniquePrefix + series.getMetric());
-        Registry.Metric.register(series.getMetric());
+        Registry.Metric.checkExists(series.getMetric());
 
         Series otherSeries = Mocks.series();
         SeriesMethod.insertSeriesCheck(series, otherSeries);

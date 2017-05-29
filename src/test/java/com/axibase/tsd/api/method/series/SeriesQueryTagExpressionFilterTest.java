@@ -22,9 +22,9 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
         // Arrange
         String metric = TestUtil.TestNames.metric();
-        Registry.Metric.register(metric);
+        Registry.Metric.checkExists(metric);
         String entity = TestUtil.TestNames.entity();
-        Registry.Entity.register(entity);
+        Registry.Entity.checkExists(entity);
 
         Series series1 = new Series();
         series1.setEntity(entity);

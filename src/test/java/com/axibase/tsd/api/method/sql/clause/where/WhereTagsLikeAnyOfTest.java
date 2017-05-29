@@ -16,7 +16,7 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
 
     @BeforeClass
     private static void prepareData() throws Exception {
-        Registry.Metric.register(METRIC_NAME);
+        Registry.Metric.checkExists(METRIC_NAME);
 
         Series series1 = Mocks.series();
         series1.setMetric(METRIC_NAME);

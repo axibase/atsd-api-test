@@ -21,10 +21,10 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
 
     @BeforeClass
     public void prepareAlertData() throws Exception {
-        Registry.Entity.register(ENTITY_NAME);
+        Registry.Entity.checkExists(ENTITY_NAME);
         generateAlertForEntity(ENTITY_NAME);
 
-        Registry.Entity.register(ENTITY_NAME_ACK);
+        Registry.Entity.checkExists(ENTITY_NAME_ACK);
         generateAlertForEntity(ENTITY_NAME_ACK);
 
         markAlertAcknowledged(ENTITY_NAME_ACK);

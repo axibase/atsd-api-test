@@ -25,9 +25,9 @@ public class SqlTableAliasTest extends SqlTest {
             put("a", "b");
             put("b", "c");
         }});
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC1_NAME);
+        Registry.Metric.checkExists(TEST_METRIC2_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
                         new Series() {{

@@ -111,7 +111,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testUnknownFieldsRaiseError() throws Exception {
         final String entityName = "create-entity-7";
         final String unknownField = "unknownfield";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
 
         Map<String, Object> insertQuery = new HashMap<>();
 
@@ -199,7 +199,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     @Test
     public void testTagValBoolean() throws Exception {
         final String entityName = "create-entity-12";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         tags.put("a", true);
@@ -219,7 +219,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     @Test
     public void testTagValInteger() throws Exception {
         final String entityName = "create-entity-13";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         tags.put("a", 123);
@@ -239,7 +239,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     @Test
     public void testTagValBooleanInteger() throws Exception {
         final String entityName = "create-entity-14";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         tags.put("a", 123);
@@ -261,7 +261,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     @Test
     public void testTagValArrayRaiseError() throws Exception {
         final String entityName = "create-entity-15";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         tags.put("a", "aval");
@@ -281,7 +281,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     @Test
     public void testTagValObjectRaiseError() throws Exception {
         final String entityName = "create-entity-16";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         Map<String, String> tagValue = new HashMap<>();

@@ -25,10 +25,10 @@ public class GroupByDatetime extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TESTS_ENTITY1_NAME);
-        Registry.Entity.register(TESTS_ENTITY2_NAME);
-        Registry.Entity.register(TESTS_ENTITY3_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TESTS_ENTITY1_NAME);
+        Registry.Entity.checkExists(TESTS_ENTITY2_NAME);
+        Registry.Entity.checkExists(TESTS_ENTITY3_NAME);
 
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(

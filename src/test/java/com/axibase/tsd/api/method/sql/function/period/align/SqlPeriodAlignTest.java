@@ -31,8 +31,8 @@ public class SqlPeriodAlignTest extends SqlTest {
 
     @BeforeClass
     public void prepareDataSet() throws Exception {
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
 
         Version version = VersionMethod.queryVersion().readEntity(Version.class);
         serverTimezone = ZoneId.of(version.getDate().getTimeZone().getName());

@@ -33,9 +33,9 @@ public class GroupByCaseExpression extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
 
         Entity testEntity1 = new Entity();
         testEntity1.setName(TEST_ENTITY1_NAME);

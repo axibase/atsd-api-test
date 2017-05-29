@@ -30,8 +30,8 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         tags.put("1", "0");
         tags.put("Т", "З");
         tags.put("имя", "значение");
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
 
 
         Series series = new Series();

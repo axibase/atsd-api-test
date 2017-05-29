@@ -27,12 +27,12 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Entity.register(TEST_ENTITY3_NAME);
-        Registry.Entity.register(TEST_ENTITY4_NAME);
-        Registry.Entity.register(TEST_ENTITY5_NAME);
+        Registry.Metric.checkExists(TEST_METRIC_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY3_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY4_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY5_NAME);
 
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series() {{
@@ -363,7 +363,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         String entityName = "e-test-operator-is-null-metric-label";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Series series = new Series();
         series.setMetric(metric.getName());
         series.setEntity(entityName);
@@ -394,7 +394,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         String entityName = "e-test-operator-is-not-null-metric-label";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Series series = new Series();
         series.setMetric(metric.getName());
         series.setEntity(entityName);

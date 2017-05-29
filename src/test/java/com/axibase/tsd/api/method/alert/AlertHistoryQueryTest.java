@@ -26,7 +26,7 @@ public class AlertHistoryQueryTest extends AlertTest {
 
     @BeforeClass(enabled = false)
     public void generateAlertHistory() throws Exception {
-        Registry.Entity.register(ALERTHISTORY_ENTITY_NAME);
+        Registry.Entity.checkExists(ALERTHISTORY_ENTITY_NAME);
         generateAlertForEntity(ALERTHISTORY_ENTITY_NAME);
         AlertHistoryQuery query = templateQuery()
                 .setEntity(ALERTHISTORY_ENTITY_NAME)

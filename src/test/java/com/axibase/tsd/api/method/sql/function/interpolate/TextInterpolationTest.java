@@ -29,10 +29,10 @@ public class TextInterpolationTest extends SqlTest {
     public List<Series> multiJoinSeries() {
         List<Series> seriesList = new ArrayList<>();
         String entityName = TestNames.entity();
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         for (int i = 0; i < TEXTS.length; i++) {
             String metricName = TestNames.metric();
-            Registry.Metric.register(metricName);
+            Registry.Metric.checkExists(metricName);
 
             Sample sample = new TextSample(Mocks.ISO_TIME, TEXTS[i]);
 

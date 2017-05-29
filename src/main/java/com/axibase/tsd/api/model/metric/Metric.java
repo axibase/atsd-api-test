@@ -36,7 +36,7 @@ public class Metric {
 
     public Metric(String name) {
         if (name != null) {
-            Registry.Metric.register(name);
+            Registry.Metric.checkExists(name);
         }
         this.name = name;
     }

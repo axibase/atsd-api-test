@@ -100,7 +100,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         String entity = entityNameBase.concat("2");
-        Registry.Entity.register(entity);
+        Registry.Entity.checkExists(entity);
         series.setEntity(entity);
         series.addTag("tag_key", "tag_value");
         series.addSamples(new Sample(addOneMS(MIN_STORABLE_DATE), "8"));

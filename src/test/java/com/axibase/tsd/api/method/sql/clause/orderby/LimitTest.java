@@ -36,12 +36,12 @@ public class LimitTest extends SqlTest {
     @BeforeClass
     public static void generateNames() {
         ENTITY_ORDER_METRIC = metric();
-        Registry.Entity.register(ENTITY_ORDER_METRIC);
+        Registry.Entity.checkExists(ENTITY_ORDER_METRIC);
         VALUE_ORDER_METRIC = metric();
         DATETIME_ORDER_METRIC = metric();
-        Registry.Entity.register(DATETIME_ORDER_METRIC);
+        Registry.Entity.checkExists(DATETIME_ORDER_METRIC);
         TAGS_ORDER_METRIC = metric();
-        Registry.Metric.register(TAGS_ORDER_METRIC);
+        Registry.Metric.checkExists(TAGS_ORDER_METRIC);
     }
 
     @BeforeGroups(groups = {ENTITY_ORDER_TEST_GROUP})
@@ -52,7 +52,7 @@ public class LimitTest extends SqlTest {
             Series series = new Series();
             series.setMetric(ENTITY_ORDER_METRIC);
             String entityName = entity();
-            Registry.Entity.register(entityName);
+            Registry.Entity.checkExists(entityName);
             series.setEntity(entityName);
             for (int j = 0; j < 10 - i; j++) {
                 Sample sample = new Sample(TestUtil.ISOFormat(date + j * TimeUnit.HOURS.toMillis(1)), j);
@@ -175,7 +175,7 @@ public class LimitTest extends SqlTest {
     public void prepareTagsTimeOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         String entityName = entity();
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         Long startTime = TestUtil.parseDate("2016-06-19T11:00:00.000Z").getTime();
         int[] values = {6, 7, 0, -1, 5, 15, 88, 3, 11, 2};
         for (int i = 0; i < 3; i++) {

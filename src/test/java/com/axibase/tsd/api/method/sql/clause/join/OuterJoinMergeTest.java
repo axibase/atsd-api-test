@@ -31,13 +31,13 @@ public class OuterJoinMergeTest extends SqlTest {
 
         for (int i = 0; i < METRIC_COUNT; i++) {
             String metric = metric();
-            Registry.Metric.register(metric);
+            Registry.Metric.checkExists(metric);
             METRIC_NAMES.add(metric);
         }
 
         for (int i = 0; i < ENTITY_COUNT; i++) {
             String entity = entity();
-            Registry.Entity.register(entity);
+            Registry.Entity.checkExists(entity);
             ENTITY_NAMES.add(entity);
         }
 

@@ -22,9 +22,9 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
+        Registry.Metric.checkExists(TEST_METRIC1_NAME);
+        Registry.Metric.checkExists(TEST_METRIC2_NAME);
 
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series() {{

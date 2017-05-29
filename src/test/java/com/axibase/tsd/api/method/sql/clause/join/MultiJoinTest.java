@@ -33,9 +33,9 @@ public class MultiJoinTest extends SqlTest {
                 TEST_METRIC5_NAME
         };
 
-        Registry.Entity.register(TEST_ENTITY_NAME);
+        Registry.Entity.checkExists(TEST_ENTITY_NAME);
         for (String metric : metrics) {
-            Registry.Metric.register(metric);
+            Registry.Metric.checkExists(metric);
         }
 
         List<Series> seriesList = new ArrayList<>(TAGS_COUNT * 5);

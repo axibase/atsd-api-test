@@ -24,16 +24,16 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @BeforeClass
     public void insertSeriesSet() throws Exception {
-        Registry.Metric.register(GROUPED_METRIC);
+        Registry.Metric.checkExists(GROUPED_METRIC);
 
         Series firstSeries = new Series();
-        Registry.Entity.register(FIRST_ENTITY);
+        Registry.Entity.checkExists(FIRST_ENTITY);
         firstSeries.setEntity(FIRST_ENTITY);
         firstSeries.setMetric(GROUPED_METRIC);
 
         Series secondSeries = new Series();
         secondSeries.setEntity(SECOND_ENTITY);
-        Registry.Entity.register(SECOND_ENTITY);
+        Registry.Entity.checkExists(SECOND_ENTITY);
         secondSeries.setMetric(GROUPED_METRIC);
 
         firstSeries.addSamples( new Sample("2016-06-25T08:00:00.000Z", 1));
