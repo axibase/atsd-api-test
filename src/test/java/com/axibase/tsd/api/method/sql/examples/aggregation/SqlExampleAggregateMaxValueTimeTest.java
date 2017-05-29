@@ -22,22 +22,17 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
+        series1.addSamples(
+                new Sample("2016-06-17T19:16:01.000Z", 1),
+                new Sample("2016-06-17T19:16:02.000Z", 2)
+        );
 
-        Series series1 = new Series(),
-                series2 = new Series();
-
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.addSamples(new Sample("2016-06-17T19:16:01.000Z", "1"));
-        series1.addSamples(new Sample("2016-06-17T19:16:02.000Z", "2"));
-
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.addSamples(new Sample("2016-06-17T19:16:03.000Z", "3"));
-        series2.addSamples(new Sample("2016-06-17T19:16:04.000Z", "4"));
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
+        series2.addSamples(
+                new Sample("2016-06-17T19:16:03.000Z", 3),
+                new Sample("2016-06-17T19:16:04.000Z", 4)
+        );
 
         List<Series> seriesList = Arrays.asList(series1, series2);
 

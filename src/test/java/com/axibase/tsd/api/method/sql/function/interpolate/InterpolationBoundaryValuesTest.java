@@ -37,14 +37,16 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
 
         Series series = new Series(entity, TEST_METRIC);
 
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T07:30:00.000Z"), 0));
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T10:30:00.000Z"), 1));
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T11:30:00.000Z"), 2));
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T12:30:00.000Z"), 3));
+        series.addSamples(
+                new Sample(replaceTimezone("2017-01-01T07:30:00.000Z"), 0),
+                new Sample(replaceTimezone("2017-01-01T10:30:00.000Z"), 1),
+                new Sample(replaceTimezone("2017-01-01T11:30:00.000Z"), 2),
+                new Sample(replaceTimezone("2017-01-01T12:30:00.000Z"), 3),
 
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T17:30:00.000Z"), 7));
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T18:30:00.000Z"), 8));
-        series.addSamples(new Sample(replaceTimezone("2017-01-01T19:30:00.000Z"), 9));
+                new Sample(replaceTimezone("2017-01-01T17:30:00.000Z"), 7),
+                new Sample(replaceTimezone("2017-01-01T18:30:00.000Z"), 8),
+                new Sample(replaceTimezone("2017-01-01T19:30:00.000Z"), 9)
+        );
 
         SeriesMethod.insertSeriesCheck(series);
     }

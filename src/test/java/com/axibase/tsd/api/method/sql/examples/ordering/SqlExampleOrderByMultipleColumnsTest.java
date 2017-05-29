@@ -23,36 +23,26 @@ public class SqlExampleOrderByMultipleColumnsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Entity.register(TEST_ENTITY3_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "tag", "b");
+        series1.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 0),
+                new Sample("2016-07-27T22:41:51.000Z", 1),
+                new Sample("2016-07-27T22:41:50.000Z", 2)
+        );
 
-        Series series1 = new Series(),
-                series2 = new Series(),
-                series3 = new Series();
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.addSamples(new Sample("2016-07-27T22:41:52.000Z", "0"));
-        series1.addSamples(new Sample("2016-07-27T22:41:51.000Z", "1"));
-        series1.addSamples(new Sample("2016-07-27T22:41:50.000Z", "2"));
-        series1.addTag("tag", "b");
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "tag", "c");
+        series2.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 2),
+                new Sample("2016-07-27T22:41:51.000Z", 3),
+                new Sample("2016-07-27T22:41:50.000Z", 4)
+        );
 
-
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.addSamples(new Sample("2016-07-27T22:41:52.000Z", "2"));
-        series2.addSamples(new Sample("2016-07-27T22:41:51.000Z", "3"));
-        series2.addSamples(new Sample("2016-07-27T22:41:50.000Z", "4"));
-        series2.addTag("tag", "c");
-
-
-        series3.setMetric(TEST_METRIC_NAME);
-        series3.setEntity(TEST_ENTITY3_NAME);
-        series3.addSamples(new Sample("2016-07-27T22:41:52.000Z", "4"));
-        series3.addSamples(new Sample("2016-07-27T22:41:51.000Z", "5"));
-        series3.addSamples(new Sample("2016-07-27T22:41:50.000Z", "6"));
-        series3.addTag("tag", "a");
+        Series series3 = new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME, "tag", "a");
+        series3.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 4),
+                new Sample("2016-07-27T22:41:50.000Z", 6),
+                new Sample("2016-07-27T22:41:51.000Z", 5)
+        );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3));
     }
