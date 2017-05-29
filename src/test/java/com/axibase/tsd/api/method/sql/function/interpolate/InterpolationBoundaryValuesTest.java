@@ -3,6 +3,8 @@ package com.axibase.tsd.api.method.sql.function.interpolate;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.method.version.VersionMethod;
+import com.axibase.tsd.api.model.DateRange;
+import com.axibase.tsd.api.model.SeriesItem;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
@@ -66,46 +68,6 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
-    }
-
-    private static class SeriesItem {
-        public final ZonedDateTime date;
-        public final int value;
-
-        SeriesItem(String date, int value) throws ParseException {
-            this.date = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
-            this.value = value;
-        }
-    }
-
-    private static class DateRange {
-        private final ZonedDateTime startDate;
-        private final ZonedDateTime endDate;
-
-        private DateRange(String startDate, String endDate) throws ParseException {
-            this.startDate = ZonedDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
-            this.endDate = ZonedDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
-        }
-
-        private DateRange(ZonedDateTime startDate, ZonedDateTime endDate) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-
-        @Override
-        public int hashCode() {
-            return startDate.hashCode() ^ endDate.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == null) return false;
-            if (other == this) return true;
-            if (!(other instanceof DateRange))return false;
-            DateRange otherRange = (DateRange)other;
-            return this.startDate.equals(otherRange.startDate) &&
-                    this.endDate.equals(otherRange.endDate);
-        }
     }
 
     private String[][] generateCalendarInterpolationOutput(Boundary boundary, DateRange... ranges) {
