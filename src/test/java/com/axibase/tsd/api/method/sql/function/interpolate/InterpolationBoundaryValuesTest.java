@@ -120,7 +120,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         for (DateRange range : ranges) {
             ZonedDateTime startHour = range.startDate.withZoneSameInstant(serverTimezone).withMinute(0);
 
-            if (serverTimezone.getRules().getOffset(range.startDate.toLocalDateTime()).getTotalSeconds() % (1000 * 3600) != 0) {
+            if (serverTimezone.getRules().getOffset(range.startDate.toLocalDateTime()).getTotalSeconds() % 3600 != 0) {
                 startHour = startHour.plusHours(1);
             }
 
