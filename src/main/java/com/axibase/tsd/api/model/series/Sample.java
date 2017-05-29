@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.util.Util;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -9,6 +10,8 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -101,6 +104,9 @@ public class Sample {
     public String getD() {
         return d;
     }
+
+    @JsonIgnore
+    public ZonedDateTime getZonedDateTime() { return ZonedDateTime.parse(this.d, DateTimeFormatter.ISO_DATE_TIME); }
 
     protected void setD(String d) {
         this.d = convertDateToISO(d);

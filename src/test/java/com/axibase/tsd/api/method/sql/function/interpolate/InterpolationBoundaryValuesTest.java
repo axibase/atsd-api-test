@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.DateRange;
-import com.axibase.tsd.api.model.SeriesItem;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -28,7 +26,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     private static final String TEST_METRIC_1 = metric();
     private static final String TEST_METRIC_2 = metric();
 
-    private static final List<SeriesItem> calendarInterpolationTestSeries = new ArrayList<>();
+    private Sample[] calendarInterpolationTestSamples;
     private final ZoneId serverTimezone;
 
     public InterpolationBoundaryValuesTest() {
@@ -46,20 +44,17 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 new Sample("1974-01-01T00:00:00Z", 4)
         );
 
-        calendarInterpolationTestSeries.addAll(
-                Arrays.asList(
-                        new SeriesItem("2017-01-01T07:50:00.000Z", 0),
-                        new SeriesItem("2017-01-01T10:50:00.000Z", 1),
-                        new SeriesItem("2017-01-01T11:50:00.000Z", 2),
-                        new SeriesItem("2017-01-01T12:50:00.000Z", 3),
-                        new SeriesItem("2017-01-01T17:50:00.000Z", 7),
-                        new SeriesItem("2017-01-01T18:50:00.000Z", 8),
-                        new SeriesItem("2017-01-01T19:50:00.000Z", 9))
-        );
+        calendarInterpolationTestSamples = new Sample[]{
+                new Sample("2017-01-01T07:50:00.000Z", 0),
+                new Sample("2017-01-01T10:50:00.000Z", 1),
+                new Sample("2017-01-01T11:50:00.000Z", 2),
+                new Sample("2017-01-01T12:50:00.000Z", 3),
+                new Sample("2017-01-01T17:50:00.000Z", 7),
+                new Sample("2017-01-01T18:50:00.000Z", 8),
+                new Sample("2017-01-01T19:50:00.000Z", 9)
+        };
 
-        for (SeriesItem seriesItem : calendarInterpolationTestSeries) {
-            series1.addSamples(new Sample(seriesItem.date.toString(), seriesItem.value));
-        }
+        series1.addSamples(calendarInterpolationTestSamples);
 
         Series series2 = new Series(entity, TEST_METRIC_2);
         series2.addSamples(
@@ -82,7 +77,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 previousRange = serverLocalHourlyRanges.get(i - 1);
             }
 
-            String value = searchHourlyRangeValue(hourlyRange, previousRange, boundary, calendarInterpolationTestSeries);
+            String value = searchHourlyRangeValue(hourlyRange, previousRange, boundary, calendarInterpolationTestSamples);
 
             if (value != null) {
                 rangeValues.put(hourlyRange, value);
@@ -145,9 +140,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
             DateRange hourlyRange,
             DateRange previousRange,
             Boundary boundary,
-            List<SeriesItem> calendarInterpolationTestSeries) {
+            Sample[] calendarInterpolationTestSeries) {
         String value = null;
-        for (SeriesItem seriesItem : calendarInterpolationTestSeries) {
+        for (Sample sample : calendarInterpolationTestSeries) {
+            ZonedDateTime sampleTime = sample.getZonedDateTime();
             if (boundary == Boundary.INNER) {
                 if (previousRange == null) {
                     break;
@@ -157,20 +153,20 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                     break;
                 }
 
-                if (seriesItem.date.isBefore(previousRange.startDate)) {
+                if (sampleTime.isBefore(previousRange.startDate)) {
                     continue;
                 }
             }
 
-            if (seriesItem.date.isAfter(hourlyRange.startDate)) {
+            if (sampleTime.isAfter(hourlyRange.startDate)) {
                 break;
             }
 
-            if (ChronoUnit.HOURS.between(seriesItem.date, hourlyRange.startDate) >= 1) {
+            if (ChronoUnit.HOURS.between(sampleTime, hourlyRange.startDate) >= 1) {
                 continue;
             }
 
-            value = String.valueOf(seriesItem.value);
+            value = String.valueOf(sample.getV());
         }
 
         return value;
