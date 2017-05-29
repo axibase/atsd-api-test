@@ -3,11 +3,13 @@ package com.axibase.tsd.api.method.sql.function.period.align;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.method.version.VersionMethod;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -904,16 +906,9 @@ public class SqlPeriodAlignTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        ZonedDateTime dateUtc = ZonedDateTime.parse("2007-01-02T00:00:00.000Z", DateTimeFormatter.ISO_DATE_TIME);
-
-        ZonedDateTime localDate1 = dateUtc.withZoneSameInstant(serverTimezone);
-        ZonedDateTime localDate2 = dateUtc.withZoneSameInstant(serverTimezone).plusMonths(3);
-        ZonedDateTime localDate3 = dateUtc.withZoneSameInstant(serverTimezone).plusMonths(6);
-
-        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
-        String resultUtcDate1 = localDate1.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
-        String resultUtcDate2 = localDate2.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
-        String resultUtcDate3 = localDate3.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
+        String resultUtcDate1 = "2007-01-02T00:00:00.000Z";
+        String resultUtcDate2 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 3);
+        String resultUtcDate3 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 6);
 
         String[][] expectedRows = new String[][]{
                 {resultUtcDate1, "1"},
@@ -945,14 +940,8 @@ public class SqlPeriodAlignTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        ZonedDateTime dateUtc = ZonedDateTime.parse("2007-04-02T00:00:00.007Z", DateTimeFormatter.ISO_DATE_TIME);
-
-        ZonedDateTime localDate1 = dateUtc.withZoneSameInstant(serverTimezone);
-        ZonedDateTime localDate2 = dateUtc.withZoneSameInstant(serverTimezone).minusMonths(3);
-
-        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
-        String resultUtcDate1 = localDate1.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
-        String resultUtcDate2 = localDate2.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
+        String resultUtcDate1 = "2007-04-02T00:00:00.007Z";
+        String resultUtcDate2 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, -3);
 
         String[][] expectedRows = new String[][]{
                 {resultUtcDate2, "2"},
@@ -983,16 +972,9 @@ public class SqlPeriodAlignTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        ZonedDateTime dateUtc = ZonedDateTime.parse("2007-01-02T00:00:00.005Z", DateTimeFormatter.ISO_DATE_TIME);
-
-        ZonedDateTime localDate1 = dateUtc.withZoneSameInstant(serverTimezone);
-        ZonedDateTime localDate2 = dateUtc.withZoneSameInstant(serverTimezone).plusMonths(3);
-        ZonedDateTime localDate3 = dateUtc.withZoneSameInstant(serverTimezone).plusMonths(6);
-
-        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
-        String resultUtcDate1 = localDate1.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
-        String resultUtcDate2 = localDate2.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
-        String resultUtcDate3 = localDate3.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
+        String resultUtcDate1 = "2007-01-02T00:00:00.005Z";
+        String resultUtcDate2 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 3);
+        String resultUtcDate3 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 6);
 
         String[][] expectedRows = new String[][]{
                 {resultUtcDate1, "1"},
