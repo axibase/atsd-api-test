@@ -12,6 +12,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class SqlSyntaxQuotesEscapingTest extends SqlTest {
@@ -31,7 +32,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
         Series series = new Series();
         series.setEntity(TEST_ENTITY_NAME);
         series.setMetric(TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", "12.4"));
+        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         series.setTags(tags);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 

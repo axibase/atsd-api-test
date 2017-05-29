@@ -31,9 +31,9 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
         series1.setEntity(TEST_ENTITY1_NAME);
         series1.setMetric(TEST_METRIC_NAME);
         series1.setSamples(Arrays.asList(
-                new Sample("2016-06-29T08:01:00.000Z", "0"),
-                new Sample("2016-06-29T08:02:00.000Z", "1"),
-                new Sample("2016-06-29T08:03:00.000Z", "2")
+                new Sample("2016-06-29T08:01:00.000Z", 0),
+                new Sample("2016-06-29T08:02:00.000Z", 1),
+                new Sample("2016-06-29T08:03:00.000Z", 2)
                 )
         );
 
@@ -41,9 +41,9 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
         series2.setEntity(TEST_ENTITY2_NAME);
         series2.setMetric(TEST_METRIC_NAME);
         series2.setSamples(Arrays.asList(
-                new Sample("2016-06-29T08:04:00.000Z", "3"),
-                new Sample("2016-06-29T08:05:00.000Z", "4"),
-                new Sample("2016-06-29T08:06:00.000Z", "5")
+                new Sample("2016-06-29T08:04:00.000Z", 3),
+                new Sample("2016-06-29T08:05:00.000Z", 4),
+                new Sample("2016-06-29T08:06:00.000Z", 5)
                 )
         );
 

@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.*;
@@ -298,7 +299,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Series expectedSeries = new Series();
         expectedSeries.setEntity(entity);
         expectedSeries.setMetric(metric);
-        expectedSeries.addSamples(new Sample("2016-06-19T00:00:00.000Z", "123.45"));
+        expectedSeries.addSamples(new Sample(date, new BigDecimal(value)));
         List<Series> expectedSeriesList = Collections.singletonList(expectedSeries);
         assertEquals(expectedSeriesList, actualSeriesList);
     }

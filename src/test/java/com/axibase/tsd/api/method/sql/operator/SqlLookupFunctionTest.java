@@ -92,7 +92,7 @@ public class SqlLookupFunctionTest extends SqlTest {
             series.setEntity(testEntityNameTagsCase);
             series.setMetric(TEST_METRIC_NAME_TAGS_CASE);
             series.setTags(tags);
-            series.addSamples(new Sample("2016-06-03T09:20:00.000Z", "1"));
+            series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
             seriesList.add(series);
         }
 

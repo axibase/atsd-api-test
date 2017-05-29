@@ -83,7 +83,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
     }
 
     private void assertUrlEncodePathHandledCorrectly(Series series) throws Exception {
-        series.addSamples(new Sample(MIN_STORABLE_DATE, "0"));
+        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
         insertSeriesCheck(Collections.singletonList(series));
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);

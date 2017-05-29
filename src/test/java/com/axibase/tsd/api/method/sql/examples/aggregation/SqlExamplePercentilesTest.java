@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,14 +23,14 @@ public class SqlExamplePercentilesTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.setSamples(Arrays.asList(
-                new Sample("2016-06-19T11:00:00.000Z", "11.1212"),
-                new Sample("2016-06-19T11:01:00.000Z", "11.3232"),
-                new Sample("2016-06-19T11:02:00.000Z", "11.123"),
-                new Sample("2016-06-19T11:03:00.000Z", "11.4343"),
-                new Sample("2016-06-19T11:04:00.000Z", "11.435"),
-                new Sample("2016-06-19T11:05:00.000Z", "11.33"),
-                new Sample("2016-06-19T11:06:00.000Z", "11.322"),
-                new Sample("2016-06-19T11:07:00.000Z", "11.3232")
+                new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("11.1212")),
+                new Sample("2016-06-19T11:01:00.000Z", new BigDecimal("11.3232")),
+                new Sample("2016-06-19T11:02:00.000Z", new BigDecimal("11.123")),
+                new Sample("2016-06-19T11:03:00.000Z", new BigDecimal("11.4343")),
+                new Sample("2016-06-19T11:04:00.000Z", new BigDecimal("11.435")),
+                new Sample("2016-06-19T11:05:00.000Z", new BigDecimal("11.33")),
+                new Sample("2016-06-19T11:06:00.000Z", new BigDecimal("11.322")),
+                new Sample("2016-06-19T11:07:00.000Z", new BigDecimal("11.3232"))
                 )
         );
 

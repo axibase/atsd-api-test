@@ -20,8 +20,8 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2015-06-03T09:23:01.000Z", "2"));
-        series.addSamples(new Sample("2016-06-03T09:23:02.000Z", "1"));
+        series.addSamples(new Sample("2015-06-03T09:23:01.000Z", 2));
+        series.addSamples(new Sample("2016-06-03T09:23:02.000Z", 1));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

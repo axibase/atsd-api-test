@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.ProcessingException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
             setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
                 put("a", "b");
             }}));
-            addSamples(new Sample("2016-06-03T09:23:00.000Z", "1.01"));
+            addSamples(new Sample("2016-06-03T09:23:00.000Z", new BigDecimal("1.01")));
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

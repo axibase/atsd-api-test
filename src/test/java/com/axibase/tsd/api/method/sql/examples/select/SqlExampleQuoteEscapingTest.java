@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +22,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", "12.4"));
+        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         series.addTag("double\"quote", "tv1");
         series.addTag("single'quote", "tv2");
         series.addTag("both'quo\"tes", "tv3");

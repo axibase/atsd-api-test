@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -24,9 +25,9 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     public static void prepareDataSet() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
             setSamples(Arrays.asList(
-                    new Sample("2016-06-03T09:26:00.000Z", "8.1"),
-                    new Sample("2016-06-03T09:36:00.000Z", "6.0"),
-                    new Sample("2016-06-03T09:41:00.000Z", "19.0")
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                    new Sample("2016-06-03T09:36:00.000Z", new BigDecimal("6.0")),
+                    new Sample("2016-06-03T09:41:00.000Z", new BigDecimal("19.0"))
             ));
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

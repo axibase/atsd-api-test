@@ -46,7 +46,7 @@ public class CastTest extends SqlTest {
             series.setMetric(metricName);
 
             series.setSamples(Collections.singletonList(
-                    new Sample("2016-06-03T09:20:00.000Z", "1")));
+                    new Sample("2016-06-03T09:20:00.000Z", 1)));
 
             String tag = tags[i];
             series.addTag("numeric_tag", tag);
@@ -216,7 +216,7 @@ public class CastTest extends SqlTest {
     @BeforeClass
     public void createCastNumberAsStringTestData() throws Exception {
         castNumberAsStringSeries = Mocks.series();
-        castNumberAsStringSeries.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, "12345.6789")));
+        castNumberAsStringSeries.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, new BigDecimal("12345.6789"))));
         SeriesMethod.insertSeriesCheck(castNumberAsStringSeries);
     }
 

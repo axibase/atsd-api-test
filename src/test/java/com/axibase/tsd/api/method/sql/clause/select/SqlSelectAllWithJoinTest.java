@@ -9,6 +9,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +32,11 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
             setMetric(TEST_METRIC1_NAME);
             setEntity(TEST_ENTITY_NAME);
             setSamples(Arrays.asList(
-                    new Sample("2016-06-03T09:23:00.000Z", "7"),
-                    new Sample("2016-06-03T09:24:00.000Z", "0"),
-                    new Sample("2016-06-03T09:25:00.000Z", "12"),
-                    new Sample("2016-06-03T09:26:00.000Z", "10.3"),
-                    new Sample("2016-06-03T09:27:00.000Z", "10")
+                    new Sample("2016-06-03T09:23:00.000Z", 7),
+                    new Sample("2016-06-03T09:24:00.000Z", 0),
+                    new Sample("2016-06-03T09:25:00.000Z", 12),
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("10.3")),
+                    new Sample("2016-06-03T09:27:00.000Z", 10)
             ));
             addTag("a", "b");
         }});
@@ -45,10 +46,10 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
             setMetric(TEST_METRIC2_NAME);
             setEntity(TEST_ENTITY_NAME);
             setSamples(Arrays.asList(
-                    new Sample("2016-06-03T09:23:00.000Z", "5"),
-                    new Sample("2016-06-03T09:24:00.000Z", "7"),
-                    new Sample("2016-06-03T09:25:00.000Z", "-2"),
-                    new Sample("2016-06-03T09:26:00.000Z", "-2.1")
+                    new Sample("2016-06-03T09:23:00.000Z", 5),
+                    new Sample("2016-06-03T09:24:00.000Z", 7),
+                    new Sample("2016-06-03T09:25:00.000Z", -2),
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("-2.1"))
             ));
             addTag("a", "b");
             addTag("b", "c");

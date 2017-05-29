@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,9 +24,9 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.setSamples(Arrays.asList(
-                new Sample("2016-06-29T08:00:00.000Z", "2.11"),
-                new Sample("2016-06-29T08:00:01.000Z", "7.567"),
-                new Sample("2016-06-29T08:00:02.000Z", "-1.23")
+                new Sample("2016-06-29T08:00:00.000Z", new BigDecimal("2.11")),
+                new Sample("2016-06-29T08:00:01.000Z", new BigDecimal("7.567")),
+                new Sample("2016-06-29T08:00:02.000Z", new BigDecimal("-1.23"))
                 )
         );
 

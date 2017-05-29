@@ -22,7 +22,7 @@ import static java.util.TimeZone.getTimeZone;
 
 
 public class AutoTimeZoneTest extends SqlTest {
-    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-03T09:41:00.000Z", "0");
+    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-03T09:41:00.000Z", 0);
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd hh:mm";
     private static final String ALGIERS_TIMEZONE_ID = "Africa/Algiers";
 

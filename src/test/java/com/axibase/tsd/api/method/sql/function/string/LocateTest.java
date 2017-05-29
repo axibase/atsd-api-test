@@ -29,7 +29,7 @@ public class LocateTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
 
         series.setSamples(Collections.singletonList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
+                new Sample("2016-06-03T09:20:00.000Z", 1)
                 )
         );
         series.addTag("tag1", "Word word WORD worD");

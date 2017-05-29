@@ -30,12 +30,12 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
                 series2 = new Series();
         series1.setEntity(TEST_ENTITY1_NAME);
         series1.setMetric(TEST_METRIC_NAME);
-        series1.addSamples(new Sample("2016-06-29T08:00:00.000Z", "0"));
+        series1.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         series1.addTag("a", "b");
 
         series2.setEntity(TEST_ENTITY2_NAME);
         series2.setMetric(TEST_METRIC_NAME);
-        series2.addSamples(new Sample("2016-06-29T08:00:00.000Z", "0"));
+        series2.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         series2.addTag("tag", "value");
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

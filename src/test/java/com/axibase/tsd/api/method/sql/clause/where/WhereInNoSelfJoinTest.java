@@ -9,6 +9,8 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
+
 public class WhereInNoSelfJoinTest extends SqlTest {
     private static final String ENTITY_NAME = "br-1211";
     private static final String METRIC_NAME1 = "tv6.pack:r01";
@@ -59,43 +61,43 @@ public class WhereInNoSelfJoinTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(ENTITY_NAME, METRIC_NAME1);
         series1.addSamples(
-                new Sample("2016-10-04T01:58:12.000Z", "90.4"),
-                new Sample("2016-10-04T02:00:05.000Z", "97.7"),
-                new Sample("2016-10-04T02:00:35.000Z", "77.1"),
-                new Sample("2016-10-04T02:02:28.000Z", "84.2"),
-                new Sample("2016-10-04T02:04:15.000Z", "65.2"),
-                new Sample("2016-10-04T02:05:28.000Z", "50.3"),
-                new Sample("2016-10-04T02:07:42.000Z", "60.1"),
-                new Sample("2016-10-04T02:08:28.000Z", "80.3"),
-                new Sample("2016-10-04T02:09:16.000Z", "87.1"),
-                new Sample("2016-10-04T02:11:11.000Z", "99.9")
+                new Sample("2016-10-04T01:58:12.000Z", new BigDecimal("90.4")),
+                new Sample("2016-10-04T02:00:05.000Z", new BigDecimal("97.7")),
+                new Sample("2016-10-04T02:00:35.000Z", new BigDecimal("77.1")),
+                new Sample("2016-10-04T02:02:28.000Z", new BigDecimal("84.2")),
+                new Sample("2016-10-04T02:04:15.000Z", new BigDecimal("65.2")),
+                new Sample("2016-10-04T02:05:28.000Z", new BigDecimal("50.3")),
+                new Sample("2016-10-04T02:07:42.000Z", new BigDecimal("60.1")),
+                new Sample("2016-10-04T02:08:28.000Z", new BigDecimal("80.3")),
+                new Sample("2016-10-04T02:09:16.000Z", new BigDecimal("87.1")),
+                new Sample("2016-10-04T02:11:11.000Z", new BigDecimal("99.9"))
         );
 
         Series series2 = new Series(ENTITY_NAME, METRIC_NAME2);
         series2.addSamples(
-                new Sample("2016-10-04T02:00:14.000Z", "47.7"),
-                new Sample("2016-10-04T02:00:55.000Z", "37.1"),
-                new Sample("2016-10-04T02:02:18.000Z", "44.2"),
-                new Sample("2016-10-04T02:04:25.000Z", "35.2"),
-                new Sample("2016-10-04T02:05:18.000Z", "40.3"),
-                new Sample("2016-10-04T02:07:22.000Z", "42.1"),
-                new Sample("2016-10-04T02:08:28.000Z", "46.3"),
-                new Sample("2016-10-04T02:09:26.000Z", "27.1"),
-                new Sample("2016-10-04T02:10:11.000Z", "49.9")
+                new Sample("2016-10-04T02:00:14.000Z", new BigDecimal("47.7")),
+                new Sample("2016-10-04T02:00:55.000Z", new BigDecimal("37.1")),
+                new Sample("2016-10-04T02:02:18.000Z", new BigDecimal("44.2")),
+                new Sample("2016-10-04T02:04:25.000Z", new BigDecimal("35.2")),
+                new Sample("2016-10-04T02:05:18.000Z", new BigDecimal("40.3")),
+                new Sample("2016-10-04T02:07:22.000Z", new BigDecimal("42.1")),
+                new Sample("2016-10-04T02:08:28.000Z", new BigDecimal("46.3")),
+                new Sample("2016-10-04T02:09:26.000Z", new BigDecimal("27.1")),
+                new Sample("2016-10-04T02:10:11.000Z", new BigDecimal("49.9"))
         );
 
         Series series3 = new Series(ENTITY_NAME, METRIC_NAME3);
         series3.addSamples(
-                new Sample("2016-10-04T01:59:12.000Z", "20.0"),
-                new Sample("2016-10-04T02:00:14.000Z", "27.7"),
-                new Sample("2016-10-04T02:01:55.000Z", "17.1"),
-                new Sample("2016-10-04T02:02:38.000Z", "24.2"),
-                new Sample("2016-10-04T02:04:45.000Z", "25.2"),
-                new Sample("2016-10-04T02:05:08.000Z", "20.3"),
-                new Sample("2016-10-04T02:07:52.000Z", "22.1"),
-                new Sample("2016-10-04T02:08:18.000Z", "26.3"),
-                new Sample("2016-10-04T02:09:46.000Z", "17.1"),
-                new Sample("2016-10-04T02:10:21.000Z", "19.9")
+                new Sample("2016-10-04T01:59:12.000Z", new BigDecimal("20.0")),
+                new Sample("2016-10-04T02:00:14.000Z", new BigDecimal("27.7")),
+                new Sample("2016-10-04T02:01:55.000Z", new BigDecimal("17.1")),
+                new Sample("2016-10-04T02:02:38.000Z", new BigDecimal("24.2")),
+                new Sample("2016-10-04T02:04:45.000Z", new BigDecimal("25.2")),
+                new Sample("2016-10-04T02:05:08.000Z", new BigDecimal("20.3")),
+                new Sample("2016-10-04T02:07:52.000Z", new BigDecimal("22.1")),
+                new Sample("2016-10-04T02:08:18.000Z", new BigDecimal("26.3")),
+                new Sample("2016-10-04T02:09:46.000Z", new BigDecimal("17.1")),
+                new Sample("2016-10-04T02:10:21.000Z", new BigDecimal("19.9"))
         );
 
         Series series4 = new Series(ENTITY_NAME, METRIC_NAME4);

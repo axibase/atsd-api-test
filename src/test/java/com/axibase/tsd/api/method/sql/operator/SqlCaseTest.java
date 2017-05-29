@@ -23,9 +23,9 @@ public class SqlCaseTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.setSamples(Arrays.asList(
-                new Sample("2016-06-03T09:20:01.000Z", "1"),
-                new Sample("2016-06-03T09:20:02.000Z", "15"),
-                new Sample("2016-06-03T09:20:03.000Z", "40")
+                new Sample("2016-06-03T09:20:01.000Z", 1),
+                new Sample("2016-06-03T09:20:02.000Z", 15),
+                new Sample("2016-06-03T09:20:03.000Z", 40)
                 )
         );
         series.addTag("tag1", "abc");

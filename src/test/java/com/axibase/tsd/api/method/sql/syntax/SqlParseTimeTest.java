@@ -24,7 +24,7 @@ public class SqlParseTimeTest extends SqlTest {
         series1.setMetric(TEST_METRIC_NAME);
         series1.setEntity(TEST_ENTITY_NAME);
         series1.setSamples(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
+                new Sample("2016-06-03T09:20:00.000Z", 1)
                 )
         );
 

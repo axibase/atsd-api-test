@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
@@ -41,7 +42,7 @@ public class LengthTest extends SeriesMethod {
             Series series = new Series();
             series.setEntity(seriesCommand.getEntityName());
             series.setMetric(metric());
-            series.addSamples(new Sample(ISO_TIME, "1"));
+            series.addSamples(new Sample(ISO_TIME, 1));
             String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
             currentLength += appendix.length();
             if (currentLength < MAX_LENGTH) {
@@ -54,7 +55,7 @@ public class LengthTest extends SeriesMethod {
                 Integer lastIndex = seriesList.size() - 1;
                 Series lastSeries = seriesList.get(lastIndex);
                 seriesList.remove(lastSeries);
-                lastSeries.setSamples(Collections.singletonList(new Sample(ISO_TIME, repeated)));
+                lastSeries.setSamples(Collections.singletonList(new Sample(ISO_TIME, new BigDecimal(repeated))));
                 values.put(lastSeries.getMetric(), repeated);
                 seriesList.add(lastSeries);
                 break;
@@ -83,7 +84,7 @@ public class LengthTest extends SeriesMethod {
             Series series = new Series();
             series.setEntity(seriesCommand.getEntityName());
             series.setMetric(metric());
-            series.addSamples(new Sample(ISO_TIME, "1"));
+            series.addSamples(new Sample(ISO_TIME, 1));
             String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
             currentLength += appendix.length();
             values.put(series.getMetric(), "1");

@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.TextSample;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class Mocks {
     public static final String ISO_TIME = "2016-06-03T09:23:00.000Z";
     public static final Long MILLS_TIME = date().getTime();
-    public static final String DECIMAL_VALUE = "123.4567";
+    public static final BigDecimal DECIMAL_VALUE = new BigDecimal("123.4567");
     public static final String TEXT_VALUE = "text";
     public static final Sample SAMPLE = new Sample(ISO_TIME, DECIMAL_VALUE);
     public static final Sample TEXT_SAMPLE = new TextSample(ISO_TIME, TEXT_VALUE);
@@ -27,7 +28,7 @@ public class Mocks {
     public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
     public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
     public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
-    public static final String ALERT_OPEN_VALUE = "1";
+    public static final int ALERT_OPEN_VALUE = 1;
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
 
 

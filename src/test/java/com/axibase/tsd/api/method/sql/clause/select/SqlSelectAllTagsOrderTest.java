@@ -37,7 +37,7 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         Series series = new Series();
         series.setMetric(TEST_METRIC_NAME);
         series.setEntity(TEST_ENTITY_NAME);
-        series.addSamples(new Sample("2016-06-03T09:23:00.000Z", "7"));
+        series.addSamples(new Sample("2016-06-03T09:23:00.000Z", 7));
         series.setTags(tags);
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

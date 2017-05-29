@@ -32,23 +32,23 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
         series1.setEntity(TEST_ENTITY1_NAME);
         series1.setMetric(TEST_METRIC_NAME);
         series1.addTag("a", "b");
-        series1.addSamples(new Sample("2016-06-19T11:00:00.000Z", "1"));
-        series1.addSamples(new Sample("2016-06-19T11:00:01.000Z", "2"));
+        series1.addSamples(new Sample("2016-06-19T11:00:00.000Z", 1));
+        series1.addSamples(new Sample("2016-06-19T11:00:01.000Z", 2));
 
         series2.setEntity(TEST_ENTITY1_NAME);
         series2.setMetric(TEST_METRIC_NAME);
         series2.addTag("b", "c");
-        series2.addSamples(new Sample("2016-06-19T11:00:03.000Z", "3"));
+        series2.addSamples(new Sample("2016-06-19T11:00:03.000Z", 3));
 
         series3.setEntity(TEST_ENTITY2_NAME);
         series3.setMetric(TEST_METRIC_NAME);
         series3.addTag("a", "b");
-        series3.addSamples(new Sample("2016-06-19T11:00:04.000Z", "4"));
+        series3.addSamples(new Sample("2016-06-19T11:00:04.000Z", 4));
 
         series4.setEntity(TEST_ENTITY2_NAME);
         series4.setMetric(TEST_METRIC_NAME);
         series4.addTag("b", "c");
-        series4.addSamples(new Sample("2016-06-19T11:00:05.000Z", "5"));
+        series4.addSamples(new Sample("2016-06-19T11:00:05.000Z", 5));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3, series4));
     }

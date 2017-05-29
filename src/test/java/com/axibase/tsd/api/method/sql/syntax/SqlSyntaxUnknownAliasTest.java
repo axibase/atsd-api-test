@@ -31,11 +31,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
 
         series1.setEntity(TEST_ENTITY_NAME);
         series1.setMetric(TEST_METRIC1_NAME);
-        series1.addSamples(new Sample("2016-06-03T09:24:00.000Z", "0"));
+        series1.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
 
         series2.setEntity(TEST_ENTITY_NAME);
         series2.setMetric(TEST_METRIC2_NAME);
-        series2.addSamples(new Sample("2016-06-03T09:24:00.000Z", "0"));
+        series2.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

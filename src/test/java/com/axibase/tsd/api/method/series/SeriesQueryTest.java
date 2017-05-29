@@ -32,7 +32,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     static {
         series = new Series("series-query-e-1", "series-query-m-1");
-        series.addSamples(new Sample(sampleDate, "1"));
+        series.addSamples(new Sample(sampleDate, 1));
     }
 
     private final Random random = new Random();
@@ -323,7 +323,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test
     public void testEntitesExpressionStarChar() throws Exception {
         Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
-        series.addSamples(new Sample("2010-01-01T00:00:00.000Z", "0"));
+        series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
@@ -343,7 +343,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test
     public void testEntitesExpressionQuestionChar() throws Exception {
         Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
-        series.addSamples(new Sample("2010-01-01T00:00:00.000Z", "0"));
+        series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
@@ -370,9 +370,9 @@ public class SeriesQueryTest extends SeriesMethod {
 
         MetricMethod.createOrReplaceMetric(versionedMetric);
 
-        series.addSamples(new Sample(MIN_STORABLE_DATE, "0"));
-        series.addSamples(new Sample(addOneMS(MIN_STORABLE_DATE), "1"));
-        series.addSamples(new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), "2"));
+        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
+        series.addSamples(new Sample(addOneMS(MIN_STORABLE_DATE), 1));
+        series.addSamples(new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), 2));
         insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();

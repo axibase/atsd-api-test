@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +22,8 @@ public class SqlExampleAvgValueTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-06-19T11:00:00.000Z", "11.1"));
-        series.addSamples(new Sample("2016-06-19T11:15:00.000Z", "11.5"));
+        series.addSamples(new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("11.1")));
+        series.addSamples(new Sample("2016-06-19T11:15:00.000Z", new BigDecimal("11.5")));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

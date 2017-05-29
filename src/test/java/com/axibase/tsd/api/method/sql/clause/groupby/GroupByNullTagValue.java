@@ -53,8 +53,8 @@ public class GroupByNullTagValue extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"null", DECIMAL_VALUE},
-                {"tagname", DECIMAL_VALUE}
+                {"null", DECIMAL_VALUE.toString()},
+                {"tagname", DECIMAL_VALUE.toString()}
         };
 
         assertSqlQueryRows("GROUP BY tag name that has null values gives wrong result", expectedRows, sqlQuery);

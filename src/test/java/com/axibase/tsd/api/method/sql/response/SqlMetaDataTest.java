@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -29,7 +30,7 @@ public class SqlMetaDataTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
         testSeries.addSamples(
-                new Sample("2016-06-29T08:00:00.000Z", "0.05")
+                new Sample("2016-06-29T08:00:00.000Z", new BigDecimal("0.05"))
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
         resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);

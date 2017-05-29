@@ -42,16 +42,6 @@ public class Sample {
         this.text = text;
     }
 
-    public Sample(String d, double v, String text) {
-        this.d = convertDateToISO(d);
-        this.v = new BigDecimal(v);
-        this.text = text;
-    }
-
-    public Sample(String d, String v, String text) {
-        this(d, new BigDecimal(v), text);
-    }
-
     public Sample(Sample sourceSample) {
         this(sourceSample.getD(), sourceSample.getV());
         setT(sourceSample.getT());
@@ -63,23 +53,18 @@ public class Sample {
         this.v = new BigDecimal(v);
     }
 
-    public Sample(String d, double v) {
-        this.d = convertDateToISO(d);
-        this.v = new BigDecimal(v);
-    }
-
-    public Sample(Date d, String v) {
-        this.d = Util.ISOFormat(d);
-        this.v = new BigDecimal(v);
-    }
-
     public Sample(String d, BigDecimal v) {
         this.d = convertDateToISO(d);
         this.v = v;
     }
 
-    public Sample(String d, String v) {
-        this.d = convertDateToISO(d);
+    public Sample(Date d, BigDecimal v) {
+        this.d = Util.ISOFormat(d);
+        this.v = v;
+    }
+
+    public Sample(Date d, int v) {
+        this.d = Util.ISOFormat(d);
         this.v = new BigDecimal(v);
     }
 

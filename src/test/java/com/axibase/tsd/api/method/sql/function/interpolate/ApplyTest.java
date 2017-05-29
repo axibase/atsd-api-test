@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 
 public class ApplyTest extends SqlTest {
     private static final String APPLY_METRIC = metric();
-    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-29T08:00:00.000Z", "0");
+    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-29T08:00:00.000Z", 0);
 
 
     @BeforeClass
