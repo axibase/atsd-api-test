@@ -57,8 +57,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testJoinFromAtsdSeries() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 JOIN m2 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT t1.datetime, t1.value, t2.value
+            FROM atsd_series t1 JOIN m2 t2 WHERE t1.metric = m1
+            ORDER BY t1.datetime
 
         | t1.datetime              | t1.value | t2.value |
         |--------------------------|----------|----------|
@@ -88,8 +89,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testJoinEmptyFromAtsdSeries() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 JOIN m3 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT t1.datetime, t1.value, t2.value
+            FROM atsd_series t1 JOIN m3 t2 WHERE t1.metric = m1
+            ORDER BY t1.datetime
 
         | t1.datetime | t1.value | t2.value |
         |-------------|----------|----------|
@@ -116,8 +118,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testMultipleJoinFromAtsdSeries() {
         /*
-        SELECT t1.value, t2.value, t3.value FROM atsd_series t1 JOIN m2 t2 JOIN m3 t3 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT t1.value, t2.value, t3.value
+            FROM atsd_series t1 JOIN m2 t2 JOIN m3 t3 WHERE t1.metric = m1
+            ORDER BY t1.datetime
 
         | t1.datetime              | t1.value | t2.value | t3.value |
         |--------------------------|----------|----------|----------|
@@ -125,7 +128,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, t3.value " +
+                "SELECT t1.datetime, t1.value, t2.value, t3.value " +
                         "FROM atsd_series t1 " +
                         "JOIN '%2$s' t2 " +
                         "JOIN '%3$s' t3 " +
@@ -149,8 +152,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testJoinFromAtsdSeriesUsingEntity() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT t1.datetime, t1.value, t2.value
+            FROM atsd_series t1 JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
+            ORDER BY t1.datetime
 
         | t1.datetime              | t1.value | t2.value |
         |--------------------------|----------|----------|
@@ -182,10 +186,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testOuterJoinFromAtsdSeries() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value
+            FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
+            ORDER BY 'date'
 
-        | t1.datetime              | t1.value | t2.value |
+        | 'date'                   | t1.value | t2.value |
         |--------------------------|----------|----------|
         | 2017-01-01T12:00:00.000Z | 1        | null     |
         | 2017-01-02T12:00:00.000Z | 2        | null     |
@@ -197,11 +202,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT t1.datetime, t1.value, t2.value " +
+                "SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value " +
                         "FROM atsd_series t1 " +
                         "OUTER JOIN '%2$s' t2 " +
                         "WHERE t1.metric = '%1$s' " +
-                        "ORDER BY t1.datetime",
+                        "ORDER BY 'date'",
                 METRIC_NAME1,
                 METRIC_NAME2
         );
@@ -225,8 +230,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testOuterJoinEmptyFromAtsdSeries() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT t1.datetime, t1.value, t2.value
+            FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
+            ORDER BY t1.datetime
 
         | t1.datetime              | t1.value | t2.value |
         |--------------------------|----------|----------|
@@ -262,10 +268,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testMultipleOuterJoinFromAtsdSeries() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value
+            FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
+            ORDER BY 'date'
 
-        | t1.datetime              | t1.value | t2.value | t3.value |
+        | date                     | t1.value | t2.value | t3.value |
         |--------------------------|----------|----------|----------|
         | 2017-01-01T12:00:00.000Z | 1        | null     | null     |
         | 2017-01-02T12:00:00.000Z | 2        | null     | null     |
@@ -277,12 +284,12 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value, t3.value " +
+                "SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value, t3.value " +
                         "FROM atsd_series t1 " +
                         "OUTER JOIN '%2$s' t2 " +
                         "OUTER JOIN '%3$s' t3 " +
                         "WHERE t1.metric = '%1$s' " +
-                        "ORDER BY t1.datetime",
+                        "ORDER BY 'date'",
                 METRIC_NAME1,
                 METRIC_NAME2,
                 METRIC_NAME3
@@ -307,10 +314,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testOuterJoinFromAtsdSeriesUsingEntity() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 OUTER JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value
+            FROM atsd_series t1 OUTER JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
+            ORDER BY 'date'
 
-        | t1.datetime              | t1.value | t2.value |
+        | date                     | t1.value | t2.value |
         |--------------------------|----------|----------|
         | 2017-01-01T12:00:00.000Z | 1        | null     |
         | 2017-01-02T12:00:00.000Z | 2        | null     |
@@ -321,11 +329,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT t1.datetime, t1.value, t2.value " +
+                "SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value " +
                         "FROM atsd_series t1 " +
                         "OUTER JOIN USING ENTITY '%2$s' t2 " +
                         "WHERE t1.metric = '%1$s' " +
-                        "ORDER BY t1.datetime",
+                        "ORDER BY 'date'",
                 METRIC_NAME1,
                 METRIC_NAME2
         );
@@ -348,8 +356,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testSelfJoinFromAtsdSeries() {
         /*
-        SELECT t1.datetime, t1.value, t2.value FROM atsd_series t1 OUTER JOIN m1 t2 WHERE t1.metric = m1
-        ORDER BY t1.datetime
+        SELECT t1.datetime, t1.value, t2.value
+            FROM atsd_series t1 OUTER JOIN m1 t2 WHERE t1.metric = m1
+            ORDER BY t1.datetime
 
         Self-join, error expected
          */
