@@ -19,7 +19,7 @@ import java.util.Date;
 import static com.axibase.tsd.api.method.entity.EntityTest.assertEntityExisting;
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.TestUtil.parseDate;
 import static java.util.Collections.singletonList;
 import static javax.ws.rs.core.Response.Status.OK;

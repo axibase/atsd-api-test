@@ -3,11 +3,12 @@ package com.axibase.tsd.api.method.sql.function.string;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static com.axibase.tsd.api.util.Mocks.entity;
 
 
 public class CommonData {
@@ -38,7 +39,7 @@ public class CommonData {
     );
 
     static void insertSeriesWithMetric(String testMetric) throws Exception {
-        String entityName = TestNames.entity();
+        String entityName = entity();
         Series series = new Series(entityName, testMetric);
         series.addSamples(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

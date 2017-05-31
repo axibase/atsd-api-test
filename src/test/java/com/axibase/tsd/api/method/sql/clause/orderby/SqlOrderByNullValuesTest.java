@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlOrderByNullValuesTest extends SqlTest {
 

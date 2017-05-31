@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -19,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.axibase.tsd.api.util.Mocks.*;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SqlDataTypeInferenceTest extends SqlMethod {
@@ -27,14 +27,21 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final String entityName = TestUtil.TestNames.entity();
+        final String entityName = entity();
         Registry.Entity.checkExists(entityName);
 
         List<Series> seriesList = new ArrayList<>();
         for (DataType type : DataType.values()) {
-            Metric metric = Mocks.metric();
+            Metric metric = new Metric(metric());
+            metric.setLabel(LABEL);
+            metric.setTags(TAGS);
+            metric.setTimeZoneID(TIMEZONE_ID);
+            metric.setDescription(DESCRIPTION);
+            metric.setDataType(DataType.DOUBLE);
+            metric.setVersioned(true);
             metric.setDataType(type);
             metric.setEnabled(true);
+
             typeToName.put(type, metric.getName());
             MetricMethod.createOrReplaceMetricCheck(metric);
 

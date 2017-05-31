@@ -18,8 +18,8 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static java.util.Collections.singletonList;
 
 public class ApplyTest extends SqlTest {

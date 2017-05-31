@@ -4,16 +4,18 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
+
 public class DateFormatCastTest extends SqlTest {
-    private static final String METRIC_NAME = TestNames.metric();
+    private static final String METRIC_NAME = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = new Series(TestNames.entity(), METRIC_NAME);
+        Series series = new Series(entity(), METRIC_NAME);
 
         series.addSamples(new Sample("2017-04-15T12:00:00.000Z", 1));
         series.addSamples(new Sample("2017-04-20T12:00:00.000Z", 2));

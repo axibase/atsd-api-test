@@ -23,7 +23,6 @@ public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
     public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
-    private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     public static Date getCurrentDate() {
@@ -146,33 +145,7 @@ public class TestUtil {
         return (((JSONObject) array.get(index)).get(field)).toString();
     }
 
-    public static class TestNames {
-        public static String metric() {
-            return NAME_GENERATOR.getMetricName();
-        }
-
-        public static String entity() {
-            return NAME_GENERATOR.getEntityName();
-        }
-
-        public static String entityGroup() {
-            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.ENTITY_GROUP);
-        }
-
-        public static String property() {
-            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY);
-        }
-
-        public static String message() {
-            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.MESSAGE);
-        }
-
-        public static String propertyType() {
-            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY_TYPE);
-        }
-    }
-
-    public static enum TimeTranslation {
+    public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
     }
 }

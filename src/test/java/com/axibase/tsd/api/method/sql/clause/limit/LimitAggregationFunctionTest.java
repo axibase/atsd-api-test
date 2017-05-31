@@ -9,13 +9,15 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 
 public class LimitAggregationFunctionTest extends SqlTest {
@@ -24,14 +26,14 @@ public class LimitAggregationFunctionTest extends SqlTest {
     @BeforeClass
     public static void setTestSeries() throws Exception {
         final Integer seriesCount = 10;
-        testMetric = new Metric(TestNames.metric());
+        testMetric = new Metric(metric());
         MetricMethod.createOrReplaceMetric(testMetric);
         Long time = Mocks.MILLS_TIME;
         List<Series> seriesList = new ArrayList<>();
         for (int i = 0; i < seriesCount; i++) {
             Series series = new Series();
             series.setMetric(testMetric.getName());
-            series.setEntity(TestNames.entity());
+            series.setEntity(entity());
             for (int j = 0; j < (i + 1); j++) {
                 series.addSamples(new Sample(TestUtil.ISOFormat(time), j));
                 time += 1000L;

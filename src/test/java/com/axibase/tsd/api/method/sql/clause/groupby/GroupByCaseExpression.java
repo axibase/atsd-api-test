@@ -16,8 +16,8 @@ import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.Mocks.DECIMAL_VALUE;
 import static com.axibase.tsd.api.util.Mocks.TEXT_VALUE;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class GroupByCaseExpression extends SqlTest {
     private static final String TEST_ENTITY1_NAME = entity();

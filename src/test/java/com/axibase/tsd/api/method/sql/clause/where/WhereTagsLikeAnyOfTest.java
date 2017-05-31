@@ -5,14 +5,15 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 
+import static com.axibase.tsd.api.util.Mocks.metric;
+
 public class WhereTagsLikeAnyOfTest extends SqlTest {
-    private static final String METRIC_NAME = TestNames.metric();
+    private static final String METRIC_NAME = metric();
 
     @BeforeClass
     private static void prepareData() throws Exception {

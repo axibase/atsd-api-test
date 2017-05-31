@@ -16,11 +16,13 @@ import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.TestUtil;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.*;
+
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 
 public class TextInterpolationTest extends SqlTest {
@@ -28,10 +30,10 @@ public class TextInterpolationTest extends SqlTest {
 
     public List<Series> multiJoinSeries() {
         List<Series> seriesList = new ArrayList<>();
-        String entityName = TestNames.entity();
+        String entityName = entity();
         Registry.Entity.checkExists(entityName);
         for (int i = 0; i < TEXTS.length; i++) {
-            String metricName = TestNames.metric();
+            String metricName = metric();
             Registry.Metric.checkExists(metricName);
 
             Sample sample = new TextSample(Mocks.ISO_TIME, TEXTS[i]);
@@ -194,7 +196,7 @@ public class TextInterpolationTest extends SqlTest {
                                   TimePeriod period,
                                   InterpolationParams interpolationParams,
                                   List<Sample> resultPoints) throws Exception {
-        Series series = new Series(TestNames.entity(), TestNames.metric());
+        Series series = new Series(entity(), metric());
         series.setSamples(sourcePoints);
         SeriesMethod.insertSeriesCheck(series);
 

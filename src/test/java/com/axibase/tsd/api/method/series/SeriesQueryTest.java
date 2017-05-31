@@ -540,8 +540,8 @@ public class SeriesQueryTest extends SeriesMethod {
      **/
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
-        String entityName = TestUtil.TestNames.entity();
-        String metricName = TestUtil.TestNames.metric();
+        String entityName = entity();
+        String metricName = metric();
 
         String largeNumber = "10.1";
         Series series = new Series(entityName, metricName);
@@ -592,14 +592,14 @@ public class SeriesQueryTest extends SeriesMethod {
      */
     @Test
     public void testExactMatchIgnoresReservedVersioningTags() throws Exception {
-        Metric metric = new Metric(TestUtil.TestNames.metric());
+        Metric metric = new Metric(metric());
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         final int insertedVersionsCount = 3;
         Series series = new Series();
         series.setMetric(metric.getName());
-        series.setEntity(TestUtil.TestNames.entity());
+        series.setEntity(entity());
         Registry.Entity.checkExists(series.getEntity());
         for (int i = 0; i < insertedVersionsCount; i++) {
             series.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, i)));

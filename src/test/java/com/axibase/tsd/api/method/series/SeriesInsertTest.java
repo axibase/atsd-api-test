@@ -11,7 +11,6 @@ import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.TestUtil;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -150,12 +149,12 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test(dataProvider = "afterCompactionDataProvider")
     public void testPrecisionAfterCompaction(DataType type, BigDecimal valueBefore) throws Exception {
-        Metric metric = new Metric(TestNames.metric());
+        Metric metric = new Metric(metric());
         metric.setDataType(type);
         Long time = MILLS_TIME;
         MetricMethod.createOrReplaceMetricCheck(metric);
         Series series = new Series();
-        series.setEntity(TestNames.entity());
+        series.setEntity(entity());
         series.setMetric(metric.getName());
         series.addSamples(new Sample(TestUtil.ISOFormat(time), valueBefore));
         SeriesMethod.insertSeriesCheck(series);
@@ -722,8 +721,8 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
-        String entityName = TestUtil.TestNames.entity();
-        String metricName = TestUtil.TestNames.metric();
+        String entityName = entity();
+        String metricName = metric();
 
         Series series = new Series(entityName, metricName);
         Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), text);

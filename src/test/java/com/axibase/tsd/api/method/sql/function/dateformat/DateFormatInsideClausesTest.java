@@ -9,8 +9,8 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class DateFormatInsideClausesTest extends SqlTest {
     private static final String METRIC_NAME1 = metric();

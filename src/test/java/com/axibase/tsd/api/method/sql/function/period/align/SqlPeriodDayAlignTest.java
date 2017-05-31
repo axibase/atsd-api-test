@@ -11,11 +11,12 @@ import org.testng.annotations.Test;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 
 public class SqlPeriodDayAlignTest extends SqlTest {
-    private static final String TEST_METRIC_NAME = TestNames.metric();
+    private static final String TEST_METRIC_NAME = metric();
     private static final String DAY_FORMAT_PATTERN = "yyyy-MM-dd";
     private static final String START_TIME = "2016-06-19T00:00:00.000Z";
     private static final String END_TIME = "2016-06-23T00:00:00.000Z";
@@ -24,7 +25,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = new Series(TestNames.entity(), TEST_METRIC_NAME);
+        Series series = new Series(entity(), TEST_METRIC_NAME);
 
         long firstTime = TestUtil.parseDate(START_TIME).getTime();
         long lastTime = TestUtil.parseDate(END_TIME).getTime();

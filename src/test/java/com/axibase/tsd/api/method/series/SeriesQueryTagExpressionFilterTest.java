@@ -4,13 +4,15 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
@@ -21,9 +23,9 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     @Test
     public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
         // Arrange
-        String metric = TestUtil.TestNames.metric();
+        String metric = metric();
         Registry.Metric.checkExists(metric);
-        String entity = TestUtil.TestNames.entity();
+        String entity = entity();
         Registry.Entity.checkExists(entity);
 
         Series series1 = new Series();
