@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,7 +22,6 @@ public class SqlPeriodDayAlignTest extends SqlTest {
     private static final String START_TIME = "2016-06-19T00:00:00.000Z";
     private static final String END_TIME = "2016-06-23T00:00:00.000Z";
     private static final long DELTA = 900000L;
-    private static final long DAY_LENGTH = 86400000L;
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -91,7 +91,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
         int daySeriesCount = 0;
         for (time = startTime; time < endTime; time += DELTA) {
             if (isDayStart(time) && daySeriesCount > 0) {
-                resultRows.add(formatRow(time - DAY_LENGTH, daySeriesCount));
+                resultRows.add(formatRow(time - Util.MILLIS_IN_DAY, daySeriesCount));
                 daySeriesCount = 0;
             }
             daySeriesCount++;
@@ -111,7 +111,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
     }
 
     private boolean isDayStart(Long time) {
-        return time % DAY_LENGTH == 0;
+        return time % Util.MILLIS_IN_DAY == 0;
     }
 
 }

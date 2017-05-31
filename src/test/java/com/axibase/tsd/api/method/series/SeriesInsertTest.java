@@ -16,6 +16,8 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
@@ -82,7 +84,7 @@ public class SeriesInsertTest extends SeriesTest {
         String entityName = "e-decimal-2";
         String metricName = "m-decimal-2";
         BigDecimal number = new BigDecimal("0.6083333332");
-        final long t = 1465984800000L;
+        ZonedDateTime dateTime = ZonedDateTime.parse(Mocks.ISO_TIME);
 
         Metric metric = new Metric(metricName);
         metric.setDataType(DataType.DECIMAL);
@@ -91,13 +93,16 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
-            String isoDate = TestUtil.ISOFormat(t + i * 5000);
-            series.addSamples(new Sample(isoDate, number));
+            series.addSamples(new Sample(dateTime.plusSeconds(5 * i).toString(), number));
         }
         assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
         assertSeriesExisting(series);
 
-        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
+        SeriesQuery seriesQuery = new SeriesQuery(
+                series.getEntity(),
+                series.getMetric(),
+                dateTime.format(DateTimeFormatter.ISO_INSTANT),
+                dateTime.plusMinutes(1).format(DateTimeFormatter.ISO_INSTANT));
         seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getV());
