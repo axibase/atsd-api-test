@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
+import com.axibase.tsd.api.method.replacementtable.ReplacementTableMethod;
 
 public enum Registry {
     Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup"), ReplacementTable("ReplacementTable");
@@ -30,7 +31,8 @@ public enum Registry {
                 exists = EntityGroupMethod.entityGroupExist(value);
                 break;
             case "ReplacementTable":
-                // todo
+                exists = ReplacementTableMethod.replacementTableExist(value);
+                break;
             default:
                 exists = true;
         }
