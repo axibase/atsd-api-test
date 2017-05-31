@@ -17,11 +17,10 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class EntityMethod extends BaseMethod {
-    public static final String METHOD_ENTITY_LIST = "/entities/";
-    public static final String METHOD_ENTITY = "/entities/{entity}";
-    public static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
-    public static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
-    public static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
+    private static final String METHOD_ENTITY = "/entities/{entity}";
+    private static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
+    private static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
+    private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
         Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(json(query));
@@ -31,6 +30,42 @@ public class EntityMethod extends BaseMethod {
 
     public static Response createOrReplaceEntity(Entity entity) throws Exception {
         return createOrReplaceEntity(entity.getName(), entity);
+    }
+
+    public static void createOrReplaceEntityCheck(Entity entity) throws Exception {
+        createOrReplaceEntityCheck(entity, new EntityCheck(entity));
+    }
+
+    public static void createOrReplaceEntityCheck(Entity entity, AbstractCheck check) throws Exception {
+        if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
+            throw new IllegalStateException("Can not execute createOrReplaceEntity query");
+        }
+        Checker.check(check);
+    }
+
+    public static boolean entityExist(final Entity entity) throws Exception {
+        Response response = getEntityResponse(entity.getName());
+        if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            return false;
+        }
+        if (response.getStatus() != OK.getStatusCode()) {
+            throw new Exception("Fail to execute queryMetric query");
+        }
+        return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class));
+    }
+
+    public static boolean entityExist(String entity) throws NotCheckedException {
+        final Response response = EntityMethod.getEntityResponse(entity);
+        if (response.getStatus() == OK.getStatusCode()) {
+            return true;
+        } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            return false;
+        }
+        if (entity.contains(" ")){
+            return entityExist(entity.replace(" ", "_"));
+        }
+
+        throw new NotCheckedException("Fail to execute entity query");
     }
 
     public static Response getEntityResponse(String entityName) {
@@ -70,8 +105,11 @@ public class EntityMethod extends BaseMethod {
         return response;
     }
 
+    public static Response queryEntityMetrics(String entityName) {
+        return queryEntityMetrics(entityName, new HashMap<>());
+    }
 
-    public static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
+    private static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
         WebTarget target = httpApiResource.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
@@ -79,10 +117,6 @@ public class EntityMethod extends BaseMethod {
         Response response = target.request().get();
         response.bufferEntity();
         return response;
-    }
-
-    public static Response queryEntityMetrics(String entityName) {
-        return queryEntityMetrics(entityName, new HashMap<String, String>());
     }
 
     public static Response queryEntityGroups(String entityName) {
@@ -95,46 +129,5 @@ public class EntityMethod extends BaseMethod {
         Response response = httpApiResource.path(METHOD_ENTITY_PROPERTY_TYPES).resolveTemplate("entity", entityName).request().get();
         response.bufferEntity();
         return response;
-    }
-
-
-    public static void createOrReplaceEntityCheck(Entity entity, AbstractCheck check) throws Exception {
-        if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
-            throw new IllegalStateException("Can not execute createOrReplaceEntity query");
-        }
-        Checker.check(check);
-    }
-
-    public static void createOrReplaceEntityCheck(Entity entity) throws Exception {
-        createOrReplaceEntityCheck(entity, new EntityCheck(entity));
-    }
-
-    public static boolean entityExist(final Entity entity) throws Exception {
-        return entityExist(entity, false);
-    }
-
-    public static boolean entityExist(final Entity entity, boolean strict) throws Exception {
-        Response response = getEntityResponse(entity.getName());
-        if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-            return false;
-        }
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new Exception("Fail to execute queryMetric query");
-        }
-        return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class), strict);
-    }
-
-    public static boolean entityExist(String entity) throws NotCheckedException {
-        final Response response = EntityMethod.getEntityResponse(entity);
-        if (response.getStatus() == OK.getStatusCode()) {
-            return true;
-        } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-            return false;
-        }
-        if (entity.contains(" ")){
-            return entityExist(entity.replace(" ", "_"));
-        }
-
-        throw new NotCheckedException("Fail to execute entity query");
     }
 }

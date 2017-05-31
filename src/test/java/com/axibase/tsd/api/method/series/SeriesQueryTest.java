@@ -263,7 +263,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         while (calendar.getTime().before(endDate)) {
             series.setSamples(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
-            Response response = insertSeries(Collections.singletonList(series), false);
+            Response response = insertSeries(Collections.singletonList(series));
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
@@ -306,7 +306,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         while (calendar.getTime().before(endDate)) {
             series.setSamples(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
-            Response response = insertSeries(Collections.singletonList(series), false);
+            Response response = insertSeries(Collections.singletonList(series));
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());

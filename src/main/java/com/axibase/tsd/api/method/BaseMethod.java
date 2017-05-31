@@ -29,16 +29,13 @@ import java.util.logging.Level;
 
 public abstract class BaseMethod {
     public static final Long REQUEST_INTERVAL = 200L;
-    public static final Long DEFAULT_EXPECTED_PROCESSING_TIME = 2000L;
     public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
     protected final static ObjectMapper jacksonMapper;
     protected final static WebTarget httpApiResource;
     protected final static WebTarget httpRootResource;
-    static final Config config;
-    private static final Integer DEFAULT_READ_TIMEOUT = 180000;
+    private static final Config config;
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
-    private static final String METHOD_VERSION = "/version";
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -94,12 +91,6 @@ public abstract class BaseMethod {
 
     public static int calculateJsonArraySize(String jsonArrayString) throws JSONException {
         return new JSONArray(jsonArrayString).length();
-    }
-
-    public static Response queryATSDVersion() {
-        Response response = httpApiResource.path(METHOD_VERSION).request().get();
-        response.bufferEntity();
-        return response;
     }
 
     public static String extractErrorMessage(Response response) throws Exception {

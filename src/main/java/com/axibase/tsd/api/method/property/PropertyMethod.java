@@ -107,37 +107,6 @@ public class PropertyMethod extends BaseMethod {
         return compareJsonString(expected, given, strict);
     }
 
-    private static Map prepareStrictPropertyQuery(final Property property) {
-        Map<String, Object> query = new HashMap<>();
-        query.put("entity", property.getEntity());
-        query.put("type", property.getType());
-        query.put("key", property.getKey());
-        if (null == property.getDate()) {
-            query.put("startDate", MIN_QUERYABLE_DATE);
-            query.put("endDate", MAX_QUERYABLE_DATE);
-        } else {
-            query.put("startDate", property.getDate());
-            query.put("interval", new HashMap<String, Object>() {{
-                put("unit", "MILLISECOND");
-                put("count", "1");
-            }});
-        }
-        query.put("exactMatch", true);
-
-        return query;
-    }
-
-    protected String buildPropertyCommandFromProperty(Property property) {
-        StringBuilder sb = new StringBuilder("property");
-        sb.append(" e:\"").append(property.getEntity()).append("\"");
-        sb.append(" t:\"").append(property.getType()).append("\"");
-        sb.append(" d:").append(property.getDate());
-        for (Map.Entry e : property.getTags().entrySet()) {
-            sb.append(" v:\"").append(e.getKey()).append("\"=\"").append(e.getValue()).append("\"");
-        }
-        return sb.toString();
-    }
-
     public static boolean propertyTypeExist(String propertyType) {
         final PropertyQuery q = new PropertyQuery();
         q.setEntity("*");
@@ -157,5 +126,25 @@ public class PropertyMethod extends BaseMethod {
             return false;
         } else
             return true;
+    }
+
+    private static Map prepareStrictPropertyQuery(final Property property) {
+        Map<String, Object> query = new HashMap<>();
+        query.put("entity", property.getEntity());
+        query.put("type", property.getType());
+        query.put("key", property.getKey());
+        if (null == property.getDate()) {
+            query.put("startDate", MIN_QUERYABLE_DATE);
+            query.put("endDate", MAX_QUERYABLE_DATE);
+        } else {
+            query.put("startDate", property.getDate());
+            query.put("interval", new HashMap<String, Object>() {{
+                put("unit", "MILLISECOND");
+                put("count", "1");
+            }});
+        }
+        query.put("exactMatch", true);
+
+        return query;
     }
 }

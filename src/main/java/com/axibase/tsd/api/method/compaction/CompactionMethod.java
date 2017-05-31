@@ -22,16 +22,4 @@ public class CompactionMethod extends BaseMethod {
             throw new IllegalStateException("Failed to perform compaction!");
         }
     }
-
-    public static void performCompaction(String day) {
-        performCompaction(day, null);
-    }
-
-    public static void performCompaction(Boolean historical) {
-        performCompaction(null, historical);
-    }
-
-    public static void performCompaction() {
-        performCompaction(null, null);
-    }
 }

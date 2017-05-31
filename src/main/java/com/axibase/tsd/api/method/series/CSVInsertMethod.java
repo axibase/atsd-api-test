@@ -15,7 +15,7 @@ import java.util.Map;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class CSVInsertMethod extends SeriesMethod {
-    protected static final String METHOD_CSV_INSERT = "/series/csv/{entity}";
+    private static final String METHOD_CSV_INSERT = "/series/csv/{entity}";
 
     public static Response csvInsert(String entity, String csv, Map<String, String> tags, String user, String password) {
         WebTarget webTarget = httpApiResource.path(METHOD_CSV_INSERT).resolveTemplate("entity", entity);
@@ -34,8 +34,7 @@ public class CSVInsertMethod extends SeriesMethod {
     }
 
     public static Response csvInsert(String entity, String csv, Map<String, String> tags) {
-        Response response = csvInsert(entity, csv, tags, null, null);
-        return response;
+        return csvInsert(entity, csv, tags, null, null);
     }
 
     public static Response csvInsert(String entity, String csv) {
@@ -52,9 +51,5 @@ public class CSVInsertMethod extends SeriesMethod {
             throw new IllegalStateException(errorMessage);
         }
         Checker.check(check);
-    }
-
-    public void csvInsertCheck(AbstractCheck check, String entity, String csv) {
-        csvInsertCheck(check, entity, csv, Collections.EMPTY_MAP);
     }
 }

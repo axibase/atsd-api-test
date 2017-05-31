@@ -36,7 +36,7 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static <T> Response insertSeries(final T seriesList, String user, String password, boolean sleepEnabled) {
+    public static <T> Response insertSeries(final T seriesList, String user, String password) {
         Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
 
         builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
@@ -44,31 +44,12 @@ public class SeriesMethod extends BaseMethod {
 
         Response response = builder.post(Entity.json(seriesList));
         response.bufferEntity();
-        try {
-            if (sleepEnabled)
-                Thread.sleep(DEFAULT_EXPECTED_PROCESSING_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return response;
     }
 
-    public static <T> Response insertSeries(final T seriesList, String user, String password) {
-        return insertSeries(seriesList, user, password, true);
-    }
-
-    public static <T> Response insertSeries(final T seriesList, boolean sleepEnabled) throws FileNotFoundException {
-        return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword(), sleepEnabled);
-    }
-
     public static <T> Response insertSeries(final T seriesList) throws FileNotFoundException {
-        return insertSeries(seriesList, false);
+        return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword());
     }
-
-    public static Response insertSeries(final Series ...series) throws FileNotFoundException {
-        return insertSeries(Arrays.asList(series), false);
-    }
-
 
     public static <T> Response querySeries(T... queries) {
         return querySeries(Arrays.asList(queries));
@@ -144,30 +125,5 @@ public class SeriesMethod extends BaseMethod {
         Response response = builder.post(Entity.json(seriesQueries));
         response.bufferEntity();
         return response;
-    }
-
-    public static JSONArray executeQuery(final SeriesQuery seriesQuery) throws Exception {
-        return executeQuery(Collections.singletonList(seriesQuery));
-    }
-
-    public static JSONArray executeQuery(final List<SeriesQuery> seriesQueries) throws Exception {
-        Response response = executeQueryRaw(seriesQueries);
-        response.bufferEntity();
-        return new JSONArray(response.readEntity(String.class));
-    }
-
-    public static String getDataField(int index, String field, JSONArray array) throws JSONException {
-        if (array == null) {
-            return "returnedSeries is null";
-        }
-        return ((JSONObject) ((JSONArray) ((JSONObject) array.get(0)).get("data")).get(index)).get(field).toString();
-    }
-
-    protected String buildSeriesCommandFromSeriesAndSample(Series series, Sample sample) {
-        StringBuilder sb = new StringBuilder("series");
-        sb.append(" e:\"").append(series.getEntity()).append("\"");
-        sb.append(" m:\"").append(series.getMetric()).append("\"=").append(sample.getV());
-        sb.append(" d:").append(sample.getD());
-        return sb.toString();
     }
 }

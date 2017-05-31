@@ -17,7 +17,6 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class MetricMethod extends BaseMethod {
-    private static final String METHOD_METRIC_LIST = "/metrics/";
     private static final String METHOD_METRIC = "/metrics/{metric}";
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
 
@@ -48,22 +47,11 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static Response queryMetricSeries(String metricName) throws Exception {
-        return queryMetricSeries(metricName, new HashMap<String, String>());
-    }
-
-    public static Response queryMetricSeries(String metricName, Map<String, String> parameters) throws Exception {
         WebTarget target = httpApiResource.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            target = target.queryParam(entry.getKey(), entry.getValue());
-        }
         Response response = target.request().get();
         response.bufferEntity();
         return response;
     }
-
-//    public static <T> Response getMetricList(T query) throws Exception {
-//        return httpApiResource.path(METHOD_METRIC_LIST).request().get(Entity.entity(query));
-//    }
 
     public static Response deleteMetric(String metricName) throws Exception {
         Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().delete();
@@ -77,7 +65,6 @@ public class MetricMethod extends BaseMethod {
         }
         Checker.check(check);
     }
-
 
     public static void createOrReplaceMetricCheck(Metric metric) throws Exception {
         createOrReplaceMetricCheck(metric, new MetricCheck(metric));
@@ -107,5 +94,4 @@ public class MetricMethod extends BaseMethod {
 
         throw new NotCheckedException("Fail to execute metric query");
     }
-
 }
