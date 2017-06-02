@@ -143,7 +143,6 @@ public class SqlMerticTagsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"null"},
                 {"otherValue"}
         };
 
@@ -161,7 +160,6 @@ public class SqlMerticTagsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"null"},
                 {"value1"},
                 {"value3"},
                 {"otherValue"}
