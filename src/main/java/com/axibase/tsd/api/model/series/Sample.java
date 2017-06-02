@@ -136,7 +136,7 @@ public class Sample {
             return false;
         if (t != null ? !t.equals(sample.t) : sample.t != null)
             return false;
-        if (v != null ? !v.equals(sample.v) : sample.v != null)
+        if (v != null ? !(v.compareTo(sample.v) == 0) : sample.v != null)
             return false;
         if (text != null ? !text.equals(sample.text) : sample.text != null)
             return false;
