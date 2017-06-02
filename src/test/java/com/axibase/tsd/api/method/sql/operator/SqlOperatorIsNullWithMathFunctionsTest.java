@@ -23,11 +23,10 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2016-06-29T08:00:00.000Z", new BigDecimal("2.11")),
                 new Sample("2016-06-29T08:00:01.000Z", new BigDecimal("7.567")),
                 new Sample("2016-06-29T08:00:02.000Z", new BigDecimal("-1.23"))
-                )
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

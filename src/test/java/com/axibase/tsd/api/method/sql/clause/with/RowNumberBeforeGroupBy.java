@@ -27,7 +27,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
 
         for (int i = 0; i < 20; i++) {
             Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag", Integer.toString(i));
-            series.setSamples(Collections.singletonList(new Sample(Util.ISOFormat(MILLS_TIME + i), i)));
+            series.addSamples(new Sample(Util.ISOFormat(MILLS_TIME + i), i));
             seriesList.add(series);
         }
 

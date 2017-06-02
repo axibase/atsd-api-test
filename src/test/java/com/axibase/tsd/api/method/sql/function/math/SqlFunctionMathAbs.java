@@ -22,11 +22,10 @@ public class SqlFunctionMathAbs extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
-        series1.setSamples(Arrays.asList(
+        series1.addSamples(
                 new Sample("2016-06-03T09:20:00.000Z", 1),
                 new Sample("2016-06-03T09:20:01.000Z", 2),
                 new Sample("2016-06-03T09:20:02.000Z", 3)
-                )
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series1));

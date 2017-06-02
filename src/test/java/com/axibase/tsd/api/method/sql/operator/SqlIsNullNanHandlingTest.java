@@ -29,19 +29,19 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
 
         seriesList.add(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME) {{
-                    setSamples(Arrays.asList(
+                    addSamples(
                             new Sample("2016-06-29T08:00:00.000Z", null),
                             new Sample("2016-06-29T08:00:01.000Z", 3)
-                    ));
+                    );
                 }}
         );
 
         seriesList.add(
                 new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME) {{
-                    setSamples(Arrays.asList(
+                    addSamples(
                             new Sample("2016-06-29T08:00:00.000Z", 0),
                             new Sample("2016-06-29T08:00:01.000Z", 1)
-                    ));
+                    );
                 }}
         );
         SeriesMethod.insertSeriesCheck(seriesList);

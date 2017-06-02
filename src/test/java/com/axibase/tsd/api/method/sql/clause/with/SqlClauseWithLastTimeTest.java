@@ -24,19 +24,17 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
-        series1.setSamples(Arrays.asList(
+        series1.addSamples(
                 new Sample("2016-06-29T08:01:00.000Z", 0),
                 new Sample("2016-06-29T08:02:00.000Z", 1),
                 new Sample("2016-06-29T08:03:00.000Z", 2)
-                )
         );
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
-        series2.setSamples(Arrays.asList(
+        series2.addSamples(
                 new Sample("2016-06-29T08:04:00.000Z", 3),
                 new Sample("2016-06-29T08:05:00.000Z", 4),
                 new Sample("2016-06-29T08:06:00.000Z", 5)
-                )
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

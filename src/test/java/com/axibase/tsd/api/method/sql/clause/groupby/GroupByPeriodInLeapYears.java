@@ -24,10 +24,12 @@ public class GroupByPeriodInLeapYears extends SqlTest {
 
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
-        series.addSamples(new Sample(firstDayOf2016Year, DECIMAL_VALUE));
-        series.addSamples(new Sample(firstDayOf2016February, DECIMAL_VALUE));
-        series.addSamples(new Sample(lastDayOf2016February, DECIMAL_VALUE));
-        series.addSamples(new Sample(lastDayOf2016Year, DECIMAL_VALUE));
+        series.addSamples(
+                new Sample(firstDayOf2016Year, DECIMAL_VALUE),
+                new Sample(firstDayOf2016February, DECIMAL_VALUE),
+                new Sample(lastDayOf2016February, DECIMAL_VALUE),
+                new Sample(lastDayOf2016Year, DECIMAL_VALUE)
+        );
 
         SeriesMethod.insertSeriesCheck(series);
     }

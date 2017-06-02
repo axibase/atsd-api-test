@@ -136,13 +136,13 @@ public class LimitTest extends SqlTest {
     @BeforeGroups(groups = {DATETIME_ORDER_TEST_GROUP})
     public void prepareDateTimeOrderData() throws Exception {
         Series series = new Series(entity(), DATETIME_ORDER_METRIC);
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2016-06-19T11:00:00.000Z", 1),
                 new Sample("2016-06-19T11:03:00.000Z", 2),
                 new Sample("2016-06-19T11:02:00.000Z", 3),
                 new Sample("2016-06-19T11:01:00.000Z", 5),
                 new Sample("2016-06-19T11:04:00.000Z", 4)
-        ));
+        );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

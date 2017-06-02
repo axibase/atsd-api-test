@@ -21,7 +21,7 @@ public class SqlOrderByNullValuesTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series testSeries = new Series(TEST_ENTITY, TEST_METRIC, "tag1", "null");
-        testSeries.setSamples(Collections.singletonList(Mocks.SAMPLE));
+        testSeries.addSamples(Mocks.SAMPLE);
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }

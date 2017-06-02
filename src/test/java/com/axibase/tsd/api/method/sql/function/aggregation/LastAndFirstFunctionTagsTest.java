@@ -24,11 +24,13 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         entity.addTag("numeric_tag", "123");
 
         Series series = new Series(testEntity, TEST_METRIC);
-        series.addSamples(new Sample("2017-01-01T09:30:00.000Z", 1));
-        series.addSamples(new Sample("2017-01-01T10:30:00.000Z", 1));
-        series.addSamples(new Sample("2017-01-01T11:30:00.000Z", 2));
-        series.addSamples(new Sample("2017-01-01T12:30:00.000Z", 2));
-        series.addSamples(new Sample("2017-01-01T13:30:00.000Z", 2));
+        series.addSamples(
+                new Sample("2017-01-01T09:30:00.000Z", 1),
+                new Sample("2017-01-01T10:30:00.000Z", 1),
+                new Sample("2017-01-01T11:30:00.000Z", 2),
+                new Sample("2017-01-01T12:30:00.000Z", 2),
+                new Sample("2017-01-01T13:30:00.000Z", 2)
+        );
 
         EntityMethod.createOrReplaceEntityCheck(entity);
 

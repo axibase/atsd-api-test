@@ -13,14 +13,13 @@ import java.util.ArrayList;
 
 public class CaseOperatorTest extends SqlTest {
     private final Series DEFAULT_SERIES = Mocks.series();
-    {
-        DEFAULT_SERIES.setSamples(new ArrayList<Sample>());
-    }
+
     private final String[] SERIES_VALUES = { "10", "0", "-5" };
 
     @BeforeClass
     public void insertDefaultSeriesData() throws Exception {
         final String ISO_MINUTES_FORMAT = "2016-06-03T09:%02d:00.000Z";
+        DEFAULT_SERIES.setSamples(new ArrayList<>());
 
         int minutes = 0;
         for (int i = 0; i < SERIES_VALUES.length; i++) {

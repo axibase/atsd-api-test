@@ -24,19 +24,25 @@ public class SqlExampleOrderByValueTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
-        series1.addSamples(new Sample("2016-07-27T22:41:52.000Z", 0));
-        series1.addSamples(new Sample("2016-07-27T22:41:51.000Z", 1));
-        series1.addSamples(new Sample("2016-07-27T22:41:50.000Z", 2));
+        series1.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 0),
+                new Sample("2016-07-27T22:41:51.000Z", 1),
+                new Sample("2016-07-27T22:41:50.000Z", 2)
+        );
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
-        series2.addSamples(new Sample("2016-07-27T22:41:52.000Z", 2));
-        series2.addSamples(new Sample("2016-07-27T22:41:51.000Z", 3));
-        series2.addSamples(new Sample("2016-07-27T22:41:50.000Z", 4));
+        series2.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 2),
+                new Sample("2016-07-27T22:41:51.000Z", 3),
+                new Sample("2016-07-27T22:41:50.000Z", 4)
+        );
 
         Series series3 = new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME);
-        series3.addSamples(new Sample("2016-07-27T22:41:52.000Z", 4));
-        series3.addSamples(new Sample("2016-07-27T22:41:51.000Z", 5));
-        series3.addSamples(new Sample("2016-07-27T22:41:50.000Z", 6));
+        series3.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 4),
+                new Sample("2016-07-27T22:41:51.000Z", 5),
+                new Sample("2016-07-27T22:41:50.000Z", 6)
+        );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3));
     }

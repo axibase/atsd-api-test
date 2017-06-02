@@ -17,16 +17,18 @@ public class SqlBetweenStringTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(entity(), METRIC_NAME);
 
-        series.addSamples(new Sample("2017-01-01T12:00:00.000Z", 1, "b"));
-        series.addSamples(new Sample("2017-01-02T12:00:00.000Z", 2, "c"));
-        series.addSamples(new Sample("2017-01-03T12:00:00.000Z", 3, "a"));
-        series.addSamples(new Sample("2017-01-04T12:00:00.000Z", 4, "d"));
-        series.addSamples(new Sample("2017-01-05T12:00:00.000Z", 5, "null"));
-        series.addSamples(new Sample("2017-01-06T12:00:00.000Z", 6, "z"));
-        series.addSamples(new Sample("2017-01-07T12:00:00.000Z", 7, "x"));
-        series.addSamples(new Sample("2017-01-08T12:00:00.000Z", 8, "az"));
-        series.addSamples(new Sample("2017-01-09T12:00:00.000Z", 9, null));
-        series.addSamples(new Sample("2017-01-10T12:00:00.000Z", 10, "a "));
+        series.addSamples(
+                new Sample("2017-01-01T12:00:00.000Z", 1, "b"),
+                new Sample("2017-01-02T12:00:00.000Z", 2, "c"),
+                new Sample("2017-01-03T12:00:00.000Z", 3, "a"),
+                new Sample("2017-01-04T12:00:00.000Z", 4, "d"),
+                new Sample("2017-01-05T12:00:00.000Z", 5, "null"),
+                new Sample("2017-01-06T12:00:00.000Z", 6, "z"),
+                new Sample("2017-01-07T12:00:00.000Z", 7, "x"),
+                new Sample("2017-01-08T12:00:00.000Z", 8, "az"),
+                new Sample("2017-01-09T12:00:00.000Z", 9, null),
+                new Sample("2017-01-10T12:00:00.000Z", 10, "a ")
+        );
 
         SeriesMethod.insertSeriesCheck(series);
     }

@@ -55,17 +55,20 @@ public class SqlLookupFunctionTest extends SqlTest {
         {
             Series series = new Series(entity(), TEST_METRIC_NAME_BASE_LOOKUP_CASE);
 
-            series.addSamples(new TextSample("2016-06-03T09:20:00.000Z", "word"));
-            series.addSamples(new TextSample("2016-06-03T09:21:00.000Z", "-1"));
-            series.addSamples(new TextSample("2016-06-03T09:22:00.000Z", "1"));
-            series.addSamples(new TextSample("2016-06-03T09:23:00.000Z", "2"));
-            series.addSamples(new TextSample("2016-06-03T09:24:00.000Z", "word"));
-            series.addSamples(new TextSample("2016-06-03T09:25:00.000Z", "words"));
-            series.addSamples(new TextSample("2016-06-03T09:26:00.000Z", "3"));
-            series.addSamples(new TextSample("2016-06-03T09:27:00.000Z", "4"));
-            series.addSamples(new TextSample("2016-06-03T09:28:00.000Z", "PI"));
-            series.addSamples(new TextSample("2016-06-03T09:29:00.000Z", "3.14"));
-            series.addSamples(new TextSample("2016-06-03T09:30:00.000Z", "nothing"));
+            series.addSamples(
+                    new TextSample("2016-06-03T09:20:00.000Z", "word"),
+                    new TextSample("2016-06-03T09:21:00.000Z", "-1"),
+                    new TextSample("2016-06-03T09:22:00.000Z", "1"),
+                    new TextSample("2016-06-03T09:23:00.000Z", "2"),
+                    new TextSample("2016-06-03T09:24:00.000Z", "word"),
+                    new TextSample("2016-06-03T09:25:00.000Z", "words"),
+                    new TextSample("2016-06-03T09:26:00.000Z", "3"),
+                    new TextSample("2016-06-03T09:27:00.000Z", "4"),
+                    new TextSample("2016-06-03T09:28:00.000Z", "PI"),
+                    new TextSample("2016-06-03T09:29:00.000Z", "3.14"),
+                    new TextSample("2016-06-03T09:30:00.000Z", "nothing")
+            );
+
             seriesList.add(series);
         }
 

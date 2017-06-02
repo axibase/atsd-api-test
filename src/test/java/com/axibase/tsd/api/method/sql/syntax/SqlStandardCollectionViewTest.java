@@ -44,7 +44,6 @@ public class SqlStandardCollectionViewTest extends SqlTest {
             addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         }});
         seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC2_NAME) {{
-            setTags(Collections.emptyMap());
             addSamples(new Sample("2016-06-29T08:00:00.000Z", 1));
         }});
         SeriesMethod.insertSeriesCheck(seriesList);

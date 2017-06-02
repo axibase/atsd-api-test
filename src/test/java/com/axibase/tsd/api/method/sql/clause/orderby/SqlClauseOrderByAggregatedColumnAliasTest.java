@@ -22,17 +22,16 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
-        series1.setSamples(Arrays.asList(
+        series1.addSamples(
                 new Sample("2016-06-17T19:16:01.000Z", 1),
                 new Sample("2016-06-17T19:16:03.000Z", 3)
-                )
         );
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
-        series2.setSamples(Arrays.asList(
+        series2.addSamples(
                 new Sample("2016-06-17T19:16:02.000Z", 2),
                 new Sample("2016-06-17T19:16:04.000Z", 4)
-        ));
+        );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

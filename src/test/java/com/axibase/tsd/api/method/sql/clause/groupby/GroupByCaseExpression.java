@@ -43,18 +43,16 @@ public class GroupByCaseExpression extends SqlTest {
 
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
 
-        series1.setSamples(Arrays.asList(
+        series1.addSamples(
                 new Sample("2017-02-09T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1),
                 new Sample("2017-02-10T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1)
-                )
         );
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
 
-        series2.setSamples(Arrays.asList(
+        series2.addSamples(
                 new Sample("2017-02-11T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2),
                 new Sample("2017-02-12T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2)
-                )
         );
 
         EntityMethod.createOrReplaceEntity(testEntity2);

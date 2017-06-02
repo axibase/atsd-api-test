@@ -19,24 +19,22 @@ public class DateFormatInsideClausesTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(entity(), METRIC_NAME1);
-        series1.setSamples(Arrays.asList(
+        series1.addSamples(
                 new Sample("2017-02-09T13:00:00.000Z", 10),
                 new Sample("2017-02-10T12:00:00.000Z", 11),
                 new Sample("2017-02-10T07:00:00.000Z", 12),
                 new Sample("2017-02-12T12:00:00.000Z", 13),
                 new Sample("2017-02-11T12:00:00.000Z", 14),
                 new Sample("2017-02-09T12:00:00.000Z", 15)
-                )
         );
 
         Series series2 = new Series(entity(), METRIC_NAME2);
-        series2.setSamples(Arrays.asList(
+        series2.addSamples(
                 new Sample("2017-02-09T12:00:00.000Z", 0),
                 new Sample("2017-02-09T13:00:00.000Z", 0),
                 new Sample("2017-02-10T12:00:00.000Z", 0),
                 new Sample("2017-02-11T12:00:00.000Z", 0),
                 new Sample("2017-02-12T12:00:00.000Z", 0)
-                )
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);

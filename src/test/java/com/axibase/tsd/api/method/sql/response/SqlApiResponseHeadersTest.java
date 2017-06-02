@@ -28,12 +28,12 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @BeforeClass
     public static void prepareDataSet() {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        testSeries.setSamples(Arrays.asList(
+        testSeries.addSamples(
                 new Sample("2016-06-03T09:23:00.000Z", new BigDecimal("16.0")),
                 new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
                 new Sample("2016-06-03T09:36:00.000Z", new BigDecimal("6.0")),
                 new Sample("2016-06-03T09:41:00.000Z", new BigDecimal("19.0"))
-        ));
+        );
     }
 
 

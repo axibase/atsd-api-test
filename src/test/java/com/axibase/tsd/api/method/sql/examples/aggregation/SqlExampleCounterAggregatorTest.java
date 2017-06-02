@@ -21,7 +21,7 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2015-09-30T09:00:05.869Z", new BigDecimal("2.0")),
                 new Sample("2015-09-30T09:00:05.860Z", new BigDecimal("3.0")),
                 new Sample("2015-09-30T09:00:05.195Z", new BigDecimal("1.0")),
@@ -30,7 +30,7 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
                 new Sample("2015-09-30T09:00:06.217Z", new BigDecimal("3.0")),
                 new Sample("2015-09-30T09:00:06.211Z", new BigDecimal("3.0")),
                 new Sample("2015-09-30T09:00:06.321Z", new BigDecimal("3.0"))
-        ));
+        );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

@@ -35,11 +35,14 @@ public class ConcatTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         Series series = new Series(TEST_ENTITY, TEST_METRIC1);
-        series.addSamples(new TextSample("2016-06-03T09:19:18.000Z", "")); // NaN value
-        series.addSamples(new Sample("2016-06-03T09:20:18.000Z", new BigDecimal("3.0")));
-        series.addSamples(new Sample("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")));
-        series.addSamples(new Sample("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")));
-        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415")));
+        series.addSamples(
+                new TextSample("2016-06-03T09:19:18.000Z", ""), // NaN value
+                new Sample("2016-06-03T09:20:18.000Z", new BigDecimal("3.0")),
+                new Sample("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")),
+                new Sample("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")),
+                new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415"))
+        );
+
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY, TEST_METRIC2);

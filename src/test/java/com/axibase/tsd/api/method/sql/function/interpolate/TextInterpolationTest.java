@@ -48,12 +48,12 @@ public class TextInterpolationTest extends SqlTest {
     @Test
     public void testOnlyNullInterpolation() throws Exception {
         Series series = Mocks.series();
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2016-06-03T09:23:01.000Z", 1),
                 new Sample("2016-06-03T09:23:02.000Z", 2),
                 new Sample("2016-06-03T09:23:03.000Z", 3),
                 new Sample("2016-06-03T09:23:04.000Z", 4)
-        ));
+        );
         SeriesMethod.insertSeriesCheck(series);
         String sqlQuery = String.format(
                 "SELECT text FROM '%s'%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +

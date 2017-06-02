@@ -20,17 +20,15 @@ public class GroupByNullTagValue extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "tagname");
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2017-02-09T12:00:00.000Z", DECIMAL_VALUE),
                 new Sample("2017-02-10T12:00:00.000Z", DECIMAL_VALUE)
-                )
         );
 
         Series seriesWithoutTag = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        seriesWithoutTag.setSamples(Arrays.asList(
+        seriesWithoutTag.addSamples(
                 new Sample("2017-02-11T12:00:00.000Z", DECIMAL_VALUE),
                 new Sample("2017-02-12T12:00:00.000Z", DECIMAL_VALUE)
-                )
         );
 
         SeriesMethod.insertSeriesCheck(series, seriesWithoutTag);

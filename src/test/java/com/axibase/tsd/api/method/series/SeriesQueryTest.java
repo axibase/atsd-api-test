@@ -262,7 +262,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Date endDate = parseDate(MIN_STORABLE_DATE);
 
         while (calendar.getTime().before(endDate)) {
-            series.setSamples(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
+            series.addSamples(new Sample(ISOFormat(calendar.getTime()), v));
             Response response = insertSeries(Collections.singletonList(series));
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
@@ -305,7 +305,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Date endDate = parseDate("2110-01-01T00:00:00.000Z");
 
         while (calendar.getTime().before(endDate)) {
-            series.setSamples(Collections.singletonList(new Sample(ISOFormat(calendar.getTime()), v)));
+            series.addSamples(new Sample(ISOFormat(calendar.getTime()), v));
             Response response = insertSeries(Collections.singletonList(series));
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
@@ -370,9 +370,11 @@ public class SeriesQueryTest extends SeriesMethod {
 
         MetricMethod.createOrReplaceMetric(versionedMetric);
 
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
-        series.addSamples(new Sample(addOneMS(MIN_STORABLE_DATE), 1));
-        series.addSamples(new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), 2));
+        series.addSamples(
+                new Sample(MIN_STORABLE_DATE, 0),
+                new Sample(addOneMS(MIN_STORABLE_DATE), 1),
+                new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), 2)
+        );
         insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();

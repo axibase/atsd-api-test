@@ -21,12 +21,11 @@ public class BetweenInsideWhere extends SqlTest {
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2017-03-09T12:00:00.000Z", 1),
                 new Sample("2017-03-10T12:00:00.000Z", 2),
                 new Sample("2017-03-11T12:00:00.000Z", 3),
                 new Sample("2017-03-12T12:00:00.000Z", 4)
-                )
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

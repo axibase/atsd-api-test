@@ -19,14 +19,8 @@ public class SelectTagsWithGroupBy extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-
-        series.setSamples(Collections.singletonList(
-                new Sample(Mocks.ISO_TIME, Mocks.DECIMAL_VALUE)
-                )
-        );
-        series.addTag("tag1", "tag1value");
-        series.addTag("tag2", "tag2value");
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "tag1value", "tag2", "tag2value");
+        series.addSamples(new Sample(Mocks.ISO_TIME, Mocks.DECIMAL_VALUE));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

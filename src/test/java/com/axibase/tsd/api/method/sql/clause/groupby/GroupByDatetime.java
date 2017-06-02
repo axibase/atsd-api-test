@@ -28,28 +28,28 @@ public class GroupByDatetime extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(
                 new Series(TESTS_ENTITY1_NAME, TEST_METRIC_NAME) {{
-                    setSamples(Arrays.asList(
+                    addSamples(
                             new Sample("2016-06-19T11:00:00.500Z", 0),
                             new Sample("2016-06-19T11:00:01.500Z", 1),
                             new Sample("2016-06-19T11:00:02.500Z", 2)
-                    ));
+                    );
                 }}
         );
 
         seriesList.add(
                 new Series(TESTS_ENTITY2_NAME, TEST_METRIC_NAME) {{
-                    setSamples(Arrays.asList(
+                    addSamples(
                             new Sample("2016-06-19T11:00:00.500Z", 0),
                             new Sample("2016-06-19T11:00:01.500Z", 1)
-                    ));
+                    );
                 }}
         );
 
         seriesList.add(
                 new Series(TESTS_ENTITY3_NAME, TEST_METRIC_NAME) {{
-                    setSamples(Collections.singletonList(
+                    addSamples(
                             new Sample("2016-06-19T11:00:00.500Z", 0)
-                    ));
+                    );
                 }}
         );
 

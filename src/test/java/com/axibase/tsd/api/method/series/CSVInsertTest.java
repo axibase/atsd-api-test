@@ -93,9 +93,11 @@ public class CSVInsertTest extends CSVInsertMethod {
     @Test
     public void testTimeRangeInISO() throws Exception {
         Series series = Mocks.series();
-        series.setSamples(new ArrayList<Sample>());
-        series.addSamples(new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE));
-        series.addSamples(new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE));
+        series.setSamples(new ArrayList<>());
+        series.addSamples(
+                new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
+                new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
+        );
 
         String csvPayload = String.format(
                 "date, %s%n%s, %s%n%s, %s%n",
@@ -118,9 +120,11 @@ public class CSVInsertTest extends CSVInsertMethod {
     @Test
     public void testTimeRangeInMS() {
         Series series = Mocks.series();
-        series.setSamples(new ArrayList<Sample>());
-        series.addSamples(new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE));
-        series.addSamples(new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE));
+        series.setSamples(new ArrayList<>());
+        series.addSamples(
+                new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
+                new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
+        );
 
         String csvPayload = String.format(
                 "time, %s%n%s, %s%n%s, %s%n",

@@ -20,16 +20,13 @@ public class SqlCaseTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "abc", "tag2", "123");
 
-        series.setSamples(Arrays.asList(
+        series.addSamples(
                 new Sample("2016-06-03T09:20:01.000Z", 1),
                 new Sample("2016-06-03T09:20:02.000Z", 15),
                 new Sample("2016-06-03T09:20:03.000Z", 40)
-                )
         );
-        series.addTag("tag1", "abc");
-        series.addTag("tag2", "123");
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

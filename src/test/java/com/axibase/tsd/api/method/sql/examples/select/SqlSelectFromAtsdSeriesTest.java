@@ -22,12 +22,16 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
-        series1.addSamples(new Sample("2016-06-17T19:16:01.000Z", 1));
-        series1.addSamples(new Sample("2016-06-17T19:16:02.000Z", 2));
+        series1.addSamples(
+                new Sample("2016-06-17T19:16:01.000Z", 1),
+                new Sample("2016-06-17T19:16:02.000Z", 2)
+        );
 
         Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
-        series2.addSamples(new Sample("2016-06-17T19:16:03.000Z", 3));
-        series2.addSamples(new Sample("2016-06-17T19:16:04.000Z", 4));
+        series2.addSamples(
+                new Sample("2016-06-17T19:16:03.000Z", 3),
+                new Sample("2016-06-17T19:16:04.000Z", 4)
+        );
 
         List<Series> seriesList = Arrays.asList(series1, series2);
 
