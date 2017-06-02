@@ -21,33 +21,18 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-        Series series1 = new Series(),
-                series2 = new Series(),
-                series3 = new Series(),
-                series4 = new Series();
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "a", "b");
+        series1.addSamples(
+                new Sample("2016-06-19T11:00:00.000Z", 1),
+                new Sample("2016-06-19T11:00:01.000Z", 2));
 
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.addTag("a", "b");
-        series1.addSamples(new Sample("2016-06-19T11:00:00.000Z", 1));
-        series1.addSamples(new Sample("2016-06-19T11:00:01.000Z", 2));
-
-        series2.setEntity(TEST_ENTITY1_NAME);
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.addTag("b", "c");
+        Series series2 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "b", "c");
         series2.addSamples(new Sample("2016-06-19T11:00:03.000Z", 3));
 
-        series3.setEntity(TEST_ENTITY2_NAME);
-        series3.setMetric(TEST_METRIC_NAME);
-        series3.addTag("a", "b");
+        Series series3 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME,"a", "b");
         series3.addSamples(new Sample("2016-06-19T11:00:04.000Z", 4));
 
-        series4.setEntity(TEST_ENTITY2_NAME);
-        series4.setMetric(TEST_METRIC_NAME);
-        series4.addTag("b", "c");
+        Series series4 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "b", "c");
         series4.addSamples(new Sample("2016-06-19T11:00:05.000Z", 5));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3, series4));

@@ -36,12 +36,9 @@ public class LimitTest extends SqlTest {
     @BeforeClass
     public static void generateNames() {
         ENTITY_ORDER_METRIC = metric();
-        Registry.Entity.checkExists(ENTITY_ORDER_METRIC);
         VALUE_ORDER_METRIC = metric();
         DATETIME_ORDER_METRIC = metric();
-        Registry.Entity.checkExists(DATETIME_ORDER_METRIC);
         TAGS_ORDER_METRIC = metric();
-        Registry.Metric.checkExists(TAGS_ORDER_METRIC);
     }
 
     @BeforeGroups(groups = {ENTITY_ORDER_TEST_GROUP})
@@ -49,11 +46,7 @@ public class LimitTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
             Long date = TestUtil.parseDate("2016-06-19T11:00:00.000Z").getTime();
-            Series series = new Series();
-            series.setMetric(ENTITY_ORDER_METRIC);
-            String entityName = entity();
-            Registry.Entity.checkExists(entityName);
-            series.setEntity(entityName);
+            Series series = new Series(entity(), ENTITY_ORDER_METRIC);
             for (int j = 0; j < 10 - i; j++) {
                 Sample sample = new Sample(TestUtil.ISOFormat(date + j * TimeUnit.HOURS.toMillis(1)), j);
                 series.addSamples(sample);
@@ -175,13 +168,10 @@ public class LimitTest extends SqlTest {
     public void prepareTagsTimeOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         String entityName = entity();
-        Registry.Entity.checkExists(entityName);
         Long startTime = TestUtil.parseDate("2016-06-19T11:00:00.000Z").getTime();
         int[] values = {6, 7, 0, -1, 5, 15, 88, 3, 11, 2};
         for (int i = 0; i < 3; i++) {
-            Series series = new Series();
-            series.setMetric(TAGS_ORDER_METRIC);
-            series.setEntity(entityName);
+            Series series = new Series(entityName, TAGS_ORDER_METRIC);
             series.addSamples(new Sample(TestUtil.ISOFormat(startTime + i * TimeUnit.HOURS.toMillis(1)), values[i]));
             seriesList.add(series);
         }
@@ -193,9 +183,7 @@ public class LimitTest extends SqlTest {
      */
     @Test(groups = {DATETIME_ORDER_TEST_GROUP}, dataProvider = "datetimeOrderProvider")
     public void testDateTimeOrder(String sqlQueryTemplate, Integer limit) throws Exception {
-        String sqlQuery = String.format("SELECT datetime FROM '%s'%nORDER BY datetime",
-                DATETIME_ORDER_METRIC
-        );
+        String sqlQuery = String.format(sqlQueryTemplate, DATETIME_ORDER_METRIC);
         assertQueryLimit(limit, sqlQuery);
     }
 

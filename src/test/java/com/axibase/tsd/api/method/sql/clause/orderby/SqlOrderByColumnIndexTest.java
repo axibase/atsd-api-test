@@ -22,23 +22,15 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-
-        Series series1 = new Series(),
-                series2 = new Series();
-
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
         series1.setSamples(Arrays.asList(
                 new Sample("2016-06-19T11:00:00.000Z", 6),
                 new Sample("2016-06-19T11:00:01.000Z", 2),
                 new Sample("2016-06-19T11:00:02.000Z", 4)
         ));
 
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
+
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
         series2.setSamples(Arrays.asList(
                 new Sample("2016-06-19T11:00:04.000Z", 3),
                 new Sample("2016-06-19T11:00:05.000Z", 1),

@@ -28,7 +28,6 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
     @BeforeClass
     public static void prepareData() throws Exception {
         final String entityName = entity();
-        Registry.Entity.checkExists(entityName);
 
         List<Series> seriesList = new ArrayList<>();
         for (DataType type : DataType.values()) {
@@ -43,13 +42,12 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
             metric.setEnabled(true);
 
             typeToName.put(type, metric.getName());
-            MetricMethod.createOrReplaceMetricCheck(metric);
 
-            Series s = new Series();
-            s.setMetric(metric.getName());
-            s.setEntity(entityName);
+            Series s = new Series(entityName, metric.getName());
             s.addSamples(Mocks.SAMPLE);
             seriesList.add(s);
+
+            MetricMethod.createOrReplaceMetricCheck(metric);
         }
 
         SeriesMethod.insertSeriesCheck(seriesList);

@@ -20,13 +20,8 @@ public class SqlOrderByNullValuesTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series testSeries = new Series();
-        testSeries.setEntity(TEST_ENTITY);
-        testSeries.setMetric(TEST_METRIC);
+        Series testSeries = new Series(TEST_ENTITY, TEST_METRIC, "tag1", "null");
         testSeries.setSamples(Collections.singletonList(Mocks.SAMPLE));
-        HashMap<String, String> tags = new HashMap<>();
-        tags.put("tag1", "null");
-        testSeries.setTags(tags);
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }

@@ -16,25 +16,14 @@ public class WhereIsNullTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.checkExists(METRIC_NAME);
-
-        Series series1 = new Series();
-        series1.setEntity(entity());
-        series1.setMetric(METRIC_NAME);
+        Series series1 = new Series(entity(), METRIC_NAME, "t1", "z");
         series1.addSamples(new Sample("2017-01-01T12:00:00.000Z", 0));
-        series1.addTag("t1", "z");
 
-        Series series2 = new Series();
-        series2.setEntity(entity());
-        series2.setMetric(METRIC_NAME);
+        Series series2 = new Series(entity(), METRIC_NAME, "t2", "y");
         series2.addSamples(new Sample("2017-01-02T12:00:00.000Z", 0));
-        series2.addTag("t2", "y");
 
-        Series series3 = new Series();
-        series3.setEntity(entity());
-        series3.setMetric(METRIC_NAME);
+        Series series3 = new Series(entity(), METRIC_NAME, "t1", "a");
         series3.addSamples(new Sample("2017-01-03T12:00:00.000Z", 0));
-        series3.addTag("t1", "a");
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }

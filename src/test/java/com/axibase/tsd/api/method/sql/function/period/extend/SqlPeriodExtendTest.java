@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -20,22 +21,12 @@ public class SqlPeriodExtendTest extends SqlTest {
     private static final String TEST_ENTITY1_NAME = TEST_PREFIX + "entity-1";
     private static final String TEST_ENTITY2_NAME = TEST_PREFIX + "entity-2";
 
-
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-
-
         List<Series> seriesList = new ArrayList<>();
 
         seriesList.add(
-                new Series() {{
-                    addTag("a", "b");
-                    addTag("b", "c");
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY1_NAME);
+                new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "a", "b", "b", "c") {{
                     setSamples(Arrays.asList(
                             new Sample("2016-07-14T15:00:06.001Z", 1),
                             new Sample("2016-07-14T15:00:08.001Z", 2)
@@ -44,12 +35,8 @@ public class SqlPeriodExtendTest extends SqlTest {
         );
 
         seriesList.add(
-                new Series() {{
-                    addTag("a", "b");
-                    addTag("b", "c");
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY2_NAME);
-                    setSamples(Arrays.asList(
+                new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "a", "b", "b", "c") {{
+                    setSamples(Collections.singletonList(
                             new Sample("2016-07-14T15:00:06.001Z", 3)
                     ));
                 }}

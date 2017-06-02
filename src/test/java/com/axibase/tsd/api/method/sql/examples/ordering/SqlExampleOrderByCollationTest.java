@@ -25,13 +25,8 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY_NAME);
-
         List<Series> seriesList = new ArrayList<>();
-        Series nullSeries = new Series();
-        nullSeries.setEntity(TEST_ENTITY_NAME);
-        nullSeries.setMetric(TEST_METRIC_NAME);
+        Series nullSeries = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         nullSeries.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
         seriesList.add(nullSeries);
 
@@ -40,11 +35,8 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
         for (final String name : NAMES) {
             if (name != null) {
                 final int value = i;
-                series = new Series();
-                series.setMetric(TEST_METRIC_NAME);
-                series.setEntity(TEST_ENTITY_NAME);
+                series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag", name);
                 series.addSamples(new Sample("2016-06-03T09:24:00.000Z", value));
-                series.addTag("tag", name);
                 seriesList.add(series);
                 i++;
             }

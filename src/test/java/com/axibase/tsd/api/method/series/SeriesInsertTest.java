@@ -157,13 +157,14 @@ public class SeriesInsertTest extends SeriesTest {
         Metric metric = new Metric(metric());
         metric.setDataType(type);
         Long time = MILLS_TIME;
-        MetricMethod.createOrReplaceMetricCheck(metric);
-        Series series = new Series();
-        series.setEntity(entity());
-        series.setMetric(metric.getName());
+
+        Series series = new Series(entity(), metric.getName());
         series.addSamples(new Sample(TestUtil.ISOFormat(time), valueBefore));
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
         CompactionMethod.performCompaction("2016-06-15", true);
+
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, time + 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         BigDecimal actualValue = seriesList.get(0).getData().get(0).getV();
@@ -769,16 +770,13 @@ public class SeriesInsertTest extends SeriesTest {
      **/
     @Test
     public void testXTextFieldVersioned() throws Exception {
+        String entityName = "e-text-versioning-2";
         String metricName = "m-text-versioning-2";
+        Series series = new Series(entityName, metricName);
+
         Metric metric = new Metric(metricName);
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
-
-        Series series = new Series();
-        series.setMetric(metricName);
-        String entityName = "e-text-versioning-2";
-        Registry.Entity.checkExists(entityName);
-        series.setEntity(entityName);
 
         String[] data = new String[]{"1", "2", "3", "4"};
         for (String x : data) {

@@ -25,27 +25,19 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.checkExists(TEST_METRIC1_NAME);
-        Registry.Metric.checkExists(TEST_METRIC2_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY_NAME);
-
         List<Series> seriesList = new ArrayList<>();
 
         seriesList.add(
-                new Series() {{
-                    setEntity(TEST_ENTITY_NAME);
-                    setMetric(TEST_METRIC1_NAME);
+                new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME) {{
                     setSamples(Arrays.asList(
-                            new Sample("2016-06-29T08:00:00.000Z", (BigDecimal) null),
+                            new Sample("2016-06-29T08:00:00.000Z", null),
                             new Sample("2016-06-29T08:00:01.000Z", 3)
                     ));
                 }}
         );
 
         seriesList.add(
-                new Series() {{
-                    setMetric(TEST_METRIC2_NAME);
-                    setEntity(TEST_ENTITY_NAME);
+                new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME) {{
                     setSamples(Arrays.asList(
                             new Sample("2016-06-29T08:00:00.000Z", 0),
                             new Sample("2016-06-29T08:00:01.000Z", 1)

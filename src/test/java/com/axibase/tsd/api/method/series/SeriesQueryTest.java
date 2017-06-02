@@ -560,16 +560,14 @@ public class SeriesQueryTest extends SeriesMethod {
      **/
     @Test
     public void testXTextFieldLastVersion() throws Exception {
+        String entityName = "e-text-overwritten-versioning-1";
         String metricName = "m-text-overwritten-versioning-1";
+
+        Series series = new Series(entityName, metricName);
+
         Metric metric = new Metric(metricName);
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
-
-        Series series = new Series();
-        series.setMetric(metricName);
-        String entityName = "e-text-overwritten-versioning-1";
-        Registry.Entity.checkExists(entityName);
-        series.setEntity(entityName);
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
@@ -592,15 +590,15 @@ public class SeriesQueryTest extends SeriesMethod {
      */
     @Test
     public void testExactMatchIgnoresReservedVersioningTags() throws Exception {
-        Metric metric = new Metric(metric());
+        String metricName = metric();
+        Metric metric = new Metric(metricName);
         metric.setVersioned(true);
-        MetricMethod.createOrReplaceMetricCheck(metric);
 
         final int insertedVersionsCount = 3;
-        Series series = new Series();
-        series.setMetric(metric.getName());
-        series.setEntity(entity());
-        Registry.Entity.checkExists(series.getEntity());
+        Series series = new Series(entity(), metricName);
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
         for (int i = 0; i < insertedVersionsCount; i++) {
             series.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, i)));
             SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

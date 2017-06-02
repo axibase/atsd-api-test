@@ -26,25 +26,14 @@ public class SqlSelectEntityTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY3_NAME);
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-
         List<Series> seriesList = Arrays.asList(
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY1_NAME);
+                new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME) {{
                     addSamples(new Sample("2016-06-03T09:27:00.000Z", 0));
                 }},
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY2_NAME);
+                new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME) {{
                     addSamples(new Sample("2016-06-03T09:27:01.000Z", 1));
                 }},
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY3_NAME);
+                new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME) {{
                     addSamples(new Sample("2016-06-03T09:27:01.000Z", 2));
                 }}
         );

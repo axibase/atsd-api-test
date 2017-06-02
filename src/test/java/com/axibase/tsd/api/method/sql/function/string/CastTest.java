@@ -35,22 +35,10 @@ public class CastTest extends SqlTest {
         String[] metricNames = {TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_METRIC3_NAME};
         String[] tags = {"4", "123", "text12a3a"};
 
-        Registry.Entity.checkExists(TEST_ENTITY_NAME);
-
         for (int i = 0; i < metricNames.length; i++) {
             String metricName = metricNames[i];
-            Registry.Metric.checkExists(metricName);
-
-            Series series = new Series();
-            series.setEntity(TEST_ENTITY_NAME);
-            series.setMetric(metricName);
-
-            series.setSamples(Collections.singletonList(
-                    new Sample("2016-06-03T09:20:00.000Z", 1)));
-
-            String tag = tags[i];
-            series.addTag("numeric_tag", tag);
-
+            Series series = new Series(TEST_ENTITY_NAME, metricName, "numeric_tag", tags[i]);
+            series.setSamples(Collections.singletonList(new Sample("2016-06-03T09:20:00.000Z", 1)));
             seriesList.add(series);
         }
 

@@ -23,28 +23,17 @@ public class SqlExampleOrderByValueTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY3_NAME);
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-
-        Series series1 = new Series(),
-                series2 = new Series(),
-                series3 = new Series();
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
         series1.addSamples(new Sample("2016-07-27T22:41:52.000Z", 0));
         series1.addSamples(new Sample("2016-07-27T22:41:51.000Z", 1));
         series1.addSamples(new Sample("2016-07-27T22:41:50.000Z", 2));
 
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
         series2.addSamples(new Sample("2016-07-27T22:41:52.000Z", 2));
         series2.addSamples(new Sample("2016-07-27T22:41:51.000Z", 3));
         series2.addSamples(new Sample("2016-07-27T22:41:50.000Z", 4));
 
-        series3.setMetric(TEST_METRIC_NAME);
-        series3.setEntity(TEST_ENTITY3_NAME);
+        Series series3 = new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME);
         series3.addSamples(new Sample("2016-07-27T22:41:52.000Z", 4));
         series3.addSamples(new Sample("2016-07-27T22:41:51.000Z", 5));
         series3.addSamples(new Sample("2016-07-27T22:41:50.000Z", 6));

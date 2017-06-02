@@ -19,14 +19,8 @@ public class SqlParseTimeTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series();
-
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setSamples(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", 1)
-                )
-        );
+        Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
     }

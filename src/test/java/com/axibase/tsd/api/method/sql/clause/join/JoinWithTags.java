@@ -34,17 +34,8 @@ public class JoinWithTags extends SqlTest {
         Registry.Entity.checkExists(TEST_ENTITY_NAME);
 
         for (int i = 0; i < metricNames.length; i++) {
-            String metricName = metricNames[i];
-            Registry.Metric.checkExists(metricName);
-
-            Series series = new Series();
-            series.setEntity(TEST_ENTITY_NAME);
-            series.setMetric(metricName);
-
+            Series series = new Series(TEST_ENTITY_NAME, metricNames[i], "tag", tags[i]);
             series.addSamples(new Sample("2016-06-03T09:20:00.000Z", i + 1));
-
-            String tag = tags[i];
-            series.addTag("tag", tag);
 
             seriesList.add(series);
         }
@@ -322,17 +313,9 @@ public class JoinWithTags extends SqlTest {
         String entity = entity();
         String[] metrics = { metric(), metric(), metric() };
 
-        Registry.Entity.checkExists(entity);
-        for (String metric : metrics) {
-            Registry.Metric.checkExists(metric);
-        }
-
         List<Series> initialSeries = new ArrayList<>(metrics.length);
         for (String metric : metrics) {
-            Series series = new Series();
-            series.setEntity(entity);
-            series.setMetric(metric);
-            series.addTag("tag", "value");
+            Series series = new Series(entity, metric, "tag", "value");
             series.addSamples(Mocks.SAMPLE);
 
             initialSeries.add(series);

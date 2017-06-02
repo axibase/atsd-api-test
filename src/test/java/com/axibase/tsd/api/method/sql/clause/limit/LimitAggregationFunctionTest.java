@@ -1,9 +1,7 @@
 package com.axibase.tsd.api.method.sql.clause.limit;
 
-import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -13,30 +11,34 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
 
 public class LimitAggregationFunctionTest extends SqlTest {
-    private static Metric testMetric;
+    private static String testMetric = metric();
 
     @BeforeClass
     public static void setTestSeries() throws Exception {
         final Integer seriesCount = 10;
-        testMetric = new Metric(metric());
-        MetricMethod.createOrReplaceMetric(testMetric);
-        Long time = Mocks.MILLS_TIME;
+        ZonedDateTime startDateTime = ZonedDateTime.parse(ISO_TIME);
         List<Series> seriesList = new ArrayList<>();
+        int secondsOffset = 0;
         for (int i = 0; i < seriesCount; i++) {
-            Series series = new Series();
-            series.setMetric(testMetric.getName());
-            series.setEntity(entity());
+            Series series = new Series(entity(), testMetric);
             for (int j = 0; j < (i + 1); j++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(time), j));
-                time += 1000L;
+                series.addSamples(new Sample(startDateTime
+                                        .plusSeconds(secondsOffset)
+                                        .format(DateTimeFormatter.ISO_INSTANT),
+                        j));
+
+                secondsOffset++;
             }
             seriesList.add(series);
         }
@@ -69,7 +71,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
     public void testAggregateFunctionLimit(String function) {
         String sqlQuery = String.format(
                 "SELECT %s(value) FROM '%s' %n",
-                function, testMetric.getName()
+                function, testMetric
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
         String limitSqlQuery = sqlQuery.concat("LIMIT 1");
@@ -82,8 +84,10 @@ public class LimitAggregationFunctionTest extends SqlTest {
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimitWithPredicate(String function) {
         String sqlQuery = String.format(
-                "SELECT %s(value) FROM '%s'%nWHERE time > %s AND time < %s %n",
-                function, testMetric.getName(), Mocks.MILLS_TIME, Mocks.MILLS_TIME + 10000L
+                "SELECT %s(value) " +
+                "FROM '%s' " +
+                "WHERE datetime > '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:23:10.000Z' ",
+                function, testMetric
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
         String limitSqlQuery = sqlQuery.concat("LIMIT 1");
@@ -96,8 +100,11 @@ public class LimitAggregationFunctionTest extends SqlTest {
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimitWithGrouping(String function) {
         String sqlQuery = String.format(
-                "SELECT %s(value) FROM '%s'%nWHERE time > %s AND time < %s GROUP BY entity%n",
-                function, testMetric.getName(), Mocks.MILLS_TIME, Mocks.MILLS_TIME + 10000L
+                "SELECT %s(value) " +
+                "FROM '%s' " +
+                "WHERE datetime > '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:23:10.000Z' " +
+                "GROUP BY entity ",
+                function, testMetric
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
         String limitSqlQuery = sqlQuery.concat("LIMIT 2");

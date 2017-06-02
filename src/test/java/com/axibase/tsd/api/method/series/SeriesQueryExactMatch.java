@@ -20,30 +20,24 @@ import static org.testng.AssertJUnit.assertTrue;
 public class SeriesQueryExactMatch extends SeriesMethod {
     private static final String exactMatchEntityName = "series-query-exactmatch-entity-1";
     private static final String exactMatchMetricName = "series-query-exactmatch-metric-1";
-    private static final Series seriesA = new Series(exactMatchEntityName, exactMatchMetricName);
-    private static final Series seriesB = new Series();
-    private static final Series seriesC = new Series();
-    private static final Series seriesD = new Series();
+    private static Series seriesA;
+    private static Series seriesB;
+    private static Series seriesC;
+    private static Series seriesD;
 
 
     @BeforeClass
     public void prepareDataset() throws Exception {
-        seriesA.addTag("tag-1", "val-1");
-        seriesA.addTag("tag-2", "val-2");
+        seriesA = new Series(exactMatchEntityName, exactMatchMetricName, "tag-1", "val-1", "tag-2", "val-2");
         seriesA.addSamples(new Sample("1970-01-01T00:00:00.000Z", 0));
 
-        seriesB.setEntity(exactMatchEntityName);
-        seriesB.setMetric(exactMatchMetricName);
-        seriesB.addTag("tag-1", "val-1");
+        seriesB = new Series(exactMatchEntityName, exactMatchMetricName, "tag-1", "val-1");
         seriesB.addSamples(new Sample("1970-01-01T00:00:00.000Z", 0));
 
-        seriesC.setEntity(exactMatchEntityName);
-        seriesC.setMetric(exactMatchMetricName);
-        seriesC.addTag("tag-2", "val-2");
+        seriesC = new Series(exactMatchEntityName, exactMatchMetricName, "tag-2", "val-2");
         seriesC.addSamples(new Sample("1970-01-01T00:00:00.000Z", 0));
 
-        seriesD.setEntity(exactMatchEntityName);
-        seriesD.setMetric(exactMatchMetricName);
+        seriesD = new Series(exactMatchEntityName, exactMatchMetricName);
         seriesD.addSamples(new Sample("1970-01-01T00:00:00.000Z", 0));
 
         insertSeriesCheck(Arrays.asList(seriesA, seriesB, seriesC, seriesD));

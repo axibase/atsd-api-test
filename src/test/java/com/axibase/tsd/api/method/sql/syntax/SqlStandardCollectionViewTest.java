@@ -37,23 +37,14 @@ public class SqlStandardCollectionViewTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-        Registry.Metric.checkExists(TEST_METRIC1_NAME);
-        Registry.Metric.checkExists(TEST_METRIC2_NAME);
-
         //Series data
         List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
+        seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME) {{
             setTags(TAGS);
-            setMetric(TEST_METRIC1_NAME);
-            setEntity(TEST_ENTITY1_NAME);
             addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         }});
-        seriesList.add(new Series() {{
-            setEntity(TEST_ENTITY2_NAME);
-            setMetric(TEST_METRIC2_NAME);
-            setTags(Collections.<String, String>emptyMap());
+        seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC2_NAME) {{
+            setTags(Collections.emptyMap());
             addSamples(new Sample("2016-06-29T08:00:00.000Z", 1));
         }});
         SeriesMethod.insertSeriesCheck(seriesList);
@@ -74,8 +65,6 @@ public class SqlStandardCollectionViewTest extends SqlTest {
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY1_NAME));
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY1_NAME));
-
-
     }
 
     /*

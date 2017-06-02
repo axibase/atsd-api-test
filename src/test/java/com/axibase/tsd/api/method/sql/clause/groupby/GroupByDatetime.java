@@ -25,16 +25,9 @@ public class GroupByDatetime extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-        Registry.Entity.checkExists(TESTS_ENTITY1_NAME);
-        Registry.Entity.checkExists(TESTS_ENTITY2_NAME);
-        Registry.Entity.checkExists(TESTS_ENTITY3_NAME);
-
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(
-                new Series() {{
-                    setEntity(TESTS_ENTITY1_NAME);
-                    setMetric(TEST_METRIC_NAME);
+                new Series(TESTS_ENTITY1_NAME, TEST_METRIC_NAME) {{
                     setSamples(Arrays.asList(
                             new Sample("2016-06-19T11:00:00.500Z", 0),
                             new Sample("2016-06-19T11:00:01.500Z", 1),
@@ -44,9 +37,7 @@ public class GroupByDatetime extends SqlTest {
         );
 
         seriesList.add(
-                new Series() {{
-                    setEntity(TESTS_ENTITY2_NAME);
-                    setMetric(TEST_METRIC_NAME);
+                new Series(TESTS_ENTITY2_NAME, TEST_METRIC_NAME) {{
                     setSamples(Arrays.asList(
                             new Sample("2016-06-19T11:00:00.500Z", 0),
                             new Sample("2016-06-19T11:00:01.500Z", 1)
@@ -55,9 +46,7 @@ public class GroupByDatetime extends SqlTest {
         );
 
         seriesList.add(
-                new Series() {{
-                    setEntity(TESTS_ENTITY3_NAME);
-                    setMetric(TEST_METRIC_NAME);
+                new Series(TESTS_ENTITY3_NAME, TEST_METRIC_NAME) {{
                     setSamples(Collections.singletonList(
                             new Sample("2016-06-19T11:00:00.500Z", 0)
                     ));

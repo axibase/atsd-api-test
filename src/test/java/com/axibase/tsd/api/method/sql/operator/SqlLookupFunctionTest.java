@@ -44,7 +44,7 @@ public class SqlLookupFunctionTest extends SqlTest {
 
         ReplacementTableMethod.createCheck(table);
 
-        return  table;
+        return table;
     }
 
     @BeforeClass
@@ -69,33 +69,33 @@ public class SqlLookupFunctionTest extends SqlTest {
             seriesList.add(series);
         }
 
-        {
-            Map<String, String> tags = new HashMap<>();
-            tags.put("1", "-1");
-            tags.put("2", "1");
-            tags.put("3", "2");
-            tags.put("4", "word");
-            tags.put("5", "words");
-            tags.put("6", "3");
-            tags.put("7", "4");
-            tags.put("8", "PI");
-            tags.put("9", "3.14");
-            tags.put("10", "nothing");
-            Metric metric = new Metric(TEST_METRIC_NAME_TAGS_CASE);
-            metric.setTags(tags);
-            MetricMethod.createOrReplaceMetricCheck(metric);
-            Entity entity = new Entity(testEntityNameTagsCase);
-            entity.setTags(tags);
-            EntityMethod.createOrReplaceEntityCheck(entity);
 
-            Series series = new Series();
-            series.setEntity(testEntityNameTagsCase);
-            series.setMetric(TEST_METRIC_NAME_TAGS_CASE);
-            series.setTags(tags);
-            series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
-            seriesList.add(series);
-        }
+        Map<String, String> tags = new HashMap<>();
+        tags.put("1", "-1");
+        tags.put("2", "1");
+        tags.put("3", "2");
+        tags.put("4", "word");
+        tags.put("5", "words");
+        tags.put("6", "3");
+        tags.put("7", "4");
+        tags.put("8", "PI");
+        tags.put("9", "3.14");
+        tags.put("10", "nothing");
 
+        Metric metric = new Metric(TEST_METRIC_NAME_TAGS_CASE);
+        metric.setTags(tags);
+
+        Entity entity = new Entity(testEntityNameTagsCase);
+        entity.setTags(tags);
+
+        Series series = new Series(testEntityNameTagsCase, TEST_METRIC_NAME_TAGS_CASE);
+        series.setTags(tags);
+        series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+        seriesList.add(series);
+
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
+        EntityMethod.createOrReplaceEntityCheck(entity);
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 

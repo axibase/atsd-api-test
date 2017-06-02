@@ -22,19 +22,11 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series(),
-                series2 = new Series();
-
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "key0", "value0");
         series1.addSamples(new Sample("2016-06-03T09:25:00.000Z", 0));
-        series1.addTag("key0", "value0");
 
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "key1", "value1");
         series2.addSamples(new Sample("2016-06-03T09:25:01.000Z", 1));
-        series2.addTag("key1", "value1");
-
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

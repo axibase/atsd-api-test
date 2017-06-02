@@ -30,13 +30,8 @@ public class WhereTagInListTest extends SqlTest {
                 {null, null},
         };
 
-        Registry.Entity.checkExists(ENTITY_NAME);
-        Registry.Metric.checkExists(METRIC_NAME);
-
         for (int i = 0; i < tags.length; i++) {
-            Series series = new Series();
-            series.setEntity(ENTITY_NAME);
-            series.setMetric(METRIC_NAME);
+            Series series = new Series(ENTITY_NAME, METRIC_NAME);
             series.addSamples(new Sample(String.format("2017-01-0%dT12:00:00.000Z", i + 1), i + 1));
 
             if (tags[i][0] != null) {

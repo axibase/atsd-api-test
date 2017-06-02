@@ -31,14 +31,12 @@ public class AutoTimeZoneTest extends SqlTest {
     public void testMetricTimeZone() throws Exception {
         Metric metric = new Metric(metric());
         metric.setTimeZoneID(ALGIERS_TIMEZONE_ID);
-        MetricMethod.createOrReplaceMetricCheck(metric);
 
-        Series series = new Series();
-        series.setMetric(metric.getName());
-        series.setEntity(entity());
+        Series series = new Series(entity(), metric.getName());
         series.addSamples(DEFAULT_SAMPLE);
-        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
+        MetricMethod.createOrReplaceMetricCheck(metric);
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         String sqlQuery = String.format(
                 "SELECT date_format(time, '%s', AUTO) FROM '%s'",
@@ -56,12 +54,11 @@ public class AutoTimeZoneTest extends SqlTest {
     public void testEntityTimeZone() throws Exception {
         Entity entity = new Entity(entity());
         entity.setTimeZoneID(ALGIERS_TIMEZONE_ID);
-        EntityMethod.createOrReplaceEntityCheck(entity);
 
-        Series series = new Series();
-        series.setMetric(metric());
-        series.setEntity(entity.getName());
+        Series series = new Series(entity.getName(), metric());
         series.addSamples(DEFAULT_SAMPLE);
+
+        EntityMethod.createOrReplaceEntityCheck(entity);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         String sqlQuery = String.format(
@@ -81,18 +78,16 @@ public class AutoTimeZoneTest extends SqlTest {
     public void testPriorityTimeZone() throws Exception {
         Entity entity = new Entity(entity());
         entity.setTimeZoneID(ALGIERS_TIMEZONE_ID);
-        EntityMethod.createOrReplaceEntityCheck(entity);
-
 
         Metric metric = new Metric(metric());
         String metricTimeZoneId = "Canada/Yukon";
         metric.setTimeZoneID(metricTimeZoneId);
-        MetricMethod.createOrReplaceMetricCheck(metric);
 
-        Series series = new Series();
-        series.setMetric(metric.getName());
-        series.setEntity(entity.getName());
+        Series series = new Series(entity.getName(), metric.getName());
         series.addSamples(DEFAULT_SAMPLE);
+
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
 

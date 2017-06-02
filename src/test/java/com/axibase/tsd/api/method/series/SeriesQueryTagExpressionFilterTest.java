@@ -24,26 +24,15 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
         // Arrange
         String metric = metric();
-        Registry.Metric.checkExists(metric);
         String entity = entity();
-        Registry.Entity.checkExists(entity);
 
-        Series series1 = new Series();
-        series1.setEntity(entity);
-        series1.setMetric(metric);
-        series1.addTag("key", "val1");
+        Series series1 = new Series(entity, metric, "key", "val1");
         series1.addSamples(new Sample("2017-03-27T00:00:00.000Z", 1));
 
-        Series series2 = new Series();
-        series2.setEntity(entity);
-        series2.setMetric(metric);
-        series2.addTag("key", "val2");
+        Series series2 = new Series(entity, metric, "key", "val2");
         series2.addSamples(new Sample("2017-03-27T00:00:01.000Z", 1));
 
-        Series series3 = new Series();
-        series3.setEntity(entity);
-        series3.setMetric(metric);
-        series3.addTag("key", "val3");
+        Series series3 = new Series(entity, metric, "key", "val3");
         series3.addSamples(new Sample("2017-03-27T00:00:02.000Z", 1));
 
         insertSeriesCheck(series1, series2, series3);

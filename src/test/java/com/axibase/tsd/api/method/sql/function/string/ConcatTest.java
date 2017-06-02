@@ -33,31 +33,22 @@ public class ConcatTest extends SqlTest {
 
     private static void prepareFunctionalConcatTestData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
-        {
-            Series series = new Series(TEST_ENTITY, TEST_METRIC1);
-            series.addSamples(new TextSample("2016-06-03T09:19:18.000Z", "")); // NaN value
-            series.addSamples(new Sample("2016-06-03T09:20:18.000Z", new BigDecimal("3.0")));
-            series.addSamples(new Sample("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")));
-            series.addSamples(new Sample("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")));
-            series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415")));
-            seriesList.add(series);
-        }
-        {
-            Series series = new Series();
-            Registry.Metric.checkExists(TEST_METRIC2);
-            series.setEntity(TEST_ENTITY);
-            series.setMetric(TEST_METRIC2);
-            series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("5.555")));
-            seriesList.add(series);
-        }
-        {
-            Series series = new Series();
-            Registry.Metric.checkExists(TEST_METRIC3);
-            series.setEntity(TEST_ENTITY);
-            series.setMetric(TEST_METRIC3);
-            series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("5.0")));
-            seriesList.add(series);
-        }
+
+        Series series = new Series(TEST_ENTITY, TEST_METRIC1);
+        series.addSamples(new TextSample("2016-06-03T09:19:18.000Z", "")); // NaN value
+        series.addSamples(new Sample("2016-06-03T09:20:18.000Z", new BigDecimal("3.0")));
+        series.addSamples(new Sample("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")));
+        series.addSamples(new Sample("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")));
+        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415")));
+        seriesList.add(series);
+
+        series = new Series(TEST_ENTITY, TEST_METRIC2);
+        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("5.555")));
+        seriesList.add(series);
+
+        series = new Series(TEST_ENTITY, TEST_METRIC3);
+        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("5.0")));
+        seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
@@ -122,7 +113,7 @@ public class ConcatTest extends SqlTest {
     public void testConcatWordAndTwoNumbers() throws Exception {
         String sqlQuery = String.format(
                 "SELECT CONCAT('a:', t1.value, ':', t2.value), CONCAT('a:', t1.value, ':', t3.value) " +
-                "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
+                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
                 TEST_METRIC1,
                 TEST_METRIC2,
                 TEST_METRIC3

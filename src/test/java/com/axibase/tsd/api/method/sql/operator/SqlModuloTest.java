@@ -26,14 +26,8 @@ public class SqlModuloTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY_NAME);
-        Registry.Metric.checkExists(TEST_METRIC1_NAME);
-        Registry.Metric.checkExists(TEST_METRIC2_NAME);
-
         final List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC1_NAME);
-            setEntity(TEST_ENTITY_NAME);
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "a", "b", "b", "c") {{
             setSamples(Arrays.asList(
                     new Sample("2016-06-03T09:23:00.000Z", 7),
                     new Sample("2016-06-03T09:24:00.000Z", 0),
@@ -41,26 +35,16 @@ public class SqlModuloTest extends SqlTest {
                     new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("10.3")),
                     new Sample("2016-06-03T09:27:00.000Z", 10)
             ));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("a", "b");
-                put("b", "c");
-            }}));
         }});
 
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC2_NAME);
-            setEntity(TEST_ENTITY_NAME);
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "a", "b", "b", "c") {{
             setSamples(Arrays.asList(
                     new Sample("2016-06-03T09:23:00.000Z", 5),
                     new Sample("2016-06-03T09:24:00.000Z", 7),
                     new Sample("2016-06-03T09:25:00.000Z", -2),
                     new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("-2.1"))
             ));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("a", "b");
-                put("b", "c");
-            }}));
         }});
 
         SeriesMethod.insertSeriesCheck(seriesList);

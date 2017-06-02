@@ -95,18 +95,17 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         String entityNameBase = "series-query-limit-entity-";
         String metricName = "series-query-limit-metric";
 
-        Series series = new Series(entityNameBase.concat("1"), metricName);
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 7));
-        insertSeriesCheck(Collections.singletonList(series));
+        Series series1 = new Series(entityNameBase.concat("1"), metricName);
+        series1.addSamples(new Sample(MIN_STORABLE_DATE, 7));
 
-        String entity = entityNameBase.concat("2");
-        Registry.Entity.checkExists(entity);
-        series.setEntity(entity);
-        series.addTag("tag_key", "tag_value");
-        series.addSamples(new Sample(addOneMS(MIN_STORABLE_DATE), 8));
-        insertSeriesCheck(Collections.singletonList(series));
+        Series series2 = new Series(entityNameBase.concat("2"), metricName, "tag_key", "tag_value");
+        series2.addSamples(
+                new Sample(MIN_STORABLE_DATE, 7),
+                new Sample(addOneMS(MIN_STORABLE_DATE), 8));
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityNameBase.concat("*"), series.getMetric(),
+        insertSeriesCheck(series1, series2);
+
+        SeriesQuery seriesQuery = new SeriesQuery(entityNameBase.concat("*"), series1.getMetric(),
                 MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         seriesQuery.setExactMatch(true);
         seriesQuery.setLimit(2);

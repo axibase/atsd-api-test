@@ -22,16 +22,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY_NAME);
-
         Map<String, String> tags = new HashMap<>();
         tags.put("double\"quote", "tv1");
         tags.put("single'quote", "tv2");
         tags.put("both'quo\"tes", "tv3");
-        Series series = new Series();
-        series.setEntity(TEST_ENTITY_NAME);
-        series.setMetric(TEST_METRIC_NAME);
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         series.setTags(tags);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

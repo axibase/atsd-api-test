@@ -22,7 +22,6 @@ import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOC
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
-    public static final Long LAST_INSERT_WRITE_PERIOD = 15000L;
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     public static Date getCurrentDate() {

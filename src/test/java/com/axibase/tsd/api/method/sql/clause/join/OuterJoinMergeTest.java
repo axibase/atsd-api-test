@@ -26,28 +26,21 @@ public class OuterJoinMergeTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-
         List<Series> seriesList = new ArrayList<>();
 
         for (int i = 0; i < METRIC_COUNT; i++) {
             String metric = metric();
-            Registry.Metric.checkExists(metric);
             METRIC_NAMES.add(metric);
         }
 
         for (int i = 0; i < ENTITY_COUNT; i++) {
             String entity = entity();
-            Registry.Entity.checkExists(entity);
             ENTITY_NAMES.add(entity);
         }
 
         for (String metricName : METRIC_NAMES) {
-
             for (String entityName : ENTITY_NAMES) {
-
-                Series series = new Series();
-                series.setEntity(entityName);
-                series.setMetric(metricName);
+                Series series = new Series(entityName, metricName);
                 series.setTags(Mocks.TAGS);
 
                 for (int i = 0; i < VALUES_COUNT; i++) {

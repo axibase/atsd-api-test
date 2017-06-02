@@ -33,23 +33,15 @@ public class GroupByCaseExpression extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.checkExists(TEST_ENTITY1_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY2_NAME);
-        Registry.Metric.checkExists(TEST_METRIC_NAME);
 
-        Entity testEntity1 = new Entity();
-        testEntity1.setName(TEST_ENTITY1_NAME);
+        Entity testEntity1 = new Entity(TEST_ENTITY1_NAME);
         testEntity1.setLabel(TEST_ENTITY1_LABEL);
-        EntityMethod.createOrReplaceEntity(testEntity1);
 
-        Entity testEntity2 = new Entity();
-        testEntity2.setName(TEST_ENTITY2_NAME);
+        Entity testEntity2 = new Entity(TEST_ENTITY2_NAME);
         testEntity2.setLabel(TEST_ENTITY2_LABEL);
-        EntityMethod.createOrReplaceEntity(testEntity2);
 
-        Series series1 = new Series();
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.setMetric(TEST_METRIC_NAME);
+
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
 
         series1.setSamples(Arrays.asList(
                 new Sample("2017-02-09T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1),
@@ -57,9 +49,7 @@ public class GroupByCaseExpression extends SqlTest {
                 )
         );
 
-        Series series2 = new Series();
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.setMetric(TEST_METRIC_NAME);
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
 
         series2.setSamples(Arrays.asList(
                 new Sample("2017-02-11T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2),
@@ -67,6 +57,8 @@ public class GroupByCaseExpression extends SqlTest {
                 )
         );
 
+        EntityMethod.createOrReplaceEntity(testEntity2);
+        EntityMethod.createOrReplaceEntity(testEntity1);
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 

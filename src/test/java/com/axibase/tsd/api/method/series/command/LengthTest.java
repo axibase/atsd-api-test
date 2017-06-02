@@ -39,11 +39,9 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series();
-            series.setEntity(seriesCommand.getEntityName());
-            series.setMetric(metric());
+            Series series = new Series(seriesCommand.getEntityName(), metric());
             series.addSamples(new Sample(ISO_TIME, 1));
-            String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
+            String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             if (currentLength < MAX_LENGTH) {
                 values.put(series.getMetric(), "1");
@@ -81,11 +79,9 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series();
-            series.setEntity(seriesCommand.getEntityName());
-            series.setMetric(metric());
+            Series series = new Series(seriesCommand.getEntityName(), metric());
             series.addSamples(new Sample(ISO_TIME, 1));
-            String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
+            String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             values.put(series.getMetric(), "1");
         }

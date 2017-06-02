@@ -20,25 +20,18 @@ public class SqlTableAliasTest extends SqlTest {
 
     @BeforeClass
     static void prepareData() throws Exception {
-
         final Map<String, String> tags = Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("a", "b");
             put("b", "c");
         }});
-        Registry.Metric.checkExists(TEST_METRIC1_NAME);
-        Registry.Metric.checkExists(TEST_METRIC2_NAME);
-        Registry.Entity.checkExists(TEST_ENTITY_NAME);
+
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
-                        new Series() {{
-                            setMetric(TEST_METRIC1_NAME);
-                            setEntity(TEST_ENTITY_NAME);
+                        new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME) {{
                             addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
                             setTags(tags);
                         }},
-                        new Series() {{
-                            setMetric(TEST_METRIC2_NAME);
-                            setEntity(TEST_ENTITY_NAME);
+                        new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME) {{
                             setTags(tags);
                             addSamples(new Sample("2016-06-03T09:24:00.000Z", 1));
                         }}

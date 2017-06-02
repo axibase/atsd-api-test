@@ -31,23 +31,16 @@ public class TextInterpolationTest extends SqlTest {
     public List<Series> multiJoinSeries() {
         List<Series> seriesList = new ArrayList<>();
         String entityName = entity();
-        Registry.Entity.checkExists(entityName);
         for (int i = 0; i < TEXTS.length; i++) {
             String metricName = metric();
-            Registry.Metric.checkExists(metricName);
-
             Sample sample = new TextSample(Mocks.ISO_TIME, TEXTS[i]);
 
-            Series series = new Series();
-            series.setEntity(entityName);
-            series.setMetric(metricName);
-
+            Series series = new Series(entityName, metricName);
             series.addSamples(sample);
             seriesList.add(series);
         }
         return seriesList;
     }
-
 
     /**
      * #3463
