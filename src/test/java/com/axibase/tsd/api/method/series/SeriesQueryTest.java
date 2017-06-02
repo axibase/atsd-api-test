@@ -47,15 +47,23 @@ public class SeriesQueryTest extends SeriesMethod {
         }
     }
 
+    @DataProvider(name = "datesWithTimezonesProvider")
+    Object[][] provideDatesWithTimezones() {
+        return new Object[][]{
+                {"2016-07-01T14:23:20Z"},
+                {"2016-07-01T15:46:20+01:23"},
+                {"2016-07-01T15:46:20+01:23"}
+        };
+    }
 
     /**
      * #2850
      */
-    @Test
-    public void testISOTimezoneZ() throws Exception {
+    @Test(dataProvider = "datesWithTimezonesProvider")
+    public void testISOTimezoneZ(String date) throws Exception {
         SeriesQuery seriesQuery = buildQuery();
 
-        seriesQuery.setStartDate("2016-07-01T14:23:20Z");
+        seriesQuery.setStartDate(date);
 
         List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
 
@@ -64,84 +72,29 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
     }
 
-    /**
-     * #2850
-     */
-    @Test
-    public void testISOTimezonePlusHoursMinutes() throws Exception {
-        SeriesQuery seriesQuery = buildQuery();
-
-        seriesQuery.setStartDate("2016-07-01T15:46:20+01:23");
-
-        List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
-
-        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
+    @DataProvider(name = "incorrectDatesProvider")
+    Object[][] provideIncorrectDates() {
+        return new Object[][]{
+                {"2016-07-01 14:23:20"},
+                {"2016-07-01T15:46:20+0123"},
+                {"1467383000000"}
+        };
     }
 
     /**
      * #2850
      */
-    @Test
-    public void testISOTimezoneMinusHoursMinutes() throws Exception {
+    @Test(dataProvider = "incorrectDatesProvider")
+    public void testLocalTimeUnsupported(String date) throws Exception {
         SeriesQuery seriesQuery = buildQuery();
 
-        seriesQuery.setStartDate("2016-07-01T13:00:20-01:23");
-
-        List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
-
-        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
-    }
-
-
-    /**
-     * #2850
-     */
-    @Test
-    public void testLocalTimeUnsupported() throws Exception {
-        SeriesQuery seriesQuery = buildQuery();
-
-        seriesQuery.setStartDate("2016-07-01 14:23:20");
+        seriesQuery.setStartDate(date);
 
         Response response = querySeries(seriesQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01 14:23:20\"}", response.readEntity(String.class), true);
+        JSONAssert.assertEquals(String.format("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: %s\"}", date), response.readEntity(String.class), true);
 
-    }
-
-    /**
-     * #2850
-     */
-    @Test
-    public void testXXTimezoneUnsupported() throws Exception {
-        SeriesQuery seriesQuery = buildQuery();
-
-        seriesQuery.setStartDate("2016-07-01T15:46:20+0123");
-
-        Response response = querySeries(seriesQuery);
-
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2016-07-01T15:46:20+0123\"}", response.readEntity(String.class), true);
-
-    }
-
-    /**
-     * #2850
-     */
-    @Test
-    public void testMillisecondsUnsupported() throws Exception {
-        SeriesQuery seriesQuery = buildQuery();
-
-        seriesQuery.setStartDate("1467383000000");
-
-        Response response = querySeries(seriesQuery);
-
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1467383000000\"}", response.readEntity(String.class), true);
     }
 
     /**
