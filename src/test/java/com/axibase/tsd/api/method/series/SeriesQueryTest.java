@@ -526,7 +526,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }

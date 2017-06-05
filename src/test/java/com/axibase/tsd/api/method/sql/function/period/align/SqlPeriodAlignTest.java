@@ -39,12 +39,12 @@ public class SqlPeriodAlignTest extends SqlTest {
         serverTimezone = ZoneId.of(version.getDate().getTimeZone().getName());
 
         insertSamples(
-                new Sample("2016-06-03T09:20:00.124Z", new BigDecimal("16.0")),
+                new Sample("2016-06-03T09:20:00.124Z", 16),
                 new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
-                new Sample("2016-06-03T09:36:00.000Z", new BigDecimal("6.0")),
-                new Sample("2016-06-03T09:41:00.321Z", new BigDecimal("19.0")),
-                new Sample("2016-06-03T09:45:00.126Z", new BigDecimal("19.0")),
-                new Sample("2016-06-03T09:45:00.400Z", new BigDecimal("17.0"))
+                new Sample("2016-06-03T09:36:00.000Z", 6),
+                new Sample("2016-06-03T09:41:00.321Z", 19),
+                new Sample("2016-06-03T09:45:00.126Z", 19),
+                new Sample("2016-06-03T09:45:00.400Z", 17)
         );
     }
 

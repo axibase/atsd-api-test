@@ -731,7 +731,7 @@ public class SeriesInsertTest extends SeriesTest {
         String metricName = metric();
 
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), text);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, text);
         series.addSamples(sample);
 
         insertSeriesCheck(Collections.singletonList(series));
@@ -753,7 +753,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -780,7 +780,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         String[] data = new String[]{"1", "2", "3", "4"};
         for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), x);
+            Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -807,7 +807,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
         String xText = "text";
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0), xText);
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, xText);
         series.addSamples(sample);
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -829,7 +829,7 @@ public class SeriesInsertTest extends SeriesTest {
         String entityName = "e-series-insert-text-null-1";
         String metricName = "m-series-insert-text-null-1";
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", new BigDecimal(1.0));
+        Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1);
         series.addSamples(sample);
 
         String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':null}]}]";
