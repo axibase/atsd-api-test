@@ -266,6 +266,54 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     /**
+     * #4217
+     */
+    @Test
+    public void testInnerInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
+        String sqlQuery = String.format(
+                "SELECT value " +
+                        "FROM '%s' " +
+                        "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
+                        "ORDER BY datetime",
+                TEST_METRIC_1);
+
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                Boundary.INNER,
+                new DateRange("2017-01-01T08:00:00Z", "2017-01-01T13:00:00Z"));
+
+        assertSqlQueryRows(
+                "Incorrect inner interpolation with single value in period",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     * #4217
+     */
+    @Test
+    public void testInnerInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
+        String sqlQuery = String.format(
+                "SELECT value " +
+                        "FROM '%s' " +
+                        "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                            "OR datetime BETWEEN '2017-01-01T14:00:00Z' AND '2017-01-01T16:00:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
+                        "ORDER BY datetime",
+                TEST_METRIC_1);
+
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                Boundary.INNER,
+                new DateRange("2017-01-01T08:00:00Z", "2017-01-01T13:00:00Z"));
+
+        assertSqlQueryRows(
+                "Incorrect inner interpolation with single value in period",
+                expectedRows,
+                sqlQuery);
+    }
+
+
+    /**
      * #4069
      */
     @Test
@@ -377,6 +425,53 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 Boundary.OUTER,
                 new DateRange("2017-01-01T13:00:00Z", "2017-01-01T15:00:00Z"),
                 new DateRange("2017-01-01T18:00:00Z", "2017-01-01T19:00:00Z"));
+
+        assertSqlQueryRows(
+                "Incorrect inner interpolation with single value in period",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     * #4217
+     */
+    @Test
+    public void testOuterInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
+        String sqlQuery = String.format(
+                "SELECT value " +
+                        "FROM '%s' " +
+                        "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
+                        "ORDER BY datetime",
+                TEST_METRIC_1);
+
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                Boundary.OUTER,
+                new DateRange("2017-01-01T08:00:00Z", "2017-01-01T13:00:00Z"));
+
+        assertSqlQueryRows(
+                "Incorrect inner interpolation with single value in period",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     * #4217
+     */
+    @Test
+    public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
+        String sqlQuery = String.format(
+                "SELECT value " +
+                        "FROM '%s' " +
+                        "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
+                            "OR datetime BETWEEN '2017-01-01T14:00:00Z' AND '2017-01-01T16:00:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
+                        "ORDER BY datetime",
+                TEST_METRIC_1);
+
+        String[][] expectedRows = generateCalendarInterpolationOutput(
+                Boundary.OUTER,
+                new DateRange("2017-01-01T08:00:00Z", "2017-01-01T13:00:00Z"));
 
         assertSqlQueryRows(
                 "Incorrect inner interpolation with single value in period",
