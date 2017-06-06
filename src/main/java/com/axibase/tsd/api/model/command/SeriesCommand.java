@@ -19,6 +19,20 @@ public class SeriesCommand extends AbstractCommand {
         super(SERIES_COMMAND);
     }
 
+    public SeriesCommand(Map<String, String> texts, Map<String, String> values, String entityName,
+                         Map<String, String> tags, Long timeMills, Integer timeSeconds,
+                         String timeISO, Boolean append) {
+        super(SERIES_COMMAND);
+        this.texts = texts;
+        this.values = values;
+        this.entityName = entityName;
+        this.tags = tags;
+        this.timeMills = timeMills;
+        this.timeSeconds = timeSeconds;
+        this.timeISO = timeISO;
+        this.append = append;
+    }
+
     public String getEntityName() {
         return entityName;
     }

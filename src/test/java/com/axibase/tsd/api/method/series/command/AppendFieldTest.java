@@ -24,39 +24,7 @@ import static java.util.Collections.singletonMap;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class AppendFieldTest {
-    private static final String ENTITY_NAME = entity();
-    private static final String METRIC_APPEND_DUPLICATES = metric();
-    private static final String METRIC_APPEND_WITH_ERASE = metric();
-    private static final String METRIC_DECIMAL_TO_TEXT = metric();
-    private static final String METRIC_APPEND_TEXT_VIA_BATCH = metric();
-    private static final String METRIC_TEXT_AFTER_DECIMAL_ADDITION = metric();
-
-    /**
-     * #3796
-     */
-    @Test
-    public void testAppendDuplicates() throws Exception {
-        String[] dataWithDuplicates = {"a", "a", "b", "a", "b", "c", "b", "0.1", "word1 word2", "0", "word1", "0.1"};
-
-        Series series = new Series();
-        series.setEntity(ENTITY_NAME);
-        series.setMetric(METRIC_APPEND_DUPLICATES);
-        series.addSamples(new TextSample(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
-
-        SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setEntityName(ENTITY_NAME);
-        seriesCommand.setTags(null);
-        seriesCommand.setAppend(false);
-        seriesCommand.setTimeISO(ISO_TIME);
-        seriesCommand.setTexts(singletonMap(METRIC_APPEND_DUPLICATES, dataWithDuplicates[0]));
-        CommandMethod.send(seriesCommand);
-
-        seriesCommand.setAppend(true);
-        for(int i = 1; i < dataWithDuplicates.length; i++) {
-            seriesCommand.setTexts(singletonMap(METRIC_APPEND_DUPLICATES, dataWithDuplicates[i]));
-            CommandMethod.send(seriesCommand);
-        }
-
+    private static boolean checkResult(Series series) {
         boolean checked = true;
         try {
             Checker.check(new SeriesCheck(Collections.singletonList(series)));
@@ -64,6 +32,32 @@ public class AppendFieldTest {
         catch (NotCheckedException e) {
             checked = false;
         }
+        return checked;
+    }
+
+    /**
+     * #3796
+     */
+    @Test
+    public void testAppendDuplicates() throws Exception {
+        final String entityName = entity();
+        final String metricAppendDuplicates = metric();
+        String[] dataWithDuplicates = {"a", "a", "b", "a", "b", "c", "b", "0.1", "word1 word2", "0", "word1", "0.1"};
+
+        Series series = new Series(entityName, metricAppendDuplicates);
+        series.addSamples(new TextSample(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
+
+        SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendDuplicates, dataWithDuplicates[0]),
+                                                        null, entityName, null, null, null, ISO_TIME, false);
+        CommandMethod.send(seriesCommand);
+
+        seriesCommand.setAppend(true);
+        for(int i = 1; i < dataWithDuplicates.length; i++) {
+            seriesCommand.setTexts(singletonMap(metricAppendDuplicates, dataWithDuplicates[i]));
+            CommandMethod.send(seriesCommand);
+        }
+
+        boolean checked = checkResult(series);
 
         List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
         List<String> actualData = new ArrayList<>();
@@ -82,45 +76,35 @@ public class AppendFieldTest {
      */
     @Test
     public void testAppendWithErase() throws Exception {
+        final String entityName = entity();
+        final String metricAppendWithErase = metric();
         String[] dataEraseFirst = {"a", "b", "c"};
         String[] dataEraseSecond = {"d", "e", "f", "g"};
 
-        Series series = new Series();
-        series.setEntity(ENTITY_NAME);
-        series.setMetric(METRIC_APPEND_WITH_ERASE);
+        Series series = new Series(entityName, metricAppendWithErase);
         series.addSamples(new TextSample(ISO_TIME, "d;\ne;\nf;\ng"));
 
-        SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setEntityName(ENTITY_NAME);
-        seriesCommand.setTags(null);
-        seriesCommand.setAppend(false);
-        seriesCommand.setTimeISO(ISO_TIME);
-        seriesCommand.setTexts(singletonMap(METRIC_APPEND_WITH_ERASE, dataEraseFirst[0]));
+        SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseFirst[0]),
+                                                        null, entityName, null, null, null, ISO_TIME, false);
         CommandMethod.send(seriesCommand);
 
         seriesCommand.setAppend(true);
         for(int i = 1; i < dataEraseFirst.length; i++) {
-            seriesCommand.setTexts(singletonMap(METRIC_APPEND_WITH_ERASE, dataEraseFirst[i]));
+            seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseFirst[i]));
             CommandMethod.send(seriesCommand);
         }
 
         seriesCommand.setAppend(false);
-        seriesCommand.setTexts(singletonMap(METRIC_APPEND_WITH_ERASE, dataEraseSecond[0]));
+        seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseSecond[0]));
         CommandMethod.send(seriesCommand);
         seriesCommand.setAppend(true);
 
         for(int i = 1; i < dataEraseSecond.length; i++) {
-            seriesCommand.setTexts(singletonMap(METRIC_APPEND_WITH_ERASE, dataEraseSecond[i]));
+            seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseSecond[i]));
             CommandMethod.send(seriesCommand);
         }
 
-        boolean checked = true;
-        try {
-            Checker.check(new SeriesCheck(Collections.singletonList(series)));
-        }
-        catch (NotCheckedException e) {
-            checked = false;
-        }
+        boolean checked = checkResult(series);
 
         List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
         List<String> actualData = new ArrayList<>();
@@ -139,38 +123,24 @@ public class AppendFieldTest {
      */
     @Test
     public void testDecimalFieldToTextField() throws Exception {
-        Series series = new Series();
-        series.setEntity(ENTITY_NAME);
-        series.setMetric(METRIC_DECIMAL_TO_TEXT);
+        final String entityName = entity();
+        final String metricDecimalToText = metric();
+        Series series = new Series(entityName, metricDecimalToText);
         series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE));
 
         List<PlainCommand> seriesCommandList = new ArrayList<>();
 
-        SeriesCommand seriesCommandText = new SeriesCommand();
-        seriesCommandText.setEntityName(ENTITY_NAME);
-        seriesCommandText.setTags(null);
-        seriesCommandText.setAppend(true);
-        seriesCommandText.setTimeISO(ISO_TIME);
-        seriesCommandText.setTexts(singletonMap(METRIC_DECIMAL_TO_TEXT, TEXT_VALUE));
+        SeriesCommand seriesCommandText = new SeriesCommand(singletonMap(metricDecimalToText, TEXT_VALUE), null,
+                                                            entityName, null, null, null, ISO_TIME, true);
         seriesCommandList.add(seriesCommandText);
 
-        SeriesCommand seriesCommandDecimal = new SeriesCommand();
-        seriesCommandDecimal.setEntityName(ENTITY_NAME);
-        seriesCommandDecimal.setTags(null);
-        seriesCommandDecimal.setAppend(false);
-        seriesCommandDecimal.setTimeISO(ISO_TIME);
-        seriesCommandDecimal.setValues(singletonMap(METRIC_DECIMAL_TO_TEXT, DECIMAL_VALUE));
+        SeriesCommand seriesCommandDecimal = new SeriesCommand(null, singletonMap(metricDecimalToText, DECIMAL_VALUE),
+                                                                entityName, null, null, null, ISO_TIME, false);
         seriesCommandList.add(seriesCommandDecimal);
 
         CommandMethod.send(seriesCommandList);
 
-        boolean checked = true;
-        try {
-            Checker.check(new SeriesCheck(Collections.singletonList(series)));
-        }
-        catch (NotCheckedException e) {
-            checked = false;
-        }
+        boolean checked = checkResult(series);
 
         List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
         List<String> actualData = new ArrayList<>();
@@ -190,42 +160,28 @@ public class AppendFieldTest {
      */
     @Test
     public void testAppendTextViaBatchOfCommands() throws Exception {
-        Series series = new Series();
-        series.setEntity(ENTITY_NAME);
-        series.setMetric(METRIC_APPEND_TEXT_VIA_BATCH);
+        final String entityName = entity();
+        final String metricAppendTextViaBatch = metric();
+        Series series = new Series(entityName, metricAppendTextViaBatch);
         series.addSamples(new TextSample(ISO_TIME, "text1;\ntext2"));
 
-        SeriesCommand seriesCommandInitial = new SeriesCommand();
-        seriesCommandInitial.setEntityName(ENTITY_NAME);
-        seriesCommandInitial.setAppend(false);
-        seriesCommandInitial.setTimeISO(ISO_TIME);
-        seriesCommandInitial.setTexts(singletonMap(METRIC_APPEND_TEXT_VIA_BATCH, "text1"));
+        SeriesCommand seriesCommandInitial = new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text1"), null,
+                                                                entityName, null, null, null, ISO_TIME, false);
         CommandMethod.send(seriesCommandInitial);
 
         List<PlainCommand> seriesCommandList = new ArrayList<>();
 
-        SeriesCommand seriesCommandText = new SeriesCommand();
-        seriesCommandText.setEntityName(ENTITY_NAME);
-        seriesCommandText.setAppend(true);
-        seriesCommandText.setTimeISO(ISO_TIME);
-        seriesCommandText.setTexts(singletonMap(METRIC_APPEND_TEXT_VIA_BATCH, "text2"));
+        SeriesCommand seriesCommandText = new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text2"), null,
+                                                            entityName, null, null, null, ISO_TIME, true);
         seriesCommandList.add(seriesCommandText);
 
-        SeriesCommand seriesCommandDecimal = new SeriesCommand();
-        seriesCommandDecimal.setEntityName(ENTITY_NAME);
-        seriesCommandDecimal.setTimeISO(ISO_TIME);
-        seriesCommandDecimal.setValues(singletonMap(METRIC_APPEND_TEXT_VIA_BATCH, DECIMAL_VALUE));
+        SeriesCommand seriesCommandDecimal = new SeriesCommand(null, singletonMap(metricAppendTextViaBatch, DECIMAL_VALUE),
+                                                                entityName, null, null, null, ISO_TIME, null);
         seriesCommandList.add(seriesCommandDecimal);
 
         CommandMethod.send(seriesCommandList);
 
-        boolean checked = true;
-        try {
-            Checker.check(new SeriesCheck(Collections.singletonList(series)));
-        }
-        catch (NotCheckedException e) {
-            checked = false;
-        }
+        boolean checked = checkResult(series);
 
         List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
         List<String> actualData = new ArrayList<>();
@@ -245,35 +201,24 @@ public class AppendFieldTest {
      */
     @Test
     public void testTextFieldAfterAdditionOfDecimalValue() throws Exception {
-        Series series = new Series();
-        series.setEntity(ENTITY_NAME);
-        series.setMetric(METRIC_TEXT_AFTER_DECIMAL_ADDITION);
+        final String entityName = entity();
+        final String metricTextAfterDecimalAddition = metric();
+        Series series = new Series(entityName, metricTextAfterDecimalAddition);
         series.addSamples(new TextSample(ISO_TIME, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = new ArrayList<>();
 
-        SeriesCommand seriesCommandText = new SeriesCommand();
-        seriesCommandText.setEntityName(ENTITY_NAME);
-        seriesCommandText.setAppend(true);
-        seriesCommandText.setTimeISO(ISO_TIME);
-        seriesCommandText.setTexts(singletonMap(METRIC_TEXT_AFTER_DECIMAL_ADDITION, TEXT_VALUE));
+        SeriesCommand seriesCommandText = new SeriesCommand(singletonMap(metricTextAfterDecimalAddition, TEXT_VALUE), null,
+                                                            entityName, null, null, null, ISO_TIME, true);
         seriesCommandList.add(seriesCommandText);
 
-        SeriesCommand seriesCommandDecimal = new SeriesCommand();
-        seriesCommandDecimal.setEntityName(ENTITY_NAME);
-        seriesCommandDecimal.setTimeISO(ISO_TIME);
-        seriesCommandDecimal.setValues(singletonMap(METRIC_TEXT_AFTER_DECIMAL_ADDITION, DECIMAL_VALUE));
+        SeriesCommand seriesCommandDecimal = new SeriesCommand(null, singletonMap(metricTextAfterDecimalAddition, DECIMAL_VALUE),
+                                                                entityName, null, null, null, ISO_TIME, null);
         seriesCommandList.add(seriesCommandDecimal);
 
         CommandMethod.send(seriesCommandList);
 
-        boolean checked = true;
-        try {
-            Checker.check(new SeriesCheck(Collections.singletonList(series)));
-        }
-        catch (NotCheckedException e) {
-            checked = false;
-        }
+        boolean checked = checkResult(series);
 
         List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
         List<String> actualData = new ArrayList<>();
