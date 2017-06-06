@@ -21,10 +21,9 @@ public class Select1Test extends SqlTest {
      */
     @Test
     public void testSelectNumber() {
-        String twelve = "12";
-        String sqlQuery = "SELECT " + twelve;
+        String sqlQuery = "SELECT 12";
         String[][] expectedRows = {
-                {twelve}
+                {"12"}
         };
         assertSqlQueryRows("'SELECT number' query should return one row with that number", expectedRows, sqlQuery);
     }
@@ -34,11 +33,33 @@ public class Select1Test extends SqlTest {
      */
     @Test
     public void testSelectNumberSum() {
-        String twelve = "12";
-        String fourty = "40";
-        String sqlQuery = "SELECT " + twelve + "+" + fourty;
+        String sqlQuery = "SELECT 12 + 40";
         String[][] expectedRows = {
                 {"52"}
+        };
+        assertSqlQueryRows("'SELECT number' query should return one row with that number", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4067
+     */
+    @Test
+    public void testSelectComplexMath() {
+        String sqlQuery = "SELECT (1 + 2) * 3";
+        String[][] expectedRows = {
+                {"9"}
+        };
+        assertSqlQueryRows("'SELECT number' query should return one row with that number", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4067
+     */
+    @Test
+    public void testSelectNumberDividedByNull() {
+        String sqlQuery = "SELECT 1/0";
+        String[][] expectedRows = {
+                {"Infinity"}
         };
         assertSqlQueryRows("'SELECT number' query should return one row with that number", expectedRows, sqlQuery);
     }
