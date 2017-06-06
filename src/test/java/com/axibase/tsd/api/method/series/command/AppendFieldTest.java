@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 import static java.util.Collections.singletonMap;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -41,7 +41,7 @@ public class AppendFieldTest {
         Series series = new Series();
         series.setEntity(ENTITY_NAME);
         series.setMetric(METRIC_APPEND_DUPLICATES);
-        series.addData(new TextSample(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
+        series.addSamples(new TextSample(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
 
         SeriesCommand seriesCommand = new SeriesCommand();
         seriesCommand.setEntityName(ENTITY_NAME);
@@ -88,7 +88,7 @@ public class AppendFieldTest {
         Series series = new Series();
         series.setEntity(ENTITY_NAME);
         series.setMetric(METRIC_APPEND_WITH_ERASE);
-        series.addData(new TextSample(ISO_TIME, "d;\ne;\nf;\ng"));
+        series.addSamples(new TextSample(ISO_TIME, "d;\ne;\nf;\ng"));
 
         SeriesCommand seriesCommand = new SeriesCommand();
         seriesCommand.setEntityName(ENTITY_NAME);
@@ -142,7 +142,7 @@ public class AppendFieldTest {
         Series series = new Series();
         series.setEntity(ENTITY_NAME);
         series.setMetric(METRIC_DECIMAL_TO_TEXT);
-        series.addData(new Sample(ISO_TIME, DECIMAL_VALUE));
+        series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE));
 
         List<PlainCommand> seriesCommandList = new ArrayList<>();
 
@@ -193,7 +193,7 @@ public class AppendFieldTest {
         Series series = new Series();
         series.setEntity(ENTITY_NAME);
         series.setMetric(METRIC_APPEND_TEXT_VIA_BATCH);
-        series.addData(new TextSample(ISO_TIME, "text1;\ntext2"));
+        series.addSamples(new TextSample(ISO_TIME, "text1;\ntext2"));
 
         SeriesCommand seriesCommandInitial = new SeriesCommand();
         seriesCommandInitial.setEntityName(ENTITY_NAME);
@@ -248,7 +248,7 @@ public class AppendFieldTest {
         Series series = new Series();
         series.setEntity(ENTITY_NAME);
         series.setMetric(METRIC_TEXT_AFTER_DECIMAL_ADDITION);
-        series.addData(new TextSample(ISO_TIME, TEXT_VALUE));
+        series.addSamples(new TextSample(ISO_TIME, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = new ArrayList<>();
 
