@@ -13,8 +13,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
 
 public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
     private static final String TEST_ENTITY = entity();
@@ -33,7 +33,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC_1);
             for (int i = 0; i < 10; i++) {
-                series.addData(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), i));
+                series.addSamples(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), i));
             }
             seriesList.add(series);
         }
@@ -42,7 +42,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC_2);
             for (int i = 0; i < 10; i++) {
-                series.addData(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
+                series.addSamples(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
             }
             seriesList.add(series);
         }
@@ -54,7 +54,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
      * #3840
      */
     @Test
-    public void testOrderByColumnWithAggregationsOfDifferentMetrics() {
+    public void testOrderByColumnDescWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
                 "SELECT SUM(t2.value)-SUM(t1.value) AS col " +
                         "FROM '%s' t1 JOIN '%s' t2 " +
@@ -72,7 +72,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows("ORDER BY doesn't sort column with aggregations of different metrics",
+        assertSqlQueryRows("ORDER BY (DESC) doesn't sort column with aggregations of different metrics",
                             expectedRows, sqlQuery);
     }
 
@@ -80,7 +80,33 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
      * #3840
      */
     @Test
-    public void testOrderByColumnWithOneAggregationOfDifferentMetrics() {
+    public void testOrderByColumnAscWithAggregationsOfDifferentMetrics() {
+        String sqlQuery = String.format(
+                "SELECT SUM(t2.value)-SUM(t1.value) AS col " +
+                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "GROUP BY t1.PERIOD(2 MILLISECOND) " +
+                        "ORDER BY col ASC",
+                TEST_METRIC_1,
+                TEST_METRIC_2
+        );
+
+        String[][] expectedRows = {
+                {"1"},
+                {"5"},
+                {"9"},
+                {"13"},
+                {"17"}
+        };
+
+        assertSqlQueryRows("ORDER BY (ASC) doesn't sort column with aggregations of different metrics",
+                expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3840
+     */
+    @Test
+    public void testOrderByColumnDescWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(
                 "SELECT SUM(t2.value-t1.value) AS col " +
                         "FROM '%s' t1 JOIN '%s' t2 " +
@@ -98,7 +124,33 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
                 {"1"}
         };
 
-        assertSqlQueryRows("ORDER BY doesn't sort column with one aggregation of different metrics",
+        assertSqlQueryRows("ORDER BY (DESC) doesn't sort column with one aggregation of different metrics",
                             expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3840
+     */
+    @Test
+    public void testOrderByColumnAscWithOneAggregationOfDifferentMetrics() {
+        String sqlQuery = String.format(
+                "SELECT SUM(t2.value-t1.value) AS col " +
+                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "GROUP BY t1.PERIOD(2 MILLISECOND) " +
+                        "ORDER BY col ASC",
+                TEST_METRIC_1,
+                TEST_METRIC_2
+        );
+
+        String[][] expectedRows = {
+                {"1"},
+                {"5"},
+                {"9"},
+                {"13"},
+                {"17"}
+        };
+
+        assertSqlQueryRows("ORDER BY (ASC) doesn't sort column with one aggregation of different metrics",
+                expectedRows, sqlQuery);
     }
 }
