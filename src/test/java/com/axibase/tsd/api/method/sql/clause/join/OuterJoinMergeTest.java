@@ -94,7 +94,7 @@ public class OuterJoinMergeTest extends SqlTest {
     @Test
     public void testOuterJoinWhereClause() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s' WHERE '%1$s'.entity = '%3$s'",
+                "SELECT m1.entity, m1.value, m2.value FROM '%1$s' m1 OUTER JOIN USING entity '%2$s' m2 WHERE m1.entity = '%3$s'",
                 METRIC_NAMES.get(0),
                 METRIC_NAMES.get(1),
 
@@ -102,9 +102,15 @@ public class OuterJoinMergeTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {ENTITY_NAMES.get(0), "1", "1"},
-                {ENTITY_NAMES.get(0), "2", "2"},
-                {ENTITY_NAMES.get(0), "3", "3"},
+                {ENTITY_NAMES.get(0),   "1",    "1"},
+                {"null",                "null", "1"},
+                {"null",                "null", "1"},
+                {ENTITY_NAMES.get(0),   "2",    "2"},
+                {"null",                "null", "2"},
+                {"null",                "null", "2"},
+                {ENTITY_NAMES.get(0),   "3",    "3"},
+                {"null",                "null", "3"},
+                {"null",                "null", "3"},
         };
 
         assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
