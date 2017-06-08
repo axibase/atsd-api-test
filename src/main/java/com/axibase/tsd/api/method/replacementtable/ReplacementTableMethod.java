@@ -5,6 +5,10 @@ import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.util.NotCheckedException;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.client.ClientProperties;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +87,18 @@ public class ReplacementTableMethod extends BaseMethod {
             throw new IllegalStateException("Error in decoding stream to string");
         }
 
-        return body.contains(replacementTable);
+        Document doc = Jsoup.parse(body);
+        Element table = doc.select("table").get(0);
+        Elements trs = table.select("tr");
+        for (Element tr : trs) {
+            Elements tds = tr.select("td");
+            for (Element td : tds) {
+                if (td.text().contains(replacementTable)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
