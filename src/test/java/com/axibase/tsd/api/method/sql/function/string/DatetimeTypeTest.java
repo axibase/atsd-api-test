@@ -7,14 +7,93 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.Instant;
+
 public class DatetimeTypeTest extends SqlTest {
-    private static Series series;
+    private static Series series1;
+    private static Series series2;
+    private static final Long UNIX_TIME = Instant.parse(Mocks.ISO_TIME).toEpochMilli();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        series = Mocks.series();
+        series1 = Mocks.series();
+        series2 = Mocks.series();
 
-        SeriesMethod.insertSeriesCheck(series);
+        SeriesMethod.insertSeriesCheck(series1, series2);
+    }
+
+    /**
+     * #4221
+     */
+    @Test
+    public void testDatetimeTypeAsIsnullResult() {
+        String sqlQuery = String.format(
+                "SELECT isnull(t1.datetime, t2.datetime) " +
+                        "FROM '%s' t1 OUTER JOIN '%s' t2",
+                series1.getMetric(), series2.getMetric()
+        );
+
+        String[][] expectedRows = {
+                {
+                        Mocks.ISO_TIME
+
+                },
+                {
+                        Mocks.ISO_TIME
+                }
+        };
+
+        assertSqlQueryRows("Datetime type mismatch (when joined using OUTER JOIN)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4221
+     */
+    @Test
+    public void testTimeTypeAsIsnullResult() {
+        String sqlQuery = String.format(
+                "SELECT isnull(t1.time, t2.time) " +
+                        "FROM '%s' t1 OUTER JOIN '%s' t2",
+                series1.getMetric(), series2.getMetric()
+        );
+
+        String[][] expectedRows = {
+                {
+                        UNIX_TIME.toString()
+
+                },
+                {
+                        UNIX_TIME.toString()
+                }
+        };
+
+        assertSqlQueryRows("Time type mismatch (when joined using OUTER JOIN)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4221
+     */
+    @Test
+    public void testDatetimeTypeInStringFunctionsWithOuterJoin() {
+        // whole reproduction of #4221 failure
+        String sqlQuery = String.format(
+                "SELECT isnull(t1.value, t2.value), isnull(t1.datetime, t2.datetime), " +
+                        "isnull(t1.time, t2.time), isnull(t1.entity, t2.entity) " +
+                        "FROM '%s' t1 OUTER JOIN '%s' t2",
+                series1.getMetric(), series2.getMetric()
+        );
+
+        String[][] expectedRows = {
+                {
+                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, UNIX_TIME.toString(), series1.getEntity()
+
+                },
+                {
+                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, UNIX_TIME.toString(), series2.getEntity()
+                }
+        };
+
+        assertSqlQueryRows("Datetime (time) type mismatch (when joined using OUTER JOIN)", expectedRows, sqlQuery);
     }
 
     /**
@@ -27,7 +106,7 @@ public class DatetimeTypeTest extends SqlTest {
                         "concat(datetime, \"word\"), concat(datetime, 123), locate(16, datetime), " +
                         "locate(\"16\", datetime), substr(datetime, 24) " +
                 "FROM '%s' t1",
-                series.getMetric()
+                series1.getMetric()
         );
 
         String[][] expectedRows = {
@@ -59,7 +138,7 @@ public class DatetimeTypeTest extends SqlTest {
                         "locate(16, isnull(NaN, datetime)), locate(\"16\", isnull(NaN, datetime)), " +
                         "substr(isnull(NaN, datetime), 24)" +
                 "FROM '%s' t1",
-                series.getMetric()
+                series1.getMetric()
         );
 
         String[][] expectedRows = {
@@ -88,7 +167,7 @@ public class DatetimeTypeTest extends SqlTest {
                 "SELECT upper(time), lower(time), replace(time, \"0\", \"9\"), length(time), concat(time, \"word\"), " +
                         "concat(time, 123), locate(0, time), locate(\"0\", time), substr(time, 13)" +
                         "FROM '%s' t1",
-                series.getMetric()
+                series1.getMetric()
         );
 
         String[][] expectedRows = {
@@ -119,7 +198,7 @@ public class DatetimeTypeTest extends SqlTest {
                         "concat(isnull(NaN, time), 123), locate(0, isnull(NaN, time)), locate(\"0\", " +
                         "isnull(NaN, time)), substr(isnull(NaN, time), 13)" +
                         "FROM '%s' t1",
-                series.getMetric()
+                series1.getMetric()
         );
 
         String[][] expectedRows = {
