@@ -187,4 +187,18 @@ public class ConcatTest extends SqlTest {
 
         assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
     }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testConcatWithDate() {
+        String sqlQuery = "SELECT CONCAT('1970-01-01T00:00:00.00', '0', 'Z')";
+
+        String[][] expectedRows = new String[][] {
+                {"1970-01-01T00:00:00.000Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }

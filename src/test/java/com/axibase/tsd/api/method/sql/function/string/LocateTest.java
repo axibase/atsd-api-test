@@ -167,4 +167,18 @@ public class LocateTest extends SqlTest {
 
         assertSqlQueryRows("Locate in HAVING gives wrong result", expectedRows, sqlQuery);
     }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testLocateWithDate() {
+        String sqlQuery = "SELECT LOCATE('01', '1970-01-01T00:00:00.00')";
+
+        String[][] expectedRows = new String[][] {
+                {"6"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }

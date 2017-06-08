@@ -73,4 +73,18 @@ public class ReplaceTest extends SqlTest {
         String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
         assertEquals(assertMessage, expectedValue, actualValue);
     }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testReplaceWithDate() {
+        String sqlQuery = "SELECT REPLACE('1970-01-01T00:00:00.00d', 'd', '0Z')";
+
+        String[][] expectedRows = new String[][] {
+                {"1970-01-01T00:00:00.000Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }

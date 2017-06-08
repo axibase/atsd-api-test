@@ -77,4 +77,18 @@ public class LowerTest extends SqlTest {
         );
         assertEquals(actualValue, expectedValue, assertMessage);
     }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testLowerWithDate() {
+        String sqlQuery = "SELECT LOWER('1970-01-01T00:00:00.00')";
+
+        String[][] expectedRows = new String[][] {
+                {"1970-01-01t00:00:00.00"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }
