@@ -7,12 +7,9 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.time.Instant;
-
 public class DatetimeTypeTest extends SqlTest {
     private static Series series1;
     private static Series series2;
-    private static final Long UNIX_TIME = Instant.parse(Mocks.ISO_TIME).toEpochMilli();
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -29,7 +26,8 @@ public class DatetimeTypeTest extends SqlTest {
     public void testDatetimeTypeAsIsnullResult() {
         String sqlQuery = String.format(
                 "SELECT isnull(t1.datetime, t2.datetime) " +
-                        "FROM '%s' t1 OUTER JOIN '%s' t2",
+                        "FROM '%s' t1 OUTER JOIN '%s' t2 " +
+                        "LIMIT 2",
                 series1.getMetric(), series2.getMetric()
         );
 
@@ -53,17 +51,18 @@ public class DatetimeTypeTest extends SqlTest {
     public void testTimeTypeAsIsnullResult() {
         String sqlQuery = String.format(
                 "SELECT isnull(t1.time, t2.time) " +
-                        "FROM '%s' t1 OUTER JOIN '%s' t2",
+                        "FROM '%s' t1 OUTER JOIN '%s' t2 " +
+                        "LIMIT 2",
                 series1.getMetric(), series2.getMetric()
         );
 
         String[][] expectedRows = {
                 {
-                        UNIX_TIME.toString()
+                        Mocks.MILLS_TIME.toString()
 
                 },
                 {
-                        UNIX_TIME.toString()
+                        Mocks.MILLS_TIME.toString()
                 }
         };
 
@@ -79,17 +78,19 @@ public class DatetimeTypeTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT isnull(t1.value, t2.value), isnull(t1.datetime, t2.datetime), " +
                         "isnull(t1.time, t2.time), isnull(t1.entity, t2.entity) " +
-                        "FROM '%s' t1 OUTER JOIN '%s' t2",
+                        "FROM '%s' t1 OUTER JOIN '%s' t2 " +
+                        "ORDER BY 1 " +
+                        "LIMIT 2",
                 series1.getMetric(), series2.getMetric()
         );
 
         String[][] expectedRows = {
                 {
-                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, UNIX_TIME.toString(), series1.getEntity()
+                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series1.getEntity()
 
                 },
                 {
-                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, UNIX_TIME.toString(), series2.getEntity()
+                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series2.getEntity()
                 }
         };
 
@@ -105,21 +106,22 @@ public class DatetimeTypeTest extends SqlTest {
                 "SELECT upper(datetime), lower(datetime), replace(datetime, \"3\", \"0\"), length(datetime), " +
                         "concat(datetime, \"word\"), concat(datetime, 123), locate(16, datetime), " +
                         "locate(\"16\", datetime), substr(datetime, 24) " +
-                "FROM '%s' t1",
+                "FROM '%s' t1 " +
+                "LIMIT 1",
                 series1.getMetric()
         );
 
         String[][] expectedRows = {
                 {
-                        "2016-06-03T09:23:00.000Z",
-                        "2016-06-03t09:23:00.000z",
-                        "2016-06-00T09:20:00.000Z",
-                        "24",
-                        "2016-06-03T09:23:00.000Zword",
-                        "2016-06-03T09:23:00.000Z123",
-                        "3",
-                        "3",
-                        "Z"
+                        Mocks.ISO_TIME.toUpperCase(),
+                        Mocks.ISO_TIME.toLowerCase(),
+                        Mocks.ISO_TIME.replace('3', '0'),
+                        String.valueOf(Mocks.ISO_TIME.length()),
+                        Mocks.ISO_TIME + "word",
+                        Mocks.ISO_TIME + "123",
+                        String.valueOf(Mocks.ISO_TIME.indexOf("16") + 1),
+                        String.valueOf(Mocks.ISO_TIME.indexOf("16") + 1),
+                        Mocks.ISO_TIME.substring(24 - 1)
                 }
         };
 
@@ -137,21 +139,22 @@ public class DatetimeTypeTest extends SqlTest {
                         "concat(isnull(NaN, datetime), \"word\"), concat(isnull(NaN, datetime), 123), " +
                         "locate(16, isnull(NaN, datetime)), locate(\"16\", isnull(NaN, datetime)), " +
                         "substr(isnull(NaN, datetime), 24)" +
-                "FROM '%s' t1",
+                "FROM '%s' t1 " +
+                "LIMIT 1",
                 series1.getMetric()
         );
 
         String[][] expectedRows = {
                 {
-                        "2016-06-03T09:23:00.000Z",
-                        "2016-06-03t09:23:00.000z",
-                        "2016-06-00T09:20:00.000Z",
-                        "24",
-                        "2016-06-03T09:23:00.000Zword",
-                        "2016-06-03T09:23:00.000Z123",
-                        "3",
-                        "3",
-                        "Z"
+                        Mocks.ISO_TIME.toUpperCase(),
+                        Mocks.ISO_TIME.toLowerCase(),
+                        Mocks.ISO_TIME.replace('3', '0'),
+                        String.valueOf(Mocks.ISO_TIME.length()),
+                        Mocks.ISO_TIME + "word",
+                        Mocks.ISO_TIME + "123",
+                        String.valueOf(Mocks.ISO_TIME.indexOf("16") + 1),
+                        String.valueOf(Mocks.ISO_TIME.indexOf("16") + 1),
+                        Mocks.ISO_TIME.substring(24 - 1)
                 }
         };
 
@@ -166,21 +169,22 @@ public class DatetimeTypeTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT upper(time), lower(time), replace(time, \"0\", \"9\"), length(time), concat(time, \"word\"), " +
                         "concat(time, 123), locate(0, time), locate(\"0\", time), substr(time, 13)" +
-                        "FROM '%s' t1",
+                "FROM '%s' t1 " +
+                "LIMIT 1",
                 series1.getMetric()
         );
 
         String[][] expectedRows = {
                 {
-                        "1464945780000",
-                        "1464945780000",
-                        "1464945789999",
-                        "13",
-                        "1464945780000word",
-                        "1464945780000123",
-                        "10",
-                        "10",
-                        "0"
+                        Mocks.MILLS_TIME.toString().toUpperCase(),
+                        Mocks.MILLS_TIME.toString().toLowerCase(),
+                        Mocks.MILLS_TIME.toString().replace('0', '9'),
+                        String.valueOf(Mocks.MILLS_TIME.toString().length()),
+                        Mocks.MILLS_TIME.toString() + "word",
+                        Mocks.MILLS_TIME.toString() + "123",
+                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
+                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
+                        Mocks.MILLS_TIME.toString().substring(13 - 1)
                 }
         };
 
@@ -197,21 +201,22 @@ public class DatetimeTypeTest extends SqlTest {
                         "length(isnull(NaN, time)), concat(isnull(NaN, time), \"word\"), " +
                         "concat(isnull(NaN, time), 123), locate(0, isnull(NaN, time)), locate(\"0\", " +
                         "isnull(NaN, time)), substr(isnull(NaN, time), 13)" +
-                        "FROM '%s' t1",
+                "FROM '%s' t1 " +
+                "LIMIT 1",
                 series1.getMetric()
         );
 
         String[][] expectedRows = {
                 {
-                        "1464945780000",
-                        "1464945780000",
-                        "1464945789999",
-                        "13",
-                        "1464945780000word",
-                        "1464945780000123",
-                        "10",
-                        "10",
-                        "0"
+                        Mocks.MILLS_TIME.toString().toUpperCase(),
+                        Mocks.MILLS_TIME.toString().toLowerCase(),
+                        Mocks.MILLS_TIME.toString().replace('0', '9'),
+                        String.valueOf(Mocks.MILLS_TIME.toString().length()),
+                        Mocks.MILLS_TIME.toString() + "word",
+                        Mocks.MILLS_TIME.toString() + "123",
+                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
+                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
+                        Mocks.MILLS_TIME.toString().substring(13 - 1)
                 }
         };
 
