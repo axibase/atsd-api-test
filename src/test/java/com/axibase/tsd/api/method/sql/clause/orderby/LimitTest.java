@@ -68,19 +68,19 @@ public class LimitTest extends SqlTest {
     public Object[][] entityOrderProvider() {
         return new Object[][]{
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nORDER BY value",
+                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nORDER BY AVG(value)",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nORDER BY value DESC",
+                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nORDER BY AVG(value) DESC",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nWHERE value > 3%nGROUP BY entity%nORDER BY value",
+                        "SELECT entity, AVG (value) FROM '%s'%nWHERE value > 3%nGROUP BY entity%nORDER BY AVG(value)",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nHAVING AVG(value) > 3%nORDER BY value",
+                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nHAVING AVG(value) > 3%nORDER BY AVG(value)",
                         3
                 }
         };
@@ -124,7 +124,7 @@ public class LimitTest extends SqlTest {
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nWHERE value > 3%nGROUP BY entity%nORDER BY value",
+                        "SELECT entity, AVG (value) FROM '%s'%nWHERE value > 3%nGROUP BY entity%nORDER BY AVG (value)",
                         3
                 }
         };
