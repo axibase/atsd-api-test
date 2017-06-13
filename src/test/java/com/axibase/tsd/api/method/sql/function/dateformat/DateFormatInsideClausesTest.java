@@ -87,6 +87,64 @@ public class DateFormatInsideClausesTest extends SqlTest {
     public void testDateFormatUWithTzInsideWhere() throws Exception {
         String sqlQuery = String.format(
                 "SELECT value FROM '%s' " +
+                        "WHERE date_format(time) = '2017-02-10T07:00:00.000Z' " +
+                        "ORDER BY value",
+                METRIC_NAME1
+        );
+
+        String[][] expectedRows = {
+                {"12"}
+        };
+
+        assertSqlQueryRows("Query with date_format inside WHERE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3746
+     */
+    @Test
+    public void testDateFormatUWithTzInsideWhereComplexClause() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%s' " +
+                        "WHERE date_format(time) = '2017-02-10T07:00:00.000Z' OR date_format(time) = '2017-02-10T12:00:00.000Z'" +
+                        "ORDER BY value",
+                METRIC_NAME1
+        );
+
+        String[][] expectedRows = {
+                {"11"},
+                {"12"}
+        };
+
+        assertSqlQueryRows("Query with date_format inside WHERE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3746
+     */
+    @Test
+    public void testDateFormatUWithTzInsideWhereWithoutMs() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%s' " +
+                        "WHERE date_format(time, 'yyyy-MM-dd''T''HH:mm:ssZZ') = '2017-02-10T07:00:00Z' " +
+                        "ORDER BY value",
+                METRIC_NAME1
+        );
+
+        String[][] expectedRows = {
+                {"12"}
+        };
+
+        assertSqlQueryRows("Query with date_format inside WHERE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4231
+     */
+    @Test
+    public void testDateFormatDefaultInsideWhere() {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%s' " +
                         "WHERE date_format(time, 'u', 'PST') = 4 " +
                         "ORDER BY value",
                 METRIC_NAME1
