@@ -128,7 +128,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
     public void testDateFormatInsideWhereWithoutMs() throws Exception {
         String sqlQuery = String.format(
                 "SELECT value FROM '%s' " +
-                        "WHERE date_format(time, 'yyyy-MM-dd''T''HH:mm:ssZZ') = '2017-02-10T07:00:00Z' " +
+                        "WHERE date_format(time, 'yyyy-MM-dd''T''HH:mm:ssZZ', 'GMT0') = '2017-02-10T07:00:00Z' " +
                         "ORDER BY value",
                 METRIC_NAME1
         );
