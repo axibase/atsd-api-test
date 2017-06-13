@@ -27,17 +27,19 @@ public class SqlEntityTagsTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
             addSamples(new Sample("2016-06-19T11:00:00.000Z", 3));
         }};
-        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
-        EntityMethod.updateEntity(TEST_ENTITY_NAME, new Entity() {{
-            setTags(
-                    Collections.unmodifiableMap(new HashMap<String, String>() {{
-                        put("tag1", "val1");
-                        put("tag2", "val2");
-                        put("tag3", "v3");
-                    }})
-            );
-        }});
+        EntityMethod.createOrReplaceEntityCheck(
+                new Entity(
+                        TEST_ENTITY_NAME,
+                        new HashMap<String, String>() {{
+                            put("tag1", "val1");
+                            put("tag2", "val2");
+                            put("tag3", "v3");
+                        }}
+                )
+        );
+
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
 

@@ -40,8 +40,7 @@ public class OuterJoinMergeTest extends SqlTest {
 
         for (String metricName : METRIC_NAMES) {
             for (String entityName : ENTITY_NAMES) {
-                Series series = new Series(entityName, metricName);
-                series.setTags(Mocks.TAGS);
+                Series series = new Series(entityName, metricName, Mocks.TAGS);
 
                 for (int i = 0; i < VALUES_COUNT; i++) {
                     series.addSamples(new Sample(String.format("2017-01-0%1sT00:00:00.000Z", i + 1), i + 1));

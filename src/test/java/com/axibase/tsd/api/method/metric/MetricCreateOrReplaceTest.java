@@ -71,10 +71,10 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         final String TAG_NAME = "SoMeTaG";
         final String TAG_VALUE = "value";
 
-        Metric metric = new Metric("create-metric-with-tag");
         Map<String, String> tags = new HashMap<>();
         tags.put(TAG_NAME, TAG_VALUE);
-        metric.setTags(tags);
+        Metric metric = new Metric("create-metric-with-tag", tags);
+
         Response response1 = createOrReplaceMetric(metric);
         assertEquals("Failed to create metric", OK.getStatusCode(), response1.getStatus());
 

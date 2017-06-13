@@ -49,14 +49,13 @@ public class SqlIsNullOperatorTest extends SqlTest {
             addSamples(new Sample("2016-06-19T11:20:00.000Z", 5));
         }});
 
-        SeriesMethod.insertSeriesCheck(seriesList);
+        EntityMethod.createOrReplaceEntityCheck(new Entity(TEST_ENTITY1_NAME, new HashMap<String, String>() {{
+                    put("tag1", "val1");
+                }}
+                )
+        );
 
-        EntityMethod.updateEntity(TEST_ENTITY1_NAME, new Entity() {{
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                        put("tag1", "val1");
-                    }})
-            );
-        }});
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
     /**

@@ -26,6 +26,8 @@ public class SqlLargeDataTest extends SqlTest {
     @Test
     public void testQueryLargeData() throws Exception {
         ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
+        Registry.Entity.checkExists(ENTITY_NAME);
+        Registry.Metric.checkExists(METRIC_NAME);
 
         for (int i = 1; i <= ENTITIES_COUNT; i++) {
             // manually set entity and metric to avoid check

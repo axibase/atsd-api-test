@@ -27,12 +27,10 @@ public class SqlTableAliasTest extends SqlTest {
 
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
-                        new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME) {{
+                        new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, tags) {{
                             addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
-                            setTags(tags);
                         }},
-                        new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME) {{
-                            setTags(tags);
+                        new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, tags) {{
                             addSamples(new Sample("2016-06-03T09:24:00.000Z", 1));
                         }}
                 )

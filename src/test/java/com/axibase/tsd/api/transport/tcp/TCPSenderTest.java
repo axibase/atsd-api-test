@@ -24,8 +24,7 @@ public class TCPSenderTest {
 
     @Test
     public void testDebugSend() throws Exception {
-        Entity entity = new Entity(entity());
-        entity.setTags(TAGS);
+        Entity entity = new Entity(entity(), TAGS);
         entity.setTimeZoneID(TIMEZONE_ID);
         entity.setInterpolationMode(InterpolationMode.LINEAR);
         entity.setLabel(LABEL);

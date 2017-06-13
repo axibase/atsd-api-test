@@ -12,22 +12,24 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
+
 public class GroupByText extends SqlTest {
-    private final Series DEFAULT_SERIES = Mocks.series();
-    private final String DEFAULT_METRIC = DEFAULT_SERIES.getMetric();
-    private final String DEFAULT_ENTITY = DEFAULT_SERIES.getEntity();
+    private final String DEFAULT_ENTITY = entity();
+    private final String DEFAULT_METRIC = metric();
 
     @BeforeClass
     public void insertTextSampleToDefaultSeries() throws Exception {
-        Series series = DEFAULT_SERIES;
-        series.setSamples(new ArrayList<>(Arrays.asList(
+        Series series = new Series(DEFAULT_ENTITY, DEFAULT_METRIC);
+        series.addSamples(
                 new TextSample("2016-06-03T09:00:00.000Z", "sample text"),
                 new TextSample("2016-06-03T09:05:00.000Z", "text"),
                 new TextSample("2016-06-03T09:10:00.000Z", "TEXT"),
                 new TextSample("2016-06-03T09:15:00.000Z", "12"),
                 new Sample    ("2016-06-03T09:20:00.000Z", 1), // text is null
                 new TextSample("2016-06-03T09:25:00.000Z", "")
-        )));
+        );
         SeriesMethod.insertSeriesCheck(series);
     }
 

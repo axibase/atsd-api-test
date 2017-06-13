@@ -39,26 +39,22 @@ public class SqlStandardCollectionViewTest extends SqlTest {
     public static void prepareData() throws Exception {
         //Series data
         List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME) {{
-            setTags(TAGS);
+        seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME, TAGS) {{
             addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         }});
+
         seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC2_NAME) {{
             addSamples(new Sample("2016-06-29T08:00:00.000Z", 1));
         }});
-        SeriesMethod.insertSeriesCheck(seriesList);
+
         //Entity data
-        EntityMethod.updateEntity(TEST_ENTITY1_NAME,
-                new Entity() {{
-                    setTags(TAGS);
-                }}
-        );
+        EntityMethod.createOrReplaceEntity(new Entity(TEST_ENTITY1_NAME, TAGS));
+
         //Metric data
-        MetricMethod.updateMetric(TEST_METRIC1_NAME,
-                new Metric() {{
-                    setTags(TAGS);
-                }}
-        );
+        MetricMethod.createOrReplaceMetric(new Metric(TEST_METRIC1_NAME, TAGS));
+
+        SeriesMethod.insertSeriesCheck(seriesList);
+
         //Entity groups data
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP1_NAME));
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));

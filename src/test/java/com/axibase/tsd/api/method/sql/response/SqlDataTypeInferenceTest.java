@@ -31,9 +31,8 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
 
         List<Series> seriesList = new ArrayList<>();
         for (DataType type : DataType.values()) {
-            Metric metric = new Metric(metric());
+            Metric metric = new Metric(metric(), TAGS);
             metric.setLabel(LABEL);
-            metric.setTags(TAGS);
             metric.setTimeZoneID(TIMEZONE_ID);
             metric.setDescription(DESCRIPTION);
             metric.setDataType(DataType.DOUBLE);

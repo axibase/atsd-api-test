@@ -41,6 +41,14 @@ public class Metric {
         this.name = name;
     }
 
+    public Metric(String name, Map<String, String> tags) {
+        if (name != null) {
+            Registry.Metric.checkExists(name);
+        }
+        this.name = name;
+        this.tags = tags;
+    }
+
     public String getFilter() {
         return filter;
     }

@@ -258,11 +258,9 @@ public class JoinWithTags extends SqlTest {
     @Test
     public void testJoinKeepsMetricTags() throws Exception {
         Series series = Mocks.series();
-        Metric metric = new Metric();
-        metric.setName(series.getMetric());
         Map<String, String> tags = new HashMap<>();
         tags.put("foobar", "foo");
-        metric.setTags(tags);
+        Metric metric = new Metric(series.getMetric(), tags);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         Series otherSeries = Mocks.series();

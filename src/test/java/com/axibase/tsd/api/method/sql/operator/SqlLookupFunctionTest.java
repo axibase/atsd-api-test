@@ -85,17 +85,12 @@ public class SqlLookupFunctionTest extends SqlTest {
         tags.put("9", "3.14");
         tags.put("10", "nothing");
 
-        Metric metric = new Metric(TEST_METRIC_NAME_TAGS_CASE);
-        metric.setTags(tags);
+        Metric metric = new Metric(TEST_METRIC_NAME_TAGS_CASE, tags);
+        Entity entity = new Entity(testEntityNameTagsCase, tags);
+        Series series = new Series(testEntityNameTagsCase, TEST_METRIC_NAME_TAGS_CASE, tags);
 
-        Entity entity = new Entity(testEntityNameTagsCase);
-        entity.setTags(tags);
-
-        Series series = new Series(testEntityNameTagsCase, TEST_METRIC_NAME_TAGS_CASE);
-        series.setTags(tags);
         series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
         seriesList.add(series);
-
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         EntityMethod.createOrReplaceEntityCheck(entity);

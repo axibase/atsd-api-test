@@ -4,32 +4,27 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
 
 public class WhereTagsLikeAnyOfTest extends SqlTest {
     private static final String METRIC_NAME = metric();
 
     @BeforeClass
     private static void prepareData() throws Exception {
-        Registry.Metric.checkExists(METRIC_NAME);
+        String entity = entity();
 
-        Series series1 = Mocks.series();
-        series1.setMetric(METRIC_NAME);
-        series1.setTags(Collections.singletonMap("tag", "ab"));
+        Series series1 = new Series(entity, METRIC_NAME, "tag", "ab");
+        series1.addSamples(Mocks.SAMPLE);
 
-        Series series2 = Mocks.series();
-        series2.setMetric(METRIC_NAME);
-        series2.setTags(Collections.singletonMap("tag", "ac"));
+        Series series2 = new Series(entity, METRIC_NAME, "tag", "ac");
+        series2.addSamples(Mocks.SAMPLE);
 
-        Series series3 = Mocks.series();
-        series3.setMetric(METRIC_NAME);
-        series3.setTags(Collections.singletonMap("tag", "ad"));
+        Series series3 = new Series(entity, METRIC_NAME, "tag", "ad");
+        series3.addSamples(Mocks.SAMPLE);
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }

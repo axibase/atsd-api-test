@@ -37,6 +37,14 @@ public class Entity {
         this.name = name;
     }
 
+    public Entity(String name, Map<String, String> tags) {
+        if (null != name) {
+            Registry.Entity.checkExists(name);
+        }
+        this.name = name;
+        this.tags = tags;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }

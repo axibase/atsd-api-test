@@ -48,8 +48,7 @@ public class Mocks {
         }
 
     public static Series series() {
-        Series resultSeries = new Series(entity(), metric());
-        resultSeries.setTags(TAGS);
+        Series resultSeries = new Series(entity(), metric(), TAGS);
         resultSeries.addSamples(SAMPLE);
         return resultSeries;
     }

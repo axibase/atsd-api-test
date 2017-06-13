@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static com.axibase.tsd.api.method.entity.EntityTest.assertEntityExisting;
@@ -43,7 +45,6 @@ public class CSVInsertTest extends CSVInsertMethod {
     @Test(dataProvider = "formatPatternProvider")
     public void testFormattedDate(String template) {
         Series expectedSeries = series();
-        expectedSeries.setSamples(singletonList(SAMPLE));
         String csvPayload = String.format(
                 "date, %s%n%s, %s%n",
                 expectedSeries.getMetric(),
@@ -93,11 +94,10 @@ public class CSVInsertTest extends CSVInsertMethod {
     @Test
     public void testTimeRangeInISO() throws Exception {
         Series series = Mocks.series();
-        series.setSamples(new ArrayList<>());
-        series.addSamples(
+        series.setSamples(Arrays.asList(
                 new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
                 new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
-        );
+        ));
 
         String csvPayload = String.format(
                 "date, %s%n%s, %s%n%s, %s%n",

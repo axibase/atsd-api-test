@@ -33,18 +33,15 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
             put("tag\"quotation'", "6");
         }});
 
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags) {{
             addSamples(new Sample("2016-06-19T11:00:00.500Z", 0));
-            setTags(tags);
         }};
-        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
-        MetricMethod.updateMetric(TEST_METRIC_NAME, new Metric() {{
-            setTags(tags);
-        }});
-        EntityMethod.updateEntity(TEST_ENTITY_NAME, new Entity() {{
-            setTags(tags);
-        }});
+        MetricMethod.createOrReplaceMetricCheck(new Metric(TEST_METRIC_NAME, tags));
+
+        EntityMethod.createOrReplaceEntityCheck(new Entity(TEST_ENTITY_NAME, tags));
+
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**
