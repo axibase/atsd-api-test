@@ -121,6 +121,34 @@ public class SqlFunctionMathTest extends SqlTest {
     }
 
     /**
+     * #4260
+     */
+    @Test
+    public void testRoundWithNaN() {
+        String sqlQuery = "SELECT ROUND(NaN)";
+
+        String[][] expectedRows = new String[][] {
+                {"NaN"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4260
+     */
+    @Test
+    public void testRoundDecimalPlacesWithNaN() {
+        String sqlQuery = "SELECT ROUND(NaN, 0)";
+
+        String[][] expectedRows = new String[][] {
+                {"NaN"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
      * #3049
      */
     @Test
