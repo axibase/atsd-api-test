@@ -7,13 +7,15 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -25,6 +27,10 @@ public class CastTest extends SqlTest {
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_METRIC3_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
+
+    private static final String TEST_METRIC1_NAME_3841 = metric();
+    private static final String TEST_METRIC2_NAME_3841 = metric();
+    private static final String TEST_ENTITY_NAME_3841 = entity();
 
     private Series castNumberAsStringSeries;
 
@@ -763,5 +769,55 @@ public class CastTest extends SqlTest {
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #3841
+     */
+    @BeforeClass
+    public static void prepareDataFor3841() throws Exception {
+        // reproducing data for ticket #3841 behaviour
+        Series series1 = new Series(TEST_ENTITY_NAME_3841, TEST_METRIC1_NAME_3841);
+        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:20:01.000Z", 2),
+                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series1.addTag("tag", "1001");
+
+        Series series2 = new Series(null, TEST_METRIC2_NAME_3841);
+        series2.setEntity(TEST_ENTITY_NAME_3841);
+        series2.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:20:01.000Z", 2),
+                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series2.addTag("tag", "2001");
+
+        SeriesMethod.insertSeriesCheck(series1, series2);
+    }
+
+    /**
+     * #3841
+     */
+    @Test
+    public void testCastReproducingBehaviourInTicket3841() {
+        // reproducing ticket #3841 behaviour
+        // in that case grouping parameter becomes (1000 second)
+        String sqlQuery = String.format(
+                "SELECT SUM(e.value) AS export, SUM(i.value) AS import, " +
+                "  SUM(e.value)-SUM(i.value) AS trade_balance " +
+                "  FROM '%s' e " +
+                "  JOIN USING ENTITY '%s' i " +
+                "WHERE e.datetime >= '1970-01-01T00:00:00Z' and e.datetime < '2016-12-01T00:00:00Z' " +
+                "  AND CAST(e.tags.tag AS number) > 1000 " +
+                "GROUP BY e.period(1 second)",
+                TEST_METRIC1_NAME_3841,
+                TEST_METRIC2_NAME_3841
+        );
+
+        String[][] expectedRows = {
+                {"1" , "1", "0"},
+                {"2" , "2", "0"},
+                {"3" , "3", "0"}
+        };
+
+        assertSqlQueryRows("Parsing '>1000' in CAST failed like in ticket #3841", expectedRows, sqlQuery);
     }
 }
