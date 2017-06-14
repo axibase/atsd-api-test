@@ -86,11 +86,11 @@ public class DatetimeTypeTest extends SqlTest {
 
         String[][] expectedRows = {
                 {
-                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series1.getEntity()
+                        Mocks.DECIMAL_VALUE.toString(), Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series1.getEntity()
 
                 },
                 {
-                        Mocks.DECIMAL_VALUE, Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series2.getEntity()
+                        Mocks.DECIMAL_VALUE.toString(), Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series2.getEntity()
                 }
         };
 
