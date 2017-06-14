@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.sql.clause.select;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import org.testng.annotations.Test;
 
-public class Select1Test extends SqlTest {
+public class SelectOneTest extends SqlTest {
     /**
      * #4067
      */
