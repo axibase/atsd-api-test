@@ -1,17 +1,17 @@
 package com.axibase.tsd.api.method.sql.examples.select;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-example-select-from-atsd-series-";
@@ -101,5 +101,21 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
         );
 
         assertTableRowsExist(expectedRows, resultTable);
+    }
+
+    /**
+     * #4259
+     */
+    @Test
+    public void testErrorOnComplexMetricFilter() {
+        String sqlQuery = String.format(
+                "SELECT entity, metric, datetime, value " +
+                        "FROM atsd_series " +
+                        "WHERE (metric = '%s') OR (metric = '%s' AND entity = '%s')",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertBadRequest("Invalid metric expression", response);
     }
 }
