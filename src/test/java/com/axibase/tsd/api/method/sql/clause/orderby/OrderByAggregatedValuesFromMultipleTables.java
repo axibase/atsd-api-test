@@ -5,16 +5,15 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
     private static final String TEST_ENTITY = entity();
@@ -23,26 +22,21 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY);
-        Registry.Metric.register(TEST_METRIC_1);
-        Registry.Metric.register(TEST_METRIC_2);
-
         List<Series> seriesList = new ArrayList<>();
         {
-            Series series = new Series();
+            Series series = new Series(TEST_ENTITY, TEST_METRIC_1);
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC_1);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), i));
+                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), i));
             }
             seriesList.add(series);
         }
         {
-            Series series = new Series();
+            Series series = new Series(null, TEST_METRIC_2);
             series.setEntity(TEST_ENTITY);
-            series.setMetric(TEST_METRIC_2);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
+                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
             }
             seriesList.add(series);
         }
