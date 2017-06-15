@@ -8,37 +8,30 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SqlSelectEntityFieldsTest extends SqlTest {
-
     private static final String TEST_ENTITY = entity();
     private static final String TEST_METRIC = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC);
-
-        Entity entity = new Entity(TEST_ENTITY);
+        Entity entity = new Entity(TEST_ENTITY, Mocks.TAGS);
         entity.setLabel(Mocks.LABEL);
         entity.setEnabled(true);
         entity.setInterpolationMode(InterpolationMode.PREVIOUS);
         entity.setTimeZoneID(Mocks.TIMEZONE_ID);
-        entity.setTags(Mocks.TAGS);
+
+        Series series = new Series(TEST_ENTITY, TEST_METRIC);
+        series.addSamples(Mocks.SAMPLE);
+
         EntityMethod.createOrReplaceEntityCheck(entity);
-
-        Series series = new Series();
-        series.setEntity(TEST_ENTITY);
-        series.setMetric(TEST_METRIC);
-        series.addData(Mocks.SAMPLE);
-
         SeriesMethod.insertSeriesCheck(series);
     }
 
@@ -56,7 +49,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
     }
 
     /**
-     * #3882, #4079
+     * #4117
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testQueryEntityFields(String field, String value) {
@@ -78,7 +71,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
     }
 
     /**
-     * #3888
+     * #4117
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInWhere(String field, String value) {
@@ -107,7 +100,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
     }
 
     /**
-     * #3888
+     * #4117
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInGroupBy(String field, String value) {
@@ -129,7 +122,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
     }
 
     /**
-     * #3888
+     * #4117
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInOrderBy(String field, String value) {
@@ -151,7 +144,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
     }
 
     /**
-     * #3888
+     * #4117
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInHaving(String field, String value) {
@@ -160,8 +153,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
             String sqlQuery = String.format(
                     "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s HAVING m.entity.%1$s IS NOT NULL",
                     field,
-                    TEST_METRIC,
-                    value);
+                    TEST_METRIC);
 
             StringTable resultTable = queryTable(sqlQuery);
             assertEquals(String.format("Error in entity field query with HAVING (%s)", field), resultTable.getRows().size(), 1);
