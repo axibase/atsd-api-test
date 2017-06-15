@@ -26,17 +26,17 @@ public class AppendFieldTest {
     private static final Long AWAIT_TIME = 500L;
 
     private static boolean checkResult(Series series) {
+        try {
+            Thread.sleep(AWAIT_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         boolean checked = true;
         try {
             Checker.check(new SeriesCheck(Collections.singletonList(series)));
         }
         catch (NotCheckedException e) {
             checked = false;
-        }
-        try {
-            Thread.sleep(AWAIT_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         return checked;
     }
@@ -78,6 +78,23 @@ public class AppendFieldTest {
         String expected = series.getData().get(0).getText();
         assertTrue(String.format("Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s",
                 expected,  actualData.toString()), checked);
+
+//        Append with erase doesn't work, expected result was
+//        a;
+//        b;
+//        c;
+//        0.1;
+//        word1 word2;
+//        0;
+//        word1
+//        but actual result is:
+//        [a;
+//        b;
+//        c;
+//        word1 word2;
+//        0;
+//        word1;
+//        0.1]
     }
 
     /**
