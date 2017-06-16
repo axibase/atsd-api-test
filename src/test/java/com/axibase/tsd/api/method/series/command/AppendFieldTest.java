@@ -14,6 +14,7 @@ import com.axibase.tsd.api.util.NotCheckedException;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,12 +73,7 @@ public class AppendFieldTest {
             CommandMethod.send(seriesCommand);
         }
 
-        boolean checked = checkResult(series);
-
-        List<String> actualData = getActualData(series);
-        String expected = series.getData().get(0).getText();
-        assertTrue(String.format("Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s",
-                expected,  actualData.toString()), checked);
+        assertDataEquals(series, "Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s");
 
 //        Append with erase doesn't work, expected result was
 //        a;
@@ -130,12 +126,7 @@ public class AppendFieldTest {
             CommandMethod.send(seriesCommand);
         }
 
-        boolean checked = checkResult(series);
-
-        List<String> actualData = getActualData(series);
-        String expected = series.getData().get(0).getText();
-        assertTrue(String.format("Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s",
-                expected, actualData.toString()), checked);
+        assertDataEquals(series, "Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s");
     }
 
     /**
@@ -148,22 +139,17 @@ public class AppendFieldTest {
         Series series = new Series(entityName, metricDecimalToText);
         series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE));
 
-        List<PlainCommand> seriesCommandList = new ArrayList<>();
-
-        seriesCommandList.add(new SeriesCommand(singletonMap(metricDecimalToText, TEXT_VALUE), null,
-                                                entityName, null, null, null, ISO_TIME, true));
-        seriesCommandList.add(new SeriesCommand(null, singletonMap(metricDecimalToText, DECIMAL_VALUE.toString()),
-                                                entityName, null, null, null, ISO_TIME, false));
+        List<PlainCommand> seriesCommandList = Arrays.asList(
+                new SeriesCommand(singletonMap(metricDecimalToText, TEXT_VALUE), null,
+                        entityName, null, null, null, ISO_TIME, true),
+                new SeriesCommand(null, singletonMap(metricDecimalToText, DECIMAL_VALUE.toString()),
+                        entityName, null, null, null, ISO_TIME, false)
+        );
 
         CommandMethod.send(seriesCommandList);
 
-        boolean checked = checkResult(series);
-
-        List<String> actualData = getActualData(series);
-        String expected = series.getData().get(0).getText();
-        assertTrue(String.format("Addition decimal field to text field failed, " +
-                        "expected result was%n%s%nbut actual result is:%n%s",
-                expected, actualData.toString()), checked);
+        assertDataEquals(series, "Addition decimal field to text field failed, " +
+                "expected result was%n%s%nbut actual result is:%n%s");
     }
 
     /**
@@ -179,21 +165,17 @@ public class AppendFieldTest {
         CommandMethod.send(new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text1"), null,
                                             entityName, null, null, null, ISO_TIME, false));
 
-        List<PlainCommand> seriesCommandList = new ArrayList<>();
-        seriesCommandList.add(new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text2"), null,
-                                                entityName, null, null, null, ISO_TIME, true));
-        seriesCommandList.add(new SeriesCommand(null, singletonMap(metricAppendTextViaBatch, DECIMAL_VALUE.toString()),
-                                                entityName, null, null, null, ISO_TIME, null));
+        List<PlainCommand> seriesCommandList = new ArrayList<>(Arrays.asList(
+                new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text2"), null,
+                        entityName, null, null, null, ISO_TIME, true),
+                new SeriesCommand(null, singletonMap(metricAppendTextViaBatch, DECIMAL_VALUE.toString()),
+                        entityName, null, null, null, ISO_TIME, null))
+        );
 
         CommandMethod.send(seriesCommandList);
 
-        boolean checked = checkResult(series);
-
-        List<String> actualData = getActualData(series);
-        String expected = series.getData().get(0).getText();
-        assertTrue(String.format("Addition text field to text field failed, " +
-                        "expected result was%n%s%nbut actual result is:%n%s",
-                expected, actualData.toString()), checked);
+        assertDataEquals(series, "Addition text field to text field failed, " +
+                "expected result was%n%s%nbut actual result is:%n%s");
     }
 
     /**
@@ -206,21 +188,25 @@ public class AppendFieldTest {
         Series series = new Series(entityName, metricTextAfterDecimalAddition);
         series.addSamples(new TextSample(ISO_TIME, TEXT_VALUE));
 
-        List<PlainCommand> seriesCommandList = new ArrayList<>();
-
-        seriesCommandList.add(new SeriesCommand(singletonMap(metricTextAfterDecimalAddition, TEXT_VALUE), null,
-                                                entityName, null, null, null, ISO_TIME, true));
-        seriesCommandList.add(new SeriesCommand(null, singletonMap(metricTextAfterDecimalAddition, DECIMAL_VALUE.toString()),
-                                                entityName, null, null, null, ISO_TIME, null));
+        List<PlainCommand> seriesCommandList = Arrays.asList(
+                new SeriesCommand(singletonMap(metricTextAfterDecimalAddition, TEXT_VALUE), null,
+                        entityName, null, null, null, ISO_TIME, true),
+                new SeriesCommand(null, singletonMap(metricTextAfterDecimalAddition, DECIMAL_VALUE.toString()),
+                        entityName, null, null, null, ISO_TIME, null)
+        );
 
         CommandMethod.send(seriesCommandList);
 
+        assertDataEquals(series, "Addition of decimal value corrupted text field, " +
+                "expected result was%n%s%nbut actual result is:%n%s");
+    }
+
+    private void assertDataEquals(Series series, String msgTemplate) throws Exception {
         boolean checked = checkResult(series);
 
         List<String> actualData = getActualData(series);
         String expected = series.getData().get(0).getText();
-        assertTrue(String.format("Addition of decimal value corrupted text field, " +
-                        "expected result was%n%s%nbut actual result is:%n%s",
+        assertTrue(String.format(msgTemplate,
                 expected, actualData.toString()), checked);
     }
 }
