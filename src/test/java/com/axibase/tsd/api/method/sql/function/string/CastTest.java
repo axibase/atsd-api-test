@@ -48,6 +48,22 @@ public class CastTest extends SqlTest {
             seriesList.add(series);
         }
 
+        // reproducing data for ticket #3841 behaviour
+        Series series1 = new Series(TEST_ENTITY_NAME_3841, TEST_METRIC1_NAME_3841);
+        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:20:01.000Z", 2),
+                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series1.addTag("tag", "1001");
+        seriesList.add(series1);
+
+        Series series2 = new Series(null, TEST_METRIC2_NAME_3841);
+        series2.setEntity(TEST_ENTITY_NAME_3841);
+        series2.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:20:01.000Z", 2),
+                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series2.addTag("tag", "2001");
+        seriesList.add(series2);
+
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
@@ -769,28 +785,6 @@ public class CastTest extends SqlTest {
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
-    }
-
-    /**
-     * #3841
-     */
-    @BeforeClass
-    public static void prepareDataFor3841() throws Exception {
-        // reproducing data for ticket #3841 behaviour
-        Series series1 = new Series(TEST_ENTITY_NAME_3841, TEST_METRIC1_NAME_3841);
-        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:20:01.000Z", 2),
-                new Sample("2016-06-03T09:20:02.000Z", 3));
-        series1.addTag("tag", "1001");
-
-        Series series2 = new Series(null, TEST_METRIC2_NAME_3841);
-        series2.setEntity(TEST_ENTITY_NAME_3841);
-        series2.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:20:01.000Z", 2),
-                new Sample("2016-06-03T09:20:02.000Z", 3));
-        series2.addTag("tag", "2001");
-
-        SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
     /**
