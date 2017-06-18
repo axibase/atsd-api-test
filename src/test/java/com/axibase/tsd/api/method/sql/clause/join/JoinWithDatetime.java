@@ -17,7 +17,7 @@ public class JoinWithDatetime extends SqlTest {
     private static String TEST_METRIC_1 = metric();
     private static String TEST_METRIC_2 = metric();
 
-    //@BeforeTest
+    @BeforeTest
     public void prepareData() throws Exception {
         String entity = entity();
 
