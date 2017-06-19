@@ -95,14 +95,8 @@ public class OuterJoinMergeTest extends SqlTest {
 
         String[][] expectedRows = {
                 {ENTITY_NAMES.get(0),   "1",    "1"},
-                {"null",                "null", "1"},
-                {"null",                "null", "1"},
                 {ENTITY_NAMES.get(0),   "2",    "2"},
-                {"null",                "null", "2"},
-                {"null",                "null", "2"},
                 {ENTITY_NAMES.get(0),   "3",    "3"},
-                {"null",                "null", "3"},
-                {"null",                "null", "3"},
         };
 
         assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
