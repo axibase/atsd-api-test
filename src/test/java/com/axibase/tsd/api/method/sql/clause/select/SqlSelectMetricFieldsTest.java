@@ -62,6 +62,9 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertEquals(String.format("Error in metric field query (%s)", field), resultTable.getRows().size(), 1);
     }
 
+    /**
+     * #4035
+     */
     @Test
     public void testMetricLastInsertTimeNotNull() {
         String sqlQuery = String.format("SELECT metric.lastInsertTime FROM '%s'",
