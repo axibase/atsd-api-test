@@ -7,10 +7,8 @@ import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
-
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class LagLeadTest extends SqlTest {
     private static final String METRIC_NAME = metric();
@@ -20,16 +18,16 @@ public class LagLeadTest extends SqlTest {
         Series series = new Series(entity(), METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-01-01T12:00:00.000Z", "1", "a"),
-                new Sample("2017-01-01T13:00:00.000Z", "0", "a"),
-                new Sample("2017-01-02T12:00:00.000Z", "2", "a"),
-                new Sample("2017-01-03T12:00:00.000Z", "4", "a"),
-                new Sample("2017-01-04T12:00:00.000Z", "7", "b"),
-                new Sample("2017-01-05T12:00:00.000Z", "11", "b"),
-                new Sample("2017-01-06T12:00:00.000Z", "16", "b"),
-                new Sample("2017-01-07T12:00:00.000Z", "23", "c"),
-                new Sample("2017-01-08T12:00:00.000Z", "31", "c"),
-                new Sample("2017-01-09T12:00:00.000Z", "40", "c")
+                new Sample("2017-01-01T12:00:00.000Z", 1, "a"),
+                new Sample("2017-01-01T13:00:00.000Z", 0, "a"),
+                new Sample("2017-01-02T12:00:00.000Z", 2, "a"),
+                new Sample("2017-01-03T12:00:00.000Z", 4, "a"),
+                new Sample("2017-01-04T12:00:00.000Z", 7, "b"),
+                new Sample("2017-01-05T12:00:00.000Z", 11, "b"),
+                new Sample("2017-01-06T12:00:00.000Z", 16, "b"),
+                new Sample("2017-01-07T12:00:00.000Z", 23, "c"),
+                new Sample("2017-01-08T12:00:00.000Z", 31, "c"),
+                new Sample("2017-01-09T12:00:00.000Z", 40, "c")
         );
 
         SeriesMethod.insertSeriesCheck(series);
