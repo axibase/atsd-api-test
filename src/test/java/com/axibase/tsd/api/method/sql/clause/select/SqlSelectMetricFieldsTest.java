@@ -67,12 +67,13 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
      */
     @Test
     public void testMetricLastInsertTimeNotNull() {
-        String sqlQuery = String.format("SELECT metric.lastInsertTime FROM '%s'",
-                TEST_SERIES.getMetric());
+        String sqlQuery = String.format(
+                "SELECT date_format(metric.lastInsertTime) FROM '%s'",
+                TEST_SERIES.getMetric()
+        );
 
-        StringTable resultTable = queryTable(sqlQuery);
+        String[][] expectedRows = {{Mocks.ISO_TIME}};
 
-        boolean ok = !"null".equals(resultTable.getValueAt(0, 0));
-        assertTrue("Metric field 'lastInsertTime' is not initialized", ok);
+        assertSqlQueryRows("Metric field 'lastInsertTime' has incorrect value", expectedRows, sqlQuery);
     }
 }
