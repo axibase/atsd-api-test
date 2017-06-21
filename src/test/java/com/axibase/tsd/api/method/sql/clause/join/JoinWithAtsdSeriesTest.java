@@ -7,19 +7,21 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil.TestNames;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
+
 public class JoinWithAtsdSeriesTest extends SqlTest {
-    private static final String METRIC_NAME1 = TestNames.metric();
-    private static final String METRIC_NAME2 = TestNames.metric();
-    private static final String METRIC_NAME3 = TestNames.metric();
-    private static final String METRIC_NAME4 = TestNames.metric();
+    private static final String METRIC_NAME1 = metric();
+    private static final String METRIC_NAME2 = metric();
+    private static final String METRIC_NAME3 = metric();
+    private static final String METRIC_NAME4 = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        String entityName = TestNames.entity();
+        String entityName = entity();
 
         Series series1 = new Series(entityName, METRIC_NAME1);
         series1.addSamples(
