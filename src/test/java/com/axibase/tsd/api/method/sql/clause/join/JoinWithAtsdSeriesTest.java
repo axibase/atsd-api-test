@@ -44,12 +44,10 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         );
 
         Series series5 = series4.copy();
-        Registry.Metric.register(METRIC_NAME3);
+        Registry.Metric.checkExists(METRIC_NAME3);
         series5.setMetric(METRIC_NAME3);
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3, series4, series5);
-
-        Registry.Metric.register(METRIC_NAME4);
         MetricMethod.createOrReplaceMetricCheck(new Metric(METRIC_NAME4));
     }
 
