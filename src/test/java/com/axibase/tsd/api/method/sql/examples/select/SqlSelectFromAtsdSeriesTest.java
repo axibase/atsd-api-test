@@ -107,7 +107,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
      * #4259
      */
     @Test
-    public void testErrorOnComplexMetricFilter() {
+    public void testErrorOnComplexMetricAndEntityFilter() {
         String sqlQuery = String.format(
                 "SELECT entity, metric, datetime, value " +
                         "FROM atsd_series " +
@@ -116,6 +116,85 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
 
         Response response = SqlMethod.queryResponse(sqlQuery);
 
-        assertBadRequest("Invalid metric expression", response);
+        assertBadRequest(
+                "Invalid response with AND entity filter",
+                "Invalid metric expression",
+                response);
+    }
+
+    /**
+     * #4259
+     */
+    @Test
+    public void testErrorOnComplexMetricOrEntityFilter() {
+        String sqlQuery = String.format(
+                "SELECT entity, metric, datetime, value " +
+                        "FROM atsd_series " +
+                        "WHERE (metric = '%s') OR (metric = '%s' OR entity = '%s')",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertBadRequest(
+                "Invalid response with OR entity filter",
+                "Invalid metric expression",
+                response);
+    }
+
+    /**
+     * #4259
+     */
+    @Test
+    public void testErrorOnComplexMetricOrEntityFilterWithoutParentheses() {
+        String sqlQuery = String.format(
+                "SELECT entity, metric, datetime, value " +
+                        "FROM atsd_series " +
+                        "WHERE metric = '%s' OR metric = '%s' AND value = 1",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertBadRequest(
+                "Invalid response with complex metric filter without parentheses",
+                "Invalid metric expression",
+                response);
+    }
+
+    /**
+     * #4259
+     */
+    @Test
+    public void testErrorOnComplexMetricOrEntityFilterLike() {
+        String sqlQuery = String.format(
+                "SELECT entity, metric, datetime, value " +
+                        "FROM atsd_series " +
+                        "WHERE metric LIKE '%s' OR metric = '%s' AND value = 1",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertBadRequest(
+                "Invalid response with complex LIKE metric filter",
+                "Invalid metric expression",
+                response);
+    }
+
+    /**
+     * #4259
+     */
+    @Test
+    public void testErrorOnComplexMetricOrEntityFilterLikeRegex() {
+        String sqlQuery = String.format(
+                "SELECT entity, metric, datetime, value " +
+                        "FROM atsd_series " +
+                        "WHERE metric LIKE '%s' OR metric REGEX '%s' AND value = 1",
+                TEST_METRIC1_NAME, TEST_METRIC2_NAME);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertBadRequest(
+                "Invalid response with complex LIKE and REGEX metric filter",
+                "Invalid metric expression",
+                response);
     }
 }
