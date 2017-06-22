@@ -20,7 +20,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class SqlSelectMetricFieldsTest extends SqlTest {
     private static final String TEST_METRIC = metric();
 
-    //@BeforeClass
+    @BeforeClass
     public static void prepareData() throws Exception {
         Metric metric = new Metric(TEST_METRIC, Mocks.TAGS);
         metric.setName(TEST_METRIC);
