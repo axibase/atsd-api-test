@@ -6,7 +6,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -14,7 +13,6 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
-import static org.testng.AssertJUnit.assertEquals;
 
 public class SqlSelectEntityFieldsTest extends SqlTest {
     private static final String TEST_ENTITY = entity();
@@ -43,7 +41,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
                 {"timeZone", Mocks.TIMEZONE_ID},
                 {"interpolate", "PREVIOUS"},
                 {"enabled", "true"},
-                {"lastInsertTime", "null"},
+                {"lastInsertTime", "1464945780000"},
                 {"tags", "tag=value"}
         };
     }
@@ -58,13 +56,6 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
                 field,
                 TEST_METRIC);
 
-        // cannot predefine last insert time value - just check for existence
-        if (field.equals("lastInsertTime")) {
-            StringTable resultTable = queryTable(sqlQuery);
-            assertEquals(String.format("Error in entity field query (%s)", field), resultTable.getRows().size(), 1);
-            return;
-        }
-
         String[][] expectedRows = {{value}};
 
         assertSqlQueryRows("Error in entity field query (%s)", expectedRows, sqlQuery);
@@ -75,19 +66,6 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInWhere(String field, String value) {
-        // cannot predefine last insert time value - just check for existence
-        if (field.equals("lastInsertTime")) {
-            String sqlQuery = String.format(
-                    "SELECT m.entity.%1$s FROM '%2$s' m WHERE m.entity.%1$s IS NOT NULL",
-                    field,
-                    TEST_METRIC,
-                    value);
-
-            StringTable resultTable = queryTable(sqlQuery);
-            assertEquals(String.format("Error in entity field query with WHERE (%s)", field), resultTable.getRows().size(), 1);
-            return;
-        }
-
         String sqlQuery = String.format(
                 "SELECT m.entity.%1$s FROM '%2$s' m WHERE m.entity.%1$s = '%3$s'",
                 field,
@@ -109,13 +87,6 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
                 field,
                 TEST_METRIC);
 
-        // cannot predefine last insert time value - just check for existence
-        if (field.equals("lastInsertTime")) {
-            StringTable resultTable = queryTable(sqlQuery);
-            assertEquals(String.format("Error in entity field query with GROUP BY (%s)", field), resultTable.getRows().size(), 1);
-            return;
-        }
-
         String[][] expectedRows = {{value}};
 
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
@@ -131,13 +102,6 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
                 field,
                 TEST_METRIC);
 
-        // cannot predefine last insert time value - just check for existence
-        if (field.equals("lastInsertTime")) {
-            StringTable resultTable = queryTable(sqlQuery);
-            assertEquals(String.format("Error in entity field query with ORDER BY (%s)", field), resultTable.getRows().size(), 1);
-            return;
-        }
-
         String[][] expectedRows = {{value}};
 
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
@@ -148,18 +112,6 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
      */
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInHaving(String field, String value) {
-        // cannot predefine last insert time value - just check for existence
-        if (field.equals("lastInsertTime")) {
-            String sqlQuery = String.format(
-                    "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s HAVING m.entity.%1$s IS NOT NULL",
-                    field,
-                    TEST_METRIC);
-
-            StringTable resultTable = queryTable(sqlQuery);
-            assertEquals(String.format("Error in entity field query with HAVING (%s)", field), resultTable.getRows().size(), 1);
-            return;
-        }
-
         String sqlQuery = String.format(
                 "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s HAVING m.entity.%1$s = '%3$s'",
                 field,
