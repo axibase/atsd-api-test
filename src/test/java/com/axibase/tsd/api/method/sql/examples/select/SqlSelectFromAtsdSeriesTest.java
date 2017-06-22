@@ -109,7 +109,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testErrorOnComplexMetricAndEntityFilter() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value " +
+                "SELECT * " +
                         "FROM atsd_series " +
                         "WHERE (metric = '%s') OR (metric = '%s' AND entity = '%s')",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME);
@@ -128,7 +128,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testErrorOnComplexMetricOrEntityFilter() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value " +
+                "SELECT * " +
                         "FROM atsd_series " +
                         "WHERE (metric = '%s') OR (metric = '%s' OR entity = '%s')",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME);
@@ -147,7 +147,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testErrorOnComplexMetricOrEntityFilterWithoutParentheses() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value " +
+                "SELECT * " +
                         "FROM atsd_series " +
                         "WHERE metric = '%s' OR metric = '%s' AND value = 1",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME);
@@ -166,7 +166,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testErrorOnComplexMetricOrEntityFilterLike() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value " +
+                "SELECT * " +
                         "FROM atsd_series " +
                         "WHERE metric LIKE '%s' OR metric = '%s' AND value = 1",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME);
@@ -185,7 +185,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
     @Test
     public void testErrorOnComplexMetricOrEntityFilterLikeRegex() {
         String sqlQuery = String.format(
-                "SELECT entity, metric, datetime, value " +
+                "SELECT * " +
                         "FROM atsd_series " +
                         "WHERE metric LIKE '%s' OR metric REGEX '%s' AND value = 1",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME);
