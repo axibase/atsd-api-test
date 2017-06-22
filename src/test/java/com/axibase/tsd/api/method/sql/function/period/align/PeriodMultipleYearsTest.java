@@ -21,7 +21,7 @@ public class PeriodMultipleYearsTest extends SqlTest {
     public static void prepareDate() throws Exception {
         Series series1 = new Series(ENTITY_NAME1, METRIC_NAME);
         series1.addSamples(
-                new Sample("1970-01-01T12:00:00.000Z", 0),
+                //new Sample("1970-01-01T12:00:00.000Z", 0),
                 new Sample("2015-06-01T12:00:00.000Z", 0),
                 new Sample("2017-06-01T12:00:00.000Z", 0),
                 new Sample("2018-08-01T12:00:00.000Z", 0)
@@ -50,7 +50,7 @@ public class PeriodMultipleYearsTest extends SqlTest {
 
         final int DATE_COLUMN = 2;
         String[][] expectedRows = {
-                {ENTITY_NAME1, "1", "1970-01-01T00:00:00.000Z"},
+                //{ENTITY_NAME1, "1", "1970-01-01T00:00:00.000Z"},
                 {ENTITY_NAME1, "2", "2006-01-01T00:00:00.000Z"},
                 {ENTITY_NAME1, "1", "2018-01-01T00:00:00.000Z"},
 
