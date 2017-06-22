@@ -9,12 +9,13 @@ import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class PeriodDaylightSavingTimeTest extends SqlTest {
-    private static final String METRIC_NAME1 = TestNames.metric();
-    private static final String METRIC_NAME2 = TestNames.metric();
-    private static final String METRIC_NAME3 = TestNames.metric();
+    private static final String METRIC_NAME1 = metric();
+    private static final String METRIC_NAME2 = metric();
+    private static final String METRIC_NAME3 = metric();
     private static final String QUERY_TEMPLATE =
             "SELECT count(*), " +
             "date_format(time, 'yyyy-MM-dd HH:mm', '%1$s'), " +
@@ -29,16 +30,16 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
 
-        Series series1 = new Series(TestNames.entity(), METRIC_NAME1);
+        Series series1 = new Series(entity(), METRIC_NAME1);
         insertDateRange(series1, TestUtil.getMillis("2017-03-24T23:00Z"));
         insertDateRange(series1, TestUtil.getMillis("2017-10-27T22:00Z"));
 
 
-        Series series2 = new Series(TestNames.entity(), METRIC_NAME2);
+        Series series2 = new Series(entity(), METRIC_NAME2);
         insertDateRange(series2, TestUtil.getMillis("2017-03-11T08:00Z"));
         insertDateRange(series2, TestUtil.getMillis("2017-11-04T07:00Z"));
 
-        Series series3 = new Series(TestNames.entity(), METRIC_NAME3);
+        Series series3 = new Series(entity(), METRIC_NAME3);
         insertDateRange(series3, TestUtil.getMillis("2011-03-25T21:00Z"));
         insertDateRange(series3, TestUtil.getMillis("2014-10-24T20:00Z"));
         insertDateRange(series3, TestUtil.getMillis("2017-03-24T21:00Z"));
