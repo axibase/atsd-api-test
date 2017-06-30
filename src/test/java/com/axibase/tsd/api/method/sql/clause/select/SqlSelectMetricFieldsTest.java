@@ -21,7 +21,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Metric metric = new Metric(TEST_METRIC, Mocks.TAGS);
-        metric.setName(TEST_METRIC);
         metric.setLabel(Mocks.LABEL);
         metric.setTimeZoneID(Mocks.TIMEZONE_ID);
         metric.setInterpolate(InterpolationMode.PREVIOUS);
