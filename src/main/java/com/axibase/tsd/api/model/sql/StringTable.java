@@ -88,7 +88,7 @@ public class StringTable {
         List<List<String>> filteredRows = new ArrayList<>();
         int index = 0;
         for (ColumnMetaData columnMetaData : columnsMetaData) {
-            if (requestedColumnNames.contains(columnMetaData.getName())) {
+            if (requestedColumnNames.contains(columnMetaData.getTitles())) {
                 indexesOfRequestedColumns.add(index);
             }
             index++;

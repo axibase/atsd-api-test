@@ -61,7 +61,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithGroupBy() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(2 minute)",
+                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(2 minute, START_TIME)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
