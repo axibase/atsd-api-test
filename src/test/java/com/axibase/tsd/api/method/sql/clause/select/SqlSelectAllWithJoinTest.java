@@ -59,18 +59,22 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t2.entity",
-                "t1.value",
-                "t2.value",
+                "t1.time",
                 "t1.datetime",
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags",
+                "t2.time",
                 "t2.datetime",
-                "t1.tags.a",
-                "t2.tags.a",
-                "t2.tags.b"
-        );
+                "t2.value",
+                "t2.text",
+                "t2.metric",
+                "t2.entity",
+                "t2.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 
@@ -86,18 +90,22 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                TEST_METRIC1_NAME + ".entity",
-                TEST_METRIC2_NAME + ".entity",
-                TEST_METRIC1_NAME + ".value",
-                TEST_METRIC2_NAME + ".value",
+                TEST_METRIC1_NAME + ".time",
                 TEST_METRIC1_NAME + ".datetime",
+                TEST_METRIC1_NAME + ".value",
+                TEST_METRIC1_NAME + ".text",
+                TEST_METRIC1_NAME + ".metric",
+                TEST_METRIC1_NAME + ".entity",
+                TEST_METRIC1_NAME + ".tags",
+                TEST_METRIC2_NAME + ".time",
                 TEST_METRIC2_NAME + ".datetime",
-                TEST_METRIC1_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.b"
-        );
+                TEST_METRIC2_NAME + ".value",
+                TEST_METRIC2_NAME + ".text",
+                TEST_METRIC2_NAME + ".metric",
+                TEST_METRIC2_NAME + ".entity",
+                TEST_METRIC2_NAME + ".tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 
@@ -114,13 +122,15 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t1.value",
+                "t1.time",
                 "t1.datetime",
-                "t1.tags.a"
-        );
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
     /**
@@ -136,18 +146,22 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t2.entity",
-                "t1.value",
-                "t2.value",
+                "t1.time",
                 "t1.datetime",
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags",
+                "t2.time",
                 "t2.datetime",
-                "t1.tags.a",
-                "t2.tags.a",
-                "t2.tags.b"
-        );
+                "t2.value",
+                "t2.text",
+                "t2.metric",
+                "t2.entity",
+                "t2.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 }
