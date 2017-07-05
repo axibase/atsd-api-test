@@ -2,50 +2,82 @@ package com.axibase.tsd.api.method.sql.clause.where;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.TextSample;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class ThreeValuedLogicTest extends SqlTest {
-    private static final String METRIC_NAME = metric();
+    private static final String ENTITY_NAME = entity();
+    private static final String METRIC_NAME_1 = metric();
+    private static final String METRIC_NAME_2 = metric();
+    private static final String METRIC_NAME_3 = metric();
 
     @BeforeTest
     private static void prepareData() throws Exception {
-        Series series = new Series(entity(), METRIC_NAME);
-        series.addSamples(SAMPLE);
+        List<Series> seriesList = new ArrayList<>();
 
-        SeriesMethod.insertSeriesCheck(series);
+        Series series = new Series(ENTITY_NAME, METRIC_NAME_1);
+        series.addSamples(new Sample(ISO_TIME, 1));
+        seriesList.add(series);
+
+        series = new Series(null, METRIC_NAME_2);
+        series.setEntity(ENTITY_NAME);
+        series.addSamples(new Sample(ISO_TIME, 2));
+        seriesList.add(series);
+
+        series = new Series(null, METRIC_NAME_3);
+        series.setEntity(ENTITY_NAME);
+        series.addSamples(new TextSample(ISO_TIME, "hello"));
+        seriesList.add(series);
+
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    @DataProvider(name = "logicTableTestProvider")
-    public Object[][] provideTestsData() {
+    @DataProvider(name = "logicTableSelectTestProvider")
+    public Object[][] provideSelectTestsData() {
         return new Object[][]{
+                {"1 = 1", "true"}, // SIMPLE
+                {"1 != 1", "false"},
+                {"NaN = NaN", "null"},
+                {"NULL = NULL", "null"},
                 {"NOT (1 = 1)", "false"},
                 {"NOT (1 != 1)", "true"},
                 {"NOT (NaN = NaN)", "null"},
-                {"(1 = 1) AND (2 = 2)", "true"},
+                {"NOT (NULL = NULL)", "null"},
+                {"(1 = 1) AND (2 = 2)", "true"}, // COMPLEX
                 {"(1 = 1) AND (2 != 2)", "false"},
                 {"(1 != 1) AND (2 != 2)", "false"},
                 {"(1 = 1) AND (NaN = NaN)", "null"},
                 {"(1 != 1) AND (NaN = NaN)", "false"},
                 {"(NaN = NaN) AND (NaN = NaN)", "null"},
+                {"(1 = 1) AND (NULL = NULL)", "null"},
+                {"(1 != 1) AND (NULL = NULL)", "false"},
+                {"(NULL = NULL) AND (NULL = NULL)", "null"},
                 {"(1 = 1) OR (2 = 2)", "true"},
                 {"(1 = 1) OR (2 != 2)", "true"},
                 {"(1 != 1) OR (2 != 2)", "false"},
                 {"(1 = 1) OR (NaN = NaN)", "true"},
                 {"(1 != 1) OR (NaN = NaN)", "null"},
-                {"(NaN = NaN) OR (NaN = NaN)", "null"}
+                {"(NaN = NaN) OR (NaN = NaN)", "null"},
+                {"(1 = 1) OR (NULL = NULL)", "true"},
+                {"(1 != 1) OR (NULL = NULL)", "null"},
+                {"(NULL = NULL) OR (NULL = NULL)", "null"}
         };
     }
 
     /**
      * #4286
      */
-    @Test(dataProvider = "logicTableTestProvider")
+    @Test(dataProvider = "logicTableSelectTestProvider")
     public void selectClauseLogicTableTest(String param, String expectedValue) {
         String query = String.format(
                 "SELECT %s",
@@ -60,13 +92,13 @@ public class ThreeValuedLogicTest extends SqlTest {
     /**
      * #4286
      */
-    @Test(dataProvider = "logicTableTestProvider")
+    @Test(dataProvider = "logicTableSelectTestProvider")
     public void whereClauseLogicTableTest(String param, String expectedValue) {
         String query = String.format(
                 "SELECT value " +
                         "FROM '%s' " +
                         "WHERE %s",
-                METRIC_NAME, param
+                METRIC_NAME_1, param
         );
 
         String actualValue;
@@ -77,7 +109,43 @@ public class ThreeValuedLogicTest extends SqlTest {
         }
 
         String assertMessage = String.format("Incorrect result of %s function in WHERE clause", param);
-        expectedValue = expectedValue.equals("true") ? DECIMAL_VALUE.toString() : "";
+        expectedValue = expectedValue.equals("true") ? "1" : "";
+
+        assertEquals(assertMessage, expectedValue, actualValue);
+    }
+
+    @DataProvider(name = "logicTableJoinTestProvider")
+    public Object[][] provideJoinTestsData() {
+        return new Object[][]{
+                {"t1.tags IS NULL", "true"},
+                {"t2.tags IS NULL", "true"},
+                {"t3.tags IS NULL", "true"},
+                {"t1.value = t3.value", "null"},
+                {"t1.text = t3.text", "null"},
+                {"t1.tags = t2.tags", "null"},
+                {"t2.tags = t3.tags", "null"}
+        };
+    }
+
+    /**
+     * #4286
+     */
+    @Test(dataProvider = "logicTableJoinTestProvider")
+    public void joinedMetricsLogicTableTest(String param, String expectedValue) {
+        String query = String.format(
+                "SELECT %s " +
+                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3 ",
+                param, METRIC_NAME_1, METRIC_NAME_2, METRIC_NAME_3
+        );
+
+        String actualValue;
+        try {
+            actualValue = queryTable(query).getValueAt(0, 0);
+        } catch (IndexOutOfBoundsException e) {
+            actualValue = "";
+        }
+
+        String assertMessage = String.format("Incorrect result of %s function in WHERE clause", param);
 
         assertEquals(assertMessage, expectedValue, actualValue);
     }
