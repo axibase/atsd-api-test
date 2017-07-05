@@ -11,13 +11,11 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Collections;
-import java.util.zip.GZIPOutputStream;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.TestUtil.getGzipBytes;
 import static java.util.Collections.singletonMap;
 
 public class CompressedPayloadTest extends SqlTest {
@@ -34,23 +32,6 @@ public class CompressedPayloadTest extends SqlTest {
         command.setValues(singletonMap(metricName, "1"));
 
         gzipOutput = getGzipBytes(command.toString());
-    }
-
-    private static byte[] getGzipBytes(String inputString) {
-        byte[] rawInput = inputString.getBytes();
-        byte[] gzipBytes;
-
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(rawInput.length);
-             GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
-            gzos.write(rawInput);
-            gzos.close();
-            gzipBytes = baos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Gzip compression of string variable failed");
-        }
-
-        return gzipBytes;
     }
 
     @Test

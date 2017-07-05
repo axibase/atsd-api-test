@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.method.version.VersionMethod;
-import com.axibase.tsd.api.model.version.*;
+import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -10,12 +10,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.zip.GZIPOutputStream;
 
 import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOCAL;
 
@@ -146,5 +147,22 @@ public class TestUtil {
 
     public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
+    }
+
+    public static byte[] getGzipBytes(String inputString) {
+        byte[] rawInput = inputString.getBytes();
+        byte[] gzipBytes;
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(rawInput.length);
+             GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
+            gzos.write(rawInput);
+            gzos.close();
+            gzipBytes = baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Gzip compression of string variable failed");
+        }
+
+        return gzipBytes;
     }
 }
