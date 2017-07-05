@@ -217,12 +217,7 @@ public abstract class SqlTest extends SqlMethod {
     private List<String> extractColumnLabels(Set<ColumnMetaData> columnMetaData) {
         List<String> columnNames = new ArrayList<>();
         for (ColumnMetaData data : columnMetaData) {
-            String label = data.getTitles();
-            if (label == null) {
-                label = data.getName();
-            }
-
-            columnNames.add(label);
+            columnNames.add(data.getTitles());
         }
         return columnNames;
     }
