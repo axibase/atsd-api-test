@@ -143,9 +143,15 @@ public abstract class SqlTest extends SqlMethod {
         List<String> columnsLabels = extractColumnLabels(table.getColumnsMetaData());
 
         if (order) {
-            assertEquals("Table columns labels are not equal to expected", expectedColumnsLabels, columnsLabels);
+            assertEquals(
+                    "Table columns labels contain different elements or placed in different order",
+                    expectedColumnsLabels,
+                    columnsLabels);
         } else {
-            assertEquals("Table columns labels contain different elements", new HashSet<>(expectedColumnsLabels), new HashSet<String>(columnsLabels));
+            assertEquals(
+                    "Table columns labels contain different elements",
+                    new HashSet<>(expectedColumnsLabels),
+                    new HashSet<>(columnsLabels));
         }
     }
 
@@ -153,9 +159,14 @@ public abstract class SqlTest extends SqlMethod {
         List<String> columnsNames = extractColumnNames(table.getColumnsMetaData());
 
         if (order) {
-            assertEquals("Table columns names are not equal to expected", expectedColumnsNames, columnsNames);
+            assertEquals(
+                    "Table columns names contain different elements or placed in different order",
+                    expectedColumnsNames,
+                    columnsNames);
         } else {
-            assertEquals("Table columns names contain different elements", new HashSet<>(expectedColumnsNames), new HashSet<String>(columnsNames));
+            assertEquals("Table columns names contain different elements",
+                    new HashSet<>(expectedColumnsNames),
+                    new HashSet<>(columnsNames));
 
         }
     }
