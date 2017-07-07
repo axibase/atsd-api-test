@@ -24,7 +24,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
     public static void prepareDate() throws Exception {
         Series series1 = new Series(ENTITY_NAME1, METRIC_NAME);
         series1.addSamples(
-                //new Sample("1970-01-01T12:00:00.000Z", 0),
+                new Sample("1970-01-01T12:00:00.000Z", 0),
                 new Sample("2015-06-01T12:00:00.000Z", 0),
                 new Sample("2017-06-01T12:00:00.000Z", 0),
                 new Sample("2018-08-01T12:00:00.000Z", 0)
@@ -55,7 +55,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
         Sample[] sampleDates1 = {
-                //new Sample("1970-01-01T00:00:00.000Z", 1),
+                new Sample("1970-01-01T00:00:00.000Z", 1),
                 new Sample("2006-01-01T00:00:00.000Z", 2),
                 new Sample("2018-01-01T00:00:00.000Z", 1)
         };
