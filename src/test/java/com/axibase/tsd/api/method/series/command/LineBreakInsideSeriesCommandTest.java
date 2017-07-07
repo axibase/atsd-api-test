@@ -38,25 +38,24 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
 
     @DataProvider(name = "testTypeAndValue")
     public static Object[][] provideTestTypeAndValue() {
-        /* Some test are disabled - see #3906 */
         String[] values = new String[]{
                 "test\ntest",
                 "test\ntest\ntest",
-                //"test\rtest\rtest",
-                //"test\ntest\rtest",
-                //"test\rtest\ntest",
-                //"test\r\ntest\n\rtest",
+                "test\rtest\rtest",
+                "test\ntest\rtest",
+                "test\rtest\ntest",
+                "test\r\ntest\n\rtest",
                 "test\n",
-                //"test\r",
-                //"test\r\n",
+                "test\r",
+                "test\r\n",
                 "\ntest",
-                //"\rtest",
-                //"\n\rtest",
+                "\rtest",
+                "\n\rtest",
                 "\n",
-                //"\r",
-                //"\n\n",
-                //"\r\n",
-                //"\n\r",
+                "\r",
+                "\n\n",
+                "\r\n",
+                "\n\r",
         };
 
         List<Object[]> parameters = new ArrayList<>();
@@ -74,7 +73,7 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
     }
 
     /**
-     * #3878
+     * #3878, #3906
      */
     @Test(dataProvider = "testTypeAndValue")
     public void testTagLineBreak(TestType type, String value) throws Exception {
@@ -86,7 +85,7 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
     }
 
     /**
-     * #3878
+     * #3878, #3906
      */
     @Test(dataProvider = "testTypeAndValue")
     public void testMetricTextLineBreak(TestType type, String value) {
