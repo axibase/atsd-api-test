@@ -42,7 +42,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -63,9 +70,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
-
 
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -85,7 +98,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
 
@@ -107,9 +127,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
-
 
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -129,7 +155,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
 
@@ -150,9 +183,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
-
 
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -215,7 +254,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
 

@@ -48,9 +48,9 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = Arrays.asList("entity", "aggregated");
+        List<String> expectedColumnLabels = Arrays.asList("entity", "aggregated");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsLabels(expectedColumnLabels, resultTable);
     }
 
 

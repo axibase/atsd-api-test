@@ -1,79 +1,149 @@
 package com.axibase.tsd.api.method.sql.clause.select;
 
+import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.common.InterpolationMode;
+import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlSelectMetricFieldsTest extends SqlTest {
-
-    private static final Series TEST_SERIES = Mocks.series();
+    private static final String TEST_METRIC = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        SeriesMethod.insertSeriesCheck(TEST_SERIES);
+        Metric metric = new Metric(TEST_METRIC, Mocks.TAGS);
+        metric.setLabel(Mocks.LABEL);
+        metric.setTimeZoneID(Mocks.TIMEZONE_ID);
+        metric.setInterpolate(InterpolationMode.PREVIOUS);
+        metric.setDescription(Mocks.DESCRIPTION);
+        metric.setDataType(DataType.INTEGER);
+        metric.setTimePrecision("SECONDS");
+        metric.setEnabled(true);
+        metric.setPersistent(true);
+        metric.setFilter("name = '*'");
+        metric.setVersioned(false);
+        metric.setAdditionalProperty("minValue", 0);
+        metric.setAdditionalProperty("maxValue", 9);
+        metric.setInvalidAction("NONE");
+        metric.setCounter(false);
+        metric.setAdditionalProperty("units", "kg");
+
+        String entity = entity();
+        Series series = new Series(entity, TEST_METRIC);
+        series.addSamples(Mocks.SAMPLE);
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
+        SeriesMethod.insertSeriesCheck(series);
     }
 
     @DataProvider(name = "metricFieldsProvider")
     private Object[][] provideMetricFields() {
         return new Object[][] {
-                {"name"},
-                {"label"},
-                {"timeZone"},
-                {"interpolate"},
-                {"description"},
-                {"dataType"},
-                {"timePrecision"},
-                {"enabled"},
-                {"persistent"},
-                {"filter"},
-                {"lastInsertTime"},
-                {"retentionIntervalDays"},
-                {"versioning"},
-                {"minValue"},
-                {"maxValue"},
-                {"invalidValueAction"},
-                {"counter"},
-                {"units"},
-                {"tags"}
+                {"name", TEST_METRIC},
+                {"label", Mocks.LABEL},
+                {"timeZone", Mocks.TIMEZONE_ID},
+                {"interpolate", "PREVIOUS"},
+                {"description", Mocks.DESCRIPTION},
+                {"dataType", "INTEGER"},
+                {"timePrecision", "SECONDS"},
+                {"enabled", "true"},
+                {"persistent", "true"},
+                {"filter", "name = '*'"},
+                {"lastInsertTime", "1464945780000"},
+                {"retentionIntervalDays", "0"},
+                {"versioning", "false"},
+                {"minValue", "0"},
+                {"maxValue", "9"},
+                {"invalidValueAction", "NONE"},
+                {"counter", "false"},
+                {"units", "kg"},
+                {"tags", "tag=value"}
         };
     }
 
     /**
-     * #3882, #3658
+     * #4117
      */
     @Test(dataProvider = "metricFieldsProvider")
-    public void testQueryMetricFields(String field) {
+    public void testQueryMetricFields(String field, String value) {
         String sqlQuery = String.format(
                 "SELECT m.metric.%s FROM '%s' m",
                 field,
-                TEST_SERIES.getMetric());
+                TEST_METRIC);
 
-        StringTable resultTable = queryTable(sqlQuery);
+        String[][] expectedRows = {{value}};
 
-        // check for row existence
-        assertEquals(String.format("Error in metric field query (%s)", field), resultTable.getRows().size(), 1);
+        assertSqlQueryRows("Error in metric field query (%s)", expectedRows, sqlQuery);
     }
 
     /**
-     * #4035
+     * #4117
      */
-    @Test
-    public void testMetricLastInsertTimeNotNull() {
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInWhere(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT date_format(metric.lastInsertTime) FROM '%s'",
-                TEST_SERIES.getMetric()
-        );
+                "SELECT m.metric.%1$s FROM '%2$s' m WHERE m.metric.%1$s = \"%3$s\"",
+                field,
+                TEST_METRIC,
+                value);
 
-        String[][] expectedRows = {{Mocks.ISO_TIME}};
+        String[][] expectedRows = {{value}};
 
-        assertSqlQueryRows("Metric field 'lastInsertTime' has incorrect value", expectedRows, sqlQuery);
+        assertSqlQueryRows("Error in metric field query with WHERE (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4117
+     */
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInGroupBy(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s",
+                field,
+                TEST_METRIC);
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in metric field query with GROUP BY (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4117
+     */
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInOrderBy(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM '%2$s' m ORDER BY m.metric.%1$s",
+                field,
+                TEST_METRIC);
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4117
+     */
+    @Test(dataProvider = "metricFieldsProvider")
+    public void testMetricFieldsInHaving(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s HAVING m.metric.%1$s = \"%3$s\"",
+                field,
+                TEST_METRIC,
+                value);
+
+        String[][] expectedRows = {{value}};
+
+        assertSqlQueryRows("Error in metric field query with HAVING (%s)", expectedRows, sqlQuery);
     }
 }
