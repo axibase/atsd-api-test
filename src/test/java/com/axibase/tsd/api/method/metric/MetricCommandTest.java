@@ -10,7 +10,7 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MetricCommandTest extends MetricTest {
@@ -111,8 +111,7 @@ public class MetricCommandTest extends MetricTest {
      */
     @Test
     public void testTags() throws Exception {
-        Metric metric = new Metric(metric());
-        metric.setTags(Mocks.TAGS);
+        Metric metric = new Metric(metric(), Mocks.TAGS);
         MetricCommand command = new MetricCommand(metric);
         CommandMethod.send(command);
         String assertMessage = String.format(

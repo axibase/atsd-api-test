@@ -18,27 +18,20 @@ public class SqlClauseJoinValueOrderTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series1 = new Series();
-        Series series2 = new Series();
+        Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME,"a", "b");
 
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1"),
-                new Sample("2016-06-03T09:21:00.000Z", "2"),
-                new Sample("2016-06-03T09:22:00.000Z", "3"),
-                new Sample("2016-06-03T09:23:00.000Z", "4")
-                )
+        series1.addSamples(
+                new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:21:00.000Z", 2),
+                new Sample("2016-06-03T09:22:00.000Z", 3),
+                new Sample("2016-06-03T09:23:00.000Z", 4)
         );
-        series1.addTag("a", "b");
 
-        series2.setMetric(TEST_METRIC2_NAME);
-        series2.setEntity(TEST_ENTITY_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-06-03T09:24:00.000Z", "3"),
-                new Sample("2016-06-03T09:25:00.000Z", "4"),
-                new Sample("2016-06-03T09:26:00.000Z", "5")
-                )
+        Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
+        series2.addSamples(
+                new Sample("2016-06-03T09:24:00.000Z", 3),
+                new Sample("2016-06-03T09:25:00.000Z", 4),
+                new Sample("2016-06-03T09:26:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

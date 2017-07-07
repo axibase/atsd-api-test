@@ -26,8 +26,8 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Test
     public void testEntity() throws Exception {
         Series series = new Series("series-command-test\\\\-e7", "series-command-test-m7");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), "1");
-        series.addData(sample);
+        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
         seriesCommand.setTimeISO(sample.getD());
@@ -44,8 +44,8 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Test
     public void testMetric() throws Exception {
         Series series = new Series("series-command-test-e8", "series-command-test\\\\-m8");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), "1");
-        series.addData(sample);
+        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
         seriesCommand.setTimeISO(sample.getD());

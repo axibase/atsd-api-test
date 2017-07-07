@@ -9,8 +9,8 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class DateFormatInsideClausesTest extends SqlTest {
     private static final String METRIC_NAME1 = metric();
@@ -19,24 +19,22 @@ public class DateFormatInsideClausesTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(entity(), METRIC_NAME1);
-        series1.setData(Arrays.asList(
-                new Sample("2017-02-09T13:00:00.000Z", "10"),
-                new Sample("2017-02-10T12:00:00.000Z", "11"),
-                new Sample("2017-02-10T07:00:00.000Z", "12"),
-                new Sample("2017-02-12T12:00:00.000Z", "13"),
-                new Sample("2017-02-11T12:00:00.000Z", "14"),
-                new Sample("2017-02-09T12:00:00.000Z", "15")
-                )
+        series1.addSamples(
+                new Sample("2017-02-09T13:00:00.000Z", 10),
+                new Sample("2017-02-10T12:00:00.000Z", 11),
+                new Sample("2017-02-10T07:00:00.000Z", 12),
+                new Sample("2017-02-12T12:00:00.000Z", 13),
+                new Sample("2017-02-11T12:00:00.000Z", 14),
+                new Sample("2017-02-09T12:00:00.000Z", 15)
         );
 
         Series series2 = new Series(entity(), METRIC_NAME2);
-        series2.setData(Arrays.asList(
-                new Sample("2017-02-09T12:00:00.000Z", "0"),
-                new Sample("2017-02-09T13:00:00.000Z", "0"),
-                new Sample("2017-02-10T12:00:00.000Z", "0"),
-                new Sample("2017-02-11T12:00:00.000Z", "0"),
-                new Sample("2017-02-12T12:00:00.000Z", "0")
-                )
+        series2.addSamples(
+                new Sample("2017-02-09T12:00:00.000Z", 0),
+                new Sample("2017-02-09T13:00:00.000Z", 0),
+                new Sample("2017-02-10T12:00:00.000Z", 0),
+                new Sample("2017-02-11T12:00:00.000Z", 0),
+                new Sample("2017-02-12T12:00:00.000Z", 0)
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
@@ -101,6 +99,64 @@ public class DateFormatInsideClausesTest extends SqlTest {
         };
 
         assertSqlQueryRows("Query with date_format inside WHERE gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4231
+     */
+    @Test
+    public void testDateFormatInsideWhereComplexClause() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%s' " +
+                        "WHERE date_format(time) = '2017-02-10T07:00:00.000Z' OR date_format(time) = '2017-02-10T12:00:00.000Z'" +
+                        "ORDER BY value",
+                METRIC_NAME1
+        );
+
+        String[][] expectedRows = {
+                {"11"},
+                {"12"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4231
+     */
+    @Test
+    public void testDateFormatInsideWhereWithoutMs() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%s' " +
+                        "WHERE date_format(time, 'yyyy-MM-dd''T''HH:mm:ssZZ', 'GMT0') = '2017-02-10T07:00:00Z' " +
+                        "ORDER BY value",
+                METRIC_NAME1
+        );
+
+        String[][] expectedRows = {
+                {"12"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4231
+     */
+    @Test
+    public void testDateFormatDefaultInsideWhere() {
+        String sqlQuery = String.format(
+                "SELECT value FROM '%s' " +
+                        "WHERE date_format(time) = '2017-02-10T07:00:00.000Z' " +
+                        "ORDER BY value",
+                METRIC_NAME1
+        );
+
+        String[][] expectedRows = {
+                {"12"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**

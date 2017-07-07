@@ -39,36 +39,11 @@ public class AlertMethod extends BaseMethod {
         return response;
     }
 
-    public static boolean alertExist(String entityName, String metricName) throws Exception {
-        Map<String, Object> query = new HashMap<>();
-        query.put("entity", entityName);
-        query.put("metrics", Collections.singletonList(metricName));
-        query.put("startDate", MIN_QUERYABLE_DATE);
-        query.put("endDate", MAX_QUERYABLE_DATE);
-
-        Alert alert = new Alert();
-        alert.setEntity(entityName);
-        alert.setMetric(metricName);
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(alert));
-        final String given = queryAlerts(query).readEntity(String.class);
-        return compareJsonString(expected, given);
-    }
-
-
     public static <T> Response deleteAlerts(T... queries) {
         Response response = httpApiResource
                 .path(METHOD_ALERTS_DELETE)
                 .request()
                 .post(Entity.json(Arrays.asList(queries)));
-        response.bufferEntity();
-        return response;
-    }
-
-    public static Response queryHistoryResponse(List<AlertHistoryQuery> queryList) {
-        Response response = httpApiResource
-                .path(METHOD_ALERTS_HISTORY_QUERY)
-                .request()
-                .post(Entity.json(queryList));
         response.bufferEntity();
         return response;
     }
@@ -80,10 +55,6 @@ public class AlertMethod extends BaseMethod {
                 .post(Entity.entity(json, MediaType.APPLICATION_JSON));
         response.bufferEntity();
         return response;
-    }
-
-    public static Response queryHistoryResponse(AlertHistoryQuery... queries) {
-        return queryHistoryResponse(Arrays.asList(queries));
     }
 
     public static List<Alert> queryHistory(List<AlertHistoryQuery> queryList) {
@@ -102,5 +73,14 @@ public class AlertMethod extends BaseMethod {
 
     public static List<Alert> queryHistory(AlertHistoryQuery... queries) {
         return queryHistory(Arrays.asList(queries));
+    }
+
+    private static Response queryHistoryResponse(List<AlertHistoryQuery> queryList) {
+        Response response = httpApiResource
+                .path(METHOD_ALERTS_HISTORY_QUERY)
+                .request()
+                .post(Entity.json(queryList));
+        response.bufferEntity();
+        return response;
     }
 }

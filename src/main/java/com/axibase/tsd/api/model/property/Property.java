@@ -22,9 +22,9 @@ public class Property {
 
     public Property(String type, String entity) {
         if (type != null)
-            Registry.Type.register(type);
+            Registry.Type.checkExists(type);
         if (entity != null)
-            Registry.Entity.register(entity);
+            Registry.Entity.checkExists(entity);
         this.type = type;
         this.entity = entity;
     }

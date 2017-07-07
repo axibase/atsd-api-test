@@ -21,7 +21,7 @@ public class EntityGroup {
 
     public EntityGroup(String name) {
         if (null != name) {
-            Registry.EntityGroup.register(name);
+            Registry.EntityGroup.checkExists(name);
         }
         this.name = name;
     }

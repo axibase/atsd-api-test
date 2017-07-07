@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SelectTagsWithGroupBy extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
@@ -19,14 +19,8 @@ public class SelectTagsWithGroupBy extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-
-        series.setData(Collections.singletonList(
-                new Sample(Mocks.ISO_TIME, Mocks.DECIMAL_VALUE)
-                )
-        );
-        series.addTag("tag1", "tag1value");
-        series.addTag("tag2", "tag2value");
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "tag1value", "tag2", "tag2value");
+        series.addSamples(new Sample(Mocks.ISO_TIME, Mocks.DECIMAL_VALUE));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

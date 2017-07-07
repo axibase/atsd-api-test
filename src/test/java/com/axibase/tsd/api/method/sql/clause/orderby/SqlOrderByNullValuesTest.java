@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlOrderByNullValuesTest extends SqlTest {
 
@@ -20,13 +20,8 @@ public class SqlOrderByNullValuesTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series testSeries = new Series();
-        testSeries.setEntity(TEST_ENTITY);
-        testSeries.setMetric(TEST_METRIC);
-        testSeries.setData(Collections.singletonList(Mocks.SAMPLE));
-        HashMap<String, String> tags = new HashMap<>();
-        tags.put("tag1", "null");
-        testSeries.setTags(tags);
+        Series testSeries = new Series(TEST_ENTITY, TEST_METRIC, "tag1", "null");
+        testSeries.addSamples(Mocks.SAMPLE);
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }

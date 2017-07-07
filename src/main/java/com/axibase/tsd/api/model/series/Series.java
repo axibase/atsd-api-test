@@ -24,10 +24,10 @@ public class Series {
 
     public Series(String entity, String metric) {
         if (null != entity) {
-            Registry.Entity.register(entity);
+            Registry.Entity.checkExists(entity);
         }
         if (null != metric) {
-            Registry.Metric.register(metric);
+            Registry.Metric.checkExists(metric);
         }
         this.entity = entity;
         this.metric = metric;
@@ -35,11 +35,44 @@ public class Series {
         this.tags = new HashMap<>();
     }
 
+    public Series(String entity, String metric, Map<String, String> tags) {
+        if (null != entity) {
+            Registry.Entity.checkExists(entity);
+        }
+        if (null != metric) {
+            Registry.Metric.checkExists(metric);
+        }
+        this.entity = entity;
+        this.metric = metric;
+        this.data = new ArrayList<>();
+        this.tags = tags;
+    }
+
+    public Series(String entity, String metric, String... tags) {
+        this(entity, metric);
+
+        /* Tag name-value pairs */
+        if (tags.length % 2 != 0) {
+            throw new IllegalArgumentException("Tag name without value in arguments");
+        }
+
+        for (int i = 0; i < tags.length; i += 2) {
+            String key = tags[i];
+            String value = tags[i + 1];
+
+            if (key == null || value == null || key.isEmpty() || value.isEmpty()) {
+                throw new IllegalArgumentException("Series tag name or value is null or empty");
+            }
+
+            addTag(key, value);
+        }
+    }
+
     public Series copy() {
         Series copy = new Series();
         copy.setEntity(entity);
         copy.setMetric(metric);
-        copy.setData(new ArrayList<>(data));
+        copy.setSamples(new ArrayList<>(data));
         copy.setTags(new HashMap<>(tags));
         return copy;
     }
@@ -81,22 +114,23 @@ public class Series {
         return data;
     }
 
-    public void setData(Collection<Sample> data) {
-        this.data = new ArrayList<>(data);
+    public void setSamples(Collection<Sample> samples) {
+        this.data = new ArrayList<>(samples);
     }
 
     public void addTag(String key, String value) {
         if (tags == null) {
             tags = new HashMap<>();
         }
+
         tags.put(key, value);
     }
 
-    public void addData(Sample sample) {
+    public void addSamples(Sample... samples) {
         if (data == null) {
             data = new ArrayList<>();
         }
-        data.add(sample);
+        Collections.addAll(data, samples);
     }
 
     @Override
@@ -110,13 +144,8 @@ public class Series {
 
         Series series = (Series) o;
 
-        if (!entity.equals(series.entity))
-            return false;
-        if (!metric.equals(series.metric))
-            return false;
-        if (!data.equals(series.data))
-            return false;
-        return tags.equals(series.tags);
+        return entity.equals(series.entity) && metric.equals(series.metric) &&
+                data.equals(series.data) && tags.equals(series.tags);
     }
 
     @Override

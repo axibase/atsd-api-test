@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class SqlGroupByDatetime extends SqlTest {
+public class GroupByDatetime extends SqlTest {
     private static final String TEST_PREFIX = "sql-group-by-datetime-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TESTS_ENTITY1_NAME = TEST_PREFIX + "entity-1";
@@ -25,50 +25,36 @@ public class SqlGroupByDatetime extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TESTS_ENTITY1_NAME);
-        Registry.Entity.register(TESTS_ENTITY2_NAME);
-        Registry.Entity.register(TESTS_ENTITY3_NAME);
-
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(
-                new Series() {{
-                    setEntity(TESTS_ENTITY1_NAME);
-                    setMetric(TEST_METRIC_NAME);
-                    setData(Arrays.asList(
-                            new Sample("2016-06-19T11:00:00.500Z", "0"),
-                            new Sample("2016-06-19T11:00:01.500Z", "1"),
-                            new Sample("2016-06-19T11:00:02.500Z", "2")
-                    ));
+                new Series(TESTS_ENTITY1_NAME, TEST_METRIC_NAME) {{
+                    addSamples(
+                            new Sample("2016-06-19T11:00:00.500Z", 0),
+                            new Sample("2016-06-19T11:00:01.500Z", 1),
+                            new Sample("2016-06-19T11:00:02.500Z", 2)
+                    );
                 }}
         );
 
         seriesList.add(
-                new Series() {{
-                    setEntity(TESTS_ENTITY2_NAME);
-                    setMetric(TEST_METRIC_NAME);
-                    setData(Arrays.asList(
-                            new Sample("2016-06-19T11:00:00.500Z", "0"),
-                            new Sample("2016-06-19T11:00:01.500Z", "1")
-                    ));
+                new Series(TESTS_ENTITY2_NAME, TEST_METRIC_NAME) {{
+                    addSamples(
+                            new Sample("2016-06-19T11:00:00.500Z", 0),
+                            new Sample("2016-06-19T11:00:01.500Z", 1)
+                    );
                 }}
         );
 
         seriesList.add(
-                new Series() {{
-                    setEntity(TESTS_ENTITY3_NAME);
-                    setMetric(TEST_METRIC_NAME);
-                    setData(Collections.singletonList(
-                            new Sample("2016-06-19T11:00:00.500Z", "0")
-                    ));
+                new Series(TESTS_ENTITY3_NAME, TEST_METRIC_NAME) {{
+                    addSamples(
+                            new Sample("2016-06-19T11:00:00.500Z", 0)
+                    );
                 }}
         );
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
-    /*
-    #3102 issue
-     */
 
     /**
      * #3102

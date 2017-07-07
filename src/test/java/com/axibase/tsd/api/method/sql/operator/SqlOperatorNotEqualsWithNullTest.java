@@ -22,21 +22,11 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "a", "b");
+        series1.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
 
-        Series series1 = new Series(),
-                series2 = new Series();
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
-        series1.addTag("a", "b");
-
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
-        series2.addTag("tag", "value");
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "tag", "value");
+        series2.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

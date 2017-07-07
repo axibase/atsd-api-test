@@ -30,22 +30,13 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         tags.put("1", "0");
         tags.put("Т", "З");
         tags.put("имя", "значение");
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
 
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags);
+        series.addSamples(new Sample("2016-06-03T09:23:00.000Z", 7));
 
-        Series series = new Series();
-        series.setMetric(TEST_METRIC_NAME);
-        series.setEntity(TEST_ENTITY_NAME);
-        series.addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
-        series.setTags(tags);
+        MetricMethod.createOrReplaceMetric(new Metric(TEST_METRIC_NAME, tags));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
-
-
-        Metric metricUpdateQuery = new Metric();
-        metricUpdateQuery.setTags(tags);
-        MetricMethod.updateMetric(TEST_METRIC_NAME, metricUpdateQuery);
     }
 
     /**
@@ -60,9 +51,9 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", true);
+        List<String> expectedColumnLabels = Arrays.asList("time", "datetime", "value", "text", "metric", "entity", "tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable, true);
+        assertTableColumnsLabels(expectedColumnLabels, resultTable, true);
     }
 
     /**

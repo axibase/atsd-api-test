@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -16,7 +15,6 @@ public class MetricDeleteTest extends MetricMethod {
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
         final String name = "delete metric-1";
-        Registry.Metric.register(name);
         Response response = deleteMetric(name);
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
     }

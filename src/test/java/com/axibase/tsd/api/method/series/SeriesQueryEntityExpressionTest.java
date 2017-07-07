@@ -504,10 +504,10 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
     private static Series createTestSeries(String entityName) {
         Series series = new Series();
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         series.setEntity(entityName);
         series.setMetric(METRIC_NAME);
-        series.addData(Mocks.SAMPLE);
+        series.addSamples(Mocks.SAMPLE);
         return series;
     }
 

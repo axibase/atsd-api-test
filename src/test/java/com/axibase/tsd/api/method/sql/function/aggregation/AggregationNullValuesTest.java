@@ -7,8 +7,8 @@ import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class AggregationNullValuesTest extends SqlTest {
 
@@ -23,17 +23,17 @@ public class AggregationNullValuesTest extends SqlTest {
 
         Series firstSeries = new Series(FIRST_ENTITY, FIRST_METRIC);
         for (int i = 0; i < 3; i++) {
-            firstSeries.addData(new Sample(String.format("2017-01-0%sT00:00:00.000Z", i + 1), i));
+            firstSeries.addSamples(new Sample(String.format("2017-01-0%sT00:00:00.000Z", i + 1), i));
         }
 
         Series secondSeries = new Series(SECOND_ENTITY, SECOND_METRIC);
-        secondSeries.addData(new Sample("2016-12-25T00:00:00.000Z", 0));
+        secondSeries.addSamples(new Sample("2016-12-25T00:00:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(firstSeries, secondSeries);
     }
 
     /**
-     * #3325
+     * #3880
      */
     @Test
     public void testNullValues() {
@@ -45,8 +45,8 @@ public class AggregationNullValuesTest extends SqlTest {
                 SECOND_METRIC);
 
         String[][] expectedRows = {
-                {"null", "null"},
-                {FIRST_ENTITY, "null"}
+                {"null", "NaN"},
+                {FIRST_ENTITY, "NaN"}
         };
 
         assertSqlQueryRows("Wrong result in JOIN query with null values", expectedRows, sqlQuery);

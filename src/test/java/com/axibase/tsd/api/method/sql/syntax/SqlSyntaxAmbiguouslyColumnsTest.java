@@ -24,20 +24,11 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series1 = new Series(),
-                series2 = new Series();
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME, "a", "b");
+        series1.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
 
-
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.addData(new Sample("2016-06-03T09:24:00.000Z", "0"));
-        series1.addTag("a", "b");
-
-
-        series2.setEntity(TEST_ENTITY1_NAME);
-        series2.setMetric(TEST_METRIC2_NAME);
-        series2.addData(new Sample("2016-06-03T09:24:01.000Z", "1"));
-        series2.addTag("b", "a");
+        Series series2 = new Series(TEST_ENTITY1_NAME, TEST_METRIC2_NAME, "b", "a");
+        series2.addSamples(new Sample("2016-06-03T09:24:01.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
@@ -74,39 +65,6 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column entity"),
                 String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "entity"), response);
-    }
-
-    /**
-     * #3157
-     */
-    @Test
-    public void testAmbiguouslyTimeColumn() {
-        String sqlQuery = String.format(
-                "SELECT time FROM '%s' %nJOIN '%s'",
-                TEST_METRIC1_NAME, TEST_METRIC2_NAME
-        );
-
-        Response response = queryResponse(sqlQuery);
-
-        assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "column time"),
-                String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "time"), response);
-    }
-
-
-    /**
-     * #3157
-     */
-    @Test
-    public void testAmbiguouslyDateTimeColumn() {
-        String sqlQuery = String.format(
-                "SELECT datetime FROM '%s' %nJOIN '%s'",
-                TEST_METRIC1_NAME, TEST_METRIC2_NAME
-        );
-
-        Response response = queryResponse(sqlQuery);
-
-        assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "where clause"),
-                String.format(SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL, "datetime"), response);
     }
 
     /**

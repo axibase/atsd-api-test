@@ -15,10 +15,6 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-/**
- * @author Dmitry Korchagin.
- */
-
 public class PropertyTypeQueryTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

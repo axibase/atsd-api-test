@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
+import static com.axibase.tsd.api.util.Mocks.entity;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class EntityCommandTest extends EntityTest {
@@ -91,11 +91,10 @@ public class EntityCommandTest extends EntityTest {
      */
     @Test
     public void testModels() throws Exception {
-        final Entity sourceEntity = new Entity(entity());
+        final Entity sourceEntity = new Entity(entity(), Mocks.TAGS);
         sourceEntity.setInterpolationMode(InterpolationMode.PREVIOUS);
         sourceEntity.setLabel(Mocks.LABEL);
         sourceEntity.setTimeZoneID(Mocks.TIMEZONE_ID);
-        sourceEntity.setTags(Mocks.TAGS);
         sourceEntity.setEnabled(true);
         EntityCommand command = new EntityCommand(sourceEntity);
 

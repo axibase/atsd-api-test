@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import com.axibase.tsd.api.util.NotCheckedException;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -17,26 +18,61 @@ import static javax.ws.rs.core.Response.Status.OK;
  * @author Dmitry Korchagin.
  */
 public class EntityGroupMethod extends BaseMethod {
-    public final static String METHOD_ENTITYGROUP_LIST = "/entity-groups";
-    public final static String METHOD_ENTITYGROUP = "/entity-groups/{group}";
-    public final static String METHOD_ENTITYGROUP_ENTITIES = "/entity-groups/{group}/entities";
-    public final static String METHOD_ENTITYGROUP_ENTITIES_ADD = "/entity-groups/{group}/entities/add";
-    public final static String METHOD_ENTITYGROUP_ENTITIES_SET = "/entity-groups/{group}/entities/set";
-    public final static String METHOD_ENTITYGROUP_ENTITIES_DELETE = "/entity-groups/{group}/entities/delete";
-    public final static String SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION = "properties('some.prop').size() > 0";
+    private final static String METHOD_ENTITYGROUP = "/entity-groups/{group}";
+    private final static String METHOD_ENTITYGROUP_ENTITIES = "/entity-groups/{group}/entities";
+    private final static String METHOD_ENTITYGROUP_ENTITIES_ADD = "/entity-groups/{group}/entities/add";
+    private final static String METHOD_ENTITYGROUP_ENTITIES_SET = "/entity-groups/{group}/entities/set";
+    private final static String METHOD_ENTITYGROUP_ENTITIES_DELETE = "/entity-groups/{group}/entities/delete";
+    final static String SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION = "properties('some.prop').size() > 0";
 
-    public static Response getEntityGroup(String groupName) {
-        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().get();
+    public static Response createOrReplaceEntityGroup(EntityGroup entityGroup) {
+        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", entityGroup.getName()).request().put(Entity.json(entityGroup));
         response.bufferEntity();
         return response;
     }
 
-    public static Response listEntityGroup(Map<String, String> parameters) {
-        WebTarget target = httpApiResource.path(METHOD_ENTITYGROUP_LIST);
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            target = target.queryParam(entry.getKey(), entry.getValue());
+    public static void createOrReplaceEntityGroupCheck(EntityGroup entityGroup) throws Exception {
+        Response response = createOrReplaceEntityGroup(entityGroup);
+        if (response.getStatus() != OK.getStatusCode()) {
+            throw new IllegalStateException("Fail to execute createOrReplaceEntityGroup query");
         }
-        Response response = target.request().get();
+
+        response = getEntityGroup(entityGroup.getName());
+        if (response.getStatus() != OK.getStatusCode()) {
+            throw new IllegalStateException("Fail to execute getEntityGroup query");
+        }
+
+        if (!compareJsonString(jacksonMapper.writeValueAsString(entityGroup), response.readEntity(String.class))) {
+            throw new IllegalStateException("Fail to check entityGroup inserted");
+        }
+    }
+
+    public static boolean entityGroupExist(EntityGroup entityGroup) throws Exception {
+        Response response = getEntityGroup(entityGroup.getName());
+        if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            return false;
+        }
+        if (response.getStatus() != OK.getStatusCode()) {
+            throw new IllegalStateException("Fail to execute getEntityGroup query");
+        }
+
+        final String expected = jacksonMapper.writeValueAsString(entityGroup);
+        final String given = response.readEntity(String.class);
+        return compareJsonString(expected, given, true);
+    }
+
+    public static boolean entityGroupExist(String entityGroup) throws NotCheckedException {
+        final Response response = EntityGroupMethod.getEntityGroup(entityGroup);
+        if (response.getStatus() == OK.getStatusCode()) {
+            return true;
+        } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            return false;
+        }
+        throw new NotCheckedException("Fail to execute entity group query");
+    }
+
+    public static Response getEntityGroup(String groupName) {
+        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", groupName).request().get();
         response.bufferEntity();
         return response;
     }
@@ -53,12 +89,6 @@ public class EntityGroupMethod extends BaseMethod {
         return response;
     }
 
-    public static Response createOrReplaceEntityGroup(EntityGroup entityGroup) {
-        Response response = httpApiResource.path(METHOD_ENTITYGROUP).resolveTemplate("group", entityGroup.getName()).request().put(Entity.json(entityGroup));
-        response.bufferEntity();
-        return response;
-    }
-
     public static Response getEntities(String groupName, Map<String, String> parameters) {
         WebTarget target = httpApiResource.path(METHOD_ENTITYGROUP_ENTITIES).resolveTemplate("group", groupName);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
@@ -70,7 +100,7 @@ public class EntityGroupMethod extends BaseMethod {
     }
 
     public static Response getEntities(String groupName) {
-        return getEntities(groupName, new HashMap<String, String>());
+        return getEntities(groupName, new HashMap<>());
     }
 
     public static Response addEntities(String groupName, Boolean createEntities, List<String> entityNames) {
@@ -114,38 +144,6 @@ public class EntityGroupMethod extends BaseMethod {
         response.bufferEntity();
         return response;
     }
-
-    public static void createOrReplaceEntityGroupCheck(EntityGroup entityGroup) throws Exception {
-        Response response = createOrReplaceEntityGroup(entityGroup);
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new IllegalStateException("Fail to execute createOrReplaceEntityGroup query");
-        }
-
-        response = getEntityGroup(entityGroup.getName());
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new IllegalStateException("Fail to execute getEntityGroup query");
-        }
-
-        if (!compareJsonString(jacksonMapper.writeValueAsString(entityGroup), response.readEntity(String.class))) {
-            throw new IllegalStateException("Fail to check entityGroup inserted");
-        }
-    }
-
-    public static boolean entityGroupExist(EntityGroup entityGroup) throws Exception {
-        Response response = getEntityGroup(entityGroup.getName());
-        if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-            return false;
-        }
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new IllegalStateException("Fail to execute getEntityGroup query");
-        }
-
-        final String expected = jacksonMapper.writeValueAsString(entityGroup);
-        final String given = response.readEntity(String.class);
-        return compareJsonString(expected, given, true);
-    }
-
-
 }
 
 

@@ -26,26 +26,15 @@ public class SqlSelectEntityTagsTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Entity.register(TEST_ENTITY3_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
-
         List<Series> seriesList = Arrays.asList(
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY1_NAME);
-                    addData(new Sample("2016-06-03T09:27:00.000Z", "0"));
+                new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME) {{
+                    addSamples(new Sample("2016-06-03T09:27:00.000Z", 0));
                 }},
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY2_NAME);
-                    addData(new Sample("2016-06-03T09:27:01.000Z", "1"));
+                new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME) {{
+                    addSamples(new Sample("2016-06-03T09:27:01.000Z", 1));
                 }},
-                new Series() {{
-                    setMetric(TEST_METRIC_NAME);
-                    setEntity(TEST_ENTITY3_NAME);
-                    addData(new Sample("2016-06-03T09:27:01.000Z", "2"));
+                new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME) {{
+                    addSamples(new Sample("2016-06-03T09:27:01.000Z", 2));
                 }}
         );
         SeriesMethod.insertSeriesCheck(seriesList);

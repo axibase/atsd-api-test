@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlClauseJoinUsingEntity extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
@@ -22,14 +22,9 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
         testMetricNames = new String[tags.length];
 
         for (int i = 0; i < tags.length; i++) {
-            arraySeries[i] = new Series();
             testMetricNames[i] = metric();
-            arraySeries[i].setMetric(testMetricNames[i]);
-            arraySeries[i].setEntity(TEST_ENTITY_NAME);
-            arraySeries[i].setData(Collections.singletonList(
-                    new Sample("2016-06-03T09:20:00.000Z", i + 1)
-                    )
-            );
+            arraySeries[i] = new Series(TEST_ENTITY_NAME, testMetricNames[i]);
+            arraySeries[i].addSamples(new Sample("2016-06-03T09:20:00.000Z", i + 1));
             if (tags[i][0] != null) {
                 arraySeries[i].addTag(tags[i][0], tags[i][1]);
             }

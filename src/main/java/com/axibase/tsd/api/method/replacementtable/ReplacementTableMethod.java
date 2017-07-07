@@ -2,24 +2,34 @@ package com.axibase.tsd.api.method.replacementtable;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
+import com.axibase.tsd.api.util.NotCheckedException;
+import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.client.ClientProperties;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+
+import static javax.ws.rs.core.Response.Status.OK;
 
 public class ReplacementTableMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
-    private static final String PATH = "/entities/lookup";
-    private static final WebTarget resource = httpRootResource.path(PATH).property(ClientProperties.FOLLOW_REDIRECTS, false);
+    private static final String METHOD_REPLACEMENT_TABLE_NEW = "/replacement-tables/new";
+    private static final String METHOD_REPLACEMENT_TABLE_LIST = "/replacement-tables/";
+    private static final String METHOD_REPLACEMENT_TABLE = "/replacement-tables/{replacementTable}";
 
-    protected static Response createResponse(ReplacementTable table) {
+    private static Response createResponse(ReplacementTable table) {
         MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
         parameters.add("lookupName", table.getName());
         parameters.add("items", squashMapIntoString(table.getMap()));
@@ -27,7 +37,8 @@ public class ReplacementTableMethod extends BaseMethod {
         parameters.add("save", "Save");
         Form form = new Form(parameters);
 
-        Response response = resource
+        Response response = httpRootResource.path(METHOD_REPLACEMENT_TABLE_NEW)
+                .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request()
                 .post(Entity.form(form));
         response.bufferEntity();
@@ -52,5 +63,42 @@ public class ReplacementTableMethod extends BaseMethod {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
         }
         return sb.toString();
+    }
+
+    private static Response getReplacementTablesResponse() {
+        Response response = httpRootResource.path(METHOD_REPLACEMENT_TABLE_LIST).request().get();
+        response.bufferEntity();
+        return response;
+    }
+
+    public static boolean replacementTableExist(String replacementTable) throws NotCheckedException {
+        replacementTable = replacementTable.replace(" ", "_").toLowerCase();
+        final Response response = ReplacementTableMethod.getReplacementTablesResponse();
+        if (response.getStatus() != OK.getStatusCode()) {
+            throw new NotCheckedException("Fail to execute replacement table query");
+        }
+
+        InputStream bodyStream = (InputStream) response.getEntity();
+        String body;
+        try {
+            body = IOUtils.toString(bodyStream, "UTF-8");
+        }
+        catch (IOException ignored) {
+            throw new IllegalStateException("Error in decoding stream to string");
+        }
+
+        Document doc = Jsoup.parse(body);
+        Element table = doc.select("table").get(0);
+        Elements trs = table.select("tr");
+        for (Element tr : trs) {
+            Elements tds = tr.select("td");
+            for (Element td : tds) {
+                if (td.text().contains(replacementTable)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -9,8 +9,8 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlJoinWithAggregations extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
@@ -20,25 +20,18 @@ public class SqlJoinWithAggregations extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series();
-        Series series2 = new Series();
-
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1"),
-                new Sample("2016-06-03T09:21:00.000Z", "2"),
-                new Sample("2016-06-03T09:22:00.000Z", "3")
-                )
+        Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
+        series1.addSamples(
+                new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:21:00.000Z", 2),
+                new Sample("2016-06-03T09:22:00.000Z", 3)
         );
 
-        series2.setMetric(TEST_METRIC2_NAME);
-        series2.setEntity(TEST_ENTITY_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "3"),
-                new Sample("2016-06-03T09:21:00.000Z", "4"),
-                new Sample("2016-06-03T09:22:00.000Z", "5")
-                )
+        Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
+        series2.addSamples(
+                new Sample("2016-06-03T09:20:00.000Z", 3),
+                new Sample("2016-06-03T09:21:00.000Z", 4),
+                new Sample("2016-06-03T09:22:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
@@ -68,7 +61,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithGroupBy() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(2 minute)",
+                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(2 minute, START_TIME)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );

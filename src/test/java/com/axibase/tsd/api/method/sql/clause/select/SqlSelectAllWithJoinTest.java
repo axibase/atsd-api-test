@@ -9,6 +9,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,36 +23,24 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-
         List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC1_NAME);
-            setEntity(TEST_ENTITY_NAME);
-            setData(Arrays.asList(
-                    new Sample("2016-06-03T09:23:00.000Z", "7"),
-                    new Sample("2016-06-03T09:24:00.000Z", "0"),
-                    new Sample("2016-06-03T09:25:00.000Z", "12"),
-                    new Sample("2016-06-03T09:26:00.000Z", "10.3"),
-                    new Sample("2016-06-03T09:27:00.000Z", "10")
-            ));
-            addTag("a", "b");
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "a", "b") {{
+            addSamples(
+                    new Sample("2016-06-03T09:23:00.000Z", 7),
+                    new Sample("2016-06-03T09:24:00.000Z", 0),
+                    new Sample("2016-06-03T09:25:00.000Z", 12),
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("10.3")),
+                    new Sample("2016-06-03T09:27:00.000Z", 10)
+            );
         }});
 
-
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC2_NAME);
-            setEntity(TEST_ENTITY_NAME);
-            setData(Arrays.asList(
-                    new Sample("2016-06-03T09:23:00.000Z", "5"),
-                    new Sample("2016-06-03T09:24:00.000Z", "7"),
-                    new Sample("2016-06-03T09:25:00.000Z", "-2"),
-                    new Sample("2016-06-03T09:26:00.000Z", "-2.1")
-            ));
-            addTag("a", "b");
-            addTag("b", "c");
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "a", "b", "b", "c") {{
+            addSamples(
+                    new Sample("2016-06-03T09:23:00.000Z", 5),
+                    new Sample("2016-06-03T09:24:00.000Z", 7),
+                    new Sample("2016-06-03T09:25:00.000Z", -2),
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("-2.1"))
+            );
         }});
 
         SeriesMethod.insertSeriesCheck(seriesList);
@@ -70,18 +59,22 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t2.entity",
-                "t1.value",
-                "t2.value",
+                "t1.time",
                 "t1.datetime",
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags",
+                "t2.time",
                 "t2.datetime",
-                "t1.tags.a",
-                "t2.tags.a",
-                "t2.tags.b"
-        );
+                "t2.value",
+                "t2.text",
+                "t2.metric",
+                "t2.entity",
+                "t2.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 
@@ -97,18 +90,22 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                TEST_METRIC1_NAME + ".entity",
-                TEST_METRIC2_NAME + ".entity",
-                TEST_METRIC1_NAME + ".value",
-                TEST_METRIC2_NAME + ".value",
+                TEST_METRIC1_NAME + ".time",
                 TEST_METRIC1_NAME + ".datetime",
+                TEST_METRIC1_NAME + ".value",
+                TEST_METRIC1_NAME + ".text",
+                TEST_METRIC1_NAME + ".metric",
+                TEST_METRIC1_NAME + ".entity",
+                TEST_METRIC1_NAME + ".tags",
+                TEST_METRIC2_NAME + ".time",
                 TEST_METRIC2_NAME + ".datetime",
-                TEST_METRIC1_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.b"
-        );
+                TEST_METRIC2_NAME + ".value",
+                TEST_METRIC2_NAME + ".text",
+                TEST_METRIC2_NAME + ".metric",
+                TEST_METRIC2_NAME + ".entity",
+                TEST_METRIC2_NAME + ".tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 
@@ -125,13 +122,15 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t1.value",
+                "t1.time",
                 "t1.datetime",
-                "t1.tags.a"
-        );
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
     /**
@@ -147,18 +146,22 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t2.entity",
-                "t1.value",
-                "t2.value",
+                "t1.time",
                 "t1.datetime",
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags",
+                "t2.time",
                 "t2.datetime",
-                "t1.tags.a",
-                "t2.tags.a",
-                "t2.tags.b"
-        );
+                "t2.value",
+                "t2.text",
+                "t2.metric",
+                "t2.entity",
+                "t2.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 }

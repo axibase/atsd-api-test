@@ -66,16 +66,28 @@ public abstract class SqlTest extends SqlMethod {
         } else {
             try {
                 switch (dataType) {
-                    case "double":
+                    case "double": {
                         Double actualDoubleValue = Double.parseDouble(actualValue);
                         Double expectedDoubleValue = Double.parseDouble(expectedValue);
                         return actualDoubleValue.equals(expectedDoubleValue);
-                    case "float":
+                    }
+                    case "float": {
                         Float actualFloatValue = Float.parseFloat(actualValue);
                         Float expectedFloatValue = Float.parseFloat(expectedValue);
                         return actualFloatValue.equals(expectedFloatValue);
-                    default:
+                    }
+                    case "java_object": {
+                        try {
+                            Float actualFloatValue = Float.parseFloat(actualValue);
+                            Float expectedFloatValue = Float.parseFloat(expectedValue);
+                            return actualFloatValue.equals(expectedFloatValue);
+                        } catch (NumberFormatException ex) {
+                            return expectedValue.equals(actualValue);
+                        }
+                    }
+                    default: {
                         return expectedValue.equals(actualValue);
+                    }
                 }
             } catch (NumberFormatException nfe) {
                 return expectedValue.equals(actualValue);
@@ -123,13 +135,38 @@ public abstract class SqlTest extends SqlMethod {
         assertTableColumnsNames(expectedColumnsNames, table, false);
     }
 
+    public void assertTableColumnsLabels(List<String> expectedColumnsLabels, StringTable table) {
+        assertTableColumnsLabels(expectedColumnsLabels, table, false);
+    }
+
+    public void assertTableColumnsLabels(List<String> expectedColumnsLabels, StringTable table, Boolean order) {
+        List<String> columnsLabels = extractColumnLabels(table.getColumnsMetaData());
+
+        if (order) {
+            assertEquals(
+                    "Table columns labels contain different elements or placed in different order",
+                    expectedColumnsLabels,
+                    columnsLabels);
+        } else {
+            assertEquals(
+                    "Table columns labels contain different elements",
+                    new HashSet<>(expectedColumnsLabels),
+                    new HashSet<>(columnsLabels));
+        }
+    }
+
     public void assertTableColumnsNames(List<String> expectedColumnsNames, StringTable table, Boolean order) {
         List<String> columnsNames = extractColumnNames(table.getColumnsMetaData());
 
         if (order) {
-            assertEquals("Table columns names are not equal to expected", expectedColumnsNames, columnsNames);
+            assertEquals(
+                    "Table columns names contain different elements or placed in different order",
+                    expectedColumnsNames,
+                    columnsNames);
         } else {
-            assertEquals("Table columns names contain different elements", new HashSet<>(expectedColumnsNames), new HashSet<String>(columnsNames));
+            assertEquals("Table columns names contain different elements",
+                    new HashSet<>(expectedColumnsNames),
+                    new HashSet<>(columnsNames));
 
         }
     }
@@ -167,6 +204,20 @@ public abstract class SqlTest extends SqlMethod {
         List<String> columnNames = new ArrayList<>();
         for (ColumnMetaData data : columnMetaData) {
             columnNames.add(data.getName());
+        }
+        return columnNames;
+    }
+
+    /**
+     * Retrieve column labels form table column metadata set
+     *
+     * @param columnMetaData set of column metadata values
+     * @return column labels set
+     */
+    private List<String> extractColumnLabels(Set<ColumnMetaData> columnMetaData) {
+        List<String> columnNames = new ArrayList<>();
+        for (ColumnMetaData data : columnMetaData) {
+            columnNames.add(data.getTitles());
         }
         return columnNames;
     }

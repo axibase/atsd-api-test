@@ -10,11 +10,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class OuterJoinMergeTest extends SqlTest {
     private static final int METRIC_COUNT = 2;
@@ -27,32 +26,24 @@ public class OuterJoinMergeTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-
         List<Series> seriesList = new ArrayList<>();
 
         for (int i = 0; i < METRIC_COUNT; i++) {
             String metric = metric();
-            Registry.Metric.register(metric);
             METRIC_NAMES.add(metric);
         }
 
         for (int i = 0; i < ENTITY_COUNT; i++) {
             String entity = entity();
-            Registry.Entity.register(entity);
             ENTITY_NAMES.add(entity);
         }
 
         for (String metricName : METRIC_NAMES) {
-
             for (String entityName : ENTITY_NAMES) {
-
-                Series series = new Series();
-                series.setEntity(entityName);
-                series.setMetric(metricName);
-                series.setTags(Mocks.TAGS);
+                Series series = new Series(entityName, metricName, Mocks.TAGS);
 
                 for (int i = 0; i < VALUES_COUNT; i++) {
-                    series.addData(new Sample(String.format("2017-01-0%1sT00:00:00.000Z", i + 1), i + 1));
+                    series.addSamples(new Sample(String.format("2017-01-0%1sT00:00:00.000Z", i + 1), i + 1));
                 }
 
                 seriesList.add(series);
@@ -95,7 +86,7 @@ public class OuterJoinMergeTest extends SqlTest {
     @Test
     public void testOuterJoinWhereClause() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s' WHERE '%1$s'.entity = '%3$s'",
+                "SELECT m1.entity, m1.value, m2.value FROM '%1$s' m1 OUTER JOIN USING entity '%2$s' m2 WHERE m1.entity = '%3$s'",
                 METRIC_NAMES.get(0),
                 METRIC_NAMES.get(1),
 
@@ -103,9 +94,9 @@ public class OuterJoinMergeTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {ENTITY_NAMES.get(0), "1", "1"},
-                {ENTITY_NAMES.get(0), "2", "2"},
-                {ENTITY_NAMES.get(0), "3", "3"},
+                {ENTITY_NAMES.get(0),   "1",    "1"},
+                {ENTITY_NAMES.get(0),   "2",    "2"},
+                {ENTITY_NAMES.get(0),   "3",    "3"},
         };
 
         assertSqlQueryRows("OUTER JOIN USING ENTITY query gives wrong result", expectedRows, sqlQuery);
