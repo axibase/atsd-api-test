@@ -11,13 +11,13 @@ import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class LagLeadTest extends SqlTest {
-    private static final String METRIC_NAME = metric();
+    private static final String METRIC_NAME1 = metric();
+    private static final String METRIC_NAME2 = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = new Series(entity(), METRIC_NAME);
-
-        series.addSamples(
+        Series series1 = new Series(entity(), METRIC_NAME1);
+        series1.addSamples(
                 new Sample("2017-01-01T12:00:00.000Z", 1, "a"),
                 new Sample("2017-01-01T13:00:00.000Z", 0, "a"),
                 new Sample("2017-01-02T12:00:00.000Z", 2, "a"),
@@ -30,7 +30,10 @@ public class LagLeadTest extends SqlTest {
                 new Sample("2017-01-09T12:00:00.000Z", 40, "c")
         );
 
-        SeriesMethod.insertSeriesCheck(series);
+        Series series2 = series1.copy();
+        series2.setMetric(METRIC_NAME2);
+
+        SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
     /**
@@ -40,7 +43,7 @@ public class LagLeadTest extends SqlTest {
     public void testLagInSelectClause() {
         String sqlQuery = String.format(
                 "SELECT value, lag(value) FROM '%s'",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -66,7 +69,7 @@ public class LagLeadTest extends SqlTest {
     public void testLeadInSelectClause() {
         String sqlQuery = String.format(
                 "SELECT value, lead(value) FROM '%s'",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -93,7 +96,7 @@ public class LagLeadTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT CASE WHEN value > 0 THEN value END, " +
                         "lag(CASE WHEN value > 0 THEN value END) FROM '%s'",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -120,7 +123,7 @@ public class LagLeadTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT CASE WHEN value > 0 THEN value END, " +
                         "lead(CASE WHEN value > 0 THEN value END) FROM '%s'",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {
@@ -148,7 +151,7 @@ public class LagLeadTest extends SqlTest {
                 "SELECT isnull(lag(sum(value)) - sum(value), 0) " +
                         "FROM '%s' " +
                         "GROUP BY text",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {{"0"}, {"-27"}, {"-60"}};
@@ -165,7 +168,7 @@ public class LagLeadTest extends SqlTest {
                 "SELECT isnull(lead(sum(value)) - sum(value), 0) " +
                         "FROM '%s' " +
                         "GROUP BY text",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {{"27"}, {"60"}, {"0"}};
@@ -182,7 +185,7 @@ public class LagLeadTest extends SqlTest {
                 "SELECT lag(value) " +
                         "FROM '%s' " +
                         "WHERE text < 'a'",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {};
@@ -199,11 +202,35 @@ public class LagLeadTest extends SqlTest {
                 "SELECT lead(value) " +
                         "FROM '%s' " +
                         "WHERE text < 'a'",
-                METRIC_NAME
+                METRIC_NAME1
         );
 
         String[][] expectedRows = {};
 
-        assertSqlQueryRows("Wrong result for LEAD functions with empty result set", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for LEAD function with empty result set", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4328
+     */
+    @Test
+    public void testLeadInJoin() {
+        String sqlQuery = String.format(
+                "SELECT lead(m1.value), lag(m2.value), lead(m1.value) + lag(m2.value) " +
+                        "FROM '%s' m1 " +
+                        "JOIN '%s' m2 " +
+                        "WHERE m1.value > 15 AND m2.value > 20 " +
+                        "ORDER BY m1.value",
+                METRIC_NAME1,
+                METRIC_NAME2
+        );
+
+        String[][] expectedRows = {
+                {  "31", "null", "null"},
+                {  "40",   "23",   "63"},
+                {"null",   "31", "null"}
+        };
+
+        assertSqlQueryRows("Wrong result for LAG/LEAD functions in JOIN", expectedRows, sqlQuery);
     }
 }
