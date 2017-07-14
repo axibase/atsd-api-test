@@ -13,65 +13,64 @@ import java.util.*;
  */
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
-    private Map<ColumnMetaData, List<String>> tableStructure;
-    private int rowsCount = 0;
+    private ColumnMetaData[] columnsMeta;
+    private String[][] tableData;
+    private int rowsCount = 0, columnsCount = 0;
 
 
-    public StringTable() {
-        tableStructure = new TreeMap<>();
-    }
+    public StringTable(ColumnMetaData[] columnsMeta, String[][] tableData) {
+        columnsCount = columnsMeta.length;
 
-
-    void addColumnMetaData(ColumnMetaData columnMetaData) {
-        if (tableStructure.containsKey(columnMetaData)) {
-            throw new IllegalStateException("Table already contains this columnMetaData");
+        if (columnsCount == 0) {
+            throw new IllegalArgumentException("Empty columns metadata");
         }
-        tableStructure.put(columnMetaData, new ArrayList<String>());
-    }
 
-    void addRow(ArrayList<String> row) {
-        int index = 0;
-        for (String cell : row) {
-            tableStructure
-                    .get(getColumnMetaData(index))
-                    .add(cell);
-            index++;
+        if (tableData.length == 0) {
+            throw new IllegalArgumentException("Empty table data");
         }
-        rowsCount++;
+
+        rowsCount = tableData.length;
+
+        for (int i = 0; i < rowsCount; i++) {
+            if (tableData[i].length != columnsCount) {
+                throw new IllegalArgumentException("Non-square table data");
+            }
+        }
+
+        this.columnsMeta = columnsMeta;
+        this.tableData = tableData;
     }
 
     public ColumnMetaData getColumnMetaData(int index) {
-        for (ColumnMetaData columnMetaData : tableStructure.keySet()) {
-            if (columnMetaData.getColumnIndex() == (index + 1)) {
-                return columnMetaData;
-            }
+        if (index < 0 || index >= rowsCount) {
+            throw new IllegalStateException("Table doesn't contain column with index " + index);
         }
-        throw new IllegalStateException("Table doesn't contains column with index " + index);
-    }
-
-    private List<String> getRow(int index) {
-        List<String> row = new ArrayList<>();
-        for (Map.Entry<ColumnMetaData, List<String>> element : tableStructure.entrySet()) {
-            row.add(element.getValue().get(index));
-        }
-        return row;
-
+        return columnsMeta[index];
     }
 
     public String getValueAt(int i, int j) {
-        return tableStructure.get(getColumnMetaData(i)).get(j);
+        return tableData[j][i];
     }
 
     public List<List<String>> getRows() {
+        return getRows(null);
+    }
+
+    public List<List<String>> getRows(boolean[] columnFilter) {
         List<List<String>> rows = new ArrayList<>();
         for (int i = 0; i < rowsCount; i++) {
-            rows.add(getRow(i));
+            rows.set(i, new ArrayList<>());
+            for (int j = 0; j < columnsCount; j++) {
+                if (columnFilter == null || columnFilter[j]) {
+                    rows.get(i).add(tableData[i][j]);
+                }
+            }
         }
         return rows;
     }
 
     public Set<ColumnMetaData> getColumnsMetaData() {
-        return tableStructure.keySet();
+        return new HashSet<>(Arrays.asList(columnsMeta));
     }
 
 
@@ -83,29 +82,11 @@ public class StringTable {
      * @return filtered rows
      */
     public List<List<String>> filterRows(Set<String> requestedColumnNames) {
-        Set<ColumnMetaData> columnsMetaData = tableStructure.keySet();
-        List<Integer> indexesOfRequestedColumns = new ArrayList<>();
-        List<List<String>> filteredRows = new ArrayList<>();
-        int index = 0;
-        for (ColumnMetaData columnMetaData : columnsMetaData) {
-            if (requestedColumnNames.contains(columnMetaData.getTitles())) {
-                indexesOfRequestedColumns.add(index);
-            }
-            index++;
+        boolean[] columnFilter = new boolean[columnsCount];
+        for (int i = 0; i < columnsCount; i++) {
+            columnFilter[i] = requestedColumnNames.contains(columnsMeta[i].getTitles());
         }
-        List<List<String>> rows = getRows();
-        for (List<String> row : rows) {
-            List<String> filteredRow = new ArrayList<>();
-            index = 0;
-            for (String cell : row) {
-                if (indexesOfRequestedColumns.contains(index)) {
-                    filteredRow.add(cell);
-                }
-                index++;
-            }
-            filteredRows.add(filteredRow);
-        }
-        return filteredRows;
+        return getRows(columnFilter);
     }
 
     public List<String> columnValues(String requestedColumnName) {

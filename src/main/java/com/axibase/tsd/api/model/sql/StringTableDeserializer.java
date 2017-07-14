@@ -9,8 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Igor Shmagrinskiy
@@ -33,17 +31,22 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
 
 
     private StringTable parseStringTable(JSONObject tableJson) throws JSONException {
-        StringTable tableModel = new StringTable();
         JSONArray columns = tableJson
                 .getJSONObject("metadata")
                 .getJSONObject("tableSchema")
                 .getJSONArray("columns");
         JSONArray data = tableJson.getJSONArray("data");
-        Integer columnCount = columns.length();
+
+        int columnCount = columns.length();
+        int rowCount = data.length();
+
+        ColumnMetaData[] columnMetaData = new ColumnMetaData[columnCount];
         for (int i = 0; i < columnCount; i++) {
-            tableModel.addColumnMetaData(parseColumn(columns.getJSONObject(i)));
+            columnMetaData[i] = parseColumn(columns.getJSONObject(i));
         }
-        String[] row = new String[columnCount];
+
+        String[][] tableValues = new String[rowCount][columnCount];
+
         Object rowJSON;
         JSONObject rowJsonObject;
         JSONArray rowJsonArray;
@@ -53,19 +56,18 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
             if (rowJSON instanceof JSONObject) {
                 rowJsonObject = (JSONObject) rowJSON;
                 for (int j = 0; j < columnCount; j++) {
-                    row[j] = rowJsonObject.getString(tableModel.getColumnMetaData(j).getName());
+                    tableValues[i][j] = rowJsonObject.getString(columnMetaData[j].getName());
                 }
             } else if (rowJSON instanceof JSONArray) {
                 rowJsonArray = data.getJSONArray(i);
                 for (int j = 0; j < columnCount; j++) {
-                    row[j] = rowJsonArray.getString(j);
+                    tableValues[i][j] = rowJsonArray.getString(j);
                 }
             } else {
                 throw new IllegalStateException("It's not JSON structure " + rowJSON);
             }
-            tableModel.addRow(new ArrayList<>(Arrays.asList(row)));
         }
-        return tableModel;
+        return new StringTable(columnMetaData, tableValues);
     }
 
     private ColumnMetaData parseColumn(JSONObject jsonColumn) throws JSONException {
