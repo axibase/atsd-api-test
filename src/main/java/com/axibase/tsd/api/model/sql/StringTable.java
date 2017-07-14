@@ -13,20 +13,16 @@ import java.util.*;
  */
 @JsonDeserialize(using = StringTableDeserializer.class)
 public class StringTable {
-    private ColumnMetaData[] columnsMeta;
+    private TableMetaData tableMeta;
     private String[][] tableData;
     private int rowsCount = 0, columnsCount = 0;
 
 
-    public StringTable(ColumnMetaData[] columnsMeta, String[][] tableData) {
-        columnsCount = columnsMeta.length;
+    public StringTable(TableMetaData tableMeta, String[][] tableData) {
+        columnsCount = tableMeta.size();
 
         if (columnsCount == 0) {
             throw new IllegalArgumentException("Empty columns metadata");
-        }
-
-        if (tableData.length == 0) {
-            throw new IllegalArgumentException("Empty table data");
         }
 
         rowsCount = tableData.length;
@@ -37,15 +33,12 @@ public class StringTable {
             }
         }
 
-        this.columnsMeta = columnsMeta;
+        this.tableMeta = tableMeta;
         this.tableData = tableData;
     }
 
     public ColumnMetaData getColumnMetaData(int index) {
-        if (index < 0 || index >= rowsCount) {
-            throw new IllegalStateException("Table doesn't contain column with index " + index);
-        }
-        return columnsMeta[index];
+        return tableMeta.getColumnMeta(index);
     }
 
     public String getValueAt(int i, int j) {
@@ -59,7 +52,7 @@ public class StringTable {
     public List<List<String>> getRows(boolean[] columnFilter) {
         List<List<String>> rows = new ArrayList<>();
         for (int i = 0; i < rowsCount; i++) {
-            rows.set(i, new ArrayList<>());
+            rows.add(new ArrayList<>(columnsCount));
             for (int j = 0; j < columnsCount; j++) {
                 if (columnFilter == null || columnFilter[j]) {
                     rows.get(i).add(tableData[i][j]);
@@ -70,7 +63,7 @@ public class StringTable {
     }
 
     public Set<ColumnMetaData> getColumnsMetaData() {
-        return new HashSet<>(Arrays.asList(columnsMeta));
+        return new HashSet<>(tableMeta.asList());
     }
 
 
@@ -84,7 +77,7 @@ public class StringTable {
     public List<List<String>> filterRows(Set<String> requestedColumnNames) {
         boolean[] columnFilter = new boolean[columnsCount];
         for (int i = 0; i < columnsCount; i++) {
-            columnFilter[i] = requestedColumnNames.contains(columnsMeta[i].getTitles());
+            columnFilter[i] = requestedColumnNames.contains(tableMeta.getColumnMeta(i).getTitles());
         }
         return getRows(columnFilter);
     }
