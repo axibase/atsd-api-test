@@ -28,6 +28,10 @@ public class TableMetaData {
         return Arrays.asList(columnsMeta);
     }
 
+    public ColumnMetaData[] getColumnsMeta() {
+        return Arrays.copyOf(columnsMeta, columnsMeta.length);
+    }
+
     public int size() {
         return columnsMeta.length;
     }

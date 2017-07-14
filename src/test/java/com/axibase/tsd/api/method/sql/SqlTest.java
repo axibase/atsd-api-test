@@ -200,7 +200,7 @@ public abstract class SqlTest extends SqlMethod {
      * @param columnMetaData set of column metadata values
      * @return column names set
      */
-    private List<String> extractColumnNames(Set<ColumnMetaData> columnMetaData) {
+    private List<String> extractColumnNames(ColumnMetaData[] columnMetaData) {
         List<String> columnNames = new ArrayList<>();
         for (ColumnMetaData data : columnMetaData) {
             columnNames.add(data.getName());
@@ -214,7 +214,7 @@ public abstract class SqlTest extends SqlMethod {
      * @param columnMetaData set of column metadata values
      * @return column labels set
      */
-    private List<String> extractColumnLabels(Set<ColumnMetaData> columnMetaData) {
+    private List<String> extractColumnLabels(ColumnMetaData[] columnMetaData) {
         List<String> columnNames = new ArrayList<>();
         for (ColumnMetaData data : columnMetaData) {
             columnNames.add(data.getTitles());

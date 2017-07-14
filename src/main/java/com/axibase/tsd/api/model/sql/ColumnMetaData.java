@@ -1,16 +1,27 @@
 package com.axibase.tsd.api.model.sql;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ColumnMetaData implements Comparable<ColumnMetaData> {
+
     private String name;
     private Integer columnIndex;
     private String table;
+
+    @JsonDeserialize(using = StrOrObjectDeserializer.class)
+    @JsonProperty("datatype")
     private String dataType;
+
     private String propertyUrl;
     private String titles;
 
+    public ColumnMetaData() {}
 
     public ColumnMetaData(String name, Integer columnIndex) {
         this.name = name;
@@ -81,6 +92,6 @@ public class ColumnMetaData implements Comparable<ColumnMetaData> {
 
     @Override
     public int compareTo(ColumnMetaData o) {
-        return this.columnIndex.compareTo(o.getColumnIndex());
+        return columnIndex.compareTo(o.columnIndex);
     }
 }

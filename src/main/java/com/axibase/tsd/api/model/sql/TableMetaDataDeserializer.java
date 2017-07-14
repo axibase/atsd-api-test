@@ -9,10 +9,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class TableMetaDataDeserializer extends JsonDeserializer<TableMetaData> {
+class TableMetaDataDeserializer extends JsonDeserializer<TableMetaData> {
     @Override
     public TableMetaData deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
-        String jsonText = jsonParser.readValueAsTree() .toString();
+        String jsonText = jsonParser.getText();
         TableMetaData result;
         try {
             result = SqlTableParser.parseMeta(new JSONObject(jsonText));

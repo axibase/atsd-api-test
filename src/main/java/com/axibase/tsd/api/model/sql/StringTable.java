@@ -62,8 +62,8 @@ public class StringTable {
         return rows;
     }
 
-    public Set<ColumnMetaData> getColumnsMetaData() {
-        return new HashSet<>(tableMeta.asList());
+    public ColumnMetaData[] getColumnsMetaData() {
+        return tableMeta.getColumnsMeta();
     }
 
 
