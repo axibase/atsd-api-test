@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 
-class StrOrObjectDeserializer extends JsonDeserializer<String> {
+class StringObjectDeserializer extends JsonDeserializer<String> {
     @Override
     public String deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
         if (p.hasToken(JsonToken.VALUE_STRING)) {

@@ -20,11 +20,6 @@ public class StringTable {
 
     public StringTable(TableMetaData tableMeta, String[][] tableData) {
         columnsCount = tableMeta.size();
-
-        if (columnsCount == 0) {
-            throw new IllegalArgumentException("Empty columns metadata");
-        }
-
         rowsCount = tableData.length;
 
         for (int i = 0; i < rowsCount; i++) {
@@ -49,7 +44,7 @@ public class StringTable {
         return getRows(null);
     }
 
-    public List<List<String>> getRows(boolean[] columnFilter) {
+    private List<List<String>> getRows(boolean[] columnFilter) {
         List<List<String>> rows = new ArrayList<>();
         for (int i = 0; i < rowsCount; i++) {
             rows.add(new ArrayList<>(columnsCount));
