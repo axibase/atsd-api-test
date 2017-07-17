@@ -12,7 +12,7 @@ import java.io.IOException;
 class TableMetaDataDeserializer extends JsonDeserializer<TableMetaData> {
     @Override
     public TableMetaData deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
-        String jsonText = jsonParser.getText();
+        String jsonText = jsonParser.readValueAsTree().toString();
         TableMetaData result;
         try {
             result = SqlTableParser.parseMeta(new JSONObject(jsonText));

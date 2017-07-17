@@ -17,7 +17,7 @@ class StringTableDeserializer extends JsonDeserializer<StringTable> {
     @Override
     public StringTable deserialize(JsonParser jsonParser,
                                    DeserializationContext deserializationContext) throws IOException {
-        String jsonText = jsonParser.readValueAsTree() .toString();
+        String jsonText = jsonParser.readValueAsTree().toString();
         StringTable result;
         try {
             result = SqlTableParser.parseStringTable(new JSONObject(jsonText));
