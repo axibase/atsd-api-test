@@ -16,14 +16,14 @@ public class TableMetaData {
         this.columnsMeta = columnsMeta;
     }
 
-    ColumnMetaData getColumnMeta(int index) {
+    public ColumnMetaData getColumnMeta(int index) {
         if (index < 0 || index >= columnsMeta.length) {
             throw new IllegalStateException("Table doesn't contain column with index " + index);
         }
         return columnsMeta[index];
     }
 
-    ColumnMetaData[] getColumnsMeta() {
+    public ColumnMetaData[] getColumnsMeta() {
         return Arrays.copyOf(columnsMeta, columnsMeta.length);
     }
 
