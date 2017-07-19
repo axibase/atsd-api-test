@@ -17,7 +17,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 public class SqlMetaMethod extends BaseMethod {
     private static final String METHOD_SQL_META_API = "/api/sql/meta";
-    protected static final WebTarget httpSqlApiResource = httpRootResource .path(METHOD_SQL_META_API);
+    protected static final WebTarget httpSqlApiResource = httpRootResource.path(METHOD_SQL_META_API);
     private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
 
     public static TableMetaData queryMetaData(String sqlQuery) {

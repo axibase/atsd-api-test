@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ColumnMetaData implements Comparable<ColumnMetaData> {
+public class ColumnMetaData {
 
     private String name;
     private Integer columnIndex;
@@ -19,9 +19,4 @@ public class ColumnMetaData implements Comparable<ColumnMetaData> {
 
     private String propertyUrl;
     private String titles;
-
-    @Override
-    public int compareTo(ColumnMetaData o) {
-        return columnIndex.compareTo(o.columnIndex);
-    }
 }
