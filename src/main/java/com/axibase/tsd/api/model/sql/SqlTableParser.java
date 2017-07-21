@@ -17,7 +17,7 @@ final class SqlTableParser {
     private static final String COLUMNS_FIELD = "columns";
     private static final String DATA_FIELD = "data";
 
-    public static TableMetaData parseMeta(JSONObject meta) throws JSONException, IOException {
+    static TableMetaData parseMeta(JSONObject meta) throws JSONException, IOException {
         ObjectMapper objMapper = new ObjectMapper();
         JSONArray columns = meta.getJSONObject(TABLE_SCHEMA_FIELD).getJSONArray(COLUMNS_FIELD);
         logger.debug("Parsing columns {}", columns);
@@ -36,30 +36,15 @@ final class SqlTableParser {
 
         String[][] tableValues = new String[rowCount][columnCount];
 
-        Object rowJSON;
-        JSONObject rowJsonObject;
-        JSONArray rowJsonArray;
+        JSONArray jsonRow;
         for (int i = 0; i < data.length(); i++) {
-            rowJSON = data.get(i);
-
-            if (rowJSON instanceof JSONObject) {
-                rowJsonObject = (JSONObject) rowJSON;
-                for (int j = 0; j < columnCount; j++) {
-                    tableValues[i][j] =
-                            rowJsonObject.getString(tableMeta.getColumnMeta(j).getName());
-                }
-            } else if (rowJSON instanceof JSONArray) {
-                rowJsonArray = data.getJSONArray(i);
-                for (int j = 0; j < columnCount; j++) {
-                    tableValues[i][j] = rowJsonArray.getString(j);
-                }
-            } else {
-                throw new IllegalStateException("It's not JSON structure " + rowJSON);
+            jsonRow = data.getJSONArray(i);
+            for (int j = 0; j < columnCount; j++) {
+                tableValues[i][j] = jsonRow.getString(j);
             }
         }
         return new StringTable(tableMeta, tableValues);
     }
-
 
     private SqlTableParser() {}
 }
