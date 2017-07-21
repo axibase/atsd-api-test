@@ -26,13 +26,15 @@ public class MetaTest extends SqlMetaTest {
                 "value",
                 "text",
                 "metric",
-                "entity"
+                "entity",
+                "tags"
         };
 
         String[] expectedTypes = {
                 "bigint",
                 "xsd:dateTimeStamp",
                 null,
+                "string",
                 "string",
                 "string",
                 "string"
@@ -76,6 +78,54 @@ public class MetaTest extends SqlMetaTest {
                 "bigint",
                 "xsd:dateTimeStamp",
                 null
+        };
+
+        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+    }
+
+    @Test
+    public void testValueTimeNonExistentMeta() {
+        String sqlQuery = String.format(
+                "SELECT time, datetime, value FROM '%s'",
+                NON_EXISTENT_METRIC_1
+        );
+
+        String[] expectedNames = {
+                "time",
+                "datetime",
+                "value"
+        };
+
+        String[] expectedTypes = {
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float"
+        };
+
+        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+    }
+
+    @Test
+    public void testValueTimeExistentMeta() {
+        String metric = Mocks.metric();
+        Series seriesA = new Series(Mocks.entity(), metric);
+        seriesA.addSamples(new Sample("2017-07-18T12:00:00.000Z", 1));
+
+        String sqlQuery = String.format(
+                "SELECT time, datetime, value FROM '%s'",
+                NON_EXISTENT_METRIC_1
+        );
+
+        String[] expectedNames = {
+                "time",
+                "datetime",
+                "value"
+        };
+
+        String[] expectedTypes = {
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -270,6 +320,53 @@ public class MetaTest extends SqlMetaTest {
     public void testMetaNonExistentJoin() {
         String sqlQuery = String.format(
                 "SELECT * from '%s' JOIN '%s'",
+                NON_EXISTENT_METRIC_1,
+                NON_EXISTENT_METRIC_2
+        );
+
+        String[] expectedNames = {
+                NON_EXISTENT_METRIC_1 + ".time",
+                NON_EXISTENT_METRIC_1 + ".datetime",
+                NON_EXISTENT_METRIC_1 + ".value",
+                NON_EXISTENT_METRIC_1 + ".text",
+                NON_EXISTENT_METRIC_1 + ".metric",
+                NON_EXISTENT_METRIC_1 + ".entity",
+                NON_EXISTENT_METRIC_1 + ".tags",
+
+                NON_EXISTENT_METRIC_2 + ".time",
+                NON_EXISTENT_METRIC_2 + ".datetime",
+                NON_EXISTENT_METRIC_2 + ".value",
+                NON_EXISTENT_METRIC_2 + ".text",
+                NON_EXISTENT_METRIC_2 + ".metric",
+                NON_EXISTENT_METRIC_2 + ".entity",
+                NON_EXISTENT_METRIC_2 + ".tags"
+        };
+
+        String[] expectedTypes = {
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float",
+                "string",
+                "string",
+                "string",
+                "string",
+
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float",
+                "string",
+                "string",
+                "string",
+                "string"
+        };
+
+        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+    }
+
+    @Test
+    public void testMetaNonExistentJoinUsingEntity() {
+        String sqlQuery = String.format(
+                "SELECT * from '%s' JOIN USING ENTITY '%s'",
                 NON_EXISTENT_METRIC_1,
                 NON_EXISTENT_METRIC_2
         );
