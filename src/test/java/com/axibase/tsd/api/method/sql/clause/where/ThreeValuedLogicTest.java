@@ -29,13 +29,13 @@ public class ThreeValuedLogicTest extends SqlTest {
         series.addSamples(new Sample(ISO_TIME, 1));
         seriesList.add(series);
 
-        series = new Series(null, METRIC_NAME_2);
-        series.setEntity(ENTITY_NAME);
+        series = new Series(ENTITY_NAME, METRIC_NAME_2);
+//        series.setEntity(ENTITY_NAME);
         series.addSamples(new Sample(ISO_TIME, 2));
         seriesList.add(series);
 
-        series = new Series(null, METRIC_NAME_3);
-        series.setEntity(ENTITY_NAME);
+        series = new Series(ENTITY_NAME, METRIC_NAME_3);
+//        series.setEntity(ENTITY_NAME);
         series.addSamples(new TextSample(ISO_TIME, "hello"));
         seriesList.add(series);
 
@@ -123,7 +123,15 @@ public class ThreeValuedLogicTest extends SqlTest {
                 {"t1.value = t3.value", "null"},
                 {"t1.text = t3.text", "null"},
                 {"t1.tags = t2.tags", "null"},
-                {"t2.tags = t3.tags", "null"}
+                {"t2.tags = t3.tags", "null"},
+                {"t1.metric.label = t2.metric.label", "null"},
+                {"t1.metric.description = t2.metric.description", "null"},
+                {"t1.metric.units = t2.metric.units", "null"},
+                {"t1.metric.minvalue = t2.metric.minvalue", "null"},
+                {"t1.metric.maxvalue = t2.metric.maxvalue", "null"},
+                {"t1.metric.tags = t2.metric.tags", "null"},
+                {"t1.entity.label = t2.entity.label", "null"},
+                {"t1.entity.tags = t2.entity.tags", "null"}
         };
     }
 
