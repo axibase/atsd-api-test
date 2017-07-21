@@ -21,11 +21,61 @@ public class MetaTest extends SqlMetaTest {
         String sqlQuery = "SELECT * from 'atsd_series'";
 
         String[] expectedNames = {
-                "time",   "datetime",          "value", "text",   "metric", "entity"
+                "time",
+                "datetime",
+                "value",
+                "text",
+                "metric",
+                "entity"
         };
 
         String[] expectedTypes = {
-                "bigint", "xsd:dateTimeStamp", null,    "string", "string", "string"
+                "bigint",
+                "xsd:dateTimeStamp",
+                null,
+                "string",
+                "string",
+                "string"
+        };
+
+        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+    }
+
+    @Test
+    public void testSelectConstMeta() {
+        String sqlQuery = "SELECT 1, 'a', 1.0, case 0 when 1 then 'a' else 5 end FROM 'atsd_series'";
+
+        String[] expectedNames = {
+                "1",
+                "'a'",
+                "1.0",
+                "case 0\nwhen 1 then 'a'\nelse 5\nend"
+        };
+
+        String[] expectedTypes = {
+                "bigint",
+                "string",
+                "double",
+                "java_object"
+        };
+
+        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+    }
+
+    @Test
+    public void testValueTimeAtsdSeriesMeta() {
+        String sqlQuery = "SELECT time, datetime, value FROM 'atsd_series'";
+
+        String[] expectedNames = {
+                "time",
+                "datetime",
+                "value"
+        };
+
+        String[] expectedTypes = {
+                "bigint",
+                "xsd:dateTimeStamp",
+                null
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -36,11 +86,23 @@ public class MetaTest extends SqlMetaTest {
         String sqlQuery = String.format("SELECT * from '%s'", NON_EXISTENT_METRIC_1);
 
         String[] expectedNames = {
-                "time",   "datetime",          "value", "text",   "metric", "entity", "tags"
+                "time",
+                "datetime",
+                "value",
+                "text",
+                "metric",
+                "entity",
+                "tags"
         };
 
         String[] expectedTypes = {
-                "bigint", "xsd:dateTimeStamp", "float", "string", "string", "string", "string"
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float",
+                "string",
+                "string",
+                "string",
+                "string"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -55,11 +117,23 @@ public class MetaTest extends SqlMetaTest {
         );
 
         String[] expectedNames = {
-                "time",   "datetime",          "value", "text",   "metric", "entity"
+                "time",
+                "datetime",
+                "value",
+                "text",
+                "metric",
+                "entity",
+                "tags"
         };
 
         String[] expectedTypes = {
-                "bigint", "xsd:dateTimeStamp", null,    "string", "string", "string"
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float",
+                "string",
+                "string",
+                "string",
+                "string"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -101,10 +175,23 @@ public class MetaTest extends SqlMetaTest {
         );
 
         String[] expectedNames = {
-                "value"
+                "time",
+                "datetime",
+                "value",
+                "text",
+                "metric",
+                "entity",
+                "tags"
         };
+
         String[] expectedTypes = {
-                "float"
+                "bigint",
+                "xsd:dateTimeStamp",
+                "float",
+                "string",
+                "string",
+                "string",
+                "string"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -125,13 +212,15 @@ public class MetaTest extends SqlMetaTest {
 
     @Test
     public void testMetaNonEmptyTagsExpansion() throws Exception {
-        Series seriesA = new Series(Mocks.entity(), Mocks.metric(), "t1", "a");
+        String metricA = Mocks.metric();
+        Series seriesA = new Series(Mocks.entity(), metricA, "t1", "a");
         seriesA.addSamples(new Sample("2017-07-18T12:00:00.000Z", 1));
 
-        Series seriesB = new Series(Mocks.entity(), Mocks.metric(), "t2", "b");
+        String metricB  =Mocks.metric();
+        Series seriesB = new Series(Mocks.entity(), metricB, "t2", "b");
         seriesB.addSamples(new Sample("2017-07-18T13:00:00.000Z", 2));
 
-        SeriesMethod.insertSeriesCheck(seriesA, seriesB);
+        SeriesMethod.insertSeriesCheck(seriesB, seriesA);
 
         String sqlQuery = String.format(
                 "SELECT *, tags.* FROM atsd_series WHERE metric in ('%s', '%s')",
@@ -147,15 +236,15 @@ public class MetaTest extends SqlMetaTest {
                 "metric",
                 "entity",
                 "tags",
-                "tags.t1",
-                "tags.t2"
+                /* Do we always have this order? */
+                metricB + ".tags.t2",
+                metricA + ".tags.t1"
         };
 
         String[] expectedTypes = {
                 "bigint",
                 "xsd:dateTimeStamp",
                 "float",
-                "string",
                 "string",
                 "string",
                 "string",
