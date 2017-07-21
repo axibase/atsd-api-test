@@ -30,12 +30,10 @@ public class ThreeValuedLogicTest extends SqlTest {
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC_NAME_2);
-//        series.setEntity(ENTITY_NAME);
         series.addSamples(new Sample(ISO_TIME, 2));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC_NAME_3);
-//        series.setEntity(ENTITY_NAME);
         series.addSamples(new TextSample(ISO_TIME, "hello"));
         seriesList.add(series);
 
