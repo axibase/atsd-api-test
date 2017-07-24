@@ -104,7 +104,7 @@ public class AppendFieldTest extends CommandMethodTest {
         final String entityName = entity();
         final String metricDecimalToText = metric();
         Series series = new Series(entityName, metricDecimalToText);
-        series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE));
+        series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = Arrays.asList(
                 new SeriesCommand(singletonMap(metricDecimalToText, TEXT_VALUE), null,
