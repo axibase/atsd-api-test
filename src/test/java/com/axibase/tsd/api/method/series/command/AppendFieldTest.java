@@ -1,55 +1,22 @@
 package com.axibase.tsd.api.method.series.command;
 
-import com.axibase.tsd.api.Checker;
-import com.axibase.tsd.api.method.checks.SeriesCheck;
+import com.axibase.tsd.api.extended.CommandMethodTest;
 import com.axibase.tsd.api.method.extended.CommandMethod;
-import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.model.series.TextSample;
-import com.axibase.tsd.api.util.NotCheckedException;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 import static java.util.Collections.singletonMap;
-import static org.testng.AssertJUnit.assertTrue;
 
-public class AppendFieldTest {
-    private static final Long AWAIT_TIME = 500L;
-
-    private static boolean checkResult(Series series) {
-        try {
-            Thread.sleep(AWAIT_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        boolean checked = true;
-        try {
-            Checker.check(new SeriesCheck(Collections.singletonList(series)));
-        }
-        catch (NotCheckedException e) {
-            checked = false;
-        }
-        return checked;
-    }
-
-    private static List<String> getActualData(Series series) throws Exception {
-        List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
-        return actualSeriesList.stream()
-                .flatMap(actualSeries -> actualSeries.getData().stream())
-                .map(Sample::getText)
-                .sorted()
-                .collect(Collectors.toList());
-    }
+public class AppendFieldTest extends CommandMethodTest {
 
     /**
      * #3796
@@ -73,7 +40,7 @@ public class AppendFieldTest {
             CommandMethod.send(seriesCommand);
         }
 
-        assertDataEquals(series, "Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s");
+        assertTextDataEquals(series, "Append with erase doesn't work");
 
 //        Append with erase doesn't work, expected result was
 //        a;
@@ -126,7 +93,7 @@ public class AppendFieldTest {
             CommandMethod.send(seriesCommand);
         }
 
-        assertDataEquals(series, "Append with erase doesn't work, expected result was%n%s%nbut actual result is:%n%s");
+        assertTextDataEquals(series, "Append with erase doesn't work");
     }
 
     /**
@@ -148,8 +115,7 @@ public class AppendFieldTest {
 
         CommandMethod.send(seriesCommandList);
 
-        assertDataEquals(series, "Addition decimal field to text field failed, " +
-                "expected result was%n%s%nbut actual result is:%n%s");
+        assertTextDataEquals(series, "Addition decimal field to text field failed");
     }
 
     /**
@@ -174,8 +140,7 @@ public class AppendFieldTest {
 
         CommandMethod.send(seriesCommandList);
 
-        assertDataEquals(series, "Addition text field to text field failed, " +
-                "expected result was%n%s%nbut actual result is:%n%s");
+        assertTextDataEquals(series, "Addition text field to text field failed");
     }
 
     /**
@@ -197,16 +162,6 @@ public class AppendFieldTest {
 
         CommandMethod.send(seriesCommandList);
 
-        assertDataEquals(series, "Addition of decimal value corrupted text field, " +
-                "expected result was%n%s%nbut actual result is:%n%s");
-    }
-
-    private void assertDataEquals(Series series, String msgTemplate) throws Exception {
-        boolean checked = checkResult(series);
-
-        List<String> actualData = getActualData(series);
-        String expected = series.getData().get(0).getText();
-        assertTrue(String.format(msgTemplate,
-                expected, actualData.toString()), checked);
+        assertTextDataEquals(series, "Addition of decimal value corrupted text field");
     }
 }
