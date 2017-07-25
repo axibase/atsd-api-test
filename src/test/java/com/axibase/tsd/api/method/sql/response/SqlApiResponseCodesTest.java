@@ -13,7 +13,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.*;
@@ -46,9 +45,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     }
 
     /**
-     * Disabled until #3609 will not be fixed
+     * #3609
      */
-    @Test(enabled = false)
+    @Test
     public void testNoQueryParamsPost() {
         final Response response = httpSqlApiResource
                 .request()
@@ -103,7 +102,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     public void testDefaultOutputFormatCsvPost() {
         final Form form = new Form();
         form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
-        form.param("outputFormat", "json");
+        form.param("outputFormat", "csv");
         final Response response = httpSqlApiResource
                 .request()
                 .post(Entity.entity(

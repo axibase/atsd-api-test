@@ -1,4 +1,4 @@
-#Contribute guide
+#Contributing guide
 
 ## Pre-requirements
 1. An instance of ATSD `api_test` version. You can install it using [docker image](https://hub.docker.com/r/axibase/atsd).
@@ -26,6 +26,10 @@
    ```bash
    mvn clean test
    ```
+
+#### IDE note.
+
+If you use IntelliJ IDEA for development you should intall Lombok plugin for proper code inspection and completion.
 
 ## Development
 

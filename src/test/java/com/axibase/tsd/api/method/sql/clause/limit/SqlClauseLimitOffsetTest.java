@@ -214,7 +214,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
                 extraneousErrorMessage("OFFSET", "{<EOF>, INTEGER_LITERAL, ID, WORD, METRIC_NAME," +
                         " STRING_LITERAL, DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER," +
-                        " JOIN, OPTION}"));
+                        " FULL, JOIN, OPTION}"));
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
                 expectedErrorMessage, response

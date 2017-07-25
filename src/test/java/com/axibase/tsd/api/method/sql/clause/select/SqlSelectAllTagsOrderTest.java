@@ -51,9 +51,9 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = sortedColumnNames(sortedTagsKeys(tags), "tags", true);
+        List<String> expectedColumnLabels = Arrays.asList("time", "datetime", "value", "text", "metric", "entity", "tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable, true);
+        assertTableColumnsLabels(expectedColumnLabels, resultTable, true);
     }
 
     /**

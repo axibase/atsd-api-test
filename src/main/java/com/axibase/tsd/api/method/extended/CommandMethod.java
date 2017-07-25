@@ -8,6 +8,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Variant;
 import java.util.List;
 
 
@@ -38,6 +39,14 @@ public class CommandMethod extends BaseMethod {
 
     private static Response sendResponse(String payload) {
         Response response = METHOD_RESOURCE.request().post(Entity.entity(payload, MediaType.TEXT_PLAIN));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response sendGzipCompressedBytes(byte[] gzipCompressedBytes) {
+        Response response = METHOD_RESOURCE.request()
+                .post(Entity.entity(gzipCompressedBytes, new Variant(MediaType.TEXT_PLAIN_TYPE, "en", "gzip")));
+
         response.bufferEntity();
         return response;
     }

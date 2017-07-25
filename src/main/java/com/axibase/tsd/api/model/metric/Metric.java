@@ -16,7 +16,6 @@ public class Metric {
     private String name;
     private Boolean enabled;
     private DataType dataType;
-    private Boolean counter;
     private Boolean persistent;
     private String timePrecision;
     private String retentionInterval;
@@ -81,15 +80,6 @@ public class Metric {
 
     public Metric setVersioned(Boolean versioned) {
         this.versioned = versioned;
-        return this;
-    }
-
-    public Boolean getCounter() {
-        return counter;
-    }
-
-    public Metric setCounter(Boolean counter) {
-        this.counter = counter;
         return this;
     }
 
