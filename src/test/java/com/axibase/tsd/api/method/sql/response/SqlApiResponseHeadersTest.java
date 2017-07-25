@@ -10,6 +10,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,12 +28,12 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @BeforeClass
     public static void prepareDataSet() {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        testSeries.setData(Arrays.asList(
-                new Sample("2016-06-03T09:23:00.000Z", "16.0"),
-                new Sample("2016-06-03T09:26:00.000Z", "8.1"),
-                new Sample("2016-06-03T09:36:00.000Z", "6.0"),
-                new Sample("2016-06-03T09:41:00.000Z", "19.0")
-        ));
+        testSeries.addSamples(
+                new Sample("2016-06-03T09:23:00.000Z", 16),
+                new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                new Sample("2016-06-03T09:36:00.000Z", 6),
+                new Sample("2016-06-03T09:41:00.000Z", 19)
+        );
     }
 
 

@@ -22,9 +22,11 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addData(new Sample("2016-07-27T22:41:52.000Z", "0"));
-        series.addData(new Sample("2016-07-27T22:41:51.000Z", "1"));
-        series.addData(new Sample("2016-07-27T22:41:50.000Z", "2"));
+        series.addSamples(
+                new Sample("2016-07-27T22:41:52.000Z", 0),
+                new Sample("2016-07-27T22:41:51.000Z", 1),
+                new Sample("2016-07-27T22:41:50.000Z", 2)
+        );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

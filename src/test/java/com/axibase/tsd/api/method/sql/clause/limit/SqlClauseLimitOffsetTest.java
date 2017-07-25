@@ -27,13 +27,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TESTS_ENTITY_NAME, TEST_METRIC_NAME);
-        series.setData(
-                Arrays.asList(
-                        new Sample("2016-06-03T09:23:00.000Z", "0"),
-                        new Sample("2016-06-03T09:23:01.000Z", "1"),
-                        new Sample("2016-06-03T09:23:02.000Z", "2"),
-                        new Sample("2016-06-03T09:23:03.000Z", "3")
-                )
+        series.addSamples(
+                        new Sample("2016-06-03T09:23:00.000Z", 0),
+                        new Sample("2016-06-03T09:23:01.000Z", 1),
+                        new Sample("2016-06-03T09:23:02.000Z", 2),
+                        new Sample("2016-06-03T09:23:03.000Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
@@ -216,7 +214,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
                 extraneousErrorMessage("OFFSET", "{<EOF>, INTEGER_LITERAL, ID, WORD, METRIC_NAME," +
                         " STRING_LITERAL, DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER," +
-                        " JOIN, OPTION}"));
+                        " FULL, JOIN, OPTION}"));
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
                 expectedErrorMessage, response

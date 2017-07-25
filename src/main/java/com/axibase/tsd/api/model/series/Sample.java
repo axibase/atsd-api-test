@@ -1,16 +1,23 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.util.Util;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
+    private static final ISO8601DateFormat isoDateFormat = new ISO8601DateFormat();
+
     private String d;
     private Long t;
 
@@ -23,50 +30,52 @@ public class Sample {
     public Sample() {
     }
 
+    public Sample(String d, int v, String text) {
+        this.d = convertDateToISO(d);
+        this.v = new BigDecimal(v);
+        this.text = text;
+    }
+
     public Sample(String d, BigDecimal v, String text) {
-        this.d = d;
+        this.d = convertDateToISO(d);
         this.v = v;
         this.text = text;
     }
 
-    public Sample(String d, String v, String text) {
-        this(d, new BigDecimal(v), text);
-    }
-
     public Sample(Sample sourceSample) {
-        this(sourceSample.getT(), sourceSample.getV());
-        setD(sourceSample.getD());
+        this(sourceSample.getD(), sourceSample.getV());
+        setT(sourceSample.getT());
         setText(sourceSample.getText());
     }
 
-    public Sample(long t, String v) {
-        this.t = t;
-        this.v = new BigDecimal(String.valueOf(v));
-    }
-
     public Sample(String d, int v) {
-        this.d = d;
-        this.v = new BigDecimal(String.valueOf(v));
-    }
-
-    public Sample(Date d, String v) {
-        this.d = Util.ISOFormat(d);
-        this.v = new BigDecimal(String.valueOf(v));
-    }
-
-    public Sample(Long t, BigDecimal v) {
-        this.t = t;
-        this.v = v;
+        this.d = convertDateToISO(d);
+        this.v = new BigDecimal(v);
     }
 
     public Sample(String d, BigDecimal v) {
-        this.d = d;
+        this.d = convertDateToISO(d);
         this.v = v;
     }
 
-    public Sample(String d, String v) {
-        this.d = d;
-        this.v = new BigDecimal(String.valueOf(v));
+    public Sample(Date d, BigDecimal v) {
+        this.d = Util.ISOFormat(d);
+        this.v = v;
+    }
+
+    public Sample(Date d, int v) {
+        this.d = Util.ISOFormat(d);
+        this.v = new BigDecimal(v);
+    }
+
+    private String convertDateToISO(String dateString) {
+        Date date;
+        try {
+            date = isoDateFormat.parse(dateString);
+        } catch (ParseException ex) {
+            return null;
+        }
+        return Util.ISOFormat(date, true, Util.DEFAULT_TIMEZONE_NAME);
     }
 
     public Long getT() {
@@ -81,7 +90,14 @@ public class Sample {
         return d;
     }
 
+    @JsonIgnore
+    public ZonedDateTime getZonedDateTime() { return ZonedDateTime.parse(this.d, DateTimeFormatter.ISO_DATE_TIME); }
+
     protected void setD(String d) {
+        this.d = convertDateToISO(d);
+    }
+
+    protected void setDUnsafe(String d) {
         this.d = d;
     }
 
@@ -116,11 +132,11 @@ public class Sample {
 
         Sample sample = (Sample) o;
 
-        if (d != null ? !d.equals(sample.d) : sample.d != null)
+        if (d != null ? !d.equals(convertDateToISO(sample.d)) : sample.d != null)
             return false;
         if (t != null ? !t.equals(sample.t) : sample.t != null)
             return false;
-        if (v != null ? !v.equals(sample.v) : sample.v != null)
+        if (v != null ? !(v.compareTo(sample.v) == 0) : sample.v != null)
             return false;
         if (text != null ? !text.equals(sample.text) : sample.text != null)
             return false;

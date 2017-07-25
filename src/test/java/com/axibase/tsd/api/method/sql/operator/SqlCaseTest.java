@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 
 public class SqlCaseTest extends SqlTest {
@@ -20,16 +20,13 @@ public class SqlCaseTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "abc", "tag2", "123");
 
-        series.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:01.000Z", "1"),
-                new Sample("2016-06-03T09:20:02.000Z", "15"),
-                new Sample("2016-06-03T09:20:03.000Z", "40")
-                )
+        series.addSamples(
+                new Sample("2016-06-03T09:20:01.000Z", 1),
+                new Sample("2016-06-03T09:20:02.000Z", 15),
+                new Sample("2016-06-03T09:20:03.000Z", 40)
         );
-        series.addTag("tag1", "abc");
-        series.addTag("tag2", "123");
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
@@ -242,5 +239,63 @@ public class SqlCaseTest extends SqlTest {
         };
 
         assertSqlQueryRows("CASE in HAVING gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     *  #3913
+     */
+    @Test
+    public void testCaseInExpression() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT 100 - CASE WHEN value < 30 THEN value ELSE 100 END FROM '%s'",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {
+                {"99"},
+                {"85"},
+                {"0"}
+        };
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in expression",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     *  #3913
+     */
+    @Test
+    public void testCaseInAggregationFunction() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT SUM(100 - CASE WHEN value < 30 THEN value ELSE 100 END) FROM '%s'",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {{"184"}};
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in aggregation function",
+                expectedRows,
+                sqlQuery);
+    }
+
+    /**
+     *  #3913
+     */
+    @Test
+    public void testCaseInCastFunction() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT CAST(100 - CASE WHEN value < 30 THEN 0 ELSE 100 END AS STRING) FROM '%s'",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {
+                {"100"},
+                {"100"},
+                {"0"}};
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in cast function",
+                expectedRows,
+                sqlQuery);
     }
 }

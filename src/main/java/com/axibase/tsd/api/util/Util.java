@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.method.version.VersionMethod;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,9 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Util {
@@ -92,6 +96,60 @@ public class Util {
 
     public static Long getMillis(String date) throws ParseException {
         return parseDate(date).getTime();
+    }
+
+    public static String addTimeUnitsInTimezone(
+            String dateTime,
+            ZoneId zoneId,
+            TimeUnit timeUnit,
+            int amount) {
+        ZonedDateTime dateUtc = ZonedDateTime.parse(dateTime, DateTimeFormatter.ISO_DATE_TIME);
+        ZonedDateTime localDate = dateUtc.withZoneSameInstant(zoneId);
+        switch (timeUnit) {
+            case NANOSECOND: {
+                localDate = localDate.plusNanos(amount);
+                break;
+            }
+            case MILLISECOND: {
+                localDate = localDate.plusNanos(amount * 1000);
+                break;
+            }
+            case SECOND: {
+                localDate = localDate.plusSeconds(amount);
+                break;
+            }
+            case MINUTE: {
+                localDate = localDate.plusMinutes(amount);
+                break;
+            }
+            case HOUR: {
+                localDate = localDate.plusHours(amount);
+                break;
+            }
+            case DAY: {
+                localDate = localDate.plusDays(amount);
+                break;
+            }
+            case WEEK: {
+                localDate = localDate.plusWeeks(amount);
+                break;
+            }
+            case MONTH: {
+                localDate = localDate.plusMonths(amount);
+                break;
+            }
+            case QUARTER: {
+                localDate = localDate.plusMonths(3 * amount);
+                break;
+            }
+            case YEAR: {
+                localDate = localDate.plusYears(amount);
+                break;
+            }
+        }
+
+        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
+        return localDate.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
     }
 
     public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {

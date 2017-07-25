@@ -20,7 +20,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class SeriesQueryDateFilterTest extends SeriesMethod {
-    private final Sample DATE_FILTER_DEFAULT_SAMPLE = new Sample("2014-06-06T00:00:00.000Z", "1");
+    private final Sample DATE_FILTER_DEFAULT_SAMPLE = new Sample("2014-06-06T00:00:00.000Z", 1);
 
     /**
      * #3030
@@ -28,7 +28,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalOnly() throws Exception {
         Series series = new Series("datefilter-e-1", "datefilter-m-1");
-        series.addData(DATE_FILTER_DEFAULT_SAMPLE);
+        series.addSamples(DATE_FILTER_DEFAULT_SAMPLE);
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
@@ -47,7 +47,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalAndEnd() throws Exception {
         Series series = new Series("datefilter-e-2", "datefilter-m-2");
-        series.addData(DATE_FILTER_DEFAULT_SAMPLE);
+        series.addSamples(DATE_FILTER_DEFAULT_SAMPLE);
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
@@ -67,7 +67,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalAndStart() throws Exception {
         Series series = new Series("datefilter-e-3", "datefilter-m-3");
-        series.addData(DATE_FILTER_DEFAULT_SAMPLE);
+        series.addSamples(DATE_FILTER_DEFAULT_SAMPLE);
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());

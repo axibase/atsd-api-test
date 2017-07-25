@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,8 +23,10 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addData(new Sample("2016-06-19T11:00:00.000Z", "1.23"));
-        series.addData(new Sample("2016-06-19T11:01:00.000Z", "0.89"));
+        series.addSamples(
+                new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("1.23")),
+                new Sample("2016-06-19T11:01:00.000Z", new BigDecimal("0.89"))
+        );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

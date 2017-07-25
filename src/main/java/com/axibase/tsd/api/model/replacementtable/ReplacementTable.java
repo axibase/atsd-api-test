@@ -11,13 +11,13 @@ public class ReplacementTable {
 
 
     public ReplacementTable(String name, Map<String, String> map) {
-        Registry.ReplacementTable.register(name);
+        Registry.ReplacementTable.checkExists(name);
         this.name = name;
         this.map = map;
     }
 
     public ReplacementTable(String name) {
-        Registry.ReplacementTable.register(name);
+        Registry.ReplacementTable.checkExists(name);
         this.name = name;
     }
 

@@ -4,13 +4,15 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
@@ -21,28 +23,17 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     @Test
     public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
         // Arrange
-        String metric = TestUtil.TestNames.metric();
-        Registry.Metric.register(metric);
-        String entity = TestUtil.TestNames.entity();
-        Registry.Entity.register(entity);
+        String metric = metric();
+        String entity = entity();
 
-        Series series1 = new Series();
-        series1.setEntity(entity);
-        series1.setMetric(metric);
-        series1.addTag("key", "val1");
-        series1.addData(new Sample("2017-03-27T00:00:00.000Z", 1));
+        Series series1 = new Series(entity, metric, "key", "val1");
+        series1.addSamples(new Sample("2017-03-27T00:00:00.000Z", 1));
 
-        Series series2 = new Series();
-        series2.setEntity(entity);
-        series2.setMetric(metric);
-        series2.addTag("key", "val2");
-        series2.addData(new Sample("2017-03-27T00:00:01.000Z", 1));
+        Series series2 = new Series(entity, metric, "key", "val2");
+        series2.addSamples(new Sample("2017-03-27T00:00:01.000Z", 1));
 
-        Series series3 = new Series();
-        series3.setEntity(entity);
-        series3.setMetric(metric);
-        series3.addTag("key", "val3");
-        series3.addData(new Sample("2017-03-27T00:00:02.000Z", 1));
+        Series series3 = new Series(entity, metric, "key", "val3");
+        series3.addSamples(new Sample("2017-03-27T00:00:02.000Z", 1));
 
         insertSeriesCheck(series1, series2, series3);
 

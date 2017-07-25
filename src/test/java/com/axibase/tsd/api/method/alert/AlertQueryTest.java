@@ -26,7 +26,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntityWildcardStarChar() throws Exception {
         final String entityName = "alert-query-entity-1";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, String> query = new HashMap<>();
@@ -45,7 +45,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntitiesWildcardStartChar() throws Exception {
         final String entityName = "alert-query-entity-2";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> query = new HashMap<>();
@@ -64,7 +64,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntitiesWildcardQuestionChar() throws Exception {
         final String entityName = "alert-query-entity-3";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> query = new HashMap<>();
@@ -83,7 +83,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntityExpressionFilterExist() throws Exception {
         final String entityName = "alert-query-entity-4";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> query = new HashMap<>();
@@ -102,7 +102,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
         final String entityName = "alert-query-entity-5";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> qExist = new HashMap<>();

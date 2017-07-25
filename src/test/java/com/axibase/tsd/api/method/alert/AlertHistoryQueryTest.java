@@ -21,13 +21,12 @@ import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-@Test
 public class AlertHistoryQueryTest extends AlertTest {
     private final static String ALERTHISTORY_ENTITY_NAME = "alert-historyquery-entity-1";
 
     @BeforeClass(enabled = false)
     public void generateAlertHistory() throws Exception {
-        Registry.Entity.register(ALERTHISTORY_ENTITY_NAME);
+        Registry.Entity.checkExists(ALERTHISTORY_ENTITY_NAME);
         generateAlertForEntity(ALERTHISTORY_ENTITY_NAME);
         AlertHistoryQuery query = templateQuery()
                 .setEntity(ALERTHISTORY_ENTITY_NAME)

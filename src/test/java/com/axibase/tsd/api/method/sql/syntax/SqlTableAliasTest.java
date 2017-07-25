@@ -20,27 +20,18 @@ public class SqlTableAliasTest extends SqlTest {
 
     @BeforeClass
     static void prepareData() throws Exception {
-
         final Map<String, String> tags = Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("a", "b");
             put("b", "c");
         }});
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-        Registry.Entity.register(TEST_ENTITY_NAME);
+
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
-                        new Series() {{
-                            setMetric(TEST_METRIC1_NAME);
-                            setEntity(TEST_ENTITY_NAME);
-                            addData(new Sample("2016-06-03T09:24:00.000Z", 0));
-                            setTags(tags);
+                        new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, tags) {{
+                            addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
                         }},
-                        new Series() {{
-                            setMetric(TEST_METRIC2_NAME);
-                            setEntity(TEST_ENTITY_NAME);
-                            setTags(tags);
-                            addData(new Sample("2016-06-03T09:24:00.000Z", 1));
+                        new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, tags) {{
+                            addSamples(new Sample("2016-06-03T09:24:00.000Z", 1));
                         }}
                 )
         );
@@ -79,12 +70,18 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        StringTable resultTable = queryResponse(sqlQuery)
-                .readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = Arrays.asList("entity", "value", "tags.a", "tags.b", "datetime");
+        List<String> expectedColumnNames = Arrays.asList(
+                "time",
+                "datetime",
+                "value",
+                "text",
+                "metric",
+                "entity",
+                "tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
     /**
@@ -97,12 +94,18 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME
         );
 
-        StringTable resultTable = queryResponse(sqlQuery)
-                .readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        List<String> expectedColumnNames = Arrays.asList("entity", "value", "tags.a", "tags.b", "datetime");
+        List<String> expectedColumnNames = Arrays.asList(
+                "time",
+                "datetime",
+                "value",
+                "text",
+                "metric",
+                "entity",
+                "tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
     /**
@@ -154,23 +157,25 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = queryResponse(sqlQuery)
-                .readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                TEST_METRIC1_NAME + ".entity",
-                TEST_METRIC1_NAME + ".value",
-                TEST_METRIC1_NAME + ".tags.a",
-                TEST_METRIC1_NAME + ".tags.b",
+                TEST_METRIC1_NAME + ".time",
                 TEST_METRIC1_NAME + ".datetime",
-                TEST_METRIC2_NAME + ".entity",
+                TEST_METRIC1_NAME + ".value",
+                TEST_METRIC1_NAME + ".text",
+                TEST_METRIC1_NAME + ".metric",
+                TEST_METRIC1_NAME + ".entity",
+                TEST_METRIC1_NAME + ".tags",
+                TEST_METRIC2_NAME + ".time",
+                TEST_METRIC2_NAME + ".datetime",
                 TEST_METRIC2_NAME + ".value",
-                TEST_METRIC2_NAME + ".tags.a",
-                TEST_METRIC2_NAME + ".tags.b",
-                TEST_METRIC2_NAME + ".datetime"
-        );
+                TEST_METRIC2_NAME + ".text",
+                TEST_METRIC2_NAME + ".metric",
+                TEST_METRIC2_NAME + ".entity",
+                TEST_METRIC2_NAME + ".tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
     /**
@@ -184,23 +189,25 @@ public class SqlTableAliasTest extends SqlTest {
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
-        StringTable resultTable = queryResponse(sqlQuery)
-                .readEntity(StringTable.class);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "t1.entity",
-                "t1.value",
-                "t1.tags.a",
-                "t1.tags.b",
+                "t1.time",
                 "t1.datetime",
-                "t2.entity",
+                "t1.value",
+                "t1.text",
+                "t1.metric",
+                "t1.entity",
+                "t1.tags",
+                "t2.time",
+                "t2.datetime",
                 "t2.value",
-                "t2.tags.a",
-                "t2.tags.b",
-                "t2.datetime"
-        );
+                "t2.text",
+                "t2.metric",
+                "t2.entity",
+                "t2.tags");
 
-        assertTableColumnsNames(expectedColumnNames, resultTable);
+        assertTableColumnsNames(expectedColumnNames, resultTable, true);
     }
 
 }

@@ -15,17 +15,13 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-/**
- * @author Dmitry Korchagin.
- */
-
 public class PropertyUrlQueryTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     /* 1278 */
     @Test
     public void testEntityNameContainsWhilespace() {
-        Property property = new Property("urlquery-property-type-1", "urlquery entityname-1");
+        final Property property = new Property("urlquery-property-type-1", "urlquery entityname-1");
         assertEquals(BAD_REQUEST.getStatusCode(), urlQueryProperty(property.getType(), property.getEntity()).getStatus());
     }
 

@@ -1,20 +1,23 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
+import com.axibase.tsd.api.method.admin.SystemInformationMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class ConcatTest extends SqlTest {
     private static final String TEST_ENTITY_LEFT = "test-concat";
@@ -30,30 +33,25 @@ public class ConcatTest extends SqlTest {
 
     private static void prepareFunctionalConcatTestData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
-        {
-            Series series = new Series(TEST_ENTITY, TEST_METRIC1);
-            series.addData(new Sample("2016-06-03T09:20:18.000Z", "3.0"));
-            series.addData(new Sample("2016-06-03T09:21:18.000Z", "3.10"));
-            series.addData(new Sample("2016-06-03T09:22:18.000Z", "3.14"));
-            series.addData(new Sample("2016-06-03T09:23:18.000Z", "3.1415"));
-            seriesList.add(series);
-        }
-        {
-            Series series = new Series();
-            Registry.Metric.register(TEST_METRIC2);
-            series.setEntity(TEST_ENTITY);
-            series.setMetric(TEST_METRIC2);
-            series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.555"));
-            seriesList.add(series);
-        }
-        {
-            Series series = new Series();
-            Registry.Metric.register(TEST_METRIC3);
-            series.setEntity(TEST_ENTITY);
-            series.setMetric(TEST_METRIC3);
-            series.addData(new Sample("2016-06-03T09:23:18.000Z", "5.0"));
-            seriesList.add(series);
-        }
+
+        Series series = new Series(TEST_ENTITY, TEST_METRIC1);
+        series.addSamples(
+                new TextSample("2016-06-03T09:19:18.000Z", ""), // NaN value
+                new Sample("2016-06-03T09:20:18.000Z", 3),
+                new Sample("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")),
+                new Sample("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")),
+                new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415"))
+        );
+
+        seriesList.add(series);
+
+        series = new Series(TEST_ENTITY, TEST_METRIC2);
+        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("5.555")));
+        seriesList.add(series);
+
+        series = new Series(TEST_ENTITY, TEST_METRIC3);
+        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", 5));
+        seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
@@ -92,7 +90,7 @@ public class ConcatTest extends SqlTest {
     }
 
     /**
-     * #3768
+     * #3768, #4000
      */
     @Test
     public void testConcatWordAndNumber() throws Exception {
@@ -101,6 +99,7 @@ public class ConcatTest extends SqlTest {
         );
 
         String[][] expectedRows = {
+                {"a:"},
                 {"a:3"},
                 {"a:3.1"},
                 {"a:3.14"},
@@ -117,14 +116,15 @@ public class ConcatTest extends SqlTest {
     public void testConcatWordAndTwoNumbers() throws Exception {
         String sqlQuery = String.format(
                 "SELECT CONCAT('a:', t1.value, ':', t2.value), CONCAT('a:', t1.value, ':', t3.value) " +
-                "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
+                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
                 TEST_METRIC1,
                 TEST_METRIC2,
                 TEST_METRIC3
         );
 
+        String javaVersion = SystemInformationMethod.getJavaVersion();
         String[][] expectedRows = {
-                {"a:3.14:5.56", "a:3.14:5"}
+                {javaVersion.startsWith("1.8") ? "a:3.14:5.55" : "a:3.14:5.56", "a:3.14:5"}
         };
 
         assertSqlQueryRows("CONCAT word and two numbers gives wrong result", expectedRows, sqlQuery);
@@ -186,5 +186,19 @@ public class ConcatTest extends SqlTest {
         };
 
         assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testConcatWithDate() {
+        String sqlQuery = "SELECT CONCAT('1970-01-01T00:00:00.00', '0', 'Z')";
+
+        String[][] expectedRows = new String[][] {
+                {"1970-01-01T00:00:00.000Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 }

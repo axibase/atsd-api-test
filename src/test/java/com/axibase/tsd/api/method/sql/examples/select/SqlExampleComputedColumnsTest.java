@@ -9,6 +9,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,29 +26,18 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-
-        Series series1 = new Series(),
-                series2 = new Series();
-
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-08-15T07:24:02.000Z", "4.3"),
-                new Sample("2016-08-15T07:24:46.000Z", "4.3"),
-                new Sample("2016-08-15T07:25:02.000Z", "5.4")
-                )
+        Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
+        series1.addSamples(
+                new Sample("2016-08-15T07:24:02.000Z", new BigDecimal("4.3")),
+                new Sample("2016-08-15T07:24:46.000Z", new BigDecimal("4.3")),
+                new Sample("2016-08-15T07:25:02.000Z", new BigDecimal("5.4"))
         );
 
-        series2.setMetric(TEST_METRIC2_NAME);
-        series2.setEntity(TEST_ENTITY_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-08-15T07:24:46.000Z", "10.1"),
-                new Sample("2016-08-15T07:25:02.000Z", "12.2"),
-                new Sample("2016-08-15T07:25:46.000Z", "10.1")
-                )
+        Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
+        series2.addSamples(
+                new Sample("2016-08-15T07:24:46.000Z", new BigDecimal("10.1")),
+                new Sample("2016-08-15T07:25:02.000Z", new BigDecimal("12.2")),
+                new Sample("2016-08-15T07:25:46.000Z", new BigDecimal("10.1"))
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

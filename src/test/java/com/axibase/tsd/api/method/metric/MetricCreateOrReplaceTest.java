@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -71,10 +71,10 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         final String TAG_NAME = "SoMeTaG";
         final String TAG_VALUE = "value";
 
-        Metric metric = new Metric("create-metric-with-tag");
         Map<String, String> tags = new HashMap<>();
         tags.put(TAG_NAME, TAG_VALUE);
-        metric.setTags(tags);
+        Metric metric = new Metric("create-metric-with-tag", tags);
+
         Response response1 = createOrReplaceMetric(metric);
         assertEquals("Failed to create metric", OK.getStatusCode(), response1.getStatus());
 

@@ -16,7 +16,6 @@ public class Metric {
     private String name;
     private Boolean enabled;
     private DataType dataType;
-    private Boolean counter;
     private Boolean persistent;
     private String timePrecision;
     private String retentionInterval;
@@ -36,9 +35,17 @@ public class Metric {
 
     public Metric(String name) {
         if (name != null) {
-            Registry.Metric.register(name);
+            Registry.Metric.checkExists(name);
         }
         this.name = name;
+    }
+
+    public Metric(String name, Map<String, String> tags) {
+        if (name != null) {
+            Registry.Metric.checkExists(name);
+        }
+        this.name = name;
+        this.tags = tags;
     }
 
     public String getFilter() {
@@ -73,15 +80,6 @@ public class Metric {
 
     public Metric setVersioned(Boolean versioned) {
         this.versioned = versioned;
-        return this;
-    }
-
-    public Boolean getCounter() {
-        return counter;
-    }
-
-    public Metric setCounter(Boolean counter) {
-        this.counter = counter;
         return this;
     }
 

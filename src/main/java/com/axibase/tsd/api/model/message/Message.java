@@ -25,17 +25,17 @@ public class Message {
 
     public Message(String entity) {
         if (entity != null) {
-            Registry.Entity.register(entity);
+            Registry.Entity.checkExists(entity);
         }
         this.entity = entity;
     }
 
     public Message(String entity, String type) {
         if (entity != null) {
-            Registry.Entity.register(entity);
+            Registry.Entity.checkExists(entity);
         }
         if (type != null) {
-            Registry.Type.register(type);
+            Registry.Type.checkExists(type);
         }
         this.entity = entity;
         this.type = type;

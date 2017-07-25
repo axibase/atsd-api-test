@@ -27,66 +27,35 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Entity.register(TEST_ENTITY3_NAME);
-        Registry.Entity.register(TEST_ENTITY4_NAME);
-        Registry.Entity.register(TEST_ENTITY5_NAME);
-
         List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY1_NAME);
-            addData(new Sample("2016-06-19T11:00:00.000Z", 1));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("tag1", "val1");
-            }}));
+        seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "tag1", "val1") {{
+            addSamples(new Sample("2016-06-19T11:00:00.000Z", 1));
         }});
 
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY2_NAME);
-            addData(new Sample("2016-06-19T11:05:00.000Z", 2));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("tag1", "val2");
-                put("tag2", "val2");
-            }}));
+        seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "tag1", "val2", "tag2", "val2") {{
+            addSamples(new Sample("2016-06-19T11:05:00.000Z", 2));
         }});
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY3_NAME);
-            addData(new Sample("2016-06-19T11:10:00.000Z", 3));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("tag2", "val3");
-            }}));
+        seriesList.add(new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME, "tag2", "val3") {{
+            addSamples(new Sample("2016-06-19T11:10:00.000Z", 3));
         }});
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY4_NAME);
-            addData(new Sample("2016-06-19T11:15:00.000Z", 4));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("tag4", "val4");
-            }}));
+        seriesList.add(new Series(TEST_ENTITY4_NAME, TEST_METRIC_NAME, "tag4", "val4") {{
+            addSamples(new Sample("2016-06-19T11:15:00.000Z", 4));
         }});
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC_NAME);
-            setEntity(TEST_ENTITY5_NAME);
-            addData(new Sample("2016-06-19T11:20:00.000Z", 5));
+        seriesList.add(new Series(TEST_ENTITY5_NAME, TEST_METRIC_NAME) {{
+            addSamples(new Sample("2016-06-19T11:20:00.000Z", 5));
         }});
+
+        EntityMethod.createOrReplaceEntityCheck(new Entity(TEST_ENTITY1_NAME, new HashMap<String, String>() {{
+                    put("tag1", "val1");
+                }}
+                )
+        );
 
         SeriesMethod.insertSeriesCheck(seriesList);
-
-        EntityMethod.updateEntity(TEST_ENTITY1_NAME, new Entity() {{
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                        put("tag1", "val1");
-                    }})
-            );
-        }});
     }
 
     /**
@@ -360,14 +329,12 @@ public class SqlIsNullOperatorTest extends SqlTest {
     public void testIsNullMetricLabel() throws Exception {
         Metric metric = new Metric("m-test-operator-is-null-metric-label");
         metric.setLabel(null);
-        MetricMethod.createOrReplaceMetricCheck(metric);
 
         String entityName = "e-test-operator-is-null-metric-label";
-        Registry.Entity.register(entityName);
-        Series series = new Series();
-        series.setMetric(metric.getName());
-        series.setEntity(entityName);
-        series.addData(new Sample("2016-06-19T00:00:00.000Z", 1));
+        Series series = new Series(entityName, metric.getName());
+        series.addSamples(new Sample("2016-06-19T00:00:00.000Z", 1));
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
 
         String sqlQuery = String.format(
@@ -391,14 +358,13 @@ public class SqlIsNullOperatorTest extends SqlTest {
     public void testIsNotNullMetricLabel() throws Exception {
         Metric metric = new Metric("m-test-operator-is-not-null-metric-label");
         metric.setLabel("foo");
-        MetricMethod.createOrReplaceMetricCheck(metric);
+
 
         String entityName = "e-test-operator-is-not-null-metric-label";
-        Registry.Entity.register(entityName);
-        Series series = new Series();
-        series.setMetric(metric.getName());
-        series.setEntity(entityName);
-        series.addData(new Sample("2016-06-19T00:00:00.000Z", 2));
+        Series series = new Series(entityName, metric.getName());
+        series.addSamples(new Sample("2016-06-19T00:00:00.000Z", 2));
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
 
         String sqlQuery = String.format(

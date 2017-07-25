@@ -37,45 +37,29 @@ public class SqlStandardCollectionViewTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-
         //Series data
         List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
-            setTags(TAGS);
-            setMetric(TEST_METRIC1_NAME);
-            setEntity(TEST_ENTITY1_NAME);
-            addData(new Sample("2016-06-29T08:00:00.000Z", 0));
+        seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME, TAGS) {{
+            addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         }});
-        seriesList.add(new Series() {{
-            setEntity(TEST_ENTITY2_NAME);
-            setMetric(TEST_METRIC2_NAME);
-            setTags(Collections.<String, String>emptyMap());
-            addData(new Sample("2016-06-29T08:00:00.000Z", 1));
+
+        seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC2_NAME) {{
+            addSamples(new Sample("2016-06-29T08:00:00.000Z", 1));
         }});
-        SeriesMethod.insertSeriesCheck(seriesList);
+
         //Entity data
-        EntityMethod.updateEntity(TEST_ENTITY1_NAME,
-                new Entity() {{
-                    setTags(TAGS);
-                }}
-        );
+        EntityMethod.createOrReplaceEntity(new Entity(TEST_ENTITY1_NAME, TAGS));
+
         //Metric data
-        MetricMethod.updateMetric(TEST_METRIC1_NAME,
-                new Metric() {{
-                    setTags(TAGS);
-                }}
-        );
+        MetricMethod.createOrReplaceMetric(new Metric(TEST_METRIC1_NAME, TAGS));
+
+        SeriesMethod.insertSeriesCheck(seriesList);
+
         //Entity groups data
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP1_NAME));
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY1_NAME));
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY1_NAME));
-
-
     }
 
     /*

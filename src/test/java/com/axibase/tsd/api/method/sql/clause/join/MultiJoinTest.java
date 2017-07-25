@@ -11,8 +11,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class MultiJoinTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
@@ -33,19 +33,11 @@ public class MultiJoinTest extends SqlTest {
                 TEST_METRIC5_NAME
         };
 
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        for (String metric : metrics) {
-            Registry.Metric.register(metric);
-        }
-
         List<Series> seriesList = new ArrayList<>(TAGS_COUNT * 5);
         for (int i = 0; i < TAGS_COUNT; i++) {
             for (String metric : metrics) {
-                Series series = new Series();
-                series.setEntity(TEST_ENTITY_NAME);
-                series.setMetric(metric);
-                series.addTag("tag", String.valueOf(i));
-                series.addData(new Sample("2010-01-01T00:00:00.000Z", 1));
+                Series series = new Series(TEST_ENTITY_NAME, metric, "tag", String.valueOf(i));
+                series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 1));
 
                 seriesList.add(series);
             }

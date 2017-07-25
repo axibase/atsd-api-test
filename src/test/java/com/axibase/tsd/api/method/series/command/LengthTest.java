@@ -9,12 +9,13 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -38,11 +39,9 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series();
-            series.setEntity(seriesCommand.getEntityName());
-            series.setMetric(metric());
-            series.addData(new Sample(ISO_TIME, "1"));
-            String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
+            Series series = new Series(seriesCommand.getEntityName(), metric());
+            series.addSamples(new Sample(ISO_TIME, 1));
+            String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             if (currentLength < MAX_LENGTH) {
                 values.put(series.getMetric(), "1");
@@ -54,7 +53,7 @@ public class LengthTest extends SeriesMethod {
                 Integer lastIndex = seriesList.size() - 1;
                 Series lastSeries = seriesList.get(lastIndex);
                 seriesList.remove(lastSeries);
-                lastSeries.setData(Collections.singletonList(new Sample(ISO_TIME, repeated)));
+                lastSeries.setSamples(Collections.singletonList(new Sample(ISO_TIME, new BigDecimal(repeated))));
                 values.put(lastSeries.getMetric(), repeated);
                 seriesList.add(lastSeries);
                 break;
@@ -80,11 +79,9 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series();
-            series.setEntity(seriesCommand.getEntityName());
-            series.setMetric(metric());
-            series.addData(new Sample(ISO_TIME, "1"));
-            String appendix = String.format(FieldFormat.keyValue("m", series.getMetric(), "1"));
+            Series series = new Series(seriesCommand.getEntityName(), metric());
+            series.addSamples(new Sample(ISO_TIME, 1));
+            String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             values.put(series.getMetric(), "1");
         }

@@ -12,6 +12,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class SqlSyntaxQuotesEscapingTest extends SqlTest {
@@ -21,18 +22,12 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TEST_ENTITY_NAME);
-
         Map<String, String> tags = new HashMap<>();
         tags.put("double\"quote", "tv1");
         tags.put("single'quote", "tv2");
         tags.put("both'quo\"tes", "tv3");
-        Series series = new Series();
-        series.setEntity(TEST_ENTITY_NAME);
-        series.setMetric(TEST_METRIC_NAME);
-        series.addData(new Sample("2016-07-27T22:41:50.407Z", "12.4"));
-        series.setTags(tags);
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags);
+        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         Metric updatedMetricQuery = new Metric();

@@ -8,15 +8,15 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class GroupByEntityTag extends SqlTest {
     private static final String TEST_METRIC_NAME = metric();
@@ -29,6 +29,8 @@ public class GroupByEntityTag extends SqlTest {
         Metric metric = new Metric(TEST_METRIC_NAME);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
+        ZonedDateTime seriesStartDate = ZonedDateTime.parse("2016-01-01T00:00:00Z");
+
         for (int i = 0; i < tags.length; i++) {
             String testEntityNameTagsCase = entity();
             Entity entity = new Entity(testEntityNameTagsCase);
@@ -38,8 +40,9 @@ public class GroupByEntityTag extends SqlTest {
             Series series = new Series();
             series.setEntity(testEntityNameTagsCase);
             series.setMetric(TEST_METRIC_NAME);
-            series.addData(new Sample(Util.ISOFormat(1485525209086L + i), i));
-            series.addData(new Sample(Util.ISOFormat(1485525289086L + i), i + 1));
+            series.addSamples(
+                    new Sample(seriesStartDate.plusSeconds(i).toString(), i),
+                    new Sample(seriesStartDate.plusSeconds(i + 60).toString(), i + 1));
             seriesList.add(series);
         }
 

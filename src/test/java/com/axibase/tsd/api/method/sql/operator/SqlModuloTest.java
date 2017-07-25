@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.ProcessingException;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -25,41 +26,25 @@ public class SqlModuloTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY_NAME);
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-
         final List<Series> seriesList = new ArrayList<>();
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC1_NAME);
-            setEntity(TEST_ENTITY_NAME);
-            setData(Arrays.asList(
-                    new Sample("2016-06-03T09:23:00.000Z", "7"),
-                    new Sample("2016-06-03T09:24:00.000Z", "0"),
-                    new Sample("2016-06-03T09:25:00.000Z", "12"),
-                    new Sample("2016-06-03T09:26:00.000Z", "10.3"),
-                    new Sample("2016-06-03T09:27:00.000Z", "10")
-            ));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("a", "b");
-                put("b", "c");
-            }}));
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "a", "b", "b", "c") {{
+            addSamples(
+                    new Sample("2016-06-03T09:23:00.000Z", 7),
+                    new Sample("2016-06-03T09:24:00.000Z", 0),
+                    new Sample("2016-06-03T09:25:00.000Z", 12),
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("10.3")),
+                    new Sample("2016-06-03T09:27:00.000Z", 10)
+            );
         }});
 
 
-        seriesList.add(new Series() {{
-            setMetric(TEST_METRIC2_NAME);
-            setEntity(TEST_ENTITY_NAME);
-            setData(Arrays.asList(
-                    new Sample("2016-06-03T09:23:00.000Z", "5"),
-                    new Sample("2016-06-03T09:24:00.000Z", "7"),
-                    new Sample("2016-06-03T09:25:00.000Z", "-2"),
-                    new Sample("2016-06-03T09:26:00.000Z", "-2.1")
-            ));
-            setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-                put("a", "b");
-                put("b", "c");
-            }}));
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "a", "b", "b", "c") {{
+            addSamples(
+                    new Sample("2016-06-03T09:23:00.000Z", 5),
+                    new Sample("2016-06-03T09:24:00.000Z", 7),
+                    new Sample("2016-06-03T09:25:00.000Z", -2),
+                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("-2.1"))
+            );
         }});
 
         SeriesMethod.insertSeriesCheck(seriesList);

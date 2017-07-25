@@ -12,7 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.*;
@@ -25,12 +25,12 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @BeforeClass
     public static void prepareDataSet() throws Exception {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
-        testSeries.setData(Arrays.asList(
-                new Sample("2016-06-03T09:23:00.000Z", "16.0"),
-                new Sample("2016-06-03T09:26:00.000Z", "8.1"),
-                new Sample("2016-06-03T09:36:00.000Z", "6.0"),
-                new Sample("2016-06-03T09:41:00.000Z", "19.0")
-        ));
+        testSeries.addSamples(
+                new Sample("2016-06-03T09:23:00.000Z", 16),
+                new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                new Sample("2016-06-03T09:36:00.000Z", 6),
+                new Sample("2016-06-03T09:41:00.000Z", 19)
+        );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }
 
@@ -45,9 +45,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     }
 
     /**
-     * Disabled until #3609 will not be fixed
+     * #3609
      */
-    @Test(enabled = false)
+    @Test
     public void testNoQueryParamsPost() {
         final Response response = httpSqlApiResource
                 .request()
@@ -102,7 +102,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     public void testDefaultOutputFormatCsvPost() {
         final Form form = new Form();
         form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
-        form.param("outputFormat", "json");
+        form.param("outputFormat", "csv");
         final Response response = httpSqlApiResource
                 .request()
                 .post(Entity.entity(

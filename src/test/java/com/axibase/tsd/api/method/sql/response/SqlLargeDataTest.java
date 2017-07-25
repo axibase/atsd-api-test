@@ -10,8 +10,9 @@ import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SqlLargeDataTest extends SqlTest {
 
@@ -23,20 +24,18 @@ public class SqlLargeDataTest extends SqlTest {
      * #3890
      */
     @Test
-    public void testQueryLargeData() throws IOException, InterruptedException {
-
+    public void testQueryLargeData() throws Exception {
         ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);
-
-        Registry.Metric.register(METRIC_NAME);
-        Registry.Metric.register(ENTITY_NAME);
+        Registry.Entity.checkExists(ENTITY_NAME);
+        Registry.Metric.checkExists(METRIC_NAME);
 
         for (int i = 1; i <= ENTITIES_COUNT; i++) {
+            // manually set entity and metric to avoid check
             Series series = new Series();
-
             series.setEntity(ENTITY_NAME);
             series.setMetric(METRIC_NAME);
             series.addTag("tag", String.valueOf(i));
-            series.addData(createTestSample(i));
+            series.addSamples(createTestSample(i));
 
             seriesRequests.addAll(series.toCommands());
         }
@@ -56,8 +55,9 @@ public class SqlLargeDataTest extends SqlTest {
         assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
     }
 
-    private static Sample createTestSample(int value) {
-        return new Sample(Mocks.MILLS_TIME + value * 1000, String.valueOf(value));
+    private static Sample createTestSample(int value) throws ParseException {
+        Long millisTime = Mocks.MILLS_TIME + value * 1000;
+        return new Sample(new Date(millisTime), value);
     }
 
     private class LargeDataCheck extends AbstractCheck {
