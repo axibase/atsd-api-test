@@ -9,18 +9,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-/**
- * @author Igor Shmagrinskiy
- *         Deserialize class for Object mapper that used in {@link javax.ws.rs.core.Response} class for deserialization of JSON objects
- */
-class StringTableDeserializer extends JsonDeserializer<StringTable> {
+class TableMetaDataDeserializer extends JsonDeserializer<TableMetaData> {
     @Override
-    public StringTable deserialize(JsonParser jsonParser,
-                                   DeserializationContext deserializationContext) throws IOException {
+    public TableMetaData deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
         String jsonText = jsonParser.readValueAsTree().toString();
-        StringTable result;
+        TableMetaData result;
         try {
-            result = SqlTableParser.parseStringTable(new JSONObject(jsonText));
+            result = SqlTableParser.parseMeta(new JSONObject(jsonText));
         } catch (JSONException je) {
             throw new JsonParseException(jsonParser, je.getMessage());
         }

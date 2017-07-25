@@ -12,10 +12,25 @@ public class SeriesCommand extends AbstractCommand {
     private Long timeMills;
     private Integer timeSeconds;
     private String timeISO;
+    private Boolean append;
 
 
     public SeriesCommand() {
         super(SERIES_COMMAND);
+    }
+
+    public SeriesCommand(Map<String, String> texts, Map<String, String> values, String entityName,
+                         Map<String, String> tags, Long timeMills, Integer timeSeconds,
+                         String timeISO, Boolean append) {
+        super(SERIES_COMMAND);
+        this.texts = texts;
+        this.values = values;
+        this.entityName = entityName;
+        this.tags = tags;
+        this.timeMills = timeMills;
+        this.timeSeconds = timeSeconds;
+        this.timeISO = timeISO;
+        this.append = append;
     }
 
     public String getEntityName() {
@@ -74,6 +89,14 @@ public class SeriesCommand extends AbstractCommand {
         this.values = values;
     }
 
+    public Boolean getAppend() {
+        return append;
+    }
+
+    public void setAppend(Boolean append) {
+        this.append = append;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = commandBuilder();
@@ -99,11 +122,13 @@ public class SeriesCommand extends AbstractCommand {
         if (this.timeISO != null) {
             stringBuilder.append(FieldFormat.quoted("d", timeISO));
         }
-
         if (this.tags != null) {
             for (Map.Entry<String, String> entry : tags.entrySet()) {
                 stringBuilder.append(FieldFormat.keyValue("t", entry.getKey(), entry.getValue()));
             }
+        }
+        if (this.append != null) {
+            stringBuilder.append(FieldFormat.quoted("a", append.toString()));
         }
         return stringBuilder.toString();
     }

@@ -34,7 +34,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         metric.setAdditionalProperty("minValue", 0);
         metric.setAdditionalProperty("maxValue", 9);
         metric.setInvalidAction("NONE");
-        metric.setCounter(false);
         metric.setAdditionalProperty("units", "kg");
 
         String entity = entity();
@@ -64,7 +63,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 {"minValue", "0"},
                 {"maxValue", "9"},
                 {"invalidValueAction", "NONE"},
-                {"counter", "false"},
                 {"units", "kg"},
                 {"tags", "tag=value"}
         };
