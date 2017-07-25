@@ -9,9 +9,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.ProcessingException;
-
-public class MetaTest extends SqlMetaTest {
+public class MetaDataTest extends SqlMetaTest {
     private static final String NON_EXISTENT_METRIC_1 = Mocks.metric();
     private static final String NON_EXISTENT_METRIC_2 = Mocks.metric();
     private static final String NON_EXISTENT_METRIC_3 = Mocks.metric();
@@ -20,7 +18,7 @@ public class MetaTest extends SqlMetaTest {
      * #4363, #4374
      */
     @Test
-    public void testAtsdSeriesMeta() {
+    public void testAtsdSeries() {
         String sqlQuery = "SELECT * from 'atsd_series'";
 
         String[] expectedNames = {
@@ -43,20 +41,22 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for * from atsd_series",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
      * #4363, #4374
      */
     @Test
-    public void testSelectConstMeta() {
-        String sqlQuery = "SELECT 1, 'a', 1.0, case 0 when 1 then 'a' else 5 end FROM 'atsd_series'";
+    public void testSelectConst() {
+        String sqlQuery = "SELECT 1, 'a', 1/0, CASE 0 WHEN 1 THEN 'a' ELSE 5 END " +
+                "FROM 'atsd_series'";
 
         String[] expectedNames = {
                 "1",
                 "'a'",
-                "1.0",
+                "1 / 0",
                 "case 0\nwhen 1 then 'a'\nelse 5\nend"
         };
 
@@ -67,7 +67,8 @@ public class MetaTest extends SqlMetaTest {
                 "java_object"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata when selecting constants",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -89,14 +90,15 @@ public class MetaTest extends SqlMetaTest {
                 null
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for certain columns in atsd_series",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
      * #4363, #4374
      */
     @Test
-    public void testValueTimeNonExistentMeta() {
+    public void testValueTimeNonExistent() {
         String sqlQuery = String.format(
                 "SELECT time, datetime, value FROM '%s'",
                 NON_EXISTENT_METRIC_1
@@ -114,21 +116,21 @@ public class MetaTest extends SqlMetaTest {
                 "float"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for certain columns in non-existent metric",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
      * #4363, #4374
      */
     @Test
-    public void testValueTimeExistentMeta() {
-        String metric = Mocks.metric();
-        Series seriesA = new Series(Mocks.entity(), metric);
-        seriesA.addSamples(new Sample("2017-07-18T12:00:00.000Z", 1));
+    public void testValueTimeExistent() throws Exception {
+        Series series = Mocks.series();
+        SeriesMethod.insertSeriesCheck(series);
 
         String sqlQuery = String.format(
                 "SELECT time, datetime, value FROM '%s'",
-                NON_EXISTENT_METRIC_1
+                series.getMetric()
         );
 
         String[] expectedNames = {
@@ -143,7 +145,8 @@ public class MetaTest extends SqlMetaTest {
                 "float"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for certain columns in existent metric",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -173,7 +176,8 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for * in non-existent metric",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -207,25 +211,8 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
-    }
-
-    /**
-     * #4363, #4374
-     */
-    @Test
-    public void testNonExistentCustomColumnsMeta() {
-        String sqlQuery = String.format("SELECT value, text, tags from '%s'", NON_EXISTENT_METRIC_1);
-
-        String[] expectedNames = {
-                "value",   "text",   "tags"
-        };
-
-        String[] expectedTypes = {
-                "float",   "string", "string"
-        };
-
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for * from atsd_series with metric expression",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -238,7 +225,8 @@ public class MetaTest extends SqlMetaTest {
         String[] expectedNames = {};
         String[] expectedTypes = {};
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for non-existent metric",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -274,7 +262,9 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for multiple non-existent " +
+                        "metrics from atsd_series",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -290,7 +280,8 @@ public class MetaTest extends SqlMetaTest {
         String[] expectedNames = {};
         String[] expectedTypes = {};
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for existent metric",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -339,20 +330,8 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
-    }
-
-    /**
-     * #4363, #4374
-     */
-    @Test(expectedExceptions = ProcessingException.class)
-    public void testMetaNonExistentSelfJoin() {
-        String sqlQuery = String.format(
-                "SELECT * from '%s' JOIN '%s'",
-                NON_EXISTENT_METRIC_1,
-                NON_EXISTENT_METRIC_1);
-
-        queryMetaData(sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for multiple existent metrics from atsd_series",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -402,7 +381,8 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for * with JOIN (existent metrics)",
+                expectedNames, expectedTypes, sqlQuery);
     }
 
     /**
@@ -452,6 +432,29 @@ public class MetaTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata for * with JOIN (non-existent metrics)",
+                expectedNames, expectedTypes, sqlQuery);
+    }
+
+    /**
+     * #4363, #4374
+     */
+    @Test
+    public void testMetaExpression() {
+        String sqlQuery = String.format(
+                "SELECT sum(value * 2) from '%s'",
+                NON_EXISTENT_METRIC_1
+        );
+
+        String[] expectedNames = {
+                "sum(value * 2)",
+        };
+
+        String[] expectedTypes = {
+                "double"
+        };
+
+        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata value expression",
+                expectedNames, expectedTypes, sqlQuery);
     }
 }
