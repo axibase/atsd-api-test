@@ -20,7 +20,7 @@ public class SeriesCommand extends AbstractCommand {
     }
 
     public SeriesCommand(Map<String, String> texts, Map<String, String> values, String entityName,
-                         Map<String, String> tags, Long timeMills, Integer timeSeconds,
+                         Map<String, String> tags, Long timeMills, Long timeSeconds,
                          String timeISO, Boolean append) {
         super(SERIES_COMMAND);
         this.texts = texts;

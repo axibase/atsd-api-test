@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.NotCheckedException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -18,8 +17,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.TestUtil.TestNames.entity;
-import static com.axibase.tsd.api.util.TestUtil.TestNames.metric;
+import static com.axibase.tsd.api.transport.tcp.TCPSender.sendChecked;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class LineBreakInsideSeriesCommandTest extends CommandMethod {
@@ -28,8 +26,8 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
 
     @BeforeClass
     public static void initializeFields() {
-        ordinarySeries = new Series(entity(), metric());
-        ordinarySeries.addData(testSample);
+        ordinarySeries = new Series(Mocks.entity(), Mocks.metric());
+        ordinarySeries.addSamples(testSample);
     }
 
     enum TestType {
@@ -77,9 +75,9 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
      */
     @Test(dataProvider = "testTypeAndValue")
     public void testTagLineBreak(TestType type, String value) throws Exception {
-        Series seriesWithBreak = new Series(entity(), metric());
+        Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
         seriesWithBreak.addTag("test-tag", value);
-        seriesWithBreak.addData(testSample);
+        seriesWithBreak.addSamples(testSample);
 
         sendAndCheck(Arrays.asList(seriesWithBreak, ordinarySeries), type);
     }
@@ -89,8 +87,8 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
      */
     @Test(dataProvider = "testTypeAndValue")
     public void testMetricTextLineBreak(TestType type, String value) {
-        Series seriesWithBreak = new Series(entity(), metric());
-        seriesWithBreak.addData(new TextSample(Mocks.ISO_TIME, value));
+        Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
+        seriesWithBreak.addSamples(new TextSample(Mocks.ISO_TIME, value));
 
         sendAndCheck(Arrays.asList(seriesWithBreak, ordinarySeries), type);
     }
@@ -107,7 +105,7 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
                 try {
                     sendChecked(new SeriesCheck(seriesList), commands);
                     checked = true;
-                } catch (NotCheckedException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                     checked = false;
                 }
