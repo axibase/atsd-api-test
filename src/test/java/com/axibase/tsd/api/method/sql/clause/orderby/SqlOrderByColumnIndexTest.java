@@ -1,11 +1,11 @@
 package com.axibase.tsd.api.method.sql.clause.orderby;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -22,28 +22,20 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Registry.Metric.register(TEST_METRIC_NAME);
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
+        series1.addSamples(
+                new Sample("2016-06-19T11:00:00.000Z", 6),
+                new Sample("2016-06-19T11:00:01.000Z", 2),
+                new Sample("2016-06-19T11:00:02.000Z", 4)
+        );
 
-        Series series1 = new Series(),
-                series2 = new Series();
 
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-19T11:00:00.000Z", "6"),
-                new Sample("2016-06-19T11:00:01.000Z", "2"),
-                new Sample("2016-06-19T11:00:02.000Z", "4")
-        ));
-
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-06-19T11:00:04.000Z", "3"),
-                new Sample("2016-06-19T11:00:05.000Z", "1"),
-                new Sample("2016-06-19T11:00:06.000Z", "5")
-        ));
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
+        series2.addSamples(
+                new Sample("2016-06-19T11:00:04.000Z", 3),
+                new Sample("2016-06-19T11:00:05.000Z", 1),
+                new Sample("2016-06-19T11:00:06.000Z", 5)
+        );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

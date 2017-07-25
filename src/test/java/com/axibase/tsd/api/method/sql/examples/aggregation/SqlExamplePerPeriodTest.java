@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,16 +24,16 @@ public class SqlExamplePerPeriodTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
-        series.setData(Arrays.asList(
-                new Sample("2015-09-30T09:00:05.869Z", "2.0"),
-                new Sample("2015-09-30T09:00:05.860Z", "3.0"),
-                new Sample("2015-09-30T09:00:05.195Z", "1.0"),
-                new Sample("2015-09-30T09:00:06.526Z", "3.0"),
-                new Sample("2015-09-30T09:00:06.858Z", "3.0"),
-                new Sample("2015-09-30T09:00:06.217Z", "3.0"),
-                new Sample("2015-09-30T09:00:06.211Z", "3.0"),
-                new Sample("2015-09-30T09:00:06.321Z", "3.0")
-        ));
+        series.addSamples(
+                new Sample("2015-09-30T09:00:05.869Z", 2),
+                new Sample("2015-09-30T09:00:05.860Z", 3),
+                new Sample("2015-09-30T09:00:05.195Z", 1),
+                new Sample("2015-09-30T09:00:06.526Z", 3),
+                new Sample("2015-09-30T09:00:06.858Z", 3),
+                new Sample("2015-09-30T09:00:06.217Z", 3),
+                new Sample("2015-09-30T09:00:06.211Z", 3),
+                new Sample("2015-09-30T09:00:06.321Z", 3)
+        );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

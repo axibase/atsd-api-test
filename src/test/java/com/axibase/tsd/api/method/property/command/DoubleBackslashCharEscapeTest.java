@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.PropertyCommand;
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class DoubleBackslashCharEscapeTest extends PropertyMethod {
     public void testEntity() throws Exception {
         Property property = new Property("property-command-test-t8", "property-command-test\\\\-e8");
         property.setTags(DEFAULT_PROPERTY_TAGS);
-        property.setDate(Util.getCurrentDate());
+        property.setDate(TestUtil.getCurrentDate());
         PlainCommand command = new PropertyCommand(property);
 
         CommandMethod.send(command);
@@ -42,7 +42,7 @@ public class DoubleBackslashCharEscapeTest extends PropertyMethod {
     public void testType() throws Exception {
         Property property = new Property("property-command-test\\\\-t7", "property-command-test-e7");
         property.setTags(DEFAULT_PROPERTY_TAGS);
-        property.setDate(Util.getCurrentDate());
+        property.setDate(TestUtil.getCurrentDate());
         PlainCommand command = new PropertyCommand(property);
         CommandMethod.send(command);
         assertPropertyExisting("Inserted property can not be received", property);

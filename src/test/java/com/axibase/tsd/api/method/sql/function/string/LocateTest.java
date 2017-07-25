@@ -12,8 +12,8 @@ import java.util.Collections;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 
@@ -26,13 +26,8 @@ public class LocateTest extends SqlTest {
     public void prepareData() throws Exception {
         insertSeriesWithMetric(TEST_METRIC1_NAME);
 
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
-
-        series.setData(Collections.singletonList(
-                new Sample("2016-06-03T09:20:00.000Z", "1")
-                )
-        );
-        series.addTag("tag1", "Word word WORD worD");
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "tag1", "Word word WORD worD");
+        series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
@@ -171,5 +166,19 @@ public class LocateTest extends SqlTest {
         };
 
         assertSqlQueryRows("Locate in HAVING gives wrong result", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testLocateWithDate() {
+        String sqlQuery = "SELECT LOCATE('01', '1970-01-01T00:00:00.00')";
+
+        String[][] expectedRows = new String[][] {
+                {"6"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 }

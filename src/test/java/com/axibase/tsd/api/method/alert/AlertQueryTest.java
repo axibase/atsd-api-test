@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONArray;
 import org.testng.annotations.Test;
 
@@ -26,7 +26,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntityWildcardStarChar() throws Exception {
         final String entityName = "alert-query-entity-1";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, String> query = new HashMap<>();
@@ -45,7 +45,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntitiesWildcardStartChar() throws Exception {
         final String entityName = "alert-query-entity-2";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> query = new HashMap<>();
@@ -64,7 +64,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntitiesWildcardQuestionChar() throws Exception {
         final String entityName = "alert-query-entity-3";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> query = new HashMap<>();
@@ -83,7 +83,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testEntityExpressionFilterExist() throws Exception {
         final String entityName = "alert-query-entity-4";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> query = new HashMap<>();
@@ -102,7 +102,7 @@ public class AlertQueryTest extends AlertTest {
     @Test
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
         final String entityName = "alert-query-entity-5";
-        Registry.Entity.register(entityName);
+        Registry.Entity.checkExists(entityName);
         generateAlertForEntity(entityName);
 
         Map<String, Object> qExist = new HashMap<>();
@@ -121,6 +121,6 @@ public class AlertQueryTest extends AlertTest {
         assertEquals(OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to get alerts by queries with unknown entity", jsonResponse.length() == 2);
         assertEquals("Unexpected warning message", "ENTITY not found for name: 'unknown'",
-                Util.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
+                TestUtil.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
     }
 }

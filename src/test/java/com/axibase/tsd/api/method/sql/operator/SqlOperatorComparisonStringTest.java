@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.ErrorTemplate;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -12,8 +13,6 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.axibase.tsd.api.util.ErrorTemplate.SQL_SYNTAX_COMPARISON_TPL;
 
 public class SqlOperatorComparisonStringTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-operator-";
@@ -23,19 +22,11 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series(),
-                series2 = new Series();
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "key0", "value0");
+        series1.addSamples(new Sample("2016-06-03T09:25:00.000Z", 0));
 
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.addData(new Sample("2016-06-03T09:25:00.000Z", "0"));
-        series1.addTag("key0", "value0");
-
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.addData(new Sample("2016-06-03T09:25:01.000Z", "1"));
-        series2.addTag("key1", "value1");
-
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "key1", "value1");
+        series2.addSamples(new Sample("2016-06-03T09:25:01.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
@@ -134,15 +125,14 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
      * #3172
      */
     @Test
-    public void testValueComparisonError() {
+    public void testCastComparison() {
         String sqlQuery = String.format(
                 "SELECT entity,value FROM '%s' %nWHERE value >= '-1'",
                 TEST_METRIC_NAME
         );
 
-        Response response = queryResponse(sqlQuery);
-
-        assertBadRequest(String.format(SQL_SYNTAX_COMPARISON_TPL, '2', "19", "'-1'"), response);
+        String[][] expectedRows = {{"sql-operator-entity-1", "0"}, {"sql-operator-entity-2", "1"}};
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     /**
@@ -310,7 +300,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
 
     /**
-     * #3172
+     * #4152
      */
     @Test
     public void testMetricComparison() {
@@ -320,7 +310,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(String.format(SQL_SYNTAX_COMPARISON_TPL, "2", "13", "metric >="), response);
+        assertOkRequest(response);
     }
 
     /**
@@ -335,7 +325,8 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest("Invalid date value", response);
+        String expectedErrorMessage = ErrorTemplate.Sql.invalidDateValue("value");
+        assertBadRequest(expectedErrorMessage, response);
     }
 
 }

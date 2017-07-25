@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlLookupFunctionTest extends SqlTest {
     private static final String TEST_METRIC_NAME_BASE_LOOKUP_CASE = metric();
@@ -44,7 +44,7 @@ public class SqlLookupFunctionTest extends SqlTest {
 
         ReplacementTableMethod.createCheck(table);
 
-        return  table;
+        return table;
     }
 
     @BeforeClass
@@ -55,47 +55,45 @@ public class SqlLookupFunctionTest extends SqlTest {
         {
             Series series = new Series(entity(), TEST_METRIC_NAME_BASE_LOOKUP_CASE);
 
-            series.addData(new TextSample("2016-06-03T09:20:00.000Z", "word"));
-            series.addData(new TextSample("2016-06-03T09:21:00.000Z", "-1"));
-            series.addData(new TextSample("2016-06-03T09:22:00.000Z", "1"));
-            series.addData(new TextSample("2016-06-03T09:23:00.000Z", "2"));
-            series.addData(new TextSample("2016-06-03T09:24:00.000Z", "word"));
-            series.addData(new TextSample("2016-06-03T09:25:00.000Z", "words"));
-            series.addData(new TextSample("2016-06-03T09:26:00.000Z", "3"));
-            series.addData(new TextSample("2016-06-03T09:27:00.000Z", "4"));
-            series.addData(new TextSample("2016-06-03T09:28:00.000Z", "PI"));
-            series.addData(new TextSample("2016-06-03T09:29:00.000Z", "3.14"));
-            series.addData(new TextSample("2016-06-03T09:30:00.000Z", "nothing"));
+            series.addSamples(
+                    new TextSample("2016-06-03T09:20:00.000Z", "word"),
+                    new TextSample("2016-06-03T09:21:00.000Z", "-1"),
+                    new TextSample("2016-06-03T09:22:00.000Z", "1"),
+                    new TextSample("2016-06-03T09:23:00.000Z", "2"),
+                    new TextSample("2016-06-03T09:24:00.000Z", "word"),
+                    new TextSample("2016-06-03T09:25:00.000Z", "words"),
+                    new TextSample("2016-06-03T09:26:00.000Z", "3"),
+                    new TextSample("2016-06-03T09:27:00.000Z", "4"),
+                    new TextSample("2016-06-03T09:28:00.000Z", "PI"),
+                    new TextSample("2016-06-03T09:29:00.000Z", "3.14"),
+                    new TextSample("2016-06-03T09:30:00.000Z", "nothing")
+            );
+
             seriesList.add(series);
         }
 
-        {
-            Map<String, String> tags = new HashMap<>();
-            tags.put("1", "-1");
-            tags.put("2", "1");
-            tags.put("3", "2");
-            tags.put("4", "word");
-            tags.put("5", "words");
-            tags.put("6", "3");
-            tags.put("7", "4");
-            tags.put("8", "PI");
-            tags.put("9", "3.14");
-            tags.put("10", "nothing");
-            Metric metric = new Metric(TEST_METRIC_NAME_TAGS_CASE);
-            metric.setTags(tags);
-            MetricMethod.createOrReplaceMetricCheck(metric);
-            Entity entity = new Entity(testEntityNameTagsCase);
-            entity.setTags(tags);
-            EntityMethod.createOrReplaceEntityCheck(entity);
 
-            Series series = new Series();
-            series.setEntity(testEntityNameTagsCase);
-            series.setMetric(TEST_METRIC_NAME_TAGS_CASE);
-            series.setTags(tags);
-            series.addData(new Sample("2016-06-03T09:20:00.000Z", "1"));
-            seriesList.add(series);
-        }
+        Map<String, String> tags = new HashMap<>();
+        tags.put("1", "-1");
+        tags.put("2", "1");
+        tags.put("3", "2");
+        tags.put("4", "word");
+        tags.put("5", "words");
+        tags.put("6", "3");
+        tags.put("7", "4");
+        tags.put("8", "PI");
+        tags.put("9", "3.14");
+        tags.put("10", "nothing");
 
+        Metric metric = new Metric(TEST_METRIC_NAME_TAGS_CASE, tags);
+        Entity entity = new Entity(testEntityNameTagsCase, tags);
+        Series series = new Series(testEntityNameTagsCase, TEST_METRIC_NAME_TAGS_CASE, tags);
+
+        series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+        seriesList.add(series);
+
+        MetricMethod.createOrReplaceMetricCheck(metric);
+        EntityMethod.createOrReplaceEntityCheck(entity);
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 

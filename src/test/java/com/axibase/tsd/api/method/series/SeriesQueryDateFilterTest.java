@@ -5,7 +5,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -20,7 +20,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class SeriesQueryDateFilterTest extends SeriesMethod {
-    private final Sample DATE_FILTER_DEFAULT_SAMPLE = new Sample("2014-06-06T00:00:00.000Z", "1");
+    private final Sample DATE_FILTER_DEFAULT_SAMPLE = new Sample("2014-06-06T00:00:00.000Z", 1);
 
     /**
      * #3030
@@ -28,7 +28,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalOnly() throws Exception {
         Series series = new Series("datefilter-e-1", "datefilter-m-1");
-        series.addData(DATE_FILTER_DEFAULT_SAMPLE);
+        series.addSamples(DATE_FILTER_DEFAULT_SAMPLE);
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
@@ -47,7 +47,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalAndEnd() throws Exception {
         Series series = new Series("datefilter-e-2", "datefilter-m-2");
-        series.addData(DATE_FILTER_DEFAULT_SAMPLE);
+        series.addSamples(DATE_FILTER_DEFAULT_SAMPLE);
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
@@ -67,7 +67,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalAndStart() throws Exception {
         Series series = new Series("datefilter-e-3", "datefilter-m-3");
-        series.addData(DATE_FILTER_DEFAULT_SAMPLE);
+        series.addSamples(DATE_FILTER_DEFAULT_SAMPLE);
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
@@ -114,7 +114,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     public void testStartGreaterEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setEndDate(MIN_QUERYABLE_DATE);
-        query.setStartDate(Util.addOneMS(MIN_QUERYABLE_DATE));
+        query.setStartDate(TestUtil.addOneMS(MIN_QUERYABLE_DATE));
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", BAD_REQUEST.getStatusCode(), response.getStatus());

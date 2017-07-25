@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.entity;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
@@ -16,9 +15,6 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
-/**
- * @author Dmitry Korchagin.
- */
 public class EntityGetMetricsTest extends EntityMethod {
 
 
@@ -26,7 +22,6 @@ public class EntityGetMetricsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         final String name = "getmetricsentity 1";
-        Registry.Entity.register(name);
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityMetrics(name).getStatus());
     }
 
@@ -35,7 +30,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         final Series series = new Series("getmetrics/entity2", "getmetrics-metric2");
-        series.addData(new Sample("1970-01-01T00:00:00.000Z", "1"));
+        series.addSamples(new Sample("1970-01-01T00:00:00.000Z", 1));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
@@ -45,7 +40,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         final Series series = new Series("getmetricsйё/entity3", "getmetrics-metric3");
-        series.addData(new Sample("1970-01-01T00:00:00.000Z", "1"));
+        series.addSamples(new Sample("1970-01-01T00:00:00.000Z", 1));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);

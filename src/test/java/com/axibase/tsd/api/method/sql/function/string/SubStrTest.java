@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SubStrTest extends SqlTest {
@@ -70,5 +70,19 @@ public class SubStrTest extends SqlTest {
         );
         String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
         assertEquals(assertMessage, expectedValue, actualValue);
+    }
+
+    /**
+     * #4233
+     */
+    @Test
+    public void testSubstrWithDate() {
+        String sqlQuery = "SELECT SUBSTR('1970-01-01T00:00:00.00', 3, 2)";
+
+        String[][] expectedRows = new String[][] {
+                {"70"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 }

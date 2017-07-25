@@ -21,13 +21,12 @@ import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-@Test
 public class AlertHistoryQueryTest extends AlertTest {
     private final static String ALERTHISTORY_ENTITY_NAME = "alert-historyquery-entity-1";
 
     @BeforeClass(enabled = false)
     public void generateAlertHistory() throws Exception {
-        Registry.Entity.register(ALERTHISTORY_ENTITY_NAME);
+        Registry.Entity.checkExists(ALERTHISTORY_ENTITY_NAME);
         generateAlertForEntity(ALERTHISTORY_ENTITY_NAME);
         AlertHistoryQuery query = templateQuery()
                 .setEntity(ALERTHISTORY_ENTITY_NAME)
@@ -82,21 +81,21 @@ public class AlertHistoryQueryTest extends AlertTest {
     @DataProvider(name = "rawJsonWithNullsProvider")
     public Object[][] provideRawJsonWithNulls() {
 
-        return new String[][] {
-            {"[\n" +
-             "  {\n" +
-             "    \"entity\": \"*\",\n" +
-             "    \"entities\": null,\n" +
-             "    \"entityExpression\": null,\n" +
-             "    \"entityGroup\": null,\n" +
-             "    \"rule\": null,\n" +
-             "    \"metric\": \"m-should-be-empty\",\n" +
-             "    \"startDate\": \"1000-01-01T00:00:00.000Z\",\n" +
-             "    \"endDate\": \"9999-12-31T23:59:59.999Z\",\n" +
-             "    \"interval\": null,\n" +
-             "    \"limit\": null\n" +
-             "  }\n" +
-             "]"}
+        return new String[][]{
+                {"[\n" +
+                        "  {\n" +
+                        "    \"entity\": \"*\",\n" +
+                        "    \"entities\": null,\n" +
+                        "    \"entityExpression\": null,\n" +
+                        "    \"entityGroup\": null,\n" +
+                        "    \"rule\": null,\n" +
+                        "    \"metric\": \"m-should-be-empty\",\n" +
+                        "    \"startDate\": \"1000-01-01T00:00:00.000Z\",\n" +
+                        "    \"endDate\": \"9999-12-31T23:59:59.999Z\",\n" +
+                        "    \"interval\": null,\n" +
+                        "    \"limit\": null\n" +
+                        "  }\n" +
+                        "]"}
         };
     }
 
@@ -114,7 +113,8 @@ public class AlertHistoryQueryTest extends AlertTest {
         assertEquals("Bad request status code\n" + json,
                 Response.Status.Family.SUCCESSFUL, resp.getStatusInfo().getFamily());
         assertTrue("Responded alert collection should be empty",
-                resp.readEntity(new GenericType<List<Alert>>(){}).isEmpty());
+                resp.readEntity(new GenericType<List<Alert>>() {
+                }).isEmpty());
     }
 
 }

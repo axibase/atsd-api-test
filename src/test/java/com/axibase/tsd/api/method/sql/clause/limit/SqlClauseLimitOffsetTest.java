@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.ErrorTemplate;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,9 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Igor Shmgainskiy
- */
+
 public class SqlClauseLimitOffsetTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-clause-limit-offset-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -28,20 +27,18 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TESTS_ENTITY_NAME, TEST_METRIC_NAME);
-        series.setData(
-                Arrays.asList(
-                        new Sample("2016-06-03T09:23:00.000Z", "0"),
-                        new Sample("2016-06-03T09:23:01.000Z", "1"),
-                        new Sample("2016-06-03T09:23:02.000Z", "2"),
-                        new Sample("2016-06-03T09:23:03.000Z", "3")
-                )
+        series.addSamples(
+                        new Sample("2016-06-03T09:23:00.000Z", 0),
+                        new Sample("2016-06-03T09:23:01.000Z", 1),
+                        new Sample("2016-06-03T09:23:02.000Z", 2),
+                        new Sample("2016-06-03T09:23:03.000Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testCorrectOffsetByLimitClause() {
@@ -59,7 +56,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testCorrectOffsetByOffsetClause() {
@@ -78,7 +75,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testCorrectOutOffsetByOffsetClause() {
@@ -97,7 +94,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testCorrectOutOffsetByLimitClause() {
@@ -116,7 +113,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testInCorrectNotIntegerOffsetByLimitClause() {
@@ -138,7 +135,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testInCorrectNotIntegerOffsetByOffsetClause() {
@@ -159,7 +156,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testInCorrectLetterOffsetByLimitClause() {
@@ -181,7 +178,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testInCorrectLetterOffsetByOffsetClause() {
@@ -203,7 +200,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
 
     /**
-     * Issue #3229
+     * #3229
      */
     @Test
     public void testInCorrectOffsetWithoutLimit() {
@@ -214,13 +211,18 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
+                extraneousErrorMessage("OFFSET", "{<EOF>, INTEGER_LITERAL, ID, WORD, METRIC_NAME," +
+                        " STRING_LITERAL, DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER," +
+                        " FULL, JOIN, OPTION}"));
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
-                String.format(
-                        ERROR_MESSAGE_TEMPLATE,
-                        "2", "0", "mismatched input 'OFFSET' expecting {<EOF>, ID, WORD, STRING_LITERAL, " +
-                                "DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER, JOIN, OPTION}"
-                ), response
+                expectedErrorMessage, response
         );
+    }
+
+    private String extraneousErrorMessage(String actual, String expected) {
+        String template = "extraneous input '%s' expecting %s";
+        return String.format(template, actual, expected);
     }
 }

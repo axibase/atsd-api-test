@@ -1,11 +1,11 @@
 package com.axibase.tsd.api.method.sql.function.dateformat;
 
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -21,9 +21,8 @@ public class SqlTimezoneFormatTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-            addTag("a", "b");
-            addData(new Sample("2016-06-03T09:23:00.000Z", "7"));
+        Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "a", "b") {{
+            addSamples(new Sample("2016-06-03T09:23:00.000Z", 7));
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
@@ -46,7 +45,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
-                Util.formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssZ")
+                TestUtil.formatDate(TestUtil.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssZ")
         );
 
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
@@ -66,7 +65,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
-                Util.formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ss")
+                TestUtil.formatDate(TestUtil.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ss")
         );
 
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");

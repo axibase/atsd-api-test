@@ -15,12 +15,14 @@ import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
-import com.axibase.tsd.api.util.Util.TestNames;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.*;
+
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 
 public class TextInterpolationTest extends SqlTest {
@@ -28,24 +30,17 @@ public class TextInterpolationTest extends SqlTest {
 
     public List<Series> multiJoinSeries() {
         List<Series> seriesList = new ArrayList<>();
-        String entityName = TestNames.entity();
-        Registry.Entity.register(entityName);
+        String entityName = entity();
         for (int i = 0; i < TEXTS.length; i++) {
-            String metricName = TestNames.metric();
-            Registry.Metric.register(metricName);
-
+            String metricName = metric();
             Sample sample = new TextSample(Mocks.ISO_TIME, TEXTS[i]);
 
-            Series series = new Series();
-            series.setEntity(entityName);
-            series.setMetric(metricName);
-
-            series.addData(sample);
+            Series series = new Series(entityName, metricName);
+            series.addSamples(sample);
             seriesList.add(series);
         }
         return seriesList;
     }
-
 
     /**
      * #3463
@@ -53,12 +48,12 @@ public class TextInterpolationTest extends SqlTest {
     @Test
     public void testOnlyNullInterpolation() throws Exception {
         Series series = Mocks.series();
-        series.setData(Arrays.asList(
+        series.addSamples(
                 new Sample("2016-06-03T09:23:01.000Z", 1),
                 new Sample("2016-06-03T09:23:02.000Z", 2),
                 new Sample("2016-06-03T09:23:03.000Z", 3),
                 new Sample("2016-06-03T09:23:04.000Z", 4)
-        ));
+        );
         SeriesMethod.insertSeriesCheck(series);
         String sqlQuery = String.format(
                 "SELECT text FROM '%s'%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +
@@ -194,8 +189,8 @@ public class TextInterpolationTest extends SqlTest {
                                   TimePeriod period,
                                   InterpolationParams interpolationParams,
                                   List<Sample> resultPoints) throws Exception {
-        Series series = new Series(TestNames.entity(), TestNames.metric());
-        series.setData(sourcePoints);
+        Series series = new Series(entity(), metric());
+        series.setSamples(sourcePoints);
         SeriesMethod.insertSeriesCheck(series);
 
         String sqlQuery = String.format(
@@ -259,7 +254,7 @@ public class TextInterpolationTest extends SqlTest {
         Long delta = 60000L;
         Long startTime = Mocks.MILLS_TIME - delta;
         Long endTime = Mocks.MILLS_TIME + delta;
-        queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", Util.ISOFormat(startTime), Util.ISOFormat(endTime)));
+        queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", TestUtil.ISOFormat(startTime), TestUtil.ISOFormat(endTime)));
         queryBuilder.append("WITH INTERPOLATE(1 MINUTE, AUTO, OUTER, EXTEND, START_TIME)");
         return queryBuilder.toString();
     }

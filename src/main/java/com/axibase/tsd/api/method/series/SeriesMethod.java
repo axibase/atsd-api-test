@@ -1,0 +1,129 @@
+package com.axibase.tsd.api.method.series;
+
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.Config;
+import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.SeriesCheck;
+import com.axibase.tsd.api.method.sql.OutputFormat;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.SeriesQuery;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
+import java.io.FileNotFoundException;
+import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static javax.ws.rs.core.Response.Status.OK;
+
+public class SeriesMethod extends BaseMethod {
+    private static final String METHOD_SERIES_INSERT = "/series/insert";
+    private static final String METHOD_SERIES_QUERY = "/series/query";
+    private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    public static <T> Response insertSeries(final T seriesList, String user, String password) {
+        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
+
+        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+
+        Response response = builder.post(Entity.json(seriesList));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static <T> Response insertSeries(final T seriesList) throws FileNotFoundException {
+        return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword());
+    }
+
+    public static <T> Response querySeries(T... queries) {
+        return querySeries(Arrays.asList(queries));
+    }
+
+    public static <T> Response querySeries(List<T> queries) {
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
+        return urlQuerySeries(entity, metric, format, parameters, null, null);
+    }
+
+    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters, String user, String password) {
+        WebTarget webTarget = httpApiResource
+                .path(METHOD_SERIES_URL_QUERY)
+                .resolveTemplate("format", format.toString())
+                .resolveTemplate("entity", entity)
+                .resolveTemplate("metric", metric);
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
+        }
+        Invocation.Builder builder = webTarget.request();
+
+        if (user != null && password != null) {
+            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+        }
+        Response response = builder.get();
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response urlQuerySeries(String entity, String metric, Map<String, String> parameters) {
+        return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
+    }
+
+    public static void insertSeriesCheck(Series... series) throws Exception {
+        insertSeriesCheck(Arrays.asList(series));
+    }
+
+    public static void insertSeriesCheck(final List<Series> seriesList) throws Exception {
+        insertSeriesCheck(seriesList, new SeriesCheck(seriesList));
+    }
+
+    public static void insertSeriesCheck(final List<Series> seriesList, AbstractCheck check) throws Exception {
+        Response response = insertSeries(seriesList);
+        if (OK.getStatusCode() != response.getStatus()) {
+            throw new Exception("Fail to execute insertSeries query");
+        }
+        Checker.check(check);
+    }
+
+    public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
+        Response response = querySeries(seriesQuery);
+        return response.readEntity(new GenericType<List<Series>>() {
+        });
+    }
+
+
+    public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries) {
+        return executeQueryRaw(seriesQueries, null, null);
+    }
+
+    public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries, String user, String password) {
+        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_QUERY).request();
+        if (user != null && password != null) {
+            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+        }
+        Response response = builder.post(Entity.json(seriesQueries));
+        response.bufferEntity();
+        return response;
+    }
+}

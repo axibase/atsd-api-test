@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.metric;
 
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.model.metric.Metric;
 import org.testng.annotations.Test;
 
@@ -16,7 +15,6 @@ public class MetricGetTest extends MetricMethod {
     @Test
     public void testURLEncodeNameWhiteSpace() throws Exception {
         final String name = "get metric-1";
-        Registry.Metric.register(name);
         Response response = queryMetric(name);
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue(response.readEntity(String.class).contains("Invalid metric name"));

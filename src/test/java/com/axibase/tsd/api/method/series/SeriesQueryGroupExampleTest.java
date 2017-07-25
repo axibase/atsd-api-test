@@ -7,6 +7,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,29 +25,20 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
      */
     @BeforeClass
     public void insertSeriesSet() throws Exception {
-        Registry.Metric.register(GROUPED_METRIC);
+        Series firstSeries = new Series(FIRST_ENTITY, GROUPED_METRIC);
+        Series secondSeries = new Series(SECOND_ENTITY, GROUPED_METRIC);
 
-        Series firstSeries = new Series();
-        Registry.Entity.register(FIRST_ENTITY);
-        firstSeries.setEntity(FIRST_ENTITY);
-        firstSeries.setMetric(GROUPED_METRIC);
-
-        Series secondSeries = new Series();
-        secondSeries.setEntity(SECOND_ENTITY);
-        Registry.Entity.register(SECOND_ENTITY);
-        secondSeries.setMetric(GROUPED_METRIC);
-
-        firstSeries.addData( new Sample("2016-06-25T08:00:00.000Z", 1));
-        secondSeries.addData(new Sample("2016-06-25T08:00:00.000Z", 11));
-        firstSeries.addData( new Sample("2016-06-25T08:00:05.000Z", 3));
-        firstSeries.addData( new Sample("2016-06-25T08:00:10.000Z", 5));
-        firstSeries.addData( new Sample("2016-06-25T08:00:15.000Z", 8));
-        secondSeries.addData(new Sample("2016-06-25T08:00:15.000Z", 8));
-        firstSeries.addData( new Sample("2016-06-25T08:00:30.000Z", 3));
-        secondSeries.addData(new Sample("2016-06-25T08:00:30.000Z", 13));
-        firstSeries.addData( new Sample("2016-06-25T08:00:45.000Z", 5));
-        secondSeries.addData(new Sample("2016-06-25T08:00:45.000Z", 15));
-        secondSeries.addData(new Sample("2016-06-25T08:00:59.000Z", 19));
+        firstSeries.addSamples( new Sample("2016-06-25T08:00:00.000Z", 1));
+        secondSeries.addSamples(new Sample("2016-06-25T08:00:00.000Z", 11));
+        firstSeries.addSamples( new Sample("2016-06-25T08:00:05.000Z", 3));
+        firstSeries.addSamples( new Sample("2016-06-25T08:00:10.000Z", 5));
+        firstSeries.addSamples( new Sample("2016-06-25T08:00:15.000Z", 8));
+        secondSeries.addSamples(new Sample("2016-06-25T08:00:15.000Z", 8));
+        firstSeries.addSamples( new Sample("2016-06-25T08:00:30.000Z", 3));
+        secondSeries.addSamples(new Sample("2016-06-25T08:00:30.000Z", 13));
+        firstSeries.addSamples( new Sample("2016-06-25T08:00:45.000Z", 5));
+        secondSeries.addSamples(new Sample("2016-06-25T08:00:45.000Z", 15));
+        secondSeries.addSamples(new Sample("2016-06-25T08:00:59.000Z", 19));
         insertSeriesCheck(Arrays.asList(firstSeries, secondSeries));
     }
 
@@ -60,13 +52,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(new Group(GroupType.SUM));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "12.0"),
-                new Sample("2016-06-25T08:00:05.000Z", "3.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "5.0"),
-                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:59.000Z", "19.0")
+                new Sample("2016-06-25T08:00:00.000Z", 12),
+                new Sample("2016-06-25T08:00:05.000Z", 3),
+                new Sample("2016-06-25T08:00:10.000Z", 5),
+                new Sample("2016-06-25T08:00:15.000Z", 16),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:45.000Z", 20),
+                new Sample("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -91,13 +83,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "12.0"),
-                new Sample("2016-06-25T08:00:05.000Z", "14.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:59.000Z", "19.0")
+                new Sample("2016-06-25T08:00:00.000Z", 12),
+                new Sample("2016-06-25T08:00:05.000Z", 14),
+                new Sample("2016-06-25T08:00:10.000Z", 16),
+                new Sample("2016-06-25T08:00:15.000Z", 16),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:45.000Z", 20),
+                new Sample("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -119,11 +111,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(new Group(GroupType.SUM, new Interval(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "15.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "21.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:40.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:50.000Z", "19.0")
+                new Sample("2016-06-25T08:00:00.000Z", 15),
+                new Sample("2016-06-25T08:00:10.000Z", 21),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:40.000Z", 20),
+                new Sample("2016-06-25T08:00:50.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -148,11 +140,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setAggregate(new Aggregate(AggregationType.SUM, period));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "15.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "21.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:40.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:50.000Z", "19.0")
+                new Sample("2016-06-25T08:00:00.000Z", 15),
+                new Sample("2016-06-25T08:00:10.000Z", 21),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:40.000Z", 20),
+                new Sample("2016-06-25T08:00:50.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -175,11 +167,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "3.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "3.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "2.0"),
-                new Sample("2016-06-25T08:00:40.000Z", "2.0"),
-                new Sample("2016-06-25T08:00:50.000Z", "1.0")
+                new Sample("2016-06-25T08:00:00.000Z", 3),
+                new Sample("2016-06-25T08:00:10.000Z", 3),
+                new Sample("2016-06-25T08:00:30.000Z", 2),
+                new Sample("2016-06-25T08:00:40.000Z", 2),
+                new Sample("2016-06-25T08:00:50.000Z", 1)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -202,11 +194,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND), 1));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "2.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "2.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "1.0"),
-                new Sample("2016-06-25T08:00:40.000Z", "1.0"),
-                new Sample("2016-06-25T08:00:50.000Z", "1.0")
+                new Sample("2016-06-25T08:00:00.000Z", 2),
+                new Sample("2016-06-25T08:00:10.000Z", 2),
+                new Sample("2016-06-25T08:00:30.000Z", 1),
+                new Sample("2016-06-25T08:00:40.000Z", 1),
+                new Sample("2016-06-25T08:00:50.000Z", 1)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -232,9 +224,9 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:45.000Z", "20.0")
+                new Sample("2016-06-25T08:00:15.000Z", 16),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:45.000Z", 20)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -262,12 +254,12 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:05.000Z", "11.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "13.0"),
-                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:59.000Z", "24.0")
+                new Sample("2016-06-25T08:00:05.000Z", 11),
+                new Sample("2016-06-25T08:00:10.000Z", 13),
+                new Sample("2016-06-25T08:00:15.000Z", 16),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:45.000Z", 20),
+                new Sample("2016-06-25T08:00:59.000Z", 24)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -295,13 +287,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "12.0"),
-                new Sample("2016-06-25T08:00:05.000Z", "3.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "5.0"),
-                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:59.000Z", "19.0")
+                new Sample("2016-06-25T08:00:00.000Z", 12),
+                new Sample("2016-06-25T08:00:05.000Z", 3),
+                new Sample("2016-06-25T08:00:10.000Z", 5),
+                new Sample("2016-06-25T08:00:15.000Z", 16),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:45.000Z", 20),
+                new Sample("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -328,13 +320,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", "12.0"),
-                new Sample("2016-06-25T08:00:05.000Z", "3.0"),
-                new Sample("2016-06-25T08:00:10.000Z", "5.0"),
-                new Sample("2016-06-25T08:00:15.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:30.000Z", "16.0"),
-                new Sample("2016-06-25T08:00:45.000Z", "20.0"),
-                new Sample("2016-06-25T08:00:59.000Z", "19.0")
+                new Sample("2016-06-25T08:00:00.000Z", 12),
+                new Sample("2016-06-25T08:00:05.000Z", 3),
+                new Sample("2016-06-25T08:00:10.000Z", 5),
+                new Sample("2016-06-25T08:00:15.000Z", 16),
+                new Sample("2016-06-25T08:00:30.000Z", 16),
+                new Sample("2016-06-25T08:00:45.000Z", 20),
+                new Sample("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);

@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.csv;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
-import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -56,7 +55,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
     }
 
     private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws Exception {
-        Registry.Entity.registerPrefix(entityName);
+        Registry.Entity.checkExists(entityName);
         Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding, null);
         assertEquals(response.getStatus(), OK.getStatusCode());
         MessageQuery query = new MessageQuery();

@@ -11,8 +11,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlFunctionMathAbs extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
@@ -21,15 +21,11 @@ public class SqlFunctionMathAbs extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series();
-
-        series1.setMetric(TEST_METRIC1_NAME);
-        series1.setEntity(TEST_ENTITY_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-03T09:20:00.000Z", "1"),
-                new Sample("2016-06-03T09:20:01.000Z", "2"),
-                new Sample("2016-06-03T09:20:02.000Z", "3")
-                )
+        Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
+        series1.addSamples(
+                new Sample("2016-06-03T09:20:00.000Z", 1),
+                new Sample("2016-06-03T09:20:01.000Z", 2),
+                new Sample("2016-06-03T09:20:02.000Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series1));

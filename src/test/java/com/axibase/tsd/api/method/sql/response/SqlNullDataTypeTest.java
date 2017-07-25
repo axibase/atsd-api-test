@@ -9,6 +9,7 @@ import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,23 +26,14 @@ public class SqlNullDataTypeTest extends SqlTest {
 
     @BeforeClass
     public static void initialize() throws Exception {
-        Registry.Metric.register(TEST_METRIC1_NAME);
-        Registry.Metric.register(TEST_METRIC2_NAME);
-        Registry.Entity.register(TEST_ENTITY_NAME);
-
         List<Series> seriesList = new ArrayList<>();
 
-
-        seriesList.add(new Series() {{
-            setEntity(TEST_ENTITY_NAME);
-            setMetric(TEST_METRIC1_NAME);
-            addData(new Sample("2016-06-29T08:00:00.000Z", "0.00"));
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME) {{
+            addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         }});
 
-        seriesList.add(new Series() {{
-            setEntity(TEST_ENTITY_NAME);
-            setMetric(TEST_METRIC2_NAME);
-            addData(new Sample("2016-06-29T08:00:01.000Z", "0.00"));
+        seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME) {{
+            addSamples(new Sample("2016-06-29T08:00:01.000Z", 0));
         }});
 
         SeriesMethod.insertSeriesCheck(seriesList);
@@ -284,7 +276,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("NaN")
         );
 
         assertTableRowsExist(expectedRows, resultTable);

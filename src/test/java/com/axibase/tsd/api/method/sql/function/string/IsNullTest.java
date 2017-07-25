@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
-import static com.axibase.tsd.api.util.Util.TestNames.metric;
+import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 
@@ -52,7 +52,7 @@ public class IsNullTest extends SqlTest {
     @BeforeClass
     public void beforeTestTypePreserved() throws Exception {
         Series series = new Series("e-test-type-preserve-1", "m-test-type-preserve-1");
-        series.addData(Mocks.SAMPLE);
+        series.addSamples(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(series);
     }
 
@@ -77,7 +77,7 @@ public class IsNullTest extends SqlTest {
                 {"value", "metric", "java_object"},
                 {"value", "value+1", "double"},
                 {"1", "\"2\"", "java_object"},
-                {"1", "2", "double"},
+                {"1", "2", "bigint"},
                 {"1", "metric", "java_object"},
                 {"1", "value+1", "double"},
 
@@ -86,6 +86,11 @@ public class IsNullTest extends SqlTest {
                 {"metric.tags", "2", "java_object"},
                 {"metric.tags", "metric", "string"},
                 {"metric.tags", "value+1", "java_object"},
+
+                {"metric.label", "\"2\"", "string"},
+                {"metric.label", "2", "java_object"},
+                {"metric.label", "metric", "string"},
+                {"metric.label", "value+1", "java_object"},
 
                 {"value * 0 / 0", "\"2\"", "java_object"},
                 {"value * 0 / 0", "2", "double"},
@@ -133,5 +138,19 @@ public class IsNullTest extends SqlTest {
                 text, sqlQuery
         );
         assertEquals(assertMessage, actualValue, expectedValue);
+    }
+
+    /**
+     *  #3844
+     */
+    @Test
+    public void testIsNullInExpression() throws Exception {
+        String sqlQuery = String.format("SELECT ROUND(100 - ISNULL(value, 0)) FROM '%s'", TEST_METRIC);
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        String[][] expectedRows = {{"-23.0"}};
+
+        assertTableRowsExist(expectedRows, resultTable);
     }
 }

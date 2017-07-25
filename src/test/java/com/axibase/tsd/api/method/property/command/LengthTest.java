@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
-import static com.axibase.tsd.api.util.Util.TestNames.entity;
-import static com.axibase.tsd.api.util.Util.TestNames.propertyType;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.propertyType;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -33,8 +33,8 @@ public class LengthTest extends PropertyMethod {
         PlainCommand command = new PropertyCommand(property);
         Integer currentLength = command.compose().length();
         for (int i = 0; currentLength < MAX_LENGTH; i++) {
-            String tagName = "name" + i;
-            String textValue = "sda" + i;
+            String tagName = "name" + property.getEntity() + i;
+            String textValue = "sda" + property.getEntity() + i;
             String addedTag = String.format(" v:%s=%s", tagName, textValue);
             currentLength += addedTag.length();
             if (currentLength <= MAX_LENGTH) {

@@ -1,12 +1,12 @@
 package com.axibase.tsd.api.method.sql.clause.with;
 
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,33 +23,21 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Registry.Entity.register(TEST_ENTITY1_NAME);
-        Registry.Entity.register(TEST_ENTITY2_NAME);
-        Registry.Metric.register(TEST_METRIC_NAME);
-
-        Series series1 = new Series();
-        series1.setEntity(TEST_ENTITY1_NAME);
-        series1.setMetric(TEST_METRIC_NAME);
-        series1.setData(Arrays.asList(
-                new Sample("2016-06-29T08:01:00.000Z", "0"),
-                new Sample("2016-06-29T08:02:00.000Z", "1"),
-                new Sample("2016-06-29T08:03:00.000Z", "2")
-                )
+        Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
+        series1.addSamples(
+                new Sample("2016-06-29T08:01:00.000Z", 0),
+                new Sample("2016-06-29T08:02:00.000Z", 1),
+                new Sample("2016-06-29T08:03:00.000Z", 2)
         );
 
-        Series series2 = new Series();
-        series2.setEntity(TEST_ENTITY2_NAME);
-        series2.setMetric(TEST_METRIC_NAME);
-        series2.setData(Arrays.asList(
-                new Sample("2016-06-29T08:04:00.000Z", "3"),
-                new Sample("2016-06-29T08:05:00.000Z", "4"),
-                new Sample("2016-06-29T08:06:00.000Z", "5")
-                )
+        Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
+        series2.addSamples(
+                new Sample("2016-06-29T08:04:00.000Z", 3),
+                new Sample("2016-06-29T08:05:00.000Z", 4),
+                new Sample("2016-06-29T08:06:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
-        //Required for last_time computing
-        Thread.sleep(Util.LAST_INSERT_WRITE_PERIOD);
     }
 
     /**

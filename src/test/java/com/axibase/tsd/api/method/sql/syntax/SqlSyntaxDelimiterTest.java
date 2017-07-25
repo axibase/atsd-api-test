@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.ErrorTemplate;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,11 +14,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.ErrorTemplate.SQL_SYNTAX_DELIMITER_TPL;
 
-/**
- * @author Igor Shmagrinskiy
- */
+
 public class SqlSyntaxDelimiterTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-syntax-delimiter-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -26,7 +24,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addData(new Sample("2016-06-29T08:00:00.000Z", "0"));
+        series.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
@@ -44,7 +42,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -65,9 +70,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
-
 
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -87,7 +98,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
 
@@ -109,9 +127,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
-
 
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -131,7 +155,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
 
@@ -152,9 +183,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
-
 
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -172,7 +209,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest(String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, 'a'), response);
+        String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 43,
+                extraneousErrorMessage("a", "{<EOF>, '+', '-', '*', '/', '%', '!=', '<>', '<=', '>=', " +
+                        "'>', '<', '=', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION}")
+        );
+        assertBadRequest(expectedErrorMessage, response);
     }
 
 
@@ -187,9 +228,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         );
 
         Response response = queryResponse(sqlQuery);
-
+        String expectedMessage = ErrorTemplate.Sql.syntaxError(
+                2, 43,
+                extraneousErrorMessage("1", "{<EOF>, '+', '-', '*', '/', '%', '!=', '<>', '<=', '>='," +
+                        " '>', '<', '=', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION}"
+                )
+        );
         assertBadRequest("Query must return correct table",
-                String.format(SQL_SYNTAX_DELIMITER_TPL, 2, 43, '1'), response
+                expectedMessage, response
         );
     }
 
@@ -208,7 +254,14 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "2016-06-29T08:00:00.000Z", "0")
+                Arrays.asList(
+                        "1467187200000",
+                        "2016-06-29T08:00:00.000Z",
+                        "0",
+                        "null",
+                        TEST_METRIC_NAME,
+                        TEST_ENTITY_NAME,
+                        "null")
         );
 
 
@@ -228,9 +281,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(
+                2, 42, tokenRecognitionError(";")
+        );
         assertBadRequest("Query must return correct table",
-                "Syntax error at line 2 position 42: extraneous input ';123' " +
-                        "expecting {<EOF>, AND, OR, ORDER, GROUP, LIMIT, WITH, OPTION}", response);
+                expectedErrorMessage, response);
     }
 
     /**
@@ -245,7 +300,20 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
+        String expectedMessage = ErrorTemplate.Sql.syntaxError(2, 46,
+                "no viable alternative at input '<EOF>'"
+        );
         assertBadRequest("Query must return correct table",
-                "Syntax error at line 2 position 46: no viable alternative at input '<EOF>'", response);
+                expectedMessage, response);
+    }
+
+    private String tokenRecognitionError(String token) {
+        final String template = "token recognition error at: '%s'";
+        return String.format(template, token);
+    }
+
+    private String extraneousErrorMessage(String actual, String expected) {
+        String template = "extraneous input '%s' expecting %s";
+        return String.format(template, actual, expected);
     }
 }
