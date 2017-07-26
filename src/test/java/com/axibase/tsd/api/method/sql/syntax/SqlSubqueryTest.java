@@ -161,7 +161,7 @@ public class SqlSubqueryTest extends SqlTest {
                         METRIC_NAME, ENTITY_NAME, "t1=Tag 1;t2=Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Select from subquery with * doesn't work as expected", expectedRows, sqlQuery);
     }
 
     /**
@@ -184,7 +184,7 @@ public class SqlSubqueryTest extends SqlTest {
                         METRIC_NAME, ENTITY_NAME, "t1=Tag 1;t2=Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Nested subqueries do not work", expectedRows, sqlQuery);
     }
 
     /**
@@ -205,7 +205,7 @@ public class SqlSubqueryTest extends SqlTest {
                 {"Text value"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result when selecting text in subquery", expectedRows, sqlQuery);
     }
 
     /**
@@ -225,7 +225,7 @@ public class SqlSubqueryTest extends SqlTest {
                 {"t1=Tag 1;t2=Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result when selecting tags in subquery", expectedRows, sqlQuery);
     }
 
     /**
@@ -245,7 +245,8 @@ public class SqlSubqueryTest extends SqlTest {
                 {"Tag 1", "Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result when selecting tags in subquery and tags.* in main query",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -265,7 +266,8 @@ public class SqlSubqueryTest extends SqlTest {
                 {"t1=Tag 1;t2=Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result when selecting tags.* in subquery and tags in main query",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -285,7 +287,8 @@ public class SqlSubqueryTest extends SqlTest {
                 {"Tag 1", "Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result when selecting tags.* in subquery and tags.* in main query",
+                expectedRows, sqlQuery);
     }
 
     /**
@@ -310,6 +313,6 @@ public class SqlSubqueryTest extends SqlTest {
                         METRIC_NAME, ENTITY_NAME, "t1=Tag 1;t2=Tag 2"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result with ROW_MEMORY_THRESHOLD option", expectedRows, sqlQuery);
     }
 }
