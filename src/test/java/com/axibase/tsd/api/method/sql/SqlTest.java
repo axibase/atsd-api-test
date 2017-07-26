@@ -13,6 +13,7 @@ import java.util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.fail;
 
 
@@ -184,14 +185,40 @@ public abstract class SqlTest extends SqlMethod {
         }
     }
 
+    public void assertBadSqlRequest(String expectedMessage, String sqlQuery) {
+        Response response = SqlMethod.queryResponse(sqlQuery);
+        assertBadRequest(expectedMessage, response);
+    }
+
     public void assertBadRequest(String expectedMessage, Response response) {
         assertBadRequest(DEFAULT_ASSERT_BAD_REQUEST_MESSAGE, expectedMessage, response);
     }
 
     public void assertBadRequest(String assertMessage, String expectedMessage, Response response) {
-        assertEquals(assertMessage, BAD_REQUEST.getStatusCode(), response.getStatus());
-        String responseMessage = extractSqlErrorMessage(response);
-        assertEquals("Error message is different form expected", expectedMessage, responseMessage);
+        String responseMessage = null;
+        int code = response.getStatus();
+        if (OK.getStatusCode() == code) {
+            String responseText = response.readEntity(String.class);
+            JSONObject responseObject;
+            try {
+                responseObject = new JSONObject(responseText);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                throw new IllegalArgumentException(assertMessage +
+                        ": Can't check if there is error message, because JSON is invalid.");
+            }
+            try {
+                responseMessage = responseObject.getJSONArray("errors").getJSONObject(0).getString("message");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                fail(assertMessage + ": Response doesn't contain error message");
+            }
+        } else if(BAD_REQUEST.getStatusCode() == code) {
+            responseMessage = extractSqlErrorMessage(response);
+        } else {
+            throw new IllegalArgumentException(assertMessage + ": Unexpected response status code");
+        }
+        assertEquals(assertMessage + ": Error message is different form expected", expectedMessage, responseMessage);
     }
 
     /**
