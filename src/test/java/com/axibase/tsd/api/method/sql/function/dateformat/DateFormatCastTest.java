@@ -18,8 +18,8 @@ public class DateFormatCastTest extends SqlTest {
         Series series = new Series(entity(), METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-04-15T12:00:00.000Z", 1),
-                new Sample("2017-04-20T12:00:00.000Z", 2)
+                Sample.ofDateInteger("2017-04-15T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-04-20T12:00:00.000Z", 2)
         );
 
         SeriesMethod.insertSeriesCheck(series);

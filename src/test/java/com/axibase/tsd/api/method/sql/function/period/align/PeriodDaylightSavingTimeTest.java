@@ -49,7 +49,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
 
     private static void insertDateRange(Series s, long start) {
         for (int i = 0; i < HOURS; i++) {
-            s.addSamples(new Sample(Util.ISOFormat(start + HOUR_DURATION * i), i));
+            s.addSamples(Sample.ofDateInteger(Util.ISOFormat(start + HOUR_DURATION * i), i));
         }
     }
 

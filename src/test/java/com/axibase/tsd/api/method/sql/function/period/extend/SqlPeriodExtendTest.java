@@ -5,13 +5,11 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -28,8 +26,8 @@ public class SqlPeriodExtendTest extends SqlTest {
         seriesList.add(
                 new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "a", "b", "b", "c") {{
                     addSamples(
-                            new Sample("2016-07-14T15:00:06.001Z", 1),
-                            new Sample("2016-07-14T15:00:08.001Z", 2)
+                            Sample.ofDateInteger("2016-07-14T15:00:06.001Z", 1),
+                            Sample.ofDateInteger("2016-07-14T15:00:08.001Z", 2)
                     );
                 }}
         );
@@ -37,7 +35,7 @@ public class SqlPeriodExtendTest extends SqlTest {
         seriesList.add(
                 new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "a", "b", "b", "c") {{
                     addSamples(
-                            new Sample("2016-07-14T15:00:06.001Z", 3)
+                            Sample.ofDateInteger("2016-07-14T15:00:06.001Z", 3)
                     );
                 }}
         );

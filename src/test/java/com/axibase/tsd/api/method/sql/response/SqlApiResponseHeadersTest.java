@@ -29,10 +29,10 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     public static void prepareDataSet() {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
         testSeries.addSamples(
-                new Sample("2016-06-03T09:23:00.000Z", 16),
-                new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
-                new Sample("2016-06-03T09:36:00.000Z", 6),
-                new Sample("2016-06-03T09:41:00.000Z", 19)
+                Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 16),
+                Sample.ofDateDecimal("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                Sample.ofDateInteger("2016-06-03T09:36:00.000Z", 6),
+                Sample.ofDateInteger("2016-06-03T09:41:00.000Z", 19)
         );
     }
 

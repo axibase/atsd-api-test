@@ -57,7 +57,7 @@ public class SqlLargeDataTest extends SqlTest {
 
     private static Sample createTestSample(int value) throws ParseException {
         Long millisTime = Mocks.MILLS_TIME + value * 1000;
-        return new Sample(new Date(millisTime), value);
+        return Sample.ofJavaDateInteger(new Date(millisTime), value);
     }
 
     private class LargeDataCheck extends AbstractCheck {

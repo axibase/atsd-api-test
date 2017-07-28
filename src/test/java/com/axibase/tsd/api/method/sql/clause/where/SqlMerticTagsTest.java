@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SqlMerticTagsTest extends SqlTest {
     private final String TEST_METRIC = metric();
@@ -29,7 +29,7 @@ public class SqlMerticTagsTest extends SqlTest {
             if (tagValue != null) {
                 series.addTag("tag", tagValue);
             }
-            series.addSamples(new Sample(String.format("2017-01-01T00:0%S:00Z", i), i));
+            series.addSamples(Sample.ofDateInteger(String.format("2017-01-01T00:0%S:00Z", i), i));
 
             seriesList.add(series);
         }

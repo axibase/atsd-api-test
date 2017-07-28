@@ -3,7 +3,6 @@ package com.axibase.tsd.api.model.series;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -78,9 +77,9 @@ public class SeriesQuery {
 
             Long curDate;
             for (Sample sample : series.getData()) {
-                curDate = sample.getT();
+                curDate = sample.getUnixTime();
                 if (curDate == null) {
-                    curDate = Util.getMillis(sample.getD());
+                    curDate = Util.getMillis(sample.getIsoDate());
                 }
                 minDate = Math.min(curDate, minDate);
                 maxDate = Math.max(curDate, maxDate);

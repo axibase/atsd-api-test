@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -32,7 +31,7 @@ public class WhereTagInListTest extends SqlTest {
 
         for (int i = 0; i < tags.length; i++) {
             Series series = new Series(ENTITY_NAME, METRIC_NAME);
-            series.addSamples(new Sample(String.format("2017-01-0%dT12:00:00.000Z", i + 1), i + 1));
+            series.addSamples(Sample.ofDateInteger(String.format("2017-01-0%dT12:00:00.000Z", i + 1), i + 1));
 
             if (tags[i][0] != null) {
                 series.addTag(tags[i][0], tags[i][1]);

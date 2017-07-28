@@ -5,8 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,16 +23,16 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
         series1.addSamples(
-                new Sample("2016-06-29T08:01:00.000Z", 0),
-                new Sample("2016-06-29T08:02:00.000Z", 1),
-                new Sample("2016-06-29T08:03:00.000Z", 2)
+                Sample.ofDateInteger("2016-06-29T08:01:00.000Z", 0),
+                Sample.ofDateInteger("2016-06-29T08:02:00.000Z", 1),
+                Sample.ofDateInteger("2016-06-29T08:03:00.000Z", 2)
         );
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
         series2.addSamples(
-                new Sample("2016-06-29T08:04:00.000Z", 3),
-                new Sample("2016-06-29T08:05:00.000Z", 4),
-                new Sample("2016-06-29T08:06:00.000Z", 5)
+                Sample.ofDateInteger("2016-06-29T08:04:00.000Z", 3),
+                Sample.ofDateInteger("2016-06-29T08:05:00.000Z", 4),
+                Sample.ofDateInteger("2016-06-29T08:06:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

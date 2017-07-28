@@ -30,7 +30,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         final Series series = new Series("getmetrics/entity2", "getmetrics-metric2");
-        series.addSamples(new Sample("1970-01-01T00:00:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
@@ -40,7 +40,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         final Series series = new Series("getmetricsйё/entity3", "getmetrics-metric3");
-        series.addSamples(new Sample("1970-01-01T00:00:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);

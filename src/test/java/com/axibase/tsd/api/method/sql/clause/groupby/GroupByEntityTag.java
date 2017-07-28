@@ -41,8 +41,8 @@ public class GroupByEntityTag extends SqlTest {
             series.setEntity(testEntityNameTagsCase);
             series.setMetric(TEST_METRIC_NAME);
             series.addSamples(
-                    new Sample(seriesStartDate.plusSeconds(i).toString(), i),
-                    new Sample(seriesStartDate.plusSeconds(i + 60).toString(), i + 1));
+                    Sample.ofDateInteger(seriesStartDate.plusSeconds(i).toString(), i),
+                    Sample.ofDateInteger(seriesStartDate.plusSeconds(i + 60).toString(), i + 1));
             seriesList.add(series);
         }
 

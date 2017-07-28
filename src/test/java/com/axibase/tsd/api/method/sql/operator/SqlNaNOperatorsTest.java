@@ -2,8 +2,8 @@ package com.axibase.tsd.api.method.sql.operator;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
@@ -18,7 +18,7 @@ public class SqlNaNOperatorsTest extends SqlTest {
     @BeforeTest
     public void prepareData() throws Exception {
         Series series = new Series(entity(), TEST_METRIC);
-        series.addSamples(new TextSample(Mocks.ISO_TIME, "text"));
+        series.addSamples(Sample.ofDateText(Mocks.ISO_TIME, "text"));
         SeriesMethod.insertSeriesCheck(series);
     }
 

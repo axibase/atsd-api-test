@@ -20,7 +20,7 @@ public class SqlParseTimeTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
     }

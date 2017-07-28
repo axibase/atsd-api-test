@@ -23,8 +23,8 @@ public class SqlExampleAvgValueTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("11.1")),
-                new Sample("2016-06-19T11:15:00.000Z", new BigDecimal("11.5"))
+                Sample.ofDateDecimal("2016-06-19T11:00:00.000Z", new BigDecimal("11.1")),
+                Sample.ofDateDecimal("2016-06-19T11:15:00.000Z", new BigDecimal("11.5"))
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

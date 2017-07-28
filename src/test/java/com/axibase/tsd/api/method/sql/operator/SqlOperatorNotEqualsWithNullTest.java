@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,10 +22,10 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "a", "b");
-        series1.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
+        series1.addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0));
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "tag", "value");
-        series2.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
+        series2.addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

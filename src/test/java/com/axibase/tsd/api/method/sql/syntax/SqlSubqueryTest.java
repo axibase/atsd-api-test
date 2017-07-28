@@ -15,7 +15,7 @@ public class SqlSubqueryTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(ENTITY_NAME, METRIC_NAME, "t1", "Tag 1", "t2", "Tag 2");
-        series.addSamples(new Sample("2017-07-21T12:00:00.000Z", 1, "Text value"));
+        series.addSamples(Sample.ofDateIntegerText("2017-07-21T12:00:00.000Z", 1, "Text value"));
 
         SeriesMethod.insertSeriesCheck(series);
     }

@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.Registry;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
@@ -35,19 +34,19 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
 
     private static void insertSeriesWithSimilarEntity() throws FileNotFoundException {
         Series seriesA = new Series("e-wc-val1", METRIC_FOR_ENTITY);
-        seriesA.addSamples(new Sample(MIN_STORABLE_DATE, 0));
+        seriesA.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
 
         Series seriesB = new Series("e-wc-val2", null);
         seriesB.setMetric(METRIC_FOR_ENTITY);
-        seriesB.addSamples(new Sample(MIN_STORABLE_DATE, 1));
+        seriesB.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 1));
 
         Series seriesC = new Series("e-wc-?al1", null);
         seriesC.setMetric(METRIC_FOR_ENTITY);
-        seriesC.addSamples(new Sample(MIN_STORABLE_DATE, 2));
+        seriesC.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 2));
 
         Series seriesD = new Series("e-wc-Value2", null);
         seriesD.setMetric(METRIC_FOR_ENTITY);
-        seriesD.addSamples(new Sample(MIN_STORABLE_DATE, 3));
+        seriesD.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 3));
 
         Response response = insertSeries(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
         if (OK.getStatusCode() != response.getStatus()) {
@@ -58,26 +57,26 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
     private static void insertSeriesWithSimilarTags() throws Exception {
         Series series = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
 
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
+        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
         series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("tag1", "val1");
         }}));
         insertSeriesCheck(Collections.singletonList(series));
 
-        series.setSamples(Collections.singletonList(new Sample(MIN_STORABLE_DATE, 1)));
+        series.setSamples(Collections.singletonList(Sample.ofDateInteger(MIN_STORABLE_DATE, 1)));
         series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("tag2", "val2");
         }}));
         insertSeriesCheck(Collections.singletonList(series));
 
-        series.setSamples(Collections.singletonList(new Sample(MIN_STORABLE_DATE, 2)));
+        series.setSamples(Collections.singletonList(Sample.ofDateInteger(MIN_STORABLE_DATE, 2)));
         series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("tag1", "Val1");
             put("tag2", "Value2");
         }}));
         insertSeriesCheck(Collections.singletonList(series));
 
-        series.setSamples(Collections.singletonList(new Sample(MIN_STORABLE_DATE, 3)));
+        series.setSamples(Collections.singletonList(Sample.ofDateInteger(MIN_STORABLE_DATE, 3)));
         series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
             put("tag1", "?al1");
         }}));
@@ -96,12 +95,12 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         String metricName = "series-query-limit-metric";
 
         Series series1 = new Series(entityNameBase.concat("1"), metricName);
-        series1.addSamples(new Sample(MIN_STORABLE_DATE, 7));
+        series1.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 7));
 
         Series series2 = new Series(entityNameBase.concat("2"), metricName, "tag_key", "tag_value");
         series2.addSamples(
-                new Sample(MIN_STORABLE_DATE, 7),
-                new Sample(addOneMS(MIN_STORABLE_DATE), 8));
+                Sample.ofDateInteger(MIN_STORABLE_DATE, 7),
+                Sample.ofDateInteger(addOneMS(MIN_STORABLE_DATE), 8));
 
         insertSeriesCheck(series1, series2);
 

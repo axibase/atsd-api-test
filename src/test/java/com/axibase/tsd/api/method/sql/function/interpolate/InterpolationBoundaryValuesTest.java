@@ -38,27 +38,27 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String entity = entity();
         Series series1 = new Series(entity, TEST_METRIC_1);
         series1.addSamples(
-                new Sample("1970-01-01T00:00:00Z", 0),
-                new Sample("1972-01-01T00:00:00Z", 2),
-                new Sample("1974-01-01T00:00:00Z", 4)
+                Sample.ofDateInteger("1970-01-01T00:00:00Z", 0),
+                Sample.ofDateInteger("1972-01-01T00:00:00Z", 2),
+                Sample.ofDateInteger("1974-01-01T00:00:00Z", 4)
         );
 
         calendarInterpolationTestSamples = new Sample[]{
-                new Sample("2017-01-01T07:50:00.000Z", 0),
-                new Sample("2017-01-01T10:50:00.000Z", 1),
-                new Sample("2017-01-01T11:50:00.000Z", 2),
-                new Sample("2017-01-01T12:50:00.000Z", 3),
-                new Sample("2017-01-01T17:50:00.000Z", 7),
-                new Sample("2017-01-01T18:50:00.000Z", 8),
-                new Sample("2017-01-01T19:50:00.000Z", 9)
+                Sample.ofDateInteger("2017-01-01T07:50:00.000Z", 0),
+                Sample.ofDateInteger("2017-01-01T10:50:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T11:50:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T12:50:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-01T17:50:00.000Z", 7),
+                Sample.ofDateInteger("2017-01-01T18:50:00.000Z", 8),
+                Sample.ofDateInteger("2017-01-01T19:50:00.000Z", 9)
         };
 
         series1.addSamples(calendarInterpolationTestSamples);
 
         Series series2 = new Series(entity, TEST_METRIC_2);
         series2.addSamples(
-                new Sample("1971-01-01T00:00:00Z", 1),
-                new Sample("1973-01-01T00:00:00Z", 3)
+                Sample.ofDateInteger("1971-01-01T00:00:00Z", 1),
+                Sample.ofDateInteger("1973-01-01T00:00:00Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
@@ -165,7 +165,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 continue;
             }
 
-            value = String.valueOf(sample.getV());
+            value = String.valueOf(sample.getValue());
         }
 
         return value;

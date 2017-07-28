@@ -9,7 +9,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
 public class CaseOperatorTest extends SqlTest {
     private final String TEST_METRIC = Mocks.metric();
@@ -25,7 +24,7 @@ public class CaseOperatorTest extends SqlTest {
         int minutes = 0;
         for (int i = 0; i < SERIES_VALUES.length; i++) {
             String time = String.format(ISO_MINUTES_FORMAT, minutes);
-            Sample sample = new Sample(time, new BigDecimal(SERIES_VALUES[i]));
+            Sample sample = Sample.ofDateDecimal(time, new BigDecimal(SERIES_VALUES[i]));
             series.addSamples(sample);
             minutes +=5;
         }

@@ -27,7 +27,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
                 "double\"quote", "tv1",
                 "single'quote", "tv2",
                 "both'quo\"tes", "tv3");
-        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
+        series.addSamples(Sample.ofDateDecimal("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

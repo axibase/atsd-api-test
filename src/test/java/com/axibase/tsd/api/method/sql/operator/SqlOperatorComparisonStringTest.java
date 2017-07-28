@@ -23,10 +23,10 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "key0", "value0");
-        series1.addSamples(new Sample("2016-06-03T09:25:00.000Z", 0));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:25:00.000Z", 0));
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "key1", "value1");
-        series2.addSamples(new Sample("2016-06-03T09:25:01.000Z", 1));
+        series2.addSamples(Sample.ofDateInteger("2016-06-03T09:25:01.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

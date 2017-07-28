@@ -217,10 +217,10 @@ public class CSVUploadTest extends CSVUploadMethod {
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
         Series series = seriesList.get(0);
 
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getD());
-        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getV().toString());
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getD());
-        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
+        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getIsoDate());
+        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getValue().toString());
+        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getIsoDate());
+        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getValue().toString());
     }
 
     /* #2957 */
@@ -241,10 +241,10 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertEquals("Managed to insert dataset with date out of range", 2, series.getData().size());
 
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getD());
-        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getV().toString());
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getD());
-        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
+        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getIsoDate());
+        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getValue().toString());
+        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getIsoDate());
+        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getValue().toString());
     }
 
     /* #3011 */
@@ -268,8 +268,8 @@ public class CSVUploadTest extends CSVUploadMethod {
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.MARCH, 24, 6, 17);
 
-        assertEquals("Incorrect stored value", LINE_BREAKS_TEST_VALUE, sample.getV().toString());
-        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getD()));
+        assertEquals("Incorrect stored value", LINE_BREAKS_TEST_VALUE, sample.getValue().toString());
+        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getIsoDate()));
     }
 
     /* #3591 */
@@ -291,7 +291,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.NOVEMBER, 24, 6, 17);
 
-        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getD()));
+        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getIsoDate()));
     }
 
 
@@ -299,7 +299,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Series expectedSeries = new Series();
         expectedSeries.setEntity(entity);
         expectedSeries.setMetric(metric);
-        expectedSeries.addSamples(new Sample(date, new BigDecimal(value)));
+        expectedSeries.addSamples(Sample.ofDateDecimal(date, new BigDecimal(value)));
         List<Series> expectedSeriesList = Collections.singletonList(expectedSeries);
         assertEquals(expectedSeriesList, actualSeriesList);
     }

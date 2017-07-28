@@ -5,8 +5,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -36,21 +34,21 @@ public class ConcatTest extends SqlTest {
 
         Series series = new Series(TEST_ENTITY, TEST_METRIC1);
         series.addSamples(
-                new TextSample("2016-06-03T09:19:18.000Z", ""), // NaN value
-                new Sample("2016-06-03T09:20:18.000Z", 3),
-                new Sample("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")),
-                new Sample("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")),
-                new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415"))
+                Sample.ofDateText("2016-06-03T09:19:18.000Z", ""), // NaN value
+                Sample.ofDateInteger("2016-06-03T09:20:18.000Z", 3),
+                Sample.ofDateDecimal("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")),
+                Sample.ofDateDecimal("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")),
+                Sample.ofDateDecimal("2016-06-03T09:23:18.000Z", new BigDecimal("3.1415"))
         );
 
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY, TEST_METRIC2);
-        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", new BigDecimal("5.555")));
+        series.addSamples(Sample.ofDateDecimal("2016-06-03T09:23:18.000Z", new BigDecimal("5.555")));
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY, TEST_METRIC3);
-        series.addSamples(new Sample("2016-06-03T09:23:18.000Z", 5));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:23:18.000Z", 5));
         seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);

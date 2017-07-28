@@ -7,6 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -14,58 +18,68 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@Data
+@Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sample {
     private static final ISO8601DateFormat isoDateFormat = new ISO8601DateFormat();
 
-    private String d;
-    private Long t;
+    @JsonProperty("d")
+    private String isoDate;
+
+    @JsonProperty("t")
+    private Long unixTime;
 
     @JsonDeserialize(using = ValueDeserializer.class)
     @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-    private BigDecimal v;
+    @JsonProperty("v")
+    private BigDecimal value;
+
+    @JsonProperty("x")
     private String text;
+
     private SampleVersion version;
 
-    public Sample() {
-    }
-
-    public Sample(String d, int v, String text) {
-        this.d = convertDateToISO(d);
-        this.v = new BigDecimal(v);
+    private Sample(Long unixTime, String date, BigDecimal value, String text) {
+        this.unixTime = unixTime;
+        if (date != null) {
+            this.isoDate = convertDateToISO(date);
+        }
+        this.value = value;
         this.text = text;
     }
 
-    public Sample(String d, BigDecimal v, String text) {
-        this.d = convertDateToISO(d);
-        this.v = v;
-        this.text = text;
+    public static Sample ofDateIntegerText(String date, int value, String text) {
+        return new Sample(null, date, BigDecimal.valueOf(value), text);
     }
 
-    public Sample(Sample sourceSample) {
-        this(sourceSample.getD(), sourceSample.getV());
-        setT(sourceSample.getT());
-        setText(sourceSample.getText());
+    public static Sample ofDateDecimalText(String date, BigDecimal value, String text) {
+        return new Sample(null, date, value, text);
     }
 
-    public Sample(String d, int v) {
-        this.d = convertDateToISO(d);
-        this.v = new BigDecimal(v);
+    public static Sample ofDateInteger(String date, int value) {
+        return new Sample(null, date, BigDecimal.valueOf(value), null);
     }
 
-    public Sample(String d, BigDecimal v) {
-        this.d = convertDateToISO(d);
-        this.v = v;
+    public static Sample ofRawDateInteger(String date, int value) {
+        return new Sample(null, null, BigDecimal.valueOf(value), null).setIsoDate(date);
     }
 
-    public Sample(Date d, BigDecimal v) {
-        this.d = Util.ISOFormat(d);
-        this.v = v;
+    public static Sample ofDateDecimal(String date, BigDecimal value) {
+        return new Sample(null, date, value, null);
     }
 
-    public Sample(Date d, int v) {
-        this.d = Util.ISOFormat(d);
-        this.v = new BigDecimal(v);
+    public static Sample ofTimeDecimal(long time, BigDecimal value) {
+        return new Sample(time, null, value, null);
+    }
+
+    public static Sample ofJavaDateInteger(Date d, int v) {
+        return new Sample(null, Util.ISOFormat(d), BigDecimal.valueOf(v), null);
+    }
+
+    public static Sample ofDateText(String date, String text) {
+        return new Sample(null, date, null, text);
     }
 
     private String convertDateToISO(String dateString) {
@@ -78,82 +92,18 @@ public class Sample {
         return Util.ISOFormat(date, true, Util.DEFAULT_TIMEZONE_NAME);
     }
 
-    public Long getT() {
-        return t;
-    }
-
-    protected void setT(Long t) {
-        this.t = t;
-    }
-
-    public String getD() {
-        return d;
-    }
-
     @JsonIgnore
-    public ZonedDateTime getZonedDateTime() { return ZonedDateTime.parse(this.d, DateTimeFormatter.ISO_DATE_TIME); }
-
-    protected void setD(String d) {
-        this.d = convertDateToISO(d);
+    public ZonedDateTime getZonedDateTime() {
+        return ZonedDateTime.parse(this.isoDate, DateTimeFormatter.ISO_DATE_TIME);
     }
 
-    protected void setDUnsafe(String d) {
-        this.d = d;
-    }
-
-    public BigDecimal getV() {
-        return v;
-    }
-
-    protected void setV(BigDecimal v) {
-        this.v = v;
-    }
-
-
-    public String getText() {
-        return text;
-    }
-
-    @JsonProperty("x")
-    protected void setText(String text) {
-        this.text = text;
+    public Sample setDate(String isoDate) {
+        this.isoDate = convertDateToISO(isoDate);
+        return this;
     }
 
     @Override
     public String toString() {
         return Util.prettyPrint(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || (!Sample.class.isInstance(o)))
-            return false;
-
-        Sample sample = (Sample) o;
-
-        if (d != null ? !d.equals(convertDateToISO(sample.d)) : sample.d != null)
-            return false;
-        if (t != null ? !t.equals(sample.t) : sample.t != null)
-            return false;
-        if (v != null ? !(v.compareTo(sample.v) == 0) : sample.v != null)
-            return false;
-        if (text != null ? !text.equals(sample.text) : sample.text != null)
-            return false;
-        return version != null ? version.equals(sample.version) : sample.version == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = d != null ? d.hashCode() : 0;
-        result = 31 * result + (t != null ? t.hashCode() : 0);
-        result = 31 * result + (v != null ? v.hashCode() : 0);
-        result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        return result;
-    }
-
-    public SampleVersion getVersion() {
-        return version;
     }
 }

@@ -12,7 +12,6 @@ import javax.ws.rs.ProcessingException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -27,7 +26,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "a", "b") {{
-            addSamples(new Sample("2016-06-03T09:23:00.000Z", new BigDecimal("1.01")));
+            addSamples(Sample.ofDateDecimal("2016-06-03T09:23:00.000Z", new BigDecimal("1.01")));
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

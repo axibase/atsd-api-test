@@ -51,7 +51,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Response should contain only 1 series", 1, messageStatsList.size());
         List<Sample> samples = messageStatsList.get(0).getData();
         assertEquals("Response should contain only 1 sample", 1, samples.size());
-        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getV());
+        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
     /**
@@ -67,7 +67,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Response should contain only 1 series", 1, messageStatsList.size());
         List<Sample> samples = messageStatsList.get(0).getData();
         assertEquals("Response should contain only 1 sample", 1, samples.size());
-        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getV());
+        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
     /**
@@ -83,7 +83,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Response should contain only 1 series", 1, messageStatsList.size());
         List<Sample> samples = messageStatsList.get(0).getData();
         assertEquals("Response should contain only 1 sample", 1, samples.size());
-        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getV());
+        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
     /**

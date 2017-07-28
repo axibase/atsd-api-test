@@ -109,7 +109,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     private void fillSeriesData(Series series) {
         String date = START_SAMPLE_DATE;
         for (int k = 0; k < SAMPLES_COUNT; k++) {
-            series.addSamples(new Sample(date, k));
+            series.addSamples(Sample.ofDateInteger(date, k));
             date = TestUtil.addOneMS(date);
         }
     }

@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,16 +27,16 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
         series1.addSamples(
-                new Sample("2016-08-15T07:24:02.000Z", new BigDecimal("4.3")),
-                new Sample("2016-08-15T07:24:46.000Z", new BigDecimal("4.3")),
-                new Sample("2016-08-15T07:25:02.000Z", new BigDecimal("5.4"))
+                Sample.ofDateDecimal("2016-08-15T07:24:02.000Z", new BigDecimal("4.3")),
+                Sample.ofDateDecimal("2016-08-15T07:24:46.000Z", new BigDecimal("4.3")),
+                Sample.ofDateDecimal("2016-08-15T07:25:02.000Z", new BigDecimal("5.4"))
         );
 
         Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
         series2.addSamples(
-                new Sample("2016-08-15T07:24:46.000Z", new BigDecimal("10.1")),
-                new Sample("2016-08-15T07:25:02.000Z", new BigDecimal("12.2")),
-                new Sample("2016-08-15T07:25:46.000Z", new BigDecimal("10.1"))
+                Sample.ofDateDecimal("2016-08-15T07:24:46.000Z", new BigDecimal("10.1")),
+                Sample.ofDateDecimal("2016-08-15T07:25:02.000Z", new BigDecimal("12.2")),
+                Sample.ofDateDecimal("2016-08-15T07:25:46.000Z", new BigDecimal("10.1"))
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

@@ -23,11 +23,11 @@ public class AggregationNullValuesTest extends SqlTest {
 
         Series firstSeries = new Series(FIRST_ENTITY, FIRST_METRIC);
         for (int i = 0; i < 3; i++) {
-            firstSeries.addSamples(new Sample(String.format("2017-01-0%sT00:00:00.000Z", i + 1), i));
+            firstSeries.addSamples(Sample.ofDateInteger(String.format("2017-01-0%sT00:00:00.000Z", i + 1), i));
         }
 
         Series secondSeries = new Series(SECOND_ENTITY, SECOND_METRIC);
-        secondSeries.addSamples(new Sample("2016-12-25T00:00:00.000Z", 0));
+        secondSeries.addSamples(Sample.ofDateInteger("2016-12-25T00:00:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(firstSeries, secondSeries);
     }

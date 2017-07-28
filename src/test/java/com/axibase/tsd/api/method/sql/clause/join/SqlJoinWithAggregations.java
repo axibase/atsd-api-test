@@ -22,16 +22,16 @@ public class SqlJoinWithAggregations extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
         series1.addSamples(
-                new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:21:00.000Z", 2),
-                new Sample("2016-06-03T09:22:00.000Z", 3)
+                Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:21:00.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:22:00.000Z", 3)
         );
 
         Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
         series2.addSamples(
-                new Sample("2016-06-03T09:20:00.000Z", 3),
-                new Sample("2016-06-03T09:21:00.000Z", 4),
-                new Sample("2016-06-03T09:22:00.000Z", 5)
+                Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 3),
+                Sample.ofDateInteger("2016-06-03T09:21:00.000Z", 4),
+                Sample.ofDateInteger("2016-06-03T09:22:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));

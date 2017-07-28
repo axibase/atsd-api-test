@@ -27,7 +27,7 @@ public class LocateTest extends SqlTest {
         insertSeriesWithMetric(TEST_METRIC1_NAME);
 
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "tag1", "Word word WORD worD");
-        series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

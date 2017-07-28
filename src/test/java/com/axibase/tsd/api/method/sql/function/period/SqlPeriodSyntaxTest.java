@@ -23,9 +23,9 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     public static void prepareDate() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.001Z", 0),
-                new Sample("2016-06-19T11:00:05.001Z", 1),
-                new Sample("2016-06-19T11:00:10.001Z", 2)
+                Sample.ofDateInteger("2016-06-19T11:00:00.001Z", 0),
+                Sample.ofDateInteger("2016-06-19T11:00:05.001Z", 1),
+                Sample.ofDateInteger("2016-06-19T11:00:10.001Z", 2)
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

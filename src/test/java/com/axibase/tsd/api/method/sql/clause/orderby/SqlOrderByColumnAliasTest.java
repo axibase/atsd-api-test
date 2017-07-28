@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -25,7 +24,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
         for (int i = 1; i < 4; i++) {
             Series series = new Series(testEntity, TEST_METRIC);
-            series.addSamples(new Sample(String.format("2017-01-01T00:0%s:00Z", i), i));
+            series.addSamples(Sample.ofDateInteger(String.format("2017-01-01T00:0%s:00Z", i), i));
 
             seriesList.add(series);
         }

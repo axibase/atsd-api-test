@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -21,15 +20,15 @@ public class AggregationEmptyValueTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(entity(), METRIC_NAME1);
         series1.addSamples(
-                new Sample(Util.ISOFormat(1), -2),
-                new Sample(Util.ISOFormat(2), -1)
+                Sample.ofDateInteger(Util.ISOFormat(1), -2),
+                Sample.ofDateInteger(Util.ISOFormat(2), -1)
         );
 
         Series series2 = new Series(entity(), METRIC_NAME2);
         /* NaN value field */
         series2.addSamples(
-                new TextSample(Util.ISOFormat(1), "text"),
-                new TextSample(Util.ISOFormat(2), "text")
+                Sample.ofDateText(Util.ISOFormat(1), "text"),
+                Sample.ofDateText(Util.ISOFormat(2), "text")
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);

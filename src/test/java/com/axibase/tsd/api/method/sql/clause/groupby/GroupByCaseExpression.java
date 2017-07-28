@@ -7,17 +7,10 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-
-import static com.axibase.tsd.api.util.Mocks.DECIMAL_VALUE;
-import static com.axibase.tsd.api.util.Mocks.TEXT_VALUE;
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Mocks.*;
 
 public class GroupByCaseExpression extends SqlTest {
     private static final String TEST_ENTITY1_NAME = entity();
@@ -44,15 +37,15 @@ public class GroupByCaseExpression extends SqlTest {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
 
         series1.addSamples(
-                new Sample("2017-02-09T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1),
-                new Sample("2017-02-10T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1)
+                Sample.ofDateDecimalText("2017-02-09T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1),
+                Sample.ofDateDecimalText("2017-02-10T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_1)
         );
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
 
         series2.addSamples(
-                new Sample("2017-02-11T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2),
-                new Sample("2017-02-12T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2)
+                Sample.ofDateDecimalText("2017-02-11T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2),
+                Sample.ofDateDecimalText("2017-02-12T12:00:00.000Z", DECIMAL_VALUE, TEXT_VALUE_2)
         );
 
         EntityMethod.createOrReplaceEntity(testEntity2);

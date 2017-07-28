@@ -26,13 +26,13 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Test
     public void testEntity() throws Exception {
         Series series = new Series("series-command-test\\\\-e7", "series-command-test-m7");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setTimeISO(sample.getD());
+        seriesCommand.setTimeISO(sample.getIsoDate());
         seriesCommand.setEntityName(series.getEntity());
-        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
+        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getValue().toString()));
 
         CommandMethod.send(seriesCommand);
         assertSeriesExisting(series);
@@ -44,13 +44,13 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Test
     public void testMetric() throws Exception {
         Series series = new Series("series-command-test-e8", "series-command-test\\\\-m8");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setTimeISO(sample.getD());
+        seriesCommand.setTimeISO(sample.getIsoDate());
         seriesCommand.setEntityName(series.getEntity());
-        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
+        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getValue().toString()));
 
         CommandMethod.send(seriesCommand);
         assertSeriesExisting(series);

@@ -10,7 +10,6 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -56,17 +55,17 @@ public class SqlLookupFunctionTest extends SqlTest {
             Series series = new Series(entity(), TEST_METRIC_NAME_BASE_LOOKUP_CASE);
 
             series.addSamples(
-                    new TextSample("2016-06-03T09:20:00.000Z", "word"),
-                    new TextSample("2016-06-03T09:21:00.000Z", "-1"),
-                    new TextSample("2016-06-03T09:22:00.000Z", "1"),
-                    new TextSample("2016-06-03T09:23:00.000Z", "2"),
-                    new TextSample("2016-06-03T09:24:00.000Z", "word"),
-                    new TextSample("2016-06-03T09:25:00.000Z", "words"),
-                    new TextSample("2016-06-03T09:26:00.000Z", "3"),
-                    new TextSample("2016-06-03T09:27:00.000Z", "4"),
-                    new TextSample("2016-06-03T09:28:00.000Z", "PI"),
-                    new TextSample("2016-06-03T09:29:00.000Z", "3.14"),
-                    new TextSample("2016-06-03T09:30:00.000Z", "nothing")
+                    Sample.ofDateText("2016-06-03T09:20:00.000Z", "word"),
+                    Sample.ofDateText("2016-06-03T09:21:00.000Z", "-1"),
+                    Sample.ofDateText("2016-06-03T09:22:00.000Z", "1"),
+                    Sample.ofDateText("2016-06-03T09:23:00.000Z", "2"),
+                    Sample.ofDateText("2016-06-03T09:24:00.000Z", "word"),
+                    Sample.ofDateText("2016-06-03T09:25:00.000Z", "words"),
+                    Sample.ofDateText("2016-06-03T09:26:00.000Z", "3"),
+                    Sample.ofDateText("2016-06-03T09:27:00.000Z", "4"),
+                    Sample.ofDateText("2016-06-03T09:28:00.000Z", "PI"),
+                    Sample.ofDateText("2016-06-03T09:29:00.000Z", "3.14"),
+                    Sample.ofDateText("2016-06-03T09:30:00.000Z", "nothing")
             );
 
             seriesList.add(series);
@@ -89,7 +88,7 @@ public class SqlLookupFunctionTest extends SqlTest {
         Entity entity = new Entity(testEntityNameTagsCase, tags);
         Series series = new Series(testEntityNameTagsCase, TEST_METRIC_NAME_TAGS_CASE, tags);
 
-        series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
         seriesList.add(series);
 
         MetricMethod.createOrReplaceMetricCheck(metric);

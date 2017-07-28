@@ -6,7 +6,6 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class AppendFieldTest extends CommandMethodTest {
         String[] dataWithDuplicates = {"a", "a", "b", "a", "b", "c", "b", "0.1", "word1 word2", "0", "word1", "0.1"};
 
         Series series = new Series(entityName, metricAppendDuplicates);
-        series.addSamples(new TextSample(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
 
         SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendDuplicates, dataWithDuplicates[0]),
                                                         null, entityName, null, null, null, ISO_TIME, false);
@@ -71,7 +70,7 @@ public class AppendFieldTest extends CommandMethodTest {
         String[] dataEraseSecond = {"d", "e", "f", "g"};
 
         Series series = new Series(entityName, metricAppendWithErase);
-        series.addSamples(new TextSample(ISO_TIME, "d;\ne;\nf;\ng"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "d;\ne;\nf;\ng"));
 
         SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseFirst[0]),
                                                         null, entityName, null, null, null, ISO_TIME, false);
@@ -104,7 +103,7 @@ public class AppendFieldTest extends CommandMethodTest {
         final String entityName = entity();
         final String metricDecimalToText = metric();
         Series series = new Series(entityName, metricDecimalToText);
-        series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE, TEXT_VALUE));
+        series.addSamples(Sample.ofDateDecimalText(ISO_TIME, DECIMAL_VALUE, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = Arrays.asList(
                 new SeriesCommand(singletonMap(metricDecimalToText, TEXT_VALUE), null,
@@ -126,7 +125,7 @@ public class AppendFieldTest extends CommandMethodTest {
         final String entityName = entity();
         final String metricAppendTextViaBatch = metric();
         Series series = new Series(entityName, metricAppendTextViaBatch);
-        series.addSamples(new TextSample(ISO_TIME, "text1;\ntext2"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "text1;\ntext2"));
 
         CommandMethod.send(new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text1"), null,
                                             entityName, null, null, null, ISO_TIME, false));
@@ -151,7 +150,7 @@ public class AppendFieldTest extends CommandMethodTest {
         final String entityName = entity();
         final String metricTextAfterDecimalAddition = metric();
         Series series = new Series(entityName, metricTextAfterDecimalAddition);
-        series.addSamples(new TextSample(ISO_TIME, TEXT_VALUE));
+        series.addSamples(Sample.ofDateText(ISO_TIME, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = Arrays.asList(
                 new SeriesCommand(singletonMap(metricTextAfterDecimalAddition, TEXT_VALUE), null,

@@ -9,7 +9,6 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,24 +28,24 @@ public class SqlIsNullOperatorTest extends SqlTest {
     public static void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "tag1", "val1") {{
-            addSamples(new Sample("2016-06-19T11:00:00.000Z", 1));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:00:00.000Z", 1));
         }});
 
 
         seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "tag1", "val2", "tag2", "val2") {{
-            addSamples(new Sample("2016-06-19T11:05:00.000Z", 2));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:05:00.000Z", 2));
         }});
 
         seriesList.add(new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME, "tag2", "val3") {{
-            addSamples(new Sample("2016-06-19T11:10:00.000Z", 3));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:10:00.000Z", 3));
         }});
 
         seriesList.add(new Series(TEST_ENTITY4_NAME, TEST_METRIC_NAME, "tag4", "val4") {{
-            addSamples(new Sample("2016-06-19T11:15:00.000Z", 4));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:15:00.000Z", 4));
         }});
 
         seriesList.add(new Series(TEST_ENTITY5_NAME, TEST_METRIC_NAME) {{
-            addSamples(new Sample("2016-06-19T11:20:00.000Z", 5));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:20:00.000Z", 5));
         }});
 
         EntityMethod.createOrReplaceEntityCheck(new Entity(TEST_ENTITY1_NAME, new HashMap<String, String>() {{
@@ -332,7 +331,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         String entityName = "e-test-operator-is-null-metric-label";
         Series series = new Series(entityName, metric.getName());
-        series.addSamples(new Sample("2016-06-19T00:00:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-19T00:00:00.000Z", 1));
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
@@ -362,7 +361,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         String entityName = "e-test-operator-is-not-null-metric-label";
         Series series = new Series(entityName, metric.getName());
-        series.addSamples(new Sample("2016-06-19T00:00:00.000Z", 2));
+        series.addSamples(Sample.ofDateInteger("2016-06-19T00:00:00.000Z", 2));
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);

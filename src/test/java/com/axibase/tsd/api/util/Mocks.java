@@ -2,7 +2,6 @@ package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -16,8 +15,8 @@ public class Mocks {
     public static final Long MILLS_TIME = date().getTime();
     public static final BigDecimal DECIMAL_VALUE = new BigDecimal("123.4567");
     public static final String TEXT_VALUE = "text";
-    public static final Sample SAMPLE = new Sample(ISO_TIME, DECIMAL_VALUE);
-    public static final Sample TEXT_SAMPLE = new TextSample(ISO_TIME, TEXT_VALUE);
+    public static final Sample SAMPLE = Sample.ofDateDecimal(ISO_TIME, DECIMAL_VALUE);
+    public static final Sample TEXT_SAMPLE = Sample.ofDateText(ISO_TIME, TEXT_VALUE);
     public static final String TIMEZONE_ID = "GMT0";
     public static final String LABEL = "label";
     public static final String DESCRIPTION = "description";

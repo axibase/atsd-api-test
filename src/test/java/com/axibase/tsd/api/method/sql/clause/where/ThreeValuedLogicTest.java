@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -26,15 +25,15 @@ public class ThreeValuedLogicTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         Series series = new Series(ENTITY_NAME, METRIC_NAME_1);
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC_NAME_2);
-        series.addSamples(new Sample(ISO_TIME, 2));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 2));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC_NAME_3);
-        series.addSamples(new TextSample(ISO_TIME, "hello"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "hello"));
         seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);

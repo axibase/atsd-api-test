@@ -28,7 +28,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC_1);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), i));
+                series.addSamples(Sample.ofDateInteger(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), i));
             }
             seriesList.add(series);
         }
@@ -36,7 +36,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
             Series series = new Series(null, TEST_METRIC_2);
             series.setEntity(TEST_ENTITY);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
+                series.addSamples(Sample.ofDateInteger(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
             }
             seriesList.add(series);
         }

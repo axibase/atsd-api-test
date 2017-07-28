@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,10 +27,10 @@ public class SqlTableAliasTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(
                 Arrays.asList(
                         new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, tags) {{
-                            addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+                            addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
                         }},
                         new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, tags) {{
-                            addSamples(new Sample("2016-06-03T09:24:00.000Z", 1));
+                            addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 1));
                         }}
                 )
         );

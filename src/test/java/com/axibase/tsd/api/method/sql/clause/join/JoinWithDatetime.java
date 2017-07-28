@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class JoinWithDatetime extends SqlTest {
     private static String TEST_METRIC_1 = metric();
@@ -23,16 +23,16 @@ public class JoinWithDatetime extends SqlTest {
 
         Series series1 = new Series(entity, TEST_METRIC_1);
         series1.addSamples(
-                new Sample("2017-01-01T00:00:00Z",1),
-                new Sample("2017-01-02T00:00:00Z",2),
-                new Sample("2017-01-07T00:00:00Z",7)
+                Sample.ofDateInteger("2017-01-01T00:00:00Z", 1),
+                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
+                Sample.ofDateInteger("2017-01-07T00:00:00Z", 7)
         );
 
         Series series2 = new Series(entity, TEST_METRIC_2);
         series2.addSamples(
-                new Sample("2017-01-01T00:00:00Z",1),
-                new Sample("2017-01-02T00:00:00Z",2),
-                new Sample("2017-01-06T00:00:00Z",6)
+                Sample.ofDateInteger("2017-01-01T00:00:00Z", 1),
+                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
+                Sample.ofDateInteger("2017-01-06T00:00:00Z", 6)
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);

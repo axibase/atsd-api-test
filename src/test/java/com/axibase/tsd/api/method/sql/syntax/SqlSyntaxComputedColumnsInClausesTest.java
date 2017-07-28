@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,9 +23,9 @@ public class SqlSyntaxComputedColumnsInClausesTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.500Z", 0),
-                new Sample("2016-06-19T11:00:01.500Z", 1),
-                new Sample("2016-06-19T11:00:02.500Z", -3)
+                Sample.ofDateInteger("2016-06-19T11:00:00.500Z", 0),
+                Sample.ofDateInteger("2016-06-19T11:00:01.500Z", 1),
+                Sample.ofDateInteger("2016-06-19T11:00:02.500Z", -3)
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }

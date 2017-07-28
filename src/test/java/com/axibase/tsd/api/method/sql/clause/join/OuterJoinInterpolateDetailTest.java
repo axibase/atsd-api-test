@@ -18,9 +18,9 @@ public class OuterJoinInterpolateDetailTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Sample[] samples = {
-                new Sample("2017-06-22T12:00:00.000Z", 1),
-                new Sample("2017-06-22T13:00:00.000Z", 1),
-                new Sample("2017-06-22T14:00:00.000Z", 1)
+                Sample.ofDateInteger("2017-06-22T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-06-22T13:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-06-22T14:00:00.000Z", 1)
         };
 
         Series series1 = new Series(ENTITY_NAME1, METRIC_NAME1);

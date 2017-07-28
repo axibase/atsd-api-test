@@ -25,7 +25,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 

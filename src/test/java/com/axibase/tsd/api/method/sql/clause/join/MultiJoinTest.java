@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,7 +36,7 @@ public class MultiJoinTest extends SqlTest {
         for (int i = 0; i < TAGS_COUNT; i++) {
             for (String metric : metrics) {
                 Series series = new Series(TEST_ENTITY_NAME, metric, "tag", String.valueOf(i));
-                series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 1));
+                series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 1));
 
                 seriesList.add(series);
             }

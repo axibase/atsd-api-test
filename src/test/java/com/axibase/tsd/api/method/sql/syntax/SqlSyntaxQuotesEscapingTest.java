@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -27,7 +26,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
         tags.put("single'quote", "tv2");
         tags.put("both'quo\"tes", "tv3");
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags);
-        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
+        series.addSamples(Sample.ofDateDecimal("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         Metric updatedMetricQuery = new Metric();

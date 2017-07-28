@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.ErrorTemplate;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,10 +22,10 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
-        series1.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
 
         Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
-        series2.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series2.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

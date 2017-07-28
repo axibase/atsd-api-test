@@ -6,8 +6,6 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -32,7 +30,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     static {
         series = new Series("series-query-e-1", "series-query-m-1");
-        series.addSamples(new Sample(sampleDate, 1));
+        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
     }
 
     private final Random random = new Random();
@@ -69,7 +67,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
         assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getD());
+        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getIsoDate());
     }
 
     @DataProvider(name = "incorrectDatesProvider")
@@ -107,7 +105,7 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("7");
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(MIN_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -127,7 +125,7 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("7");
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(MIN_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -147,7 +145,7 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("7");
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(MIN_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -155,8 +153,8 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
-        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Incorrect stored value", v, data.get(0).getV());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getIsoDate());
+        assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
     /**
@@ -169,7 +167,7 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("7");
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(MIN_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -177,8 +175,8 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
-        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Incorrect stored value", v, data.get(0).getV());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getIsoDate());
+        assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
     /**
@@ -191,7 +189,7 @@ public class SeriesQueryTest extends SeriesMethod {
         BigDecimal v = new BigDecimal("7");
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(MIN_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MIN_STORABLE_DATE, v));
 
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -199,8 +197,8 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
-        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getD());
-        assertEquals("Incorrect stored value", v, data.get(0).getV());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getIsoDate());
+        assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
     /**
@@ -215,7 +213,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Date endDate = parseDate(MIN_STORABLE_DATE);
 
         while (calendar.getTime().before(endDate)) {
-            series.addSamples(new Sample(ISOFormat(calendar.getTime()), v));
+            series.addSamples(Sample.ofDateDecimal(ISOFormat(calendar.getTime()), v));
             Response response = insertSeries(Collections.singletonList(series));
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
@@ -239,10 +237,10 @@ public class SeriesQueryTest extends SeriesMethod {
         Date maxStorableDay = parseDate(MAX_STORABLE_DATE);
 
         while (calendar.getTime().before(maxStorableDay)) {
-            series.addSamples(new Sample(ISOFormat(calendar.getTime()), v));
+            series.addSamples(Sample.ofDateDecimal(ISOFormat(calendar.getTime()), v));
             setRandomTimeDuringNextDay(calendar);
         }
-        series.addSamples(new Sample(MAX_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MAX_STORABLE_DATE, v));
         insertSeriesCheck(Collections.singletonList(series));
     }
 
@@ -258,7 +256,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Date endDate = parseDate("2110-01-01T00:00:00.000Z");
 
         while (calendar.getTime().before(endDate)) {
-            series.addSamples(new Sample(ISOFormat(calendar.getTime()), v));
+            series.addSamples(Sample.ofDateDecimal(ISOFormat(calendar.getTime()), v));
             Response response = insertSeries(Collections.singletonList(series));
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
@@ -276,7 +274,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test
     public void testEntitesExpressionStarChar() throws Exception {
         Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
-        series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 0));
+        series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
@@ -296,7 +294,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test
     public void testEntitesExpressionQuestionChar() throws Exception {
         Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
-        series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 0));
+        series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
 
         Map<String, Object> query = new HashMap<>();
@@ -324,9 +322,9 @@ public class SeriesQueryTest extends SeriesMethod {
         MetricMethod.createOrReplaceMetric(versionedMetric);
 
         series.addSamples(
-                new Sample(MIN_STORABLE_DATE, 0),
-                new Sample(addOneMS(MIN_STORABLE_DATE), 1),
-                new Sample(addOneMS(addOneMS(MIN_STORABLE_DATE)), 2)
+                Sample.ofDateInteger(MIN_STORABLE_DATE, 0),
+                Sample.ofDateInteger(addOneMS(MIN_STORABLE_DATE), 1),
+                Sample.ofDateInteger(addOneMS(addOneMS(MIN_STORABLE_DATE)), 2)
         );
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -350,7 +348,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test
     public void testDateIntervalFieldEnoughToDetail() throws Exception {
         Series series = new Series("entity-query-24", "metric-query-24");
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 1));
+        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 1));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery();
@@ -371,7 +369,7 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test
     public void testDateIntervalFieldEnoughToGroup() throws Exception {
         Series series = new Series("entity-query-25", "metric-query-25");
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 1));
+        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 1));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery();
@@ -395,7 +393,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDateIntervalFieldEnoughToAggregate() throws Exception {
         final BigDecimal VALUE = new BigDecimal("1.0");
         Series series = new Series("entity-query-26", "metric-query-26");
-        series.addSamples(new Sample("2014-01-01T00:00:00.000Z", VALUE));
+        series.addSamples(Sample.ofDateDecimal("2014-01-01T00:00:00.000Z", VALUE));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery();
@@ -411,7 +409,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Response should contain only one series", 1, storedSeries.size());
         List<Sample> data = storedSeries.get(0).getData();
         assertEquals("Response should contain only one sample", 1, data.size());
-        assertEquals("Returned value does not match to expected SUM", VALUE, data.get(0).getV());
+        assertEquals("Returned value does not match to expected SUM", VALUE, data.get(0).getValue());
     }
 
     /**
@@ -500,7 +498,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         String largeNumber = "10.1";
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample(MIN_STORABLE_DATE, new BigDecimal(largeNumber), text);
+        Sample sample = Sample.ofDateDecimalText(MIN_STORABLE_DATE, new BigDecimal(largeNumber), text);
         series.addSamples(sample);
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -526,7 +524,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, x);
+            Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -555,7 +553,7 @@ public class SeriesQueryTest extends SeriesMethod {
         MetricMethod.createOrReplaceMetricCheck(metric);
 
         for (int i = 0; i < insertedVersionsCount; i++) {
-            series.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, i)));
+            series.setSamples(Collections.singleton(Sample.ofDateInteger(Mocks.ISO_TIME, i)));
             SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
         }
 

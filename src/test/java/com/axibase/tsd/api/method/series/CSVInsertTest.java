@@ -15,13 +15,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 
 import static com.axibase.tsd.api.method.entity.EntityTest.assertEntityExisting;
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.TestUtil.parseDate;
 import static java.util.Collections.singletonList;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -48,7 +46,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = String.format(
                 "date, %s%n%s, %s%n",
                 expectedSeries.getMetric(),
-                formatISODate(parseDate(SAMPLE.getD()), template), SAMPLE.getV()
+                formatISODate(parseDate(SAMPLE.getIsoDate()), template), SAMPLE.getValue()
         );
         csvInsert(expectedSeries.getEntity(), csvPayload, expectedSeries.getTags());
         assertSeriesExisting(expectedSeries);
@@ -77,7 +75,7 @@ public class CSVInsertTest extends CSVInsertMethod {
                     formatISODate(date, pattern), Mocks.DECIMAL_VALUE
             );
             payloadBuilder.append(csvRow);
-            series.addSamples(new Sample(dateTemplatePairs[i][0], Mocks.DECIMAL_VALUE));
+            series.addSamples(Sample.ofDateDecimal(dateTemplatePairs[i][0], Mocks.DECIMAL_VALUE));
         }
         String csvPayload = payloadBuilder.toString();
         csvInsertCheck(
@@ -95,8 +93,8 @@ public class CSVInsertTest extends CSVInsertMethod {
     public void testTimeRangeInISO() throws Exception {
         Series series = Mocks.series();
         series.setSamples(Arrays.asList(
-                new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
-                new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
+                Sample.ofDateDecimal(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
+                Sample.ofDateDecimal(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
         ));
 
         String csvPayload = String.format(
@@ -122,8 +120,8 @@ public class CSVInsertTest extends CSVInsertMethod {
         Series series = Mocks.series();
         series.setSamples(new ArrayList<>());
         series.addSamples(
-                new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
-                new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
+                Sample.ofDateDecimal(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
+                Sample.ofDateDecimal(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
         );
 
         String csvPayload = String.format(

@@ -7,9 +7,7 @@ import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.Mocks.DECIMAL_VALUE;
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Mocks.*;
 
 public class GroupByPeriodInLeapYears extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
@@ -25,10 +23,10 @@ public class GroupByPeriodInLeapYears extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.addSamples(
-                new Sample(firstDayOf2016Year, DECIMAL_VALUE),
-                new Sample(firstDayOf2016February, DECIMAL_VALUE),
-                new Sample(lastDayOf2016February, DECIMAL_VALUE),
-                new Sample(lastDayOf2016Year, DECIMAL_VALUE)
+                Sample.ofDateDecimal(firstDayOf2016Year, DECIMAL_VALUE),
+                Sample.ofDateDecimal(firstDayOf2016February, DECIMAL_VALUE),
+                Sample.ofDateDecimal(lastDayOf2016February, DECIMAL_VALUE),
+                Sample.ofDateDecimal(lastDayOf2016Year, DECIMAL_VALUE)
         );
 
         SeriesMethod.insertSeriesCheck(series);

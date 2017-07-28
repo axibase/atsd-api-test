@@ -44,23 +44,23 @@ public class CastTest extends SqlTest {
         for (int i = 0; i < metricNames.length; i++) {
             String metricName = metricNames[i];
             Series series = new Series(TEST_ENTITY_NAME, metricName, "numeric_tag", tags[i]);
-            series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+            series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
             seriesList.add(series);
         }
 
         // reproducing data for ticket #3841 behaviour
         Series series1 = new Series(TEST_ENTITY_NAME_3841, TEST_METRIC1_NAME_3841);
-        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:20:01.000Z", 2),
-                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:20:01.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:20:02.000Z", 3));
         series1.addTag("tag", "1001");
         seriesList.add(series1);
 
         Series series2 = new Series(null, TEST_METRIC2_NAME_3841);
         series2.setEntity(TEST_ENTITY_NAME_3841);
-        series2.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:20:01.000Z", 2),
-                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series2.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:20:01.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:20:02.000Z", 3));
         series2.addTag("tag", "2001");
         seriesList.add(series2);
 
@@ -226,7 +226,7 @@ public class CastTest extends SqlTest {
     @BeforeClass
     public void createCastNumberAsStringTestData() throws Exception {
         castNumberAsStringSeries = Mocks.series();
-        castNumberAsStringSeries.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, new BigDecimal("12345.6789"))));
+        castNumberAsStringSeries.setSamples(Collections.singleton(Sample.ofDateDecimal(Mocks.ISO_TIME, new BigDecimal("12345.6789"))));
         SeriesMethod.insertSeriesCheck(castNumberAsStringSeries);
     }
 
@@ -373,7 +373,7 @@ public class CastTest extends SqlTest {
                 "SELECT metric%n" +
                 "FROM '%s'%n" +
                 "WHERE value = '%s'",
-                series.getMetric(), series.getData().get(0).getV()
+                series.getMetric(), series.getData().get(0).getValue()
         );
 
         String[][] expected = {
@@ -479,7 +479,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testImplicitCastOfStringFunctionResult() throws Exception {
         Series series = Mocks.series();
-        series.setSamples(Collections.singletonList(new Sample(Mocks.ISO_TIME, 10)));
+        series.setSamples(Collections.singletonList(Sample.ofDateInteger(Mocks.ISO_TIME, 10)));
         SeriesMethod.insertSeriesCheck(series);
 
         String sql = String.format(

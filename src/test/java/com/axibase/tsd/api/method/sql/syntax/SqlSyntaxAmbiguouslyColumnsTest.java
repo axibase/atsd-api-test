@@ -25,10 +25,10 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME, "a", "b");
-        series1.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
 
         Series series2 = new Series(TEST_ENTITY1_NAME, TEST_METRIC2_NAME, "b", "a");
-        series2.addSamples(new Sample("2016-06-03T09:24:01.000Z", 1));
+        series2.addSamples(Sample.ofDateInteger("2016-06-03T09:24:01.000Z", 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }

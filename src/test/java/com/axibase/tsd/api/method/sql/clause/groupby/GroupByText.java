@@ -4,13 +4,8 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
-import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -23,12 +18,12 @@ public class GroupByText extends SqlTest {
     public void insertTextSampleToDefaultSeries() throws Exception {
         Series series = new Series(DEFAULT_ENTITY, DEFAULT_METRIC);
         series.addSamples(
-                new TextSample("2016-06-03T09:00:00.000Z", "sample text"),
-                new TextSample("2016-06-03T09:05:00.000Z", "text"),
-                new TextSample("2016-06-03T09:10:00.000Z", "TEXT"),
-                new TextSample("2016-06-03T09:15:00.000Z", "12"),
-                new Sample    ("2016-06-03T09:20:00.000Z", 1), // text is null
-                new TextSample("2016-06-03T09:25:00.000Z", "")
+                Sample.ofDateText("2016-06-03T09:00:00.000Z", "sample text"),
+                Sample.ofDateText("2016-06-03T09:05:00.000Z", "text"),
+                Sample.ofDateText("2016-06-03T09:10:00.000Z", "TEXT"),
+                Sample.ofDateText("2016-06-03T09:15:00.000Z", "12"),
+                Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1), // text is null
+                Sample.ofDateText("2016-06-03T09:25:00.000Z", "")
         );
         SeriesMethod.insertSeriesCheck(series);
     }

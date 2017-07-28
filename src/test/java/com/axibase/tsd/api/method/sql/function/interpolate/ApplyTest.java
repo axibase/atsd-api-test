@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 
 public class ApplyTest extends SqlTest {
     private static final String APPLY_METRIC = metric();
-    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-29T08:00:00.000Z", 0);
+    private static final Sample DEFAULT_SAMPLE = Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0);
 
 
     @BeforeClass
@@ -122,7 +122,7 @@ public class ApplyTest extends SqlTest {
         Long endTime = TestUtil.parseDate("2016-06-29T10:00:00.000Z").getTime();
         Series series = new Series(entity(), metric());
         for (long i = startTime; i < endTime; i += 60000) {
-            series.addSamples(new Sample(TestUtil.ISOFormat(i), (BigDecimal) null));
+            series.addSamples(Sample.ofDateDecimal(TestUtil.ISOFormat(i), (BigDecimal) null));
         }
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
         String sqlQuery = String.format("SELECT * FROM '%s'%nWHERE time >= %d AND time < %d%nWITH INTERPOLATE(1 MINUTE, LINEAR)",

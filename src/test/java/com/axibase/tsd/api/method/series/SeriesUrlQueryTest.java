@@ -83,7 +83,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
     }
 
     private void assertUrlEncodePathHandledCorrectly(Series series) throws Exception {
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
+        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
         insertSeriesCheck(Collections.singletonList(series));
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
@@ -95,8 +95,8 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         });
         assertEquals("Incorrect series entity", series.getEntity(), responseSeries.get(0).getEntity());
         assertEquals("Incorrect series metric", series.getMetric(), responseSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", 0L, responseSeries.get(0).getData().get(0).getT().longValue());
-        assertEquals("Incorrect series sample value", new BigDecimal(0), responseSeries.get(0).getData().get(0).getV());
+        assertEquals("Incorrect series sample date", 0L, responseSeries.get(0).getData().get(0).getUnixTime().longValue());
+        assertEquals("Incorrect series sample value", new BigDecimal(0), responseSeries.get(0).getData().get(0).getValue());
 
     }
 }

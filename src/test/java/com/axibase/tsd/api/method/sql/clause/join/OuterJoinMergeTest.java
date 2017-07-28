@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -43,7 +42,7 @@ public class OuterJoinMergeTest extends SqlTest {
                 Series series = new Series(entityName, metricName, Mocks.TAGS);
 
                 for (int i = 0; i < VALUES_COUNT; i++) {
-                    series.addSamples(new Sample(String.format("2017-01-0%1sT00:00:00.000Z", i + 1), i + 1));
+                    series.addSamples(Sample.ofDateInteger(String.format("2017-01-0%1sT00:00:00.000Z", i + 1), i + 1));
                 }
 
                 seriesList.add(series);

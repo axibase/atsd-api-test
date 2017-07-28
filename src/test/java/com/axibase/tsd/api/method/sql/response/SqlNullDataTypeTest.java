@@ -5,11 +5,9 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,11 +27,11 @@ public class SqlNullDataTypeTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME) {{
-            addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
+            addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0));
         }});
 
         seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME) {{
-            addSamples(new Sample("2016-06-29T08:00:01.000Z", 0));
+            addSamples(Sample.ofDateInteger("2016-06-29T08:00:01.000Z", 0));
         }});
 
         SeriesMethod.insertSeriesCheck(seriesList);

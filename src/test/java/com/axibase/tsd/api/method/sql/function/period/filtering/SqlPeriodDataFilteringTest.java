@@ -26,77 +26,77 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     public static void prepareDataSet() throws Exception {
         Series seriesMillis = new Series(entity(), TEST_METRIC_MILLISECONDS);
         seriesMillis.addSamples(
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-01T00:00:00.001Z", 2),
-                new Sample("2017-01-01T00:00:00.002Z", 3),
-                new Sample("2017-01-01T00:00:00.003Z", 4),
-                new Sample("2017-01-01T00:00:00.004Z", 5)
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:00:00.001Z", 2),
+                Sample.ofDateInteger("2017-01-01T00:00:00.002Z", 3),
+                Sample.ofDateInteger("2017-01-01T00:00:00.003Z", 4),
+                Sample.ofDateInteger("2017-01-01T00:00:00.004Z", 5)
         );
 
 
         Series seriesSeconds = new Series(entity(), TEST_METRIC_SECONDS);
         seriesSeconds.addSamples(
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-01T00:00:00.500Z", 2),
-                new Sample("2017-01-01T00:00:01.000Z", 3),
-                new Sample("2017-01-01T00:00:02.000Z", 4),
-                new Sample("2017-01-01T00:00:03.000Z", 5),
-                new Sample("2017-01-01T00:00:04.000Z", 6)
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:00:00.500Z", 2),
+                Sample.ofDateInteger("2017-01-01T00:00:01.000Z", 3),
+                Sample.ofDateInteger("2017-01-01T00:00:02.000Z", 4),
+                Sample.ofDateInteger("2017-01-01T00:00:03.000Z", 5),
+                Sample.ofDateInteger("2017-01-01T00:00:04.000Z", 6)
         );
 
         Series seriesMinutes = new Series(entity(), TEST_METRIC_MINUTES);
         seriesMinutes.addSamples(
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-01T00:00:30.000Z", 2),
-                new Sample("2017-01-01T00:01:00.000Z", 3),
-                new Sample("2017-01-01T00:02:00.000Z", 4),
-                new Sample("2017-01-01T00:03:00.000Z", 5),
-                new Sample("2017-01-01T00:04:00.000Z", 6)
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:00:30.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T00:01:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-01T00:02:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-01T00:03:00.000Z", 5),
+                Sample.ofDateInteger("2017-01-01T00:04:00.000Z", 6)
         );
 
         Series seriesHours = new Series(entity(), TEST_METRIC_HOURS);
         seriesHours.addSamples(
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-01T00:01:00.000Z", 2),
-                new Sample("2017-01-01T01:00:00.000Z", 3),
-                new Sample("2017-01-01T02:00:00.000Z", 4),
-                new Sample("2017-01-01T02:01:00.000Z", 5)
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:01:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T01:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-01T02:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-01T02:01:00.000Z", 5)
         );
 
         Series seriesDays = new Series(entity(), TEST_METRIC_DAYS);
         seriesDays.addSamples(
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-01T12:00:00.000Z", 2),
-                new Sample("2017-01-02T00:00:00.000Z", 3),
-                new Sample("2017-01-03T00:00:00.000Z", 4),
-                new Sample("2017-01-04T00:00:00.000Z", 5)
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-02T00:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-03T00:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-04T00:00:00.000Z", 5)
         );
 
         Series seriesWeeks = new Series(entity(), TEST_METRIC_WEEKS);
         seriesWeeks.addSamples(
-                new Sample("2016-12-31T00:00:00.000Z", 0),
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-02T00:00:00.000Z", 2),
-                new Sample("2017-01-08T00:00:00.000Z", 3),
-                new Sample("2017-01-09T00:00:00.000Z", 4)
+                Sample.ofDateInteger("2016-12-31T00:00:00.000Z", 0),
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-02T00:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-08T00:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-09T00:00:00.000Z", 4)
         );
 
         Series seriesMonths = new Series(entity(), TEST_METRIC_MONTHS);
         seriesMonths.addSamples(
-                new Sample("2017-01-01T00:00:00.000Z", 1),
-                new Sample("2017-01-15T00:00:00.000Z", 2),
-                new Sample("2017-02-01T00:00:00.000Z", 3),
-                new Sample("2017-03-01T00:00:00.000Z", 4),
-                new Sample("2017-04-01T00:00:00.000Z", 5)
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-15T00:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-02-01T00:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-03-01T00:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-04-01T00:00:00.000Z", 5)
         );
 
         Series seriesYears = new Series(entity(), TEST_METRIC_YEARS);
         seriesYears.addSamples(
-                new Sample("1970-01-01T00:00:00.000Z", 1),
-                new Sample("1970-05-01T00:00:00.000Z", 2),
-                new Sample("1970-09-01T00:00:00.000Z", 3),
-                new Sample("1971-01-01T00:00:00.000Z", 4),
-                new Sample("1972-01-01T00:00:00.000Z", 5)
+                Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1),
+                Sample.ofDateInteger("1970-05-01T00:00:00.000Z", 2),
+                Sample.ofDateInteger("1970-09-01T00:00:00.000Z", 3),
+                Sample.ofDateInteger("1971-01-01T00:00:00.000Z", 4),
+                Sample.ofDateInteger("1972-01-01T00:00:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(seriesMillis, seriesSeconds, seriesMinutes,

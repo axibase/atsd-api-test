@@ -35,7 +35,7 @@ public class JoinWithTags extends SqlTest {
 
         for (int i = 0; i < metricNames.length; i++) {
             Series series = new Series(TEST_ENTITY_NAME, metricNames[i], "tag", tags[i]);
-            series.addSamples(new Sample("2016-06-03T09:20:00.000Z", i + 1));
+            series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", i + 1));
 
             seriesList.add(series);
         }

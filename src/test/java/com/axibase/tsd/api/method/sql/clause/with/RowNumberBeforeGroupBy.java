@@ -4,18 +4,14 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.MILLS_TIME;
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Mocks.*;
 
 public class RowNumberBeforeGroupBy extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
@@ -27,7 +23,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
 
         for (int i = 0; i < 20; i++) {
             Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag", Integer.toString(i));
-            series.addSamples(new Sample(Util.ISOFormat(MILLS_TIME + i), i));
+            series.addSamples(Sample.ofDateInteger(Util.ISOFormat(MILLS_TIME + i), i));
             seriesList.add(series);
         }
 

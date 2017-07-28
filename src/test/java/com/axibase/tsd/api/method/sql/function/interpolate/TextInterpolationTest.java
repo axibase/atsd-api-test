@@ -7,14 +7,12 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.model.sql.TimePeriod;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -33,7 +31,7 @@ public class TextInterpolationTest extends SqlTest {
         String entityName = entity();
         for (int i = 0; i < TEXTS.length; i++) {
             String metricName = metric();
-            Sample sample = new TextSample(Mocks.ISO_TIME, TEXTS[i]);
+            Sample sample = Sample.ofDateText(Mocks.ISO_TIME, TEXTS[i]);
 
             Series series = new Series(entityName, metricName);
             series.addSamples(sample);
@@ -49,10 +47,10 @@ public class TextInterpolationTest extends SqlTest {
     public void testOnlyNullInterpolation() throws Exception {
         Series series = Mocks.series();
         series.addSamples(
-                new Sample("2016-06-03T09:23:01.000Z", 1),
-                new Sample("2016-06-03T09:23:02.000Z", 2),
-                new Sample("2016-06-03T09:23:03.000Z", 3),
-                new Sample("2016-06-03T09:23:04.000Z", 4)
+                Sample.ofDateInteger("2016-06-03T09:23:01.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:23:02.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3),
+                Sample.ofDateInteger("2016-06-03T09:23:04.000Z", 4)
         );
         SeriesMethod.insertSeriesCheck(series);
         String sqlQuery = String.format(
@@ -76,7 +74,7 @@ public class TextInterpolationTest extends SqlTest {
         return new Object[][]{
                 {
                         Collections.singletonList(
-                                new TextSample("2016-06-03T09:23:01.000Z", "text")
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text")
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -89,16 +87,16 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "text"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "text"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "text")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "text")
                         )
 
                 },
                 {
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:01.000Z", "text"),
-                                new Sample("2016-06-03T09:23:00.000Z", 1)
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
+                                Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 1)
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -111,20 +109,20 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:00.500Z", "null"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "text"),
-                                new TextSample("2016-06-03T09:23:01.500Z", "text"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "text")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:00.500Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:01.500Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "text")
                         )
 
                 },
                 {
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:01.000Z", "first"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "second"),
-                                new Sample("2016-06-03T09:23:03.000Z", 3),
-                                new TextSample("2016-06-03T09:23:04.000Z", "fourth")
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "second"),
+                                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3),
+                                Sample.ofDateText("2016-06-03T09:23:04.000Z", "fourth")
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -137,26 +135,26 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "first"),
-                                new TextSample("2016-06-03T09:23:00.500Z", "first"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "first"),
-                                new TextSample("2016-06-03T09:23:01.500Z", "first"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "second"),
-                                new TextSample("2016-06-03T09:23:02.500Z", "second"),
-                                new TextSample("2016-06-03T09:23:03.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:03.500Z", "null"),
-                                new TextSample("2016-06-03T09:23:04.000Z", "fourth"),
-                                new TextSample("2016-06-03T09:23:04.500Z", "fourth"),
-                                new TextSample("2016-06-03T09:23:05.000Z", "fourth")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:00.500Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:01.500Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "second"),
+                                Sample.ofDateText("2016-06-03T09:23:02.500Z", "second"),
+                                Sample.ofDateText("2016-06-03T09:23:03.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:03.500Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:04.000Z", "fourth"),
+                                Sample.ofDateText("2016-06-03T09:23:04.500Z", "fourth"),
+                                Sample.ofDateText("2016-06-03T09:23:05.000Z", "fourth")
                         )
 
                 },
                 {
                         Arrays.asList(
-                                new Sample("2016-06-03T09:23:01.000Z", 1),
-                                new Sample("2016-06-03T09:23:02.000Z", 2),
-                                new Sample("2016-06-03T09:23:03.000Z", 3),
-                                new Sample("2016-06-03T09:23:04.000Z", 4)
+                                Sample.ofDateInteger("2016-06-03T09:23:01.000Z", 1),
+                                Sample.ofDateInteger("2016-06-03T09:23:02.000Z", 2),
+                                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3),
+                                Sample.ofDateInteger("2016-06-03T09:23:04.000Z", 4)
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -169,12 +167,12 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:03.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:04.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:05.000Z", "null")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:03.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:04.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:05.000Z", "null")
                         )
 
                 }
@@ -263,7 +261,7 @@ public class TextInterpolationTest extends SqlTest {
         String[][] result = new String[samples.size()][2];
         int i = 0;
         for (Sample sample : samples) {
-            result[i][0] = sample.getD();
+            result[i][0] = sample.getIsoDate();
             result[i][1] = sample.getText();
             i++;
         }

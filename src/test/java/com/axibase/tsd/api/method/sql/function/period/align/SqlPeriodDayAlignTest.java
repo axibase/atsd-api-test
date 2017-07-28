@@ -30,7 +30,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
         long firstTime = TestUtil.parseDate(START_TIME).getTime();
         long lastTime = TestUtil.parseDate(END_TIME).getTime();
         for (long time = firstTime; time < lastTime; time += DELTA) {
-            series.addSamples(new Sample(TestUtil.ISOFormat(time), 0));
+            series.addSamples(Sample.ofDateInteger(TestUtil.ISOFormat(time), 0));
         }
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));

@@ -24,11 +24,11 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         Series series = new Series(ENTITY_NAME, METRIC1_NAME);
-        series.addSamples(new Sample("2016-06-03T09:20:18.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:18.000Z", 1));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC2_NAME);
-        series.addSamples(new Sample("2016-06-03T09:20:18.000Z", 2));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:18.000Z", 2));
         seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);

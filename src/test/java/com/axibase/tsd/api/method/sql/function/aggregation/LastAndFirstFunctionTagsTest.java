@@ -6,7 +6,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,11 +24,11 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
 
         Series series = new Series(testEntity, TEST_METRIC);
         series.addSamples(
-                new Sample("2017-01-01T09:30:00.000Z", 1),
-                new Sample("2017-01-01T10:30:00.000Z", 1),
-                new Sample("2017-01-01T11:30:00.000Z", 2),
-                new Sample("2017-01-01T12:30:00.000Z", 2),
-                new Sample("2017-01-01T13:30:00.000Z", 2)
+                Sample.ofDateInteger("2017-01-01T09:30:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T10:30:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T11:30:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T12:30:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T13:30:00.000Z", 2)
         );
 
         EntityMethod.createOrReplaceEntityCheck(entity);

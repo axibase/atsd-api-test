@@ -23,14 +23,14 @@ public class SqlExamplePercentilesTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("11.1212")),
-                new Sample("2016-06-19T11:01:00.000Z", new BigDecimal("11.3232")),
-                new Sample("2016-06-19T11:02:00.000Z", new BigDecimal("11.123")),
-                new Sample("2016-06-19T11:03:00.000Z", new BigDecimal("11.4343")),
-                new Sample("2016-06-19T11:04:00.000Z", new BigDecimal("11.435")),
-                new Sample("2016-06-19T11:05:00.000Z", new BigDecimal("11.33")),
-                new Sample("2016-06-19T11:06:00.000Z", new BigDecimal("11.322")),
-                new Sample("2016-06-19T11:07:00.000Z", new BigDecimal("11.3232"))
+                Sample.ofDateDecimal("2016-06-19T11:00:00.000Z", new BigDecimal("11.1212")),
+                Sample.ofDateDecimal("2016-06-19T11:01:00.000Z", new BigDecimal("11.3232")),
+                Sample.ofDateDecimal("2016-06-19T11:02:00.000Z", new BigDecimal("11.123")),
+                Sample.ofDateDecimal("2016-06-19T11:03:00.000Z", new BigDecimal("11.4343")),
+                Sample.ofDateDecimal("2016-06-19T11:04:00.000Z", new BigDecimal("11.435")),
+                Sample.ofDateDecimal("2016-06-19T11:05:00.000Z", new BigDecimal("11.33")),
+                Sample.ofDateDecimal("2016-06-19T11:06:00.000Z", new BigDecimal("11.322")),
+                Sample.ofDateDecimal("2016-06-19T11:07:00.000Z", new BigDecimal("11.3232"))
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
