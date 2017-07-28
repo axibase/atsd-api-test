@@ -67,7 +67,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
         assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getIsoDate());
+        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getRawDate());
     }
 
     @DataProvider(name = "incorrectDatesProvider")
@@ -153,7 +153,7 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
-        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getIsoDate());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
         assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
@@ -175,7 +175,7 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
-        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getIsoDate());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
         assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
@@ -197,7 +197,7 @@ public class SeriesQueryTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
-        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getIsoDate());
+        assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
         assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 

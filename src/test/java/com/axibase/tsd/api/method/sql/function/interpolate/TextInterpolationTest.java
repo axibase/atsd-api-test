@@ -261,7 +261,7 @@ public class TextInterpolationTest extends SqlTest {
         String[][] result = new String[samples.size()][2];
         int i = 0;
         for (Sample sample : samples) {
-            result[i][0] = sample.getIsoDate();
+            result[i][0] = sample.getRawDate();
             result[i][1] = sample.getText();
             i++;
         }

@@ -165,7 +165,7 @@ public class Series {
             seriesCommand.setValues(Collections.singletonMap(metric, s.getValue().toPlainString()));
             seriesCommand.setTexts(Collections.singletonMap(metric, s.getText()));
             seriesCommand.setTags(tags);
-            seriesCommand.setTimeISO(s.getIsoDate());
+            seriesCommand.setTimeISO(s.getRawDate());
             seriesCommand.setTimeMills(s.getUnixTime());
             result.add(seriesCommand);
         }

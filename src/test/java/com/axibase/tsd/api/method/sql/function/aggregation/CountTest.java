@@ -29,8 +29,8 @@ public class CountTest extends SqlTest {
                 Sample.ofDateInteger("2016-10-18T00:00:00.000Z", 7)
         );
         total = series.getData().size();
-        minDateTime = series.getData().get(0).getIsoDate();
-        maxDateTime = series.getData().get(total - 1).getIsoDate();
+        minDateTime = series.getData().get(0).getRawDate();
+        maxDateTime = series.getData().get(total - 1).getRawDate();
         SeriesMethod.insertSeriesCheck(series);
     }
 

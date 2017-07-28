@@ -196,7 +196,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getIsoDate());
+        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
@@ -219,7 +219,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getIsoDate());
+        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
@@ -242,7 +242,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getIsoDate());
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
@@ -264,7 +264,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getIsoDate());
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
@@ -286,7 +286,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertSeriesQueryDataSize(seriesQuery, 1);
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getIsoDate());
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
@@ -812,7 +812,7 @@ public class SeriesInsertTest extends SeriesTest {
         String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':null}]}]";
         commandJsonFormat = commandJsonFormat.replace('\'', '"');
         String json = String.format(commandJsonFormat, series.getEntity(), series.getMetric(),
-                sample.getIsoDate(), sample.getValue());
+                sample.getRawDate(), sample.getValue());
         Response response = insertSeries(json);
         assertEquals("Bad insertion request status code", OK.getStatusCode(), response.getStatus());
         Checker.check(new SeriesCheck(Collections.singletonList(series)));

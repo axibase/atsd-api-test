@@ -26,7 +26,7 @@ public class Sample {
     private static final ISO8601DateFormat isoDateFormat = new ISO8601DateFormat();
 
     @JsonProperty("d")
-    private String isoDate;
+    private String rawDate;
 
     @JsonProperty("t")
     private Long unixTime;
@@ -44,7 +44,7 @@ public class Sample {
     private Sample(Long unixTime, String date, BigDecimal value, String text) {
         this.unixTime = unixTime;
         if (date != null) {
-            this.isoDate = convertDateToISO(date);
+            this.rawDate = convertDateToISO(date);
         }
         this.value = value;
         this.text = text;
@@ -63,7 +63,7 @@ public class Sample {
     }
 
     public static Sample ofRawDateInteger(String date, int value) {
-        return new Sample(null, null, BigDecimal.valueOf(value), null).setIsoDate(date);
+        return new Sample(null, null, BigDecimal.valueOf(value), null).setRawDate(date);
     }
 
     public static Sample ofDateDecimal(String date, BigDecimal value) {
@@ -94,11 +94,11 @@ public class Sample {
 
     @JsonIgnore
     public ZonedDateTime getZonedDateTime() {
-        return ZonedDateTime.parse(this.isoDate, DateTimeFormatter.ISO_DATE_TIME);
+        return ZonedDateTime.parse(this.rawDate, DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public Sample setDate(String isoDate) {
-        this.isoDate = convertDateToISO(isoDate);
+        this.rawDate = convertDateToISO(isoDate);
         return this;
     }
 

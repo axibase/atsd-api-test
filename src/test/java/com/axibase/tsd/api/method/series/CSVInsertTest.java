@@ -46,7 +46,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = String.format(
                 "date, %s%n%s, %s%n",
                 expectedSeries.getMetric(),
-                formatISODate(parseDate(SAMPLE.getIsoDate()), template), SAMPLE.getValue()
+                formatISODate(parseDate(SAMPLE.getRawDate()), template), SAMPLE.getValue()
         );
         csvInsert(expectedSeries.getEntity(), csvPayload, expectedSeries.getTags());
         assertSeriesExisting(expectedSeries);

@@ -30,7 +30,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setTimeISO(sample.getIsoDate());
+        seriesCommand.setTimeISO(sample.getRawDate());
         seriesCommand.setEntityName(series.getEntity());
         seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getValue().toString()));
 
@@ -48,7 +48,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setTimeISO(sample.getIsoDate());
+        seriesCommand.setTimeISO(sample.getRawDate());
         seriesCommand.setEntityName(series.getEntity());
         seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getValue().toString()));
 
