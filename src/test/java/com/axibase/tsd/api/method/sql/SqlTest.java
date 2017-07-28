@@ -223,14 +223,6 @@ public abstract class SqlTest extends SqlMethod {
         assertEquals(assertMessage + ": Error message is different form expected", expectedMessage, responseMessage);
     }
 
-    public void assertColumnType(String assertMessage, String sqlQuery, int columnIndex, String expectedDataType) {
-        StringTable table = queryTable(sqlQuery);
-        String actualDataType = table.getColumnMetaData(columnIndex).getDataType();
-
-        assertEquals(assertMessage + ": Error type is different form expected on column " + columnIndex,
-                expectedDataType, actualDataType);
-    }
-
     /**
      * Retrieve column names form table column metadata list
      *

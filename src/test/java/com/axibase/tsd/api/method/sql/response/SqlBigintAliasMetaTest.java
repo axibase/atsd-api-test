@@ -2,15 +2,19 @@ package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlMetaMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.sql.TableMetaData;
 import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class SqlBigintAliasMetaTest extends SqlTest {
+import static org.testng.AssertJUnit.assertEquals;
+
+public class SqlBigintAliasMetaTest {
     private static String metricName;
 
     @BeforeClass
@@ -26,7 +30,21 @@ public class SqlBigintAliasMetaTest extends SqlTest {
     }
 
     private void assertBigintAliasForQuery(String sqlQuery) {
-        assertColumnType("Incorrect type alias for LONG metric value", sqlQuery, 0, "bigint");
+        TableMetaData metaFromSql = SqlTest.queryTable(sqlQuery).getTableMetaData();
+        TableMetaData metaFromSqlMeta = SqlMetaMethod.queryMetaData(sqlQuery);
+
+        assertColumnType("Incorrect type alias for LONG metric value [/api/sql]",
+                metaFromSql, 0, "bigint");
+        assertColumnType("Incorrect type alias for LONG metric value [/api/sql/meta]",
+                metaFromSqlMeta, 0, "bigint");
+    }
+
+    private void assertColumnType(String assertMessage, TableMetaData tableMeta,
+                                  int columnIndex, String expectedDataType) {
+        String actualDataType = tableMeta.asList().get(columnIndex).getDataType();
+
+        assertEquals(assertMessage + ": Error type is different form expected on column " + columnIndex,
+                expectedDataType, actualDataType);
     }
 
     /**
@@ -36,6 +54,7 @@ public class SqlBigintAliasMetaTest extends SqlTest {
     public void testBigintAliasForValueField() {
         String sqlQuery = String.format("SELECT value FROM '%s'", metricName);
         assertBigintAliasForQuery(sqlQuery);
+
     }
 
     /**
