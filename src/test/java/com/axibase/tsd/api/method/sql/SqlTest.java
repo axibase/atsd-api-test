@@ -8,12 +8,14 @@ import org.json.JSONObject;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.fail;
 
 
@@ -219,6 +221,14 @@ public abstract class SqlTest extends SqlMethod {
             throw new IllegalArgumentException(assertMessage + ": Unexpected response status code");
         }
         assertEquals(assertMessage + ": Error message is different form expected", expectedMessage, responseMessage);
+    }
+
+    public void assertColumnType(String assertMessage, String sqlQuery, int columnIndex, String expectedDataType) {
+        StringTable table = queryTable(sqlQuery);
+        String actualDataType = table.getColumnMetaData(columnIndex).getDataType();
+
+        assertEquals(assertMessage + ": Error type is different form expected on column " + columnIndex,
+                expectedDataType, actualDataType);
     }
 
     /**
