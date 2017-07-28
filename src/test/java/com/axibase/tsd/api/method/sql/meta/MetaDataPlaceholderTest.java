@@ -316,7 +316,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         );
 
         String[] expectedNames = {
-                "isnull(?)",
+                "isnull(?, ?)",
                 "coalesce(?, ?, ?)"
         };
 
