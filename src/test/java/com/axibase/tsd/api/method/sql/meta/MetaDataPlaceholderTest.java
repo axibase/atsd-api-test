@@ -36,12 +36,11 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
 
         String[] expectedNames = {
                 "datetime",
-                "value",
                 "value"
         };
 
         String[] expectedTypes = {
-                "string",
+                "xsd:dateTimeStamp",
                 "float"
         };
 
@@ -76,7 +75,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
     public void testGroupBy() {
         String metricName = Mocks.metric();
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) " +
+                "SELECT entity, avg(value) " +
                         "FROM '%s' " +
                         "WHERE datetime < ? " +
                         "GROUP BY entity",
@@ -90,7 +89,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
 
         String[] expectedTypes = {
                 "string",
-                "float"
+                "double"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -217,7 +216,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
 
         String[] expectedTypes = {
                 "bigint",
-                "float"
+                "double"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
