@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.sql.response;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMetaMethod;
-import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
@@ -30,7 +30,7 @@ public class SqlBigintAliasMetaTest {
     }
 
     private void assertBigintAliasForQuery(String sqlQuery) {
-        TableMetaData metaFromSql = SqlTest.queryTable(sqlQuery).getTableMetaData();
+        TableMetaData metaFromSql = SqlMethod.queryTable(sqlQuery).getTableMetaData();
         TableMetaData metaFromSqlMeta = SqlMetaMethod.queryMetaData(sqlQuery);
 
         assertColumnType("Incorrect type alias for LONG metric value [/api/sql]",
@@ -74,7 +74,7 @@ public class SqlBigintAliasMetaTest {
         String sqlQuery = String.format(
                 "SELECT row_number()\n" +
                         "  FROM '%s'\n" +
-                        "  WITH ROW_NUMBER(entity ORDER BY datetime DESC) <= 2\n" +
+                        "  WITH ROW_NUMBER(entity ORDER BY datetime DESC) < 2\n" +
                         "ORDER BY row_number()",
                 metricName
         );
