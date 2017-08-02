@@ -25,6 +25,10 @@ public class TestUtil {
     public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
+    public enum TimeTranslation {
+        LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
+    }
+
     public static Date getCurrentDate() {
         return new Date();
     }
@@ -35,11 +39,7 @@ public class TestUtil {
     }
 
     public static String formatDate(Date date, String pattern) {
-        try {
-            return formatDate(date, pattern, getServerTimeZone());
-        } catch (JSONException e) {
-            throw new IllegalStateException("Unknown timezone");
-        }
+        return formatDate(date, pattern, getServerTimeZone());
     }
 
     public static String formatDate(Date date, String pattern, TimeZone timeZone) {
@@ -49,7 +49,7 @@ public class TestUtil {
         return format.format(date);
     }
 
-    public static TimeZone getServerTimeZone() throws JSONException {
+    public static TimeZone getServerTimeZone() {
         Version version = VersionMethod.queryVersion().readEntity(Version.class);
         return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
     }
@@ -103,12 +103,7 @@ public class TestUtil {
     }
 
     public static String timeTranslateDefault(String date, TimeTranslation mode) {
-        TimeZone timeZone;
-        try {
-            timeZone = getServerTimeZone();
-        } catch (JSONException e) {
-            throw new IllegalStateException("Unknown timezone");
-        }
+        TimeZone timeZone = getServerTimeZone();
         return timeTranslate(date, timeZone, mode);
     }
 
@@ -118,6 +113,14 @@ public class TestUtil {
         } catch (JsonProcessingException e) {
             return o.toString();
         }
+    }
+
+    public static String formatAsLocalTime(String isoDate) {
+        TimeZone serverTimeZone = getServerTimeZone();
+        Date parsedDate = parseDate(isoDate);
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        localDateFormat.setTimeZone(serverTimeZone);
+        return localDateFormat.format(parsedDate);
     }
 
     public static String addOneMS(String date) {
@@ -148,10 +151,6 @@ public class TestUtil {
             return "JSONArray is null";
         }
         return (((JSONObject) array.get(index)).get(field)).toString();
-    }
-
-    public enum TimeTranslation {
-        LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
     }
 
     public static byte[] getGzipBytes(String inputString) {
