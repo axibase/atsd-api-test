@@ -2,7 +2,6 @@ package com.axibase.tsd.api.method.sql.function.dateparse;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.TestUtil;
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,7 +37,7 @@ public class DateParseFunctionTest extends SqlTest {
     @Test
     public void testDateParseISOFormat() {
         String sqlQuery = "SELECT date_parse('1970-01-01T01:00:00.000Z', " +
-                "\"yyyy-MM-dd'T'HH:mm:ss.SSS ZZ\")";
+                "\"yyyy-MM-dd'T'HH:mm:ss.SSSZZ\")";
 
         String[][] expectedRows = {{"3600000"}};
 
