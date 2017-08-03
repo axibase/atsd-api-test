@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.function.aggregation;
+package com.axibase.tsd.api.method.sql.function.aggregate;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
