@@ -24,6 +24,7 @@ public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
     public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    private static TimeZone serverTimeZone = null;
 
     public static Date getCurrentDate() {
         return new Date();
@@ -50,8 +51,11 @@ public class TestUtil {
     }
 
     public static TimeZone getServerTimeZone() throws JSONException {
-        Version version = VersionMethod.queryVersion().readEntity(Version.class);
-        return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
+        if (serverTimeZone == null) {
+            Version version = VersionMethod.queryVersion().readEntity(Version.class);
+            serverTimeZone = TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
+        }
+        return serverTimeZone;
     }
 
     public static String getHBaseVersion() {
