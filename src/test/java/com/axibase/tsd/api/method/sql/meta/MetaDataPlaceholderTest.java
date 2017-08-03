@@ -5,6 +5,10 @@ import com.axibase.tsd.api.util.Mocks;
 import org.testng.annotations.Test;
 
 public class MetaDataPlaceholderTest extends SqlMetaTest {
+
+    /**
+     * #4368
+     */
     @Test
     public void testSelectExpression() {
         String metricName = Mocks.metric();
@@ -24,6 +28,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testBetween() {
         String metricNameA = Mocks.metric();
@@ -47,6 +54,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testCaseOperator() {
         String metricName = Mocks.metric();
@@ -71,6 +81,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testGroupBy() {
         String metricName = Mocks.metric();
@@ -95,6 +108,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testOrderBy() {
         String metricName = Mocks.metric();
@@ -119,6 +135,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testJoin() {
         String metricNameA = Mocks.metric();
@@ -147,6 +166,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testJoinUsingEntity() {
         String metricNameA = Mocks.metric();
@@ -175,6 +197,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testOption() {
         String metricName = Mocks.metric();
@@ -198,6 +223,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testHaving() {
         String metricName = Mocks.metric();
@@ -222,6 +250,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testMathFunctions() {
         String metricName = Mocks.metric();
@@ -264,6 +295,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testStringFunctions() {
         String metricName = Mocks.metric();
@@ -303,6 +337,9 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
     }
 
+    /**
+     * #4368
+     */
     @Test
     public void testOtherFunctions() {
         String metricName = Mocks.metric();
