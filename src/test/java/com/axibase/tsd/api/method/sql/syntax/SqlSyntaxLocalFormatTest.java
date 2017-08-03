@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class SqlSyntaxLocalFormatTest extends SqlTest {
@@ -22,7 +23,7 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
         return value.substring(0, value.length() - tailLength);
     }
 
-    //@BeforeClass
+    @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(Mocks.entity(), METRIC_NAME);
         series.addSamples(
@@ -169,6 +170,37 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
         };
 
         assertSqlQueryRows("Wrong result for dates in local format without fractional part",
+                expectedResult, sqlQuery);
+    }
+
+    /**
+     * #4386
+     */
+    @Test(
+            description = "The test asserts that parsing works if fractional " +
+                    "is not present, for dates in local date format. Use time column"
+    )
+    public void testLocalDateNoFractionalDigitsWithTime() {
+        String beginDate = stringTruncate(TestUtil.formatAsLocalTime("2017-01-01T00:00:00.000Z"), 4);
+        String endDate = stringTruncate(TestUtil.formatAsLocalTime("2017-01-01T00:00:01.000Z"), 4);
+
+        String sqlQuery = String.format(
+                "SELECT time " +
+                        "FROM '%1$s' " +
+                        "WHERE (time > '%2$s') " +
+                        "AND (time < '%3$s')",
+                METRIC_NAME,
+                beginDate,
+                endDate
+        );
+
+        String[][] expectedResult = {
+                {"1483228800997"},
+                {"1483228800998"},
+                {"1483228800999"}
+        };
+
+        assertSqlQueryRows("Wrong result for dates in local format without fractional part (time column)",
                 expectedResult, sqlQuery);
     }
 }
