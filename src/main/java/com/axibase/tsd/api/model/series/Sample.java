@@ -50,6 +50,10 @@ public class Sample {
         this.text = text;
     }
 
+    public static Sample ofDate(String date) {
+        return new Sample(null, date, null, null);
+    }
+
     public static Sample ofDateIntegerText(String date, int value, String text) {
         return new Sample(null, date, BigDecimal.valueOf(value), text);
     }
