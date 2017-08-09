@@ -17,7 +17,7 @@ public class SelectNonExistentMetricTest extends SqlTest {
 
         String expectedMessage = String.format("Metric '%s' not found", metricName);
 
-        Response responce = queryResponse(sqlQuery);
-        assertBadRequest(expectedMessage, responce);
+        Response response = queryResponse(sqlQuery);
+        assertBadRequest(expectedMessage, response);
     }
 }
