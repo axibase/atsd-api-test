@@ -99,8 +99,8 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
     @Test
     public void testCountJoinWithGroupBy() {
         String sqlQuery = String.format(
-                "SELECT count(t1.value) as 'first', count(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 GROUP BY t2.period(2 minute)" +
-                        "ORDER by 'first' DESC",
+                "SELECT count(t1.value) as \"first\", count(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 GROUP BY t2.period(2 minute)" +
+                        "ORDER by \"first\" DESC",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );

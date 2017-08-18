@@ -165,4 +165,15 @@ public class TestUtil {
 
         return gzipBytes;
     }
+
+    public static String quoteEscape(String s) {
+        StringBuilder resultBuilder = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c == '\'') {
+                resultBuilder.append('\'');
+            }
+            resultBuilder.append(c);
+        }
+        return resultBuilder.toString();
+    }
 }

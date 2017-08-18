@@ -95,9 +95,9 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     @Test
     public void testSpecifiedSeriesTags() {
         String sqlQuery = String.format(
-                "SELECT tags.\"double\"\"quote\", tags.'double\"quote', %n" +
-                        "tags.\"single'quote\", tags.'single''quote', %n" +
-                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes' %n" +
+                "SELECT tags.\"double\"\"quote\", %n" +
+                        "tags.\"single'quote\", %n" +
+                        "tags.\"both'quo\"\"tes\" %n" +
                         "FROM \"%s\" %nWHERE datetime > '2016-07-27T22:40:00.000Z'",
                 TEST_METRIC_NAME
 
@@ -107,12 +107,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "tags.double\"quote", "tags.double\"quote", "tags.single'quote",
-                "tags.single'quote", "tags.both'quo\"tes", "tags.both'quo\"tes"
+                "tags.double\"quote", "tags.single'quote", "tags.both'quo\"tes"
         );
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
+                Arrays.asList("tv1", "tv2", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
         assertTableRowsExist(expectedRows, resultTable);
@@ -125,9 +124,9 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     @Test
     public void testSpecifiedMetricSeriesTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.\"double\"\"quote\", metric.tags.'double\"quote', %n" +
-                        "metric.tags.\"single'quote\", metric.tags.'single''quote', %n" +
-                        "metric.tags.\"both'quo\"\"tes\", metric.tags.'both''quo\"tes' %n" +
+                "SELECT metric.tags.\"double\"\"quote\", %n" +
+                        "metric.tags.\"single'quote\", %n" +
+                        "metric.tags.\"both'quo\"\"tes\"%n" +
                         "FROM \"%s\" %nWHERE datetime > '2016-07-27T22:40:00.000Z'",
                 TEST_METRIC_NAME
 
@@ -137,12 +136,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "metric.tags.double\"quote", "metric.tags.double\"quote", "metric.tags.single'quote",
-                "metric.tags.single'quote", "metric.tags.both'quo\"tes", "metric.tags.both'quo\"tes"
+                "metric.tags.double\"quote", "metric.tags.single'quote", "metric.tags.both'quo\"tes"
         );
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
+                Arrays.asList("tv1", "tv2", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
         assertTableRowsExist(expectedRows, resultTable);
@@ -155,11 +153,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     @Test
     public void testLikeOperatorSeriesTags() {
         String sqlQuery = String.format(
-                "SELECT tags.\"double\"\"quote\", tags.'double\"quote', %n" +
-                        "tags.\"single'quote\", tags.'single''quote', %n" +
-                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes' %n" +
+                "SELECT tags.\"double\"\"quote\", %n" +
+                        "tags.\"single'quote\", %n" +
+                        "tags.\"both'quo\"\"tes\" %n" +
                         "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" LIKE 'tv*' %n" +
-                        "AND tags.'both''quo\"tes' LIKE 'tv3' %nAND tags.'single''quote' LIKE '*2' %n" +
+                        "AND tags.\"both'quo\"\"tes\" LIKE 'tv3' %nAND tags.\"single'quote\" LIKE '*2' %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 
@@ -169,12 +167,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "tags.double\"quote", "tags.double\"quote", "tags.single'quote",
-                "tags.single'quote", "tags.both'quo\"tes", "tags.both'quo\"tes"
+                "tags.double\"quote", "tags.single'quote", "tags.both'quo\"tes"
         );
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
+                Arrays.asList("tv1", "tv2", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
         assertTableRowsExist(expectedRows, resultTable);
@@ -187,11 +184,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     @Test
     public void testIsNullOperatorSeriesTags() {
         String sqlQuery = String.format(
-                "SELECT tags.\"double\"\"quote\", tags.'double\"quote', %n" +
-                        "tags.\"single'quote\", tags.'single''quote', %n" +
-                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes' %n" +
+                "SELECT tags.\"double\"\"quote\", %n" +
+                        "tags.\"single'quote\", %n" +
+                        "tags.\"both'quo\"\"tes\" %n" +
                         "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" IS NOT NULL %n" +
-                        "AND tags.'both''quo\"tes' IS NOT NULL %nAND tags.'single''quote' IS NOT NULL %n" +
+                        "AND tags.\"both'quo\"\"tes\" IS NOT NULL %nAND tags.\"single'quote\" IS NOT NULL %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 
@@ -201,12 +198,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "tags.double\"quote", "tags.double\"quote", "tags.single'quote",
-                "tags.single'quote", "tags.both'quo\"tes", "tags.both'quo\"tes"
+                "tags.double\"quote", "tags.single'quote", "tags.both'quo\"tes"
         );
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
+                Arrays.asList("tv1", "tv2", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
         assertTableRowsExist(expectedRows, resultTable);
@@ -219,11 +215,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     @Test
     public void testEqualsOperatorSeriesTags() {
         String sqlQuery = String.format(
-                "SELECT tags.\"double\"\"quote\", tags.'double\"quote', %n" +
-                        "tags.\"single'quote\", tags.'single''quote', %n" +
-                        "tags.\"both'quo\"\"tes\", tags.'both''quo\"tes' %n" +
+                "SELECT tags.\"double\"\"quote\", %n" +
+                        "tags.\"single'quote\", %n" +
+                        "tags.\"both'quo\"\"tes\" %n" +
                         "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" = 'tv1' %n" +
-                        "AND tags.'both''quo\"tes' = 'tv3' %nAND tags.'single''quote'  = 'tv2' %n" +
+                        "AND tags.\"both'quo\"\"tes\" = 'tv3' %nAND tags.\"single'quote\" = 'tv2' %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 
@@ -233,12 +229,11 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<String> expectedColumnNames = Arrays.asList(
-                "tags.double\"quote", "tags.double\"quote", "tags.single'quote",
-                "tags.single'quote", "tags.both'quo\"tes", "tags.both'quo\"tes"
+                "tags.double\"quote", "tags.single'quote", "tags.both'quo\"tes"
         );
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("tv1", "tv1", "tv2", "tv2", "tv3", "tv3")
+                Arrays.asList("tv1", "tv2", "tv3")
         );
         assertTableColumnsNames(expectedColumnNames, resultTable);
         assertTableRowsExist(expectedRows, resultTable);

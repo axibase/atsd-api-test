@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -58,7 +59,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 {"enabled", "true"},
                 {"persistent", "true"},
                 {"filter", "name = '*'"},
-//                {"filter", "name = \'\'*\'\'"},
                 {"lastInsertTime", "" + Util.getMillis(Mocks.ISO_TIME)},
                 {"retentionIntervalDays", "0"},
                 {"versioning", "false"},
@@ -81,7 +81,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 TEST_METRIC);
 
         String[][] expectedRows = {{value}};
-//        String[][] expectedRows = {{value.replaceAll("\\''","'")}};
 
         assertSqlQueryRows("Error in metric field query (%s)", expectedRows, sqlQuery);
     }
@@ -95,7 +94,8 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 "SELECT m.metric.%1$s FROM \"%2$s\" m WHERE m.metric.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
-                value);
+                TestUtil.quoteEscape(value)
+        );
 
         String[][] expectedRows = {{value}};
 
@@ -141,7 +141,8 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 "SELECT m.metric.%1$s FROM \"%2$s\" m GROUP BY m.metric.%1$s HAVING m.metric.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
-                value);
+                TestUtil.quoteEscape(value)
+        );
 
         String[][] expectedRows = {{value}};
 
