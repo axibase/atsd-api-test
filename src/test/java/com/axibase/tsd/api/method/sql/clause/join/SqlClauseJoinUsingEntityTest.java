@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class SqlClauseJoinUsingEntity extends SqlTest {
+public class SqlClauseJoinUsingEntityTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static String[] testMetricNames;
 

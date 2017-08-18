@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class JoinWithDatetime extends SqlTest {
+public class JoinWithDatetimeTest extends SqlTest {
     private static String TEST_METRIC_1 = metric();
     private static String TEST_METRIC_2 = metric();
 

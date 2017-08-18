@@ -13,7 +13,7 @@ import java.util.Collections;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 
 
-public class AverageFunction extends SqlTest {
+public class AverageFunctionTest extends SqlTest {
 
     @DataProvider(name = "sqlStringArg")
     private static Object[][] strings() {

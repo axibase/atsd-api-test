@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
-public class GroupByCaseExpression extends SqlTest {
+public class GroupByCaseExpressionTest extends SqlTest {
     private static final String TEST_ENTITY1_NAME = entity();
     private static final String TEST_ENTITY1_LABEL = Mocks.LABEL + "1";
 

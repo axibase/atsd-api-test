@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class GroupByDatetime extends SqlTest {
+public class GroupByDatetimeTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-group-by-datetime-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TESTS_ENTITY1_NAME = TEST_PREFIX + "entity-1";

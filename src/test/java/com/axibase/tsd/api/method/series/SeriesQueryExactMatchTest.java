@@ -17,7 +17,7 @@ import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class SeriesQueryExactMatch extends SeriesMethod {
+public class SeriesQueryExactMatchTest extends SeriesMethod {
     private static final String exactMatchEntityName = "series-query-exactmatch-entity-1";
     private static final String exactMatchMetricName = "series-query-exactmatch-metric-1";
     private static Series seriesA;

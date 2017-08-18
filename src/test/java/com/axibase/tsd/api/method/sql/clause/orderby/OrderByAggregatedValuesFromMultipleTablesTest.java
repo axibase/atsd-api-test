@@ -15,7 +15,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
+public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
     private static final String TEST_ENTITY = entity();
     private static final String TEST_METRIC_1 = metric();
     private static final String TEST_METRIC_2 = metric();

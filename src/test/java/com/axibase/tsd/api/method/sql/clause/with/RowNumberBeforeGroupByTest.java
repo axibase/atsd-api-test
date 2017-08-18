@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
-public class RowNumberBeforeGroupBy extends SqlTest {
+public class RowNumberBeforeGroupByTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 

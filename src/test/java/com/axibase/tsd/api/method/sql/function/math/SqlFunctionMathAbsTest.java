@@ -13,7 +13,7 @@ import java.util.Collections;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class SqlFunctionMathAbs extends SqlTest {
+public class SqlFunctionMathAbsTest extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
 

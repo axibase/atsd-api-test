@@ -18,7 +18,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class GroupByEntityTag extends SqlTest {
+public class GroupByEntityTagTest extends SqlTest {
     private static final String TEST_METRIC_NAME = metric();
 
     @BeforeClass

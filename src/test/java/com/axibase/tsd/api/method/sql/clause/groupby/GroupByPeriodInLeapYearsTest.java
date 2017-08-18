@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
-public class GroupByPeriodInLeapYears extends SqlTest {
+public class GroupByPeriodInLeapYearsTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 

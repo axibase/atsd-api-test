@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class GroupByText extends SqlTest {
+public class GroupByTextTest extends SqlTest {
     private final String DEFAULT_ENTITY = entity();
     private final String DEFAULT_METRIC = metric();
 

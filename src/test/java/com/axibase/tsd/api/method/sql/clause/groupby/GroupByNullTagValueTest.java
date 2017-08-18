@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
-public class GroupByNullTagValue extends SqlTest {
+public class GroupByNullTagValueTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 
