@@ -69,7 +69,8 @@ public class OptionsMethodTest extends BaseMethod {
                 {"/entity-groups/group/entities/add", "POST"},
                 {"/entity-groups/group/entities/set", "POST"},
                 {"/entity-groups/group/entities/delete", "POST"},
-                {"/version", "GET"}
+                {"/search", "GET"},
+                {"/version", "GET"},
         };
     }
 
