@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
@@ -126,6 +129,13 @@ public class TestUtil {
 
     public static Long getMillis(String date) throws ParseException {
         return parseDate(date).getTime();
+    }
+
+    public static long truncateTime(long time, TimeZone trucnationTimeZone, TemporalUnit truncationUnit) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time),  trucnationTimeZone.toZoneId())
+                .truncatedTo(truncationUnit)
+                .toInstant()
+                .toEpochMilli();
     }
 
     public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {

@@ -8,12 +8,14 @@ import org.json.JSONObject;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.fail;
 
 
@@ -103,6 +105,13 @@ public abstract class SqlTest extends SqlMethod {
 
     private static String format(String message, Object expected, Object actual) {
         return String.format("%s expected:<%s> but was:<%s>", message, expected, actual);
+    }
+
+    public void assertRowsMatch(String message, String[][] expectedRows, StringTable resultTable, String sqlQuery) {
+        assertTableRowsExist(
+                String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery),
+                expectedRows, resultTable
+        );
     }
 
     public void assertSqlQueryRows(String message, List<List<String>> expectedRows, String sqlQuery) {
