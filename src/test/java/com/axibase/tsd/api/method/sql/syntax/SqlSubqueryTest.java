@@ -5,7 +5,6 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -26,15 +25,10 @@ public class SqlSubqueryTest extends SqlTest {
      */
     @Test
     public void testSelectConst() {
-        String nonExistentEntityName = Mocks.entity();
-
-        String sqlQuery = String.format(
-                "SELECT *\n" +
-                        "FROM (\n" +
-                        "    SELECT 1\n" +
-                        ")",
-                nonExistentEntityName
-        );
+        String sqlQuery = "SELECT *\n" +
+                "FROM (\n" +
+                "    SELECT 1\n" +
+                ")";
 
         assertBadSqlRequest("Invalid subquery", sqlQuery);
     }
@@ -300,6 +294,9 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Wrong result with ROW_MEMORY_THRESHOLD option in subquery", expectedRows, sqlQuery);
     }
 
+    /**
+     * #4133
+     */
     @Test
     public void testDeepNested() {
         String sqlQuery = String.format(
@@ -319,15 +316,20 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Wrong result with nested subqueries", expectedRows, sqlQuery);
     }
 
-    @Test
+    /**
+     * #4133
+     */
+    @Test(
+            description = "Test that we can use custom expression to define 'value' column"
+    )
     public void testValueExpressionsAndGroupBy() {
         String sqlQuery = String.format(
                 "SELECT datetime, tags.t1, tags.t2, \n" +
                         "  sum(value)/count(value)\n" +
                         "FROM (\n" +
                         "    SELECT datetime, tags.t1, tags.t2,\n" +
-                        "      CASE WHEN sum(value) >= 0.3 THEN 1 ELSE 0 END AS \"value\"\n" +
-                        "    FROM \"method-sql-syntax-sql-subquery-test-metric-0\" \n" +
+                        "      CASE WHEN sum(value) >= 0 THEN 1 ELSE 0 END AS \"value\"\n" +
+                        "    FROM \"%s\" \n" +
                         "    WHERE datetime >= '2017-07-21T11:00:00.000Z' AND datetime < '2017-07-21T13:00:00.000Z'\n" +
                         "      WITH INTERPOLATE (5 MINUTE)\n" +
                         "      GROUP BY datetime, tags.t1, tags.t2\n" +
