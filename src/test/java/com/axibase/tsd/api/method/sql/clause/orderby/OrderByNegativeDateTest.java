@@ -27,7 +27,10 @@ public class OrderByNegativeDateTest extends SqlTest {
     /**
      * 4307
      */
-    @Test
+    @Test(
+            description = "Test that values with negative date appear on the right postion " +
+                    "when sorting is done in ascending order"
+    )
     public void testOrderByNegativeDateAscending() {
         String sqlQuery = String.format(
                 "SELECT min(value) " +
@@ -50,7 +53,10 @@ public class OrderByNegativeDateTest extends SqlTest {
     /**
      * 4307
      */
-    @Test
+    @Test(
+            description = "Test that values with negative date appear on the right postion " +
+                    "when sorting is done in descending order"
+    )
     public void testOrderByNegativeDateDescending() {
         String sqlQuery = String.format(
                 "SELECT min(value) " +
