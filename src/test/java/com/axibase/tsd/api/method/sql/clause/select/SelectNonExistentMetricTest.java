@@ -10,10 +10,13 @@ public class SelectNonExistentMetricTest extends SqlTest {
     /**
      * #4421
      */
-    @Test
+    @Test(
+            description = "Test that we get error message for non-existent metric. " +
+                    "#4421 was opened because there we were receiving empty table."
+    )
     public void testErrorNonExistentMetric() {
         String metricName = Mocks.metric();
-        String sqlQuery = String.format("SELECT * FROM '%s'", metricName);
+        String sqlQuery = String.format("SELECT * FROM \"%s\"", metricName);
 
         String expectedMessage = String.format("Metric '%s' not found", metricName);
 
