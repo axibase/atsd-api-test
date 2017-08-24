@@ -162,7 +162,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
-        CompactionMethod.performCompaction("2016-06-15", true);
+        CompactionMethod.performCompaction();
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, time + 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
