@@ -54,6 +54,11 @@ public class TestUtil {
         return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
     }
 
+    public static String getHBaseVersion() {
+        Version version = VersionMethod.queryVersion().readEntity(Version.class);
+        return version.getBuildInfo().getHbaseVersion();
+    }
+
     public static Date getNextDay() {
         return new Date(System.currentTimeMillis() + MILLIS_IN_DAY);
     }

@@ -1,8 +1,6 @@
 package com.axibase.tsd.api.util;
 
-import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.TimeUnit;
-import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -33,24 +31,11 @@ public class Util {
     }
 
 
-    public static String formatDate(Date date, String pattern) {
-        try {
-            return formatDate(date, pattern, getServerTimeZone());
-        } catch (JSONException e) {
-            throw new IllegalStateException("Unknow timezone");
-        }
-    }
-
     public static String formatDate(Date date, String pattern, TimeZone timeZone) {
         SimpleDateFormat format;
         format = new SimpleDateFormat(pattern);
         format.setTimeZone(timeZone);
         return format.format(date);
-    }
-
-    private static TimeZone getServerTimeZone() throws JSONException {
-        Version version = VersionMethod.queryVersion().readEntity(Version.class);
-        return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
     }
 
     public static Date getNextDay() {

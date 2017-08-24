@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.version.Version;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,6 +25,7 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 public class InterpolationBoundaryValuesTest extends SqlTest {
     private static final String TEST_METRIC_1 = metric();
     private static final String TEST_METRIC_2 = metric();
+    private static final String HBASE_VERSION = TestUtil.getHBaseVersion();
 
     private Sample[] calendarInterpolationTestSamples;
     private final ZoneId serverTimezone;
@@ -83,13 +85,25 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 continue;
             }
 
+            final boolean isHbase1 = HBASE_VERSION.startsWith("1");
+
             if (previousRange == null) {
-                rangeValues.put(hourlyRange, "NaN");
+                if (isHbase1 && boundary == Boundary.OUTER) {
+                    rangeValues.put(hourlyRange, "0");
+                } else {
+                    rangeValues.put(hourlyRange, "NaN");
+                }
                 continue;
             }
 
+
             if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
-                rangeValues.put(hourlyRange, "NaN");
+                value = rangeValues.get(previousRange);
+                if (isHbase1 && boundary == Boundary.OUTER && value != null) {
+                    rangeValues.put(hourlyRange, value);
+                } else {
+                    rangeValues.put(hourlyRange, "NaN");
+                }
                 continue;
             }
 
