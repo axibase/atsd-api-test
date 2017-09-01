@@ -100,7 +100,12 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
             if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
                 value = rangeValues.get(previousRange);
                 if (isHbase1 && boundary == Boundary.OUTER && value != null) {
-                    rangeValues.put(hourlyRange, value);
+                    int offset = serverTimezone.getRules().getOffset(previousRange.endDate.toLocalDateTime()).getTotalSeconds();
+                    if (offset / 3600 == offset / 3600.0) {
+                        rangeValues.put(hourlyRange, value);
+                    } else {
+                        rangeValues.put(hourlyRange, "" + (Integer.parseInt(value) + 1));
+                    }
                 } else {
                     rangeValues.put(hourlyRange, "NaN");
                 }
