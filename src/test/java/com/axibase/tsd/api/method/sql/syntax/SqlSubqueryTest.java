@@ -80,23 +80,6 @@ public class SqlSubqueryTest extends SqlTest {
      * #4133
      */
     @Test
-    public void testIllegalTime() {
-        String sqlQuery = String.format(
-                "SELECT *\n" +
-                        "FROM (\n" +
-                        "    SELECT value, entity, -1 AS \"time\"\n" +
-                        "    FROM \"%s\"\n" +
-                        ")",
-                METRIC_NAME
-        );
-
-        assertBadSqlRequest("Invalid expression for time/datetime column", sqlQuery);
-    }
-
-    /**
-     * #4133
-     */
-    @Test
     public void testIncorrectCreatedTags() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
@@ -124,7 +107,8 @@ public class SqlSubqueryTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadSqlRequest("Join is not allowed in a subquery", sqlQuery);
+        String errorMessage = String.format("Self join is not supported (metric: %s)", METRIC_NAME);
+        assertBadSqlRequest(errorMessage, sqlQuery);
     }
 
     /**

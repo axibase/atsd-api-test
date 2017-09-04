@@ -42,7 +42,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     /**
      * #2945
      */
-    @Test
+    @Test(enabled = false)
     public void testNoAggregate() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
 
@@ -57,7 +57,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     /**
      * #2945
      */
-    @Test
+    @Test(enabled = false)
     public void testAggregateCount() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.COUNT));
@@ -73,7 +73,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     /**
      * #2945
      */
-    @Test
+    @Test(enabled = false)
     public void testAggregateDetail() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.DETAIL));
