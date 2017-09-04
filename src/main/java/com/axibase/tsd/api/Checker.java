@@ -7,12 +7,16 @@ import com.axibase.tsd.api.util.NotCheckedException;
 import lombok.SneakyThrows;
 
 public class Checker {
-    @SneakyThrows(InterruptedException.class)
     public static void check(AbstractCheck check) {
+        check(check, false);
+    }
+
+    @SneakyThrows(InterruptedException.class)
+    public static void check(AbstractCheck check, boolean enableLogging) {
         final long startTime = System.currentTimeMillis();
         boolean checked = false;
         while (!checked) {
-            checked = check.isChecked();
+            checked = check.isChecked(enableLogging);
             if (!checked) {
                 if (System.currentTimeMillis() - BaseMethod.UPPER_BOUND_FOR_CHECK > startTime) {
                     throw new NotCheckedException(check.getErrorMessage());

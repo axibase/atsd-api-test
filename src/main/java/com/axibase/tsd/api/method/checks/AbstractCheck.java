@@ -6,6 +6,10 @@ public abstract class AbstractCheck {
 
     public abstract boolean isChecked();
 
+    public boolean isChecked(boolean enableLogging) {
+        return isChecked();
+    }
+
     public String getErrorMessage() {
         return DEFAULT_CHECK_MESSAGE;
     }

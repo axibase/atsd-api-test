@@ -20,7 +20,7 @@ public class CommandMethodTest extends CommandMethod {
 
     public static void assertSeries(Series series) {
         try {
-            Checker.check(new SeriesCheck(Collections.singletonList(series)));
+            Checker.check(new SeriesCheck(Collections.singletonList(series)), true);
         } catch (NotCheckedException e) {
             fail("Fail to execute series query");
         }
