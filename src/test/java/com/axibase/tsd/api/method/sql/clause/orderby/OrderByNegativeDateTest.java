@@ -28,7 +28,7 @@ public class OrderByNegativeDateTest extends SqlTest {
      * 4307
      */
     @Test(
-            description = "Test that values with negative date appear on the right postion " +
+            description = "Test that values with negative date appear on the right position " +
                     "when sorting is done in ascending order"
     )
     public void testOrderByNegativeDateAscending() {
@@ -54,7 +54,7 @@ public class OrderByNegativeDateTest extends SqlTest {
      * 4307
      */
     @Test(
-            description = "Test that values with negative date appear on the right postion " +
+            description = "Test that values with negative date appear on the right position " +
                     "when sorting is done in descending order"
     )
     public void testOrderByNegativeDateDescending() {
