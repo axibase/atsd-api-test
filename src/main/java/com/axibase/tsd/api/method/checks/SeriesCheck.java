@@ -4,8 +4,7 @@ package com.axibase.tsd.api.method.checks;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -14,8 +13,8 @@ import java.util.List;
 import static com.axibase.tsd.api.method.BaseMethod.compareJsonString;
 import static com.axibase.tsd.api.method.series.SeriesMethod.querySeries;
 
+@Slf4j
 public class SeriesCheck extends AbstractCheck {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeriesCheck.class);
     private static final String ERROR_MESSAGE = "Failed to check series list insert.";
     private List<Series> seriesList;
 
@@ -33,7 +32,7 @@ public class SeriesCheck extends AbstractCheck {
         try {
             return seriesListIsInserted(seriesList);
         } catch (Exception e) {
-            LOGGER.error("Unexpected error on series check. Reason: {}", e.getMessage());
+            log.error("Unexpected error on series check. Reason: {}", e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -50,6 +49,11 @@ public class SeriesCheck extends AbstractCheck {
         Response response = querySeries(seriesQueryList);
         String expected = BaseMethod.getJacksonMapper().writeValueAsString(formattedSeriesList);
         String actual = response.readEntity(String.class);
-        return compareJsonString(expected, actual);
+        final boolean areEqual = compareJsonString(expected, actual);
+        if (!areEqual) {
+            log.warn("SeriesCheck#seriesListIsInserted result is false. Expected: {}. Actual: {}",
+                    expected, actual);
+        }
+        return areEqual;
     }
 }
