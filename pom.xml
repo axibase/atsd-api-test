@@ -134,6 +134,14 @@
             <version>1.16.18</version>
             <scope>provided</scope>
         </dependency>
+
+        <!--for Issue annotation-->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>2.0-BETA17</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
