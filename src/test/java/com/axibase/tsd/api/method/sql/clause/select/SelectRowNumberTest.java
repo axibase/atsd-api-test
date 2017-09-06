@@ -11,24 +11,27 @@ import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class SelectRowNumberTest extends SqlTest {
+    private static final String ENTITY_NAME1 = entity();
+    private static final String ENTITY_NAME2 = entity();
+    private static final String ENTITY_NAME3 = entity();
     private static final String METRIC_NAME = metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series1 = new Series(entity(), METRIC_NAME);
+        Series series1 = new Series(ENTITY_NAME1, METRIC_NAME);
         series1.addSamples(
                 new Sample("2017-06-20T00:00:00Z", 1),
                 new Sample("2017-06-21T00:00:00Z", 2)
         );
 
         /* Additional samples with different entity */
-        Series series2 = new Series(entity(), METRIC_NAME);
+        Series series2 = new Series(ENTITY_NAME2, METRIC_NAME);
         series2.addSamples(
                 new Sample("2017-06-22T00:00:00Z", 3),
                 new Sample("2017-06-23T00:00:00Z", 4)
         );
 
-        Series series3 = new Series(entity(), METRIC_NAME);
+        Series series3 = new Series(ENTITY_NAME3, METRIC_NAME);
         series3.addSamples(
                 new Sample("2017-06-24T00:00:00Z", 5),
                 new Sample("2017-06-25T00:00:00Z", 6)
@@ -45,19 +48,19 @@ public class SelectRowNumberTest extends SqlTest {
     )
     public void testSelectRowNumberOrderBy() {
         String sqlQuery = String.format(
-                "SELECT value, row_number() FROM \"%s\" " +
+                "SELECT entity, value, row_number() FROM \"%s\" " +
                         "WITH ROW_NUMBER(entity order by value) > 0 " +
                         "ORDER BY row_number(), value",
                 METRIC_NAME
         );
 
         String[][] expectedResult = {
-                {"1", "1"},
-                {"3", "1"},
-                {"5", "1"},
-                {"2", "2"},
-                {"4", "2"},
-                {"6", "2"}
+                {ENTITY_NAME1, "1", "1"},
+                {ENTITY_NAME2, "3", "1"},
+                {ENTITY_NAME3, "5", "1"},
+                {ENTITY_NAME1, "2", "2"},
+                {ENTITY_NAME2, "4", "2"},
+                {ENTITY_NAME3, "6", "2"}
         };
 
         assertSqlQueryRows("Wrong result for row_number in ORDER BY", expectedResult, sqlQuery);
