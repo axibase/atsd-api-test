@@ -156,8 +156,8 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
                 "SELECT tags.\"double\"\"quote\", %n" +
                         "tags.\"single'quote\", %n" +
                         "tags.\"both'quo\"\"tes\" %n" +
-                        "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" LIKE 'tv*' %n" +
-                        "AND tags.\"both'quo\"\"tes\" LIKE 'tv3' %nAND tags.\"single'quote\" LIKE '*2' %n" +
+                        "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" LIKE 'tv%%' %n" +
+                        "AND tags.\"both'quo\"\"tes\" LIKE 'tv3' %nAND tags.\"single'quote\" LIKE '%%2' %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 

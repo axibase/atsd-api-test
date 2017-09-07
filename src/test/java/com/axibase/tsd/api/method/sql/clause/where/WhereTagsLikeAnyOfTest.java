@@ -37,7 +37,7 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags.tag " +
                         "FROM \"%s\" " +
-                        "WHERE tags.tag LIKE '*'",
+                        "WHERE tags.tag LIKE '%%'",
                 METRIC_NAME
         );
 
@@ -59,8 +59,8 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags.tag " +
                         "FROM \"%s\" " +
-                        "WHERE tags.tag LIKE '*' " +
-                        "OR tags.tag LIKE '*'",
+                        "WHERE tags.tag LIKE '%%' " +
+                        "OR tags.tag LIKE '%%'",
                 METRIC_NAME
         );
 
@@ -82,8 +82,8 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags.tag " +
                         "FROM \"%s\" " +
-                        "WHERE tags.tag LIKE '*' " +
-                        "OR tags.tag LIKE '*b'",
+                        "WHERE tags.tag LIKE '%%' " +
+                        "OR tags.tag LIKE '%%b'",
                 METRIC_NAME
         );
 

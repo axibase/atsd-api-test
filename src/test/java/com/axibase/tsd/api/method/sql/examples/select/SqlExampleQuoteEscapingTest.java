@@ -97,7 +97,7 @@ public class SqlExampleQuoteEscapingTest extends SqlTest {
                         "tags.\"single'quote\", %n" +
                         "tags.\"both'quo\"\"tes\" %n" +
                         "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" = 'tv1' %n" +
-                        "AND tags.\"both'quo\"\"tes\" IS NOT NULL %nAND tags.\"single'quote\" LIKE '*2' %n" +
+                        "AND tags.\"both'quo\"\"tes\" IS NOT NULL %nAND tags.\"single'quote\" LIKE '%%2' %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 

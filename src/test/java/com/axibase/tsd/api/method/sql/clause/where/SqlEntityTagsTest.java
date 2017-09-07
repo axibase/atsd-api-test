@@ -54,7 +54,7 @@ public class SqlEntityTagsTest extends SqlTest {
     public void testLikeOperator() {
         String sqlQuery = String.format(
                 "SELECT entity.tags.tag1 %nFROM \"%s\" %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
-                        "entity.tags.tag1 LIKE 'val*' %nAND entity = '%s'",
+                        "entity.tags.tag1 LIKE 'val%%' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -74,7 +74,7 @@ public class SqlEntityTagsTest extends SqlTest {
     public void testNotLikeOperator() {
         String sqlQuery = String.format(
                 "SELECT entity.tags.tag1 %nFROM \"%s\" %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
-                        "entity.tags.tag1 NOT LIKE 'val*' %nAND entity = '%s'",
+                        "entity.tags.tag1 NOT LIKE 'val%%' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

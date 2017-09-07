@@ -161,7 +161,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
      */
     @Test
     public void testWhereLikeNoSelfJoin() {
-        String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack*')");
+        String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack%%')");
 
         assertSqlQueryRows("Wrong result when LIKE matches metric to join with", QUERY_RESULT, sqlQuery);
     }
