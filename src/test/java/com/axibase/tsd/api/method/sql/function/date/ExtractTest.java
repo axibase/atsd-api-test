@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -15,6 +16,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 
+@Slf4j
 public class ExtractTest extends SqlTest {
     private static final String DATE_STRING_A = "2016-06-01T15:04:03.002Z";
     private static final String DATE_STRING_B = "2017-07-02T13:06:01.004Z";
@@ -26,22 +28,26 @@ public class ExtractTest extends SqlTest {
         try {
             return ZonedDateTime.ofInstant(Instant.parse(date), TestUtil.getServerTimeZone().toZoneId());
         } catch (JSONException e) {
-            return null;
+            log.error("Can't parse date '{}'", date, e);
+            throw new RuntimeException(e);
         }
     }
 
     private enum DateAccessor {
-        GET_YEAR(date -> String.valueOf(date.getYear())),
-        GET_QUARTER(date -> String.valueOf(date.getMonth().ordinal() / 3 + 1)),
-        GET_MONTH(date -> String.valueOf(date.getMonth().getValue())),
-        GET_DAY(date -> String.valueOf(date.getDayOfMonth())),
-        GET_DAYOFWEEK(date -> String.valueOf(date.getDayOfWeek().getValue())),
-        GET_HOUR(date -> String.valueOf(date.getHour())),
-        GET_MINUTE(date -> String.valueOf(date.getMinute())),
-        GET_SECOND(date -> String.valueOf(date.getSecond()));
+        GET_YEAR("year", date -> String.valueOf(date.getYear())),
+        GET_QUARTER("quarter", date -> String.valueOf(date.getMonth().ordinal() / 3 + 1)),
+        GET_MONTH("month", date -> String.valueOf(date.getMonth().getValue())),
+        GET_DAY("day", date -> String.valueOf(date.getDayOfMonth())),
+        GET_DAYOFWEEK("dayofweek", date -> String.valueOf(date.getDayOfWeek().getValue())),
+        GET_HOUR("hour", date -> String.valueOf(date.getHour())),
+        GET_MINUTE("minute", date -> String.valueOf(date.getMinute())),
+        GET_SECOND("second", date -> String.valueOf(date.getSecond()));
 
+        String part;
         Function<ZonedDateTime, String> accessFunction;
-        DateAccessor(Function<ZonedDateTime, String> accessFunction) {
+
+        DateAccessor(String part, Function<ZonedDateTime, String> accessFunction) {
+            this.part = part;
             this.accessFunction = accessFunction;
         }
 
@@ -63,26 +69,14 @@ public class ExtractTest extends SqlTest {
 
     @DataProvider
     public Object[][] provideDatePartNameAndAccessor() {
-        Object[][] partsAccessors = new Object[][] {
-                {"year", DateAccessor.GET_YEAR},
-                {"quarter", DateAccessor.GET_QUARTER},
-                {"month", DateAccessor.GET_MONTH},
-                {"day", DateAccessor.GET_DAY},
-                {"dayofweek", DateAccessor.GET_DAYOFWEEK},
-                {"hour", DateAccessor.GET_HOUR},
-                {"minute", DateAccessor.GET_MINUTE},
-                {"second", DateAccessor.GET_SECOND}
-        };
+        DateAccessor[] accessors = DateAccessor.values();
+        String[] extractionSources = new String[]{"time", "datetime"};
 
-        Object[][] extractionSources = new Object[][] {
-                {"time"}, {"datetime"}
-        };
-
-        Object[][] testData = new Object[partsAccessors.length * extractionSources.length][];
-        for (int i = 0; i < partsAccessors.length; i++) {
+        Object[][] testData = new Object[accessors.length * extractionSources.length][];
+        for (int i = 0; i < accessors.length; i++) {
             for (int j = 0; j < extractionSources.length; j++) {
                 testData[i * extractionSources.length + j] = new Object[] {
-                        extractionSources[j][0], partsAccessors[i][0], partsAccessors[i][1]
+                        extractionSources[j], accessors[i]
                 };
             }
         }
@@ -92,81 +86,99 @@ public class ExtractTest extends SqlTest {
     /**
      * #4393
      */
-    @Test(dataProvider = "provideDatePartNameAndAccessor")
-    public void testExtractFrom(String source, String part, DateAccessor accessFunction) {
+    @Test(
+            dataProvider = "provideDatePartNameAndAccessor",
+            description = "Test extract(... from ...) with " +
+                    "different parts (year, month, ...) and sources (time, datetime)"
+    )
+    public void testExtractFrom(String source, DateAccessor accessor) {
         String sqlQuery = String.format(
-                "SELECT extract(%2$s FROM %1$s) " +
-                        "FROM \"%3$s\"",
-                source, part, METRIC_NAME
+                "SELECT extract(%s FROM %s) " +
+                        "FROM \"%s\"",
+                accessor.part, source, METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {accessFunction.apply(dateA)},
-                {accessFunction.apply(dateB)},
+                {accessor.apply(dateA)},
+                {accessor.apply(dateB)},
         };
 
-        assertSqlQueryRows("Wrong result for extract function from datetime", expectedRows, sqlQuery);
+        String assertMessage = String.format("Wrong result for extract(%s FROM %s)", accessor.part, source);
+        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
     /**
      * #4393
      */
-    @Test(dataProvider = "provideDatePartNameAndAccessor")
-    public void testIndividualExtractFunctions(String source, String part, DateAccessor accessFunction) {
+    @Test(
+            dataProvider = "provideDatePartNameAndAccessor",
+            description = "Test different extraction functions " +
+                    "(year, month, ...) and sources (time, datetime)"
+    )
+    public void testIndividualExtractFunctions(String source, DateAccessor accessor) {
         String sqlQuery = String.format(
-                "SELECT %2$s(%1$s) " +
-                        "FROM \"%3$s\"",
-                source, part, METRIC_NAME
+                "SELECT %s(%s) " +
+                        "FROM \"%s\"",
+                accessor.part, source, METRIC_NAME
         );
 
         String[][] expectedRows = {
-                {accessFunction.apply(dateA)},
-                {accessFunction.apply(dateB)},
+                {accessor.apply(dateA)},
+                {accessor.apply(dateB)},
         };
 
-        assertSqlQueryRows("Wrong result for extract function from time", expectedRows, sqlQuery);
+        String assertMessage = String.format("Wrong result for function %s with argument %s", accessor.part, source);
+        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
     /**
      * #4393
      */
-    @Test(dataProvider = "provideDatePartNameAndAccessor")
-    public void testWhereExtractIn(String source, String part, DateAccessor accessFunction) {
-        String extractedValue = accessFunction.apply(dateA);
+    @Test(
+            dataProvider = "provideDatePartNameAndAccessor",
+            description = "Test when using extract(... FROM ...) result in WHERE ... IN (...)"
+    )
+    public void testWhereExtractIn(String source, DateAccessor accessor) {
+        String extractedValue = accessor.apply(dateA);
 
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
-                        "FROM \"%3$s\" " +
-                        "WHERE extract(%2$s FROM %1$s) IN (%4$s, 2018, 0, 'a')",
-                source, part, METRIC_NAME, extractedValue
+                        "FROM \"%s\" " +
+                        "WHERE extract(%s FROM %s) IN (%s, 2018, 0, 'a')",
+                METRIC_NAME, accessor.part, source, extractedValue
         );
 
         String[][] expectedRows = {
                 {DATE_STRING_A, "1"}
         };
 
-        assertSqlQueryRows("Wrong when using WHERE extract(...) IN (...)", expectedRows, sqlQuery);
+        String assertMessage = String.format("Wrong result when using " +
+                "WHERE extract(%s FROM %s) IN (...)", accessor.part, source);
+        assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
     /**
      * #4393
      */
-    @Test(dataProvider = "provideDatePartNameAndAccessor")
-    public void testWhereIndividualExtractIn(String source, String part, DateAccessor accessFunction) {
-        String extractedValue = accessFunction.apply(dateA);
+    @Test(
+            dataProvider = "provideDatePartNameAndAccessor",
+            description = "Test when using date part extraction function result in WHERE ... IN (...)"
+    )
+    public void testWhereIndividualExtractIn(String source, DateAccessor accessor) {
+        String extractedValue = accessor.apply(dateA);
 
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
-                        "FROM \"%3$s\" " +
-                        "WHERE %2$s(%1$s) IN (%4$s, 2018, 0, 'a')",
-                source, part, METRIC_NAME, extractedValue
+                        "FROM \"%s\" " +
+                        "WHERE %s(%s) IN (%s, 2018, 0, 'a')",
+                METRIC_NAME, accessor.part, source, extractedValue
         );
 
         String[][] expectedRows = {
                 {DATE_STRING_A, "1"}
         };
 
-        String assertMessage = String.format("Wrong when using WHERE %s(...) IN (...)", part);
+        String assertMessage = String.format("Wrong when using WHERE %s(%s) IN (...)", accessor.part, source);
         assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 }
