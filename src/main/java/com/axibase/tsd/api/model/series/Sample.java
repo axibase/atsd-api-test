@@ -101,11 +101,6 @@ public class Sample {
         return ZonedDateTime.parse(this.rawDate, DateTimeFormatter.ISO_DATE_TIME);
     }
 
-    public Sample setDate(String isoDate) {
-        this.rawDate = convertDateToISO(isoDate);
-        return this;
-    }
-
     @Override
     public String toString() {
         return Util.prettyPrint(this);

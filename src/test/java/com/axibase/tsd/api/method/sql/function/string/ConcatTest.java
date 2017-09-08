@@ -34,7 +34,7 @@ public class ConcatTest extends SqlTest {
 
         Series series = new Series(TEST_ENTITY, TEST_METRIC1);
         series.addSamples(
-                Sample.ofDateText("2016-06-03T09:19:18.000Z", ""), // NaN value
+                Sample.ofDate("2016-06-03T09:19:18.000Z"),
                 Sample.ofDateInteger("2016-06-03T09:20:18.000Z", 3),
                 Sample.ofDateDecimal("2016-06-03T09:21:18.000Z", new BigDecimal("3.10")),
                 Sample.ofDateDecimal("2016-06-03T09:22:18.000Z", new BigDecimal("3.14")),
