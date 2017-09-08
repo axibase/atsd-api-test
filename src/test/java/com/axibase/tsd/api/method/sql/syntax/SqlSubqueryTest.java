@@ -23,7 +23,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test subquery with inappropriate set of columns"
+    )
     public void testSelectConst() {
         String sqlQuery = "SELECT *\n" +
                 "FROM (\n" +
@@ -36,7 +38,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test subquery that tries to substitute the name of non-existent entity"
+    )
     public void testNonExistentEntity() {
         String nonExistentEntityName = Mocks.entity();
 
@@ -56,7 +60,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test subquery that selects columns with identical names"
+    )
     public void testColumnDuplicates() {
         String sqlQuery = String.format(
                 "SELECT value, entity, datetime\n" +
@@ -73,7 +79,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test query that uses a string which cannot be a 'tags' string"
+    )
     public void testIncorrectCreatedTags() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
@@ -89,7 +97,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test that self-join is not supported in subqueries"
+    )
     public void testJoin() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
@@ -108,7 +118,10 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test query that uses a string which cannot be a 'tags' string, " +
+                    "and using tags expansion in SELECT"
+    )
     public void testCreatedTags() {
         String sqlQuery = String.format(
                 "SELECT tags.* FROM (\n" +
@@ -124,7 +137,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133, #4377
      */
-    @Test
+    @Test(
+            description = "Test default columns selection (*) in subquery"
+    )
     public void testSelectAsteriskTwice() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
@@ -145,30 +160,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test(enabled = false)
-    public void testSelectAsteriskNested() {
-        String sqlQuery = String.format(
-                "SELECT * FROM (\n" +
-                        "    SELECT * FROM (\n" +
-                        "        SELECT *\n" +
-                        "        FROM \"%s\"\n" +
-                        "    )\n" +
-                        ")",
-                METRIC_NAME
-        );
-
-        String[][] expectedRows = {
-                {"1500638400000", "2017-07-21T12:00:00.000Z", "1", "Text value",
-                        METRIC_NAME, ENTITY_NAME, "t1=Tag 1;t2=Tag 2"}
-        };
-
-        assertSqlQueryRows("Nested subqueries do not work", expectedRows, sqlQuery);
-    }
-
-    /**
-     * #4133
-     */
-    @Test
+    @Test(
+            description = "Test ability to select text column in subquery"
+    )
     public void testSelectText() {
         String sqlQuery = String.format(
                 "SELECT text from (\n" +
@@ -189,7 +183,10 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test that it is possible to select tags column in subquery " +
+                    "and use it in the main query"
+    )
     public void testTagsToTags() {
         String sqlQuery = String.format(
                 "SELECT tags FROM (\n" +
@@ -209,7 +206,10 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test that it is possible to select tags column in subquery " +
+                    "and expand it in the main subquery"
+    )
     public void testTagsToTagsExpansion() {
         String sqlQuery = String.format(
                 "SELECT tags.* FROM (\n" +
@@ -230,7 +230,10 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test that it is possible to expand tags in subquery " +
+                    "and collapse them in the main subquery"
+    )
     public void testTagsExpansionToTags() {
         String sqlQuery = String.format(
                 "SELECT tags FROM (\n" +
@@ -251,7 +254,10 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test that it is possible to expand tags in subquery " +
+                    "and select them in the main subquery"
+    )
     public void testTagsExpansionToTagsExpansion() {
         String sqlQuery = String.format(
                 "SELECT tags.* FROM (\n" +
@@ -272,7 +278,9 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
+    @Test(
+            description = "Test that subquery with OPTION ROW_MEMORY_THRESHOLD works"
+    )
     public void testOption() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
@@ -297,8 +305,10 @@ public class SqlSubqueryTest extends SqlTest {
     /**
      * #4133
      */
-    @Test
-    public void testDeepNested() {
+    @Test(
+            description = "Test nested subquery"
+    )
+    public void testNested() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
                         "    SELECT * FROM (\n" +
