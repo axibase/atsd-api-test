@@ -50,9 +50,11 @@ public class SqlBigintAliasMetaTest {
     /**
      * #4420
      */
-    @Test
+    @Test(
+            description = "Check that LONG value has bigint type alias"
+    )
     public void testBigintAliasForValueField() {
-        String sqlQuery = String.format("SELECT value FROM '%s'", metricName);
+        String sqlQuery = String.format("SELECT value FROM \"%s\"", metricName);
         assertBigintAliasForQuery(sqlQuery);
 
     }
@@ -60,20 +62,24 @@ public class SqlBigintAliasMetaTest {
     /**
      * #4420
      */
-    @Test
+    @Test(
+            description = "Check function application to LONG values has bigint type alias"
+    )
     public void testBigintAliasCountFunction() {
-        String sqlQuery = String.format("SELECT count(*) FROM '%s'", metricName);
+        String sqlQuery = String.format("SELECT count(*) FROM \"%s\"", metricName);
         assertBigintAliasForQuery(sqlQuery);
     }
 
     /**
      * #4420
      */
-    @Test
+    @Test(
+            description = "Check that result for some other function has bigint type alias"
+    )
     public void testBigintAliasRowNumberFunction() {
         String sqlQuery = String.format(
                 "SELECT row_number()\n" +
-                        "  FROM '%s'\n" +
+                        "  FROM \"%s\"\n" +
                         "  WITH ROW_NUMBER(entity ORDER BY datetime DESC) < 2\n" +
                         "ORDER BY row_number()",
                 metricName
