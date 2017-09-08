@@ -46,9 +46,9 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
     public void testLocalDateFractionalPartTruncationTo3() {
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%1$s' " +
-                        "WHERE (datetime > '%2$s') " +
-                        "AND (datetime < '%3$s')",
+                        "FROM \"%s\" " +
+                        "WHERE (datetime > '%s') " +
+                        "AND (datetime < '%s')",
                 METRIC_NAME,
                 TestUtil.formatAsLocalTime("2017-01-01T00:00:00.999Z") + "8",
                 TestUtil.formatAsLocalTime("2017-01-01T00:00:00.999Z") + "9"
@@ -71,9 +71,9 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%1$s' " +
-                        "WHERE (datetime > '%2$s') " +
-                        "AND (datetime < '%3$s')",
+                        "FROM \"%s\" " +
+                        "WHERE (datetime > '%s') " +
+                        "AND (datetime < '%s')",
                 METRIC_NAME,
                 beginDate,
                 endDate
@@ -96,9 +96,9 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%1$s' " +
-                        "WHERE (datetime > '%2$s') " +
-                        "AND (datetime < '%3$s')",
+                        "FROM \"%s\" " +
+                        "WHERE (datetime > '%s') " +
+                        "AND (datetime < '%s')",
                 METRIC_NAME,
                 beginDate,
                 endDate
@@ -126,9 +126,9 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%1$s' " +
-                        "WHERE (datetime > '%2$s') " +
-                        "AND (datetime < '%3$s')",
+                        "FROM \"%s\" " +
+                        "WHERE (datetime > '%s') " +
+                        "AND (datetime < '%s')",
                 METRIC_NAME,
                 beginDate,
                 endDate
@@ -155,9 +155,9 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%1$s' " +
-                        "WHERE (datetime > '%2$s') " +
-                        "AND (datetime < '%3$s')",
+                        "FROM \"%s\" " +
+                        "WHERE (datetime > '%s') " +
+                        "AND (datetime < '%s')",
                 METRIC_NAME,
                 beginDate,
                 endDate
@@ -186,9 +186,9 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT time " +
-                        "FROM '%1$s' " +
-                        "WHERE (time > '%2$s') " +
-                        "AND (time < '%3$s')",
+                        "FROM \"%s\" " +
+                        "WHERE (time > '%s') " +
+                        "AND (time < '%s')",
                 METRIC_NAME,
                 beginDate,
                 endDate
