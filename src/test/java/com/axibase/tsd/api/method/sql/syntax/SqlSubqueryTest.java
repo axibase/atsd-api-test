@@ -100,7 +100,7 @@ public class SqlSubqueryTest extends SqlTest {
     @Test(
             description = "Test that self-join is not supported in subqueries"
     )
-    public void testJoin() {
+    public void testSelfJoin() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
                         "    SELECT *\n" +
