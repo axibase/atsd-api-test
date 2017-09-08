@@ -38,7 +38,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @Test
     public void testOrderByColumnAlias() {
         String sqlQuery = String.format(
-                "SELECT value as 'ValueColumn' FROM '%s' ORDER BY 'ValueColumn'",
+                "SELECT value as \"ValueColumn\" FROM \"%s\" ORDER BY \"ValueColumn\"",
                 TEST_METRIC
         );
 
@@ -57,7 +57,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @Test
     public void testOrderByColumnAliasWithoutQuotes() {
         String sqlQuery = String.format(
-                "SELECT value as 'ValueColumn' FROM '%s' ORDER BY ValueColumn",
+                "SELECT value as \"ValueColumn\" FROM \"%s\" ORDER BY ValueColumn",
                 TEST_METRIC
         );
 
@@ -76,7 +76,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @Test
     public void testOrderByColumnAliasExpression() {
         String sqlQuery = String.format(
-                "SELECT value / 2 as 'ValueColumn' FROM '%s' ORDER BY 'ValueColumn' / 2",
+                "SELECT value / 2 as \"ValueColumn\" FROM \"%s\" ORDER BY \"ValueColumn\" / 2",
                 TEST_METRIC
         );
 
@@ -95,7 +95,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @Test
     public void testOrderByColumnAliasExpressionWithoutQuotes() {
         String sqlQuery = String.format(
-                "SELECT value / 2 as 'ValueColumn' FROM '%s' ORDER BY ValueColumn / 2",
+                "SELECT value / 2 as \"ValueColumn\" FROM \"%s\" ORDER BY ValueColumn / 2",
                 TEST_METRIC
         );
 
@@ -114,12 +114,12 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
     @Test
     public void testOrderByNonExistingColumnAliasExpression() {
         String sqlQuery = String.format(
-                "SELECT value / 2 as 'ValueColumn' FROM '%s' ORDER BY 'NonExistingColumn' / 2",
+                "SELECT value / 2 as \"ValueColumn\" FROM \"%s\" ORDER BY \"NonExistingColumn\" / 2",
                 TEST_METRIC
         );
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest("Invalid expression: ''NonExistingColumn' / 2'", response);
+        assertBadRequest("Unexpected expression: '\"NonExistingColumn\"'", response);
     }
 }

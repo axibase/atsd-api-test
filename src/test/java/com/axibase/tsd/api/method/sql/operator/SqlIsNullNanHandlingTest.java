@@ -54,8 +54,8 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
     @Test
     public void testNanExcluding() {
         String sqlQuery = String.format(
-                "SELECT t1.value + t2.value AS 'sum'  FROM '%s' t1 %n" +
-                        "JOIN '%s' t2 %n" +
+                "SELECT t1.value + t2.value AS \"sum\"  FROM \"%s\" t1 %n" +
+                        "JOIN \"%s\" t2 %n" +
                         "WHERE t1.value IS NOT NULL AND t2.value IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -76,7 +76,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
     @Test
     public void testNanIncluding() {
         String sqlQuery = String.format(
-                "SELECT COUNT(value) AS 'nans'  FROM '%s' t1 %nWHERE entity = '%s' %n" +
+                "SELECT COUNT(value) AS \"nans\"  FROM \"%s\" t1 %nWHERE entity = '%s' %n" +
                         "AND value IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_ENTITY_NAME
         );

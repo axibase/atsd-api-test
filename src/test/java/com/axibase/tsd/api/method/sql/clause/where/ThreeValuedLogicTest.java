@@ -93,7 +93,7 @@ public class ThreeValuedLogicTest extends SqlTest {
     public void whereClauseLogicTableTest(String param, String expectedValue) {
         String query = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE %s",
                 METRIC_NAME_1, param
         );
@@ -139,7 +139,7 @@ public class ThreeValuedLogicTest extends SqlTest {
     public void joinedMetricsLogicTableTest(String param, String expectedValue) {
         String query = String.format(
                 "SELECT %s " +
-                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3 ",
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 JOIN \"%s\" t3 ",
                 param, METRIC_NAME_1, METRIC_NAME_2, METRIC_NAME_3
         );
 

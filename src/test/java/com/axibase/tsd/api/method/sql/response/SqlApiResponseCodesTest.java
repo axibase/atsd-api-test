@@ -60,7 +60,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-codes-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .request()
                 .get();
         response.bufferEntity();
@@ -71,7 +71,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         final Response response = httpSqlApiResource
                 .request()
                 .post(Entity.entity(
@@ -86,7 +86,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatJsonPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         form.param("outputFormat", "json");
         final Response response = httpSqlApiResource
                 .request()
@@ -101,7 +101,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatCsvPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         form.param("outputFormat", "csv");
         final Response response = httpSqlApiResource
                 .request()
@@ -116,7 +116,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatJsonGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-codes-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .queryParam("outputFormat", OutputFormat.JSON)
                 .request()
                 .get();
@@ -128,7 +128,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatCsvGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-codes-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .queryParam("outputFormat", OutputFormat.CSV)
                 .request()
                 .get();

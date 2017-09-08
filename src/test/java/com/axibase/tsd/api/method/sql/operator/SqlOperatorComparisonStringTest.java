@@ -37,7 +37,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testEntityLess() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE entity < '%s'",
+                "SELECT entity,value FROM \"%s\" %nWHERE entity < '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY2_NAME
         );
 
@@ -59,7 +59,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testEntityLessOrEquals() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE entity <= '%s'",
+                "SELECT entity,value FROM \"%s\" %nWHERE entity <= '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY2_NAME
         );
 
@@ -82,7 +82,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testEntityGreater() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE entity > '%s'",
+                "SELECT entity,value FROM \"%s\" %nWHERE entity > '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
@@ -104,7 +104,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testEntityGreaterOrEquals() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE entity >= '%s'",
+                "SELECT entity,value FROM \"%s\" %nWHERE entity >= '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
@@ -127,7 +127,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testCastComparison() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE value >= '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE value >= '-1'",
                 TEST_METRIC_NAME
         );
 
@@ -141,7 +141,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testNullTagComparisonLess() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.t < '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.t < '-1'",
                 TEST_METRIC_NAME
         );
 
@@ -161,7 +161,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testNullTagComparisonLessEqual() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.t <= '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.t <= '-1'",
                 TEST_METRIC_NAME
         );
 
@@ -181,7 +181,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testNullTagComparisonGreater() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.t > '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.t > '-1'",
                 TEST_METRIC_NAME
         );
 
@@ -201,7 +201,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testNullTagComparisonGreaterEqual() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.t >= '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.t >= '-1'",
                 TEST_METRIC_NAME
         );
 
@@ -221,7 +221,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testTagComparisonLess() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.t < '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.t < '-1'",
                 TEST_METRIC_NAME
         );
 
@@ -241,7 +241,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testTagComparisonLessEqual() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.key0 <= 'value'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.key0 <= 'value'",
                 TEST_METRIC_NAME
         );
 
@@ -261,7 +261,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testTagComparisonGreater() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.key0 > 'value'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.key0 > 'value'",
                 TEST_METRIC_NAME
         );
 
@@ -283,7 +283,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testTagComparisonGreaterEqual() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s' %nWHERE tags.key0 >= 'value'",
+                "SELECT entity,value FROM \"%s\" %nWHERE tags.key0 >= 'value'",
                 TEST_METRIC_NAME
         );
 
@@ -319,7 +319,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testDatetimeComparison() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM '%s'  %nWHERE datetime >= 'value'",
+                "SELECT entity,value FROM \"%s\"  %nWHERE datetime >= 'value'",
                 TEST_METRIC_NAME
         );
 

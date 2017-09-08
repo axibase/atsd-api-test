@@ -45,7 +45,7 @@ public class LowerTest extends SqlTest {
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT LOWER(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT LOWER(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply LOWER function to %s", param), queryResponse(sqlQuery));
@@ -56,7 +56,7 @@ public class LowerTest extends SqlTest {
         return new Object[][]{
                 {"VaLuE", "value"},
                 {"VALUE", "value"},
-                {"444'a3'A4", "444'a3'a4"},
+                {"444\"a3\"A4", "444\"a3\"a4"},
                 {"aBc12@", "abc12@"},
                 {"Кириллица", "кириллица"}
         };
@@ -67,7 +67,7 @@ public class LowerTest extends SqlTest {
         Series series = Mocks.series();
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
         String sqlQuery = String.format(
-                "SELECT LOWER(\"%s\") FROM '%s'",
+                "SELECT LOWER('%s') FROM \"%s\"",
                 text, series.getMetric()
         );
 

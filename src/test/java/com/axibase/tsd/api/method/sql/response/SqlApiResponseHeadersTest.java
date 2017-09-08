@@ -55,7 +55,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test
     public void testContentTypeJsonGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-headers-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-headers-metric\"")
                 .request()
                 .get();
         response.bufferEntity();
@@ -65,7 +65,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test
     public void testContentTypeCsvGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-headers-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-headers-metric\"")
                 .queryParam("outputFormat", "csv")
                 .request()
                 .get();
@@ -76,7 +76,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test
     public void testContentTypeJsonPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-headers-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-headers-metric\"");
         form.param("outputFormat", "json");
         final Response response = httpSqlApiResource
                 .request()

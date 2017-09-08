@@ -8,7 +8,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -32,7 +31,7 @@ public class SqlOrderByNullValuesTest extends SqlTest {
     @Test
     public void testNullTags() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' ORDER BY tags.tag",
+                "SELECT tags.tag FROM \"%s\" ORDER BY tags.tag",
                 TEST_METRIC
         );
 

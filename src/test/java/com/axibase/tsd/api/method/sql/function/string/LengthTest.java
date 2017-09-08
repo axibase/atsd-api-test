@@ -34,7 +34,7 @@ public class LengthTest extends SqlTest {
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT LENGTH(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT LENGTH(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply LOWER function to %s", param), queryResponse(sqlQuery));

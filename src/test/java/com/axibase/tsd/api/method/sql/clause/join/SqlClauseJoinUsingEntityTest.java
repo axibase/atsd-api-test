@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class SqlClauseJoinUsingEntity extends SqlTest {
+public class SqlClauseJoinUsingEntityTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static String[] testMetricNames;
 
@@ -52,7 +52,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     @Test
     public void testJoin() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' t1 JOIN '%s' t2",
+                "SELECT * FROM \"%s\" t1 JOIN \"%s\" t2",
                 testMetricNames[0],
                 testMetricNames[1]
         );
@@ -69,7 +69,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     @Test
     public void testJoinUsingEntity() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
+                "SELECT t1.value, t2.value FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2",
                 testMetricNames[0],
                 testMetricNames[1]
         );
@@ -87,7 +87,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     @Test
     public void testJoinUsingEntitySameTags() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
+                "SELECT t1.value, t2.value FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2",
                 testMetricNames[1],
                 testMetricNames[2]
         );
@@ -105,7 +105,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     @Test
     public void testJoinUsingEntityOneWithoutTags() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
+                "SELECT t1.value, t2.value FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2",
                 testMetricNames[2],
                 testMetricNames[3]
         );
@@ -123,7 +123,7 @@ public class SqlClauseJoinUsingEntity extends SqlTest {
     @Test
     public void testJoinUsingEntityDifferentTags() {
         String sqlQuery = String.format(
-                "SELECT t1.value, t2.value FROM '%s' t1 JOIN USING ENTITY '%s' t2",
+                "SELECT t1.value, t2.value FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2",
                 testMetricNames[2],
                 testMetricNames[4]
         );

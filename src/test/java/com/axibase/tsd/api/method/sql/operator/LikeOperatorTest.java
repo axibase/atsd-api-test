@@ -65,7 +65,7 @@ public class LikeOperatorTest extends SqlTest {
                 "SELECT metric%n" +
                         "FROM atsd_series%n" +
                         "WHERE metric in ('%s', '%s')%n" +
-                        "AND metric LIKE '%s*'%n" +
+                        "AND metric LIKE '%s%%'%n" +
                         "LIMIT 2",
                 series.getMetric(), otherSeries.getMetric(), uniquePrefix
         );
@@ -85,7 +85,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-first-*' " +
+                        "WHERE metric LIKE '%s-first-%%' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -101,7 +101,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-*' " +
+                        "WHERE metric LIKE '%s-%%' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -117,7 +117,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-not-match-*' " +
+                        "WHERE metric LIKE '%s-not-match-%%' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -150,7 +150,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-*-0?' " +
+                        "WHERE metric LIKE '%s-%%-0_' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -170,7 +170,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-first-???' " +
+                        "WHERE metric LIKE '%s-first-___' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -186,7 +186,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-first-??' " +
+                        "WHERE metric LIKE '%s-first-__' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -202,7 +202,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%s-first-?*?' " +
+                        "WHERE metric LIKE '%s-first-_%%_' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -218,7 +218,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1*' OR metric LIKE '%1$s-first-2*'" +
+                        "WHERE metric LIKE '%1$s-first-1%%' OR metric LIKE '%1$s-first-2%%'" +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -234,7 +234,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-??' AND metric LIKE '%1$s-first-2*'" +
+                        "WHERE metric LIKE '%1$s-first-__' AND metric LIKE '%1$s-first-2%%'" +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -250,7 +250,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1?' OR metric = '%1$s-first-20'" +
+                        "WHERE metric LIKE '%1$s-first-1_' OR metric = '%1$s-first-20'" +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -266,7 +266,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1?' AND metric != '%1$s-first-10'" +
+                        "WHERE metric LIKE '%1$s-first-1_' AND metric != '%1$s-first-10'" +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -282,7 +282,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1?' AND text IS NOT NULL " +
+                        "WHERE metric LIKE '%1$s-first-1_' AND text IS NOT NULL " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -298,7 +298,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1?' AND metric IN ('%1$s-first-10', '%1$s-first-11') " +
+                        "WHERE metric LIKE '%1$s-first-1_' AND metric IN ('%1$s-first-10', '%1$s-first-11') " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -314,7 +314,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1?' OR metric IN ('%1$s-first-20', '%1$s-first-21') " +
+                        "WHERE metric LIKE '%1$s-first-1_' OR metric IN ('%1$s-first-20', '%1$s-first-21') " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -330,7 +330,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-1?' AND metric LIKE '%1$s-non-existing-*?' " +
+                        "WHERE metric LIKE '%1$s-first-1_' AND metric LIKE '%1$s-non-existing-*?' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -346,7 +346,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-*' AND metric < '%1$s-first-10' " +
+                        "WHERE metric LIKE '%1$s-first-%%' AND metric < '%1$s-first-10' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 
@@ -362,7 +362,7 @@ public class LikeOperatorTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT metric " +
                         "FROM atsd_series " +
-                        "WHERE metric LIKE '%1$s-first-*' AND metric >= '%1$s-first-40' " +
+                        "WHERE metric LIKE '%1$s-first-%%' AND metric >= '%1$s-first-40' " +
                         "ORDER BY metric ",
                 TEST_METRIC_PREFIX);
 

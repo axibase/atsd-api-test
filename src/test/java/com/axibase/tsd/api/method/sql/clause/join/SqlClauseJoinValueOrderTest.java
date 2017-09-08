@@ -43,7 +43,7 @@ public class SqlClauseJoinValueOrderTest extends SqlTest {
     @Test
     public void testOrderAsc() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1%nOUTER JOIN '%s' t2%nORDER BY t1.value",
+                "SELECT t1.value FROM \"%s\" t1%nOUTER JOIN \"%s\" t2%nORDER BY t1.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
@@ -68,7 +68,7 @@ public class SqlClauseJoinValueOrderTest extends SqlTest {
     @Test
     public void testOrderDesc() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1%nOUTER JOIN '%s' t2%nORDER BY t1.value DESC",
+                "SELECT t1.value FROM \"%s\" t1%nOUTER JOIN \"%s\" t2%nORDER BY t1.value DESC",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);

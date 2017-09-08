@@ -43,7 +43,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testNoTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' ",
+                "SELECT tags.tag FROM \"%s\" ",
                 TEST_METRIC
         );
 
@@ -64,7 +64,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testIsNullTagFilter() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' WHERE tags.tag IS NULL",
+                "SELECT value FROM \"%s\" WHERE tags.tag IS NULL",
                 TEST_METRIC
         );
 
@@ -81,7 +81,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testIsNotNullTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag IS NOT NULL",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag IS NOT NULL",
                 TEST_METRIC
         );
 
@@ -101,7 +101,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testLikeTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag LIKE 'value?'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag LIKE 'value_'",
                 TEST_METRIC
         );
 
@@ -120,7 +120,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testLikeTagFilterAsterisk() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag LIKE '*2'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag LIKE '%%2'",
                 TEST_METRIC
         );
 
@@ -137,7 +137,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testNotLikeTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag NOT LIKE 'value?'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag NOT LIKE 'value_'",
                 TEST_METRIC
         );
 
@@ -154,7 +154,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testNotLikeTagFilterAsterisk() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag NOT LIKE '*2'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag NOT LIKE '%%2'",
                 TEST_METRIC
         );
 
@@ -173,7 +173,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testRegexTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag REGEX 'value[1,2]{1}|.*Value'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag REGEX 'value[1,2]{1}|.*Value'",
                 TEST_METRIC
         );
 
@@ -192,7 +192,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testEqualsTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag = 'value1'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag = 'value1'",
                 TEST_METRIC
         );
 
@@ -209,7 +209,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testNotEqualsTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag != 'value1'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag != 'value1'",
                 TEST_METRIC
         );
 
@@ -228,7 +228,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testGreaterTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag > 'value1'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag > 'value1'",
                 TEST_METRIC
         );
 
@@ -246,7 +246,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testLessOrEqualsTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag <= 'value1'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag <= 'value1'",
                 TEST_METRIC
         );
 
@@ -264,7 +264,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testNotNullAndLikeTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag LIKE 'value?' AND tags.tag IS NOT NULL",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag LIKE 'value_' AND tags.tag IS NOT NULL",
                 TEST_METRIC
         );
 
@@ -283,7 +283,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testLikeAndGreaterTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag LIKE 'value?' AND tags.tag > 'value1'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag LIKE 'value_' AND tags.tag > 'value1'",
                 TEST_METRIC
         );
 
@@ -301,7 +301,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testEqualsAndNotNullTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag IS NOT NULL AND tags.tag = 'value1'",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag IS NOT NULL AND tags.tag = 'value1'",
                 TEST_METRIC
         );
 
@@ -318,7 +318,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Test
     public void testIsNullAndLikeTagFilter() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' WHERE tags.tag LIKE 'value?' OR tags.tag IS NULL",
+                "SELECT tags.tag FROM \"%s\" WHERE tags.tag LIKE 'value_' OR tags.tag IS NULL",
                 TEST_METRIC
         );
 

@@ -59,7 +59,7 @@ public class CountTest extends SqlTest {
 
     private String selectCount(String argument) {
         String queryTemplate = "SELECT COUNT(%s) %n" +
-                "FROM '%s' %n" +
+                "FROM \"%s\" %n" +
                 "WHERE datetime >= '%s' AND datetime <= '%s' %n";
 
         return String.format(queryTemplate, argument,

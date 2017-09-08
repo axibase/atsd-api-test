@@ -84,13 +84,14 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
         EntityGroup updatedEntityGroup = new EntityGroup();
         updatedEntityGroup.setName(entityGroup.getName());
         updatedEntityGroup.addTag("oldtag1", "newtagvalue1");
+        updatedEntityGroup.setEnabled(true);
 
         if (entityGroupExist(updatedEntityGroup)) {
             throw new IllegalArgumentException("Updated entity group should not exist before execution of updateEntityGroup query");
         }
         Response response = updateEntityGroup(updatedEntityGroup);
         assertEquals("Fail to execute updateEntityGroup query", OK.getStatusCode(), response.getStatus());
-        assertTrue("Updated entityGroup should exists", entityGroupExist(updatedEntityGroup));
-        assertFalse("Old entityGroup should not exists", entityGroupExist(entityGroup));
+        assertTrue("Updated entityGroup should exist", entityGroupExist(updatedEntityGroup));
+        assertFalse("Old entityGroup should not exist", entityGroupExist(entityGroup));
     }
 }

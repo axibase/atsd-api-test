@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.version.Version;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,6 +25,7 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 public class InterpolationBoundaryValuesTest extends SqlTest {
     private static final String TEST_METRIC_1 = metric();
     private static final String TEST_METRIC_2 = metric();
+    private static final String HBASE_VERSION = TestUtil.getHBaseVersion();
 
     private Sample[] calendarInterpolationTestSamples;
     private final ZoneId serverTimezone;
@@ -83,13 +85,30 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 continue;
             }
 
+            final boolean isHbase1 = HBASE_VERSION.startsWith("1");
+
             if (previousRange == null) {
-                rangeValues.put(hourlyRange, "NaN");
+                if (isHbase1 && boundary == Boundary.OUTER) {
+                    rangeValues.put(hourlyRange, "0");
+                } else {
+                    rangeValues.put(hourlyRange, "NaN");
+                }
                 continue;
             }
 
+
             if (ChronoUnit.HOURS.between(previousRange.endDate, hourlyRange.startDate) >= 1) {
-                rangeValues.put(hourlyRange, "NaN");
+                value = rangeValues.get(previousRange);
+                if (isHbase1 && boundary == Boundary.OUTER && value != null) {
+                    int offset = serverTimezone.getRules().getOffset(previousRange.endDate.toLocalDateTime()).getTotalSeconds();
+                    if (offset / 3600 == offset / 3600.0) {
+                        rangeValues.put(hourlyRange, value);
+                    } else {
+                        rangeValues.put(hourlyRange, "" + (Integer.parseInt(value) + 1));
+                    }
+                } else {
+                    rangeValues.put(hourlyRange, "NaN");
+                }
                 continue;
             }
 
@@ -178,7 +197,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInnerInterpolation() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
@@ -200,7 +219,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInnerInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T21:00:00Z' " +
                         "     AND (datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "     OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z') " +
@@ -223,7 +242,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInnerInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T12:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T18:00:00Z' AND '2017-01-01T21:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
@@ -248,7 +267,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInnerInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T18:00:00Z' AND '2017-01-01T20:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T22:00:00Z' AND '2017-01-01T23:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
@@ -272,7 +291,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInnerInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
                         "ORDER BY datetime",
@@ -295,7 +314,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInnerInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
                             "OR datetime BETWEEN '2017-01-01T14:00:00Z' AND '2017-01-01T16:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, INNER, NAN) " +
@@ -320,7 +339,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationEntirePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T10:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T16:00:00Z' AND '2017-01-01T21:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
@@ -342,7 +361,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T21:00:00Z' " +
                         "     AND (datetime BETWEEN '2017-01-01T09:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "     OR datetime BETWEEN '2017-01-01T17:00:00Z' AND '2017-01-01T21:00:00Z') " +
@@ -365,7 +384,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T12:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T18:00:00Z' AND '2017-01-01T21:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
@@ -390,7 +409,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T18:00:00Z' AND '2017-01-01T20:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T22:00:00Z' AND '2017-01-01T23:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
@@ -414,7 +433,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationWithOuterBoundValue() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T13:00:00Z' AND '2017-01-01T15:00:00Z' " +
                         "      OR datetime BETWEEN '2017-01-01T18:00:00Z' AND '2017-01-01T19:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
@@ -439,7 +458,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
                         "ORDER BY datetime",
@@ -462,7 +481,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T08:00:00Z' AND '2017-01-01T13:00:00Z' " +
                             "OR datetime BETWEEN '2017-01-01T14:00:00Z' AND '2017-01-01T16:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
@@ -486,7 +505,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testInterpolationWithOverlappingPeriods() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T11:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "OR datetime BETWEEN '2017-01-01T12:00:00Z' AND '2017-01-01T14:00:00Z' " +
                         "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
@@ -511,8 +530,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithMinDateNoneCalendar() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, CALENDAR)",
                 TEST_METRIC_1,
@@ -535,8 +554,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithMinDateNanCalendar() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NAN, CALENDAR)",
                 TEST_METRIC_1,
@@ -560,8 +579,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithMinDateExtendCalendar() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, CALENDAR)",
                 TEST_METRIC_1,
@@ -585,8 +604,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithMinDateNoneStartTime() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, START_TIME)",
                 TEST_METRIC_1,
@@ -609,8 +628,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithMinDateNanStartTime() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NAN, START_TIME)",
                 TEST_METRIC_1,
@@ -634,8 +653,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithMinDateExtendStartTime() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, START_TIME)",
                 TEST_METRIC_1,
@@ -659,8 +678,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     public void testJoinWithDateBeforeMin() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1969-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
                         "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, START_TIME)",
                 TEST_METRIC_1,

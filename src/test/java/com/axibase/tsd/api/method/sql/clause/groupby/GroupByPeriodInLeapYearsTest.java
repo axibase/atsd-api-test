@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
-public class GroupByPeriodInLeapYears extends SqlTest {
+public class GroupByPeriodInLeapYearsTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 
@@ -38,7 +38,7 @@ public class GroupByPeriodInLeapYears extends SqlTest {
     @Test
     public void testGroupByPeriodLeapYear() {
         String sqlQuery = String.format(
-                "SELECT count(value) FROM '%s' GROUP BY period(1 year)",
+                "SELECT count(value) FROM \"%s\" GROUP BY period(1 year)",
                 TEST_METRIC_NAME
         );
 
@@ -55,7 +55,7 @@ public class GroupByPeriodInLeapYears extends SqlTest {
     @Test
     public void testGroupByPeriodLeapFebruary() {
         String sqlQuery = String.format(
-                "SELECT count(value) FROM '%s' GROUP BY period(1 month)",
+                "SELECT count(value) FROM \"%s\" GROUP BY period(1 month)",
                 TEST_METRIC_NAME
 
         );

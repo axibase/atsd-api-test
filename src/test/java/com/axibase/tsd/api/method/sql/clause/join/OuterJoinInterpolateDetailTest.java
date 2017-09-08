@@ -42,8 +42,8 @@ public class OuterJoinInterpolateDetailTest extends SqlTest {
     public void testOuterJoinInterpolateDetailDifferentEntity() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.entity, m2.entity " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WITH INTERPOLATE(DETAIL) " +
                         "ORDER BY time, m1.entity",
                 METRIC_NAME1,
@@ -68,8 +68,8 @@ public class OuterJoinInterpolateDetailTest extends SqlTest {
     public void testOuterJoinInterpolateDetailSameEntity() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.entity, m2.entity " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WITH INTERPOLATE(DETAIL) " +
                         "ORDER BY time, m1.entity",
                 METRIC_NAME1,

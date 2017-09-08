@@ -15,7 +15,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
+public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
     private static final String TEST_ENTITY = entity();
     private static final String TEST_METRIC_1 = metric();
     private static final String TEST_METRIC_2 = metric();
@@ -51,7 +51,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
     public void testOrderByColumnDescWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
                 "SELECT SUM(t2.value)-SUM(t1.value) AS col " +
-                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 " +
                         "GROUP BY t1.PERIOD(2 MILLISECOND) " +
                         "ORDER BY col DESC",
                 TEST_METRIC_1,
@@ -77,7 +77,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
     public void testOrderByColumnAscWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
                 "SELECT SUM(t2.value)-SUM(t1.value) AS col " +
-                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 " +
                         "GROUP BY t1.PERIOD(2 MILLISECOND) " +
                         "ORDER BY col ASC",
                 TEST_METRIC_1,
@@ -103,7 +103,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
     public void testOrderByColumnDescWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(
                 "SELECT SUM(t2.value-t1.value) AS col " +
-                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 " +
                         "GROUP BY t1.PERIOD(2 MILLISECOND) " +
                         "ORDER BY col DESC",
                 TEST_METRIC_1,
@@ -129,7 +129,7 @@ public class OrderByAggregatedValuesFromMultipleTables extends SqlTest {
     public void testOrderByColumnAscWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(
                 "SELECT SUM(t2.value-t1.value) AS col " +
-                        "FROM '%s' t1 JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 " +
                         "GROUP BY t1.PERIOD(2 MILLISECOND) " +
                         "ORDER BY col ASC",
                 TEST_METRIC_1,

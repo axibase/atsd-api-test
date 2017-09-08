@@ -45,7 +45,7 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
     public void testExample() {
         String sqlQuery = String.format(
                 "SELECT entity, MAX(value), date_format(MAX_VALUE_TIME(value), 'yyyy-MM-dd HH:mm:ss') AS \"Max Time\" %n" +
-                        "FROM '%s' %n" +
+                        "FROM \"%s\" %n" +
                         "WHERE datetime BETWEEN '2016-06-17T19:16:01.000Z' AND '2016-06-17T19:16:05.000Z'  %n" +
                         "GROUP BY entity", TEST_METRIC_NAME);
 

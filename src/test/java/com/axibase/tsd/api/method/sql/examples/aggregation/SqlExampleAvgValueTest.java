@@ -40,7 +40,7 @@ public class SqlExampleAvgValueTest extends SqlTest {
         String sqlQuery =
                 String.format(
                         "SELECT avg(value) %n" +
-                                "FROM '%s'  %n" +
+                                "FROM \"%s\"  %n" +
                                 "WHERE entity = '%s'" +
                                 "AND datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:16:00.000Z'",
                         TEST_METRIC_NAME, TEST_ENTITY_NAME
@@ -64,7 +64,7 @@ public class SqlExampleAvgValueTest extends SqlTest {
         String sqlQuery =
                 String.format(
                         "SELECT avg(value), max(value), last(value), count(*) %n" +
-                                "FROM '%s'  %n" +
+                                "FROM \"%s\"  %n" +
                                 "WHERE entity = '%s'" +
                                 "AND datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:16:00.000Z'",
                         TEST_METRIC_NAME, TEST_ENTITY_NAME

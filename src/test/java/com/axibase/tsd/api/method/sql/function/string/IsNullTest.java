@@ -43,7 +43,7 @@ public class IsNullTest extends SqlTest {
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String params) throws Exception {
-        String sqlQuery = String.format("SELECT ISNULL(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT ISNULL(%s) FROM \"%s\"",
                 params, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply ISNULL function to %s", params), queryResponse(sqlQuery));
@@ -63,40 +63,40 @@ public class IsNullTest extends SqlTest {
     public Object[][] provideCheckTestData() {
         return new Object[][]{
                 // Not Null
-                {"metric", "\"2\"", "string"},
+                {"metric", "'2'", "string"},
                 {"metric", "2", "java_object"},
                 {"metric", "metric", "string"},
                 {"metric", "value+1", "java_object"},
-                {"\"m\"", "\"2\"", "string"},
-                {"\"m\"", "2", "java_object"},
-                {"\"m\"", "metric", "string"},
-                {"\"m\"", "value+1", "java_object"},
+                {"'m'", "'2'", "string"},
+                {"'m'", "2", "java_object"},
+                {"'m'", "metric", "string"},
+                {"'m'", "value+1", "java_object"},
 
-                {"value", "\"2\"", "java_object"},
+                {"value", "'2'", "java_object"},
                 {"value", "2", "double"},
                 {"value", "metric", "java_object"},
                 {"value", "value+1", "double"},
-                {"1", "\"2\"", "java_object"},
+                {"1", "'2'", "java_object"},
                 {"1", "2", "bigint"},
                 {"1", "metric", "java_object"},
                 {"1", "value+1", "double"},
 
                 // Null
-                {"metric.tags", "\"2\"", "string"},
+                {"metric.tags", "'2'", "string"},
                 {"metric.tags", "2", "java_object"},
                 {"metric.tags", "metric", "string"},
                 {"metric.tags", "value+1", "java_object"},
 
-                {"metric.label", "\"2\"", "string"},
+                {"metric.label", "'2'", "string"},
                 {"metric.label", "2", "java_object"},
                 {"metric.label", "metric", "string"},
                 {"metric.label", "value+1", "java_object"},
 
-                {"value * 0 / 0", "\"2\"", "java_object"},
+                {"value * 0 / 0", "'2'", "java_object"},
                 {"value * 0 / 0", "2", "double"},
                 {"value * 0 / 0", "metric", "java_object"},
                 {"value * 0 / 0", "value+1", "double"},
-                {"0 / 0", "\"2\"", "java_object"},
+                {"0 / 0", "'2'", "java_object"},
                 {"0 / 0", "2", "double"},
                 {"0 / 0", "metric", "java_object"},
                 {"0 / 0", "value+1", "double"},
@@ -130,7 +130,7 @@ public class IsNullTest extends SqlTest {
     @Test(dataProvider = "functionResultProvider")
     public void testFunctionResult(String text, String expectedValue) throws Exception {
         String sqlQuery = String.format(
-                "SELECT ISNULL(%s) FROM '%s'",
+                "SELECT ISNULL(%s) FROM \"%s\"",
                 text, TEST_METRIC
         );
         String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
@@ -145,7 +145,7 @@ public class IsNullTest extends SqlTest {
      */
     @Test
     public void testIsNullInExpression() throws Exception {
-        String sqlQuery = String.format("SELECT ROUND(100 - ISNULL(value, 0)) FROM '%s'", TEST_METRIC);
+        String sqlQuery = String.format("SELECT ROUND(100 - ISNULL(value, 0)) FROM \"%s\"", TEST_METRIC);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 

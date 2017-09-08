@@ -43,7 +43,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @Test
     public void testSelectMetricTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
+                "SELECT metric.tags %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -63,7 +63,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @Test
     public void testSelectMetricMultipleTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.* %n FROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
+                "SELECT metric.tags.* %n FROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -88,7 +88,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @Test
     public void testSelectMetricSpecifiedTag() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.a %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.a %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -109,7 +109,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @Test
     public void testSelectMetricSpecifiedTagWithDash() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.'a-b' %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.\"a-b\" %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
@@ -129,7 +129,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @Test
     public void testSelectMetricSpecifiedTagCaseSensitivityFalse() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.tag %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
@@ -149,7 +149,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @Test
     public void testSelectMetricSpecifiedTagCaseSensitivityTrue() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.Tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.Tag %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

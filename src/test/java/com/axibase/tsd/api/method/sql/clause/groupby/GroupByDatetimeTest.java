@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class GroupByDatetime extends SqlTest {
+public class GroupByDatetimeTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-group-by-datetime-";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TESTS_ENTITY1_NAME = TEST_PREFIX + "entity-1";
@@ -60,7 +60,7 @@ public class GroupByDatetime extends SqlTest {
     @Test
     public void testGroupByDatetimeSyntax() {
         String sqlQuery = String.format(
-                "SELECT datetime , entity, value FROM '%s' %nGROUP BY datetime, entity, value",
+                "SELECT datetime , entity, value FROM \"%s\" %nGROUP BY datetime, entity, value",
                 TEST_METRIC_NAME
         );
 
@@ -86,7 +86,7 @@ public class GroupByDatetime extends SqlTest {
     @Test
     public void testGroupByDatetimeWithAggregateFunction() {
         String sqlQuery = String.format(
-                "SELECT datetime, COUNT(value) FROM '%s' %nGROUP BY datetime, value",
+                "SELECT datetime, COUNT(value) FROM \"%s\" %nGROUP BY datetime, value",
                 TEST_METRIC_NAME
         );
 

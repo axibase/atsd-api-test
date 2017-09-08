@@ -39,7 +39,7 @@ public class ReplaceTest extends SqlTest {
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT REPLACE(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT REPLACE(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply REPLACE function to %s", param), queryResponse(sqlQuery));
@@ -64,7 +64,7 @@ public class ReplaceTest extends SqlTest {
     @Test(dataProvider = "selectTestProvider")
     public void testFunctionResult(String param, String expectedValue) {
         String sqlQuery = String.format(
-                "SELECT REPLACE(%s) FROM '%s'",
+                "SELECT REPLACE(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         String assertMessage = String.format("Incorrect result of REPLACE function with param '%s'.%n\tQuery: %s",

@@ -55,7 +55,7 @@ public class SqlExampleOrderByMultipleColumnsTest extends SqlTest {
     @Test
     public void test() {
         String sqlQuery = String.format(
-                "SELECT entity, tags.tag, delta(value) FROM '%s'%nGROUP BY entity, tags%nORDER BY  tags.tag, DELTA(value) DESC",
+                "SELECT entity, tags.tag, delta(value) FROM \"%s\"%nGROUP BY entity, tags%nORDER BY  tags.tag, DELTA(value) DESC",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);

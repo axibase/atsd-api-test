@@ -35,7 +35,7 @@ public class SqlLimitParamTest extends SqlTest {
     @Test
     public void testRequestLessLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value LIMIT 3",
+                "SELECT value FROM \"%s\" ORDER BY value LIMIT 3",
                 TEST_METRIC_NAME
         );
 
@@ -57,7 +57,7 @@ public class SqlLimitParamTest extends SqlTest {
     @Test
     public void testRequestGraterLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value LIMIT 5",
+                "SELECT value FROM \"%s\" ORDER BY value LIMIT 5",
                 TEST_METRIC_NAME
         );
 
@@ -78,7 +78,7 @@ public class SqlLimitParamTest extends SqlTest {
     @Test
     public void testLimitUndefined() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value",
+                "SELECT value FROM \"%s\" ORDER BY value",
                 TEST_METRIC_NAME
         );
 
@@ -102,7 +102,7 @@ public class SqlLimitParamTest extends SqlTest {
     @Test
     public void testRequestNegativeWithLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value LIMIT 4",
+                "SELECT value FROM \"%s\" ORDER BY value LIMIT 4",
                 TEST_METRIC_NAME
         );
 
@@ -124,7 +124,7 @@ public class SqlLimitParamTest extends SqlTest {
     @Test
     public void testRequestUndefinedWithLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY VALUE LIMIT 3",
+                "SELECT value FROM \"%s\" ORDER BY VALUE LIMIT 3",
                 TEST_METRIC_NAME
         );
 
@@ -146,7 +146,7 @@ public class SqlLimitParamTest extends SqlTest {
     @Test
     public void testRequestNegativeWithoutLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value",
+                "SELECT value FROM \"%s\" ORDER BY value",
                 TEST_METRIC_NAME
         );
 

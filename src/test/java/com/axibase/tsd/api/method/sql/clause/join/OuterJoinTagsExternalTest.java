@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -39,7 +38,7 @@ public class OuterJoinTagsExternalTest extends SqlTest {
     @Test
     public void testOuterJoinEmptyTagsExternal() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.tags FROM '%1$s' OUTER JOIN '%2$s' " +
+                "SELECT \"%1$s\".tags FROM \"%1$s\" OUTER JOIN \"%2$s\" " +
                         "OPTION (ROW_MEMORY_THRESHOLD 0)",
                 METRIC_NO_TAGS_1,
                 METRIC_NO_TAGS_2
@@ -61,7 +60,7 @@ public class OuterJoinTagsExternalTest extends SqlTest {
     @Test
     public void testOuterJoinPartiallyEmptyTagsExternal() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.tags FROM '%1$s' OUTER JOIN '%2$s' " +
+                "SELECT \"%1$s\".tags FROM \"%1$s\" OUTER JOIN \"%2$s\" " +
                         "OPTION (ROW_MEMORY_THRESHOLD 0)",
                 METRIC_WITH_TAGS,
                 METRIC_NO_TAGS_1

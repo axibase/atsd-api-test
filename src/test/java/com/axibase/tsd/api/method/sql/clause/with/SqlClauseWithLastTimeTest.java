@@ -44,7 +44,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testGreaterOrEqualsLastTime() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWITH time >= last_time - 1*minute",
+                "SELECT entity, value FROM \"%s\" %nWITH time >= last_time - 1*minute",
                 TEST_METRIC_NAME
         );
 
@@ -68,7 +68,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testGreaterLastTime() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWITH time > last_time - 1*minute",
+                "SELECT entity, value FROM \"%s\" %nWITH time > last_time - 1*minute",
                 TEST_METRIC_NAME
         );
 
@@ -91,7 +91,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testLessOrEqualsLastTime() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWITH time <= last_time - 1*minute",
+                "SELECT entity, value FROM \"%s\" %nWITH time <= last_time - 1*minute",
                 TEST_METRIC_NAME
         );
 
@@ -116,7 +116,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testLessLastTime() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWITH time < last_time - 1*minute",
+                "SELECT entity, value FROM \"%s\" %nWITH time < last_time - 1*minute",
                 TEST_METRIC_NAME
         );
 
@@ -139,7 +139,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testCaseInsensitive() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWITH time < LASt_TiMe - 1*miNute",
+                "SELECT entity, value FROM \"%s\" %nWITH time < LASt_TiMe - 1*miNute",
                 TEST_METRIC_NAME
         );
 
@@ -162,7 +162,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testWithWhereClause() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWHERE datetime > '2016-06-29T08:03:00.000Z'" +
+                "SELECT entity, value FROM \"%s\" %nWHERE datetime > '2016-06-29T08:03:00.000Z'" +
                         "WITH time < LAST_TIME - 1*minute",
                 TEST_METRIC_NAME
         );
@@ -185,7 +185,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     @Test
     public void testWithOrderByClause() {
         String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWITH time < LAST_TIME - 1*minute%n" +
+                "SELECT entity, value FROM \"%s\" %nWITH time < LAST_TIME - 1*minute%n" +
                         "ORDER BY value DESC",
                 TEST_METRIC_NAME
         );

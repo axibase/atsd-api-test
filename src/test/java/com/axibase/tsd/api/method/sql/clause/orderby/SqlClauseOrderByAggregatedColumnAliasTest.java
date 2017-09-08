@@ -41,7 +41,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     @Test
     public void testColumnNames() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY 'aggregated'",
+                "SELECT entity, AVG(value) AS \"aggregated\" FROM \"%s\" %nGROUP BY entity %nORDER BY \"aggregated\"",
                 TEST_METRIC_NAME
         );
 
@@ -59,7 +59,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     @Test
     public void testASC() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY 'aggregated'",
+                "SELECT entity, AVG(value) AS \"aggregated\" FROM \"%s\" %nGROUP BY entity %nORDER BY \"aggregated\"",
                 TEST_METRIC_NAME
         );
 
@@ -79,7 +79,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     @Test
     public void testDESC() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY 'aggregated' DESC",
+                "SELECT entity, AVG(value) AS \"aggregated\" FROM \"%s\" %nGROUP BY entity %nORDER BY \"aggregated\" DESC",
                 TEST_METRIC_NAME
         );
 
@@ -99,7 +99,7 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
     @Test
     public void testOrderMultipleColumn() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) AS 'aggregated' FROM '%s' %nGROUP BY entity %nORDER BY entity ASC, 'aggregated' DESC",
+                "SELECT entity, AVG(value) AS \"aggregated\" FROM \"%s\" %nGROUP BY entity %nORDER BY entity ASC, \"aggregated\" DESC",
                 TEST_METRIC_NAME
         );
 

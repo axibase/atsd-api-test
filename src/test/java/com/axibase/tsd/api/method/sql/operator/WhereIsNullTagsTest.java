@@ -34,7 +34,7 @@ public class WhereIsNullTagsTest extends SqlTest {
     public void testWhereIsNullTags() {
         String sqlQuery = String.format(
                 "SELECT tags.t1, tags.t2 " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE isnull(tags.t1, 'a') = 'a' ",
                 METRIC_NAME
         );

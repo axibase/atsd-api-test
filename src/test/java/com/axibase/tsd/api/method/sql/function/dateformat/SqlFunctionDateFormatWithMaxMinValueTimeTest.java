@@ -34,7 +34,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
     @Test
     public void testMaxValueTime() {
         String sqlQuery = String.format(
-                "SELECT date_format(MAX_VALUE_TIME(value),'yyyy') FROM '%s'",
+                "SELECT date_format(MAX_VALUE_TIME(value),'yyyy') FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -54,7 +54,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
     @Test
     public void testMinValueTime() {
         String sqlQuery = String.format(
-                "SELECT date_format(MIN_VALUE_TIME(value),'yyyy') FROM '%s'",
+                "SELECT date_format(MIN_VALUE_TIME(value),'yyyy') FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 

@@ -46,7 +46,7 @@ public class SqlLargeDataTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT COUNT(*) " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "GROUP BY entity",
                 METRIC_NAME);
 
@@ -78,7 +78,7 @@ public class SqlLargeDataTest extends SqlTest {
 
             String sqlQuery = String.format(
                     "SELECT COUNT(value) " +
-                    "FROM '%s' " +
+                    "FROM \"%s\" " +
                     "WHERE entity = '%s'",
                     metricName,
                     entityName);

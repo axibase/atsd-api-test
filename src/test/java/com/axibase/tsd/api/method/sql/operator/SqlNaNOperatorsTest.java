@@ -81,7 +81,7 @@ public class SqlNaNOperatorsTest extends SqlTest {
      */
     @Test(dataProvider = "operatorsProvider")
     public void testOperatorsWithNaN(String operator, String expectedResult) {
-        String sqlQuery = String.format("SELECT %s FROM '%s'", operator, TEST_METRIC);
+        String sqlQuery = String.format("SELECT %s FROM \"%s\"", operator, TEST_METRIC);
 
         String[][] expectedRows = new String[][] {{expectedResult}};
 

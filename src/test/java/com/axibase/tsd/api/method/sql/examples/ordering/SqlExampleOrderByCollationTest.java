@@ -8,7 +8,10 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 public class SqlExampleOrderByCollationTest extends SqlTest {
@@ -50,7 +53,7 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
     @Test
     public void testOrderByEntityTagNameASC() {
         String sqlQuery =
-                "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
+                "SELECT tags.tag FROM \"" + TEST_METRIC_NAME + "\"\n" +
                         "ORDER BY tags.tag ASC";
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
@@ -64,7 +67,7 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
     @Test
     public void testOrderByEntityTagNameDESC() {
         String sqlQuery =
-                "SELECT tags.tag FROM '" + TEST_METRIC_NAME + "'\n" +
+                "SELECT tags.tag FROM \"" + TEST_METRIC_NAME + "\"\n" +
                         "ORDER BY tags.tag DESC";
         StringTable resultTable = queryResponse(sqlQuery)
                 .readEntity(StringTable.class);
@@ -91,20 +94,17 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
     private List<String> sortList(List<String> list, boolean reverse) {
         List<String> resultList = new ArrayList<>();
         resultList.addAll(list);
-        Collections.sort(resultList, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                if (o1 == null && o2 == null) {
-                    return 0;
-                }
-                if (o1 == null) {
-                    return -1;
-                }
-                if (o2 == null) {
-                    return 1;
-                }
-                return o1.compareTo(o2);
+        resultList.sort((o1, o2) -> {
+            if (o1 == null && o2 == null) {
+                return 0;
             }
+            if (o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            return o1.compareTo(o2);
         });
 
         if (reverse) {

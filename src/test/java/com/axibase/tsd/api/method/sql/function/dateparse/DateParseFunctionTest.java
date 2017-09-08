@@ -37,7 +37,7 @@ public class DateParseFunctionTest extends SqlTest {
     @Test
     public void testDateParseISOFormat() {
         String sqlQuery = "SELECT date_parse('1970-01-01T01:00:00.000Z', " +
-                "\"yyyy-MM-dd'T'HH:mm:ss.SSSZZ\")";
+                "'yyyy-MM-dd''T''HH:mm:ss.SSSZZ')";
 
         String[][] expectedRows = {{"3600000"}};
 

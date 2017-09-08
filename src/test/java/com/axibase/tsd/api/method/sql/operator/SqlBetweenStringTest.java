@@ -39,7 +39,7 @@ public class SqlBetweenStringTest extends SqlTest {
     @Test
     public void testBetweenEqualStringLimits() {
         String sqlQuery = String.format(
-                "SELECT value, text FROM '%s' WHERE text BETWEEN 'a' AND 'a'",
+                "SELECT value, text FROM \"%s\" WHERE text BETWEEN 'a' AND 'a'",
                 METRIC_NAME
         );
 
@@ -54,7 +54,7 @@ public class SqlBetweenStringTest extends SqlTest {
     @Test
     public void testBetweenAllString() {
         String sqlQuery = String.format(
-                "SELECT value, text FROM '%s' WHERE text BETWEEN 'a' AND 'z'",
+                "SELECT value, text FROM \"%s\" WHERE text BETWEEN 'a' AND 'z'",
                 METRIC_NAME
         );
 
@@ -79,7 +79,7 @@ public class SqlBetweenStringTest extends SqlTest {
     @Test
     public void testBetweenSimpleString() {
         String sqlQuery = String.format(
-                "SELECT value, text FROM '%s' WHERE text BETWEEN 'a' AND 'b'",
+                "SELECT value, text FROM \"%s\" WHERE text BETWEEN 'a' AND 'b'",
                 METRIC_NAME
         );
 
@@ -99,7 +99,7 @@ public class SqlBetweenStringTest extends SqlTest {
     @Test
     public void testBetweenNullString() {
         String sqlQuery = String.format(
-                "SELECT value, text FROM '%s' WHERE text BETWEEN 'null' AND 'z'",
+                "SELECT value, text FROM \"%s\" WHERE text BETWEEN 'null' AND 'z'",
                 METRIC_NAME
         );
 

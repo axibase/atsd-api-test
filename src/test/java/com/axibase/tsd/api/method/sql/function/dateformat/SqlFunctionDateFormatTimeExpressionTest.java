@@ -31,7 +31,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testSimpleArithmetic() {
         String sqlQuery = String.format(
-                "SELECT date_format(time+1) FROM '%s'", TEST_METRIC_NAME
+                "SELECT date_format(time+1) FROM \"%s\"", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -50,7 +50,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testMinus() {
         String sqlQuery = String.format(
-                "SELECT date_format(time-1) FROM '%s'", TEST_METRIC_NAME
+                "SELECT date_format(time-1) FROM \"%s\"", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -70,7 +70,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testDivisionByZero() {
         String sqlQuery = String.format(
-                "SELECT date_format(time/0) FROM '%s'", TEST_METRIC_NAME
+                "SELECT date_format(time/0) FROM \"%s\"", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -90,7 +90,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testAllOperations() {
         String sqlQuery = String.format(
-                "SELECT date_format(time + 200/2 - 20*5) FROM '%s'", TEST_METRIC_NAME
+                "SELECT date_format(time + 200/2 - 20*5) FROM \"%s\"", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -110,7 +110,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testDivisionWithRest() {
         String sqlQuery = String.format(
-                "SELECT date_format(time + 10/3) FROM '%s'", TEST_METRIC_NAME
+                "SELECT date_format(time + 10/3) FROM \"%s\"", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -129,7 +129,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testNanHandling() {
         String sqlQuery = String.format(
-                "SELECT date_format(time + 0/0) FROM '%s'", TEST_METRIC_NAME
+                "SELECT date_format(time + 0/0) FROM \"%s\"", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -149,7 +149,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testNullFormattedOrderBy() {
         String sqlQuery = String.format(
-                "SELECT date_format(time + 0/0) FROM '%s' ORDER BY datetime", TEST_METRIC_NAME
+                "SELECT date_format(time + 0/0) FROM \"%s\" ORDER BY datetime", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -169,7 +169,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test
     public void testValueAsParam() {
         String sqlQuery = String.format(
-                "SELECT date_format(value) FROM '%s' ORDER BY datetime", TEST_METRIC_NAME
+                "SELECT date_format(value) FROM \"%s\" ORDER BY datetime", TEST_METRIC_NAME
         );
 
         Response response = queryResponse(sqlQuery);
@@ -189,7 +189,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @Test(enabled = false)
     public void testOverflow() {
         String sqlQuery = String.format(
-                "SELECT date_format(time + %s - %s) FROM '%s' ORDER BY datetime",
+                "SELECT date_format(time + %s - %s) FROM \"%s\" ORDER BY datetime",
                 Long.toString(Long.MAX_VALUE), Long.toString(Long.MAX_VALUE), TEST_METRIC_NAME
         );
 

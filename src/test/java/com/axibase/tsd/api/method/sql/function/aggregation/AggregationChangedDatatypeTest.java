@@ -8,9 +8,7 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
-import static com.axibase.tsd.api.util.Mocks.SAMPLE;
+import static com.axibase.tsd.api.util.Mocks.*;
 
 public class AggregationChangedDatatypeTest extends SqlTest {
 
@@ -33,7 +31,7 @@ public class AggregationChangedDatatypeTest extends SqlTest {
         MetricMethod.createOrReplaceMetric(metric);
 
         String sqlQuery = String.format(
-                "SELECT SUM(ROUND(value * cast(tags.tag1))) FROM '%s'",
+                "SELECT SUM(ROUND(value * cast(tags.tag1))) FROM \"%s\"",
                 metric.getName());
 
         String[][] expectedRows = {{"123.0"}};

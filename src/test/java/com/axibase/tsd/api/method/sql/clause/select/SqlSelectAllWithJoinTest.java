@@ -51,7 +51,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     @Test
     public void testSelectAllColumnsWithAlias() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' t1 %nJOIN '%s' t2",
+                "SELECT * FROM \"%s\" t1 %nJOIN \"%s\" t2",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -83,8 +83,8 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     @Test
     public void testSelectAllColumnsWithoutAlias() {
         String sqlQuery =
-                "SELECT * FROM 'sql-select-all-join-metric-1' " +
-                        "JOIN 'sql-select-all-join-metric-2'";
+                "SELECT * FROM \"sql-select-all-join-metric-1\" " +
+                        "JOIN \"sql-select-all-join-metric-2\"";
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
@@ -114,7 +114,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     @Test
     public void testSelectAllColumnsFromTableAlias() {
         String sqlQuery = String.format(
-                "SELECT t1.* FROM '%s' t1  %n JOIN '%s' t2",
+                "SELECT t1.* FROM \"%s\" t1  %n JOIN \"%s\" t2",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -138,7 +138,7 @@ public class SqlSelectAllWithJoinTest extends SqlTest {
     @Test
     public void testSelectAllColumnsFromSeveralTableAliases() {
         String sqlQuery = String.format(
-                "SELECT t1.*, t2.* FROM '%s' t1 JOIN '%s' t2",
+                "SELECT t1.*, t2.* FROM \"%s\" t1 JOIN \"%s\" t2",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 

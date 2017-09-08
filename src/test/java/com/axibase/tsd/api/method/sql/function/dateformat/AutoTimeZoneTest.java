@@ -39,7 +39,7 @@ public class AutoTimeZoneTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         String sqlQuery = String.format(
-                "SELECT date_format(time, '%s', AUTO) FROM '%s'",
+                "SELECT date_format(time, '%s', AUTO) FROM \"%s\"",
                 DEFAULT_PATTERN, metric.getName()
         );
 
@@ -62,7 +62,7 @@ public class AutoTimeZoneTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         String sqlQuery = String.format(
-                "SELECT date_format(time, '%s', AUTO) FROM '%s'",
+                "SELECT date_format(time, '%s', AUTO) FROM \"%s\"",
                 DEFAULT_PATTERN, series.getMetric()
         );
 
@@ -92,7 +92,7 @@ public class AutoTimeZoneTest extends SqlTest {
 
 
         String sqlQuery = String.format(
-                "SELECT date_format(time, '%s', AUTO) FROM '%s'",
+                "SELECT date_format(time, '%s', AUTO) FROM \"%s\"",
                 DEFAULT_PATTERN, series.getMetric()
         );
 
@@ -111,7 +111,7 @@ public class AutoTimeZoneTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         String sqlQuery = String.format(
-                "SELECT date_format(time, '%s', AUTO) FROM '%s'",
+                "SELECT date_format(time, '%s', AUTO) FROM \"%s\"",
                 DEFAULT_PATTERN, series.getMetric()
         );
 

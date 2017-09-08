@@ -11,7 +11,7 @@ import java.util.Map;
 public class Mocks {
     private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
 
-    public static final String ISO_TIME = "2016-06-03T09:23:00.000Z";
+    public static final String ISO_TIME = "2017-08-01T00:00:00.000Z";
     public static final Long MILLS_TIME = date().getTime();
     public static final BigDecimal DECIMAL_VALUE = new BigDecimal("123.4567");
     public static final String TEXT_VALUE = "text";

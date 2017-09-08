@@ -50,7 +50,7 @@ public class SqlSubqueryTest extends SqlTest {
                 "SELECT value, entity, datetime\n" +
                         "FROM (\n" +
                         "    SELECT value, '%s' as entity, datetime\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 nonExistentEntityName,
                 METRIC_NAME
@@ -67,8 +67,8 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT value, entity, datetime\n" +
                         "FROM (\n" +
-                        "    SELECT value, entity, datetime, value as 'value'\n" +
-                        "    FROM '%s'\n" +
+                        "    SELECT value, entity, datetime, value as \"value\"\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -80,28 +80,11 @@ public class SqlSubqueryTest extends SqlTest {
      * #4133
      */
     @Test
-    public void testIllegalTime() {
-        String sqlQuery = String.format(
-                "SELECT *\n" +
-                        "FROM (\n" +
-                        "    SELECT value, entity, -1 AS 'time'\n" +
-                        "    FROM '%s'\n" +
-                        ")",
-                METRIC_NAME
-        );
-
-        assertBadSqlRequest("Invalid expression for time/datetime column", sqlQuery);
-    }
-
-    /**
-     * #4133
-     */
-    @Test
     public void testIncorrectCreatedTags() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
-                        "    SELECT entity, value, time, 'x' AS 'tags'\n" +
-                        "    FROM '%s'\n" +
+                        "    SELECT entity, value, time, 'x' AS \"tags\"\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -117,14 +100,15 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
                         "    SELECT *\n" +
-                        "    FROM '%s'\n" +
-                        "    JOIN '%s'\n" +
+                        "    FROM \"%s\"\n" +
+                        "    JOIN \"%s\"\n" +
                         ")",
                 METRIC_NAME,
                 METRIC_NAME
         );
 
-        assertBadSqlRequest("Join is not allowed in a subquery", sqlQuery);
+        String errorMessage = String.format("Self join is not supported (metric: %s)", METRIC_NAME);
+        assertBadSqlRequest(errorMessage, sqlQuery);
     }
 
     /**
@@ -134,8 +118,8 @@ public class SqlSubqueryTest extends SqlTest {
     public void testCreatedTags() {
         String sqlQuery = String.format(
                 "SELECT tags.* FROM (\n" +
-                        "    SELECT entity, value, time, 'x' AS 'tags'\n" +
-                        "    FROM '%s'\n" +
+                        "    SELECT entity, value, time, 'x' AS \"tags\"\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -150,7 +134,7 @@ public class SqlSubqueryTest extends SqlTest {
     public void testSelectAsteriskTwice() {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
-                        "    SELECT * FROM '%s'\n" +
+                        "    SELECT * FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -173,7 +157,7 @@ public class SqlSubqueryTest extends SqlTest {
                 "SELECT * FROM (\n" +
                         "    SELECT * FROM (\n" +
                         "        SELECT *\n" +
-                        "        FROM '%s'\n" +
+                        "        FROM \"%s\"\n" +
                         "    )\n" +
                         ")",
                 METRIC_NAME
@@ -195,7 +179,7 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT text from (\n" +
                         "    SELECT entity, value, text, time\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -216,7 +200,7 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags FROM (\n" +
                         "    SELECT entity, value, time, tags\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -236,7 +220,7 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags.* FROM (\n" +
                         "    SELECT entity, value, time, tags\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -257,7 +241,7 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags FROM (\n" +
                         "    SELECT entity, value, time, tags.*\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -278,7 +262,7 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT tags.* FROM (\n" +
                         "    SELECT entity, value, time, tags.*\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         ")",
                 METRIC_NAME
         );
@@ -299,7 +283,7 @@ public class SqlSubqueryTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT * FROM (\n" +
                         "    SELECT *\n" +
-                        "    FROM '%s'\n" +
+                        "    FROM \"%s\"\n" +
                         "    ORDER BY value\n" +
                         "    OPTION (ROW_MEMORY_THRESHOLD 0)\n" +
                         ")\n" +

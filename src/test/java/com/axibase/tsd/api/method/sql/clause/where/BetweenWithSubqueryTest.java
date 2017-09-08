@@ -36,9 +36,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @Test
     public void testBetweenSubqueryEmpty() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%1$s' " +
+                "SELECT value FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value > 7)",
+                        "(SELECT datetime FROM \"%1$s\" WHERE value > 7)",
                 METRIC_NAME
         );
 
@@ -55,9 +55,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @Test
     public void testBetweenSubqueryLeftBound() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%1$s' " +
+                "SELECT value FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value = 4)",
+                        "(SELECT datetime FROM \"%1$s\" WHERE value = 4)",
                 METRIC_NAME
         );
 
@@ -79,9 +79,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @Test
     public void testBetweenSubqueryBothBounds() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%1$s' " +
+                "SELECT value FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value = 2 OR value = 4)",
+                        "(SELECT datetime FROM \"%1$s\" WHERE value = 2 OR value = 4)",
                 METRIC_NAME
         );
 
@@ -102,9 +102,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @Test
     public void testBetweenSubqueryMultipleRanges() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%1$s' " +
+                "SELECT value FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
+                        "(SELECT datetime FROM \"%1$s\" WHERE value %% 2 != 0)",
                 METRIC_NAME
         );
 
@@ -130,9 +130,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @Test
     public void testBetweenSubqueryAggregation() {
         String sqlQuery = String.format(
-                "SELECT avg(value), first(value), last(value), count(value) FROM '%1$s' " +
+                "SELECT avg(value), first(value), last(value), count(value) FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
+                        "(SELECT datetime FROM \"%1$s\" WHERE value %% 2 != 0)",
                 METRIC_NAME
         );
 
@@ -151,9 +151,9 @@ public class BetweenWithSubqueryTest extends SqlTest {
     @Test
     public void testBetweenSubquerySelectText() {
         String sqlQuery = String.format(
-                "SELECT datetime, text FROM '%1$s' " +
+                "SELECT datetime, text FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN " +
-                        "(SELECT datetime FROM '%1$s' WHERE value %% 2 != 0)",
+                        "(SELECT datetime FROM \"%1$s\" WHERE value %% 2 != 0)",
                 METRIC_NAME
         );
 

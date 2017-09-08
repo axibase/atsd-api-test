@@ -13,22 +13,29 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.axibase.tsd.api.model.message.Severity.*;
-import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.*;
 
 
 public class MessageSeverityQueryTest extends MessageMethod {
     private Message message;
     private MessageQuery messageQuery;
+    private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
     public void insertMessages() throws Exception {
         message = new Message("message-query-test-severity");
         message.setMessage("message-text");
-        message.setDate(MIN_STORABLE_DATE);
+        calendar.setTime(new Date());
+        calendar.add(Calendar.YEAR, -1);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        message.setDate(calendar.getTime());
         for (Severity severity : values()) {
             message.setSeverity(severity.name());
             insertMessageCheck(message);

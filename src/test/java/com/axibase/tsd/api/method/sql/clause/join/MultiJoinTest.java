@@ -52,11 +52,11 @@ public class MultiJoinTest extends SqlTest {
     public void testSimpleMultiJoinRequest() {
         String sqlQuery = String.format(
                 "SELECT t1.tags\n" +
-                        "FROM '%s' t1\n" +
-                        "JOIN USING entity '%s' t2\n" +
-                        "JOIN USING entity '%s' t3\n" +
-                        "JOIN USING entity '%s' t4\n" +
-                        "JOIN USING entity '%s' t5\n" +
+                        "FROM \"%s\" t1\n" +
+                        "JOIN USING ENTITY \"%s\" t2\n" +
+                        "JOIN USING ENTITY \"%s\" t3\n" +
+                        "JOIN USING ENTITY \"%s\" t4\n" +
+                        "JOIN USING ENTITY \"%s\" t5\n" +
                         "WHERE \n" +
                         "    t1.tags.tag = '1' AND\n" +
                         "    t2.tags.tag = '1' AND\n" +

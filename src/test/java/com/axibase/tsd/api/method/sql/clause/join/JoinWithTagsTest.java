@@ -19,7 +19,7 @@ import java.util.Map;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class JoinWithTags extends SqlTest {
+public class JoinWithTagsTest extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_METRIC3_NAME = metric();
@@ -51,7 +51,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinWithEntityFilter() {
         String sqlQuery = String.format(
                     "SELECT t1.value, t2.value " +
-                    "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                    "FROM \"%1$s\" t1 JOIN \"%2$s\" t2 " +
                     "WHERE t1.entity = '%3$s' AND t2.entity = '%3$s'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME, TEST_ENTITY_NAME
         );
@@ -70,7 +70,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinWithEntityNotNullFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN \"%2$s\" t2 " +
                         "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -89,7 +89,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinUsingEntityWithEntityFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN USING ENTITY \"%2$s\" t2 " +
                         "WHERE t1.entity = '%3$s' AND t2.entity = '%3$s'",
                 TEST_METRIC1_NAME, TEST_METRIC3_NAME, TEST_ENTITY_NAME
         );
@@ -108,7 +108,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinUsingEntityWithEntityNotNullFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN USING ENTITY \"%2$s\" t2 " +
                         "WHERE t1.entity IS NOT NULL AND t2.entity IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_METRIC3_NAME
         );
@@ -127,7 +127,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinWithTagFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN \"%2$s\" t2 " +
                         "WHERE t1.tags.tag = '123' AND t2.tags.tag = '123'",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -146,7 +146,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinWithTagNotNullFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN \"%2$s\" t2 " +
                         "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
@@ -165,7 +165,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinUsingEntityWithTagFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN USING ENTITY \"%2$s\" t2 " +
                         "WHERE t1.tags.tag = '123' AND t2.tags.tag = 'abc4'",
                 TEST_METRIC1_NAME, TEST_METRIC3_NAME
         );
@@ -184,7 +184,7 @@ public class JoinWithTags extends SqlTest {
     public void testJoinUsingEntityWithTagNotNullFilter() {
         String sqlQuery = String.format(
                 "SELECT t1.value, t2.value " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 " +
+                        "FROM \"%1$s\" t1 JOIN USING ENTITY \"%2$s\" t2 " +
                         "WHERE t1.tags.tag IS NOT NULL AND t2.tags.tag IS NOT NULL",
                 TEST_METRIC1_NAME, TEST_METRIC3_NAME
         );
@@ -203,7 +203,7 @@ public class JoinWithTags extends SqlTest {
     public void testTagsAfterJoin() {
         String sqlQuery = String.format(
                 "SELECT t1.tags, t2.tags " +
-                        "FROM '%1$s' t1 JOIN '%2$s' t2 ",
+                        "FROM \"%1$s\" t1 JOIN \"%2$s\" t2 ",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -221,7 +221,7 @@ public class JoinWithTags extends SqlTest {
     public void testSameTagsAfterJoinUsingEntity() {
         String sqlQuery = String.format(
                 "SELECT t1.tags, t2.tags " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 ",
+                        "FROM \"%1$s\" t1 JOIN USING ENTITY \"%2$s\" t2 ",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -240,7 +240,7 @@ public class JoinWithTags extends SqlTest {
     public void testDifferentTagsAfterJoinUsingEntity() {
         String sqlQuery = String.format(
                 "SELECT t1.tags, t2.tags " +
-                        "FROM '%1$s' t1 JOIN USING ENTITY '%2$s' t2 ",
+                        "FROM \"%1$s\" t1 JOIN USING ENTITY \"%2$s\" t2 ",
                 TEST_METRIC1_NAME, TEST_METRIC3_NAME
         );
 
@@ -269,8 +269,8 @@ public class JoinWithTags extends SqlTest {
 
         String sql = String.format(
                 "SELECT t1.metric.tags.foobar, t1.metric.tags%n" +
-                "FROM '%s' as t1%n" +
-                "JOIN '%s' as t2",
+                "FROM \"%s\" as t1%n" +
+                "JOIN \"%s\" as t2",
                 metric.getName(), otherSeries.getMetric()
         );
         String[][] expected = {
@@ -292,8 +292,8 @@ public class JoinWithTags extends SqlTest {
 
         String sql = String.format(
                 "SELECT t1.metric.interpolate, t2.metric.interpolate%n" +
-                "FROM '%s' as t1%n" +
-                "JOIN '%s' as t2",
+                "FROM \"%s\" as t1%n" +
+                "JOIN \"%s\" as t2",
                 series.getMetric(), otherSeries.getMetric()
         );
         String[][] expected = {
@@ -323,9 +323,9 @@ public class JoinWithTags extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT t1.tags " +
-                "FROM '%s' t1 " +
-                "JOIN USING ENTITY '%s' t2 " +
-                "JOIN USING ENTITY '%s' t3 " +
+                "FROM \"%s\" t1 " +
+                "JOIN USING ENTITY \"%s\" t2 " +
+                "JOIN USING ENTITY \"%s\" t3 " +
                 "WHERE t1.tags.tag = 'value' AND " +
                 "t2.tags.tag = 'value' AND " +
                 "t3.tags.tag = 'value'",

@@ -33,7 +33,7 @@ public class SqlParseTimeTest extends SqlTest {
         Integer numberOfTimes = 27;
 
         String sqlQuery = String.format(
-                "SELECT " + sumNTimes(numberOfTimes, "value") + " FROM '%s'",
+                "SELECT " + sumNTimes(numberOfTimes, "value") + " FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 

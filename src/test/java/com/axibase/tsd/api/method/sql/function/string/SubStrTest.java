@@ -38,7 +38,7 @@ public class SubStrTest extends SqlTest {
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT SUBSTR(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT SUBSTR(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply SUBSTR function to %s%n\tQuery: %s", param, sqlQuery), queryResponse(sqlQuery));
@@ -62,7 +62,7 @@ public class SubStrTest extends SqlTest {
     @Test(dataProvider = "selectTestProvider")
     public void testFunctionResult(String param, String expectedValue) {
         String sqlQuery = String.format(
-                "SELECT SUBSTR(%s) FROM '%s'",
+                "SELECT SUBSTR(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         String assertMessage = String.format("Incorrect result of SUBSTR function with param '%s'.%n\tQuery: %s",

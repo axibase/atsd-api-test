@@ -50,7 +50,7 @@ public class WhereTagInListTest extends SqlTest {
     public void testWhereTagInList() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE tags.t1 IN ('a', 'b')",
                 METRIC_NAME
         );
@@ -69,7 +69,7 @@ public class WhereTagInListTest extends SqlTest {
     public void testWhereTagNotInList() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE tags.t1 NOT IN ('a', 'b')",
                 METRIC_NAME
         );

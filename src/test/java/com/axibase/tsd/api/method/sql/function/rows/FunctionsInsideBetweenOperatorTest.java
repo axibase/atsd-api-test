@@ -35,7 +35,7 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
     @Test
     public void testLagLeadInsideBetweenOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' WHERE value BETWEEN lag(value) and lead(value)",
+                "SELECT value FROM \"%s\" WHERE value BETWEEN lag(value) and lead(value)",
                 METRIC_NAME
         );
 
@@ -50,7 +50,7 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
     @Test
     public void testSqrtInsideBetweenOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' WHERE value BETWEEN sqrt(value) and value",
+                "SELECT value FROM \"%s\" WHERE value BETWEEN sqrt(value) and value",
                 METRIC_NAME
         );
 

@@ -43,7 +43,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
     public void testDayAlign() {
         String sqlQuery = String.format(
                 "SELECT DATE_FORMAT(time,'%s'), COUNT(*) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY PERIOD(1 DAY)",
                 DAY_FORMAT_PATTERN, TEST_METRIC_NAME
         );
@@ -60,7 +60,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Kathmandu");
         String sqlQuery = String.format(
                 "SELECT DATE_FORMAT(time,'%1$s', '%3$s'), COUNT(*) " +
-                        "FROM '%2$s' " +
+                        "FROM \"%2$s\" " +
                         "GROUP BY PERIOD(1 DAY, '%3$s')",
                 DAY_FORMAT_PATTERN,
                 TEST_METRIC_NAME,

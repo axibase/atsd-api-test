@@ -20,7 +20,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
             "SELECT count(*), " +
             "date_format(time, 'yyyy-MM-dd HH:mm', '%1$s'), " +
             "date_format(time, 'yyyy-MM-dd HH:mm', 'UTC') " +
-            "FROM '%2$s' " +
+            "FROM \"%2$s\" " +
             "GROUP BY PERIOD(1 DAY, '%1$s')";
 
     // three days

@@ -73,7 +73,7 @@ public class SqlStandardCollectionViewTest extends SqlTest {
     @Test
     public void testAlphabeticalOrder() {
         String sqlQuery = String.format(
-                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s'  %nWHERE entity = '%s'",
+                "SELECT tags, metric.tags, entity.tags, entity.groups FROM \"%s\"  %nWHERE entity = '%s'",
                 TEST_METRIC1_NAME, TEST_ENTITY1_NAME
         );
 
@@ -97,7 +97,7 @@ public class SqlStandardCollectionViewTest extends SqlTest {
     @Test
     public void testEmptyTags() {
         String sqlQuery = String.format(
-                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s' %nWHERE entity = '%s'",
+                "SELECT tags, metric.tags, entity.tags, entity.groups FROM \"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC2_NAME, TEST_ENTITY2_NAME
         );
 

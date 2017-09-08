@@ -13,7 +13,7 @@ import java.util.Collections;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class SelectTagsWithGroupBy extends SqlTest {
+public class SelectTagsWithGroupByTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 
@@ -31,7 +31,7 @@ public class SelectTagsWithGroupBy extends SqlTest {
     @Test
     public void testIfTagsAsteriskCanBeAppliedWhenGroupedByTags() {
         String sqlQuery = String.format(
-                "SELECT tags.* FROM '%s' t1 GROUP BY tags",
+                "SELECT tags.* FROM \"%s\" t1 GROUP BY tags",
                 TEST_METRIC_NAME
         );
 

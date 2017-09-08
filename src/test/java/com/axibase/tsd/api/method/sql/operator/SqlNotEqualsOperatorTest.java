@@ -42,7 +42,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsFalse() {
         final String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s'" +
+                "SELECT entity, value, datetime FROM \"%s\"" +
                         "WHERE datetime <> '2016-06-03T09:23:00.000Z' AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -57,7 +57,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsTrue() {
         final String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s'" +
+                "SELECT entity, value, datetime FROM \"%s\"" +
                         "WHERE datetime <> '2016-06-03T09:25:00.000Z' AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -72,7 +72,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @Test
     public void testNotEqualsWithNumericIsFalse() {
         final String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s'WHERE value <> 1.2 AND entity = '%s'",
+                "SELECT entity, value FROM \"%s\"WHERE value <> 1.2 AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -93,7 +93,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @Test
     public void testNotEqualsWithNumericIsTrue() {
         final String sqlQuery = String.format(
-                "SELECT entity, value FROM '%s' %nWHERE value <> 1.01 AND entity = '%s'",
+                "SELECT entity, value FROM \"%s\" %nWHERE value <> 1.01 AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -109,7 +109,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @Test
     public void testNotEqualsWitStringIsFalse() {
         final String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nWHERE tags.a <> 'b'",
+                "SELECT entity, value, datetime FROM \"%s\" %nWHERE tags.a <> 'b'",
                 TEST_METRIC_NAME
         );
 
@@ -125,7 +125,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @Test
     public void testNotEqualsWithStringIsTrue() {
         final String sqlQuery = String.format(
-                "SELECT entity, tags.a FROM '%s' %n WHERE tags.a <> 'a' AND entity = '%s'",
+                "SELECT entity, tags.a FROM \"%s\" %n WHERE tags.a <> 'a' AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

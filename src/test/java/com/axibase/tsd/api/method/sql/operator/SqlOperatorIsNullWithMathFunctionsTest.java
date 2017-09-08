@@ -38,7 +38,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     @Test
     public void testIsNotNullWithMathFunction() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL",
+                "SELECT SQRT(value) FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -59,7 +59,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     @Test
     public void testIsNullWithMathFunction() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NULL",
+                "SELECT SQRT(value) FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NULL",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -79,7 +79,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     @Test
     public void testIsNotNullWithMathFunctionAliasInOrderBy() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) AS 'sqrt' FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL %nORDER BY 'sqrt'",
+                "SELECT SQRT(value) AS \"sqrt\" FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL %nORDER BY \"sqrt\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -99,7 +99,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     @Test
     public void testIsNullWithMathFunctionAliasInOrderBy() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) AS 'sqrt' FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NULL %nORDER BY 'sqrt'",
+                "SELECT SQRT(value) AS \"sqrt\" FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NULL %nORDER BY \"sqrt\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -119,7 +119,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     @Test
     public void testIsNullWithMathFunctionComposeAliasInOrderBy() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) AS 'sqrt' FROM '%s' %nWHERE entity = '%s'AND (SQRT(value) + ABS(value))/value IS NULL %nORDER BY 'sqrt'",
+                "SELECT SQRT(value) AS \"sqrt\" FROM \"%s\" %nWHERE entity = '%s'AND (SQRT(value) + ABS(value))/value IS NULL %nORDER BY \"sqrt\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

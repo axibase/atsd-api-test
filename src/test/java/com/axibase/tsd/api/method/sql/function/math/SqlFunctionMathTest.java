@@ -37,7 +37,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testAbs() {
         String sqlQuery = String.format(
-                "SELECT ABS(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT ABS(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -59,7 +59,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testСeil() {
         String sqlQuery = String.format(
-                "SELECT CEIL(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT CEIL(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -81,7 +81,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testFloor() {
         String sqlQuery = String.format(
-                "SELECT FLOOR(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT FLOOR(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -103,7 +103,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testRound() {
         String sqlQuery = String.format(
-                "SELECT ROUND(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT ROUND(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -154,7 +154,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testRoundTo2DecimalPlaces() {
         String sqlQuery = String.format(
-                "SELECT ROUND(value,2) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT ROUND(value,2) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -177,7 +177,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testMod() {
         String sqlQuery = String.format(
-                "SELECT MOD(value,2.11) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT MOD(value,2.11) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -199,7 +199,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testPower() {
         String sqlQuery = String.format(
-                "SELECT Power(value,2.11) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT Power(value,2.11) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -221,7 +221,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testExp() {
         String sqlQuery = String.format(
-                "SELECT EXP(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT EXP(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -244,7 +244,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testLn() {
         String sqlQuery = String.format(
-                "SELECT LN(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT LN(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -267,7 +267,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testLog() {
         String sqlQuery = String.format(
-                "SELECT LOG(1.5, value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT LOG(1.5, value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -292,7 +292,7 @@ public class SqlFunctionMathTest extends SqlTest {
     @Test
     public void testSqrt() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM'%s' %n WHERE entity = '%s'",
+                "SELECT SQRT(value) FROM\"%s\" %n WHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

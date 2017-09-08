@@ -33,7 +33,7 @@ public class DateFormatCastTest extends SqlTest {
         //This test may not work in some timezones
         String sqlQuery = String.format(
                 "SELECT cast(date_format(time, 'M')) + cast(date_format(time, 'd')) " +
-                        "FROM '%s'",
+                        "FROM \"%s\"",
                 METRIC_NAME
         );
 
@@ -52,7 +52,7 @@ public class DateFormatCastTest extends SqlTest {
     public void testDateFormatWithTimeZoneCast() {
         String sqlQuery = String.format(
                 "SELECT cast(date_format(time, 'M', 'UTC')) + cast(date_format(time, 'd', 'UTC')) " +
-                        "FROM '%s'",
+                        "FROM \"%s\"",
                 METRIC_NAME
         );
 
@@ -71,7 +71,7 @@ public class DateFormatCastTest extends SqlTest {
     public void testDateFormatCastInWhere() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE cast(date_format(time, 'd')) = 20",
                 METRIC_NAME
         );

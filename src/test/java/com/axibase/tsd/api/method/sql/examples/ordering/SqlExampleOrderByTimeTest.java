@@ -39,7 +39,7 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
     @Test
     public void test() {
         String sqlQuery = String.format(
-                "SELECT datetime, value FROM '%s'%nORDER BY datetime",
+                "SELECT datetime, value FROM \"%s\"%nORDER BY datetime",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);

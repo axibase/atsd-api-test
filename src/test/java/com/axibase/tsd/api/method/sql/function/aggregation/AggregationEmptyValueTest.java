@@ -41,7 +41,7 @@ public class AggregationEmptyValueTest extends SqlTest {
     public void testMinMaxValueTimeNegavtives() {
         String sqlQuery = String.format(
                 "SELECT min_value_time(value), max_value_time(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY entity",
                 METRIC_NAME1
         );
@@ -61,7 +61,7 @@ public class AggregationEmptyValueTest extends SqlTest {
     public void testMinMaxValueTimeNaN() {
         String sqlQuery = String.format(
                 "SELECT min_value_time(value), max_value_time(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY entity",
                 METRIC_NAME2
         );
@@ -81,7 +81,7 @@ public class AggregationEmptyValueTest extends SqlTest {
     public void testMinMaxValueTimeNull() {
         String sqlQuery = String.format(
                 "SELECT min_value_time(text), max_value_time(text) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY entity",
                 METRIC_NAME1
         );
@@ -123,7 +123,7 @@ public class AggregationEmptyValueTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT %s " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY entity",
                 functionWithArgument,
                 METRIC_NAME2
@@ -143,7 +143,7 @@ public class AggregationEmptyValueTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT %s " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY entity",
                 functionWithArgument,
                 METRIC_NAME2

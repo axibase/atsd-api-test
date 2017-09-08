@@ -43,7 +43,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testCorrectOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 1,2",
+                "SELECT value FROM \"%s\" %nLIMIT 1,2",
                 TEST_METRIC_NAME
         );
 
@@ -61,7 +61,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testCorrectOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 2 OFFSET 1",
+                "SELECT value FROM \"%s\" %nLIMIT 2 OFFSET 1",
                 TEST_METRIC_NAME
         );
 
@@ -80,7 +80,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testCorrectOutOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 3 OFFSET 5",
+                "SELECT value FROM \"%s\" %nLIMIT 3 OFFSET 5",
                 TEST_METRIC_NAME
         );
 
@@ -99,7 +99,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testCorrectOutOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 5,3",
+                "SELECT value FROM \"%s\" %nLIMIT 5,3",
                 TEST_METRIC_NAME
         );
 
@@ -118,7 +118,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testInCorrectNotIntegerOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT -1,3",
+                "SELECT value FROM \"%s\" %nLIMIT -1,3",
                 TEST_METRIC_NAME
         );
 
@@ -140,7 +140,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testInCorrectNotIntegerOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 3 OFFSET -1",
+                "SELECT value FROM \"%s\" %nLIMIT 3 OFFSET -1",
                 TEST_METRIC_NAME
         );
 
@@ -161,7 +161,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testInCorrectLetterOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 3 OFFSET A",
+                "SELECT value FROM \"%s\" %nLIMIT 3 OFFSET A",
                 TEST_METRIC_NAME
         );
 
@@ -183,7 +183,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testInCorrectLetterOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT A,3",
+                "SELECT value FROM \"%s\" %nLIMIT A,3",
                 TEST_METRIC_NAME
         );
 
@@ -205,7 +205,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     @Test
     public void testInCorrectOffsetWithoutLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nOFFSET 1",
+                "SELECT value FROM \"%s\" %nOFFSET 1",
                 TEST_METRIC_NAME
         );
 

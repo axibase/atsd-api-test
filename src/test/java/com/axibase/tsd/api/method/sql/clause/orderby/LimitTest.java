@@ -59,19 +59,19 @@ public class LimitTest extends SqlTest {
     public Object[][] entityOrderProvider() {
         return new Object[][]{
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nORDER BY AVG(value)",
+                        "SELECT entity, AVG (value) FROM \"%s\"%nGROUP BY entity%nORDER BY AVG(value)",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nORDER BY AVG(value) DESC",
+                        "SELECT entity, AVG (value) FROM \"%s\"%nGROUP BY entity%nORDER BY AVG(value) DESC",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nWHERE value > 3%nGROUP BY entity%nORDER BY AVG(value)",
+                        "SELECT entity, AVG (value) FROM \"%s\"%nWHERE value > 3%nGROUP BY entity%nORDER BY AVG(value)",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nGROUP BY entity%nHAVING AVG(value) > 3%nORDER BY AVG(value)",
+                        "SELECT entity, AVG (value) FROM \"%s\"%nGROUP BY entity%nHAVING AVG(value) > 3%nORDER BY AVG(value)",
                         3
                 }
         };
@@ -107,15 +107,15 @@ public class LimitTest extends SqlTest {
     public Object[][] valueOrderProvider() {
         return new Object[][]{
                 {
-                        "SELECT value FROM '%s'%nORDER BY value",
+                        "SELECT value FROM \"%s\"%nORDER BY value",
                         3
                 },
                 {
-                        "SELECT value FROM '%s'%nORDER BY value DESC",
+                        "SELECT value FROM \"%s\"%nORDER BY value DESC",
                         3
                 },
                 {
-                        "SELECT entity, AVG (value) FROM '%s'%nWHERE value > 3%nGROUP BY entity%nORDER BY AVG (value)",
+                        "SELECT entity, AVG (value) FROM \"%s\"%nWHERE value > 3%nGROUP BY entity%nORDER BY AVG (value)",
                         3
                 }
         };
@@ -148,15 +148,15 @@ public class LimitTest extends SqlTest {
     public Object[][] datetimeOrderProvider() {
         return new Object[][]{
                 {
-                        "SELECT datetime FROM '%s'%nORDER BY datetime",
+                        "SELECT datetime FROM \"%s\"%nORDER BY datetime",
                         3
                 },
                 {
-                        "SELECT datetime FROM '%s'%nORDER BY datetime DESC",
+                        "SELECT datetime FROM \"%s\"%nORDER BY datetime DESC",
                         3
                 },
                 {
-                        "SELECT datetime FROM '%s'%nWHERE datetime > '2016-06-19T11:02:00.000Z'%n",
+                        "SELECT datetime FROM \"%s\"%nWHERE datetime > '2016-06-19T11:02:00.000Z'%n",
                         3
                 }
         };
@@ -190,11 +190,11 @@ public class LimitTest extends SqlTest {
     public Object[][] tagsOrderProvider() {
         return new Object[][]{
                 {
-                        "SELECT value , tags.* FROM '%s'%nORDER BY tags.a",
+                        "SELECT value , tags.* FROM \"%s\"%nORDER BY tags.a",
                         2
                 },
                 {
-                        "SELECT value , tags.* FROM '%s'%nORDER BY tags.a DESC",
+                        "SELECT value , tags.* FROM \"%s\"%nORDER BY tags.a DESC",
                         2
                 }
         };
@@ -205,11 +205,11 @@ public class LimitTest extends SqlTest {
     public Object[][] metricOrderProvider() {
         return new Object[][]{
                 {
-                        "SELECT * FROM '%s' t1%nOUTER JOIN '%s' t2%nOUTER JOIN '%s' t3%nORDER BY t1.metric",
+                        "SELECT * FROM \"%s\" t1%nOUTER JOIN \"%s\" t2%nOUTER JOIN \"%s\" t3%nORDER BY t1.metric",
                         2
                 },
                 {
-                        "SELECT * FROM '%s' t1%nOUTER JOIN '%s' t2%nOUTER JOIN '%s' t3%nORDER BY t1.metric DESC",
+                        "SELECT * FROM \"%s\" t1%nOUTER JOIN \"%s\" t2%nOUTER JOIN \"%s\" t3%nORDER BY t1.metric DESC",
                         2
                 }
         };

@@ -36,7 +36,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testGreaterOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value > 1.01 LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE value > 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -53,7 +53,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testLessOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value <= 1.01 LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE value <= 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -70,7 +70,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testLessOrEqualsOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value <= 1.01 LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE value <= 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -87,7 +87,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testGreaterOrEqualsOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value > 1.01 LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE value > 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -104,7 +104,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testValueAsRightOperand() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE  1.01 > value LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE  1.01 > value LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -121,7 +121,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testMathematicalFunction() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE  sqrt(1.01) > value LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE  sqrt(1.01) > value LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -138,7 +138,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testEquals() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value = 1.01 LIMIT 1",
+                "SELECT value FROM \"%s\"%nWHERE value = 1.01 LIMIT 1",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -154,7 +154,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testIsNull() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value IS NOT NULL LIMIT 2",
+                "SELECT value FROM \"%s\"%nWHERE value IS NOT NULL LIMIT 2",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -173,7 +173,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testNotEquals() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE value <> 1.01 LIMIT 2",
+                "SELECT value FROM \"%s\"%nWHERE value <> 1.01 LIMIT 2",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -192,7 +192,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     @Test
     public void testSqrtFromValueComparison() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'%nWHERE SQRT(value) > 1.01 LIMIT 2",
+                "SELECT value FROM \"%s\"%nWHERE SQRT(value) > 1.01 LIMIT 2",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);

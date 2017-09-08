@@ -103,7 +103,7 @@ public class ApplyTest extends SqlTest {
      */
     @Test(dataProvider = "interpolateVariantsProvider")
     public void testApplyWithDateTimeInterval(String param) {
-        String sqlQuery = String.format("SELECT * FROM '%s'%nWHERE datetime BETWEEN '2016-06-29T07:00:00.000Z' " +
+        String sqlQuery = String.format("SELECT * FROM \"%s\"%nWHERE datetime BETWEEN '2016-06-29T07:00:00.000Z' " +
                         "AND '2016-06-29T08:00:00.000Z'%nWITH INTERPOLATE(%s)",
                 APPLY_METRIC, param
         );
@@ -125,7 +125,7 @@ public class ApplyTest extends SqlTest {
             series.addSamples(Sample.ofDateDecimal(TestUtil.ISOFormat(i), (BigDecimal) null));
         }
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
-        String sqlQuery = String.format("SELECT * FROM '%s'%nWHERE time >= %d AND time < %d%nWITH INTERPOLATE(1 MINUTE, LINEAR)",
+        String sqlQuery = String.format("SELECT * FROM \"%s\"%nWHERE time >= %d AND time < %d%nWITH INTERPOLATE(1 MINUTE, LINEAR)",
                 series.getMetric(), startTime, endTime
         );
         String assertMessage = String.format(

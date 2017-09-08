@@ -45,7 +45,7 @@ public class SqlSelectLiteralTest extends SqlTest {
      */
     @Test(dataProvider = "literalAndResultProvider")
     public void testSelectLiteral(String literal, String result) {
-        String sqlQuery = String.format("SELECT %s FROM '%s'", literal, metricName);
+        String sqlQuery = String.format("SELECT %s FROM \"%s\"", literal, metricName);
         StringTable resultTable = queryTable(sqlQuery);
 
         List<List<String>> res = resultTable.filterRows(literal);

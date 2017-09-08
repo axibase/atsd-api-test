@@ -58,7 +58,7 @@ public class OuterJoinMergeTest extends SqlTest {
     @Test
     public void testOuterJoin() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.entity, '%1$s'.value, '%2$s'.value FROM '%1$s' OUTER JOIN USING entity '%2$s' ORDER BY '%1$s'.entity",
+                "SELECT \"%1$s\".entity, \"%1$s\".value, \"%2$s\".value FROM \"%1$s\" OUTER JOIN USING entity \"%2$s\" ORDER BY \"%1$s\".entity",
                 METRIC_NAMES.get(0),
                 METRIC_NAMES.get(1)
         );
@@ -85,7 +85,7 @@ public class OuterJoinMergeTest extends SqlTest {
     @Test
     public void testOuterJoinWhereClause() {
         String sqlQuery = String.format(
-                "SELECT m1.entity, m1.value, m2.value FROM '%1$s' m1 OUTER JOIN USING entity '%2$s' m2 WHERE m1.entity = '%3$s'",
+                "SELECT m1.entity, m1.value, m2.value FROM \"%1$s\" m1 OUTER JOIN USING entity \"%2$s\" m2 WHERE m1.entity = '%3$s'",
                 METRIC_NAMES.get(0),
                 METRIC_NAMES.get(1),
 
@@ -108,7 +108,7 @@ public class OuterJoinMergeTest extends SqlTest {
     @Test
     public void testOuterJoinGroupClause() {
         String sqlQuery = String.format(
-                "SELECT '%1$s'.entity, LAST('%1$s'.value), LAST('%2$s'.value) FROM '%1$s' OUTER JOIN USING entity '%2$s' GROUP BY '%1$s'.entity",
+                "SELECT \"%1$s\".entity, LAST(\"%1$s\".value), LAST(\"%2$s\".value) FROM \"%1$s\" OUTER JOIN USING entity \"%2$s\" GROUP BY \"%1$s\".entity",
                 METRIC_NAMES.get(0),
                 METRIC_NAMES.get(1)
         );

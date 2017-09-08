@@ -55,7 +55,7 @@ public class SqlExampleOrderByValueTest extends SqlTest {
     @Test
     public void test() {
         String sqlQuery = String.format(
-                "SELECT entity, AVG(value) FROM '%s'%nGROUP BY entity%nORDER BY AVG(value) DESC",
+                "SELECT entity, AVG(value) FROM \"%s\"%nGROUP BY entity%nORDER BY AVG(value) DESC",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);

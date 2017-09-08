@@ -42,7 +42,7 @@ public class LagLeadTest extends SqlTest {
     @Test
     public void testLagInSelectClause() {
         String sqlQuery = String.format(
-                "SELECT value, lag(value) FROM '%s'",
+                "SELECT value, lag(value) FROM \"%s\"",
                 METRIC_NAME1
         );
 
@@ -68,7 +68,7 @@ public class LagLeadTest extends SqlTest {
     @Test
     public void testLeadInSelectClause() {
         String sqlQuery = String.format(
-                "SELECT value, lead(value) FROM '%s'",
+                "SELECT value, lead(value) FROM \"%s\"",
                 METRIC_NAME1
         );
 
@@ -95,7 +95,7 @@ public class LagLeadTest extends SqlTest {
     public void testLagInSelectClauseWithNull() {
         String sqlQuery = String.format(
                 "SELECT CASE WHEN value > 0 THEN value END, " +
-                        "lag(CASE WHEN value > 0 THEN value END) FROM '%s'",
+                        "lag(CASE WHEN value > 0 THEN value END) FROM \"%s\"",
                 METRIC_NAME1
         );
 
@@ -122,7 +122,7 @@ public class LagLeadTest extends SqlTest {
     public void testLeadInSelectClauseWithNull() {
         String sqlQuery = String.format(
                 "SELECT CASE WHEN value > 0 THEN value END, " +
-                        "lead(CASE WHEN value > 0 THEN value END) FROM '%s'",
+                        "lead(CASE WHEN value > 0 THEN value END) FROM \"%s\"",
                 METRIC_NAME1
         );
 
@@ -149,7 +149,7 @@ public class LagLeadTest extends SqlTest {
     public void testLagInSelectExpression() {
         String sqlQuery = String.format(
                 "SELECT isnull(lag(sum(value)) - sum(value), 0) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY text",
                 METRIC_NAME1
         );
@@ -166,7 +166,7 @@ public class LagLeadTest extends SqlTest {
     public void testLeadInSelectExpression() {
         String sqlQuery = String.format(
                 "SELECT isnull(lead(sum(value)) - sum(value), 0) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY text",
                 METRIC_NAME1
         );
@@ -183,7 +183,7 @@ public class LagLeadTest extends SqlTest {
     public void testLagInEmptyResult() {
         String sqlQuery = String.format(
                 "SELECT lag(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE text < 'a'",
                 METRIC_NAME1
         );
@@ -200,7 +200,7 @@ public class LagLeadTest extends SqlTest {
     public void testLeadInEmptyResult() {
         String sqlQuery = String.format(
                 "SELECT lead(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE text < 'a'",
                 METRIC_NAME1
         );
@@ -217,8 +217,8 @@ public class LagLeadTest extends SqlTest {
     public void testLeadInJoin() {
         String sqlQuery = String.format(
                 "SELECT lead(m1.value), lag(m2.value), lead(m1.value) + lag(m2.value) " +
-                        "FROM '%s' m1 " +
-                        "JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "JOIN \"%s\" m2 " +
                         "WHERE m1.value > 15 AND m2.value > 20 " +
                         "ORDER BY m1.value",
                 METRIC_NAME1,

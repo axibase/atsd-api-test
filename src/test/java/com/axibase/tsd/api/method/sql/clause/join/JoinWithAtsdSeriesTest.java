@@ -69,7 +69,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "JOIN '%2$s' t2 " +
+                        "JOIN \"%2$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
                         "ORDER BY t1.datetime",
                 METRIC_NAME1,
@@ -100,7 +100,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "JOIN '%2$s' t2 " +
+                        "JOIN \"%2$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
                         "ORDER BY t1.datetime",
                 METRIC_NAME1,
@@ -130,8 +130,8 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.value, t2.value, t3.value " +
                         "FROM atsd_series t1 " +
-                        "JOIN '%2$s' t2 " +
-                        "JOIN '%3$s' t3 " +
+                        "JOIN \"%2$s\" t2 " +
+                        "JOIN \"%3$s\" t3 " +
                         "WHERE t1.metric = '%1$s' " +
                         "ORDER BY t1.datetime",
                 METRIC_NAME1,
@@ -165,7 +165,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "JOIN USING ENTITY '%2$s' t2 " +
+                        "JOIN USING ENTITY \"%2$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
                         "ORDER BY t1.datetime",
                 METRIC_NAME1,
@@ -186,9 +186,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testOuterJoinFromAtsdSeries() {
         /*
-        SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value
+        SELECT isnull(t1.datetime, t2.datetime) as \"date\", t1.value, t2.value
             FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
-            ORDER BY 'date'
+            ORDER BY \"date\"
 
         | 'date'                   | t1.value | t2.value |
         |--------------------------|----------|----------|
@@ -202,11 +202,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value " +
+                "SELECT isnull(t1.datetime, t2.datetime) as \"date\", t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "OUTER JOIN '%2$s' t2 " +
+                        "OUTER JOIN \"%2$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
-                        "ORDER BY 'date'",
+                        "ORDER BY \"date\"",
                 METRIC_NAME1,
                 METRIC_NAME2
         );
@@ -245,7 +245,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "OUTER JOIN '%2$s' t2 " +
+                        "OUTER JOIN \"%2$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
                         "ORDER BY t1.datetime",
                 METRIC_NAME1,
@@ -268,9 +268,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testMultipleOuterJoinFromAtsdSeries() {
         /*
-        SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value
+        SELECT isnull(t1.datetime, t2.datetime) as \"date\", t1.value, t2.value
             FROM atsd_series t1 OUTER JOIN m2 t2 WHERE t1.metric = m1
-            ORDER BY 'date'
+            ORDER BY \"date\"
 
         | date                     | t1.value | t2.value | t3.value |
         |--------------------------|----------|----------|----------|
@@ -284,12 +284,12 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value, t3.value " +
+                "SELECT isnull(t1.datetime, t2.datetime) as \"date\", t1.value, t2.value, t3.value " +
                         "FROM atsd_series t1 " +
-                        "OUTER JOIN '%2$s' t2 " +
-                        "OUTER JOIN '%3$s' t3 " +
+                        "OUTER JOIN \"%2$s\" t2 " +
+                        "OUTER JOIN \"%3$s\" t3 " +
                         "WHERE t1.metric = '%1$s' " +
-                        "ORDER BY 'date'",
+                        "ORDER BY \"date\"",
                 METRIC_NAME1,
                 METRIC_NAME2,
                 METRIC_NAME3
@@ -314,9 +314,9 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     @Test
     public void testOuterJoinFromAtsdSeriesUsingEntity() {
         /*
-        SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value
+        SELECT isnull(t1.datetime, t2.datetime) as \"date\", t1.value, t2.value
             FROM atsd_series t1 OUTER JOIN USING ENTITY m2 t2 WHERE t1.metric = m1
-            ORDER BY 'date'
+            ORDER BY \"date\"
 
         | date                     | t1.value | t2.value |
         |--------------------------|----------|----------|
@@ -329,11 +329,11 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
          */
 
         String sqlQuery = String.format(
-                "SELECT isnull(t1.datetime, t2.datetime) as 'date', t1.value, t2.value " +
+                "SELECT isnull(t1.datetime, t2.datetime) as \"date\", t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "OUTER JOIN USING ENTITY '%2$s' t2 " +
+                        "OUTER JOIN USING ENTITY \"%2$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
-                        "ORDER BY 'date'",
+                        "ORDER BY \"date\"",
                 METRIC_NAME1,
                 METRIC_NAME2
         );
@@ -366,7 +366,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.value, t2.value " +
                         "FROM atsd_series t1 " +
-                        "JOIN '%1$s' t2 " +
+                        "JOIN \"%1$s\" t2 " +
                         "WHERE t1.metric = '%1$s' " +
                         "ORDER BY t1.datetime",
                 METRIC_NAME1

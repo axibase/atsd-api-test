@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class JoinWithDatetime extends SqlTest {
+public class JoinWithDatetimeTest extends SqlTest {
     private static String TEST_METRIC_1 = metric();
     private static String TEST_METRIC_2 = metric();
 
@@ -45,8 +45,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortDatetimeSyntaxInSelect() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                "FROM '%s' m1 " +
-                "OUTER JOIN '%s' m2",
+                "FROM \"%s\" m1 " +
+                "OUTER JOIN \"%s\" m2",
                 TEST_METRIC_1, TEST_METRIC_2
         );
 
@@ -67,8 +67,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortTimeSyntaxInSelect() {
         String sqlQuery = String.format(
                 "SELECT time, m1.time, m2.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2",
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2",
                 TEST_METRIC_1, TEST_METRIC_2
         );
 
@@ -89,8 +89,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortDatetimeSyntaxInWhere() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-06T00:00:00.000Z' AND '2017-01-07T00:00:00.000Z' " +
                         "   AND m2.datetime BETWEEN '2017-01-06T00:00:00.000Z' AND '2017-01-06T00:00:00.000Z'",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -110,8 +110,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortTimeSyntaxInWhere() {
         String sqlQuery = String.format(
                 "SELECT time, m1.time, m2.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE time >= 1483660800000 AND m1.time <= 1483747200000",
                 TEST_METRIC_1, TEST_METRIC_2
         );
@@ -131,8 +131,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortDatetimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-02T00:00:00.000Z' AND '2017-01-07T00:00:00.000Z' " +
                         "GROUP BY datetime",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -154,8 +154,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testFullDatetimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
                 "SELECT m1.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.datetime BETWEEN '2017-01-02T00:00:00.000Z' AND '2017-01-07T00:00:00.000Z' " +
                         "GROUP BY m1.datetime",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -177,8 +177,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortTimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
                 "SELECT time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE time >= 1483315200000 AND time <= 1483747200000 " +
                         "GROUP BY time",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -200,8 +200,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testFullTimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
                 "SELECT m1.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.time >= 1483315200000 AND m1.time <= 1483747200000 " +
                         "GROUP BY m1.time",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -223,8 +223,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortDatetimeSyntaxInHaving() {
         String sqlQuery = String.format(
                 "SELECT datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "GROUP BY datetime " +
                         "HAVING datetime >= '2017-01-02T00:00:00.000Z' ",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -246,8 +246,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testFullDatetimeSyntaxInHaving() {
         String sqlQuery = String.format(
                 "SELECT m1.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "GROUP BY m1.datetime " +
                         "HAVING m1.datetime >= '2017-01-02T00:00:00.000Z'",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -268,8 +268,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortTimeSyntaxInHaving() {
         String sqlQuery = String.format(
                 "SELECT time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "GROUP BY time " +
                         "HAVING time >= 1483660800000",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -290,8 +290,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testFullTimeSyntaxInHaving() {
         String sqlQuery = String.format(
                 "SELECT m1.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "GROUP BY m1.time " +
                         "HAVING m1.time >= 1483315200000 OR m1.time IS NULL",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -313,8 +313,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortDatetimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "ORDER BY datetime",
                 TEST_METRIC_1, TEST_METRIC_2
         );
@@ -336,8 +336,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testShortTimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
                 "SELECT time, m1.time, m2.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "ORDER BY time",
                 TEST_METRIC_1, TEST_METRIC_2
         );
@@ -359,8 +359,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testFullDatetimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "ORDER BY m1.datetime",
                 TEST_METRIC_1, TEST_METRIC_2
         );
@@ -382,8 +382,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testFullTimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
                 "SELECT time, m1.time, m2.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "ORDER BY m2.time",
                 TEST_METRIC_1, TEST_METRIC_2
         );
@@ -405,8 +405,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testIntersectingPeriodDatetimeCondition() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-06T00:00:00Z' " +
                         "   AND m2.datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-07T00:00:00Z' " +
                         "ORDER BY datetime",
@@ -428,8 +428,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testIntersectingSingleDayDatetimeCondition() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-02T00:00:00Z' " +
                         "   AND m2.datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-07T00:00:00Z' " +
                         "ORDER BY datetime",
@@ -450,8 +450,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testInvalidDatetimeCondition() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-02T00:00:00Z' " +
                         "   AND m2.datetime BETWEEN '2017-01-05T00:00:00Z' AND '2017-01-07T00:00:00Z'",
                 TEST_METRIC_1, TEST_METRIC_2
@@ -470,8 +470,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testIntersectingPeriodTimeCondition() {
         String sqlQuery = String.format(
                 "SELECT time, m1.time, m2.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.time >= 1483228800000 AND m1.time <= 1483660800000 " +
                         "   AND m2.time >= 1483315200000 AND m2.time <= 1483747200000 " +
                         "ORDER BY time",
@@ -493,8 +493,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testIntersectingSingleDayTimeCondition() {
         String sqlQuery = String.format(
                 "SELECT time, m1.time, m2.time " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.time >= 1483228800000 AND m1.time <= 1483660800000 " +
                         "   AND m2.time >= 1483660800000 AND m2.time <= 1483747200000 " +
                         "ORDER BY time",
@@ -515,8 +515,8 @@ public class JoinWithDatetime extends SqlTest {
     public void testInvalidTimeCondition() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.datetime, m2.datetime " +
-                        "FROM '%s' m1 " +
-                        "OUTER JOIN '%s' m2 " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
                         "WHERE m1.time >= 1483228800000 AND m1.time <= 1483315200000 " +
                         "   AND m2.time >= 1483660800000 AND m2.time <= 1483747200000",
                 TEST_METRIC_1, TEST_METRIC_2

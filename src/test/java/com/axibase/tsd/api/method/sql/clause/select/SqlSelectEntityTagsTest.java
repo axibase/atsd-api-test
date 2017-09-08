@@ -56,7 +56,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     @Test
     public void testSelectEntityTags() {
         String sqlQuery = String.format(
-                "SELECT entity, value, entity.tags FROM '%s' %n" +
+                "SELECT entity, value, entity.tags FROM \"%s\" %n" +
                         "WHERE datetime >= '2016-06-03T09:27:00.000Z' AND datetime < '2016-06-03T09:27:02.001Z' %n" +
                         "AND entity = '%s' %nORDER BY datetime",
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
@@ -76,7 +76,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     @Test
     public void testSelectEmptyEntityTags() {
         String sqlQuery = String.format(
-                "SELECT entity, value, entity.tags FROM '%s' %n" +
+                "SELECT entity, value, entity.tags FROM \"%s\" %n" +
                         "WHERE datetime >= '2016-06-03T09:27:00.000Z' AND datetime < '2016-06-03T09:27:02.001Z' %n" +
                         "AND entity = '%s' %nORDER BY datetime",
                 TEST_METRIC_NAME, TEST_ENTITY3_NAME
@@ -96,7 +96,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     @Test
     public void testSelectTagsWithGroupByEntityTags() {
         String sqlQuery = String.format(
-                "SELECT entity, COUNT(value), entity.tags FROM '%s' %n" +
+                "SELECT entity, COUNT(value), entity.tags FROM \"%s\" %n" +
                         "WHERE datetime >= '2016-06-03T09:27:00.000Z' AND datetime < '2016-06-03T09:27:02.001Z' %n" +
                         "AND entity = '%s' %nGROUP BY entity, value",
                 TEST_METRIC_NAME, TEST_ENTITY3_NAME

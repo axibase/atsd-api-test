@@ -23,7 +23,7 @@ public class SelectNonExistentTagTest extends SqlTest {
      */
     @Test
     public void testNonExistentTag() {
-        String sqlQuery = String.format("SELECT tags.do_not_exist FROM '%s'", metricName);
+        String sqlQuery = String.format("SELECT tags.do_not_exist FROM \"%s\"", metricName);
 
         String[][] expectedRows = {
                 {"null"}

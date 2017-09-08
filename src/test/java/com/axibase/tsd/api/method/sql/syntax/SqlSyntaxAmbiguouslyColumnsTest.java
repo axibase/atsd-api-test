@@ -40,7 +40,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyValueColumn() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nJOIN '%s'",
+                "SELECT value FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -57,7 +57,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyEntityColumn() {
         String sqlQuery = String.format(
-                "SELECT entity FROM '%s' %nJOIN '%s'",
+                "SELECT entity FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -73,7 +73,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyTagsColumn() {
         String sqlQuery = String.format(
-                "SELECT tags FROM '%s' %nJOIN '%s'",
+                "SELECT tags FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -90,7 +90,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslySpecifiedTagColumn() {
         String sqlQuery = String.format(
-                "SELECT tags.a FROM '%s' %nJOIN '%s'",
+                "SELECT tags.a FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -106,7 +106,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyTagsAllColumn() {
         String sqlQuery = String.format(
-                "SELECT tags.* FROM '%s' %nJOIN '%s'",
+                "SELECT tags.* FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -123,7 +123,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyMetricTagsAllColumn() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.* FROM '%s' %nJOIN '%s'",
+                "SELECT metric.tags.* FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -139,7 +139,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslySpecifiedMetricTagAllColumn() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.a FROM '%s' %nJOIN '%s'",
+                "SELECT metric.tags.a FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -155,7 +155,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslySpecifiedEntityTagAllColumn() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.a FROM '%s' %nJOIN '%s'",
+                "SELECT entity.tags.a FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -172,7 +172,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyColumnWithMathFunction() {
         String sqlQuery = String.format(
-                "SELECT ABS(value) FROM '%s' %nJOIN '%s'",
+                "SELECT ABS(value) FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -189,7 +189,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyColumnWithAggregateFunction() {
         String sqlQuery = String.format(
-                "SELECT AVG(value) FROM '%s' %nJOIN '%s'",
+                "SELECT AVG(value) FROM \"%s\" %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -206,7 +206,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testAmbiguouslyColumnInWhereClause() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1 %nJOIN '%s' %nWHERE value <> 0",
+                "SELECT t1.value FROM \"%s\" t1 %nJOIN \"%s\" %nWHERE value <> 0",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -223,7 +223,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectValueColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.value FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -238,7 +238,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectEntityColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.entity FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.entity FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -253,7 +253,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectTimeColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.time FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.time FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -269,7 +269,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectDateTimeColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.datetime FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.datetime FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -284,7 +284,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectTagsColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.tags FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.tags FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -300,7 +300,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectSpecifiedTagColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.tags.a FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.tags.a FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -315,7 +315,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectTagsAllColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.tags.* FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.tags.* FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -331,7 +331,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectMetricTagsAllColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.metric.tags.* FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.metric.tags.* FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -347,7 +347,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectSpecifiedMetricTagAllColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.metric.tags.a FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.metric.tags.a FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -362,7 +362,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectSpecifiedEntityTagAllColumn() {
         String sqlQuery = String.format(
-                "SELECT t1.entity.tags.a FROM '%s' t1 %nJOIN '%s'",
+                "SELECT t1.entity.tags.a FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -378,7 +378,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectColumnWithMathFunction() {
         String sqlQuery = String.format(
-                "SELECT ABS(t1.value) FROM '%s' t1 %nJOIN '%s'",
+                "SELECT ABS(t1.value) FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -393,7 +393,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectColumnWithAggregateFunction() {
         String sqlQuery = String.format(
-                "SELECT AVG(t1.value) FROM '%s' t1 %nJOIN '%s'",
+                "SELECT AVG(t1.value) FROM \"%s\" t1 %nJOIN \"%s\"",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -408,7 +408,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
     @Test
     public void testCorrectColumnInWhereClause() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1 %nJOIN '%s' %nWHERE t1.value <> 0",
+                "SELECT t1.value FROM \"%s\" t1 %nJOIN \"%s\" %nWHERE t1.value <> 0",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 

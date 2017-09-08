@@ -13,7 +13,7 @@ import java.util.Collections;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 
 
-public class AverageFunction extends SqlTest {
+public class AverageFunctionTest extends SqlTest {
 
     @DataProvider(name = "sqlStringArg")
     private static Object[][] strings() {
@@ -29,7 +29,7 @@ public class AverageFunction extends SqlTest {
     public void testLengthFunction(String param) throws Exception {
         Series series = Mocks.series();
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
-        String sqlQuery = String.format("SELECT AVG(LENGTH(%s)) FROM '%s'%nGROUP BY entity",
+        String sqlQuery = String.format("SELECT AVG(LENGTH(%s)) FROM \"%s\"%nGROUP BY entity",
                 param, series.getMetric()
         );
         String assertMessage = String.format("Failed to aggregate average values from length function with param" +

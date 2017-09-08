@@ -54,7 +54,7 @@ public class TextInterpolationTest extends SqlTest {
         );
         SeriesMethod.insertSeriesCheck(series);
         String sqlQuery = String.format(
-                "SELECT text FROM '%s'%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +
+                "SELECT text FROM \"%s\"%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +
                         "WITH INTERPOLATE(500 MILLISECOND, AUTO, OUTER, EXTEND)",
                 series.getMetric()
         );
@@ -192,7 +192,7 @@ public class TextInterpolationTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
 
         String sqlQuery = String.format(
-                "SELECT datetime, text FROM '%s'%nWHERE time BETWEEN %s AND %s%nWITH INTERPOLATE(%s)",
+                "SELECT datetime, text FROM \"%s\"%nWHERE time BETWEEN %s AND %s%nWITH INTERPOLATE(%s)",
                 series.getMetric(), period.getStartTime(), period.getEndTime(), interpolationParams
         );
 
@@ -241,7 +241,7 @@ public class TextInterpolationTest extends SqlTest {
         queryBuilder.append(" FROM ");
         i = 0;
         for (Series series : seriesList) {
-            String fromTable = String.format(" '%s' t%d%n", series.getMetric(), i + 1);
+            String fromTable = String.format(" \"%s\" t%d%n", series.getMetric(), i + 1);
             if (i == 0) {
                 queryBuilder.append(fromTable);
             } else {

@@ -36,7 +36,7 @@ public class CaseValueTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT CASE value " +
                         "WHEN value THEN value END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -62,7 +62,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 5 THEN 'e' " +
                         "ELSE 'x' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -87,7 +87,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 4 THEN 'd' " +
                         "WHEN 5 THEN 'e' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -112,7 +112,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN MOD(57, 9) THEN 'd' " +
                         "ELSE 'x' " +
                         "END, value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY 1,2",
                 METRIC_NAME
         );
@@ -142,7 +142,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 'd' THEN 4 " +
                         "WHEN 'e' THEN 5 " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY text",
                 METRIC_NAME
         );
@@ -179,7 +179,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 2 OR 3 OR 4 THEN 'b' " +
                         "WHEN 5 THEN 'c' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -202,7 +202,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 2 OR 3 OR (CASE text WHEN 'd' THEN 4 END) THEN 'b' " +
                         "WHEN 5 THEN 'c' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -227,7 +227,7 @@ public class CaseValueTest extends SqlTest {
                             "(CASE text WHEN 'c' OR 'd' THEN 'x' END) " +
                         "WHEN 5 THEN 'c' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -254,7 +254,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 2 THEN 'b' " +
                         "ELSE 'c'" +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );

@@ -45,7 +45,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test123Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 1,2,3",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 1,2,3",
                 TEST_METRIC_NAME
         );
 
@@ -70,7 +70,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test132Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 1,3,2",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 1,3,2",
                 TEST_METRIC_NAME
         );
 
@@ -95,7 +95,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test213Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 2,1,3",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 2,1,3",
                 TEST_METRIC_NAME
         );
 
@@ -120,7 +120,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test231Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 2,3,1",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 2,3,1",
                 TEST_METRIC_NAME
         );
 
@@ -145,7 +145,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test312Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 3,1,2",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 3,1,2",
                 TEST_METRIC_NAME
         );
 
@@ -170,7 +170,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test321Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 3,2,1",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 3,2,1",
                 TEST_METRIC_NAME
         );
 
@@ -196,7 +196,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     @Test
     public void test1Decs2Decs3DecsOrder() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 1 DESC,2 DESC,3 DESC",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 1 DESC,2 DESC,3 DESC",
                 TEST_METRIC_NAME
         );
 

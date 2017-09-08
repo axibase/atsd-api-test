@@ -25,7 +25,7 @@ public class SqlMetaDataTest extends SqlMethod {
     @BeforeClass
     public static void prepareDataSet() throws Exception {
         final String sqlQuery = String.format(
-                "SELECT entity, metric, value, value*100, datetime  FROM '%s' %n" +
+                "SELECT entity, metric, value, value*100, datetime  FROM \"%s\" %n" +
                         "WHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );

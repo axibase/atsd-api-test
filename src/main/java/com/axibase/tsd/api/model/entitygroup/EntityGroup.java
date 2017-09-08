@@ -2,6 +2,9 @@ package com.axibase.tsd.api.model.entitygroup;
 
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,45 +12,23 @@ import java.util.Map;
 /**
  * @author Dmitry Korchagin.
  */
+@Getter
+@Setter
+@NoArgsConstructor
 public class EntityGroup {
     private String name;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String expression;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Map<String, String> tags = new HashMap<>();
-
-    public EntityGroup() {
-    }
+    private Boolean enabled;
 
     public EntityGroup(String name) {
         if (null != name) {
             Registry.EntityGroup.checkExists(name);
         }
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getExpression() {
-        return expression;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
-
-    public Map<String, String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Map<String, String> tags) {
-        this.tags = tags;
+        this.enabled = true;
     }
 
     public void addTag(String tagName, String tagValue) {

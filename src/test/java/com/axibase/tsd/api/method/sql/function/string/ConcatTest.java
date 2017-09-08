@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
-import com.axibase.tsd.api.method.admin.SystemInformationMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
@@ -81,7 +80,7 @@ public class ConcatTest extends SqlTest {
      */
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT CONCAT(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT CONCAT(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply CONCAT function to %s", param), queryResponse(sqlQuery));
@@ -92,7 +91,7 @@ public class ConcatTest extends SqlTest {
      */
     @Test
     public void testConcatWordAndNumber() throws Exception {
-        String sqlQuery = String.format("SELECT CONCAT('a:', value) FROM '%s'",
+        String sqlQuery = String.format("SELECT CONCAT('a:', value) FROM \"%s\"",
                 TEST_METRIC1
         );
 
@@ -114,15 +113,14 @@ public class ConcatTest extends SqlTest {
     public void testConcatWordAndTwoNumbers() throws Exception {
         String sqlQuery = String.format(
                 "SELECT CONCAT('a:', t1.value, ':', t2.value), CONCAT('a:', t1.value, ':', t3.value) " +
-                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3",
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 JOIN \"%s\" t3",
                 TEST_METRIC1,
                 TEST_METRIC2,
                 TEST_METRIC3
         );
 
-        String javaVersion = SystemInformationMethod.getJavaVersion();
         String[][] expectedRows = {
-                {javaVersion.startsWith("1.8") ? "a:3.14:5.55" : "a:3.14:5.56", "a:3.14:5"}
+                {"a:3.14:5.55", "a:3.14:5"}
         };
 
         assertSqlQueryRows("CONCAT word and two numbers gives wrong result", expectedRows, sqlQuery);
@@ -135,7 +133,7 @@ public class ConcatTest extends SqlTest {
     @Test
     public void testConcatInWhere() {
         String sqlQuery = String.format(
-                "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', '')",
+                "SELECT entity FROM \"%s\" WHERE entity = CONCAT('%s', '')",
                 TEST_METRIC2,
                 TEST_ENTITY
         );
@@ -153,7 +151,7 @@ public class ConcatTest extends SqlTest {
     @Test
     public void testConcatInWhereNonEmpty() {
         String sqlQuery = String.format(
-                "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', '%s')",
+                "SELECT entity FROM \"%s\" WHERE entity = CONCAT('%s', '%s')",
                 TEST_METRIC2,
                 TEST_ENTITY_LEFT,
                 TEST_ENTITY_RIGHT + TEST_ENTITY_INDEX
@@ -173,7 +171,7 @@ public class ConcatTest extends SqlTest {
     @Test
     public void testConcatInWhereNumber() {
         String sqlQuery = String.format(
-                "SELECT entity FROM '%s' WHERE entity = CONCAT('%s', %d)",
+                "SELECT entity FROM \"%s\" WHERE entity = CONCAT('%s', %d)",
                 TEST_METRIC2,
                 TEST_ENTITY_LEFT + TEST_ENTITY_RIGHT,
                 TEST_ENTITY_INDEX

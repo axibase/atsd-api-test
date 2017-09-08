@@ -36,7 +36,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
     public void testAliasInsideRowNumber() {
         String sqlQuery = String.format(
                 "SELECT entity AS e, value AS v " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "WITH ROW_NUMBER(e ORDER BY v) <= 2",
                 METRIC_NAME
         );
@@ -56,7 +56,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
     public void testAliasInsideCast() {
         String sqlQuery = String.format(
                 "SELECT value AS v " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "ORDER BY CAST(v AS string)",
                 METRIC_NAME
         );

@@ -37,9 +37,9 @@ public class AggregationNullValuesTest extends SqlTest {
      */
     @Test
     public void testNullValues() {
-        String sqlQuery = String.format("SELECT '%1$s'.entity as \"Item\", LAST('%1$s'.value) * LAST('%2$s'.value) " +
-                "FROM '%1$s' " +
-                "OUTER JOIN USING ENTITY '%2$s' " +
+        String sqlQuery = String.format("SELECT \"%1$s\".entity as \"Item\", LAST(\"%1$s\".value) * LAST(\"%2$s\".value) " +
+                "FROM \"%1$s\" " +
+                "OUTER JOIN USING ENTITY \"%2$s\" " +
                 "GROUP BY \"Item\"",
                 FIRST_METRIC,
                 SECOND_METRIC);

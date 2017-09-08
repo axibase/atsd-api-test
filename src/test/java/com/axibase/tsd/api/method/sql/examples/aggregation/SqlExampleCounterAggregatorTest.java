@@ -42,7 +42,7 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
     @Test
     public void testExample() {
         String sqlQuery = String.format("SELECT datetime, count(value), max(value), first(value), last(value), counter(value), delta(value) %n" +
-                "FROM '%s' %n" +
+                "FROM \"%s\" %n" +
                 "WHERE datetime >= '2015-09-30T09:00:05Z' AND datetime < '2015-09-30T09:00:07Z'  %n" +
                 "GROUP BY period(1 second)", TEST_METRIC_NAME);
 

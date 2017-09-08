@@ -35,7 +35,7 @@ public class SumExpressionTest extends SqlTest {
     @Test
     public void testSumInExpression() {
         String sqlQuery = String.format(
-                "SELECT sum(value * value) * sum(value * 2) FROM '%s'",
+                "SELECT sum(value * value) * sum(value * 2) FROM \"%s\"",
                 METRIC_NAME);
 
         String[][] expectedRows = {{"1650"}};

@@ -34,7 +34,7 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
     public void testEqualsInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "WHERE (value = 1) OR (value = 2)",
                 TEST_METRIC);
 
@@ -53,7 +53,7 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
     public void testLessGreatInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE (value < 1) OR (value >= 2)",
                 TEST_METRIC);
 
@@ -73,7 +73,7 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
     public void testLogicalOperationsOrderInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE ((value < 1) OR (value > 2)) AND (value != 0)",
                 TEST_METRIC);
 
@@ -91,7 +91,7 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
     public void testNotNullInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE (text IS NOT NULL) OR (value = 2)",
                 TEST_METRIC);
 
@@ -110,7 +110,7 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
     public void testRegexInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE (text REGEX 'ze..') AND (value = 0)",
                 TEST_METRIC);
 

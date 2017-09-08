@@ -26,7 +26,7 @@ public class DatetimeTypeTest extends SqlTest {
     public void testDatetimeTypeAsIsnullResult() {
         String sqlQuery = String.format(
                 "SELECT isnull(t1.datetime, t2.datetime) " +
-                        "FROM '%s' t1 OUTER JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 OUTER JOIN \"%s\" t2 " +
                         "LIMIT 2",
                 series1.getMetric(), series2.getMetric()
         );
@@ -51,7 +51,7 @@ public class DatetimeTypeTest extends SqlTest {
     public void testTimeTypeAsIsnullResult() {
         String sqlQuery = String.format(
                 "SELECT isnull(t1.time, t2.time) " +
-                        "FROM '%s' t1 OUTER JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 OUTER JOIN \"%s\" t2 " +
                         "LIMIT 2",
                 series1.getMetric(), series2.getMetric()
         );
@@ -78,7 +78,7 @@ public class DatetimeTypeTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT isnull(t1.value, t2.value), isnull(t1.datetime, t2.datetime), " +
                         "isnull(t1.time, t2.time), isnull(t1.entity, t2.entity) " +
-                        "FROM '%s' t1 OUTER JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 OUTER JOIN \"%s\" t2 " +
                         "ORDER BY 1 " +
                         "LIMIT 2",
                 series1.getMetric(), series2.getMetric()
@@ -103,10 +103,10 @@ public class DatetimeTypeTest extends SqlTest {
     @Test
     public void testDatetimeTypeInStringFunctions() {
         String sqlQuery = String.format(
-                "SELECT upper(datetime), lower(datetime), replace(datetime, \"3\", \"0\"), length(datetime), " +
-                        "concat(datetime, \"word\"), concat(datetime, 123), locate(16, datetime), " +
-                        "locate(\"16\", datetime), substr(datetime, 24) " +
-                "FROM '%s' t1 " +
+                "SELECT upper(datetime), lower(datetime), replace(datetime, '3', '0'), length(datetime), " +
+                        "concat(datetime, 'word'), concat(datetime, 123), locate(16, datetime), " +
+                        "locate('16', datetime), substr(datetime, 24) " +
+                "FROM \"%s\" t1 " +
                 "LIMIT 1",
                 series1.getMetric()
         );
@@ -135,11 +135,11 @@ public class DatetimeTypeTest extends SqlTest {
     public void testDatetimeAsIsnullResultTypeInStringFunctions() {
         String sqlQuery = String.format(
                 "SELECT upper(isnull(NaN, datetime)), lower(isnull(NaN, datetime)), " +
-                        "replace(isnull(NaN, datetime), \"3\", \"0\"), length(isnull(NaN, datetime)), " +
-                        "concat(isnull(NaN, datetime), \"word\"), concat(isnull(NaN, datetime), 123), " +
-                        "locate(16, isnull(NaN, datetime)), locate(\"16\", isnull(NaN, datetime)), " +
+                        "replace(isnull(NaN, datetime), '3', '0'), length(isnull(NaN, datetime)), " +
+                        "concat(isnull(NaN, datetime), 'word'), concat(isnull(NaN, datetime), 123), " +
+                        "locate(16, isnull(NaN, datetime)), locate('16', isnull(NaN, datetime)), " +
                         "substr(isnull(NaN, datetime), 24)" +
-                "FROM '%s' t1 " +
+                "FROM \"%s\" t1 " +
                 "LIMIT 1",
                 series1.getMetric()
         );
@@ -167,9 +167,9 @@ public class DatetimeTypeTest extends SqlTest {
     @Test
     public void testTimeTypeInStringFunctions() throws Exception {
         String sqlQuery = String.format(
-                "SELECT upper(time), lower(time), replace(time, \"0\", \"9\"), length(time), concat(time, \"word\"), " +
-                        "concat(time, 123), locate(0, time), locate(\"0\", time), substr(time, 13)" +
-                "FROM '%s' t1 " +
+                "SELECT upper(time), lower(time), replace(time, '0', '9'), length(time), concat(time, 'word'), " +
+                        "concat(time, 123), locate(0, time), locate('0', time), substr(time, 13)" +
+                "FROM \"%s\" t1 " +
                 "LIMIT 1",
                 series1.getMetric()
         );
@@ -197,11 +197,11 @@ public class DatetimeTypeTest extends SqlTest {
     @Test
     public void testTimeAsIsnullResultTypeInStringFunctions() throws Exception {
         String sqlQuery = String.format(
-                "SELECT upper(isnull(NaN, time)), lower(isnull(NaN, time)), replace(isnull(NaN, time), \"0\", \"9\"), " +
-                        "length(isnull(NaN, time)), concat(isnull(NaN, time), \"word\"), " +
-                        "concat(isnull(NaN, time), 123), locate(0, isnull(NaN, time)), locate(\"0\", " +
+                "SELECT upper(isnull(NaN, time)), lower(isnull(NaN, time)), replace(isnull(NaN, time), '0', '9'), " +
+                        "length(isnull(NaN, time)), concat(isnull(NaN, time), 'word'), " +
+                        "concat(isnull(NaN, time), 123), locate(0, isnull(NaN, time)), locate('0', " +
                         "isnull(NaN, time)), substr(isnull(NaN, time), 13)" +
-                "FROM '%s' t1 " +
+                "FROM \"%s\" t1 " +
                 "LIMIT 1",
                 series1.getMetric()
         );

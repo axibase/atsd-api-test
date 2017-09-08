@@ -109,7 +109,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterMilliseconds() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(2 MILLISECOND, 'UTC')",
                 TEST_METRIC_MILLISECONDS
@@ -130,7 +130,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterSeconds() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 SECOND, 'UTC')",
                 TEST_METRIC_SECONDS
@@ -153,7 +153,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterFewSeconds() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(2 SECOND, 'UTC')",
                 TEST_METRIC_SECONDS
@@ -174,7 +174,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterMinutes() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 MINUTE, 'UTC')",
                 TEST_METRIC_MINUTES
@@ -197,7 +197,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterFewMinutes() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-01T00:03:00.000Z'" +
                         "GROUP BY PERIOD(5 MINUTE, 'UTC')",
                 TEST_METRIC_MINUTES
@@ -216,7 +216,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterDays() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 DAY, 'UTC')",
                 TEST_METRIC_DAYS
@@ -238,7 +238,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterFewDays() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-03T00:00:00.000Z'" +
                         "GROUP BY PERIOD(3 DAY, 'UTC')",
                 TEST_METRIC_DAYS
@@ -259,7 +259,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterWeeks() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 WEEK, 'UTC')",
                 TEST_METRIC_WEEKS
@@ -280,7 +280,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterFewWeeks() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(2 WEEK, 'UTC')",
                 TEST_METRIC_WEEKS
@@ -300,7 +300,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterMonths() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 MONTH, 'UTC')",
                 TEST_METRIC_MONTHS
@@ -322,7 +322,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterFewMonths() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-02-02T00:00:00.000Z'" +
                         "GROUP BY PERIOD(3 MONTH, 'UTC')",
                 TEST_METRIC_MONTHS
@@ -342,7 +342,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterQuarters() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 QUARTER, 'UTC')",
                 TEST_METRIC_MONTHS
@@ -362,7 +362,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterYears() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '1970-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 YEAR, 'UTC')",
                 TEST_METRIC_YEARS
@@ -383,7 +383,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterLeftBound() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z'" +
                         "GROUP BY PERIOD(1 HOUR, 'UTC')",
                 TEST_METRIC_HOURS
@@ -404,7 +404,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterRightBound() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime <= '2017-01-01T02:00:00.000Z'" +
                         "GROUP BY PERIOD(1 HOUR, 'UTC')",
                 TEST_METRIC_HOURS
@@ -425,7 +425,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodFilterBothBounds() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime > '2017-01-01T00:00:00.000Z' AND datetime <= '2017-01-01T02:00:00.000Z' " +
                         "GROUP BY PERIOD(1 HOUR, 'UTC')",
                 TEST_METRIC_HOURS
@@ -445,7 +445,7 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     @Test
     public void testPeriodNonFilterBothBounds() {
         final String sqlQuery = String.format(
-                "SELECT datetime, sum(value), count(value) FROM '%s' " +
+                "SELECT datetime, sum(value), count(value) FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-01T00:00:00.000Z' AND datetime <= '2017-01-01T02:01:00.000Z' " +
                         "GROUP BY PERIOD(1 HOUR, 'UTC')",
                 TEST_METRIC_HOURS

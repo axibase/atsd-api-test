@@ -73,7 +73,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastSumJoin() {
         String sqlQuery = String.format(
-                "SELECT cast(t1.tags.numeric_tag) + cast(t2.tags.numeric_tag) FROM '%s' t1 JOIN '%s' t2",
+                "SELECT cast(t1.tags.numeric_tag) + cast(t2.tags.numeric_tag) FROM \"%s\" t1 JOIN \"%s\" t2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -90,7 +90,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastSumJoinUsingEntity() {
         String sqlQuery = String.format(
-                "SELECT cast(t1.tags.numeric_tag) + cast(t2.tags.numeric_tag) FROM '%s' t1 JOIN USING ENTITY '%s' t2",
+                "SELECT cast(t1.tags.numeric_tag) + cast(t2.tags.numeric_tag) FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -109,7 +109,7 @@ public class CastTest extends SqlTest {
     public void testCastMultiply() {
         String sqlQuery = String.format(
                 "SELECT cast(t1.tags.numeric_tag)*2, cast(t2.tags.numeric_tag)*2, cast(t3.tags.numeric_tag)*2 " +
-                        "FROM '%s' t1 JOIN USING ENTITY '%s' t2 JOIN USING ENTITY '%s' t3",
+                        "FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2 JOIN USING ENTITY \"%s\" t3",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME,
                 TEST_METRIC3_NAME
@@ -128,7 +128,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastConcat() {
         String sqlQuery = String.format(
-                "SELECT cast(concat(t1.tags.numeric_tag, t2.tags.numeric_tag))*2 FROM '%s' t1 JOIN USING ENTITY '%s' t2",
+                "SELECT cast(concat(t1.tags.numeric_tag, t2.tags.numeric_tag))*2 FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -146,7 +146,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastGroupBy() {
         String sqlQuery = String.format(
-                "SELECT count(t1.value),CAST(t1.tags.numeric_tag) FROM '%s' t1 OUTER JOIN '%s' t2 OUTER JOIN '%s' t3 " +
+                "SELECT count(t1.value),CAST(t1.tags.numeric_tag) FROM \"%s\" t1 OUTER JOIN \"%s\" t2 OUTER JOIN \"%s\" t3 " +
                         "GROUP BY CAST(t1.tags.numeric_tag)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME,
@@ -168,7 +168,7 @@ public class CastTest extends SqlTest {
     public void testCastWhere() {
         String sqlQuery = String.format(
                 "SELECT t1.value" +
-                        " FROM '%s' t1 JOIN USING ENTITY '%s' t2" +
+                        " FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2" +
                         " WHERE CAST(t1.tags.numeric_tag) + CAST(t2.tags.numeric_tag) = 127",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
@@ -188,7 +188,7 @@ public class CastTest extends SqlTest {
     public void testCastWhereAndConcat() {
         String sqlQuery = String.format(
                 "SELECT t1.value" +
-                        " FROM '%s' t1 JOIN USING ENTITY '%s' t2" +
+                        " FROM \"%s\" t1 JOIN USING ENTITY \"%s\" t2" +
                         " WHERE CAST(CONCAT(t1.tags.numeric_tag, t2.tags.numeric_tag)) = 4123",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
@@ -207,8 +207,8 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastHaving() {
         String sqlQuery = String.format(
-                "SELECT count(t1.value), CAST(t1.tags.numeric_tag) FROM '%s' t1 OUTER JOIN '%s' t2 " +
-                "OUTER JOIN '%s' t3 " +
+                "SELECT count(t1.value), CAST(t1.tags.numeric_tag) FROM \"%s\" t1 OUTER JOIN \"%s\" t2 " +
+                "OUTER JOIN \"%s\" t3 " +
                 "GROUP BY CAST(t1.tags.numeric_tag) " +
                 "HAVING SUM(CAST(t1.tags.numeric_tag)) != 0",
                 TEST_METRIC1_NAME,
@@ -262,7 +262,7 @@ public class CastTest extends SqlTest {
      public void testCastNumberAsStringApplied(String castArgument) throws Exception {
          Series series = castNumberAsStringSeries;
          String sqlQuery = String.format(
-                 "SELECT CAST(%s AS string) FROM '%s'",
+                 "SELECT CAST(%s AS string) FROM \"%s\"",
                  castArgument, series.getMetric()
          );
 
@@ -281,7 +281,7 @@ public class CastTest extends SqlTest {
     public void testCastNumberAsStringPassedToStringFunction(String castArgument) throws Exception {
         Series series = castNumberAsStringSeries;
         String sqlQuery = String.format(
-                "SELECT CONCAT('foo', CAST(%s AS string)) FROM '%s'",
+                "SELECT CONCAT('foo', CAST(%s AS string)) FROM \"%s\"",
                 castArgument, series.getMetric()
         );
 
@@ -307,8 +307,8 @@ public class CastTest extends SqlTest {
             {"1231243124", "1231243124"},
             {"1.23", "1.23"},
             {"-1.23", "-1.23"},
-            {"1.235", "1.24"},
-            {"-1.235", "-1.24"},
+            {"1.235", "1.23"},
+            {"-1.235", "-1.23"},
             {"0/0", "null"},
         };
     }
@@ -323,7 +323,7 @@ public class CastTest extends SqlTest {
          */
         Series series = castNumberAsStringSeries;
         String sqlQuery = String.format(
-                "SELECT CAST(%s AS string) FROM '%s'",
+                "SELECT CAST(%s AS string) FROM \"%s\"",
                 castArgument, series.getMetric()
         );
 
@@ -344,7 +344,7 @@ public class CastTest extends SqlTest {
          */
         Series series = castNumberAsStringSeries;
         String sqlQuery = String.format(
-                "SELECT %1$s, CAST(%1$s AS string) FROM '%2$s'",
+                "SELECT %1$s, CAST(%1$s AS string) FROM \"%2$s\"",
                 castArgument, series.getMetric()
         );
 
@@ -371,7 +371,7 @@ public class CastTest extends SqlTest {
 
         String sql = String.format(
                 "SELECT metric%n" +
-                "FROM '%s'%n" +
+                "FROM \"%s\"%n" +
                 "WHERE value = '%s'",
                 series.getMetric(), series.getData().get(0).getValue()
         );
@@ -395,8 +395,8 @@ public class CastTest extends SqlTest {
 
         String sql = String.format(
                 "SELECT metric%n" +
-                "FROM '%s'%n" +
-                "WHERE tags.'value' = 10",
+                "FROM \"%s\"%n" +
+                "WHERE tags.\"value\" = 10",
                 series.getMetric()
         );
 
@@ -417,7 +417,7 @@ public class CastTest extends SqlTest {
 
         String sql = String.format(
                 "SELECT ABS('10')%n" +
-                "FROM '%s'",
+                "FROM \"%s\"",
                 series.getMetric()
         );
 
@@ -439,7 +439,7 @@ public class CastTest extends SqlTest {
 
         String sql = String.format(
                 "SELECT ABS('foo')%n" +
-                        "FROM '%s'",
+                        "FROM \"%s\"",
                 series.getMetric()
         );
 
@@ -461,8 +461,8 @@ public class CastTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
 
         String sql = String.format(
-                "SELECT ABS(tags.'value')%n" +
-                "FROM '%s'",
+                "SELECT ABS(tags.\"value\")%n" +
+                "FROM \"%s\"",
                 series.getMetric()
         );
 
@@ -484,7 +484,7 @@ public class CastTest extends SqlTest {
 
         String sql = String.format(
                 "SELECT ABS(CONCAT(value, ''))%n" +
-                "FROM '%s'",
+                "FROM \"%s\"",
                 series.getMetric()
         );
 
@@ -505,7 +505,7 @@ public class CastTest extends SqlTest {
 
         String sql = String.format(
                 "SELECT CONCAT(value, '')+10%n" +
-                "FROM '%s'",
+                "FROM \"%s\"",
                 series.getMetric()
         );
 
@@ -521,7 +521,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullString() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL('5', '3') AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL('5', '3') AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -538,7 +538,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullEmptyString() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(text, '3') AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(text, '3') AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -555,7 +555,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullStringExpression() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(CONCAT('5', '8'), '3') AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(CONCAT('5', '8'), '3') AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -572,7 +572,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullLookup() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), '3') AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), '3') AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -589,7 +589,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullLookupExpression() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), LENGTH(CONCAT('test', '123'))) AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), LENGTH(CONCAT('test', '123'))) AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -606,7 +606,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNumeric() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(value, 3) AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL(value, 3) AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -623,7 +623,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNumericNaN() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(NaN, 3) AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL(NaN, 3) AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -640,7 +640,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNumericExpression() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(5 + SQRT(9), 3) AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL(5 + SQRT(9), 3) AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -657,7 +657,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullStringNumericAsString() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL('5', 3) AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL('5', 3) AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -674,7 +674,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullEmptyStringNumericAsString() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(text, 3) AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL(text, 3) AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -691,7 +691,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNumericStringAsString() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(5, '3') AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL(5, '3') AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -708,7 +708,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNaNNumericStringAsString() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(NaN, '3') AS STRING) FROM '%s' ",
+                "SELECT CAST(ISNULL(NaN, '3') AS STRING) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -725,7 +725,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullStringNumericAsNumber() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL('5', 3) AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL('5', 3) AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -742,7 +742,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullEmptyStringNumericAsNumber() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(text, 3) AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(text, 3) AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -759,7 +759,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNumericStringAsNumber() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(5, '3') AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(5, '3') AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -776,7 +776,7 @@ public class CastTest extends SqlTest {
     @Test
     public void testCastIsNullNaNNumericStringAsNumber() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(NaN, '3') AS NUMBER) FROM '%s' ",
+                "SELECT CAST(ISNULL(NaN, '3') AS NUMBER) FROM \"%s\" ",
                 TEST_METRIC1_NAME
         );
 
@@ -797,8 +797,8 @@ public class CastTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT SUM(e.value) AS export, SUM(i.value) AS import, " +
                 "  SUM(e.value)-SUM(i.value) AS trade_balance " +
-                "  FROM '%s' e " +
-                "  JOIN USING ENTITY '%s' i " +
+                "  FROM \"%s\" e " +
+                "  JOIN USING ENTITY \"%s\" i " +
                 "WHERE e.datetime >= '1970-01-01T00:00:00Z' and e.datetime < '2016-12-01T00:00:00Z' " +
                 "  AND CAST(e.tags.tag AS number) > 1000 " +
                 "GROUP BY e.period(1 second)",

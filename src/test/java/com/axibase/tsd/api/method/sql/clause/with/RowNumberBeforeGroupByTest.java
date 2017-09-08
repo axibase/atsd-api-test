@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
-public class RowNumberBeforeGroupBy extends SqlTest {
+public class RowNumberBeforeGroupByTest extends SqlTest {
     private static final String TEST_ENTITY_NAME = entity();
     private static final String TEST_METRIC_NAME = metric();
 
@@ -37,7 +37,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberWithoutWhereAndGroupBy() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 3",
                 TEST_METRIC_NAME
         );
@@ -59,7 +59,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberWithWhereAndWithoutGroupBy() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE value < 2 " +
                         "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 3",
                 TEST_METRIC_NAME
@@ -81,7 +81,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberBeforeGroupBy() {
         String sqlQuery = String.format(
                 "SELECT sum(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 9 " +
                         "GROUP BY entity",
                 TEST_METRIC_NAME
@@ -102,7 +102,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberAfterGroupBy() {
         String sqlQuery = String.format(
                 "SELECT sum(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY tags.tag " +
                         "WITH ROW_NUMBER(entity ORDER BY sum(value) DESC) <= 3",
                 TEST_METRIC_NAME
@@ -125,7 +125,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberBeforeGroupByWithWhere() {
         String sqlQuery = String.format(
                 "SELECT sum(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE value < 15 " +
                         "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 9 " +
                         "GROUP BY entity",
@@ -147,7 +147,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberAfterGroupByWithWhere() {
         String sqlQuery = String.format(
                 "SELECT sum(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE value > 17 " +
                         "GROUP BY tags.tag " +
                         "WITH ROW_NUMBER(entity ORDER BY sum(value) DESC) <= 3",
@@ -170,7 +170,7 @@ public class RowNumberBeforeGroupBy extends SqlTest {
     public void testRowNumberWithGroupingByPeriod() {
         String sqlQuery = String.format(
                 "SELECT sum(value) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY period(5 millisecond) " +
                         "WITH ROW_NUMBER(entity ORDER BY period(5 millisecond) DESC) <= 3",
                 TEST_METRIC_NAME

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class SqlJoinWithAggregations extends SqlTest {
+public class SqlJoinWithAggregationsTest extends SqlTest {
     private static final String TEST_METRIC1_NAME = metric();
     private static final String TEST_METRIC2_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
@@ -43,7 +43,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithoutGroupBy() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2",
+                "SELECT sum(t1.value), sum(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -61,7 +61,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithGroupBy() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(2 minute, START_TIME)",
+                "SELECT sum(t1.value), sum(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 GROUP BY t2.period(2 minute, START_TIME)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -81,7 +81,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testCountJoinWithoutGroupBy() {
         String sqlQuery = String.format(
-                "SELECT count(t1.value), count(t2.value) FROM '%s' t1 JOIN '%s' t2",
+                "SELECT count(t1.value), count(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -99,8 +99,8 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testCountJoinWithGroupBy() {
         String sqlQuery = String.format(
-                "SELECT count(t1.value) as 'first', count(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(2 minute)" +
-                        "ORDER by 'first' DESC",
+                "SELECT count(t1.value) as \"first\", count(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 GROUP BY t2.period(2 minute)" +
+                        "ORDER by \"first\" DESC",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -119,7 +119,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testDeltaAndStddevJoinWithoutGroupBy() {
         String sqlQuery = String.format(
-                "SELECT delta(t1.value), stddev(t2.value) FROM '%s' t1 JOIN '%s' t2",
+                "SELECT delta(t1.value), stddev(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -137,7 +137,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testDeltaAndStddevJoinWithGroupBy() {
         String sqlQuery = String.format(
-                "SELECT delta(t1.value), stddev(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(1 year)",
+                "SELECT delta(t1.value), stddev(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 GROUP BY t2.period(1 year)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -155,7 +155,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithGroupByAndHaving() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 GROUP BY t2.period(1 minute) HAVING (sum(t1.value) > 2)",
+                "SELECT sum(t1.value), sum(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 GROUP BY t2.period(1 minute) HAVING (sum(t1.value) > 2)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -173,7 +173,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithGroupByAndWhere() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 WHERE t1.value > 2 GROUP BY t2.period(1 year)",
+                "SELECT sum(t1.value), sum(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 WHERE t1.value > 2 GROUP BY t2.period(1 year)",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );
@@ -191,7 +191,7 @@ public class SqlJoinWithAggregations extends SqlTest {
     @Test
     public void testJoinWithWhere() {
         String sqlQuery = String.format(
-                "SELECT sum(t1.value), sum(t2.value) FROM '%s' t1 JOIN '%s' t2 WHERE t1.value > 2",
+                "SELECT sum(t1.value), sum(t2.value) FROM \"%s\" t1 JOIN \"%s\" t2 WHERE t1.value > 2",
                 TEST_METRIC1_NAME,
                 TEST_METRIC2_NAME
         );

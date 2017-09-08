@@ -29,7 +29,7 @@ public class WithInterpolateNoBoundariesTest extends SqlTest {
          */
         String sqlQuery = String.format(
                 "SELECT count(*) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WITH INTERPOLATE(1 MINUTE, PREVIOUS) " +
                         "GROUP BY entity",
                 metricName

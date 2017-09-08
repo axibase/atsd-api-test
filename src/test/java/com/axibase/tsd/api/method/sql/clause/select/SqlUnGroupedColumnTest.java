@@ -33,7 +33,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
     @Test
     public void testErrorRaisingSelectUngroupedColumnWithGroupClause() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, avg(value) %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z' %nGROUP BY entity",
+                "SELECT entity, datetime, avg(value) %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z' %nGROUP BY entity",
                 TEST_METRIC_NAME
         );
 
@@ -46,7 +46,7 @@ public class SqlUnGroupedColumnTest extends SqlTest {
     @Test
     public void testErrorRaisingSelectUngroupedColumnWithoutGroupClause() {
         String sqlQuery = String.format(
-                "SELECT entity, datetime, avg(value) %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'",
+                "SELECT entity, datetime, avg(value) %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'",
                 TEST_METRIC_NAME
         );
 

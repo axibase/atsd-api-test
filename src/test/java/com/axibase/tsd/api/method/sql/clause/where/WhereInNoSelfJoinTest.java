@@ -19,17 +19,17 @@ public class WhereInNoSelfJoinTest extends SqlTest {
     private static final String METRIC_NAME6 = "tv6.unit_procedure";
 
     private static final String QUERY_TEMPLATE = "SELECT t1.entity, t1.metric, t1.datetime, \n" +
-            "  t1.value, t4.text AS 'Elapsed Time', t5.text AS 'Unit Batch Id', t6.text AS 'Unit Procedure', \n" +
+            "  t1.value, t4.text AS \"Elapsed Time\", t5.text AS \"Unit Batch Id\", t6.text AS \"Unit Procedure\", \n" +
             "CASE interval_number()\n" +
             "  WHEN 0 THEN t5.text\n" +
             "  ELSE CONCAT(t5.text, '.', interval_number()) \n" +
-            "END AS 'Unit Batch Number'\n" +
+            "END AS \"Unit Batch Number\"\n" +
             "  FROM atsd_series t1\n" +
-            "    JOIN 'TV6.Elapsed_Time' t4\n" +
-            "    JOIN 'TV6.Unit_BatchID' t5\n" +
-            "    JOIN 'TV6.Unit_Procedure' t6\n" +
+            "    JOIN \"TV6.Elapsed_Time\" t4\n" +
+            "    JOIN \"TV6.Unit_BatchID\" t5\n" +
+            "    JOIN \"TV6.Unit_Procedure\" t6\n" +
             "WHERE %s\n" +
-            "  AND t1.datetime BETWEEN (SELECT datetime FROM 'TV6.Unit_BatchID' WHERE entity = " +
+            "  AND t1.datetime BETWEEN (SELECT datetime FROM \"TV6.Unit_BatchID\" WHERE entity = " +
             "    'br-1211' AND (text = '800' OR LAG(text)='800'))\n" +
             "  AND t1.entity = 'br-1211'\n" +
             "WITH INTERPOLATE(60 SECOND, AUTO, OUTER, EXTEND, START_TIME)\n" +
@@ -160,7 +160,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
      */
     @Test
     public void testWhereLikeNoSelfJoin() {
-        String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack*')");
+        String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack%%')");
 
         assertSqlQueryRows("Wrong result when LIKE matches metric to join with", QUERY_RESULT, sqlQuery);
     }

@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -36,7 +35,7 @@ public class EntityRecreateTest extends SqlTest {
         /* Insert second series */
         SeriesMethod.insertSeriesCheck(series2);
 
-        String sqlQuery = String.format("SELECT entity FROM '%s' ORDER BY entity", metricName);
+        String sqlQuery = String.format("SELECT entity FROM \"%s\" ORDER BY entity", metricName);
 
         String[][] expectedRows = {{entityName2}};
 
