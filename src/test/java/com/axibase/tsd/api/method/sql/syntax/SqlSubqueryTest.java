@@ -330,7 +330,7 @@ public class SqlSubqueryTest extends SqlTest {
      * #4133
      */
     @Test(
-            description = "Test that we can use custom expression to define 'value' column"
+            description = "Test that we can use custom expression to define 'value' column in subquery"
     )
     public void testValueExpressionsAndGroupBy() {
         String sqlQuery = String.format(
@@ -353,5 +353,28 @@ public class SqlSubqueryTest extends SqlTest {
         };
 
         assertSqlQueryRows("Wrong result with value expressions and group by in subquery", expectedRows, sqlQuery);
+    }
+
+    /**
+     * #4518
+     */
+    @Test(
+            description = "Test possibility of using expressions for time column in subquery"
+    )
+    public void testTimeExpression() {
+        String sqlQuery = String.format(
+                "SELECT datetime FROM (\n" +
+                        "  SELECT max(time) as \"time\", entity, count(value) as \"value\" \n" +
+                        "    FROM \"%s\" \n" +
+                        "    GROUP BY entity \n" +
+                        ")",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2017-07-21T12:00:00.000Z"}
+        };
+
+        assertSqlQueryRows("Wrong result when using expressions for time column in subquery", expectedRows, sqlQuery);
     }
 }
