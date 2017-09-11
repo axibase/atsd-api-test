@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -33,9 +34,7 @@ public class SqlBetweenStringTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenEqualStringLimits() {
         String sqlQuery = String.format(
@@ -48,9 +47,7 @@ public class SqlBetweenStringTest extends SqlTest {
         assertSqlQueryRows("Wrong result with equal string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenAllString() {
         String sqlQuery = String.format(
@@ -73,9 +70,7 @@ public class SqlBetweenStringTest extends SqlTest {
         assertSqlQueryRows("Wrong result with string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenSimpleString() {
         String sqlQuery = String.format(
@@ -93,9 +88,7 @@ public class SqlBetweenStringTest extends SqlTest {
         assertSqlQueryRows("Wrong result with string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenNullString() {
         String sqlQuery = String.format(

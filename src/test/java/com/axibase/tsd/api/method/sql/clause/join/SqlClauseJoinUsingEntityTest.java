@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -46,9 +47,7 @@ public class SqlClauseJoinUsingEntityTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series));
     }
 
-    /**
-     * #3741
-     */
+    @Issue("3741")
     @Test
     public void testJoin() {
         String sqlQuery = String.format(
@@ -63,9 +62,7 @@ public class SqlClauseJoinUsingEntityTest extends SqlTest {
         assertSqlQueryRows("Query gives some result, but should give none", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3741
-     */
+    @Issue("3741")
     @Test
     public void testJoinUsingEntity() {
         String sqlQuery = String.format(
@@ -81,9 +78,7 @@ public class SqlClauseJoinUsingEntityTest extends SqlTest {
         assertSqlQueryRows("Join Using Entity gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3741
-     */
+    @Issue("3741")
     @Test
     public void testJoinUsingEntitySameTags() {
         String sqlQuery = String.format(
@@ -99,9 +94,7 @@ public class SqlClauseJoinUsingEntityTest extends SqlTest {
         assertSqlQueryRows("Join Using Entity with same tags gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3741
-     */
+    @Issue("3741")
     @Test
     public void testJoinUsingEntityOneWithoutTags() {
         String sqlQuery = String.format(
@@ -117,9 +110,7 @@ public class SqlClauseJoinUsingEntityTest extends SqlTest {
         assertSqlQueryRows("Join Using Entity (one metric has no tags) gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3741
-     */
+    @Issue("3741")
     @Test
     public void testJoinUsingEntityDifferentTags() {
         String sqlQuery = String.format(

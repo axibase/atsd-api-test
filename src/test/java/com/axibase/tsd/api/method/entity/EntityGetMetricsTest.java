@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -18,7 +19,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class EntityGetMetricsTest extends EntityMethod {
 
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         final String name = "getmetricsentity 1";
@@ -26,7 +27,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     }
 
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         final Series series = new Series("getmetrics/entity2", "getmetrics-metric2");
@@ -36,7 +37,7 @@ public class EntityGetMetricsTest extends EntityMethod {
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         final Series series = new Series("getmetricsйё/entity3", "getmetrics-metric3");

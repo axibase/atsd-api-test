@@ -12,6 +12,7 @@ import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -24,9 +25,7 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-/**
- * #3612
- */
+@Issue("3612")
 public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
     private static final String METRIC_NAME = "m-test-entity-expression-001";
@@ -184,9 +183,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "entityExpressionProviderForWildcardEntity")
     public static void testEntityExpressionWithWildcardEntity(String expression, HashSet<String> expectedEntities) throws Exception {
         SeriesQuery query = createTestQuery("*");
@@ -229,9 +226,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "emptyResultEntityExpressionProvider")
     public static void testEmptyResultEntityExpressionWithWildcardEntity(String expression) throws Exception {
         SeriesQuery query = createTestQuery("*");
@@ -273,9 +268,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "entityExpressionProviderForFixedEntity")
     public static void testEntityExpressionWithFixedEntity(String expression) throws Exception {
         SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
@@ -321,9 +314,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "emptyResultEntityExpressionProviderForFixedEntity")
     public static void testEmptyResultEntityExpressionWithFixedEntity(String expression) throws Exception {
         SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
@@ -371,9 +362,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "entityExpressionProviderForEntityGroup")
     public static void testEntityExpressionWithEntityGroup(String expression, HashSet<String> expectedEntities) throws Exception {
         SeriesQuery query = createTestQuery(null);
@@ -418,9 +407,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "emptyResultEntityExpressionProviderForEntityGroup")
     public static void testEntityExpressionWithEntityGroup(String expression) throws Exception {
         SeriesQuery query = createTestQuery(null);
@@ -458,9 +445,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3612
-     */
+    @Issue("3612")
     @Test(dataProvider = "errorEntityExpressionProvider")
     public static void testErrorOnBadEntityExpression(String expression) throws Exception {
         SeriesQuery query = createTestQuery("*");

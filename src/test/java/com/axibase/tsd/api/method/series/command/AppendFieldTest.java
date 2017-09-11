@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -17,9 +18,7 @@ import static java.util.Collections.singletonMap;
 
 public class AppendFieldTest extends CommandMethodTest {
 
-    /**
-     * #3796
-     */
+    @Issue("3796")
     @Test
     public void testAppendDuplicates() throws Exception {
         final String entityName = entity();
@@ -59,9 +58,7 @@ public class AppendFieldTest extends CommandMethodTest {
 //        0.1]
     }
 
-    /**
-     * #3796
-     */
+    @Issue("3796")
     @Test
     public void testAppendWithErase() throws Exception {
         final String entityName = entity();
@@ -95,9 +92,7 @@ public class AppendFieldTest extends CommandMethodTest {
         assertTextDataEquals(series, "Append with erase doesn't work");
     }
 
-    /**
-     * #3874
-     */
+    @Issue("3874")
     @Test
     public void testDecimalFieldToTextField() throws Exception {
         final String entityName = entity();
@@ -117,9 +112,7 @@ public class AppendFieldTest extends CommandMethodTest {
         assertTextDataEquals(series, "Addition decimal field to text field failed");
     }
 
-    /**
-     * #3885
-     */
+    @Issue("3885")
     @Test
     public void testAppendTextViaBatchOfCommands() throws Exception {
         final String entityName = entity();
@@ -142,9 +135,7 @@ public class AppendFieldTest extends CommandMethodTest {
         assertTextDataEquals(series, "Addition text field to text field failed");
     }
 
-    /**
-     * #3902
-     */
+    @Issue("3902")
     @Test
     public void testTextFieldAfterAdditionOfDecimalValue() throws Exception {
         final String entityName = entity();

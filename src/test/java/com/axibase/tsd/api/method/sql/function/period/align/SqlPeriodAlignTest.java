@@ -9,7 +9,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -55,9 +55,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /*
-      #2906
-     */
+    @Issue("2906")
     @Test
     public void testStartTimeInclusiveAlignment() {
         final String sqlQuery = String.format(
@@ -81,9 +79,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertEquals(expectedTableRows, resultTableRows);
     }
 
-    /**
-     * 2906
-     */
+    @Issue("2906")
     @Test
     public void testStartTimeExclusiveAlignment() {
         final String sqlQuery = String.format(
@@ -108,9 +104,7 @@ public class SqlPeriodAlignTest extends SqlTest {
     }
 
 
-    /**
-     * 2906
-     */
+    @Issue("2906")
     @Test
     public void testEndTimeInclusiveAlignment() {
         final String sqlQuery = String.format(
@@ -134,9 +128,7 @@ public class SqlPeriodAlignTest extends SqlTest {
     }
 
 
-    /**
-     * 2906
-     */
+    @Issue("2906")
     @Test
     public void testEndTimeExclusiveAlignment() {
         final String sqlQuery = String.format(
@@ -159,9 +151,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertEquals(expectedTableRows, resultTableRows);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMillisecondStartTime() throws Exception {
         insertSamples(
@@ -189,9 +179,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMillisecondEndTime() throws Exception {
         insertSamples(
@@ -219,9 +207,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMillisecondFirstValueTime() throws Exception {
         insertSamples(
@@ -249,9 +235,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodSecondStartTime() throws Exception {
         insertSamples(
@@ -279,9 +263,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodSecondEndTime() throws Exception {
         insertSamples(
@@ -308,9 +290,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodSecondFirstValueTime() throws Exception {
         insertSamples(
@@ -338,9 +318,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMinuteStartTime() throws Exception {
         insertSamples(
@@ -368,9 +346,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMinuteEndTime() throws Exception {
         insertSamples(
@@ -397,9 +373,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMinuteFirstValueTime() throws Exception {
         insertSamples(
@@ -427,9 +401,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodHourStartTime() throws Exception {
         insertSamples(
@@ -457,9 +429,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodHourEndTime() throws Exception {
         insertSamples(
@@ -486,9 +456,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodHourFirstValueTime() throws Exception {
         insertSamples(
@@ -516,9 +484,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodDayStartTime() throws Exception {
         insertSamples(
@@ -546,9 +512,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodDayEndTime() throws Exception {
         insertSamples(
@@ -575,9 +539,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodDayFirstValueTime() throws Exception {
         insertSamples(
@@ -605,9 +567,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testPeriodsTimeGroupingDSTChangedStartTime() throws Exception {
         insertSamples(
@@ -639,9 +599,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testPeriodsTimeGroupingDSTChangedEndTime() throws Exception {
         insertSamples(
@@ -673,9 +631,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testPeriodsTimeGroupingDSTChangedFirstValueTime() throws Exception {
         insertSamples(
@@ -707,9 +663,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodWeekStartTime() throws Exception {
         insertSamples(
@@ -737,9 +691,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodWeekEndTime() throws Exception {
         insertSamples(
@@ -766,9 +718,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodWeekFirstValueTime() throws Exception {
         insertSamples(
@@ -796,9 +746,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMonthStartTime() throws Exception {
         insertSamples(
@@ -826,9 +774,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMonthEndTime() throws Exception {
         insertSamples(
@@ -855,9 +801,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodMonthFirstValueTime() throws Exception {
         insertSamples(
@@ -885,9 +829,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodQuarterStartTime() throws Exception {
         insertSamples(
@@ -919,9 +861,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodQuarterEndTime() throws Exception {
         insertSamples(
@@ -951,9 +891,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodQuarterFirstValueTime() throws Exception {
         insertSamples(
@@ -985,9 +923,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodYearStartTime() throws Exception {
         insertSamples(
@@ -1015,9 +951,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodYearEndTime() throws Exception {
         insertSamples(
@@ -1044,9 +978,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4175
-     */
+    @Issue("4175")
     @Test
     public void testGroupByPeriodYearFirstValueTime() throws Exception {
         insertSamples(

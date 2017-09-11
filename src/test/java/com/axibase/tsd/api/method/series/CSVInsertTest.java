@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         };
     }
 
-    /**
-     * #2009
-     */
+    @Issue("2009")
     @Test(dataProvider = "formatPatternProvider")
     public void testFormattedDate(String template) {
         Series expectedSeries = series();
@@ -52,9 +51,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         assertSeriesExisting(expectedSeries);
     }
 
-    /**
-     * #2009
-     */
+    @Issue("2009")
     @Test
     public void testMultipleISOFormat() throws Exception {
         Series series = Mocks.series();
@@ -86,9 +83,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         );
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeInISO() throws Exception {
         Series series = Mocks.series();
@@ -112,9 +107,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         );
     }
 
-    /**
-     * #2957
-     */
+    @Issue("2957")
     @Test
     public void testTimeRangeInMS() {
         Series series = Mocks.series();
@@ -151,9 +144,7 @@ public class CSVInsertTest extends CSVInsertMethod {
     }
 
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test(dataProvider = "entityNameProvider")
     public void testEntityNames(String queryName, String expectedName) throws Exception {
         Entity entity = new Entity(queryName);

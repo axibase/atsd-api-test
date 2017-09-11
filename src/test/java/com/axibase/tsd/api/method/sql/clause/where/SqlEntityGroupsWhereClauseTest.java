@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,9 +47,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testEntityGroupsInOneElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -66,9 +65,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testEntityGroupsNotInOneElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -85,9 +82,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testInEntityGroupsContainOneElement() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -106,9 +101,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testNotInEntityGroupsContainOneElement() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -126,9 +119,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testOneEntityGroupInThreeElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -148,9 +139,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testEntityGroupsNotInSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -170,9 +159,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testTwoEntityGroupsIntersectingOneElementSet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -195,9 +182,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testTwoEntityGroupsNotIntersectingOneElementSet() {
         EntityGroupMethod
@@ -219,9 +204,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testZeroEntityGroupsIntersectingTwoElementSet() {
         String sqlQuery = String.format(
@@ -237,9 +220,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testZeroEntityGroupsNotIntersectingTwoElementSet() {
         String sqlQuery = String.format(
@@ -258,9 +239,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testZeroEntityGroupsNotIntersectingOneElementSet() {
         String sqlQuery = String.format(
@@ -277,9 +256,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testEntityGroupsInCaseSensitivitySet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -296,9 +273,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testEntityGroupsNotInCaseSensitivitySet() {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP1_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -319,9 +294,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testCaseSensitivityEntityGroupsInSet() {
         EntityGroupMethod.addEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));
@@ -341,9 +314,7 @@ public class SqlEntityGroupsWhereClauseTest extends SqlTest {
     }
 
 
-    /**
-     * #3020
-     */
+    @Issue("3020")
     @Test
     public void testCaseSensitivityEntityGroupsNotInSet() {
         EntityGroupMethod.addEntities(TEST_CASE_SENSITIVITY_GROUP_NAME, Collections.singletonList(TEST_ENTITY_NAME));

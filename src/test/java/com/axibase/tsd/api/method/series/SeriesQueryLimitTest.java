@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -114,9 +115,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         }
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testSeriesLimit0(SeriesQuery query) throws Exception {
         query.setSeriesLimit(0);
@@ -132,9 +131,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
     }
 
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testSeriesLimitNegative(SeriesQuery query) throws Exception {
         query.setSeriesLimit(-1);
@@ -149,9 +146,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertTrue("All inserted series should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testSeriesLimit1(SeriesQuery query) throws Exception {
         final int seriesLimit = 1;
@@ -167,9 +162,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertEquals("Sample count mismatch", SAMPLES_COUNT, seriesList.get(0).getData().size());
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testSeriesLimit5(SeriesQuery query) throws Exception {
         final int seriesLimit = 5;
@@ -187,9 +180,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertSampleCountMatch(seriesList, SAMPLES_COUNT);
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testLimit20SeriesLimit0(SeriesQuery query) throws Exception {
         final int limit = 20;
@@ -207,9 +198,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertTrue("All inserted series should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testLimit1SeriesLimit11(SeriesQuery query) throws Exception {
         final int limit = 1;
@@ -232,9 +221,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertSampleCountMatch(seriesList, limit);
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testLimit10000SeriesLimit11(SeriesQuery query) throws Exception {
         final int limit = 10000;
@@ -254,9 +241,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertSampleCountMatch(seriesList, SAMPLES_COUNT);
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test
     public void testLastInsertedEntitySeriesLimit2() throws Exception {
         final int seriesLimit = 2;
@@ -278,9 +263,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertFalse("All series should be for one entity", diffEntityCountGraterThan(seriesList, 1));
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test
     public void testLastInsertedEntitySeriesLimit2Limit5() throws Exception {
         final int seriesLimit = 2;
@@ -304,9 +287,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertFalse("All series should be for one entity", diffEntityCountGraterThan(seriesList, 1));
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
     public void testLimit1SeriesLimit5ExactMatch(SeriesQuery query) throws Exception {
         final int seriesLimit = 5;
@@ -329,9 +310,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         assertTrue("All series should be for different entity", diffEntityCountGraterThan(seriesList, seriesLimit - 1));
     }
 
-    /**
-     * #3211
-     */
+    @Issue("3211")
     @Test
     public void testLastEntityLimit1SeriesLimit5ExactMatch() throws Exception {
         final int seriesLimit = 3;

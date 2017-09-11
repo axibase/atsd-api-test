@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.command.PropertyCommand;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -21,9 +22,7 @@ public class LengthTest extends PropertyMethod {
     private static final int MAX_LENGTH = 128 * 1024;
 
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLength() throws Exception {
         final Property property = new Property(propertyType(), entity());
@@ -54,9 +53,7 @@ public class LengthTest extends PropertyMethod {
         assertPropertyExisting("Inserted property can not be received", property);
     }
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLengthOverflow() throws Exception {
         final Property property = new Property(propertyType(), entity());

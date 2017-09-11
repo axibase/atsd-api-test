@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import io.qameta.allure.Issue;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,7 @@ public class MessageInsertTest extends MessageMethod {
     private Calendar calendar = Calendar.getInstance();
 
 
-    /* #2903 */
+    @Issue("2903")
     @Test
     public void testTrimmedMessages() throws Exception {
         String entityName = "          nurswgvml022    \n    ";
@@ -53,7 +54,7 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals("application", storedMessage.getType());
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeMinSaved() throws Exception {
         Message message = new Message("e-time-range-msg-1");
@@ -78,7 +79,7 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals("Incorrect stored message", message.getMessage(), msgResponse.getMessage());
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxTimeSaved() throws Exception {
         Message message = new Message("e-time-range-msg-3");
@@ -100,7 +101,7 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals("Incorrect stored message", message.getMessage(), msgResponse.getMessage());
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Message message = new Message("e-time-range-msg-4");
@@ -114,7 +115,7 @@ public class MessageInsertTest extends MessageMethod {
         }
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testISOTimezoneZ() throws Exception {
         String entityName = "message-insert-test-isoz";
@@ -140,7 +141,7 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
         String entityName = "message-insert-test-iso+hm";
@@ -166,7 +167,7 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         String entityName = "message-insert-test-iso-hm";
@@ -192,7 +193,7 @@ public class MessageInsertTest extends MessageMethod {
         assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         Message message = new Message("message-insert-test-localtime");
@@ -207,7 +208,7 @@ public class MessageInsertTest extends MessageMethod {
 
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         Message message = new Message("message-insert-test-xxtimezone");
@@ -221,7 +222,7 @@ public class MessageInsertTest extends MessageMethod {
                 response.readEntity(String.class), true);
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         Message message = new Message("message-insert-test-milliseconds");

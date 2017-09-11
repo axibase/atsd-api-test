@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -57,9 +58,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -81,9 +80,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNullMetricTags() {
         String sqlQuery = String.format(
@@ -101,9 +98,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testNotIsNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -123,9 +118,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testNotIsNullMetricTags() {
         String sqlQuery = String.format(
@@ -146,9 +139,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNotNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -168,9 +159,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNotNullMetricTags() {
         String sqlQuery = String.format(
@@ -190,9 +179,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testNotIsNotNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -214,9 +201,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testNotIsNotNullMetricTags() {
         String sqlQuery = String.format(
@@ -234,9 +219,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNotNullEntitySpecifiedTag() throws Exception {
         String sqlQuery = String.format(
@@ -256,9 +239,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNotNullEntityTags() throws Exception {
         String sqlQuery = String.format(
@@ -276,9 +257,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNullEntitySpecifiedTag() throws Exception {
         String sqlQuery = String.format(
@@ -298,9 +277,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNullEntityTags() throws Exception {
         String sqlQuery = String.format(
@@ -321,9 +298,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3516
-     */
+    @Issue("3516")
     @Test
     public void testIsNullMetricLabel() throws Exception {
         Metric metric = new Metric("m-test-operator-is-null-metric-label");
@@ -350,9 +325,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3516
-     */
+    @Issue("3516")
     @Test
     public void testIsNotNullMetricLabel() throws Exception {
         Metric metric = new Metric("m-test-operator-is-not-null-metric-label");

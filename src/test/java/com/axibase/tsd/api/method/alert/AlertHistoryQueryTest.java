@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -53,9 +54,7 @@ public class AlertHistoryQueryTest extends AlertTest {
     }
 
 
-    /**
-     * #2991
-     */
+    @Issue("2991")
     @Test(enabled = false, dataProvider = "alertEntityFiltersProvider")
     public void testEntityFilter(AlertHistoryQuery query) throws Exception {
         List<Alert> alertList = queryHistory(query);
@@ -66,9 +65,7 @@ public class AlertHistoryQueryTest extends AlertTest {
         assertTrue(assertMessage, alertList.size() > 0);
     }
 
-    /**
-     * #2993
-     */
+    @Issue("2993")
     @Test(enabled = false)
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
         AlertHistoryQuery qExist = templateQuery().setEntity("alert-historyquery-entity-1");
@@ -104,9 +101,7 @@ public class AlertHistoryQueryTest extends AlertTest {
         MetricMethod.createOrReplaceMetricCheck(new Metric("m-should-be-empty"));
     }
 
-    /**
-     * #3640
-     */
+    @Issue("3640")
     @Test(dataProvider = "rawJsonWithNullsProvider")
     public void testQueryWithNullFieldsSuccess(String json) throws Exception {
         Response resp = AlertMethod.queryHistoryResponseRawJSON(json);

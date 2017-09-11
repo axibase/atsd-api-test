@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testJoinWithoutGroupBy() {
         String sqlQuery = String.format(
@@ -55,9 +54,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Join without Group by gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testJoinWithGroupBy() {
         String sqlQuery = String.format(
@@ -75,9 +72,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Join with Group by gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testCountJoinWithoutGroupBy() {
         String sqlQuery = String.format(
@@ -93,9 +88,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Count Join without Group by gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testCountJoinWithGroupBy() {
         String sqlQuery = String.format(
@@ -113,9 +106,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Count Join with Group by gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testDeltaAndStddevJoinWithoutGroupBy() {
         String sqlQuery = String.format(
@@ -131,9 +122,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Delta and Stddev with Join without Group by gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testDeltaAndStddevJoinWithGroupBy() {
         String sqlQuery = String.format(
@@ -149,9 +138,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Delta and Stddev with Join with Group by gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testJoinWithGroupByAndHaving() {
         String sqlQuery = String.format(
@@ -167,9 +154,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Join with Group by and Having gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testJoinWithGroupByAndWhere() {
         String sqlQuery = String.format(
@@ -185,9 +170,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         assertSqlQueryRows("Join with Group by and Where gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3695
-     */
+    @Issue("3695")
     @Test
     public void testJoinWithWhere() {
         String sqlQuery = String.format(

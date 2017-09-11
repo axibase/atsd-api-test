@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.json.JSONArray;
 import org.testng.annotations.Test;
 
@@ -20,9 +21,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class AlertQueryTest extends AlertTest {
 
 
-    /**
-     * #2991
-     */
+    @Issue("2991")
     @Test
     public void testEntityWildcardStarChar() throws Exception {
         final String entityName = "alert-query-entity-1";
@@ -39,9 +38,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardStartChar() throws Exception {
         final String entityName = "alert-query-entity-2";
@@ -58,9 +55,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardQuestionChar() throws Exception {
         final String entityName = "alert-query-entity-3";
@@ -77,9 +72,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2981
-     */
+    @Issue("2981")
     @Test
     public void testEntityExpressionFilterExist() throws Exception {
         final String entityName = "alert-query-entity-4";
@@ -96,9 +89,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2993
-     */
+    @Issue("2993")
     @Test
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
         final String entityName = "alert-query-entity-5";

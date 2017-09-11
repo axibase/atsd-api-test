@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -36,9 +37,7 @@ public class WhereInMetricsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #4075
-     */
+    @Issue("4075")
     @Test
     public void testMetricsBasic() {
         String sqlQuery = String.format(

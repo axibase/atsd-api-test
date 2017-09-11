@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -27,10 +28,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-
-    /**
-     * Issues #3184
-     */
+    @Issue("3184")
     @Test
     public void testMaxValueTime() {
         String sqlQuery = String.format(
@@ -47,10 +45,7 @@ public class SqlFunctionDateFormatWithMaxMinValueTimeTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * Issues #3184
-     */
+    @Issue("3184")
     @Test
     public void testMinValueTime() {
         String sqlQuery = String.format(

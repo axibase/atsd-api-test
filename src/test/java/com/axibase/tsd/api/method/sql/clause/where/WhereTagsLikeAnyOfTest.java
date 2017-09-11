@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,9 +30,7 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
-    /**
-     * #4034
-     */
+    @Issue("4034")
     @Test
     public void testWhereTagsAny() {
         String sqlQuery = String.format(
@@ -51,9 +50,7 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4034
-     */
+    @Issue("4034")
     @Test
     public void testWhereTagsAnyOrAny() {
         String sqlQuery = String.format(
@@ -74,9 +71,7 @@ public class WhereTagsLikeAnyOfTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4034
-     */
+    @Issue("4034")
     @Test
     public void testWhereTagsAnyOrAnyOf() {
         String sqlQuery = String.format(

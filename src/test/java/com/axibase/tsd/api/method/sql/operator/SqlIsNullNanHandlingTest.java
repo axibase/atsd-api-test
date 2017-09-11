@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,13 +45,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /*
-    #3077 issue
-     */
-
-    /**
-     * ##3077
-     */
+    @Issue("3077")
     @Test
     public void testNanExcluding() {
         String sqlQuery = String.format(
@@ -70,9 +65,7 @@ public class SqlIsNullNanHandlingTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * ##3077
-     */
+    @Issue("3077")
     @Test
     public void testNanIncluding() {
         String sqlQuery = String.format(

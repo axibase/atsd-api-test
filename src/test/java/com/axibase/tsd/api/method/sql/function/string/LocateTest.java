@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -83,9 +84,7 @@ public class LocateTest extends SqlTest {
         };
     }
 
-    /**
-     * #2910
-     */
+    @Issue("2910")
     @Test(dataProvider = "selectTestProvider")
     public void testFunctionResult(String param, String expectedValue) {
         String sqlQuery = String.format(
@@ -100,9 +99,7 @@ public class LocateTest extends SqlTest {
     }
 
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
         String sqlQuery = String.format("SELECT LOCATE(%s) FROM \"%s\"",
@@ -111,9 +108,7 @@ public class LocateTest extends SqlTest {
         assertOkRequest(String.format("Can't apply LOCATE function to %s", param), queryResponse(sqlQuery));
     }
 
-    /**
-     * #3749
-     */
+    @Issue("3749")
     @Test(dataProvider = "applyFunctionalTestProvider")
     public void testLocateInSelect(String word, String position) {
         String sqlQuery = String.format(
@@ -129,9 +124,7 @@ public class LocateTest extends SqlTest {
         assertSqlQueryRows("Locate in SELECT gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3749
-     */
+    @Issue("3749")
     @Test(dataProvider = "applyFunctionalTestProvider")
     public void testLocateInWhere(String word, String position) {
         String sqlQuery = String.format(
@@ -148,9 +141,7 @@ public class LocateTest extends SqlTest {
         assertSqlQueryRows("Locate in WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3749
-     */
+    @Issue("3749")
     @Test(dataProvider = "applyFunctionalTestProvider")
     public void testLocateInHaving(String word, String position) {
         String sqlQuery = String.format(
@@ -168,9 +159,7 @@ public class LocateTest extends SqlTest {
         assertSqlQueryRows("Locate in HAVING gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4233
-     */
+    @Issue("4233")
     @Test
     public void testLocateWithDate() {
         String sqlQuery = "SELECT LOCATE('01', '1970-01-01T00:00:00.00')";

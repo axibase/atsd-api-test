@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,9 +30,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3842
-     */
+    @Issue("3842")
     @Test
     public void testAliasInsideRowNumber() {
         String sqlQuery = String.format(
@@ -49,9 +48,7 @@ public class ColumnAliasInFunctionTest extends SqlTest {
         assertSqlQueryRows("Wrong result with alias inside ROW_NUMBER", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3842
-     */
+    @Issue("3842")
     @Test
     public void testAliasInsideCast() {
         String sqlQuery = String.format(

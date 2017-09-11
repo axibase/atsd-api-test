@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -54,9 +55,7 @@ public class GroupByDatetimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3102
-     */
+    @Issue("3102")
     @Test
     public void testGroupByDatetimeSyntax() {
         String sqlQuery = String.format(
@@ -80,9 +79,7 @@ public class GroupByDatetimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3102
-     */
+    @Issue("3102")
     @Test
     public void testGroupByDatetimeWithAggregateFunction() {
         String sqlQuery = String.format(

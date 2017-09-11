@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,9 +45,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     }
 
-    /**
-     * #3609
-     */
+    @Issue("3609")
     @Test
     public void testNoQueryParamsPost() {
         final Response response = httpSqlApiResource

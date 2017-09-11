@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,9 +26,7 @@ public class SqlParseTimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
     }
 
-    /**
-     * #3711
-     */
+    @Issue("3711")
     @Test(timeOut = 10000)
     public void testIfParseTimeIsAppropriate() {
         Integer numberOfTimes = 27;

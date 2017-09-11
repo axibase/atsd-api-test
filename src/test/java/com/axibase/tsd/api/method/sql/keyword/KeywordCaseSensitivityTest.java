@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -52,9 +53,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testBasicKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
@@ -82,9 +81,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertOkRequest(queryResponse(sqlQuery));
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "keywordTestProvider", dependsOnMethods = {"testBasicKeywordsForCaseSensitivityInLowerCase"})
     public void testBasicKeywordsForCaseSensitivity(String keyword) {
         String sqlQuery = String.format(
@@ -121,9 +118,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testAggregationsKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
@@ -141,9 +136,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertSqlQueryRows("There's a problem with aggregations keywords in lowercase", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "aggregationsKeywordTestProvider",
             dependsOnMethods = {"testAggregationsKeywordsForCaseSensitivityInLowerCase"})
     public void testAggregationsKeywordsForCaseSensitivity(String keyword) {
@@ -170,9 +163,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testMathematicalKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
@@ -189,9 +180,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertSqlQueryRows("There's a problem with mathematical keywords in lowercase", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "mathematicalKeywordTestProvider",
             dependsOnMethods = {"testMathematicalKeywordsForCaseSensitivityInLowerCase"})
     public void testMathematicalKeywordsForCaseSensitivity(String keyword) {
@@ -217,9 +206,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testStringKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
@@ -236,9 +223,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertSqlQueryRows("There's a problem with string keywords in lowercase", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "stringKeywordTestProvider",
             dependsOnMethods = {"testStringKeywordsForCaseSensitivityInLowerCase"})
     public void testStringKeywordsForCaseSensitivity(String keyword) {
@@ -295,9 +280,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "timeKeywordTestProvider")
     public void testTimeKeywordsForCaseSensitivity(String keyword) {
 
@@ -325,9 +308,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "timeIntervalKeywordTestProvider")
     public void testTimeIntervalKeywordsForCaseSensitivity(String keyword) {
 

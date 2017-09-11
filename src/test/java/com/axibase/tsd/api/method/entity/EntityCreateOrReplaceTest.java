@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -23,9 +24,7 @@ import static org.testng.AssertJUnit.*;
 
 public class EntityCreateOrReplaceTest extends EntityMethod {
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("createentity 1");
@@ -33,9 +32,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), createOrReplaceEntity(entity).getStatus());
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         Entity entity = new Entity("createentity/2");
@@ -44,9 +41,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertTrue("Fail to get required entity", entityExist(entity));
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("createйёentity3");
@@ -55,9 +50,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertTrue("Fail to get required entity", entityExist(entity));
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagNameConvertedToLowerCase() throws Exception {
         Entity entity = new Entity("createentity4");
@@ -75,9 +68,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Tags name should be converted to lower case", formattedTags, savedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagValueRetainCase() throws Exception {
         Entity entity = new Entity("createentity5");
@@ -90,9 +81,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Tags Value should retain case", entity.getTags(), savedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testEntityNameConvertedToLowerCase() throws Exception {
         Entity entity = new Entity("CreateEntity6");
@@ -104,9 +93,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Entity name should be converted to lower case", entity.getName().toLowerCase(), savedEntity.getName());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testUnknownFieldsRaiseError() throws Exception {
         final String entityName = "create-entity-7";
@@ -123,9 +110,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertErrorMessageStart(givenErrorMessage, UNKNOWN_ENTITY_FIELD_PREFIX);
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testNoTagsReplaceExisting() throws Exception {
         Entity entity = new Entity("create-entity-8");
@@ -140,9 +125,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         }
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testEmptyTagsReplaceExisting() throws Exception {
         Entity entity = new Entity("create-entity-9");
@@ -157,9 +140,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         }
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testAreplaceAF() throws Exception {
         Entity entity = new Entity("create-entity-10");
@@ -176,9 +157,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Stored tags are incorrect", entity.getTags(), storedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testNullTagValIgnored() throws Exception {
         Entity entity = new Entity("create-entity-11");
@@ -193,9 +172,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Stored tags are incorrect", expectedTags, storedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagValBoolean() throws Exception {
         final String entityName = "create-entity-12";
@@ -213,9 +190,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Stored tags are incorrect", expectedTags, storedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagValInteger() throws Exception {
         final String entityName = "create-entity-13";
@@ -233,9 +208,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Stored tags are incorrect", expectedTags, storedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagValBooleanInteger() throws Exception {
         final String entityName = "create-entity-14";
@@ -255,9 +228,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         assertEquals("Stored tags are incorrect", expectedTags, storedEntity.getTags());
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagValArrayRaiseError() throws Exception {
         final String entityName = "create-entity-15";
@@ -275,9 +246,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     }
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testTagValObjectRaiseError() throws Exception {
         final String entityName = "create-entity-16";
@@ -297,9 +266,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     }
 
 
-    /**
-     * #1968
-     */
+    @Issue("1968")
     @Test
     public void testSeriesRemain() throws Exception {
         Series series = new Series("create-entity-17", "create-entity-metric-17");

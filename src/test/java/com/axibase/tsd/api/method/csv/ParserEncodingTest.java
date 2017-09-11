@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -35,7 +36,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
         assertTrue(success);
     }
 
-    /* #2916 */
+    @Issue("2916")
     @Test
     public void testCsvCorrectTextEncodingISO8859_1(Method method) throws Exception {
         String controlSequence = "¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
@@ -45,7 +46,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
         checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, ISO_8859_1);
     }
 
-    /* #2916 */
+    @Issue("2916")
     @Test
     public void testCsvCorrectTextEncodingWindows1251(Method method) throws Exception {
         String controlSequence = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";

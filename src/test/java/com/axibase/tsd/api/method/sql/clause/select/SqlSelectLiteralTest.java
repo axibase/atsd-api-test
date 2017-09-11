@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -40,9 +41,7 @@ public class SqlSelectLiteralTest extends SqlTest {
         };
     }
 
-    /**
-     * #3837
-     */
+    @Issue("3837")
     @Test(dataProvider = "literalAndResultProvider")
     public void testSelectLiteral(String literal, String result) {
         String sqlQuery = String.format("SELECT %s FROM \"%s\"", literal, metricName);

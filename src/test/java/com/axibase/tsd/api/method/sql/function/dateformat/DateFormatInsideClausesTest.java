@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,9 +39,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #3893
-     */
+    @Issue("3893")
     @Test
     public void testDateFormatInsideHavingGroupingByPeriod() throws Exception {
         String sqlQuery = String.format(
@@ -57,9 +56,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows("Query with date_format inside HAVING gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3746
-     */
+    @Issue("3746")
     @Test
     public void testDateFormatEWithTzInsideWhere() throws Exception {
         String sqlQuery = String.format(
@@ -78,9 +75,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows("Query with date_format inside WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3746
-     */
+    @Issue("3746")
     @Test
     public void testDateFormatUWithTzInsideWhere() throws Exception {
         String sqlQuery = String.format(
@@ -99,9 +94,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows("Query with date_format inside WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4231
-     */
+    @Issue("4231")
     @Test
     public void testDateFormatInsideWhereComplexClause() throws Exception {
         String sqlQuery = String.format(
@@ -119,9 +112,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4231
-     */
+    @Issue("4231")
     @Test
     public void testDateFormatInsideWhereWithoutMs() throws Exception {
         String sqlQuery = String.format(
@@ -138,9 +129,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4231
-     */
+    @Issue("4231")
     @Test
     public void testDateFormatDefaultInsideWhere() {
         String sqlQuery = String.format(
@@ -157,9 +146,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3746
-     */
+    @Issue("3746")
     @Test
     public void testDateFormatWithTzInsideGroupBy() throws Exception {
         String sqlQuery = String.format(
@@ -179,9 +166,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows("Query with date_format inside GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3746
-     */
+    @Issue("3746")
     @Test
     public void testDateFormatEWithTzInsideOrderBy() throws Exception {
         String sqlQuery = String.format(
@@ -202,9 +187,7 @@ public class DateFormatInsideClausesTest extends SqlTest {
         assertSqlQueryRows("Query with date_format inside ORDER BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3746
-     */
+    @Issue("3746")
     @Test
     public void testDateFormatUWithTzInsideOrderBy() throws Exception {
         String sqlQuery = String.format(

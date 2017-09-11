@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -47,9 +48,7 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
     }
 
 
-    /**
-     * #3162
-     */
+    @Issue("3162")
     @Test
     public void testOrderByEntityTagNameASC() {
         String sqlQuery =
@@ -61,9 +60,7 @@ public class SqlExampleOrderByCollationTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumn, resultTable, "tags.tag");
     }
 
-    /**
-     * #3162
-     */
+    @Issue("3162")
     @Test
     public void testOrderByEntityTagNameDESC() {
         String sqlQuery =

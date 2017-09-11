@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -42,14 +43,7 @@ public class SqlEntityTagsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-
-    /*
-      #2926 issue.
-     */
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testLikeOperator() {
         String sqlQuery = String.format(
@@ -67,9 +61,7 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testNotLikeOperator() {
         String sqlQuery = String.format(
@@ -85,10 +77,7 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testEqualsOperator() {
         String sqlQuery = String.format(
@@ -106,10 +95,7 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testNotEqualsOperator() {
         String sqlQuery = String.format(
@@ -127,10 +113,7 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testIsNullOperator() {
         String sqlQuery = String.format(
@@ -148,9 +131,7 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testIsNotNullOperator() {
         String sqlQuery = String.format(

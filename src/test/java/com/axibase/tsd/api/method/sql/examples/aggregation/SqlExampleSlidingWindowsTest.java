@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,13 +38,9 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2, series3, series4));
     }
 
-    /**
-     * #3047
-     * Test for query all tags documentation example.
-     *
-     * @see <a href="Aggregate - Sliding Window">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-sliding-window.md</a>
-     */
-    @Test
+    @Issue("3047")
+    @Test(description = "Test for query all tags documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-sliding-window.md")
     public void testExample1() {
         String sqlQuery = String.format(
                 "SELECT entity, avg(value), max(value), last(value), count(*) %n" +
@@ -65,9 +62,7 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
     }
 
 
-    /**
-     * #3047
-     */
+    @Issue("3047")
     @Test
     public void testExample2() {
         String sqlQuery = String.format(

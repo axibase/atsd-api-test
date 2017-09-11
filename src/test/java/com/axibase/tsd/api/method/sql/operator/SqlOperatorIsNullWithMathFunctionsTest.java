@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -32,9 +33,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNotNullWithMathFunction() {
         String sqlQuery = String.format(
@@ -53,9 +52,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     }
 
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNullWithMathFunction() {
         String sqlQuery = String.format(
@@ -73,9 +70,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     }
 
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNotNullWithMathFunctionAliasInOrderBy() {
         String sqlQuery = String.format(
@@ -93,9 +88,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNullWithMathFunctionAliasInOrderBy() {
         String sqlQuery = String.format(
@@ -113,9 +106,7 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     }
 
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNullWithMathFunctionComposeAliasInOrderBy() {
         String sqlQuery = String.format(

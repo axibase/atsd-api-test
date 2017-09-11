@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -33,9 +34,7 @@ import static org.testng.AssertJUnit.*;
 public class SeriesInsertTest extends SeriesTest {
     final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testBigFloatOverflow() throws Exception {
         String entityName = "e-float-1";
@@ -57,9 +56,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testBigDecimalOverflow() throws Exception {
         String entityName = "e-decimal-1";
@@ -77,9 +74,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Managed to insert large decimal series", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
     }
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testBigDecimalAggregatePrecision() throws Exception {
         String entityName = "e-decimal-2";
@@ -109,9 +104,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testDoubleAggregatePrecision() throws Exception {
         String entityName = "e-double-3";
@@ -150,9 +143,7 @@ public class SeriesInsertTest extends SeriesTest {
     }
 
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test(dataProvider = "afterCompactionDataProvider")
     public void testPrecisionAfterCompaction(DataType type, BigDecimal valueBefore) throws Exception {
         Metric metric = new Metric(metric());
@@ -176,9 +167,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertTrue(assertMessage, valueBefore.compareTo(actualValue) == 0);
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsZmsAbsent() throws Exception {
         String entityName = "e-iso-1";
@@ -199,9 +188,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsZms() throws Exception {
         String entityName = "e-iso-2";
@@ -222,9 +209,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsPlusHoursNoMS() throws Exception {
         String entityName = "e-iso-3";
@@ -245,9 +230,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsPlusHoursMS() throws Exception {
         String entityName = "e-iso-4";
@@ -267,9 +250,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testISOFormatsMinusHoursNoMS() throws Exception {
         String entityName = "e-iso-10";
@@ -290,9 +271,7 @@ public class SeriesInsertTest extends SeriesTest {
     }
 
 
-    /**
-     * #2913
-     **/
+    @Issue("2913")
     @Test
     public void testUnderscoreSequence() throws Exception {
         final long t = MILLS_TIME;
@@ -304,9 +283,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertSeriesExisting(series);
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMinInMSSaved() throws Exception {
         Long time = 0L;
@@ -320,9 +297,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMinInISOSaved() throws Exception {
         Series series = new Series("e-time-range-2", "m-time-range-2");
@@ -335,9 +310,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeInMSTimeSaved() throws Exception {
         Long time = 1L;
@@ -351,9 +324,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInMSSaved() throws Exception {
         final long t = getMillis(MAX_STORABLE_DATE);
@@ -370,9 +341,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals(v, data.get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInISOSaved() throws Exception {
         final BigDecimal v = new BigDecimal("" + getMillis(MAX_STORABLE_DATE));
@@ -389,9 +358,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals(v, data.get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInMSOverflow() throws Exception {
         final long t = getMillis(MAX_STORABLE_DATE) + 1;
@@ -409,9 +376,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Managed to insert series with t out of range", 0, data.size());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInISOOverflow() throws Exception {
         final BigDecimal v = new BigDecimal("" + getMillis(NEXT_AFTER_MAX_STORABLE_DATE));
@@ -427,9 +392,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Managed to insert series with d out of range", 0, seriesList.get(0).getData().size());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest0() throws Exception {
         Response response = httpRootResource.path("api").path("404").request().get();
@@ -438,9 +401,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest1() throws Exception {
         Response response = httpApiResource.path("query").request().get();
@@ -448,9 +409,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest2() throws Exception {
         Response response = httpApiResource.path("404").request().get();
@@ -458,9 +417,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest3() throws Exception {
         Response response = httpApiResource.path("404").queryParam("not", "exist").request().get();
@@ -468,9 +425,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequestWithoutApiV1() throws Exception {
         Response response = httpRootResource.path("api").path("404").request().options();
@@ -478,9 +433,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url without /api/v1 options doesn't return 404", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest0() throws Exception {
         Response response = httpApiResource.path("*").request().options();
@@ -488,9 +441,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest1() throws Exception {
         Response response = httpApiResource.path("query").request().options();
@@ -498,9 +449,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest2() throws Exception {
         Response response = httpApiResource.path("404").request().options();
@@ -508,9 +457,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest3() throws Exception {
         Response response = httpApiResource.path("404").queryParam("not", "exist").request().options();
@@ -518,9 +465,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "e-iso-11";
@@ -543,9 +488,7 @@ public class SeriesInsertTest extends SeriesTest {
         );
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "e-iso-12";
@@ -563,9 +506,7 @@ public class SeriesInsertTest extends SeriesTest {
         );
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "e-iso-13";
@@ -586,9 +527,7 @@ public class SeriesInsertTest extends SeriesTest {
         );
     }
 
-    /**
-     * #3164
-     */
+    @Issue("3164")
     @Test
     public void testEmptyTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-1", "m-empty-tag-1");
@@ -604,9 +543,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * #3164
-     */
+    @Issue("3164")
     @Test
     public void testNullTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-2", "m-empty-tag-2");
@@ -622,9 +559,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * #3164
-     **/
+    @Issue("3164")
     @Test
     public void testNullTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-3", "m-empty-tag-3");
@@ -641,9 +576,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * #3164
-     **/
+    @Issue("3164")
     @Test
     public void testEmptyTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-4", "m-empty-tag-4");
@@ -660,9 +593,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * 2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueNullRaiseError() throws Exception {
         Series series = new Series("nulltag-entity-1", "nulltag-metric-1");
@@ -698,9 +629,7 @@ public class SeriesInsertTest extends SeriesTest {
         };
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
         String entityName = entity();
@@ -717,9 +646,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldOverwritten() throws Exception {
         String entityName = "e-text-overwritten-1";
@@ -741,9 +668,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
     }
 
-    /**
-     * #3740
-     **/
+    @Issue("3740")
     @Test
     public void testXTextFieldVersioned() throws Exception {
         String entityName = "e-text-versioning-2";
@@ -773,9 +698,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Text field versioning is corrupted", Arrays.asList(data), textValuesVersioned);
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldPreservedFromTagsModifications() throws Exception {
         String entityName = "e-text-modify-tags-1";
@@ -797,9 +720,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldExplicitNull() throws Exception {
         String entityName = "e-series-insert-text-null-1";

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -143,9 +144,7 @@ public class PropertyInsertTest extends PropertyMethod {
     }
 
 
-    /**
-     * #2957
-     */
+    @Issue("2957")
     @Test
     public void testTimeRangeMinSaved() throws Exception {
         Property property = new Property("t-time-range-p-1", "e-time-range--1");
@@ -158,9 +157,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(property));
     }
 
-    /**
-     * #2957
-     */
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxTimeSaved() throws Exception {
         Property property = new Property("t-time-range-p-3", "e-time-range-p-3");
@@ -173,9 +170,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(property));
     }
 
-    /**
-     * #2957
-     */
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Property property = new Property("t-time-range-p-4", "e-time-range-p-4");
@@ -188,9 +183,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertFalse(propertyExist(property));
     }
 
-    /**
-     * #2957
-     */
+    @Issue("2957")
     @Test
     public void testSameTimeSamePropertyConjunction() throws Exception {
         final long timeMillis = System.currentTimeMillis();
@@ -216,9 +209,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue(propertyExist(resultProperty));
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testISOTimezoneZ() throws Exception {
         Property property = new Property("test1", "property-insert-test-isoz");
@@ -243,9 +234,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
         String entityName = "property-insert-test-iso+hm";
@@ -270,9 +259,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         String entityName = "property-insert-test-iso-hm";
@@ -297,9 +284,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "property-insert-test-localtime";
@@ -316,9 +301,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "property-insert-test-xx-timezone";
@@ -334,9 +317,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertEquals("Error message mismatch", DATE_FILTER_INVALID_FORMAT, extractErrorMessage(response));
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "property-insert-test-milliseconds";
@@ -352,9 +333,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertEquals("Error message mismatch", DATE_FILTER_INVALID_FORMAT, extractErrorMessage(response));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueNull() throws Exception {
         Property property = new Property("insert-property-t-1", "insert-property-e-1");
@@ -371,9 +350,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueContainNull() throws Exception {
         Property property = new Property("insert-property-t-2", "insert-property-e-2");
@@ -391,9 +368,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueNull() throws Exception {
         Property property = new Property("insert-property-t-3", "insert-property-e-3");
@@ -407,9 +382,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueEmpty() throws Exception {
         Property property = new Property("insert-property-t-4", "insert-property-e-4");
@@ -426,9 +399,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueEmpty() throws Exception {
         Property property = new Property("insert-property-t-41", "insert-property-e-41");
@@ -446,9 +417,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueContainSpace() throws Exception {
         Property property = new Property("insert-property-t-5", "insert-property-e-5");
@@ -466,9 +435,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueSpaces() throws Exception {
         Property property = new Property("insert-property-t-6", "insert-property-e-6");
@@ -485,9 +452,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueContainSpace() throws Exception {
         Property property = new Property("insert-property-t-7", "insert-property-e-7");
@@ -504,9 +469,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueSpaces() throws Exception {
         Property property = new Property("insert-property-t-8", "insert-property-e-8");
@@ -524,9 +487,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueInteger() throws Exception {
         final Property storedProperty = new Property("insert-property-t-9", "insert-property-e-9");
@@ -548,9 +509,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueBoolean() throws Exception {
         final Property storedProperty = new Property("insert-property-t-10", "insert-property-e-10");
@@ -572,9 +531,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueInteger() throws Exception {
         final Property storedProperty = new Property("insert-property-t-11", "insert-property-e-11");
@@ -594,9 +551,7 @@ public class PropertyInsertTest extends PropertyMethod {
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueBoolean() throws Exception {
         final Property storedProperty = new Property("insert-property-t-12", "insert-property-e-12");

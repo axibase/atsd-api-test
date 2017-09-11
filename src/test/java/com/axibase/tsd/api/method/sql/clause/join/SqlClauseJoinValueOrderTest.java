@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,7 @@ public class SqlClauseJoinValueOrderTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3322
-     */
+    @Issue("3322")
     @Test
     public void testOrderAsc() {
         String sqlQuery = String.format(
@@ -62,9 +61,7 @@ public class SqlClauseJoinValueOrderTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3322
-     */
+    @Issue("3322")
     @Test
     public void testOrderDesc() {
         String sqlQuery = String.format(

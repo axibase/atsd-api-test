@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.model.entity.Entity;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -14,14 +15,14 @@ import static org.testng.AssertJUnit.assertTrue;
 public class EntityUpdateTest extends EntityMethod {
 
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         Entity entity = new Entity("updateentity 1");
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), updateEntity(entity).getStatus());
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         final Entity entity = new Entity("update_entity/2");
@@ -33,7 +34,7 @@ public class EntityUpdateTest extends EntityMethod {
         assertUrlencodedPathHandledSuccessfullyOnUpdate(entity, newTags);
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("update_йёentity3");

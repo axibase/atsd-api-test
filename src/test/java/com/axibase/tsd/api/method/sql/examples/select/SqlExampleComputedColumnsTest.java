@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -42,14 +43,9 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-
-    /**
-     * Issue #3073
-     * Test for alias documentation example.
-     *
-     * @see <a href="Computed Columns">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/select-computed-columns.md</a>
-     */
-    @Test
+    @Issue("3073")
+    @Test(description = "Test for alias documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/select-computed-columns.md")
     public void testExample1() {
         String sqlQuery = String.format(
                 "SELECT t1.datetime, t1.entity AS \"entity\", t1.value, t2.value, t1.value + t2.value AS total_cpu %n" +
@@ -69,9 +65,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #Issue #3073
-     */
+    @Issue("3073")
     @Test
     public void testExample2() {
         String sqlQuery = String.format(
@@ -93,9 +87,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #Issue #3073
-     */
+    @Issue("3073")
     @Test
     public void testExample3() {
         String sqlQuery = String.format(
@@ -118,9 +110,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
     }
 
 
-    /**
-     * #Issue #3073
-     */
+    @Issue("3073")
     @Test
     public void testExample4() {
         String sqlQuery = String.format(

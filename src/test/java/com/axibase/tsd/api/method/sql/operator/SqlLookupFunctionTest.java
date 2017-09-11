@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -96,9 +97,7 @@ public class SqlLookupFunctionTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupFromText() {
         String sqlQuery = String.format(
@@ -129,9 +128,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupCompositionFromText() {
         String sqlQuery = String.format(
@@ -163,9 +160,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupCaseSensitivity() {
         String sqlQuery = String.format(
@@ -183,9 +178,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupWithWrongTable() {
         String sqlQuery = String.format(
@@ -212,9 +205,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInWhere() {
         String sqlQuery = String.format(
@@ -241,9 +232,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInCast() {
         String sqlQuery = String.format(
@@ -270,9 +259,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInGroupBy() {
         String sqlQuery = String.format(
@@ -299,9 +286,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInHaving() {
         String sqlQuery = String.format(
@@ -323,9 +308,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInLength() {
         String sqlQuery = String.format(
@@ -347,9 +330,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupWithLike() {
         String sqlQuery = String.format(
@@ -384,9 +365,7 @@ public class SqlLookupFunctionTest extends SqlTest {
         };
     }
 
-    /**
-     * #3769
-     */
+    @Issue("3769")
     @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithEntityTags(String key, String expectedResult) {
         String sqlQuery = String.format(
@@ -404,9 +383,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_TAGS_CASE.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3769
-     */
+    @Issue("3769")
     @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithMetricTags(String key, String expectedResult) {
         String sqlQuery = String.format(
@@ -424,9 +401,7 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_TAGS_CASE.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3769
-     */
+    @Issue("3769")
     @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithSeriesTags(String key, String expectedResult) {
         String sqlQuery = String.format(

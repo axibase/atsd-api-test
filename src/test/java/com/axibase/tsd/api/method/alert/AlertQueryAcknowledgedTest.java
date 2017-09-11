@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -77,9 +78,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
     }
 
 
-    /**
-     * #2976
-     */
+    @Issue("2976")
     @Test
     public void testAcknowledgedFilterTrue() throws Exception {
         Map<String, Object> alertQuery = new HashMap<>();
@@ -95,9 +94,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         }
     }
 
-    /**
-     * #2976
-     */
+    @Issue("2976")
     @Test
     public void testAcknowledgedFilterFalse() throws Exception {
         Map<String, Object> alertQuery = new HashMap<>();

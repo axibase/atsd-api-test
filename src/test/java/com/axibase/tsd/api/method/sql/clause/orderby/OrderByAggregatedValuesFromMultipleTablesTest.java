@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,9 +45,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnDescWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
@@ -70,9 +69,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
                             expectedRows, sqlQuery);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnAscWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
@@ -96,9 +93,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnDescWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(
@@ -122,9 +117,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
                             expectedRows, sqlQuery);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnAscWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(

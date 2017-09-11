@@ -14,6 +14,7 @@ import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -40,9 +41,7 @@ public class TextInterpolationTest extends SqlTest {
         return seriesList;
     }
 
-    /**
-     * #3463
-     */
+    @Issue("3463")
     @Test
     public void testOnlyNullInterpolation() throws Exception {
         Series series = Mocks.series();
@@ -179,9 +178,7 @@ public class TextInterpolationTest extends SqlTest {
         };
     }
 
-    /**
-     * #3463
-     */
+    @Issue("3463")
     @Test(dataProvider = "interpolationDataProvider")
     public void testInterpolation(Collection<Sample> sourcePoints,
                                   TimePeriod period,
@@ -204,9 +201,7 @@ public class TextInterpolationTest extends SqlTest {
         assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
-    /**
-     * #3463
-     */
+    @Issue("3463")
     @Test
     public void testMultiJoinInterpolation() throws Exception {
         List<Series> seriesList = multiJoinSeries();

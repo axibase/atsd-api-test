@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 public class MetaDataTest extends SqlMetaTest {
@@ -14,9 +15,8 @@ public class MetaDataTest extends SqlMetaTest {
     private static final String NON_EXISTENT_METRIC_2 = Mocks.metric();
     private static final String NON_EXISTENT_METRIC_3 = Mocks.metric();
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testAtsdSeries() {
         String sqlQuery = "SELECT * from \"atsd_series\"";
@@ -45,9 +45,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testSelectConst() {
         String sqlQuery = "SELECT 1, 'a', 1/0, CASE 0 WHEN 1 THEN 'a' ELSE 5 END " +
@@ -71,9 +70,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testValueTimeAtsdSeriesMeta() {
         String sqlQuery = "SELECT time, datetime, value FROM \"atsd_series\"";
@@ -94,9 +92,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testValueTimeNonExistent() {
         String sqlQuery = String.format(
@@ -120,9 +117,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testValueTimeExistent() throws Exception {
         Series series = Mocks.series();
@@ -149,9 +145,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testNonExistentMeta() {
         String sqlQuery = String.format("SELECT * FROM \"%s\"", NON_EXISTENT_METRIC_1);
@@ -180,9 +175,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testNonExistentFromAtsdSeries() {
         String sqlQuery = String.format(
@@ -215,9 +209,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testNonExistentTagsExpansionMeta() {
         String sqlQuery = String.format("SELECT tags.* FROM \"%s\"", NON_EXISTENT_METRIC_1);
@@ -229,9 +222,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testMetaNonExistentMetricIn() {
         String sqlQuery = String.format(
@@ -267,9 +259,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testMetaEmptyExistentTagsExpansion() throws Exception {
         Metric existentMetric = new Metric(Mocks.metric());
@@ -284,9 +275,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testMetaNonEmptyTagsExpansion() throws Exception {
         String metricA = Mocks.metric();
@@ -334,9 +324,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testMetaNonExistentJoin() {
         String sqlQuery = String.format(
@@ -385,9 +374,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testMetaNonExistentJoinUsingEntity() {
         String sqlQuery = String.format(
@@ -436,9 +424,8 @@ public class MetaDataTest extends SqlMetaTest {
                 expectedNames, expectedTypes, sqlQuery);
     }
 
-    /**
-     * #4363, #4374
-     */
+    @Issue("4363")
+    @Issue("4374")
     @Test
     public void testMetaExpression() {
         String sqlQuery = String.format(

@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import io.qameta.allure.Issue;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
@@ -85,9 +86,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         }
     }
 
-    /*
-    * #3371
-    */
+    @Issue("3371")
     @Test
     public void testEntityWithWildcardExactMatchTrue() throws Exception {
         String entityNameBase = "series-query-limit-entity-";
@@ -116,7 +115,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         assertEquals("ExactMatch true with wildcard doesn't return series with tags", 2, data.size());
     }
 
-    /* #2207 */
+    @Issue("2207")
     @Test(dataProvider = "entities")
     public void testWildcardInEntity(String entity, int seriesCount) throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(entity, METRIC_FOR_ENTITY);
@@ -151,7 +150,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         };
     }
 
-    /* #2207 */
+    @Issue("2207")
     @Test(dataProvider = "tags")
     public void testWildcardInTagValue(String key, String value, int seriesWithNonEmptyDataCount) throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(ENTITY_FOR_TAGS, METRIC_FOR_TAGS,

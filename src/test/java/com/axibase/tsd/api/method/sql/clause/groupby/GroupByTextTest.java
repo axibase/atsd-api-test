@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,9 +29,7 @@ public class GroupByTextTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByText() {
         String query = String.format(
@@ -52,9 +51,7 @@ public class GroupByTextTest extends SqlTest {
         assertSqlQueryRows("Unexpected grouping by text", expected, query);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByFunctionOfText() {
         String query = String.format(
@@ -74,9 +71,7 @@ public class GroupByTextTest extends SqlTest {
         assertSqlQueryRows("Unexpected grouping by text function", expected, query);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByIsNullText() {
         String query = String.format(
@@ -93,9 +88,7 @@ public class GroupByTextTest extends SqlTest {
         assertSqlQueryRows("Unexpected grouping by text nullity", expected, query);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByTextAsNumber() {
         String query = String.format(

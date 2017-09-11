@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -43,9 +44,7 @@ public class CountTest extends SqlTest {
         };
     }
 
-    /**
-     * #3325
-     */
+    @Issue("3325")
     @Test(dataProvider = "countAggregationArgumentsProvider")
     public void testCountValue(String countArg) {
         String sqlQuery = selectCount(countArg);

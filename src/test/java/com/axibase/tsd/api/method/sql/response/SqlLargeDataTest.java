@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.text.ParseException;
@@ -20,9 +21,7 @@ public class SqlLargeDataTest extends SqlTest {
     private final static String ENTITY_NAME = "test-sql-large-data-test-entity";
     private final static String METRIC_NAME = "test-sql-large-data-test-metric";
 
-    /**
-     * #3890
-     */
+    @Issue("3890")
     @Test
     public void testQueryLargeData() throws Exception {
         ArrayList<SeriesCommand> seriesRequests = new ArrayList<>(ENTITIES_COUNT);

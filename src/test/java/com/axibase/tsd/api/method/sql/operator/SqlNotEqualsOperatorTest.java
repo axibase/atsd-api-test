@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -31,14 +32,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /*
-      #2933
-     */
-
-
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsFalse() {
         final String sqlQuery = String.format(
@@ -51,9 +45,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 .readEntity(StringTable.class);
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test(expectedExceptions = ProcessingException.class)
     public void testNotEqualsWithDatetimeIsTrue() {
         final String sqlQuery = String.format(
@@ -66,9 +58,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 .readEntity(StringTable.class);
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWithNumericIsFalse() {
         final String sqlQuery = String.format(
@@ -87,9 +77,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         assertEquals("Table value rows must be identical", expectedRows, resultRows);
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWithNumericIsTrue() {
         final String sqlQuery = String.format(
@@ -103,9 +91,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         assertTrue("Result rows must be empty", resultRows.isEmpty());
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWitStringIsFalse() {
         final String sqlQuery = String.format(
@@ -119,9 +105,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         assertTrue("Result rows must be empty", resultRows.isEmpty());
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWithStringIsTrue() {
         final String sqlQuery = String.format(

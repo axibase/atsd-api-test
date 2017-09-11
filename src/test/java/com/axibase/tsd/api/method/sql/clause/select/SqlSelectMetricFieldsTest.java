@@ -9,7 +9,7 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
-import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -71,9 +71,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         };
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testQueryMetricFields(String field, String value) {
         String sqlQuery = String.format(
@@ -86,9 +84,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in metric field query (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInWhere(String field, String value) {
         String sqlQuery = String.format(
@@ -103,9 +99,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in metric field query with WHERE (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInGroupBy(String field, String value) {
         String sqlQuery = String.format(
@@ -118,9 +112,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in metric field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInOrderBy(String field, String value) {
         String sqlQuery = String.format(
@@ -133,9 +125,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInHaving(String field, String value) {
         String sqlQuery = String.format(

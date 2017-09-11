@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,9 +30,7 @@ public class SqlLimitParamTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestLessLimit() {
         String sqlQuery = String.format(
@@ -51,9 +50,7 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestGraterLimit() {
         String sqlQuery = String.format(
@@ -72,9 +69,7 @@ public class SqlLimitParamTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testLimitUndefined() {
         String sqlQuery = String.format(
@@ -96,9 +91,7 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestNegativeWithLimit() {
         String sqlQuery = String.format(
@@ -118,9 +111,7 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestUndefinedWithLimit() {
         String sqlQuery = String.format(
@@ -140,9 +131,7 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestNegativeWithoutLimit() {
         String sqlQuery = String.format(

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -30,9 +31,7 @@ public class SqlCaseTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseThatGivesCharactersInSelect() {
         String sqlQuery = String.format(
@@ -52,9 +51,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE in SELECT gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseInSelectWithAggregateExpressions() {
         String sqlQuery = String.format(
@@ -71,9 +68,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE in SELECT with Aggregate Expressions gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseReturnsNull() {
         String sqlQuery = String.format(
@@ -91,9 +86,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE not returning null", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseNullCheck() {
         String sqlQuery = String.format(
@@ -111,9 +104,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE can not check for null", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseWithTagThatGivesNumbersInSelect() {
         String sqlQuery = String.format(
@@ -132,9 +123,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE with tags in SELECT gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseWithLocateInSelect() {
         String sqlQuery = String.format(
@@ -153,9 +142,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE with LOCATE in SELECT gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseInSelectWithGrouping() {
         String sqlQuery = String.format(
@@ -177,9 +164,7 @@ public class SqlCaseTest extends SqlTest {
 
     // Add tests to cover CASE expression usage in GROUP, and HAVING clauses.
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseInWhere() {
         String sqlQuery = String.format(
@@ -197,9 +182,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE in WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseInGroupBy() {
         String sqlQuery = String.format(
@@ -218,9 +201,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE in GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3421
-     */
+    @Issue("3421")
     @Test
     public void testCaseInHaving() {
         String sqlQuery = String.format(
@@ -240,9 +221,7 @@ public class SqlCaseTest extends SqlTest {
         assertSqlQueryRows("CASE in HAVING gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     *  #3913
-     */
+    @Issue("3913")
     @Test
     public void testCaseInExpression() throws Exception {
         String sqlQuery = String.format(
@@ -261,9 +240,7 @@ public class SqlCaseTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     *  #3913
-     */
+    @Issue("3913")
     @Test
     public void testCaseInAggregationFunction() throws Exception {
         String sqlQuery = String.format(
@@ -278,9 +255,7 @@ public class SqlCaseTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     *  #3913
-     */
+    @Issue("3913")
     @Test
     public void testCaseInCastFunction() throws Exception {
         String sqlQuery = String.format(

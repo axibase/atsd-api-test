@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -57,9 +58,7 @@ public class SqlFunctionMathAbsTest extends SqlTest {
         };
     }
 
-    /**
-     * #3738
-     */
+    @Issue("3738")
     @Test(dataProvider = "provideTestsDataForAbsTest")
     public void testAbsWithAggregateExpressionsInside(String query, String value) {
         String sqlQuery = String.format(

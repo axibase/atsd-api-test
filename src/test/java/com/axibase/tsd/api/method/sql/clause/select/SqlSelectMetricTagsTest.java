@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricTags() {
         String sqlQuery = String.format(
@@ -57,9 +56,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricMultipleTags() {
         String sqlQuery = String.format(
@@ -82,9 +79,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -103,9 +98,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTagWithDash() {
         String sqlQuery = String.format(
@@ -123,9 +116,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTagCaseSensitivityFalse() {
         String sqlQuery = String.format(
@@ -143,9 +134,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTagCaseSensitivityTrue() {
         String sqlQuery = String.format(

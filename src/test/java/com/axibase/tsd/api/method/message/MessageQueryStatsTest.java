@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Aggregate;
 import com.axibase.tsd.api.model.series.AggregationType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -39,9 +40,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         }
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test(enabled = false)
     public void testNoAggregate() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
@@ -54,9 +53,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test(enabled = false)
     public void testAggregateCount() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
@@ -70,9 +67,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test(enabled = false)
     public void testAggregateDetail() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
@@ -86,9 +81,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test
     public void testAggregateUnknownRaiseError() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
@@ -99,9 +92,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Query with unknown aggregate type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test
     public void testAggregateNoTypeRaiseError() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);

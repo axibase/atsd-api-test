@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,9 +35,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test
     public void testMinMaxValueTimeNegavtives() {
         String sqlQuery = String.format(
@@ -54,9 +53,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         );
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test
     public void testMinMaxValueTimeNaN() {
         String sqlQuery = String.format(
@@ -74,9 +71,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         );
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test
     public void testMinMaxValueTimeNull() {
         String sqlQuery = String.format(
@@ -114,9 +109,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         };
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test(dataProvider = "aggregationFunctionFormats")
     public void testAggregationNaN(String functionFormat) {
         String functionWithArgument = String.format(functionFormat, "value");
@@ -134,9 +127,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         assertSqlQueryRows("Incorrect result for one of aggregation functions with NaN", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test(dataProvider = "aggregationFunctionFormats")
     public void testAggregationNull(String functionFormat) {
         String functionWithArgument = String.format(functionFormat, "text");

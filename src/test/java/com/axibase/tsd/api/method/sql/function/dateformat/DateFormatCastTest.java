@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,9 +26,7 @@ public class DateFormatCastTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3747
-     */
+    @Issue("3747")
     @Test
     public void testDateFormatCast() {
         //This test may not work in some timezones
@@ -45,9 +44,7 @@ public class DateFormatCastTest extends SqlTest {
         assertSqlQueryRows("Wrong result for cast(date_format(...))", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3747
-     */
+    @Issue("3747")
     @Test
     public void testDateFormatWithTimeZoneCast() {
         String sqlQuery = String.format(
@@ -64,9 +61,7 @@ public class DateFormatCastTest extends SqlTest {
         assertSqlQueryRows("Wrong result for cast(date_format(...)) with timezone", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3747
-     */
+    @Issue("3747")
     @Test
     public void testDateFormatCastInWhere() {
         String sqlQuery = String.format(

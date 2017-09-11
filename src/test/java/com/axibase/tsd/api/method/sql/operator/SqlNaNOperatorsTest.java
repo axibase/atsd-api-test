@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -76,9 +77,7 @@ public class SqlNaNOperatorsTest extends SqlTest {
         };
     }
 
-    /**
-     * #4247
-     */
+    @Issue("4247")
     @Test(dataProvider = "operatorsProvider")
     public void testOperatorsWithNaN(String operator, String expectedResult) {
         String sqlQuery = String.format("SELECT %s FROM \"%s\"", operator, TEST_METRIC);

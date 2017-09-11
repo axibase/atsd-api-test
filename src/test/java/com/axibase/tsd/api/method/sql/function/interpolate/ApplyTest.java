@@ -11,6 +11,7 @@ import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -98,9 +99,7 @@ public class ApplyTest extends SqlTest {
         return enumValues;
     }
 
-    /**
-     * #3388
-     */
+    @Issue("3388")
     @Test(dataProvider = "interpolateVariantsProvider")
     public void testApplyWithDateTimeInterval(String param) {
         String sqlQuery = String.format("SELECT * FROM \"%s\"%nWHERE datetime BETWEEN '2016-06-29T07:00:00.000Z' " +
@@ -113,9 +112,7 @@ public class ApplyTest extends SqlTest {
     }
 
 
-    /**
-     * #3462
-     */
+    @Issue("3462")
     @Test
     public void testNullSeries() throws Exception {
         Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z'").getTime();

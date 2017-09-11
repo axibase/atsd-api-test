@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -50,9 +51,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3062
-     */
+    @Issue("3062")
     @Test
     public void testSelectEntityTags() {
         String sqlQuery = String.format(
@@ -70,9 +69,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3062
-     */
+    @Issue("3062")
     @Test
     public void testSelectEmptyEntityTags() {
         String sqlQuery = String.format(
@@ -90,9 +87,7 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3062
-     */
+    @Issue("3062")
     @Test
     public void testSelectTagsWithGroupByEntityTags() {
         String sqlQuery = String.format(

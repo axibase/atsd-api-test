@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -39,9 +40,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test123Order() {
         String sqlQuery = String.format(
@@ -64,9 +63,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test132Order() {
         String sqlQuery = String.format(
@@ -89,9 +86,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test213Order() {
         String sqlQuery = String.format(
@@ -114,9 +109,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test231Order() {
         String sqlQuery = String.format(
@@ -139,9 +132,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test312Order() {
         String sqlQuery = String.format(
@@ -164,9 +155,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test321Order() {
         String sqlQuery = String.format(
@@ -190,9 +179,7 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     }
 
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test1Decs2Decs3DecsOrder() {
         String sqlQuery = String.format(

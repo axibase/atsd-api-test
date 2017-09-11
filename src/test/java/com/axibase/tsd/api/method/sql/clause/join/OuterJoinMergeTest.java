@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -52,9 +53,7 @@ public class OuterJoinMergeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3872
-     */
+    @Issue("3872")
     @Test
     public void testOuterJoin() {
         String sqlQuery = String.format(
@@ -79,9 +78,7 @@ public class OuterJoinMergeTest extends SqlTest {
     }
 
 
-    /**
-     * #3872
-     */
+    @Issue("3872")
     @Test
     public void testOuterJoinWhereClause() {
         String sqlQuery = String.format(
@@ -102,9 +99,7 @@ public class OuterJoinMergeTest extends SqlTest {
     }
 
 
-    /**
-     * #3872
-     */
+    @Issue("3872")
     @Test
     public void testOuterJoinGroupClause() {
         String sqlQuery = String.format(

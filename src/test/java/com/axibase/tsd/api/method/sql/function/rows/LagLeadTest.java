@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -36,9 +37,7 @@ public class LagLeadTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLagInSelectClause() {
         String sqlQuery = String.format(
@@ -62,9 +61,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAG function in SELECT clause", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLeadInSelectClause() {
         String sqlQuery = String.format(
@@ -88,9 +85,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LEAD function in SELECT clause", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLagInSelectClauseWithNull() {
         String sqlQuery = String.format(
@@ -115,9 +110,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAG function in SELECT clause with null", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLeadInSelectClauseWithNull() {
         String sqlQuery = String.format(
@@ -142,9 +135,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LEAD function in SELECT clause with null", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLagInSelectExpression() {
         String sqlQuery = String.format(
@@ -159,9 +150,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAG function in SELECT expression", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLeadInSelectExpression() {
         String sqlQuery = String.format(
@@ -176,9 +165,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LEAD function in SELECT expression", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLagInEmptyResult() {
         String sqlQuery = String.format(
@@ -193,9 +180,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAG function with empty result set", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4032
-     */
+    @Issue("4032")
     @Test
     public void testLeadInEmptyResult() {
         String sqlQuery = String.format(
@@ -210,9 +195,7 @@ public class LagLeadTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LEAD function with empty result set", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4328
-     */
+    @Issue("4328")
     @Test
     public void testLeadInJoin() {
         String sqlQuery = String.format(

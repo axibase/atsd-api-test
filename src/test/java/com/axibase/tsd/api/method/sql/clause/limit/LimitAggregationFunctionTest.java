@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -61,9 +62,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
         };
     }
 
-    /**
-     * #3600
-     */
+    @Issue("3600")
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimit(String function) {
         String sqlQuery = String.format(
@@ -75,9 +74,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
         assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 1), limitSqlQuery);
     }
 
-    /**
-     * #3600
-     */
+    @Issue("3600")
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimitWithPredicate(String function) {
         String sqlQuery = String.format(
@@ -91,9 +88,7 @@ public class LimitAggregationFunctionTest extends SqlTest {
         assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 1), limitSqlQuery);
     }
 
-    /**
-     * #3600
-     */
+    @Issue("3600")
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimitWithGrouping(String function) {
         String sqlQuery = String.format(

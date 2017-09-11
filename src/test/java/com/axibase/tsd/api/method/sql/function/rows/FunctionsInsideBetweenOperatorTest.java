@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,9 +30,7 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4060
-     */
+    @Issue("4060")
     @Test
     public void testLagLeadInsideBetweenOperator() {
         String sqlQuery = String.format(
@@ -44,9 +43,7 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
         assertSqlQueryRows("Incorrect result with lag/lead in BETWEEN operator",
                 expectedRows, sqlQuery);
     }
-    /**
-     * #4060
-     */
+    @Issue("4060")
     @Test
     public void testSqrtInsideBetweenOperator() {
         String sqlQuery = String.format(

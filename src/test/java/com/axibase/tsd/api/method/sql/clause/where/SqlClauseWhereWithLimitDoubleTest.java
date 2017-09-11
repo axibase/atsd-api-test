@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -30,9 +31,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testGreaterOperator() {
         String sqlQuery = String.format(
@@ -47,9 +46,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testLessOperator() {
         String sqlQuery = String.format(
@@ -64,9 +61,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testLessOrEqualsOperator() {
         String sqlQuery = String.format(
@@ -81,9 +76,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testGreaterOrEqualsOperator() {
         String sqlQuery = String.format(
@@ -98,9 +91,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testValueAsRightOperand() {
         String sqlQuery = String.format(
@@ -115,9 +106,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testMathematicalFunction() {
         String sqlQuery = String.format(
@@ -132,9 +121,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testEquals() {
         String sqlQuery = String.format(
@@ -148,9 +135,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     }
 
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testIsNull() {
         String sqlQuery = String.format(
@@ -167,9 +152,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     }
 
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testNotEquals() {
         String sqlQuery = String.format(
@@ -186,9 +169,7 @@ public class SqlClauseWhereWithLimitDoubleTest extends SqlTest {
     }
 
 
-    /**
-     * #3282
-     */
+    @Issue("3282")
     @Test
     public void testSqrtFromValueComparison() {
         String sqlQuery = String.format(

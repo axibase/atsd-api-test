@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -31,9 +32,7 @@ public class SqlTestPeriodServerTimeZoneIndependentTest extends SqlTest {
         };
     }
 
-    /**
-     * #4365
-     */
+    @Issue("4365")
     @Test(
             dataProvider = "provideTimezoneAndResultDate",
             description = "Test that GROUP BY PERIOD doesn't depend on ATSD instance timezone."

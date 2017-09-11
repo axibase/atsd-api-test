@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -36,9 +37,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3241
-     */
+    @Issue("3241")
     @Test
     public void testDayAlign() {
         String sqlQuery = String.format(
@@ -52,9 +51,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
                 generateExpectedRows(null), sqlQuery);
     }
 
-    /**
-     * #4100
-     */
+    @Issue("4100")
     @Test
     public void testDayAlignWithTimezone() {
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Kathmandu");

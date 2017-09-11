@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,13 +39,9 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3177
-     * Test for alias documentation example.
-     *
-     * @see <a href="Aggregate Percentiles">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md</a>
-     */
-    @Test
+    @Issue("3177")
+    @Test(description = "Test for alias documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md")
     public void testExample1() {
         String sqlQuery = String.format(
                 "SELECT entity, metric, datetime, value  %nFROM atsd_series  %nWHERE metric = '%s' %n", TEST_METRIC1_NAME);
@@ -59,9 +56,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3177
-     */
+    @Issue("3177")
     @Test
     public void testExample2() {
         String sqlQuery = String.format(
@@ -81,9 +76,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3177
-     */
+    @Issue("3177")
     @Test
     public void testExample3() {
         String sqlQuery = String.format(
@@ -103,9 +96,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #4259
-     */
+    @Issue("4259")
     @Test
     public void testErrorOnComplexMetricAndEntityFilter() {
         String sqlQuery = String.format(
@@ -122,9 +113,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 response);
     }
 
-    /**
-     * #4259
-     */
+    @Issue("4259")
     @Test
     public void testErrorOnComplexMetricOrEntityFilter() {
         String sqlQuery = String.format(
@@ -141,9 +130,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 response);
     }
 
-    /**
-     * #4259
-     */
+    @Issue("4259")
     @Test
     public void testErrorOnComplexMetricOrEntityFilterWithoutParentheses() {
         String sqlQuery = String.format(
@@ -160,9 +147,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 response);
     }
 
-    /**
-     * #4259
-     */
+    @Issue("4259")
     @Test
     public void testErrorOnComplexMetricOrEntityFilterLike() {
         String sqlQuery = String.format(
@@ -179,9 +164,7 @@ public class SqlSelectFromAtsdSeriesTest extends SqlTest {
                 response);
     }
 
-    /**
-     * #4259
-     */
+    @Issue("4259")
     @Test
     public void testErrorOnComplexMetricOrEntityFilterLikeRegex() {
         String sqlQuery = String.format(

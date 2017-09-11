@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -49,9 +50,7 @@ public class GroupByEntityTagTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3795
-     */
+    @Issue("3795")
     @Test
     public void testGroupByWithoutAggregations() throws Exception {
         String sqlQuery = String.format(
@@ -73,9 +72,7 @@ public class GroupByEntityTagTest extends SqlTest {
         assertSqlQueryRows("GROUP BY entity tag without aggregate function gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3795
-     */
+    @Issue("3795")
     @Test
     public void testGroupByWithSum() throws Exception {
         String sqlQuery = String.format(

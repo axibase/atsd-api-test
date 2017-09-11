@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -61,9 +62,7 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3945
-     */
+    @Issue("3945")
     @Test
     public void testJoinUsingEntityWithTags() {
         String sqlQuery = String.format(
@@ -85,9 +84,7 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN USING ENTITY with tags gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4157
-     */
+    @Issue("4157")
     @Test
     public void testOuterJoinUsingEntity() throws Exception {
         String sqlQuery = String.format(

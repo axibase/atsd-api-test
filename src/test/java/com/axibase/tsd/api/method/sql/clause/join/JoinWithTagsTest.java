@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,9 +45,7 @@ public class JoinWithTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinWithEntityFilter() {
         String sqlQuery = String.format(
@@ -63,9 +62,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN with Entity filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinWithEntityNotNullFilter() {
         String sqlQuery = String.format(
@@ -82,9 +79,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN with Entity NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinUsingEntityWithEntityFilter() {
         String sqlQuery = String.format(
@@ -101,9 +96,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN USING ENTITY with Entity filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinUsingEntityWithEntityNotNullFilter() {
         String sqlQuery = String.format(
@@ -120,9 +113,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN USING ENTITY with Entity NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinWithTagFilter() {
         String sqlQuery = String.format(
@@ -139,9 +130,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN with Tag filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinWithTagNotNullFilter() {
         String sqlQuery = String.format(
@@ -158,9 +147,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN with Tag NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinUsingEntityWithTagFilter() {
         String sqlQuery = String.format(
@@ -177,9 +164,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN USING ENTITY with Tag filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3756
-     */
+    @Issue("3756")
     @Test
     public void testJoinUsingEntityWithTagNotNullFilter() {
         String sqlQuery = String.format(
@@ -196,9 +181,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN USING ENTITY with Tag NOT NULL filter gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3873
-     */
+    @Issue("3873")
     @Test
     public void testTagsAfterJoin() {
         String sqlQuery = String.format(
@@ -214,9 +197,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("List of tags is malformed after JOIN", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3873
-     */
+    @Issue("3873")
     @Test
     public void testSameTagsAfterJoinUsingEntity() {
         String sqlQuery = String.format(
@@ -233,9 +214,7 @@ public class JoinWithTagsTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3873
-     */
+    @Issue("3873")
     @Test
     public void testDifferentTagsAfterJoinUsingEntity() {
         String sqlQuery = String.format(
@@ -252,9 +231,7 @@ public class JoinWithTagsTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4027
-     */
+    @Issue("4027")
     @Test
     public void testJoinKeepsMetricTags() throws Exception {
         Series series = Mocks.series();
@@ -280,9 +257,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("Metric tags are absent or corrupted in JOIN", expected, sql);
     }
 
-    /**
-     * #4027
-     */
+    @Issue("4027")
     @Test
     public void testJoinKeepsMetricFields() throws Exception {
         Series series = Mocks.series();
@@ -303,9 +278,7 @@ public class JoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("Metric interpolate field is absent or corrupted in JOIN", expected, sql);
     }
 
-    /**
-     * #3939
-     */
+    @Issue("3939")
     @Test
     public void testJoinSeriesWithChangedMetrics() throws Exception {
         String entity = entity();

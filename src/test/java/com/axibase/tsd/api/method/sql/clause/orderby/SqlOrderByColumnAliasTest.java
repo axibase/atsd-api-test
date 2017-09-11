@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -32,9 +33,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3838
-     */
+    @Issue("3838")
     @Test
     public void testOrderByColumnAlias() {
         String sqlQuery = String.format(
@@ -51,9 +50,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
         assertSqlQueryRows("ORDER BY column alias error", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3838
-     */
+    @Issue("3838")
     @Test
     public void testOrderByColumnAliasWithoutQuotes() {
         String sqlQuery = String.format(
@@ -70,9 +67,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
         assertSqlQueryRows("ORDER BY column alias without quotes error", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3838
-     */
+    @Issue("3838")
     @Test
     public void testOrderByColumnAliasExpression() {
         String sqlQuery = String.format(
@@ -89,9 +84,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
         assertSqlQueryRows("ORDER BY column alias expression error", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3838
-     */
+    @Issue("3838")
     @Test
     public void testOrderByColumnAliasExpressionWithoutQuotes() {
         String sqlQuery = String.format(
@@ -108,9 +101,7 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
         assertSqlQueryRows("ORDER BY column alias expression without quotes error", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3838
-     */
+    @Issue("3838")
     @Test
     public void testOrderByNonExistingColumnAliasExpression() {
         String sqlQuery = String.format(

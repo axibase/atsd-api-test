@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,9 +26,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testSimpleArithmetic() {
         String sqlQuery = String.format(
@@ -44,9 +43,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testMinus() {
         String sqlQuery = String.format(
@@ -64,9 +61,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testDivisionByZero() {
         String sqlQuery = String.format(
@@ -84,9 +79,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testAllOperations() {
         String sqlQuery = String.format(
@@ -104,9 +97,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testDivisionWithRest() {
         String sqlQuery = String.format(
@@ -123,9 +114,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testNanHandling() {
         String sqlQuery = String.format(
@@ -143,9 +132,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testNullFormattedOrderBy() {
         String sqlQuery = String.format(
@@ -163,9 +150,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testValueAsParam() {
         String sqlQuery = String.format(
@@ -183,9 +168,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test(enabled = false)
     public void testOverflow() {
         String sqlQuery = String.format(

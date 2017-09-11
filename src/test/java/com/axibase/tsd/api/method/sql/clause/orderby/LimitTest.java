@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.DataProvider;
@@ -77,9 +78,7 @@ public class LimitTest extends SqlTest {
         };
     }
 
-    /**
-     * #3416
-     */
+    @Issue("3416")
     @Test(groups = {ENTITY_ORDER_TEST_GROUP}, dataProvider = "entityOrderProvider")
     public void testEntityOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, ENTITY_ORDER_METRIC);
@@ -122,9 +121,7 @@ public class LimitTest extends SqlTest {
     }
 
 
-    /**
-     * #3416
-     */
+    @Issue("3416")
     @Test(groups = {VALUE_ORDER_TEST_GROUP}, dataProvider = "valueOrderProvider")
     public void testValueOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, VALUE_ORDER_METRIC);
@@ -176,9 +173,7 @@ public class LimitTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3416
-     */
+    @Issue("3416")
     @Test(groups = {DATETIME_ORDER_TEST_GROUP}, dataProvider = "datetimeOrderProvider")
     public void testDateTimeOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, DATETIME_ORDER_METRIC);
@@ -215,9 +210,7 @@ public class LimitTest extends SqlTest {
         };
     }
 
-    /**
-     * #3416
-     */
+    @Issue("3416")
     @Test(groups = {TAGS_ORDER_TEST_GROUP}, dataProvider = "tagsOrderProvider")
     public void testTagsOrder(String sqlQueryTemplate, Integer limit) throws Exception {
         String sqlQuery = String.format(sqlQueryTemplate, TAGS_ORDER_METRIC);

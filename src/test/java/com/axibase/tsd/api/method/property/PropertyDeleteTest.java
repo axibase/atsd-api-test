@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -621,9 +622,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be removed", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueNullExactTrue() throws Exception {
         final Property property = new Property("delete-type-22", "delete-entity22");
@@ -640,9 +639,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueNullExactFalse() throws Exception {
         final Property property = new Property("delete-type-23", "delete-entity23");
@@ -659,9 +656,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueEmptyExactTrue() throws Exception {
         final Property property = new Property("delete-type-24", "delete-entity24");
@@ -678,9 +673,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueEmptyExactFalse() throws Exception {
         final Property property = new Property("delete-type-25", "delete-entity25");
@@ -697,9 +690,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueSpaces() throws Exception {
         final Property property = new Property("delete-type-26", "delete-entity26");
@@ -715,9 +706,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueContainsSpaces() throws Exception {
         final Property property = new Property("delete-type-27", "delete-entity27");
@@ -734,9 +723,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueInteger() throws Exception {
         final Property property = new Property("delete-type-28", "delete-entity28");
@@ -758,9 +745,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueBoolean() throws Exception {
         final Property property = new Property("delete-type-29", "delete-entity29");

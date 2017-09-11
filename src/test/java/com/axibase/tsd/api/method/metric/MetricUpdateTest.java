@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -14,18 +15,14 @@ import static org.testng.AssertJUnit.assertTrue;
 
 public class MetricUpdateTest extends MetricMethod {
 
-    /**
-     * #1278
-     **/
+    @Issue("1278")
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
         final Metric metric = new Metric("update metric-1");
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), updateMetric(metric).getStatus());
     }
 
-    /**
-     * #1278
-     **/
+    @Issue("1278")
     @Test
     public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("update/metric-2");
@@ -37,9 +34,7 @@ public class MetricUpdateTest extends MetricMethod {
         assertTrue("Can not find required metric", metricExist(metric));
     }
 
-    /**
-     * #1278
-     **/
+    @Issue("1278")
     @Test
     public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("updateйёmetric-3");
@@ -57,9 +52,7 @@ public class MetricUpdateTest extends MetricMethod {
         assertEquals("Unknown metric should return NotFound", NOT_FOUND.getStatusCode(), updateMetric(metric).getStatus());
     }
 
-    /**
-     * #3141
-     **/
+    @Issue("3141")
     @Test
     public void testMetricTagNameIsLowerCased() throws Exception {
         final String TAG_NAME = "NeWtAg";

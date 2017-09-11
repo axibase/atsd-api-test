@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -20,9 +21,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
         DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
     }
 
-    /**
-     * #2854
-     */
+    @Issue("2854")
     @Test
     public void testEntity() throws Exception {
         Series series = new Series("series-command-test\\-e5", "series-command-test-m5");
@@ -38,9 +37,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
         assertSeriesExisting(series);
     }
 
-    /**
-     * #2854
-     */
+    @Issue("2854")
     @Test
     public void testMetric() throws Exception {
         Series series = new Series("series-command-test-e6", "series-command-test\\-m6");

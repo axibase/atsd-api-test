@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,7 @@ public class SqlMerticTagsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testNoTagFilter() {
         String sqlQuery = String.format(
@@ -58,9 +57,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testIsNullTagFilter() {
         String sqlQuery = String.format(
@@ -75,9 +72,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testIsNotNullTagFilter() {
         String sqlQuery = String.format(
@@ -95,9 +90,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testLikeTagFilter() {
         String sqlQuery = String.format(
@@ -114,9 +107,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testLikeTagFilterAsterisk() {
         String sqlQuery = String.format(
@@ -131,9 +122,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testNotLikeTagFilter() {
         String sqlQuery = String.format(
@@ -148,9 +137,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testNotLikeTagFilterAsterisk() {
         String sqlQuery = String.format(
@@ -167,9 +154,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testRegexTagFilter() {
         String sqlQuery = String.format(
@@ -186,9 +171,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testEqualsTagFilter() {
         String sqlQuery = String.format(
@@ -203,9 +186,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testNotEqualsTagFilter() {
         String sqlQuery = String.format(
@@ -222,9 +203,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testGreaterTagFilter() {
         String sqlQuery = String.format(
@@ -240,9 +219,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testLessOrEqualsTagFilter() {
         String sqlQuery = String.format(
@@ -258,9 +235,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testNotNullAndLikeTagFilter() {
         String sqlQuery = String.format(
@@ -277,9 +252,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testLikeAndGreaterTagFilter() {
         String sqlQuery = String.format(
@@ -295,9 +268,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testEqualsAndNotNullTagFilter() {
         String sqlQuery = String.format(
@@ -312,9 +283,7 @@ public class SqlMerticTagsTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4180
-     */
+    @Issue("4180")
     @Test
     public void testIsNullAndLikeTagFilter() {
         String sqlQuery = String.format(

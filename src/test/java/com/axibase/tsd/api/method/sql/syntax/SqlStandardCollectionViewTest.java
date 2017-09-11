@@ -11,6 +11,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -61,15 +62,7 @@ public class SqlStandardCollectionViewTest extends SqlTest {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY1_NAME));
     }
 
-    /*
-    #3126 issue
-    Standard collection view
-     */
-
-    /**
-     * #3126
-     * Test will fail until #3141 won't be fixed
-     */
+    @Issue("3126")
     @Test
     public void testAlphabeticalOrder() {
         String sqlQuery = String.format(
@@ -91,9 +84,7 @@ public class SqlStandardCollectionViewTest extends SqlTest {
         assertTableContainsColumnsValues(expectedRows, resultTable, "tags", "metric.tags", "entity.tags", "entity.groups");
     }
 
-    /**
-     * #3126
-     */
+    @Issue("3126")
     @Test
     public void testEmptyTags() {
         String sqlQuery = String.format(

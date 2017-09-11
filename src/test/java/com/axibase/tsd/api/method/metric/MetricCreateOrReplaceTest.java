@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -26,9 +27,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
-    /**
-     * #1278
-     **/
+    @Issue("1278")
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
         final Metric metric = new Metric("createreplace metric-1");
@@ -37,9 +36,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1278
-     **/
+    @Issue("1278")
     @Test
     public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("createreplace/metric-2");
@@ -50,9 +47,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
-    /**
-     * #1278
-     **/
+    @Issue("1278")
     @Test
     public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("createreplacйёmetric-3");
@@ -63,9 +58,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
-    /**
-     * #3141
-     **/
+    @Issue("3141")
     @Test
     public void testMetricTagNameIsLowerCased() throws Exception {
         final String TAG_NAME = "SoMeTaG";

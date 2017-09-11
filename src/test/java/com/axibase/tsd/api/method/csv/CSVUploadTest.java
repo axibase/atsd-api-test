@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -66,7 +67,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         };
     }
 
-    /* #2916 */
+    @Issue("2916")
     @Test
     public void testPlainCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-1";
@@ -78,7 +79,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     }
 
-    /* #2916 */
+    @Issue("2916")
     @Test
     public void testPlainCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-2";
@@ -89,7 +90,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testTarGzCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-3";
@@ -100,7 +101,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testTarGzCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-4";
@@ -111,7 +112,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testZipCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-5";
@@ -122,7 +123,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testZipCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-6";
@@ -134,7 +135,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testGzCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-7";
@@ -145,7 +146,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testGzCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-8";
@@ -156,7 +157,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testDSStoreFileInTarGz(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-9";
@@ -165,7 +166,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testMetaFileInTarGz(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-10";
@@ -176,7 +177,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testDSStoreFileInZip(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-11";
@@ -187,7 +188,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testMetaFileInZip(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-12";
@@ -198,7 +199,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeInISO(Method method) throws Exception {
         Entity entity = new Entity("e-csv-simple-parser-iso-0");
@@ -221,7 +222,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getValue().toString());
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeInMS(Method method) throws Exception {
         Entity entity = new Entity("e-csv-simple-parser-ms-1");
@@ -245,7 +246,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getValue().toString());
     }
 
-    /* #3011 */
+    @Issue("3011")
     @Test(dataProvider = "parserProvider")
     public void testFileWithLineBreak(Method method, int numTest, String lineBreakType, String parser, Integer dataSize) throws Exception {
         String nameSuffix = String.format("-%s-parser-ms-%d", lineBreakType, numTest);
@@ -270,7 +271,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getRawDate()));
     }
 
-    /* #3591 */
+    @Issue("3591")
     @Test
     public void testFileWithCRLineBreakAndDST(Method method) throws Exception {
         Entity entity = new Entity("e-cr-dst-parser-ms-2");

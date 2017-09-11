@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.property;
 
 
 import com.axibase.tsd.api.model.property.Property;
+import io.qameta.allure.Issue;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -61,11 +62,11 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
     }
 
     /**
-     * #2947
      * Last offset = 0, = 0 therefore Last include
      * Middle offset = 5, > 0 therefore Past do not include
      * Past offset = 10, > 0 therefore Past do not include
      */
+    @Issue("2947")
     @Test
     public void testOffset0SelectsLast() throws Exception {
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyLast1, propertyLast2));
@@ -74,9 +75,9 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
     }
 
     /**
-     * #2947
      * offset < 0 therefore include ALL.
      */
+    @Issue("2947")
     @Test
     public void testOffsetNegativeSelectAll() throws Exception {
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));
@@ -85,10 +86,10 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
     }
 
     /**
-     * #2947
      * Middle offset = 5, Last offset = 0, <= 5 therefore Middle&Last include
      * Past offset = 10, > 5 therefore Past do not include
      */
+    @Issue("2947")
     @Test
     public void testOffsetEqualDateDiffSelectsDateInclusive() throws Exception {
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyMiddl, propertyLast1, propertyLast2));
@@ -97,10 +98,10 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
     }
 
     /**
-     * #2947
      * Middle offset = 5, Last offset = 0, < 6 therefore Middle&Last include
      * Past offset = 10, > 6 therefore Past do not include
      */
+    @Issue("2947")
     @Test
     public void testOffsetMoreDateSelectsLessOrEqualDate() throws Exception {
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyMiddl, propertyLast1, propertyLast2));
@@ -109,9 +110,9 @@ public class PropertyQueryOffsetTest extends PropertyMethod {
     }
 
     /**
-     * #2947
      * Middle offset = 5, Last offset = 0, Past offset = 10 < 100 therefore Past&Middle&Last include
      */
+    @Issue("2947")
     @Test
     public void testOffsetLargeSelectAll() throws Exception {
         String expected = jacksonMapper.writeValueAsString(Arrays.asList(propertyPast1, propertyMiddl, propertyLast1, propertyLast2));

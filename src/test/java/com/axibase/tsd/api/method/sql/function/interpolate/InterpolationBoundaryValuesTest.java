@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -190,9 +191,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         return value;
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testInnerInterpolation() throws ParseException {
         String sqlQuery = String.format(
@@ -212,9 +211,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows("Incorrect inner interpolation", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testInnerInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
@@ -235,9 +232,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows("Incorrect inner interpolation with period intersection", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testInnerInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -260,9 +255,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testInnerInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -284,9 +277,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4217
-     */
+    @Issue("4217")
     @Test
     public void testInnerInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -307,9 +298,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4217
-     */
+    @Issue("4217")
     @Test
     public void testInnerInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -331,10 +320,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testOuterInterpolationEntirePeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -354,9 +340,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows("Incorrect outer interpolation by entire period", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testOuterInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
@@ -377,9 +361,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows("Incorrect inner interpolation with period intersection", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testOuterInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -402,9 +384,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testOuterInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -426,9 +406,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testOuterInterpolationWithOuterBoundValue() throws ParseException {
         String sqlQuery = String.format(
@@ -451,9 +429,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4217
-     */
+    @Issue("4217")
     @Test
     public void testOuterInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -474,9 +450,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4217
-     */
+    @Issue("4217")
     @Test
     public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
         String sqlQuery = String.format(
@@ -498,9 +472,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 sqlQuery);
     }
 
-    /**
-     * #4069
-     */
+    @Issue("4069")
     @Test
     public void testInterpolationWithOverlappingPeriods() {
         String sqlQuery = String.format(
@@ -523,9 +495,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 expectedErrorMessage, response);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithMinDateNoneCalendar() {
         String sqlQuery = String.format(
@@ -547,9 +517,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithMinDateNanCalendar() {
         String sqlQuery = String.format(
@@ -572,9 +540,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithMinDateExtendCalendar() {
         String sqlQuery = String.format(
@@ -597,9 +563,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithMinDateNoneStartTime() {
         String sqlQuery = String.format(
@@ -621,9 +585,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithMinDateNanStartTime() {
         String sqlQuery = String.format(
@@ -646,9 +608,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithMinDateExtendStartTime() {
         String sqlQuery = String.format(
@@ -671,9 +631,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4181
-     */
+    @Issue("4181")
     @Test
     public void testJoinWithDateBeforeMin() {
         String sqlQuery = String.format(

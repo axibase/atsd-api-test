@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -53,9 +54,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #3892
-     */
+    @Issue("3892")
     @Test
     public void testCaseInSelectWithoutGroupBy() {
         String sqlQuery = String.format(
@@ -75,9 +74,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("CASE in SELECT without GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3892
-     */
+    @Issue("3892")
     @Test
     public void testCaseInGroupByOnly() {
         String sqlQuery = String.format(
@@ -94,9 +91,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("CASE in GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3892
-     */
+    @Issue("3892")
     @Test
     public void testCaseInSelectAndGroupBy() {
         String sqlQuery = String.format(
@@ -116,9 +111,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("CASE in SELECT and GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3912
-     */
+    @Issue("3912")
     @Test
     public void testGroupByColumnAlias() {
         String sqlQuery = String.format(
@@ -137,9 +130,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("CASE in SELECT and GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3855
-     */
+    @Issue("3855")
     @Test
     public void testGroupByEntityLabel() {
         String sqlQuery = String.format(
@@ -157,9 +148,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("GROUP BY entity label gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3855
-     */
+    @Issue("3855")
     @Test
     public void testGroupByEntityLabelAlias() {
         String sqlQuery = String.format(
@@ -177,9 +166,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("GROUP BY entity label alias gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3855
-     */
+    @Issue("3855")
     @Test
     public void testGroupByTextField() {
         String sqlQuery = String.format(
@@ -197,9 +184,7 @@ public class GroupByCaseExpressionTest extends SqlTest {
         assertSqlQueryRows("GROUP BY text field gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3855
-     */
+    @Issue("3855")
     @Test
     public void testGroupByTextFieldAlias() {
         String sqlQuery = String.format(

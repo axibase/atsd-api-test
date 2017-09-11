@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -145,9 +146,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
                 series4, series5, series6);
     }
 
-    /**
-     * #4149
-     */
+    @Issue("4149")
     @Test
     public void testWhereInMertricsNoSelfJoin() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric IN metrics('br-1211')");
@@ -155,9 +154,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         assertSqlQueryRows("Wrong result when metrics(...) contains metric to join with", QUERY_RESULT, sqlQuery);
     }
 
-    /**
-     * #4149
-     */
+    @Issue("4149")
     @Test
     public void testWhereLikeNoSelfJoin() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack%%')");

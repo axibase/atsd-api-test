@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.model.message.SeverityAlias;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -52,11 +53,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
 
     }
 
-    /*
-         #2917
-         unknown severity name or code raise error
-    */
-    @Test(dataProvider = "unknownSeverities")
+    @Issue("2917")
+    @Test(
+            dataProvider = "unknownSeverities",
+            description = "unknown severity name or code raise error"
+    )
     public void testUnknownSeverityRaiseError(Object o) throws Exception {
         messageQuery.setSeverity(String.valueOf(o));
         String response = queryMessageResponse(messageQuery).readEntity(String.class);
@@ -64,11 +65,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
         assertTrue("Error if not raised", error.has("error"));
     }
 
-    /*
-         #2917
-         alias processed correctly
-    */
-    @Test(dataProvider = "aliases")
+    @Issue("2917")
+    @Test(
+            dataProvider = "aliases",
+            description = "alias processed correctly"
+    )
     public void testAliasProcessedCorrectly(SeverityAlias alias) throws Exception {
         messageQuery.setSeverity(alias.name());
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
@@ -77,11 +78,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
         assertEquals("Alias processed wrong", alias.getSeverity().name(), severity);
     }
 
-    /*
-         #2917
-         minSeverity is case insensitive
-    */
-    @Test(dataProvider = "severities")
+    @Issue("2917")
+    @Test(
+            dataProvider = "severities",
+            description = "minSeverity is case insensitive"
+    )
     public void testMinSeverityCaseInsensitive(Severity severity) throws Exception {
         messageQuery.setMinSeverity(properCase(severity.name()));
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
@@ -95,11 +96,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
         }
     }
 
-    /*
-         #2917
-         severity is case insensitive
-    */
-    @Test(dataProvider = "severities")
+    @Issue("2917")
+    @Test(
+            dataProvider = "severities",
+            description = "severity is case insensitive"
+    )
     public void testSeverityCaseInsensitive(Severity s) throws Exception {
         messageQuery.setSeverity(properCase(s.name()));
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
@@ -108,11 +109,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
         assertEquals("Severity is case sensitive", s.name(), severity);
     }
 
-    /*
-         #2917
-         response contains severity as name (text) not as numeric code
-    */
-    @Test(dataProvider = "severities")
+    @Issue("2917")
+    @Test(
+            dataProvider = "severities",
+            description = "response contains severity as name (text) not as numeric code"
+    )
     public void testResponseSeverityNotNumeric(Severity s) throws Exception {
         messageQuery.setSeverity(s.name());
         List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
@@ -123,11 +124,11 @@ public class MessageSeverityQueryTest extends MessageMethod {
         assertFalse(errMessage, severity.matches("-?\\d+(\\.\\d+)?"));
     }
 
-    /*
-         #2917
-         minSeverity is >= filter
-    */
-    @Test(dataProvider = "severities")
+    @Issue("2917")
+    @Test(
+            dataProvider = "severities",
+            description = "minSeverity is >= filter"
+    )
     public void testMinSeverityFilter(Severity severity) throws Exception {
         String key = severity.name();
         Integer minimumSeverity = severity.getNumVal();
@@ -142,11 +143,8 @@ public class MessageSeverityQueryTest extends MessageMethod {
         }
     }
 
-    /*
-         #2917
-         severities should return messages with the same severities names as in the request
-    */
-    @Test
+    @Issue("2917")
+    @Test(description = "severities should return messages with the same severities names as in the request")
     public void testActualSeveritiesCorrespondRequired() throws Exception {
         String[] allSeverities = names();
         messageQuery.setSeverities(Arrays.asList(allSeverities));

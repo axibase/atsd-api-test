@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -32,9 +33,7 @@ public class CaseOperatorTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3981
-     */
+    @Issue("3981")
     @Test
     public void testSimpleCaseOperator() {
         final String sql = String.format(
@@ -53,9 +52,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad CASE... result", expected, sql);
     }
 
-    /**
-     * #3981
-     */
+    @Issue("3981")
     @Test
     public void testCaseOperator() {
         final String sql = String.format(
@@ -74,9 +71,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad CASE... result", expected, sql);
     }
 
-    /**
-     * #3981
-     */
+    @Issue("3981")
     @Test
     public void testCaseOperatorInNumericFunction() {
         final String sql = String.format(
@@ -92,9 +87,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad apply SUM to CASE...", expected, sql);
     }
 
-    /**
-     * #3981
-     */
+    @Issue("3981")
     @Test
     public void testCaseOperatorInStringFunction() {
         final String sql = String.format(
@@ -113,9 +106,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad apply UPPER to CASE...", expected, sql);
     }
 
-    /**
-     * #3852
-     */
+    @Issue("3852")
     @Test
     public void testOrderByCaseOperator() {
         final String sql = String.format(
@@ -134,9 +125,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad ascending order by CASE...", expected, sql);
     }
 
-    /**
-     * #3852
-     */
+    @Issue("3852")
     @Test
     public void testOrderByCaseOperatorAsColumn() {
         final String sql = String.format(
@@ -155,9 +144,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad ascending order by CASE...", expected, sql);
     }
 
-    /**
-     * #3852
-     */
+    @Issue("3852")
     @Test
     public void testOrderByCaseOperatorOfDifferentTypes() {
         final String sql = String.format(
@@ -176,9 +163,7 @@ public class CaseOperatorTest extends SqlTest {
         assertSqlQueryRows("Bad ascending order by CASE...", expected, sql);
     }
 
-    /**
-     * #3852
-     */
+    @Issue("3852")
     @Test
     public void testCaseOperatorInWhereSwitchingCondition() {
         final String sql = String.format(
@@ -197,9 +182,7 @@ public class CaseOperatorTest extends SqlTest {
     }
 
 
-    /**
-     * #3852
-     */
+    @Issue("3852")
     @Test
     public void testCaseOperatorInWhere() {
         final String sql = String.format(

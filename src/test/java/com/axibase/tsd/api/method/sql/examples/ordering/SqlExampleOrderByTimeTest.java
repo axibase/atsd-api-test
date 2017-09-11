@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -30,13 +31,9 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3047
-     * Test for alias documentation example.
-     *
-     * @see <a href="Computed Columns">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/order-by-time.md</a>
-     */
-    @Test
+    @Issue("3047")
+    @Test(description = "Test for alias documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/order-by-time.md")
     public void test() {
         String sqlQuery = String.format(
                 "SELECT datetime, value FROM \"%s\"%nORDER BY datetime",

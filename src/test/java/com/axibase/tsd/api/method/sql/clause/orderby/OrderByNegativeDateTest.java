@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,9 +25,7 @@ public class OrderByNegativeDateTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * 4307
-     */
+    @Issue("4307")
     @Test(
             description = "Test that values with negative date appear on the right position " +
                     "when sorting is done in ascending order"
@@ -50,9 +49,7 @@ public class OrderByNegativeDateTest extends SqlTest {
         assertSqlQueryRows("", expectedRows, sqlQuery);
     }
 
-    /**
-     * 4307
-     */
+    @Issue("4307")
     @Test(
             description = "Test that values with negative date appear on the right position " +
                     "when sorting is done in descending order"

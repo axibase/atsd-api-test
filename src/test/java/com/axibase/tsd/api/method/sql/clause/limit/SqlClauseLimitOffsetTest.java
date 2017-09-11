@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.ErrorTemplate;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,9 +38,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOffsetByLimitClause() {
         String sqlQuery = String.format(
@@ -55,9 +54,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumn, resultTable, "value");
     }
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOffsetByOffsetClause() {
         String sqlQuery = String.format(
@@ -74,9 +71,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOutOffsetByOffsetClause() {
         String sqlQuery = String.format(
@@ -93,9 +88,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOutOffsetByLimitClause() {
         String sqlQuery = String.format(
@@ -112,9 +105,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectNotIntegerOffsetByLimitClause() {
         String sqlQuery = String.format(
@@ -134,9 +125,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectNotIntegerOffsetByOffsetClause() {
         String sqlQuery = String.format(
@@ -155,9 +144,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         );
     }
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectLetterOffsetByLimitClause() {
         String sqlQuery = String.format(
@@ -177,9 +164,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectLetterOffsetByOffsetClause() {
         String sqlQuery = String.format(
@@ -199,9 +184,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectOffsetWithoutLimit() {
         String sqlQuery = String.format(

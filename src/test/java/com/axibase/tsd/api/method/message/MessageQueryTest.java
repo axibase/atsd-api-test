@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,9 +33,7 @@ public class MessageQueryTest extends MessageMethod {
     }
 
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testISOTimezoneZ() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
@@ -49,9 +48,7 @@ public class MessageQueryTest extends MessageMethod {
         assertEquals("Incorrect message date", message.getDate(), storedMessage.getDate());
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
@@ -66,9 +63,7 @@ public class MessageQueryTest extends MessageMethod {
         assertEquals("Incorrect message date", message.getDate(), storedMessage.getDate());
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
@@ -83,9 +78,7 @@ public class MessageQueryTest extends MessageMethod {
         assertEquals("Incorrect message date", message.getDate(), storedMessage.getDate());
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
@@ -98,9 +91,7 @@ public class MessageQueryTest extends MessageMethod {
 
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
@@ -112,9 +103,7 @@ public class MessageQueryTest extends MessageMethod {
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2017-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
@@ -126,9 +115,7 @@ public class MessageQueryTest extends MessageMethod {
         JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 1500595200000\"}", response.readEntity(String.class), true);
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardStarChar() throws Exception {
         Message message = new Message("message-query-wildcard-2-1");
@@ -146,9 +133,7 @@ public class MessageQueryTest extends MessageMethod {
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardQuestionChar() throws Exception {
         Message message = new Message("message-query-wildcard-3-1");
@@ -166,9 +151,7 @@ public class MessageQueryTest extends MessageMethod {
         assertTrue("Message in response does not match to inserted", compareJsonString(expected, given));
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntityEntitiesWildcardSame() throws Exception {
         Message message = new Message("message-query-wildcard-4-1");

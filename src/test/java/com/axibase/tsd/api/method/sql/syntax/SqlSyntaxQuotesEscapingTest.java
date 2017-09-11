@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,9 +39,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
         MetricMethod.updateMetric(TEST_METRIC_NAME, updatedEntityQuery);
     }
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testSeriesTagsAll() {
         String sqlQuery = String.format(
@@ -64,9 +63,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testMetricTagsAll() {
         String sqlQuery = String.format(
@@ -89,9 +86,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
     }
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testSpecifiedSeriesTags() {
         String sqlQuery = String.format(
@@ -118,9 +113,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testSpecifiedMetricSeriesTags() {
         String sqlQuery = String.format(
@@ -147,9 +140,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testLikeOperatorSeriesTags() {
         String sqlQuery = String.format(
@@ -178,9 +169,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testIsNullOperatorSeriesTags() {
         String sqlQuery = String.format(
@@ -209,9 +198,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testEqualsOperatorSeriesTags() {
         String sqlQuery = String.format(

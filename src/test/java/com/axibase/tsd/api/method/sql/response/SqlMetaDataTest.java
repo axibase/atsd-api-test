@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -36,10 +37,7 @@ public class SqlMetaDataTest extends SqlMethod {
         resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
     }
 
-
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testEntityDataType() {
         String entityDataType = resultTable
@@ -48,10 +46,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("string", entityDataType);
     }
 
-
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testEntityPropertyUrl() {
         String entityPropertyUrl = resultTable
@@ -60,10 +55,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("atsd:entity", entityPropertyUrl);
     }
 
-
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testMetricDataType() {
         String metricDataType = resultTable
@@ -72,10 +64,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("string", metricDataType);
     }
 
-
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testMetricPropertyUrl() {
         String metricPropertyUrl = resultTable
@@ -84,10 +73,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("atsd:metric", metricPropertyUrl);
     }
 
-
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testValueDataType() {
         String valueDataType = resultTable
@@ -96,9 +82,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("float", valueDataType);
     }
 
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testValuePropertyUrl() {
         String valuePropertyUrl = resultTable
@@ -107,9 +91,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("atsd:value", valuePropertyUrl);
     }
 
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testValueWithExpressionDataType() {
         String valueWithExpressionDataType = resultTable
@@ -118,14 +100,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("double", valueWithExpressionDataType);
     }
 
-
-    /**
-     * Will fail until bug #2978 will not be fixed
-     */
-
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testValueWithExpressionPropertyUrl() {
         String valueWithExpressionPropertyUrl = resultTable
@@ -134,9 +109,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("atsd:value", valueWithExpressionPropertyUrl);
     }
 
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testDateTimeDataType() {
         String dateTimeDataType = resultTable
@@ -145,9 +118,7 @@ public class SqlMetaDataTest extends SqlMethod {
         assertEquals("xsd:dateTimeStamp", dateTimeDataType);
     }
 
-    /**
-     * #2973
-     */
+    @Issue("2973")
     @Test
     public void testDateTimePropertyUrl() {
         String dateTimePropertyUrl = resultTable

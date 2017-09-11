@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -42,9 +43,7 @@ public class SqlNullDataTypeTest extends SqlTest {
       Arithmetical function
      */
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testDivisionExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -58,9 +57,7 @@ public class SqlNullDataTypeTest extends SqlTest {
         assertEquals("null", resultTable.getValueAt(2, 0));
     }
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testExpressionNaNDataType() {
         final String sqlQuery = String.format(
@@ -74,9 +71,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testMinusExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -89,9 +84,7 @@ public class SqlNullDataTypeTest extends SqlTest {
         assertEquals("null", resultTable.getValueAt(2, 0));
     }
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testPlusExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -106,9 +99,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testMultiplicationExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -127,9 +118,7 @@ public class SqlNullDataTypeTest extends SqlTest {
      */
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testCountExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -149,9 +138,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testSumExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -171,9 +158,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testAvgExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -193,9 +178,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testMinExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -215,9 +198,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testMaxExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -237,9 +218,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testFirstExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -259,9 +238,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testCounterExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -281,9 +258,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testDeltaExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(
@@ -303,9 +278,7 @@ public class SqlNullDataTypeTest extends SqlTest {
     }
 
 
-    /**
-     * #2934
-     */
+    @Issue("2934")
     @Test
     public void testLastExpressionWithNullValueDataType() {
         final String sqlQuery = String.format(

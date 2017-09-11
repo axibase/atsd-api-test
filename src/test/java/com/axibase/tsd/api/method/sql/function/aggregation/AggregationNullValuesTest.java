@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -32,9 +33,7 @@ public class AggregationNullValuesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(firstSeries, secondSeries);
     }
 
-    /**
-     * #3880
-     */
+    @Issue("3880")
     @Test
     public void testNullValues() {
         String sqlQuery = String.format("SELECT \"%1$s\".entity as \"Item\", LAST(\"%1$s\".value) * LAST(\"%2$s\".value) " +

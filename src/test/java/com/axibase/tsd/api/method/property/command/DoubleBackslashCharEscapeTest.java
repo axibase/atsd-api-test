@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.PropertyCommand;
 import com.axibase.tsd.api.model.property.Property;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -21,9 +22,7 @@ public class DoubleBackslashCharEscapeTest extends PropertyMethod {
         DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
     }
 
-    /**
-     * #2854
-     */
+    @Issue("2854")
     @Test
     public void testEntity() throws Exception {
         Property property = new Property("property-command-test-t8", "property-command-test\\\\-e8");
@@ -35,9 +34,7 @@ public class DoubleBackslashCharEscapeTest extends PropertyMethod {
         assertPropertyExisting("Inserted property can not be received", property);
     }
 
-    /**
-     * #2854
-     */
+    @Issue("2854")
     @Test
     public void testType() throws Exception {
         Property property = new Property("property-command-test\\\\-t7", "property-command-test-e7");

@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -55,9 +56,7 @@ public class SeriesQueryTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test(dataProvider = "datesWithTimezonesProvider")
     public void testISOTimezoneZ(String date) throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -80,9 +79,7 @@ public class SeriesQueryTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #2850
-     */
+    @Issue("2850")
     @Test(dataProvider = "incorrectDatesProvider")
     public void testLocalTimeUnsupported(String date) throws Exception {
         SeriesQuery seriesQuery = buildQuery();
@@ -96,9 +93,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     }
 
-    /**
-     * #3013
-     */
+    @Issue("3013")
     @Test
     public void testDateFilterRangeIsBeforeStorableRange() throws Exception {
         String entityName = "e-query-range-14";
@@ -116,9 +111,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
 
-    /**
-     * #3013
-     */
+    @Issue("3013")
     @Test
     public void testDateFilterRangeIsAfterStorableRange() throws Exception {
         String entityName = "e-query-range-15";
@@ -136,9 +129,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
 
-    /**
-     * #3013
-     */
+    @Issue("3013")
     @Test
     public void testDateFilterRangeIncludesStorableRange() throws Exception {
         String entityName = "e-query-range-16";
@@ -158,9 +149,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
-    /**
-     * #3013
-     */
+    @Issue("3013")
     @Test
     public void testDateFilterRangeIntersectsStorableRangeBeginning() throws Exception {
         String entityName = "e-query-range-17";
@@ -180,9 +169,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
-    /**
-     * #3013
-     */
+    @Issue("3013")
     @Test
     public void testDateFilterRangeIntersectsStorableRangeEnding() throws Exception {
         String entityName = "e-query-range-18";
@@ -202,9 +189,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect stored value", v, data.get(0).getValue());
     }
 
-    /**
-     * #3043
-     */
+    @Issue("3043")
     @Test
     public void testEveryDayFrom1969ToMinStorableDateFailToInsert() throws Exception {
         Series series = new Series("e-query-range-19", "m-query-range-19");
@@ -226,9 +211,7 @@ public class SeriesQueryTest extends SeriesMethod {
         }
     }
 
-    /**
-     * #3043
-     */
+    @Issue("3043")
     @Test
     public void testEveryDayFromMinToMaxStorableDateCorrectlySaved() throws Exception {
         Series series = new Series("e-query-range-20", "m-query-range-20");
@@ -245,9 +228,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3043
-     */
+    @Issue("3043")
     @Test
     public void testEveryDayFromMaxStorableDateTo2110FailToInsert() throws Exception {
         Series series = new Series("e-query-range-21", "m-query-range-21");
@@ -269,9 +250,7 @@ public class SeriesQueryTest extends SeriesMethod {
         }
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitesExpressionStarChar() throws Exception {
         Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
@@ -289,9 +268,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertTrue(compareJsonString(expected, given));
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitesExpressionQuestionChar() throws Exception {
         Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
@@ -309,9 +286,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertTrue(compareJsonString(expected, given));
     }
 
-    /**
-     * #2970
-     */
+    @Issue("2970")
     @Test
     public void testVersionedLimitSupport() throws Exception {
         Series series = new Series("e-query-v-l-24", "m-query-v-l-24");
@@ -343,9 +318,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals(assertMessage, limitValue, calculateJsonArraySize(((JSONObject) jsonArray.get(0)).getString("data")));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testDateIntervalFieldEnoughToDetail() throws Exception {
         Series series = new Series("entity-query-24", "metric-query-24");
@@ -364,9 +337,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testDateIntervalFieldEnoughToGroup() throws Exception {
         Series series = new Series("entity-query-25", "metric-query-25");
@@ -387,9 +358,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertTrue("Stored series does not match to inserted", compareJsonString(expected, given));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testDateIntervalFieldEnoughToAggregate() throws Exception {
         final BigDecimal VALUE = new BigDecimal("1.0");
@@ -413,9 +382,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Returned value does not match to expected SUM", VALUE, data.get(0).getValue());
     }
 
-    /**
-     * #3324
-     */
+    @Issue("3324")
     @Test
     public void testAggregateInterpolateNoTypeRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
@@ -432,9 +399,7 @@ public class SeriesQueryTest extends SeriesMethod {
     }
 
 
-    /**
-     * #3324
-     */
+    @Issue("3324")
     @Test
     public void testGroupInterpolateNoTypeRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
@@ -450,9 +415,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Error message mismatch", INTERPOLATE_TYPE_REQUIRED, extractErrorMessage(response));
     }
 
-    /**
-     * #3324
-     */
+    @Issue("3324")
     @Test
     public void testAggregateNoPeriodRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
@@ -489,9 +452,7 @@ public class SeriesQueryTest extends SeriesMethod {
         };
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
         String entityName = entity();
@@ -509,9 +470,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldLastVersion() throws Exception {
         String entityName = "e-text-overwritten-versioning-1";
@@ -539,9 +498,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Last version of text field incorrect", data[data.length - 1], received);
     }
 
-    /**
-     * #3770
-     */
+    @Issue("3770")
     @Test
     public void testExactMatchIgnoresReservedVersioningTags() throws Exception {
         String metricName = metric();
@@ -579,9 +536,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals(assertMessage, Collections.singletonList(series), resultSeriesList);
     }
 
-    /**
-     * #3860
-     */
+    @Issue("3860")
     @Test
     public void testLastSeriesWithText() throws Exception {
 

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -38,9 +39,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortDatetimeSyntaxInSelect() {
         String sqlQuery = String.format(
@@ -60,9 +59,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortTimeSyntaxInSelect() {
         String sqlQuery = String.format(
@@ -82,9 +79,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortDatetimeSyntaxInWhere() {
         String sqlQuery = String.format(
@@ -103,9 +98,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortTimeSyntaxInWhere() {
         String sqlQuery = String.format(
@@ -124,9 +117,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortDatetimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
@@ -147,9 +138,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testFullDatetimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
@@ -170,9 +159,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortTimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
@@ -193,9 +180,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testFullTimeSyntaxInGroupBy() {
         String sqlQuery = String.format(
@@ -216,9 +201,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortDatetimeSyntaxInHaving() {
         String sqlQuery = String.format(
@@ -239,9 +222,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testFullDatetimeSyntaxInHaving() {
         String sqlQuery = String.format(
@@ -261,9 +242,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortTimeSyntaxInHaving() {
         String sqlQuery = String.format(
@@ -283,9 +262,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testFullTimeSyntaxInHaving() {
         String sqlQuery = String.format(
@@ -306,9 +283,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortDatetimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
@@ -329,9 +304,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testShortTimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
@@ -352,9 +325,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testFullDatetimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
@@ -375,9 +346,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4225
-     */
+    @Issue("4225")
     @Test
     public void testFullTimeSyntaxInOrderBy() {
         String sqlQuery = String.format(
@@ -398,9 +367,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4258
-     */
+    @Issue("4258")
     @Test
     public void testIntersectingPeriodDatetimeCondition() {
         String sqlQuery = String.format(
@@ -421,9 +388,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4258
-     */
+    @Issue("4258")
     @Test
     public void testIntersectingSingleDayDatetimeCondition() {
         String sqlQuery = String.format(
@@ -443,9 +408,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4258
-     */
+    @Issue("4258")
     @Test
     public void testInvalidDatetimeCondition() {
         String sqlQuery = String.format(
@@ -463,9 +426,7 @@ public class JoinWithDatetimeTest extends SqlTest {
     }
 
 
-    /**
-     * #4258
-     */
+    @Issue("4258")
     @Test
     public void testIntersectingPeriodTimeCondition() {
         String sqlQuery = String.format(
@@ -486,9 +447,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4258
-     */
+    @Issue("4258")
     @Test
     public void testIntersectingSingleDayTimeCondition() {
         String sqlQuery = String.format(
@@ -508,9 +467,7 @@ public class JoinWithDatetimeTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4258
-     */
+    @Issue("4258")
     @Test
     public void testInvalidTimeCondition() {
         String sqlQuery = String.format(

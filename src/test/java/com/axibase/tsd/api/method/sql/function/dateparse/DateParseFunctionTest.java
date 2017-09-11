@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.sql.function.dateparse;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,9 +19,7 @@ public class DateParseFunctionTest extends SqlTest {
         timeZone = Util.getServerTimeZone();
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseISODefault() {
         String sqlQuery = "SELECT date_parse('1970-01-01T01:00:00.000Z')";
@@ -31,9 +30,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseISOFormat() {
         String sqlQuery = "SELECT date_parse('1970-01-01T01:00:00.000Z', " +
@@ -45,9 +42,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseCustomFormat() throws ParseException {
         /* Use server local time */
@@ -64,9 +59,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseTimezoneAndCustomFormat() {
         String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 -08:00', " +
@@ -78,9 +71,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseLongTimezoneAndCustomFormat() {
         String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 Europe/Berlin', " +
@@ -92,9 +83,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseCustomFormatWithLongTimezone() {
         String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283', " +
@@ -106,9 +95,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseCustomFormatWithNumericTimezone() {
         String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283', " +
@@ -120,9 +107,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseTimezoneBoth() {
         String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 Europe/Berlin', " +
@@ -134,9 +119,7 @@ public class DateParseFunctionTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4050
-     */
+    @Issue("4050")
     @Test
     public void testDateParseTimezoneBothNumeric() {
         String sqlQuery = "SELECT date_parse('31.03.2017 12:36:03.283 +01:00', " +

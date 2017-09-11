@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,9 +21,7 @@ public class SqlSubqueryTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testSelectConst() {
         String nonExistentEntityName = Mocks.entity();
@@ -39,9 +38,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertBadSqlRequest("Invalid subquery", sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testNonExistentEntity() {
         String nonExistentEntityName = Mocks.entity();
@@ -59,9 +56,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertBadSqlRequest("Invalid expression for entity column", sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testColumnDuplicates() {
         String sqlQuery = String.format(
@@ -76,9 +71,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertBadSqlRequest("Duplicate column name: value", sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testIncorrectCreatedTags() {
         String sqlQuery = String.format(
@@ -92,9 +85,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertBadSqlRequest("Invalid expression for tags column", sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testJoin() {
         String sqlQuery = String.format(
@@ -111,9 +102,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertBadSqlRequest(errorMessage, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testCreatedTags() {
         String sqlQuery = String.format(
@@ -127,9 +116,8 @@ public class SqlSubqueryTest extends SqlTest {
         assertBadSqlRequest("Invalid expression for tags column", sqlQuery);
     }
 
-    /**
-     * #4133, #4377
-     */
+    @Issue("4133")
+    @Issue("4377")
     @Test
     public void testSelectAsteriskTwice() {
         String sqlQuery = String.format(
@@ -148,9 +136,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Select from subquery with * doesn't work as expected", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test(enabled = false)
     public void testSelectAsteriskNested() {
         String sqlQuery = String.format(
@@ -171,9 +157,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Nested subqueries do not work", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testSelectText() {
         String sqlQuery = String.format(
@@ -192,9 +176,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Wrong result when selecting text in subquery", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testTagsToTags() {
         String sqlQuery = String.format(
@@ -212,9 +194,7 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Wrong result when selecting tags in subquery", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testTagsToTagsExpansion() {
         String sqlQuery = String.format(
@@ -233,9 +213,7 @@ public class SqlSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testTagsExpansionToTags() {
         String sqlQuery = String.format(
@@ -254,9 +232,7 @@ public class SqlSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testTagsExpansionToTagsExpansion() {
         String sqlQuery = String.format(
@@ -275,9 +251,7 @@ public class SqlSubqueryTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4133
-     */
+    @Issue("4133")
     @Test
     public void testOption() {
         String sqlQuery = String.format(

@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,13 +30,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /*
-      #2904
-     */
-
-    /**
-     * #2904
-     */
+    @Issue("2904")
     @Test
     public void testSimpleDateFormatWithZeroZone() throws JSONException {
         String sqlQuery = String.format(
@@ -53,9 +48,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
-    /**
-     * #2904
-     */
+    @Issue("2904")
     @Test
     public void testSimpleDateFormatWithoutMs() {
         String sqlQuery = String.format(
@@ -73,9 +66,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
-    /**
-     * #2904
-     */
+    @Issue("2904")
     @Test
     public void testSimpleDateFormatPST() {
         String sqlQuery = String.format(
@@ -91,9 +82,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
-    /**
-     * #2904
-     */
+    @Issue("2904")
     @Test
     public void testSimpleDateFormatGMT() {
         String sqlQuery = String.format(
@@ -109,9 +98,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
     }
 
-    /**
-     * #2904
-     */
+    @Issue("2904")
     @Test
     public void testSimpleDateFormatZeroZoneAndGMT() {
         String sqlQuery = String.format(

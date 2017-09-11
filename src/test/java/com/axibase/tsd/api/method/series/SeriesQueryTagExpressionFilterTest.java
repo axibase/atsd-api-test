@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import io.qameta.allure.Issue;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,10 +17,7 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
-    /**
-     * #3915(#20) test bugfix
-     */
-
+    @Issue("3915")
     @Test
     public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
         // Arrange

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -30,9 +31,7 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3284
-     */
+    @Issue("3284")
     @Test
     public void testIgnoringNullObjectsComparison() {
         String sqlQuery = String.format(
@@ -45,9 +44,7 @@ public class SqlOperatorNotEqualsWithNullTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3284
-     */
+    @Issue("3284")
     @Test
     public void testIgnoringNullObjectsComparison1() {
         String sqlQuery = String.format(

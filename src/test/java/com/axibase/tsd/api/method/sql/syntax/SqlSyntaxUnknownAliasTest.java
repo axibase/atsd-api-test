@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.ErrorTemplate;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -30,9 +31,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInSelectWithoutJoin() {
         String sqlQuery = String.format(
@@ -49,9 +48,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInWhereWithoutJoin() {
         String sqlQuery = String.format(
@@ -68,9 +65,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInOrderByWithoutJoin() {
         String sqlQuery = String.format(
@@ -87,9 +82,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInGroupByWithoutJoin() {
         String sqlQuery = String.format(
@@ -105,9 +98,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         );
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInSelectWithJoin() {
         String sqlQuery = String.format(
@@ -123,9 +114,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         );
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInWhereWithJoin() {
         String sqlQuery = String.format(
@@ -141,9 +130,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         );
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInOrderByWithJoin() {
         String sqlQuery = String.format(
@@ -160,9 +147,7 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInGroupByWithJoin() {
         String sqlQuery = String.format(

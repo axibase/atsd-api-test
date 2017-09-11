@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -43,15 +44,9 @@ public class SqlPeriodExtendTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-
-    /**
-     * #3066.
-     * It tests the EXTEND option in PERIOD function
-     *
-     * @see <a href="https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/interpolate-extend.md">EXTEND</a>
-     * #3066
-     */
-    @Test
+    @Issue("3066")
+    @Test(description = "It tests the EXTEND option in PERIOD function. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/interpolate-extend.md")
     public void testPeriodExtendOptionBegin() {
         String sqlQuery = String.format(
                 "SELECT datetime, AVG(value) FROM \"%s\" %nWHERE entity = '%s' %n" +
@@ -70,9 +65,7 @@ public class SqlPeriodExtendTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionTrail() {
         String sqlQuery = String.format(
@@ -93,9 +86,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     }
 
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionBeginAndTrail() {
         String sqlQuery = String.format(
@@ -120,9 +111,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     }
 
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionBeginAndTrailWithValueInterpolation() {
         String sqlQuery = String.format(
@@ -146,9 +135,7 @@ public class SqlPeriodExtendTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionBeginAndTrailWithLinearInterpolation() {
         String sqlQuery = String.format(
@@ -172,9 +159,7 @@ public class SqlPeriodExtendTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionWithIntervalLinear() {
 
@@ -198,9 +183,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     }
 
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithoutInterval() {
 
@@ -225,9 +208,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     }
 
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithstartDate() {
 
@@ -254,9 +235,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     }
 
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
 
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithEndDate() {
@@ -284,9 +263,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     }
 
 
-    /**
-     * #3066
-     */
+    @Issue("3066")
     @Test
     public void testPeriodExtendOptionWithMultipleEntityWithStartAndEndDate() {
 

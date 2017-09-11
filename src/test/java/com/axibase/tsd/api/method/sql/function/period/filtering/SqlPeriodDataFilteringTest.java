@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -103,9 +104,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
                 seriesHours, seriesDays, seriesWeeks, seriesMonths, seriesYears);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterMilliseconds() {
         final String sqlQuery = String.format(
@@ -124,9 +124,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for millisecond period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterSeconds() {
         final String sqlQuery = String.format(
@@ -147,9 +146,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterFewSeconds() {
         final String sqlQuery = String.format(
@@ -168,9 +166,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterMinutes() {
         final String sqlQuery = String.format(
@@ -191,9 +188,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterFewMinutes() {
         final String sqlQuery = String.format(
@@ -210,9 +206,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterDays() {
         final String sqlQuery = String.format(
@@ -232,9 +227,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterFewDays() {
         final String sqlQuery = String.format(
@@ -253,9 +247,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
     }
 
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterWeeks() {
         final String sqlQuery = String.format(
@@ -274,9 +267,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterFewWeeks() {
         final String sqlQuery = String.format(
@@ -294,9 +286,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterMonths() {
         final String sqlQuery = String.format(
@@ -316,9 +307,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterFewMonths() {
         final String sqlQuery = String.format(
@@ -336,9 +326,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterQuarters() {
         final String sqlQuery = String.format(
@@ -356,9 +345,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterYears() {
         final String sqlQuery = String.format(
@@ -377,9 +365,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result for second period filter", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterLeftBound() {
         final String sqlQuery = String.format(
@@ -398,9 +385,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result if period is not in range (left bound)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterRightBound() {
         final String sqlQuery = String.format(
@@ -419,9 +405,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result if period is not in range (right bound)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodFilterBothBounds() {
         final String sqlQuery = String.format(
@@ -439,9 +424,8 @@ public class SqlPeriodDataFilteringTest extends SqlTest {
         assertSqlQueryRows("Wrong result if period is not in range (both bounds)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #2967, #4146
-     */
+    @Issue("2967")
+    @Issue("4146")
     @Test
     public void testPeriodNonFilterBothBounds() {
         final String sqlQuery = String.format(

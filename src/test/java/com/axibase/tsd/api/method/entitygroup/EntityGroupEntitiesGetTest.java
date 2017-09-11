@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -13,9 +14,7 @@ import static org.testng.AssertJUnit.assertEquals;
  */
 public class EntityGroupEntitiesGetTest extends EntityGroupMethod {
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsWhitespace() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodegetentities entitygroup1");
@@ -23,9 +22,7 @@ public class EntityGroupEntitiesGetTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsSlash() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodegetentities/entitygroup2");
@@ -33,9 +30,7 @@ public class EntityGroupEntitiesGetTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsCyrillic() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodegetentitiesйёentitygroup3");

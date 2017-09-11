@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,9 +39,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testGreaterOrEqualsLastTime() {
         String sqlQuery = String.format(
@@ -62,9 +61,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testGreaterLastTime() {
         String sqlQuery = String.format(
@@ -85,9 +82,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testLessOrEqualsLastTime() {
         String sqlQuery = String.format(
@@ -110,9 +105,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testLessLastTime() {
         String sqlQuery = String.format(
@@ -133,9 +126,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testCaseInsensitive() {
         String sqlQuery = String.format(
@@ -156,9 +147,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testWithWhereClause() {
         String sqlQuery = String.format(
@@ -179,9 +168,7 @@ public class SqlClauseWithLastTimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3291
-     */
+    @Issue("3291")
     @Test
     public void testWithOrderByClause() {
         String sqlQuery = String.format(

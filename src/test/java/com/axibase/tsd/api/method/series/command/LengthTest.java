@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -22,9 +23,7 @@ public class LengthTest extends SeriesMethod {
     private static final int MAX_LENGTH = 128 * 1024;
 
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLength() throws Exception {
         SeriesCommand seriesCommand = new SeriesCommand();
@@ -63,9 +62,7 @@ public class LengthTest extends SeriesMethod {
         assertSeriesExisting(seriesList);
     }
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLengthOverflow() throws Exception {
         SeriesCommand seriesCommand = new SeriesCommand();

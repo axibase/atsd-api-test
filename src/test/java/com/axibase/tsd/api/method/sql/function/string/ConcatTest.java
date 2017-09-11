@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -75,9 +76,7 @@ public class ConcatTest extends SqlTest {
         return result;
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
         String sqlQuery = String.format("SELECT CONCAT(%s) FROM \"%s\"",
@@ -86,9 +85,8 @@ public class ConcatTest extends SqlTest {
         assertOkRequest(String.format("Can't apply CONCAT function to %s", param), queryResponse(sqlQuery));
     }
 
-    /**
-     * #3768, #4000
-     */
+    @Issue("3768")
+    @Issue("4000")
     @Test
     public void testConcatWordAndNumber() throws Exception {
         String sqlQuery = String.format("SELECT CONCAT('a:', value) FROM \"%s\"",
@@ -106,9 +104,7 @@ public class ConcatTest extends SqlTest {
         assertSqlQueryRows("CONCAT word and number without CAST gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3768
-     */
+    @Issue("3768")
     @Test
     public void testConcatWordAndTwoNumbers() throws Exception {
         String sqlQuery = String.format(
@@ -127,9 +123,7 @@ public class ConcatTest extends SqlTest {
     }
 
 
-    /**
-     * #4017
-     */
+    @Issue("4017")
     @Test
     public void testConcatInWhere() {
         String sqlQuery = String.format(
@@ -145,9 +139,7 @@ public class ConcatTest extends SqlTest {
         assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4017
-     */
+    @Issue("4017")
     @Test
     public void testConcatInWhereNonEmpty() {
         String sqlQuery = String.format(
@@ -165,9 +157,7 @@ public class ConcatTest extends SqlTest {
     }
 
 
-    /**
-     * #4017
-     */
+    @Issue("4017")
     @Test
     public void testConcatInWhereNumber() {
         String sqlQuery = String.format(
@@ -184,9 +174,7 @@ public class ConcatTest extends SqlTest {
         assertSqlQueryRows("CONCAT in WHERE clause gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4233
-     */
+    @Issue("4233")
     @Test
     public void testConcatWithDate() {
         String sqlQuery = "SELECT CONCAT('1970-01-01T00:00:00.00', '0', 'Z')";

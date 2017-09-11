@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -52,9 +53,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
         }
     }
 
-    /**
-     * #4131
-     */
+    @Issue("4131")
     @Test
     public void testPeriodDaylightSavingTimeTzPositive() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "Europe/Vienna", METRIC_NAME1);
@@ -74,9 +73,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4131
-     */
+    @Issue("4131")
     @Test
     public void testPeriodDaylightSavingTimeTzNegative() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "America/Los_Angeles", METRIC_NAME2);
@@ -96,9 +93,7 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4131
-     */
+    @Issue("4131")
     @Test
     public void testPeriodDaylightSavingTimeTzChange() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "Europe/Moscow", METRIC_NAME3);

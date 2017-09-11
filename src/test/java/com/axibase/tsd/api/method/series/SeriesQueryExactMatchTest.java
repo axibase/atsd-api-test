@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -43,11 +44,8 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
         insertSeriesCheck(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
     }
 
-    /**
-     * #3002
-     * strict no tags => only seriesD should be received
-     */
-    @Test
+    @Issue("3002")
+    @Test(description = "strict no tags => only seriesD should be received")
     public void testExactTrueNoKey() throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(
                 exactMatchEntityName,
@@ -65,11 +63,8 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
         assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
-    /**
-     * #3002
-     * soft no tags => all series will be received
-     */
-    @Test
+    @Issue("3002")
+    @Test(description = "soft no tags => all series will be received")
     public void testExactFalseNoKey() throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(
                 exactMatchEntityName,
@@ -87,11 +82,8 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
         assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
-    /**
-     * #3002
-     * strict match tags => only series with specified tag (tag-1=val-1) will be received
-     */
-    @Test
+    @Issue("3002")
+    @Test(description = "strict match tags => only series with specified tag (tag-1=val-1) will be received")
     public void testExactTrueTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
@@ -111,11 +103,8 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
         assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
-    /**
-     * #3002
-     * soft match tags => series which has the specified tag (tag-1=val-1) will be received
-     */
-    @Test
+    @Issue("3002")
+    @Test(description = "soft match tags => series which has the specified tag (tag-1=val-1) will be received")
     public void testExactFalseTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
@@ -135,10 +124,8 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
         assertTrue("Received series mismatch", compareJsonString(expected, given));
     }
 
-    /*
-    * #3371 test that wildcard for existing entity unfolded correctly
-    */
-    @Test
+    @Issue("3371")
+    @Test(description = "test that wildcard for existing entity unfolded correctly")
     public void testWildcardInEntityName() throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(
                 "series-query-exactmatch-entity*",

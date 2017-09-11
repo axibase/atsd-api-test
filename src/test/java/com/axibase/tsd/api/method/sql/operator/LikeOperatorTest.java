@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -47,9 +48,7 @@ public class LikeOperatorTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #4030
-     */
+    @Issue("4030")
     @Test
     public void testLikeOperatorForMetricInWhereClause() throws Exception {
         final String uniquePrefix = "unique";
@@ -77,9 +76,7 @@ public class LikeOperatorTest extends SqlTest {
         assertSqlQueryRows(expected, sql);
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeOperatorForMetricLimit() {
         String sqlQuery = String.format(
@@ -93,9 +90,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(0, 50), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeOperatorForMetricLimitOverflow() {
         String sqlQuery = String.format(
@@ -109,9 +104,7 @@ public class LikeOperatorTest extends SqlTest {
         assertBadRequest("Too many metrics found. Maximum: 50", response);
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeOperatorForNoMatchingMetric() {
         String sqlQuery = String.format(
@@ -125,9 +118,7 @@ public class LikeOperatorTest extends SqlTest {
         assertBadRequest("No matching metrics found", response);
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorExactMatch() {
         String sqlQuery = String.format(
@@ -142,9 +133,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(Collections.singletonList(TEST_METRICS.get(0)), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorWildcards() {
         String sqlQuery = String.format(
@@ -162,9 +151,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(result, table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorQuestionWildcardsNoMatch() {
         String sqlQuery = String.format(
@@ -178,9 +165,7 @@ public class LikeOperatorTest extends SqlTest {
         assertBadRequest("No matching metrics found", response);
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorQuestionWildcardsMatch() {
         String sqlQuery = String.format(
@@ -194,9 +179,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(0, 50), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorAsteriskWildcardsZeroLength() {
         String sqlQuery = String.format(
@@ -210,9 +193,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(0, 50), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testMultipleLikeMetricOperatorsOr() {
         String sqlQuery = String.format(
@@ -226,9 +207,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(10, 30), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testMultipleLikeMetricOperatorsAnd() {
         String sqlQuery = String.format(
@@ -242,9 +221,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(20, 30), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorOrEquals() {
         String sqlQuery = String.format(
@@ -258,9 +235,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(10, 21), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorAndNotEquals() {
         String sqlQuery = String.format(
@@ -274,9 +249,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(11, 20), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorAndNotNull() {
         String sqlQuery = String.format(
@@ -290,9 +263,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(Collections.<String>emptyList(), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorAndIn() {
         String sqlQuery = String.format(
@@ -306,9 +277,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(10, 12), table, "metric");
     }
 
-    /**
-     * #4083
-     */
+    @Issue("4083")
     @Test
     public void testLikeMetricOperatorOrIn() {
         String sqlQuery = String.format(
@@ -322,9 +291,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(10, 22), table, "metric");
     }
 
-    /**
-     * #4152
-     */
+    @Issue("4152")
     @Test
     public void testMultipleLikeMetricOperatorNoMetricFitsCondition() {
         String sqlQuery = String.format(
@@ -338,9 +305,7 @@ public class LikeOperatorTest extends SqlTest {
         assertBadRequest("No matching metrics found", response);
     }
 
-    /**
-     * #4152
-     */
+    @Issue("4152")
     @Test
     public void testLikeMetricOperatorAndLess() {
         String sqlQuery = String.format(
@@ -354,9 +319,7 @@ public class LikeOperatorTest extends SqlTest {
         assertTableContainsColumnValues(TEST_METRICS.subList(0, 10), table, "metric");
     }
 
-    /**
-     * #4152
-     */
+    @Issue("4152")
     @Test
     public void testLikeMetricOperatorAndGreaterOrEquals() {
         String sqlQuery = String.format(
