@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -13,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;

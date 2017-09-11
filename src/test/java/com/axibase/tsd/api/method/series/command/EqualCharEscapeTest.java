@@ -5,12 +5,14 @@ import com.axibase.tsd.api.method.series.SeriesTest;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
 
 public class EqualCharEscapeTest extends SeriesTest {
     private final static Map DEFAULT_PROPERTY_TAGS;
@@ -26,7 +28,7 @@ public class EqualCharEscapeTest extends SeriesTest {
     @Test
     public void testEntity() throws Exception {
         Series series = new Series("series-command-test=-e3", "series-command-test-m3");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        Sample sample = new Sample(getCurrentDate(), 1);
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
@@ -44,7 +46,7 @@ public class EqualCharEscapeTest extends SeriesTest {
     @Test
     public void testMetric() throws Exception {
         Series series = new Series("series-command-test-e4", "series-command-test=-m4");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        Sample sample = new Sample(getCurrentDate(), 1);
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();

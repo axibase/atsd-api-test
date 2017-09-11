@@ -5,13 +5,15 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.axibase.tsd.api.util.TestUtil.formatDate;
 
 
 public class SqlTimezoneFormatTest extends SqlTest {
@@ -45,7 +47,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
-                TestUtil.formatDate(TestUtil.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssZ")
+                formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssZ")
         );
 
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");
@@ -65,7 +67,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
-                TestUtil.formatDate(TestUtil.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ss")
+                formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ss")
         );
 
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");

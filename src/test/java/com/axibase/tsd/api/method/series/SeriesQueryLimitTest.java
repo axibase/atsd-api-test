@@ -4,7 +4,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
@@ -110,7 +110,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         String date = START_SAMPLE_DATE;
         for (int k = 0; k < SAMPLES_COUNT; k++) {
             series.addSamples(new Sample(date, k));
-            date = TestUtil.addOneMS(date);
+            date = Util.addOneMS(date);
         }
     }
 

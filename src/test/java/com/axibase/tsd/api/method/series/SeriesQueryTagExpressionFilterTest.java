@@ -13,6 +13,8 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
@@ -41,8 +43,8 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery();
         query.setMetric(metric);
         query.setEntity(entity);
-        query.setStartDate(Util.MIN_QUERYABLE_DATE);
-        query.setEndDate(Util.MAX_QUERYABLE_DATE);
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
         query.setTagExpression("tags.key = 'val2'");
 
         List<Series> list = executeQueryReturnSeries(query);

@@ -11,7 +11,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -19,8 +19,8 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -105,17 +105,17 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         testDatasetDescriptionBuilder.append("\n=====================================\n");
 
         testDatasetDescriptionBuilder.append(String.format("Metric:%n"));
-        testDatasetDescriptionBuilder.append(String.format("%s%n%n", TestUtil.prettyPrint(METRIC)));
+        testDatasetDescriptionBuilder.append(String.format("%s%n%n", Util.prettyPrint(METRIC)));
 
         testDatasetDescriptionBuilder.append(String.format("Series: [%n"));
         for (Series series: SERIES_LIST) {
-            testDatasetDescriptionBuilder.append(String.format("%s%n", TestUtil.prettyPrint(series)));
+            testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(series)));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 
         testDatasetDescriptionBuilder.append(String.format("Properties: [%n"));
         for (Property property: PROPERTIES) {
-            testDatasetDescriptionBuilder.append(String.format("%s%n", TestUtil.prettyPrint(property)));
+            testDatasetDescriptionBuilder.append(String.format("%s%n", Util.prettyPrint(property)));
         }
         testDatasetDescriptionBuilder.append(String.format("]%n%n"));
 

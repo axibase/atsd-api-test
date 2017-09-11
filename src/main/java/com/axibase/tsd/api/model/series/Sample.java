@@ -14,6 +14,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import static com.axibase.tsd.api.util.Util.DEFAULT_TIMEZONE_NAME;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Sample {
     private static final ISO8601DateFormat isoDateFormat = new ISO8601DateFormat();
@@ -75,7 +77,7 @@ public class Sample {
         } catch (ParseException ex) {
             return null;
         }
-        return Util.ISOFormat(date, true, Util.DEFAULT_TIMEZONE_NAME);
+        return Util.ISOFormat(date, true, DEFAULT_TIMEZONE_NAME);
     }
 
     public Long getT() {

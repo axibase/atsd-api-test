@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -17,7 +18,7 @@ import java.util.Map;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.TAG_VALUE_ARRAY_PREFIX;
 import static com.axibase.tsd.api.util.ErrorTemplate.UNKNOWN_ENTITY_FIELD_PREFIX;
-import static com.axibase.tsd.api.util.Mocks.MIN_STORABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.AssertJUnit.*;
 

@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.TestUtil.quoteEscape;
 
 public class SqlSelectMetricFieldsTest extends SqlTest {
     private static final String TEST_METRIC = metric();
@@ -94,7 +95,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 "SELECT m.metric.%1$s FROM \"%2$s\" m WHERE m.metric.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
-                TestUtil.quoteEscape(value)
+                quoteEscape(value)
         );
 
         String[][] expectedRows = {{value}};
@@ -141,7 +142,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 "SELECT m.metric.%1$s FROM \"%2$s\" m GROUP BY m.metric.%1$s HAVING m.metric.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
-                TestUtil.quoteEscape(value)
+                quoteEscape(value)
         );
 
         String[][] expectedRows = {{value}};

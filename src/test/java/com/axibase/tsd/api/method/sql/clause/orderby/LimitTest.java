@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.DataProvider;
@@ -43,10 +43,10 @@ public class LimitTest extends SqlTest {
     public void prepareEntityOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
-            Long date = TestUtil.parseDate("2016-06-19T11:00:00.000Z").getTime();
+            Long date = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
             Series series = new Series(entity(), ENTITY_ORDER_METRIC);
             for (int j = 0; j < 10 - i; j++) {
-                Sample sample = new Sample(TestUtil.ISOFormat(date + j * TimeUnit.HOURS.toMillis(1)), j);
+                Sample sample = new Sample(Util.ISOFormat(date + j * TimeUnit.HOURS.toMillis(1)), j);
                 series.addSamples(sample);
 
             }
@@ -89,12 +89,12 @@ public class LimitTest extends SqlTest {
 
     @BeforeGroups(groups = {VALUE_ORDER_TEST_GROUP})
     public void prepareValueOrderData() throws Exception {
-        Long date = TestUtil.parseDate("2016-06-19T11:00:00.000Z").getTime();
+        Long date = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
         Series series = new Series(entity(), VALUE_ORDER_METRIC);
         float[] values = {1.23f, 3.12f, 5.67f, 4.13f, 5, -4, 4, 8, 6, 5};
         for (int i = 1; i < 10; i++) {
             Sample sample = new Sample(
-                    TestUtil.ISOFormat(date + i * TimeUnit.HOURS.toMillis(1)),
+                    Util.ISOFormat(date + i * TimeUnit.HOURS.toMillis(1)),
                     new BigDecimal(values[i])
             );
             series.addSamples(sample);
@@ -166,11 +166,11 @@ public class LimitTest extends SqlTest {
     public void prepareTagsTimeOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         String entityName = entity();
-        Long startTime = TestUtil.parseDate("2016-06-19T11:00:00.000Z").getTime();
+        Long startTime = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
         int[] values = {6, 7, 0, -1, 5, 15, 88, 3, 11, 2};
         for (int i = 0; i < 3; i++) {
             Series series = new Series(entityName, TAGS_ORDER_METRIC);
-            series.addSamples(new Sample(TestUtil.ISOFormat(startTime + i * TimeUnit.HOURS.toMillis(1)), values[i]));
+            series.addSamples(new Sample(Util.ISOFormat(startTime + i * TimeUnit.HOURS.toMillis(1)), values[i]));
             seriesList.add(series);
         }
         SeriesMethod.insertSeriesCheck(seriesList);

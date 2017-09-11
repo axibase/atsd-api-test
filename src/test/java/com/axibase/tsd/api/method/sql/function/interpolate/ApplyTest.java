@@ -10,7 +10,7 @@ import com.axibase.tsd.api.model.sql.function.interpolate.Alignment;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -118,11 +118,11 @@ public class ApplyTest extends SqlTest {
      */
     @Test
     public void testNullSeries() throws Exception {
-        Long startTime = TestUtil.parseDate("2016-06-29T07:00:00.000Z'").getTime();
-        Long endTime = TestUtil.parseDate("2016-06-29T10:00:00.000Z").getTime();
+        Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z'").getTime();
+        Long endTime = Util.parseDate("2016-06-29T10:00:00.000Z").getTime();
         Series series = new Series(entity(), metric());
         for (long i = startTime; i < endTime; i += 60000) {
-            series.addSamples(new Sample(TestUtil.ISOFormat(i), (BigDecimal) null));
+            series.addSamples(new Sample(Util.ISOFormat(i), null));
         }
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
         String sqlQuery = String.format("SELECT * FROM \"%s\"%nWHERE time >= %d AND time < %d%nWITH INTERPOLATE(1 MINUTE, LINEAR)",

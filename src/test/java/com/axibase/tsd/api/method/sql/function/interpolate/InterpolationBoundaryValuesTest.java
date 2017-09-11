@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.version.Version;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,7 +25,7 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 public class InterpolationBoundaryValuesTest extends SqlTest {
     private static final String TEST_METRIC_1 = metric();
     private static final String TEST_METRIC_2 = metric();
-    private static final String HBASE_VERSION = TestUtil.getHBaseVersion();
+    private static final String HBASE_VERSION = Util.getHBaseVersion();
 
     private Sample[] calendarInterpolationTestSamples;
     private final ZoneId serverTimezone;

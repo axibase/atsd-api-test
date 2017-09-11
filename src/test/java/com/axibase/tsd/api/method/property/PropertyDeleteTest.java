@@ -4,14 +4,18 @@ import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.TestUtil.appendChar;
+import static com.axibase.tsd.api.util.TestUtil.getNextDay;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
@@ -24,7 +28,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         final Property property = new Property("delete-type9", "delete-entity9");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
-        property.setDate(TestUtil.getNextDay());
+        property.setDate(getNextDay());
         insertPropertyCheck(property);
 
         PropertyQuery deleteQuery = new PropertyQuery();
@@ -42,7 +46,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         final Property property = new Property("delete-type8", "delete-entity8");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
-        property.setDate(TestUtil.getNextDay());
+        property.setDate(getNextDay());
         insertPropertyCheck(property);
 
         PropertyQuery deleteQuery = new PropertyQuery();
@@ -59,7 +63,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         final Property property = new Property("delete-type7", "delete-entity7");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
-        property.setDate(TestUtil.getNextDay());
+        property.setDate(getNextDay());
         insertPropertyCheck(property);
 
         PropertyQuery deleteQuery = new PropertyQuery();
@@ -146,7 +150,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     public void testKeyNameTooLong() throws Exception {
         final Property property = new Property("delete-type-6.4", "delete-entity6.4");
         property.addTag("t1", "v1");
-        property.addKey(TestUtil.appendChar(new StringBuilder(), 'a', 10000).append("-key").toString(), "kv1");
+        property.addKey(appendChar(new StringBuilder(), 'a', 10000).append("-key").toString(), "kv1");
         insertPropertyCheck(property);
 
         PropertyQuery deleteQuery = new PropertyQuery();
@@ -162,7 +166,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     public void testKeyValueTooLong() throws Exception {
         final Property property = new Property("delete-type-6.5", "delete-entity6.5");
         property.addTag("t1", "v1");
-        property.addKey("kv1", TestUtil.appendChar(new StringBuilder(), 'a', 10000).append("-value").toString());
+        property.addKey("kv1", appendChar(new StringBuilder(), 'a', 10000).append("-value").toString());
         insertPropertyCheck(property);
 
         PropertyQuery deleteQuery = new PropertyQuery();
@@ -257,7 +261,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
     @Test
     public void testTypeTooLong() throws Exception {
-        final Property property = new Property(TestUtil.appendChar(new StringBuilder(), 'a', 10000).append("type-161").toString(), "delete-entity161");
+        final Property property = new Property(appendChar(new StringBuilder(), 'a', 10000).append("type-161").toString(), "delete-entity161");
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
         insertPropertyCheck(property);
@@ -556,7 +560,7 @@ public class PropertyDeleteTest extends PropertyMethod {
 
     @Test
     public void testEntityTooLong() throws Exception {
-        final Property property = new Property("delete-type-18", TestUtil.appendChar(new StringBuilder(), 'a', 5000).append("type-18").toString());
+        final Property property = new Property("delete-type-18", appendChar(new StringBuilder(), 'a', 5000).append("type-18").toString());
 
         property.addTag("t1", "v1");
         property.addKey("k1", "v1");
@@ -582,7 +586,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setType(property.getType());
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setStartDate(property.getDate());
-        deleteQuery.setEndDate(TestUtil.addOneMS(property.getDate()));
+        deleteQuery.setEndDate(Util.addOneMS(property.getDate()));
 
         assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
         assertFalse("Property should be removed", propertyExist(property));

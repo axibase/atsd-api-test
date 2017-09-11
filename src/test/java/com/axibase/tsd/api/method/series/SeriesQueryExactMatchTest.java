@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -12,8 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -49,7 +50,12 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
      */
     @Test
     public void testExactTrueNoKey() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, new HashMap<String, String>());
+        SeriesQuery seriesQuery = new SeriesQuery(
+                exactMatchEntityName,
+                exactMatchMetricName,
+                MIN_QUERYABLE_DATE,
+                MAX_QUERYABLE_DATE,
+                new HashMap<>());
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 
@@ -66,7 +72,12 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
      */
     @Test
     public void testExactFalseNoKey() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, new HashMap<String, String>());
+        SeriesQuery seriesQuery = new SeriesQuery(
+                exactMatchEntityName,
+                exactMatchMetricName,
+                MIN_QUERYABLE_DATE,
+                MAX_QUERYABLE_DATE,
+                new HashMap<>());
         seriesQuery.setExactMatch(false);
         Response response = querySeries(seriesQuery);
 
@@ -85,7 +96,12 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
     public void testExactTrueTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, tags);
+        SeriesQuery seriesQuery = new SeriesQuery(
+                exactMatchEntityName,
+                exactMatchMetricName,
+                MIN_QUERYABLE_DATE,
+                MAX_QUERYABLE_DATE,
+                tags);
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 
@@ -104,7 +120,12 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
     public void testExactFalseTagMatch() throws Exception {
         Map<String, String> tags = new HashMap<>();
         tags.put("tag-1", "val-1");
-        SeriesQuery seriesQuery = new SeriesQuery(exactMatchEntityName, exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE, tags);
+        SeriesQuery seriesQuery = new SeriesQuery(
+                exactMatchEntityName,
+                exactMatchMetricName,
+                MIN_QUERYABLE_DATE,
+                MAX_QUERYABLE_DATE,
+                tags);
         seriesQuery.setExactMatch(false);
         Response response = querySeries(seriesQuery);
 
@@ -120,7 +141,11 @@ public class SeriesQueryExactMatchTest extends SeriesMethod {
     */
     @Test
     public void testWildcardInEntityName() throws Exception {
-        SeriesQuery seriesQuery = new SeriesQuery("series-query-exactmatch-entity*", exactMatchMetricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(
+                "series-query-exactmatch-entity*",
+                exactMatchMetricName,
+                MIN_QUERYABLE_DATE,
+                MAX_QUERYABLE_DATE);
         seriesQuery.setExactMatch(true);
         Response response = querySeries(seriesQuery);
 

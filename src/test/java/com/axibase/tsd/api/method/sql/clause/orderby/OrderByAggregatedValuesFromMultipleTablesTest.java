@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,7 +28,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC_1);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), i));
+                series.addSamples(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), i));
             }
             seriesList.add(series);
         }
@@ -36,7 +36,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
             Series series = new Series(null, TEST_METRIC_2);
             series.setEntity(TEST_ENTITY);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
+                series.addSamples(new Sample(Util.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
             }
             seriesList.add(series);
         }

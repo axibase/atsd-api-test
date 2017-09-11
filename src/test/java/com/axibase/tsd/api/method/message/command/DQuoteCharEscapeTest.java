@@ -5,10 +5,11 @@ import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
+import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
 
 public class DQuoteCharEscapeTest extends MessageMethod {
 
@@ -19,7 +20,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
     public void testEntity() throws Exception {
         Message message = new Message("message-command-test\"-e1", "message-command-test-t1");
         message.setMessage("message1");
-        message.setDate(TestUtil.getCurrentDate());
+        message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);
         CommandMethod.send(command);
         assertMessageExisting("Inserted message can not be received", message);
@@ -32,7 +33,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
     public void testType() throws Exception {
         Message message = new Message("message-command-test-e2", "message-command-\"test-t2");
         message.setMessage("message2");
-        message.setDate(TestUtil.getCurrentDate());
+        message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);
         CommandMethod.send(command);
         assertMessageExisting("Inserted message can not be received", message);
@@ -45,7 +46,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
     public void testText() throws Exception {
         Message message = new Message("message-command-test-e3", "message-command-test-t3");
         message.setMessage("mess\"age3");
-        message.setDate(TestUtil.getCurrentDate());
+        message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);
         CommandMethod.send(command);
         assertMessageExisting("Inserted message can not be received", message);

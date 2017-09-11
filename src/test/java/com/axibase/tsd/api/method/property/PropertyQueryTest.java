@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.ErrorTemplate;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -18,6 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
+import static com.axibase.tsd.api.util.TestUtil.getNextDay;
+import static com.axibase.tsd.api.util.TestUtil.getPreviousDay;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -51,7 +56,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type19", "query-entity19");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getNextDay());
+        property.setDate(getNextDay());
         insertPropertyCheck(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity(), property.getKey());
@@ -295,14 +300,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type8", "query-entity8");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t2", "tv2");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -320,14 +325,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type7", "query-entity7");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t1l", "tv1l");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -346,14 +351,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type6", "query-entity6");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t1l", "tv1l");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -372,14 +377,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type6.1", "query-entity6.1");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t1l", "tv1l");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         final Property lastPropertySecond = new Property();
@@ -406,7 +411,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type5", "query-entity5");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
@@ -425,12 +430,12 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type4", "query-entity4");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertProperty(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
         query.setStartDate(property.getDate());
-        query.setEndDate(TestUtil.addOneMS(property.getDate()));
+        query.setEndDate(Util.addOneMS(property.getDate()));
 
         assertInsertedPropertyReturned(property, query);
     }
@@ -443,12 +448,12 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type3", "query-entity3");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
-        query.setStartDate(TestUtil.ISOFormat(TestUtil.getPreviousDay()));
-        query.setEndDate(TestUtil.ISOFormat(TestUtil.getNextDay()));
+        query.setStartDate(Util.ISOFormat(getPreviousDay()));
+        query.setEndDate(Util.ISOFormat(getNextDay()));
 
         assertInsertedPropertyReturned(property, query);
     }
@@ -461,7 +466,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type2", "query-entity2");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -477,7 +482,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type1", "query-entity1");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -1203,7 +1208,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property2 = new Property();
         property2.setType(property1.getType());
         property2.setEntity(property1.getEntity());
-        property2.setDate(TestUtil.addOneMS(property1.getDate()));
+        property2.setDate(Util.addOneMS(property1.getDate()));
         property2.addKey("uniq", "key2");
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
@@ -1218,7 +1223,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Property2 should be returned", compareJsonString(expected, given));
 
         query.setStartDate(MIN_QUERYABLE_DATE);
-        query.setEndDate(TestUtil.addOneMS(property1.getDate()));
+        query.setEndDate(Util.addOneMS(property1.getDate()));
 
         given = queryProperty(query).readEntity(String.class);
         expected = jacksonMapper.writeValueAsString(Collections.singletonList(property1));
@@ -1238,14 +1243,14 @@ public class PropertyQueryTest extends PropertyMethod {
 
         final Property property2 = new Property(null, "query-entity57-b-limitentity-2");
         property2.setType(property.getType());
-        property2.setDate(TestUtil.addOneMS(property.getDate()));
+        property2.setDate(Util.addOneMS(property.getDate()));
         property2.addKey("uniq", "key2");
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
 
         final Property property3 = new Property(null, "query-entity57-b-limitentity-3");
         property3.setType(property.getType());
-        property3.setDate(TestUtil.addOneMS(property.getDate()));
+        property3.setDate(Util.addOneMS(property.getDate()));
         property3.addKey("uniq", "key3");
         property3.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property3);

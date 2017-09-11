@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
@@ -17,8 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.addOneMS;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 

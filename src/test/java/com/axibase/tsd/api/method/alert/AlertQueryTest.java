@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONArray;
 import org.testng.annotations.Test;
 
@@ -11,8 +11,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.TestUtil.extractJSONObjectFieldFromJSONArrayByIndex;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -121,6 +122,6 @@ public class AlertQueryTest extends AlertTest {
         assertEquals(OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to get alerts by queries with unknown entity", jsonResponse.length() == 2);
         assertEquals("Unexpected warning message", "ENTITY not found for name: 'unknown'",
-                TestUtil.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
+                extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
     }
 }
