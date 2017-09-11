@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.axibase.tsd.api.util.TestUtil.addTimeUnitsInTimezone;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SqlPeriodAlignTest extends SqlTest {
@@ -906,8 +907,8 @@ public class SqlPeriodAlignTest extends SqlTest {
         );
 
         String resultUtcDate1 = "2007-01-02T00:00:00.000Z";
-        String resultUtcDate2 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 3);
-        String resultUtcDate3 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 6);
+        String resultUtcDate2 = addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 3);
+        String resultUtcDate3 = addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 6);
 
         String[][] expectedRows = new String[][]{
                 {resultUtcDate1, "1"},
@@ -940,7 +941,7 @@ public class SqlPeriodAlignTest extends SqlTest {
         );
 
         String resultUtcDate1 = "2007-04-02T00:00:00.007Z";
-        String resultUtcDate2 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, -3);
+        String resultUtcDate2 = addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, -3);
 
         String[][] expectedRows = new String[][]{
                 {resultUtcDate2, "2"},
@@ -972,8 +973,8 @@ public class SqlPeriodAlignTest extends SqlTest {
         );
 
         String resultUtcDate1 = "2007-01-02T00:00:00.005Z";
-        String resultUtcDate2 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 3);
-        String resultUtcDate3 = Util.addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 6);
+        String resultUtcDate2 = addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 3);
+        String resultUtcDate3 = addTimeUnitsInTimezone(resultUtcDate1, serverTimezone, TimeUnit.MONTH, 6);
 
         String[][] expectedRows = new String[][]{
                 {resultUtcDate1, "1"},

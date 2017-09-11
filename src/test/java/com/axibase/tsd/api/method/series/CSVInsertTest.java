@@ -6,7 +6,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -20,7 +20,7 @@ import java.util.Date;
 import static com.axibase.tsd.api.method.entity.EntityTest.assertEntityExisting;
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.parseDate;
+import static com.axibase.tsd.api.util.Util.*;
 import static java.util.Collections.singletonList;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -127,8 +127,8 @@ public class CSVInsertTest extends CSVInsertMethod {
         String csvPayload = String.format(
                 "time, %s%n%s, %s%n%s, %s%n",
                 series.getMetric(),
-                TestUtil.parseDate(MIN_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE,
-                TestUtil.parseDate(MAX_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE
+                Util.parseDate(MIN_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE,
+                Util.parseDate(MAX_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE
 
         );
         csvInsertCheck(

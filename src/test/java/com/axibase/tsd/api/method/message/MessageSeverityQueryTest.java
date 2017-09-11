@@ -4,7 +4,7 @@ import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.model.message.SeverityAlias;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -18,8 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.axibase.tsd.api.model.message.Severity.*;
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.*;
 
 
@@ -39,7 +39,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         for (Severity severity : values()) {
             message.setSeverity(severity.name());
             insertMessageCheck(message);
-            message.setDate(TestUtil.addOneMS(message.getDate()));
+            message.setDate(Util.addOneMS(message.getDate()));
         }
     }
 

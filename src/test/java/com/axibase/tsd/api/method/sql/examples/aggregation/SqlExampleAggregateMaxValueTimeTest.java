@@ -5,12 +5,14 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.axibase.tsd.api.util.TestUtil.formatDate;
 
 
 public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
@@ -55,16 +57,16 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
                 Arrays.asList(
                         TEST_ENTITY1_NAME,
                         "2.0",
-                        TestUtil.formatDate(
-                                TestUtil.parseDate("2016-06-17T19:16:02.000Z"),
+                        formatDate(
+                                Util.parseDate("2016-06-17T19:16:02.000Z"),
                                 "yyyy-MM-dd HH:mm:ss"
                         )
                 ),
                 Arrays.asList(
                         TEST_ENTITY2_NAME,
                         "4.0",
-                        TestUtil.formatDate(
-                                TestUtil.parseDate("2016-06-17T19:16:04.000Z"),
+                        formatDate(
+                                Util.parseDate("2016-06-17T19:16:04.000Z"),
                                 "yyyy-MM-dd HH:mm:ss"
                         )
                 )

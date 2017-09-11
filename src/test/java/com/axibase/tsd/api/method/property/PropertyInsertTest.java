@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -13,9 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_INVALID_FORMAT;
-import static com.axibase.tsd.api.util.Mocks.MAX_STORABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_STORABLE_DATE;
-import static com.axibase.tsd.api.util.TestUtil.addOneMS;
+import static com.axibase.tsd.api.util.Util.MAX_STORABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
@@ -180,7 +180,7 @@ public class PropertyInsertTest extends PropertyMethod {
     public void testTimeRangeMaxTimeOverflow() throws Exception {
         Property property = new Property("t-time-range-p-4", "e-time-range-p-4");
         property.addTag("ttr-t", "ttr-v");
-        property.setDate(addOneMS(MAX_STORABLE_DATE));
+        property.setDate(Util.addOneMS(MAX_STORABLE_DATE));
 
         Response response = insertProperty(property);
         assertNotSame("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());

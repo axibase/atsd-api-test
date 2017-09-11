@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -78,7 +78,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         StringTable resultTable = response.readEntity(StringTable.class);
 
         String[][] expectedRows = {
-                {TestUtil.ISOFormat(new Date(Long.MAX_VALUE))}
+                {Util.ISOFormat(new Date(Long.MAX_VALUE))}
         };
         assertTableRowsExist(expectedRows, resultTable);
     }
@@ -177,7 +177,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         StringTable resultTable = response.readEntity(StringTable.class);
 
         String[][] expectedRows = {
-                {TestUtil.ISOFormat(1)}
+                {Util.ISOFormat(1)}
         };
         assertTableRowsExist(expectedRows, resultTable);
     }

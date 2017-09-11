@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.sql.function.dateparse;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,7 +15,7 @@ public class DateParseFunctionTest extends SqlTest {
 
     @BeforeClass
     public static void requestTimeZone() throws Exception {
-        timeZone = TestUtil.getServerTimeZone();
+        timeZone = Util.getServerTimeZone();
     }
 
     /**

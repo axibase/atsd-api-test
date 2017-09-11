@@ -17,7 +17,7 @@ import java.util.Collections;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.TestUtil.formatDate;
-import static com.axibase.tsd.api.util.TestUtil.parseDate;
+import static com.axibase.tsd.api.util.Util.parseDate;
 import static java.util.TimeZone.getTimeZone;
 
 

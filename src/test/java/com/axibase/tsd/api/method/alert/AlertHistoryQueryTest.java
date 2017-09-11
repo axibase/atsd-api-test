@@ -16,8 +16,8 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 

@@ -19,8 +19,9 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.AGGREGATE_NON_DETAIL_REQUIRE_PERIOD;
 import static com.axibase.tsd.api.util.ErrorTemplate.INTERPOLATE_TYPE_REQUIRED;
-import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.*;
+import static com.axibase.tsd.api.util.Mocks.entity;
+import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 

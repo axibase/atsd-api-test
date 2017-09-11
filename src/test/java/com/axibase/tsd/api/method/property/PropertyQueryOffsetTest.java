@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_STORABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 
 /**
  * @author Dmitry Korchagin.
