@@ -32,42 +32,42 @@ public class DetailInterpolationTest extends SqlTest {
 
         Series series = new Series(TEST_ENTITY1, TEST_METRIC1, Mocks.TAGS);
         series.addSamples(
-                new Sample("2017-01-01T23:50:00Z", 1),
-                new Sample("2017-01-03T00:00:00Z", 3),
-                new Sample("2017-01-05T00:00:00Z", 5)
+                Sample.ofDateInteger("2017-01-01T23:50:00Z", 1),
+                Sample.ofDateInteger("2017-01-03T00:00:00Z", 3),
+                Sample.ofDateInteger("2017-01-05T00:00:00Z", 5)
         );
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY1, TEST_METRIC2, Mocks.TAGS);
         series.addSamples(
-                new Sample("2017-01-02T00:00:00Z", 2),
-                new Sample("2017-01-04T00:00:00Z", 4),
-                new Sample("2017-01-05T00:10:00Z", 6)
+                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
+                Sample.ofDateInteger("2017-01-04T00:00:00Z", 4),
+                Sample.ofDateInteger("2017-01-05T00:10:00Z", 6)
         );
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY1, TEST_METRIC3, Mocks.TAGS);
         series.addSamples(
-                new Sample("2016-12-31T23:50:00Z", 0),
-                new Sample("2017-01-01T00:00:00Z", 1),
-                new Sample("2017-01-03T00:00:00Z", 3)
+                Sample.ofDateInteger("2016-12-31T23:50:00Z", 0),
+                Sample.ofDateInteger("2017-01-01T00:00:00Z", 1),
+                Sample.ofDateInteger("2017-01-03T00:00:00Z", 3)
         );
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY1, TEST_METRIC4, Mocks.TAGS);
         series.addSamples(
-                new Sample("2017-01-02T00:00:00Z", 2),
-                new Sample("2017-01-04T00:00:00Z", 4),
-                new Sample("2017-01-04T00:10:00Z", 5)
+                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
+                Sample.ofDateInteger("2017-01-04T00:00:00Z", 4),
+                Sample.ofDateInteger("2017-01-04T00:10:00Z", 5)
         );
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY2, TEST_METRIC4, Mocks.TAGS);
         series.addSamples(
-                new Sample("2017-01-01T00:00:00Z", 1),
-                new Sample("2017-01-02T00:00:00Z", 2),
-                new Sample("2017-01-03T00:00:00Z", 3),
-                new Sample("2017-01-04T00:00:00Z", 4)
+                Sample.ofDateInteger("2017-01-01T00:00:00Z", 1),
+                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
+                Sample.ofDateInteger("2017-01-03T00:00:00Z", 3),
+                Sample.ofDateInteger("2017-01-04T00:00:00Z", 4)
         );
         seriesList.add(series);
 
