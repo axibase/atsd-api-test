@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -74,9 +75,7 @@ public class DetailInterpolationTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoin() {
         String sqlQuery = String.format(
@@ -98,9 +97,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinear() {
         String sqlQuery = String.format(
@@ -122,9 +119,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPrevious() {
         String sqlQuery = String.format(
@@ -146,9 +141,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearInner() {
         String sqlQuery = String.format(
@@ -170,9 +163,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPreviousInner() {
         String sqlQuery = String.format(
@@ -194,9 +185,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearOuter() {
         String sqlQuery = String.format(
@@ -218,9 +207,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPreviousOuter() {
         String sqlQuery = String.format(
@@ -242,9 +229,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearInnerNan() {
         String sqlQuery = String.format(
@@ -267,9 +252,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearOuterNan() {
         String sqlQuery = String.format(
@@ -292,9 +275,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPreviousInnerNan() {
         String sqlQuery = String.format(
@@ -316,9 +297,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPreviousOuterNan() {
         String sqlQuery = String.format(
@@ -339,9 +318,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearInnerExtend() {
         String sqlQuery = String.format(
@@ -362,9 +339,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearOuterExtend() {
         String sqlQuery = String.format(
@@ -387,9 +362,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPreviousOuterExtend() {
         String sqlQuery = String.format(
@@ -412,9 +385,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinUsingEntityLinearInner() {
         String sqlQuery = String.format(
@@ -440,9 +411,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinUsingEntityPreviousInnerNaNAdditionalFilter() {
         String sqlQuery = String.format(
@@ -465,9 +434,7 @@ public class DetailInterpolationTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3435
-     */
+    @Issue("3435")
     @Test
     public void testNonAcceptableCalendarAlignment() throws Exception {
         String sqlQuery = String.format(
