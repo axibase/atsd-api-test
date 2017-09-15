@@ -352,4 +352,32 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
+
+    @Issue("4281")
+    @Test
+    public void testIsNullFunctionEntityTags() {
+        String sqlQuery = String.format(
+                "SELECT ISNULL(entity.tags, '-'), ISNULL(entity.tags.tag, '-') FROM \"%s\" WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY5_NAME);
+
+        String[][] expectedRows = {
+                {"-", "-"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4281")
+    @Test
+    public void testIsNullFunctionMetricTags() {
+        String sqlQuery = String.format(
+                "SELECT ISNULL(metric.tags, '-'), ISNULL(metric.tags.tag, '-') FROM \"%s\" WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY5_NAME);
+
+        String[][] expectedRows = {
+                {"-", "-"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }
