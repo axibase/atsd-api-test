@@ -503,7 +503,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, CALENDAR)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, CALENDAR, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -525,7 +525,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NAN, CALENDAR)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NAN, CALENDAR, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -548,7 +548,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, CALENDAR)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, CALENDAR, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -571,7 +571,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, START_TIME)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, START_TIME, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
