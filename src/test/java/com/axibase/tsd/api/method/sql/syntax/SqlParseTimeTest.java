@@ -51,4 +51,52 @@ public class SqlParseTimeTest extends SqlTest {
         }
         return stringbuilder.toString();
     }
+
+    @Issue("4437")
+    @Test
+    public void testDateStringNotConverting() {
+        String sqlQuery = "SELECT '2017-08-01T00:00:00Z'";
+
+        String[][] expectedRows = {
+                {"2017-08-01T00:00:00Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4437")
+    @Test
+    public void testDateStringNotConvertingWithAlias() {
+        String sqlQuery = "SELECT '2017-08-01T00:00:00Z' as \"date\"";
+
+        String[][] expectedRows = {
+                {"2017-08-01T00:00:00Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4437")
+    @Test
+    public void testDateStringNotConvertingWithFrom() {
+        String sqlQuery = String.format("SELECT '2017-08-01T00:00:00Z' as \"date\" FROM \"%s\"", TEST_METRIC_NAME);
+
+        String[][] expectedRows = {
+                {"2017-08-01T00:00:00Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4437")
+    @Test
+    public void testDateStringNotConvertingWithStringFunction() {
+        String sqlQuery = String.format("SELECT CONCAT('2017-08-01T00:00:00', 'Z') as \"date\" FROM \"%s\"", TEST_METRIC_NAME);
+
+        String[][] expectedRows = {
+                {"2017-08-01T00:00:00Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }
