@@ -28,15 +28,17 @@ public class AppendFieldTest extends CommandMethodTest {
         Series series = new Series(entityName, metricName);
         series.addSamples(Sample.ofDateText(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
 
-        SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricName, dataWithDuplicates[0]),
-                                                        null, entityName, null, null, null, ISO_TIME, false);
-        CommandMethod.send(seriesCommand);
-
-        seriesCommand.setAppend(true);
-        for(int i = 1; i < dataWithDuplicates.length; i++) {
-            seriesCommand.setTexts(singletonMap(metricName, dataWithDuplicates[i]));
-            CommandMethod.send(seriesCommand);
+        List<PlainCommand> commandList = new ArrayList<>();
+        for(int i = 0; i < dataWithDuplicates.length; i++) {
+            SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricName, dataWithDuplicates[i]),
+                    null, entityName, null, null, null, ISO_TIME, true);
+            if (i == 0) {
+                seriesCommand.setAppend(false);
+            }
+            commandList.add(seriesCommand);
         }
+
+        CommandMethod.send(commandList);
 
         assertTextDataEquals(series, "Append with erase doesn't work");
 
@@ -69,25 +71,27 @@ public class AppendFieldTest extends CommandMethodTest {
         Series series = new Series(entityName, metricAppendWithErase);
         series.addSamples(Sample.ofDateText(ISO_TIME, "d;\ne;\nf;\ng"));
 
-        SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseFirst[0]),
-                                                        null, entityName, null, null, null, ISO_TIME, false);
-        CommandMethod.send(seriesCommand);
+        List<PlainCommand> commandList = new ArrayList<>();
 
-        seriesCommand.setAppend(true);
-        for(int i = 1; i < dataEraseFirst.length; i++) {
-            seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseFirst[i]));
-            CommandMethod.send(seriesCommand);
+        for(int i = 0; i < dataEraseFirst.length; i++) {
+            SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseFirst[i]),
+                    null, entityName, null, null, null, ISO_TIME, true);
+            if (i == 0) {
+                seriesCommand.setAppend(false);
+            }
+            commandList.add(seriesCommand);
         }
 
-        seriesCommand.setAppend(false);
-        seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseSecond[0]));
-        CommandMethod.send(seriesCommand);
-        seriesCommand.setAppend(true);
-
-        for(int i = 1; i < dataEraseSecond.length; i++) {
-            seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseSecond[i]));
-            CommandMethod.send(seriesCommand);
+        for(int i = 0; i < dataEraseSecond.length; i++) {
+            SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseSecond[i]),
+                    null, entityName, null, null, null, ISO_TIME, true);
+            if (i == 0) {
+                seriesCommand.setAppend(false);
+            }
+            commandList.add(seriesCommand);
         }
+
+        CommandMethod.send(commandList);
 
         assertTextDataEquals(series, "Append with erase doesn't work");
     }
