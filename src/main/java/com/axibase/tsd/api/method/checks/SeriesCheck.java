@@ -50,8 +50,6 @@ public class SeriesCheck extends AbstractCheck {
         Response response = querySeries(seriesQueryList);
         String expected = BaseMethod.getJacksonMapper().writeValueAsString(formattedSeriesList);
         String actual = response.readEntity(String.class);
-        LOGGER.info("Expected {}", expected);
-        LOGGER.info("Actual {}", actual);
         return compareJsonString(expected, actual);
     }
 }
