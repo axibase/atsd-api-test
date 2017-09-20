@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,11 +18,10 @@ public class SqlParseTimeTest extends SqlTest {
     private static final String TEST_METRIC_NAME = metric();
     private static final String TEST_ENTITY_NAME = entity();
 
-
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
+        series1.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1));
     }
@@ -55,10 +55,10 @@ public class SqlParseTimeTest extends SqlTest {
     @Issue("4437")
     @Test
     public void testDateStringNotConverting() {
-        String sqlQuery = "SELECT '2017-08-01T00:00:00Z'";
+        String sqlQuery = String.format("SELECT '%s'", Mocks.ISO_TIME);
 
         String[][] expectedRows = {
-                {"2017-08-01T00:00:00Z"}
+                {Mocks.ISO_TIME}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -67,10 +67,10 @@ public class SqlParseTimeTest extends SqlTest {
     @Issue("4437")
     @Test
     public void testDateStringNotConvertingWithAlias() {
-        String sqlQuery = "SELECT '2017-08-01T00:00:00Z' as \"date\"";
+        String sqlQuery =  String.format("SELECT '%s' as \"date\"", Mocks.ISO_TIME);
 
         String[][] expectedRows = {
-                {"2017-08-01T00:00:00Z"}
+                {Mocks.ISO_TIME}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -79,10 +79,10 @@ public class SqlParseTimeTest extends SqlTest {
     @Issue("4437")
     @Test
     public void testDateStringNotConvertingWithFrom() {
-        String sqlQuery = String.format("SELECT '2017-08-01T00:00:00Z' as \"date\" FROM \"%s\"", TEST_METRIC_NAME);
+        String sqlQuery = String.format("SELECT '%s' as \"date\" FROM \"%s\"", Mocks.ISO_TIME, TEST_METRIC_NAME);
 
         String[][] expectedRows = {
-                {"2017-08-01T00:00:00Z"}
+                {Mocks.ISO_TIME}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -91,10 +91,10 @@ public class SqlParseTimeTest extends SqlTest {
     @Issue("4437")
     @Test
     public void testDateStringNotConvertingWithStringFunction() {
-        String sqlQuery = String.format("SELECT CONCAT('2017-08-01T00:00:00', 'Z') as \"date\" FROM \"%s\"", TEST_METRIC_NAME);
+        String sqlQuery = String.format("SELECT CONCAT('2017-08-01T00:00:00.000', 'Z') as \"date\" FROM \"%s\"", TEST_METRIC_NAME);
 
         String[][] expectedRows = {
-                {"2017-08-01T00:00:00Z"}
+                {Mocks.ISO_TIME}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
