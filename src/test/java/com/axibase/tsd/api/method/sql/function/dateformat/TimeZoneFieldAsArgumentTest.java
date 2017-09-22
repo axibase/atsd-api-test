@@ -24,7 +24,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
     private static final String METRIC_NAME2 = Mocks.metric();
     private static final String METRIC_NAME3 = Mocks.metric();
 
-    private static final TimeZone ENTITY_ZONE = TimeZone.getTimeZone("Asia/Kathmandu");
+    private static final TimeZone ENTITY_ZONE = TimeZone.getTimeZone("Pacific/Chatham");
     private static final TimeZone METRIC_ZONE = TimeZone.getTimeZone("America/Los_Angeles");
 
     @BeforeClass
@@ -79,7 +79,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"2017-08-01 17:45:00", "2017-08-01 05:00:00"}
+                {"2017-08-02 00:45:00", "2017-08-01 05:00:00"}
         };
 
         assertSqlQueryRows("Wrong result when specifying timezone from metric/entity timezone field in date_format",
@@ -145,8 +145,8 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"2017-07-31T18:15:00.000Z", "3"},
-                {"2017-08-01T18:15:00.000Z", "7"},
+                {"2017-07-31T11:15:00.000Z", "1"},
+                {"2017-08-01T11:15:00.000Z", "9"},
         };
 
         assertSqlQueryRows("Wrong result when specifying timezone from entity.timezone field in GROUP BY PERIOD",
