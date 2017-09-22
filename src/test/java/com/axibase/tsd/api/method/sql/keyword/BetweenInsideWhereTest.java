@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,18 +22,16 @@ public class BetweenInsideWhereTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-03-09T12:00:00.000Z", 1),
-                new Sample("2017-03-10T12:00:00.000Z", 2),
-                new Sample("2017-03-11T12:00:00.000Z", 3),
-                new Sample("2017-03-12T12:00:00.000Z", 4)
+                Sample.ofDateInteger("2017-03-09T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-03-10T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-03-11T12:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-03-12T12:00:00.000Z", 4)
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #4014
-     */
+    @Issue("4014")
     @Test
     public void checkIfBetweenSuccededByAndWorks() {
         String sqlQuery = String.format(

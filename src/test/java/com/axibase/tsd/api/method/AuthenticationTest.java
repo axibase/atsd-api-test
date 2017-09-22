@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -19,9 +20,7 @@ public class AuthenticationTest extends BaseMethod {
     private static final String UNKNOWN_USER = "Unknown User";
     private static final String UNKNOWN_USER_PASSWORD = "Unknown User Password";
 
-    /**
-     * #2870
-     */
+    @Issue("2870")
     @Test(enabled=false)
     public void seriesQueryTest() throws Exception {
         List<SeriesQuery> seriesQueryList = Collections.singletonList(new SeriesQuery());
@@ -32,9 +31,7 @@ public class AuthenticationTest extends BaseMethod {
         assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 
-    /**
-     * #2870
-     */
+    @Issue("2870")
     @Test(enabled=false)
     public void seriesInsertTest() throws Exception {
         List<Series> seriesQueryList = Collections.singletonList(new Series());
@@ -45,9 +42,7 @@ public class AuthenticationTest extends BaseMethod {
         assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 
-    /**
-     * #2870
-     */
+    @Issue("2870")
     @Test(enabled=false)
     public void seriesCSVInsertTest() throws Exception {
         Response response = CSVInsertMethod.csvInsert("entity", "some csv", new HashMap<String, String>(), UNKNOWN_USER, UNKNOWN_USER_PASSWORD);
@@ -57,9 +52,7 @@ public class AuthenticationTest extends BaseMethod {
         assertEquals("Wrong error message", USER_NOT_FOUND, errorMessage);
     }
 
-    /**
-     * #2870
-     */
+    @Issue("2870")
     @Test(enabled=false)
     public void seriesUrlQueryTest() throws Exception {
         Response response = SeriesMethod.urlQuerySeries("entity", "metric", OutputFormat.JSON, new HashMap<String, String>(), UNKNOWN_USER, UNKNOWN_USER_PASSWORD);

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -20,17 +21,17 @@ public class CountTest extends SqlTest {
     public void prepareTestSeries() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-10-12T00:00:00.000Z", 1),
-                new Sample("2016-10-13T00:00:00.000Z", 2),
-                new Sample("2016-10-14T00:00:00.000Z", 3),
-                new Sample("2016-10-15T00:00:00.000Z", 4),
-                new Sample("2016-10-16T00:00:00.000Z", 5),
-                new Sample("2016-10-17T00:00:00.000Z", 6),
-                new Sample("2016-10-18T00:00:00.000Z", 7)
+                Sample.ofDateInteger("2016-10-12T00:00:00.000Z", 1),
+                Sample.ofDateInteger("2016-10-13T00:00:00.000Z", 2),
+                Sample.ofDateInteger("2016-10-14T00:00:00.000Z", 3),
+                Sample.ofDateInteger("2016-10-15T00:00:00.000Z", 4),
+                Sample.ofDateInteger("2016-10-16T00:00:00.000Z", 5),
+                Sample.ofDateInteger("2016-10-17T00:00:00.000Z", 6),
+                Sample.ofDateInteger("2016-10-18T00:00:00.000Z", 7)
         );
         total = series.getData().size();
-        minDateTime = series.getData().get(0).getD();
-        maxDateTime = series.getData().get(total - 1).getD();
+        minDateTime = series.getData().get(0).getRawDate();
+        maxDateTime = series.getData().get(total - 1).getRawDate();
         SeriesMethod.insertSeriesCheck(series);
     }
 
@@ -43,9 +44,7 @@ public class CountTest extends SqlTest {
         };
     }
 
-    /**
-     * #3325
-     */
+    @Issue("3325")
     @Test(dataProvider = "countAggregationArgumentsProvider")
     public void testCountValue(String countArg) {
         String sqlQuery = selectCount(countArg);

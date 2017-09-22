@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,20 +24,14 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     public static void prepareDate() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.001Z", 0),
-                new Sample("2016-06-19T11:00:05.001Z", 1),
-                new Sample("2016-06-19T11:00:10.001Z", 2)
+                Sample.ofDateInteger("2016-06-19T11:00:00.001Z", 0),
+                Sample.ofDateInteger("2016-06-19T11:00:05.001Z", 1),
+                Sample.ofDateInteger("2016-06-19T11:00:10.001Z", 2)
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /*
-    #3057 issue
-     */
-
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodEmptyOptions() {
         String sqlQuery = String.format(
@@ -58,9 +53,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodAlignOptions() {
         String sqlQuery = String.format(
@@ -81,9 +74,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodExtendOptions() {
         String sqlQuery = String.format(
@@ -105,9 +96,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodInterpolateOptions() {
         String sqlQuery = String.format(
@@ -130,9 +119,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodAlignInterpolateOptions() {
         String sqlQuery = String.format(
@@ -155,9 +142,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodAlignExtendOptions() {
         String sqlQuery = String.format(
@@ -180,9 +165,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodInterpolateAlignOptions() {
         String sqlQuery = String.format(
@@ -204,9 +187,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodInterpolateExtendOptions() {
         String sqlQuery = String.format(
@@ -229,9 +210,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodExtendInterpolateOptions() {
         String sqlQuery = String.format(
@@ -254,9 +233,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodAlignInterpolateExtendOptions() {
         String sqlQuery = String.format(
@@ -282,9 +259,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodAlignExtendInterpolateOptions() {
         String sqlQuery = String.format("SELECT datetime, AVG(value) FROM \"%s\" %n WHERE entity = '%s' %n" +
@@ -309,9 +284,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodInterpolateAlignExtendOptions() {
         String sqlQuery = String.format(
@@ -337,9 +310,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodInterpolateExtendAlignOptions() {
         String sqlQuery = String.format(
@@ -366,9 +337,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
     }
 
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodExtendInterpolateAlignOptions() {
         String sqlQuery = String.format(
@@ -394,9 +363,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3058
-     */
+    @Issue("3058")
     @Test
     public void testPeriodExtendAlignInterpolateOptions() {
         String sqlQuery = String.format("SELECT datetime, AVG(value) FROM \"%s\" %nWHERE entity = '%s' %n" +

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,9 +20,7 @@ public class DatetimeTypeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testDatetimeTypeAsIsnullResult() {
         String sqlQuery = String.format(
@@ -44,9 +43,7 @@ public class DatetimeTypeTest extends SqlTest {
         assertSqlQueryRows("Datetime type mismatch (when joined using OUTER JOIN)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testTimeTypeAsIsnullResult() {
         String sqlQuery = String.format(
@@ -69,9 +66,7 @@ public class DatetimeTypeTest extends SqlTest {
         assertSqlQueryRows("Time type mismatch (when joined using OUTER JOIN)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testDatetimeTypeInStringFunctionsWithOuterJoin() {
         // whole reproduction of #4221 failure
@@ -97,9 +92,7 @@ public class DatetimeTypeTest extends SqlTest {
         assertSqlQueryRows("Datetime (time) type mismatch (when joined using OUTER JOIN)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testDatetimeTypeInStringFunctions() {
         String sqlQuery = String.format(
@@ -128,9 +121,7 @@ public class DatetimeTypeTest extends SqlTest {
         assertSqlQueryRows("Datetime in STRING functions behaves not like ISO-time string", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testDatetimeAsIsnullResultTypeInStringFunctions() {
         String sqlQuery = String.format(
@@ -161,9 +152,7 @@ public class DatetimeTypeTest extends SqlTest {
         assertSqlQueryRows("Datetime (as ISNULL result) in STRING functions behaves not like ISO-time string", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testTimeTypeInStringFunctions() throws Exception {
         String sqlQuery = String.format(
@@ -191,9 +180,7 @@ public class DatetimeTypeTest extends SqlTest {
         assertSqlQueryRows("Time in STRING functions behaves not like UNIX-time string", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4221
-     */
+    @Issue("4221")
     @Test
     public void testTimeAsIsnullResultTypeInStringFunctions() throws Exception {
         String sqlQuery = String.format(

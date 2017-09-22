@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.sql.function.string;
 
 
 import com.axibase.tsd.api.method.sql.SqlTest;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,9 +30,7 @@ public class UpperTest extends SqlTest {
         return result;
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
         String sqlQuery = String.format("SELECT LOWER(%s) FROM \"%s\"",
@@ -65,9 +64,7 @@ public class UpperTest extends SqlTest {
         assertEquals(actualValue, expectedValue, assertMessage);
     }
 
-    /**
-     * #4233
-     */
+    @Issue("4233")
     @Test
     public void testUpperWithDate() {
         String sqlQuery = "SELECT UPPER('1970-01-01T00:00:00.00')";

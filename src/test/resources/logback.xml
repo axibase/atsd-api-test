@@ -38,7 +38,7 @@
         </encoder>
     </appender>
 
-
+    <logger name="org.glassfish.jersey.internal.util" level="ERROR"/>
 
     <root level="${loggerLevel}">
         <!--<root level="info">-->

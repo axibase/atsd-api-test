@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -26,9 +27,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
-import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.UNIVERSAL_TIMEZONE_NAME;
-import static com.axibase.tsd.api.util.TestUtil.parseDate;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
@@ -43,7 +42,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    private static String timezone = UNIVERSAL_TIMEZONE_NAME;
+    private static String timezone = DEFAULT_TIMEZONE_NAME;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {
@@ -68,7 +67,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         };
     }
 
-    /* #2916 */
+    @Issue("2916")
     @Test
     public void testPlainCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-1";
@@ -80,7 +79,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
     }
 
-    /* #2916 */
+    @Issue("2916")
     @Test
     public void testPlainCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-2";
@@ -91,7 +90,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testTarGzCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-3";
@@ -102,7 +101,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testTarGzCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-4";
@@ -113,7 +112,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testZipCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-5";
@@ -124,7 +123,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testZipCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-6";
@@ -136,7 +135,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testGzCsvMultipartUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-7";
@@ -147,7 +146,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkMultipartFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2919 */
+    @Issue("2919")
     @Test
     public void testGzCsvBinaryUpload(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-8";
@@ -158,7 +157,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testDSStoreFileInTarGz(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-9";
@@ -167,7 +166,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testMetaFileInTarGz(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-10";
@@ -178,7 +177,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testDSStoreFileInZip(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-11";
@@ -189,7 +188,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2966 */
+    @Issue("2966")
     @Test
     public void testMetaFileInZip(Method method) throws Exception {
         String entityName = ENTITY_PREFIX + "-12";
@@ -200,7 +199,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         checkBinaryFileUpload(entityName, metricName, csvPath);
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeInISO(Method method) throws Exception {
         Entity entity = new Entity("e-csv-simple-parser-iso-0");
@@ -217,13 +216,13 @@ public class CSVUploadTest extends CSVUploadMethod {
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
         Series series = seriesList.get(0);
 
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getD());
-        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getV().toString());
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getD());
-        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
+        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getRawDate());
+        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getValue().toString());
+        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getRawDate());
+        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getValue().toString());
     }
 
-    /* #2957 */
+    @Issue("2957")
     @Test
     public void testTimeRangeInMS(Method method) throws Exception {
         Entity entity = new Entity("e-csv-simple-parser-ms-1");
@@ -241,13 +240,13 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertEquals("Managed to insert dataset with date out of range", 2, series.getData().size());
 
-        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getD());
-        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getV().toString());
-        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getD());
-        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getV().toString());
+        assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getRawDate());
+        assertEquals("Incorrect stored value", "12.45", series.getData().get(0).getValue().toString());
+        assertEquals("Max storable date failed to save", MAX_STORABLE_DATE, series.getData().get(1).getRawDate());
+        assertEquals("Incorrect stored value", "10.8", series.getData().get(1).getValue().toString());
     }
 
-    /* #3011 */
+    @Issue("3011")
     @Test(dataProvider = "parserProvider")
     public void testFileWithLineBreak(Method method, int numTest, String lineBreakType, String parser, Integer dataSize) throws Exception {
         String nameSuffix = String.format("-%s-parser-ms-%d", lineBreakType, numTest);
@@ -268,11 +267,11 @@ public class CSVUploadTest extends CSVUploadMethod {
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.MARCH, 24, 6, 17);
 
-        assertEquals("Incorrect stored value", LINE_BREAKS_TEST_VALUE, sample.getV().toString());
-        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getD()));
+        assertEquals("Incorrect stored value", LINE_BREAKS_TEST_VALUE, sample.getValue().toString());
+        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getRawDate()));
     }
 
-    /* #3591 */
+    @Issue("3591")
     @Test
     public void testFileWithCRLineBreakAndDST(Method method) throws Exception {
         Entity entity = new Entity("e-cr-dst-parser-ms-2");
@@ -291,7 +290,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.NOVEMBER, 24, 6, 17);
 
-        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getD()));
+        assertEquals("Date failed to save", serverCalendar.getTime(), parseDate(sample.getRawDate()));
     }
 
 
@@ -299,7 +298,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         Series expectedSeries = new Series();
         expectedSeries.setEntity(entity);
         expectedSeries.setMetric(metric);
-        expectedSeries.addSamples(new Sample(date, new BigDecimal(value)));
+        expectedSeries.addSamples(Sample.ofDateDecimal(date, new BigDecimal(value)));
         List<Series> expectedSeriesList = Collections.singletonList(expectedSeries);
         assertEquals(expectedSeriesList, actualSeriesList);
     }

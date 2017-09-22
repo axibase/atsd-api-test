@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -16,20 +17,18 @@ public class WhereIsNullTagsTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(entity(), METRIC_NAME, "t1", "z");
-        series1.addSamples(new Sample("2017-01-01T12:00:00.000Z", 0));
+        series1.addSamples(Sample.ofDateInteger("2017-01-01T12:00:00.000Z", 0));
 
         Series series2 = new Series(entity(), METRIC_NAME, "t2", "y");
-        series2.addSamples(new Sample("2017-01-02T12:00:00.000Z", 0));
+        series2.addSamples(Sample.ofDateInteger("2017-01-02T12:00:00.000Z", 0));
 
         Series series3 = new Series(entity(), METRIC_NAME, "t1", "a");
-        series3.addSamples(new Sample("2017-01-03T12:00:00.000Z", 0));
+        series3.addSamples(Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
-    /**
-     * #4112
-     */
+    @Issue("4112")
     @Test
     public void testWhereIsNullTags() {
         String sqlQuery = String.format(

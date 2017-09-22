@@ -6,15 +6,14 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.*;
 
 public class AggregationChangedDatatypeTest extends SqlTest {
 
-    /**
-     * #3881
-     */
+    @Issue("3881")
     @Test
     public void testChangedDataTypeValues() throws Exception {
         String entityName = entity();

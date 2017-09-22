@@ -1,14 +1,14 @@
 package com.axibase.tsd.api.method.sql.operator;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlMethod;
+import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.ProcessingException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,7 +18,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 
-public class SqlNotEqualsOperatorTest extends SqlMethod {
+public class SqlNotEqualsOperatorTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-not-equals-syntax-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
@@ -26,20 +26,13 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "a", "b") {{
-            addSamples(new Sample("2016-06-03T09:23:00.000Z", new BigDecimal("1.01")));
+            addSamples(Sample.ofDateDecimal("2016-06-03T09:23:00.000Z", new BigDecimal("1.01")));
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /*
-      #2933
-     */
-
-
-    /**
-     * #2933
-     */
-    @Test(expectedExceptions = ProcessingException.class)
+    @Issue("2933")
+    @Test
     public void testNotEqualsWithDatetimeIsFalse() {
         final String sqlQuery = String.format(
                 "SELECT entity, value, datetime FROM \"%s\"" +
@@ -47,14 +40,13 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        queryResponse(sqlQuery)
-                .readEntity(StringTable.class);
+        String[][] expectedRows = {};
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2933
-     */
-    @Test(expectedExceptions = ProcessingException.class)
+    @Issue("2933")
+    @Test
     public void testNotEqualsWithDatetimeIsTrue() {
         final String sqlQuery = String.format(
                 "SELECT entity, value, datetime FROM \"%s\"" +
@@ -62,13 +54,14 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
-        queryResponse(sqlQuery)
-                .readEntity(StringTable.class);
+        String[][] expectedRows = {
+                {TEST_ENTITY_NAME, "1.01", "2016-06-03T09:23:00.000Z" }
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWithNumericIsFalse() {
         final String sqlQuery = String.format(
@@ -87,9 +80,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         assertEquals("Table value rows must be identical", expectedRows, resultRows);
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWithNumericIsTrue() {
         final String sqlQuery = String.format(
@@ -103,9 +94,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         assertTrue("Result rows must be empty", resultRows.isEmpty());
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWitStringIsFalse() {
         final String sqlQuery = String.format(
@@ -119,9 +108,7 @@ public class SqlNotEqualsOperatorTest extends SqlMethod {
         assertTrue("Result rows must be empty", resultRows.isEmpty());
     }
 
-    /**
-     * #2933
-     */
+    @Issue("2933")
     @Test
     public void testNotEqualsWithStringIsTrue() {
         final String sqlQuery = String.format(
