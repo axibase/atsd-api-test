@@ -199,6 +199,10 @@ public abstract class SqlTest extends SqlMethod {
         assertBadRequest(expectedMessage, response);
     }
 
+    public void assertBadRequest(String expectedMessage, String sqlQuery) {
+        assertBadRequest(expectedMessage, queryResponse(sqlQuery));
+    }
+
     public void assertBadRequest(String expectedMessage, Response response) {
         assertBadRequest(DEFAULT_ASSERT_BAD_REQUEST_MESSAGE, expectedMessage, response);
     }
