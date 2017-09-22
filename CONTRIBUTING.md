@@ -29,12 +29,12 @@
 
 #### IDE note.
 
-If you use IntelliJ IDEA for development you should intall Lombok plugin for proper code inspection and completion.
+If you use IntelliJ IDEA for development you should install Lombok plugin for proper code inspection and completion.
 
 ## Development
 
 ### Version control (git)
-1. Name your remote branch with specified pattern `surname-issue_id` for example 'pushkin-1234'.
+1. Name your remote branch with specified pattern `last_name-issue_id` for example 'pushkin-1234'.
 2. Pull request flow
     a. Before submit a `pull request`:
         1. `squash` all commits into a single commit
@@ -47,11 +47,16 @@ If you use IntelliJ IDEA for development you should intall Lombok plugin for pro
 ### Code style
 Use [standard](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf) java code style.
 
-  Each test must contain javadoc before test method declaration with a related issue number or a comment that this test was added directly bypassing corporate issue tracker.
+  Each test must contain javadoc before test method declaration with a
+  related issue number or a comment that this test was added directly
+  bypassing corporate issue tracker.
+  For new tests always write test description - as complete as possible.
+  It is very helpful in case when someone tries to understand why
+  the test fails and how to fix it properly.
 
 ```java
     @Issue("1234")
-    @Test
+    @Test(description = "My explanatory test description")
     public void testSomething() {
         //arrange
         

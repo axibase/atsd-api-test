@@ -8,7 +8,6 @@ import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -26,12 +25,7 @@ public class ExtractTest extends SqlTest {
     private static final String METRIC_NAME = Mocks.metric();
 
     private static ZonedDateTime zonedFromStringDate(String date) {
-        try {
-            return ZonedDateTime.ofInstant(Instant.parse(date), Util.getServerTimeZone().toZoneId());
-        } catch (JSONException e) {
-            log.error("Can't parse date '{}'", date, e);
-            throw new RuntimeException(e);
-        }
+        return ZonedDateTime.ofInstant(Instant.parse(date), Util.getServerTimeZone().toZoneId());
     }
 
     private enum DateAccessor {

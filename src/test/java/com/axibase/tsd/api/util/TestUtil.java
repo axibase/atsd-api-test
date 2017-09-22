@@ -32,11 +32,7 @@ public class TestUtil {
     }
 
     public static String formatDate(Date date, String pattern) {
-        try {
-            return formatDate(date, pattern, getServerTimeZone());
-        } catch (JSONException e) {
-            throw new IllegalStateException("Unknown timezone");
-        }
+        return formatDate(date, pattern, getServerTimeZone());
     }
 
 
@@ -65,12 +61,7 @@ public class TestUtil {
     }
 
     public static String timeTranslateDefault(String date, TimeTranslation mode) {
-        TimeZone timeZone;
-        try {
-            timeZone = getServerTimeZone();
-        } catch (JSONException e) {
-            throw new IllegalStateException("Unknown timezone");
-        }
+        TimeZone timeZone = getServerTimeZone();
         return timeTranslate(date, timeZone, mode);
     }
 
@@ -126,6 +117,14 @@ public class TestUtil {
 
         DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
         return localDate.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
+    }
+
+    public static String formatAsLocalTime(String isoDate) {
+        TimeZone serverTimeZone = Util.getServerTimeZone();
+        Date parsedDate = parseDate(isoDate);
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        localDateFormat.setTimeZone(serverTimeZone);
+        return localDateFormat.format(parsedDate);
     }
 
     public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {

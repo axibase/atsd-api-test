@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -24,7 +23,7 @@ public class Util {
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
     private static TimeZone serverTimeZone;
 
-    public static TimeZone getServerTimeZone() throws JSONException {
+    public static TimeZone getServerTimeZone() {
         if (serverTimeZone == null) {
             Version version = VersionMethod.queryVersion().readEntity(Version.class);
             serverTimeZone = TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
