@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,29 +21,27 @@ public class SelectRowNumberTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(ENTITY_NAME1, METRIC_NAME);
         series1.addSamples(
-                new Sample("2017-06-20T00:00:00Z", 1),
-                new Sample("2017-06-21T00:00:00Z", 2)
+                Sample.ofDateInteger("2017-06-20T00:00:00Z", 1),
+                Sample.ofDateInteger("2017-06-21T00:00:00Z", 2)
         );
 
         /* Additional samples with different entity */
         Series series2 = new Series(ENTITY_NAME2, METRIC_NAME);
         series2.addSamples(
-                new Sample("2017-06-22T00:00:00Z", 3),
-                new Sample("2017-06-23T00:00:00Z", 4)
+                Sample.ofDateInteger("2017-06-22T00:00:00Z", 3),
+                Sample.ofDateInteger("2017-06-23T00:00:00Z", 4)
         );
 
         Series series3 = new Series(ENTITY_NAME3, METRIC_NAME);
         series3.addSamples(
-                new Sample("2017-06-24T00:00:00Z", 5),
-                new Sample("2017-06-25T00:00:00Z", 6)
+                Sample.ofDateInteger("2017-06-24T00:00:00Z", 5),
+                Sample.ofDateInteger("2017-06-25T00:00:00Z", 6)
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
-    /**
-     * #3845
-     */
+    @Issue("3845")
     @Test(
             description = "Test row_number support in SELECT and ORDER BY"
     )
@@ -66,9 +65,7 @@ public class SelectRowNumberTest extends SqlTest {
         assertSqlQueryRows("Wrong result for row_number in ORDER BY", expectedResult, sqlQuery);
     }
 
-    /**
-     * #3845
-     */
+    @Issue("3845")
     @Test(
             description = "Test row_number support in SELECT and GROUP BY"
     )
@@ -89,9 +86,7 @@ public class SelectRowNumberTest extends SqlTest {
         assertSqlQueryRows("Wrong result for row_number in GROUP BY", expectedResult, sqlQuery);
     }
 
-    /**
-     * #3845
-     */
+    @Issue("3845")
     @Test(
             description = "Check error message when trying to use row_number() function inside WITH ROW_NUMBER"
     )
@@ -106,9 +101,7 @@ public class SelectRowNumberTest extends SqlTest {
         assertBadRequest("row_number() function is not allowed inside row_number clause", queryResponse(sqlQuery));
     }
 
-    /**
-     * #3845
-     */
+    @Issue("3845")
     @Test(
             description = "Check error message when trying to use row_number() function without WITH ROW_NUMBER"
     )
