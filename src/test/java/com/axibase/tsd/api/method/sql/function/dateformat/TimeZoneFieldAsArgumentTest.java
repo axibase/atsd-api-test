@@ -116,6 +116,23 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
 
     @Issue("4147")
     @Test(
+            description = "Test if GROUP BY PERIOD doesn't allow entity.timezone without grouping by entity column"
+    )
+    public void testGroupByPeriodEntityZoneFieldNoEntityColumn() {
+        String sqlQuery = String.format(
+                "SELECT " +
+                        "datetime, sum(value) " +
+                        "FROM \"%s\" " +
+                        "GROUP BY period(1 day, entity.timezone)",
+                METRIC_NAME2
+        );
+
+        assertBadSqlRequest("entity.timezone in period function requires grouping by entity. " +
+                "Include \"entity\" column in the GROUP BY clause.", sqlQuery);
+    }
+
+    @Issue("4147")
+    @Test(
             description = "Test if GROUP BY PERIOD correctly supports timezone field of entity"
     )
     public void testGroupByPeriodEntityZoneField() {
@@ -123,7 +140,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 "SELECT " +
                         "datetime, sum(value) " +
                         "FROM \"%s\" " +
-                        "GROUP BY period(1 day, entity.timezone)",
+                        "GROUP BY entity, period(1 day, entity.timezone)",
                 METRIC_NAME2
         );
 
