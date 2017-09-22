@@ -5,7 +5,8 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,7 +29,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
             series.setEntity(TEST_ENTITY);
             series.setMetric(TEST_METRIC_1);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), i));
+                series.addSamples(Sample.ofDateInteger(Util.ISOFormat(Mocks.MILLS_TIME + i), i));
             }
             seriesList.add(series);
         }
@@ -36,7 +37,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
             Series series = new Series(null, TEST_METRIC_2);
             series.setEntity(TEST_ENTITY);
             for (int i = 0; i < 10; i++) {
-                series.addSamples(new Sample(TestUtil.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
+                series.addSamples(Sample.ofDateInteger(Util.ISOFormat(Mocks.MILLS_TIME + i), 2 * i));
             }
             seriesList.add(series);
         }
@@ -44,9 +45,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnDescWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
@@ -70,9 +69,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
                             expectedRows, sqlQuery);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnAscWithAggregationsOfDifferentMetrics() {
         String sqlQuery = String.format(
@@ -96,9 +93,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnDescWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(
@@ -122,9 +117,7 @@ public class OrderByAggregatedValuesFromMultipleTablesTest extends SqlTest {
                             expectedRows, sqlQuery);
     }
 
-    /**
-     * #3840
-     */
+    @Issue("3840")
     @Test
     public void testOrderByColumnAscWithOneAggregationOfDifferentMetrics() {
         String sqlQuery = String.format(

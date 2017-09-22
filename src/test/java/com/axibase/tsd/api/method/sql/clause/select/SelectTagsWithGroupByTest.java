@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,14 +21,12 @@ public class SelectTagsWithGroupByTest extends SqlTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "tag1value", "tag2", "tag2value");
-        series.addSamples(new Sample(Mocks.ISO_TIME, Mocks.DECIMAL_VALUE));
+        series.addSamples(Sample.ofDateDecimal(Mocks.ISO_TIME, Mocks.DECIMAL_VALUE));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #4013
-     */
+    @Issue("4013")
     @Test
     public void testIfTagsAsteriskCanBeAppliedWhenGroupedByTags() {
         String sqlQuery = String.format(

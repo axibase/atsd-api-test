@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.model.entity.Entity;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -16,7 +17,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class EntityGetGroupsTest extends EntityMethod {
 
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsWhitespace() throws Exception {
         final String name = "getgroupsentity 1";
@@ -24,7 +25,7 @@ public class EntityGetGroupsTest extends EntityMethod {
     }
 
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         Entity entity = new Entity("getgroups/entity-2");
@@ -33,7 +34,7 @@ public class EntityGetGroupsTest extends EntityMethod {
 
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("getgroupsйёentity-3");

@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -11,7 +12,7 @@ import static org.testng.AssertJUnit.assertFalse;
 
 public class MetricDeleteTest extends MetricMethod {
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
         final String name = "delete metric-1";
@@ -19,7 +20,7 @@ public class MetricDeleteTest extends MetricMethod {
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("delete/metric-2");
@@ -30,7 +31,7 @@ public class MetricDeleteTest extends MetricMethod {
         assertFalse("Metric should be deleted", metricExist(metric));
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("deleteйёmetric-3");

@@ -6,7 +6,8 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -15,14 +16,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 
 import static com.axibase.tsd.api.method.entity.EntityTest.assertEntityExisting;
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.Mocks.metric;
-import static com.axibase.tsd.api.util.TestUtil.parseDate;
+import static com.axibase.tsd.api.util.Util.*;
 import static java.util.Collections.singletonList;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -39,24 +38,20 @@ public class CSVInsertTest extends CSVInsertMethod {
         };
     }
 
-    /**
-     * #2009
-     */
+    @Issue("2009")
     @Test(dataProvider = "formatPatternProvider")
     public void testFormattedDate(String template) {
         Series expectedSeries = series();
         String csvPayload = String.format(
                 "date, %s%n%s, %s%n",
                 expectedSeries.getMetric(),
-                formatISODate(parseDate(SAMPLE.getD()), template), SAMPLE.getV()
+                formatISODate(parseDate(SAMPLE.getRawDate()), template), SAMPLE.getValue()
         );
         csvInsert(expectedSeries.getEntity(), csvPayload, expectedSeries.getTags());
         assertSeriesExisting(expectedSeries);
     }
 
-    /**
-     * #2009
-     */
+    @Issue("2009")
     @Test
     public void testMultipleISOFormat() throws Exception {
         Series series = Mocks.series();
@@ -77,7 +72,7 @@ public class CSVInsertTest extends CSVInsertMethod {
                     formatISODate(date, pattern), Mocks.DECIMAL_VALUE
             );
             payloadBuilder.append(csvRow);
-            series.addSamples(new Sample(dateTemplatePairs[i][0], Mocks.DECIMAL_VALUE));
+            series.addSamples(Sample.ofDateDecimal(dateTemplatePairs[i][0], Mocks.DECIMAL_VALUE));
         }
         String csvPayload = payloadBuilder.toString();
         csvInsertCheck(
@@ -88,15 +83,13 @@ public class CSVInsertTest extends CSVInsertMethod {
         );
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeInISO() throws Exception {
         Series series = Mocks.series();
         series.setSamples(Arrays.asList(
-                new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
-                new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
+                Sample.ofDateDecimal(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
+                Sample.ofDateDecimal(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
         ));
 
         String csvPayload = String.format(
@@ -114,23 +107,21 @@ public class CSVInsertTest extends CSVInsertMethod {
         );
     }
 
-    /**
-     * #2957
-     */
+    @Issue("2957")
     @Test
     public void testTimeRangeInMS() {
         Series series = Mocks.series();
         series.setSamples(new ArrayList<>());
         series.addSamples(
-                new Sample(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
-                new Sample(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
+                Sample.ofDateDecimal(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
+                Sample.ofDateDecimal(MAX_STORABLE_DATE, Mocks.DECIMAL_VALUE)
         );
 
         String csvPayload = String.format(
                 "time, %s%n%s, %s%n%s, %s%n",
                 series.getMetric(),
-                TestUtil.parseDate(MIN_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE,
-                TestUtil.parseDate(MAX_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE
+                Util.parseDate(MIN_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE,
+                Util.parseDate(MAX_STORABLE_DATE).getTime(), Mocks.DECIMAL_VALUE
 
         );
         csvInsertCheck(
@@ -153,9 +144,7 @@ public class CSVInsertTest extends CSVInsertMethod {
     }
 
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test(dataProvider = "entityNameProvider")
     public void testEntityNames(String queryName, String expectedName) throws Exception {
         Entity entity = new Entity(queryName);

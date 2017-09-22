@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -44,32 +45,30 @@ public class CastTest extends SqlTest {
         for (int i = 0; i < metricNames.length; i++) {
             String metricName = metricNames[i];
             Series series = new Series(TEST_ENTITY_NAME, metricName, "numeric_tag", tags[i]);
-            series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+            series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
             seriesList.add(series);
         }
 
         // reproducing data for ticket #3841 behaviour
         Series series1 = new Series(TEST_ENTITY_NAME_3841, TEST_METRIC1_NAME_3841);
-        series1.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:20:01.000Z", 2),
-                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:20:01.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:20:02.000Z", 3));
         series1.addTag("tag", "1001");
         seriesList.add(series1);
 
         Series series2 = new Series(null, TEST_METRIC2_NAME_3841);
         series2.setEntity(TEST_ENTITY_NAME_3841);
-        series2.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1),
-                new Sample("2016-06-03T09:20:01.000Z", 2),
-                new Sample("2016-06-03T09:20:02.000Z", 3));
+        series2.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:20:01.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:20:02.000Z", 3));
         series2.addTag("tag", "2001");
         seriesList.add(series2);
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastSumJoin() {
         String sqlQuery = String.format(
@@ -84,9 +83,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("Sum of CASTs with Join gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastSumJoinUsingEntity() {
         String sqlQuery = String.format(
@@ -102,9 +99,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("Sum of CASTs with Join Using Entity gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastMultiply() {
         String sqlQuery = String.format(
@@ -122,9 +117,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("Multiplication of CASTs gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastConcat() {
         String sqlQuery = String.format(
@@ -140,9 +133,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("CAST of CONCAT gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastGroupBy() {
         String sqlQuery = String.format(
@@ -161,9 +152,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("CAST in GROUP BY gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastWhere() {
         String sqlQuery = String.format(
@@ -181,9 +170,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("CAST in WHERE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastWhereAndConcat() {
         String sqlQuery = String.format(
@@ -201,9 +188,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("CAST in WHERE with CONCAT gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3661
-     */
+    @Issue("3661")
     @Test
     public void testCastHaving() {
         String sqlQuery = String.format(
@@ -226,7 +211,7 @@ public class CastTest extends SqlTest {
     @BeforeClass
     public void createCastNumberAsStringTestData() throws Exception {
         castNumberAsStringSeries = Mocks.series();
-        castNumberAsStringSeries.setSamples(Collections.singleton(new Sample(Mocks.ISO_TIME, new BigDecimal("12345.6789"))));
+        castNumberAsStringSeries.setSamples(Collections.singleton(Sample.ofDateDecimal(Mocks.ISO_TIME, new BigDecimal("12345.6789"))));
         SeriesMethod.insertSeriesCheck(castNumberAsStringSeries);
     }
 
@@ -255,9 +240,7 @@ public class CastTest extends SqlTest {
         };
     }
 
-    /**
-     * #3770
-     */
+    @Issue("3770")
      @Test(dataProvider = "castNumberArgumentsProvider")
      public void testCastNumberAsStringApplied(String castArgument) throws Exception {
          Series series = castNumberAsStringSeries;
@@ -274,9 +257,7 @@ public class CastTest extends SqlTest {
          );
      }
 
-    /**
-     * #3770
-     */
+    @Issue("3770")
     @Test(dataProvider = "castNumberArgumentsProvider")
     public void testCastNumberAsStringPassedToStringFunction(String castArgument) throws Exception {
         Series series = castNumberAsStringSeries;
@@ -313,9 +294,7 @@ public class CastTest extends SqlTest {
         };
     }
 
-    /**
-     * #3770
-     */
+    @Issue("3770")
     @Test(dataProvider = "constNumbersWithFormatProvider")
     public void testCastConstantAsStringAppliesFormat(String castArgument, String expected) throws Exception {
         /**
@@ -334,9 +313,7 @@ public class CastTest extends SqlTest {
         assertEquals("Inproper format applied", expected, castValue);
     }
 
-    /**
-     * #3770
-     */
+    @Issue("3770")
     @Test(dataProvider = "castNumberArgumentsProvider")
     public void testCastNumberAsStringAppliesFormat(String castArgument) throws Exception {
         /**
@@ -361,9 +338,7 @@ public class CastTest extends SqlTest {
         );
     }
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastToNumber() throws Exception {
         Series series = Mocks.series();
@@ -373,7 +348,7 @@ public class CastTest extends SqlTest {
                 "SELECT metric%n" +
                 "FROM \"%s\"%n" +
                 "WHERE value = '%s'",
-                series.getMetric(), series.getData().get(0).getV()
+                series.getMetric(), series.getData().get(0).getValue()
         );
 
         String[][] expected = {
@@ -383,9 +358,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("String constant was not implicitly casted to number", expected, sql);
     }
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastStringColumnToNumber() throws Exception {
         Series series = Mocks.series();
@@ -407,9 +380,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("String column was not implicitly casted to number", expected, sql);
     }
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastToNumberInFunction() throws Exception {
         Series series = Mocks.series();
@@ -429,9 +400,7 @@ public class CastTest extends SqlTest {
     }
 
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastOfNonNumericReturnsNaN() throws Exception {
         Series series = Mocks.series();
@@ -450,9 +419,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("Non-numeric string 'foo' was implicitly casted to number with bad result", expected, sql);
     }
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastStringColumnToNumberInFunction() throws Exception {
         Series series = Mocks.series();
@@ -473,13 +440,11 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("String column argument was not implicitly casted to number", expected, sql);
     }
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastOfStringFunctionResult() throws Exception {
         Series series = Mocks.series();
-        series.setSamples(Collections.singletonList(new Sample(Mocks.ISO_TIME, 10)));
+        series.setSamples(Collections.singletonList(Sample.ofDateInteger(Mocks.ISO_TIME, 10)));
         SeriesMethod.insertSeriesCheck(series);
 
         String sql = String.format(
@@ -495,9 +460,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("String function result was not implicitly casted to number", expected, sql);
     }
 
-    /**
-     * #4020
-     */
+    @Issue("4020")
     @Test
     public void testImplicitCastInMathExpressionsRizesError() throws Exception {
         Series series = Mocks.series();
@@ -515,9 +478,7 @@ public class CastTest extends SqlTest {
         );
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullString() {
         String sqlQuery = String.format(
@@ -532,9 +493,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullEmptyString() {
         String sqlQuery = String.format(
@@ -549,9 +508,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullStringExpression() {
         String sqlQuery = String.format(
@@ -566,9 +523,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullLookup() {
         String sqlQuery = String.format(
@@ -583,9 +538,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullLookupExpression() {
         String sqlQuery = String.format(
@@ -600,9 +553,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNumeric() {
         String sqlQuery = String.format(
@@ -617,9 +568,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNumericNaN() {
         String sqlQuery = String.format(
@@ -634,9 +583,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNumericExpression() {
         String sqlQuery = String.format(
@@ -651,9 +598,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullStringNumericAsString() {
         String sqlQuery = String.format(
@@ -668,9 +613,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullEmptyStringNumericAsString() {
         String sqlQuery = String.format(
@@ -685,9 +628,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNumericStringAsString() {
         String sqlQuery = String.format(
@@ -702,9 +643,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNaNNumericStringAsString() {
         String sqlQuery = String.format(
@@ -719,9 +658,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullStringNumericAsNumber() {
         String sqlQuery = String.format(
@@ -736,9 +673,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullEmptyStringNumericAsNumber() {
         String sqlQuery = String.format(
@@ -753,9 +688,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNumericStringAsNumber() {
         String sqlQuery = String.format(
@@ -770,9 +703,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4182
-     */
+    @Issue("4182")
     @Test
     public void testCastIsNullNaNNumericStringAsNumber() {
         String sqlQuery = String.format(
@@ -787,9 +718,7 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3841
-     */
+    @Issue("3841")
     @Test
     public void testCastReproducingBehaviourInTicket3841() {
         // reproducing ticket #3841 behaviour

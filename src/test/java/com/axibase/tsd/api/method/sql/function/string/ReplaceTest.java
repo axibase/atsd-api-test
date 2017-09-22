@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,9 +35,7 @@ public class ReplaceTest extends SqlTest {
         return result;
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
         String sqlQuery = String.format("SELECT REPLACE(%s) FROM \"%s\"",
@@ -58,9 +57,7 @@ public class ReplaceTest extends SqlTest {
         };
     }
 
-    /**
-     * #2910
-     */
+    @Issue("2910")
     @Test(dataProvider = "selectTestProvider")
     public void testFunctionResult(String param, String expectedValue) {
         String sqlQuery = String.format(
@@ -74,9 +71,7 @@ public class ReplaceTest extends SqlTest {
         assertEquals(assertMessage, expectedValue, actualValue);
     }
 
-    /**
-     * #4233
-     */
+    @Issue("4233")
     @Test
     public void testReplaceWithDate() {
         String sqlQuery = "SELECT REPLACE('1970-01-01T00:00:00.00d', 'd', '0Z')";

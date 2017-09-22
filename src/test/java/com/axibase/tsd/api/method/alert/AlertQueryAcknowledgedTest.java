@@ -3,14 +3,15 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
@@ -77,9 +78,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
     }
 
 
-    /**
-     * #2976
-     */
+    @Issue("2976")
     @Test
     public void testAcknowledgedFilterTrue() throws Exception {
         Map<String, Object> alertQuery = new HashMap<>();
@@ -95,9 +94,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         }
     }
 
-    /**
-     * #2976
-     */
+    @Issue("2976")
     @Test
     public void testAcknowledgedFilterFalse() throws Exception {
         Map<String, Object> alertQuery = new HashMap<>();

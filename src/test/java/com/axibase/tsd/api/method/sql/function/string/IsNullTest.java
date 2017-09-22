@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -38,9 +39,7 @@ public class IsNullTest extends SqlTest {
         return list.iterator();
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String params) throws Exception {
         String sqlQuery = String.format("SELECT ISNULL(%s) FROM \"%s\"",
@@ -56,9 +55,7 @@ public class IsNullTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3675
-     */
+    @Issue("3675")
     @DataProvider(name = "typeCheckTestProvider")
     public Object[][] provideCheckTestData() {
         return new Object[][]{
@@ -103,9 +100,7 @@ public class IsNullTest extends SqlTest {
         };
     }
 
-    /**
-     * #3675
-     */
+    @Issue("3675")
     @Test(dataProvider = "typeCheckTestProvider")
     public void testTypePreserved(String from, String to, String type) throws Exception {
         String sqlQuery = String.format("SELECT ISNULL(%s, %s) FROM \"m-test-type-preserve-1\"", from, to);
@@ -140,9 +135,7 @@ public class IsNullTest extends SqlTest {
         assertEquals(assertMessage, actualValue, expectedValue);
     }
 
-    /**
-     *  #3844
-     */
+    @Issue("3844")
     @Test
     public void testIsNullInExpression() throws Exception {
         String sqlQuery = String.format("SELECT ROUND(100 - ISNULL(value, 0)) FROM \"%s\"", TEST_METRIC);

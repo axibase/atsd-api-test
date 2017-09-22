@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,24 +19,22 @@ public class SqlBetweenStringTest extends SqlTest {
         Series series = new Series(entity(), METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-01-01T12:00:00.000Z", 1, "b"),
-                new Sample("2017-01-02T12:00:00.000Z", 2, "c"),
-                new Sample("2017-01-03T12:00:00.000Z", 3, "a"),
-                new Sample("2017-01-04T12:00:00.000Z", 4, "d"),
-                new Sample("2017-01-05T12:00:00.000Z", 5, "null"),
-                new Sample("2017-01-06T12:00:00.000Z", 6, "z"),
-                new Sample("2017-01-07T12:00:00.000Z", 7, "x"),
-                new Sample("2017-01-08T12:00:00.000Z", 8, "az"),
-                new Sample("2017-01-09T12:00:00.000Z", 9, null),
-                new Sample("2017-01-10T12:00:00.000Z", 10, "a ")
+                Sample.ofDateIntegerText("2017-01-01T12:00:00.000Z", 1, "b"),
+                Sample.ofDateIntegerText("2017-01-02T12:00:00.000Z", 2, "c"),
+                Sample.ofDateIntegerText("2017-01-03T12:00:00.000Z", 3, "a"),
+                Sample.ofDateIntegerText("2017-01-04T12:00:00.000Z", 4, "d"),
+                Sample.ofDateIntegerText("2017-01-05T12:00:00.000Z", 5, "null"),
+                Sample.ofDateIntegerText("2017-01-06T12:00:00.000Z", 6, "z"),
+                Sample.ofDateIntegerText("2017-01-07T12:00:00.000Z", 7, "x"),
+                Sample.ofDateIntegerText("2017-01-08T12:00:00.000Z", 8, "az"),
+                Sample.ofDateIntegerText("2017-01-09T12:00:00.000Z", 9, null),
+                Sample.ofDateIntegerText("2017-01-10T12:00:00.000Z", 10, "a ")
         );
 
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenEqualStringLimits() {
         String sqlQuery = String.format(
@@ -48,9 +47,7 @@ public class SqlBetweenStringTest extends SqlTest {
         assertSqlQueryRows("Wrong result with equal string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenAllString() {
         String sqlQuery = String.format(
@@ -73,9 +70,7 @@ public class SqlBetweenStringTest extends SqlTest {
         assertSqlQueryRows("Wrong result with string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenSimpleString() {
         String sqlQuery = String.format(
@@ -93,9 +88,7 @@ public class SqlBetweenStringTest extends SqlTest {
         assertSqlQueryRows("Wrong result with string limits in BETWEEN operator", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3991
-     */
+    @Issue("3991")
     @Test
     public void testBetweenNullString() {
         String sqlQuery = String.format(

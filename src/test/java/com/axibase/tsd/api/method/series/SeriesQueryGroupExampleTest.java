@@ -3,11 +3,10 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,37 +27,33 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         Series firstSeries = new Series(FIRST_ENTITY, GROUPED_METRIC);
         Series secondSeries = new Series(SECOND_ENTITY, GROUPED_METRIC);
 
-        firstSeries.addSamples( new Sample("2016-06-25T08:00:00.000Z", 1));
-        secondSeries.addSamples(new Sample("2016-06-25T08:00:00.000Z", 11));
-        firstSeries.addSamples( new Sample("2016-06-25T08:00:05.000Z", 3));
-        firstSeries.addSamples( new Sample("2016-06-25T08:00:10.000Z", 5));
-        firstSeries.addSamples( new Sample("2016-06-25T08:00:15.000Z", 8));
-        secondSeries.addSamples(new Sample("2016-06-25T08:00:15.000Z", 8));
-        firstSeries.addSamples( new Sample("2016-06-25T08:00:30.000Z", 3));
-        secondSeries.addSamples(new Sample("2016-06-25T08:00:30.000Z", 13));
-        firstSeries.addSamples( new Sample("2016-06-25T08:00:45.000Z", 5));
-        secondSeries.addSamples(new Sample("2016-06-25T08:00:45.000Z", 15));
-        secondSeries.addSamples(new Sample("2016-06-25T08:00:59.000Z", 19));
+        firstSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 1));
+        secondSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 11));
+        firstSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:05.000Z", 3));
+        firstSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 5));
+        firstSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 8));
+        secondSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 8));
+        firstSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 3));
+        secondSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 13));
+        firstSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 5));
+        secondSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 15));
+        secondSeries.addSamples(Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19));
         insertSeriesCheck(Arrays.asList(firstSeries, secondSeries));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#no-aggregation
-     */
-    @Test
+    @Issue("2995")
     public void testExampleSum() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 12),
-                new Sample("2016-06-25T08:00:05.000Z", 3),
-                new Sample("2016-06-25T08:00:10.000Z", 5),
-                new Sample("2016-06-25T08:00:15.000Z", 16),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:45.000Z", 20),
-                new Sample("2016-06-25T08:00:59.000Z", 19)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 12),
+                Sample.ofDateInteger("2016-06-25T08:00:05.000Z", 3),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 5),
+                Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -70,11 +65,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#interpolation-1
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#interpolation-1")
     public void testExampleSumInterpolation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
@@ -83,13 +75,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 12),
-                new Sample("2016-06-25T08:00:05.000Z", 14),
-                new Sample("2016-06-25T08:00:10.000Z", 16),
-                new Sample("2016-06-25T08:00:15.000Z", 16),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:45.000Z", 20),
-                new Sample("2016-06-25T08:00:59.000Z", 19)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 12),
+                Sample.ofDateInteger("2016-06-25T08:00:05.000Z", 14),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -101,21 +93,18 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation")
     public void testExampleSumAggregation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, new Interval(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 15),
-                new Sample("2016-06-25T08:00:10.000Z", 21),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:40.000Z", 20),
-                new Sample("2016-06-25T08:00:50.000Z", 19)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 15),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 21),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:40.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -127,11 +116,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation")
     public void testExampleSumGroupAggregation() throws Exception {
         final Interval period = new Interval(10, TimeUnit.SECOND);
 
@@ -140,11 +126,11 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setAggregate(new Aggregate(AggregationType.SUM, period));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 15),
-                new Sample("2016-06-25T08:00:10.000Z", 21),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:40.000Z", 20),
-                new Sample("2016-06-25T08:00:50.000Z", 19)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 15),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 21),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:40.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -156,22 +142,19 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#aggregation---group
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#aggregation---group")
     public void testExampleSumAggregationToGroup() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, null, 1));
         query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 3),
-                new Sample("2016-06-25T08:00:10.000Z", 3),
-                new Sample("2016-06-25T08:00:30.000Z", 2),
-                new Sample("2016-06-25T08:00:40.000Z", 2),
-                new Sample("2016-06-25T08:00:50.000Z", 1)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 3),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 3),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 2),
+                Sample.ofDateInteger("2016-06-25T08:00:40.000Z", 2),
+                Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 1)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -183,22 +166,19 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---aggregation
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---aggregation")
     public void testExampleSumGroupToAggregation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, new Interval(1, TimeUnit.MILLISECOND), 0));
         query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND), 1));
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 2),
-                new Sample("2016-06-25T08:00:10.000Z", 2),
-                new Sample("2016-06-25T08:00:30.000Z", 1),
-                new Sample("2016-06-25T08:00:40.000Z", 1),
-                new Sample("2016-06-25T08:00:50.000Z", 1)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 2),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 2),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 1),
+                Sample.ofDateInteger("2016-06-25T08:00:40.000Z", 1),
+                Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 1)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -210,11 +190,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#truncation
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#truncation")
     public void testExampleSumTruncate() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
 
@@ -224,9 +201,9 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:15.000Z", 16),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:45.000Z", 20)
+                Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -238,11 +215,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2995
-     * https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#extend
-     */
-    @Test
+    @Issue("2995")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#extend")
     public void testExampleSumExtendTrue() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
 
@@ -254,12 +228,12 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:05.000Z", 11),
-                new Sample("2016-06-25T08:00:10.000Z", 13),
-                new Sample("2016-06-25T08:00:15.000Z", 16),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:45.000Z", 20),
-                new Sample("2016-06-25T08:00:59.000Z", 24)
+                Sample.ofDateInteger("2016-06-25T08:00:05.000Z", 11),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 13),
+                Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 24)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -271,11 +245,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2997
-     * https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation
-     */
-    @Test
+    @Issue("2997")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation")
     public void testExampleSumExtendFalse() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
@@ -287,13 +258,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 12),
-                new Sample("2016-06-25T08:00:05.000Z", 3),
-                new Sample("2016-06-25T08:00:10.000Z", 5),
-                new Sample("2016-06-25T08:00:15.000Z", 16),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:45.000Z", 20),
-                new Sample("2016-06-25T08:00:59.000Z", 19)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 12),
+                Sample.ofDateInteger("2016-06-25T08:00:05.000Z", 3),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 5),
+                Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);
@@ -305,11 +276,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         assertTrue("Grouped series do not match to expected", compareJsonString(expected, actual));
     }
 
-    /**
-     * #2997
-     * https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation
-     */
-    @Test
+    @Issue("2997")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation")
     public void testExampleSumExtendNull() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
@@ -320,13 +288,13 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
-                new Sample("2016-06-25T08:00:00.000Z", 12),
-                new Sample("2016-06-25T08:00:05.000Z", 3),
-                new Sample("2016-06-25T08:00:10.000Z", 5),
-                new Sample("2016-06-25T08:00:15.000Z", 16),
-                new Sample("2016-06-25T08:00:30.000Z", 16),
-                new Sample("2016-06-25T08:00:45.000Z", 20),
-                new Sample("2016-06-25T08:00:59.000Z", 19)
+                Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 12),
+                Sample.ofDateInteger("2016-06-25T08:00:05.000Z", 3),
+                Sample.ofDateInteger("2016-06-25T08:00:10.000Z", 5),
+                Sample.ofDateInteger("2016-06-25T08:00:15.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:30.000Z", 16),
+                Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20),
+                Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
         List<Series> groupedSeries = executeQueryReturnSeries(query);

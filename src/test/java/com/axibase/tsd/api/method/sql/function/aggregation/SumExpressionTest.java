@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,19 +20,17 @@ public class SumExpressionTest extends SqlTest {
         Series series = new Series(entity(), METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-01-01T12:00:00.000Z", 1),
-                new Sample("2017-01-02T12:00:00.000Z", 2),
-                new Sample("2017-01-03T12:00:00.000Z", 3),
-                new Sample("2017-01-04T12:00:00.000Z", 4),
-                new Sample("2017-01-05T12:00:00.000Z", 5)
+                Sample.ofDateInteger("2017-01-01T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-02T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-05T12:00:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3950
-     */
+    @Issue("3950")
     @Test
     public void testSumInExpression() {
         String sqlQuery = String.format(

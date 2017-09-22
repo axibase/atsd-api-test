@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -26,7 +27,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
         tags.put("single'quote", "tv2");
         tags.put("both'quo\"tes", "tv3");
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags);
-        series.addSamples(new Sample("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
+        series.addSamples(Sample.ofDateDecimal("2016-07-27T22:41:50.407Z", new BigDecimal("12.4")));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
 
         Metric updatedMetricQuery = new Metric();
@@ -38,9 +39,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
         MetricMethod.updateMetric(TEST_METRIC_NAME, updatedEntityQuery);
     }
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testSeriesTagsAll() {
         String sqlQuery = String.format(
@@ -64,9 +63,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testMetricTagsAll() {
         String sqlQuery = String.format(
@@ -89,9 +86,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
 
     }
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testSpecifiedSeriesTags() {
         String sqlQuery = String.format(
@@ -118,9 +113,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testSpecifiedMetricSeriesTags() {
         String sqlQuery = String.format(
@@ -147,17 +140,15 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testLikeOperatorSeriesTags() {
         String sqlQuery = String.format(
                 "SELECT tags.\"double\"\"quote\", %n" +
                         "tags.\"single'quote\", %n" +
                         "tags.\"both'quo\"\"tes\" %n" +
-                        "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" LIKE 'tv*' %n" +
-                        "AND tags.\"both'quo\"\"tes\" LIKE 'tv3' %nAND tags.\"single'quote\" LIKE '*2' %n" +
+                        "FROM \"%s\" %nWHERE tags.\"double\"\"quote\" LIKE 'tv%%' %n" +
+                        "AND tags.\"both'quo\"\"tes\" LIKE 'tv3' %nAND tags.\"single'quote\" LIKE '%%2' %n" +
                         "ORDER BY tags.\"single'quote\"",
                 TEST_METRIC_NAME
 
@@ -178,9 +169,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testIsNullOperatorSeriesTags() {
         String sqlQuery = String.format(
@@ -209,9 +198,7 @@ public class SqlSyntaxQuotesEscapingTest extends SqlTest {
     }
 
 
-    /**
-     * #3125
-     */
+    @Issue("3125")
     @Test
     public void testEqualsOperatorSeriesTags() {
         String sqlQuery = String.format(

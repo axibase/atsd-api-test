@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,18 +24,16 @@ public class GroupByPeriodInLeapYearsTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.addSamples(
-                new Sample(firstDayOf2016Year, DECIMAL_VALUE),
-                new Sample(firstDayOf2016February, DECIMAL_VALUE),
-                new Sample(lastDayOf2016February, DECIMAL_VALUE),
-                new Sample(lastDayOf2016Year, DECIMAL_VALUE)
+                Sample.ofDateDecimal(firstDayOf2016Year, DECIMAL_VALUE),
+                Sample.ofDateDecimal(firstDayOf2016February, DECIMAL_VALUE),
+                Sample.ofDateDecimal(lastDayOf2016February, DECIMAL_VALUE),
+                Sample.ofDateDecimal(lastDayOf2016Year, DECIMAL_VALUE)
         );
 
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3825
-     */
+    @Issue("3825")
     @Test
     public void testGroupByPeriodLeapYear() {
         String sqlQuery = String.format(
@@ -49,9 +48,7 @@ public class GroupByPeriodInLeapYearsTest extends SqlTest {
         assertSqlQueryRows("GROUP BY period gives wrong result with leap year", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3825
-     */
+    @Issue("3825")
     @Test
     public void testGroupByPeriodLeapFebruary() {
         String sqlQuery = String.format(

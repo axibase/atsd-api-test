@@ -11,6 +11,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -35,21 +36,21 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
 
         Series series1 = new Series(ENTITY_NAME, METRIC_NAME1);
         series1.addSamples(
-                new Sample("2017-08-01T12:00:00.000Z", 1)
+                Sample.ofDateInteger("2017-08-01T12:00:00.000Z", 1)
         );
 
         Series series2 = new Series(ENTITY_NAME, METRIC_NAME2);
         series2.addSamples(
-                new Sample("2017-08-01T04:00:00.000Z", 1),
-                new Sample("2017-08-01T12:00:00.000Z", 2),
-                new Sample("2017-08-01T20:00:00.000Z", 3),
-                new Sample("2017-08-02T03:00:00.000Z", 4)
+                Sample.ofDateInteger("2017-08-01T04:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-08-01T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-08-01T20:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-08-02T03:00:00.000Z", 4)
         );
 
         Series series3 = new Series(ENTITY_NAME, METRIC_NAME3);
         series3.addSamples(
-                new Sample("2017-08-01T04:00:00.000Z", 1),
-                new Sample("2017-08-01T07:00:00.000Z", 4)
+                Sample.ofDateInteger("2017-08-01T04:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-08-01T07:00:00.000Z", 4)
         );
 
         entity.setTimeZoneID(ENTITY_ZONE.getID());
@@ -64,9 +65,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }
 
-    /**
-     * #4147
-     */
+    @Issue("4147")
     @Test(
             description = "Test if date_format correctly supports timezone field of entity/metric"
     )
@@ -87,9 +86,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4147
-     */
+    @Issue("4147")
     @Test(
             description = "Test if endtime correctly supports timezone field of entity/metric"
     )
@@ -117,9 +114,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 expectedRows, resultTable, sqlQuery);
     }
 
-    /**
-     * #4147
-     */
+    @Issue("4147")
     @Test(
             description = "Test if GROUP BY PERIOD correctly supports timezone field of entity"
     )
@@ -141,9 +136,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4147
-     */
+    @Issue("4147")
     @Test(
             description = "Test if GROUP BY PERIOD correctly supports timezone field of metric"
     )
@@ -165,9 +158,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4147
-     */
+    @Issue("4147")
     @Test(
             description = "Test if WITH INTERPOLATE correctly supports timezone field of entity"
     )
@@ -190,9 +181,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4147
-     */
+    @Issue("4147")
     @Test(
             description = "Test if WITH INTERPOLATE correctly supports timezone field of metric"
     )

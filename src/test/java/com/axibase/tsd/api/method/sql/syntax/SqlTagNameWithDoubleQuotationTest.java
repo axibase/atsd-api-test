@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -34,7 +35,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         }});
 
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags) {{
-            addSamples(new Sample("2016-06-19T11:00:00.500Z", 0));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:00:00.500Z", 0));
         }};
 
         MetricMethod.createOrReplaceMetricCheck(new Metric(TEST_METRIC_NAME, tags));
@@ -44,9 +45,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testPlainName() {
         String sqlQuery = String.format(
@@ -64,9 +63,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testDoubleQuotationName() {
         String sqlQuery = String.format(
@@ -84,9 +81,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testPlusName() {
         String sqlQuery = String.format(
@@ -104,9 +99,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testMinusName() {
         String sqlQuery = String.format(
@@ -124,9 +117,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testMultipleName() {
         String sqlQuery = String.format(
@@ -144,9 +135,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testDivisionName() {
         String sqlQuery = String.format(
@@ -165,9 +154,7 @@ public class SqlTagNameWithDoubleQuotationTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3085
-     */
+    @Issue("3085")
     @Test
     public void testDifferentQuotationName() {
         String sqlQuery = String.format(

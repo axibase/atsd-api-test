@@ -4,7 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -60,95 +60,93 @@ public class WhereInNoSelfJoinTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(ENTITY_NAME, METRIC_NAME1);
         series1.addSamples(
-                new Sample("2016-10-04T01:58:12.000Z", new BigDecimal("90.4")),
-                new Sample("2016-10-04T02:00:05.000Z", new BigDecimal("97.7")),
-                new Sample("2016-10-04T02:00:35.000Z", new BigDecimal("77.1")),
-                new Sample("2016-10-04T02:02:28.000Z", new BigDecimal("84.2")),
-                new Sample("2016-10-04T02:04:15.000Z", new BigDecimal("65.2")),
-                new Sample("2016-10-04T02:05:28.000Z", new BigDecimal("50.3")),
-                new Sample("2016-10-04T02:07:42.000Z", new BigDecimal("60.1")),
-                new Sample("2016-10-04T02:08:28.000Z", new BigDecimal("80.3")),
-                new Sample("2016-10-04T02:09:16.000Z", new BigDecimal("87.1")),
-                new Sample("2016-10-04T02:11:11.000Z", new BigDecimal("99.9"))
+                Sample.ofDateDecimal("2016-10-04T01:58:12.000Z", new BigDecimal("90.4")),
+                Sample.ofDateDecimal("2016-10-04T02:00:05.000Z", new BigDecimal("97.7")),
+                Sample.ofDateDecimal("2016-10-04T02:00:35.000Z", new BigDecimal("77.1")),
+                Sample.ofDateDecimal("2016-10-04T02:02:28.000Z", new BigDecimal("84.2")),
+                Sample.ofDateDecimal("2016-10-04T02:04:15.000Z", new BigDecimal("65.2")),
+                Sample.ofDateDecimal("2016-10-04T02:05:28.000Z", new BigDecimal("50.3")),
+                Sample.ofDateDecimal("2016-10-04T02:07:42.000Z", new BigDecimal("60.1")),
+                Sample.ofDateDecimal("2016-10-04T02:08:28.000Z", new BigDecimal("80.3")),
+                Sample.ofDateDecimal("2016-10-04T02:09:16.000Z", new BigDecimal("87.1")),
+                Sample.ofDateDecimal("2016-10-04T02:11:11.000Z", new BigDecimal("99.9"))
         );
 
         Series series2 = new Series(ENTITY_NAME, METRIC_NAME2);
         series2.addSamples(
-                new Sample("2016-10-04T02:00:14.000Z", new BigDecimal("47.7")),
-                new Sample("2016-10-04T02:00:55.000Z", new BigDecimal("37.1")),
-                new Sample("2016-10-04T02:02:18.000Z", new BigDecimal("44.2")),
-                new Sample("2016-10-04T02:04:25.000Z", new BigDecimal("35.2")),
-                new Sample("2016-10-04T02:05:18.000Z", new BigDecimal("40.3")),
-                new Sample("2016-10-04T02:07:22.000Z", new BigDecimal("42.1")),
-                new Sample("2016-10-04T02:08:28.000Z", new BigDecimal("46.3")),
-                new Sample("2016-10-04T02:09:26.000Z", new BigDecimal("27.1")),
-                new Sample("2016-10-04T02:10:11.000Z", new BigDecimal("49.9"))
+                Sample.ofDateDecimal("2016-10-04T02:00:14.000Z", new BigDecimal("47.7")),
+                Sample.ofDateDecimal("2016-10-04T02:00:55.000Z", new BigDecimal("37.1")),
+                Sample.ofDateDecimal("2016-10-04T02:02:18.000Z", new BigDecimal("44.2")),
+                Sample.ofDateDecimal("2016-10-04T02:04:25.000Z", new BigDecimal("35.2")),
+                Sample.ofDateDecimal("2016-10-04T02:05:18.000Z", new BigDecimal("40.3")),
+                Sample.ofDateDecimal("2016-10-04T02:07:22.000Z", new BigDecimal("42.1")),
+                Sample.ofDateDecimal("2016-10-04T02:08:28.000Z", new BigDecimal("46.3")),
+                Sample.ofDateDecimal("2016-10-04T02:09:26.000Z", new BigDecimal("27.1")),
+                Sample.ofDateDecimal("2016-10-04T02:10:11.000Z", new BigDecimal("49.9"))
         );
 
         Series series3 = new Series(ENTITY_NAME, METRIC_NAME3);
         series3.addSamples(
-                new Sample("2016-10-04T01:59:12.000Z", new BigDecimal("20.0")),
-                new Sample("2016-10-04T02:00:14.000Z", new BigDecimal("27.7")),
-                new Sample("2016-10-04T02:01:55.000Z", new BigDecimal("17.1")),
-                new Sample("2016-10-04T02:02:38.000Z", new BigDecimal("24.2")),
-                new Sample("2016-10-04T02:04:45.000Z", new BigDecimal("25.2")),
-                new Sample("2016-10-04T02:05:08.000Z", new BigDecimal("20.3")),
-                new Sample("2016-10-04T02:07:52.000Z", new BigDecimal("22.1")),
-                new Sample("2016-10-04T02:08:18.000Z", new BigDecimal("26.3")),
-                new Sample("2016-10-04T02:09:46.000Z", new BigDecimal("17.1")),
-                new Sample("2016-10-04T02:10:21.000Z", new BigDecimal("19.9"))
+                Sample.ofDateDecimal("2016-10-04T01:59:12.000Z", new BigDecimal("20.0")),
+                Sample.ofDateDecimal("2016-10-04T02:00:14.000Z", new BigDecimal("27.7")),
+                Sample.ofDateDecimal("2016-10-04T02:01:55.000Z", new BigDecimal("17.1")),
+                Sample.ofDateDecimal("2016-10-04T02:02:38.000Z", new BigDecimal("24.2")),
+                Sample.ofDateDecimal("2016-10-04T02:04:45.000Z", new BigDecimal("25.2")),
+                Sample.ofDateDecimal("2016-10-04T02:05:08.000Z", new BigDecimal("20.3")),
+                Sample.ofDateDecimal("2016-10-04T02:07:52.000Z", new BigDecimal("22.1")),
+                Sample.ofDateDecimal("2016-10-04T02:08:18.000Z", new BigDecimal("26.3")),
+                Sample.ofDateDecimal("2016-10-04T02:09:46.000Z", new BigDecimal("17.1")),
+                Sample.ofDateDecimal("2016-10-04T02:10:21.000Z", new BigDecimal("19.9"))
         );
 
         Series series4 = new Series(ENTITY_NAME, METRIC_NAME4);
         series4.addSamples(
-                new TextSample("2016-10-04T02:00:00.000Z", "475.0"),
-                new TextSample("2016-10-04T02:01:00.000Z", "26.0"),
-                new TextSample("2016-10-04T02:02:00.000Z", "35.0"),
-                new TextSample("2016-10-04T02:03:00.000Z", "95.0"),
-                new TextSample("2016-10-04T02:04:00.000Z", "155.0"),
-                new TextSample("2016-10-04T02:05:00.000Z", "215.0"),
-                new TextSample("2016-10-04T02:06:00.000Z", "275.0"),
-                new TextSample("2016-10-04T02:07:00.000Z", "335.0"),
-                new TextSample("2016-10-04T02:08:00.000Z", "395.0"),
-                new TextSample("2016-10-04T02:09:00.000Z", "455.0"),
-                new TextSample("2016-10-04T02:10:00.000Z", "51.0")
+                Sample.ofDateText("2016-10-04T02:00:00.000Z", "475.0"),
+                Sample.ofDateText("2016-10-04T02:01:00.000Z", "26.0"),
+                Sample.ofDateText("2016-10-04T02:02:00.000Z", "35.0"),
+                Sample.ofDateText("2016-10-04T02:03:00.000Z", "95.0"),
+                Sample.ofDateText("2016-10-04T02:04:00.000Z", "155.0"),
+                Sample.ofDateText("2016-10-04T02:05:00.000Z", "215.0"),
+                Sample.ofDateText("2016-10-04T02:06:00.000Z", "275.0"),
+                Sample.ofDateText("2016-10-04T02:07:00.000Z", "335.0"),
+                Sample.ofDateText("2016-10-04T02:08:00.000Z", "395.0"),
+                Sample.ofDateText("2016-10-04T02:09:00.000Z", "455.0"),
+                Sample.ofDateText("2016-10-04T02:10:00.000Z", "51.0")
         );
 
         Series series5 = new Series(ENTITY_NAME, METRIC_NAME5);
         series5.addSamples(
-                new TextSample("2016-10-04T01:52:05.000Z", "700"),
-                new TextSample("2016-10-04T02:00:34.000Z", "Inactive"),
-                new TextSample("2016-10-04T02:01:20.000Z", "800"),
-                new TextSample("2016-10-04T02:03:05.000Z", "Inactive"),
-                new TextSample("2016-10-04T02:03:10.000Z", "800"),
-                new TextSample("2016-10-04T02:07:05.000Z", "Inactive"),
-                new TextSample("2016-10-04T02:09:09.000Z", "900"),
-                new TextSample("2016-10-04T02:12:30.000Z", "Inactive")
+                Sample.ofDateText("2016-10-04T01:52:05.000Z", "700"),
+                Sample.ofDateText("2016-10-04T02:00:34.000Z", "Inactive"),
+                Sample.ofDateText("2016-10-04T02:01:20.000Z", "800"),
+                Sample.ofDateText("2016-10-04T02:03:05.000Z", "Inactive"),
+                Sample.ofDateText("2016-10-04T02:03:10.000Z", "800"),
+                Sample.ofDateText("2016-10-04T02:07:05.000Z", "Inactive"),
+                Sample.ofDateText("2016-10-04T02:09:09.000Z", "900"),
+                Sample.ofDateText("2016-10-04T02:12:30.000Z", "Inactive")
         );
 
         Series series6 = new Series(ENTITY_NAME, METRIC_NAME6);
         series6.addSamples(
-            new TextSample("2016-10-04T01:57:08.000Z", "Proc3"),
-            new TextSample("2016-10-04T02:00:34.000Z", "Inactive"),
-            new TextSample("2016-10-04T02:01:20.000Z", "Proc1"),
-            new TextSample("2016-10-04T02:01:59.000Z", "Proc2"),
-            new TextSample("2016-10-04T02:02:20.000Z", "Proc3"),
-            new TextSample("2016-10-04T02:03:05.000Z", "Inactive"),
-            new TextSample("2016-10-04T02:03:10.000Z", "Proc1"),
-            new TextSample("2016-10-04T02:04:59.000Z", "Proc2"),
-            new TextSample("2016-10-04T02:06:20.000Z", "Proc3"),
-            new TextSample("2016-10-04T02:07:05.000Z", "Inactive"),
-            new TextSample("2016-10-04T02:09:09.000Z", "Proc1"),
-            new TextSample("2016-10-04T02:12:30.000Z", "Inactive")
+                Sample.ofDateText("2016-10-04T01:57:08.000Z", "Proc3"),
+                Sample.ofDateText("2016-10-04T02:00:34.000Z", "Inactive"),
+                Sample.ofDateText("2016-10-04T02:01:20.000Z", "Proc1"),
+                Sample.ofDateText("2016-10-04T02:01:59.000Z", "Proc2"),
+                Sample.ofDateText("2016-10-04T02:02:20.000Z", "Proc3"),
+                Sample.ofDateText("2016-10-04T02:03:05.000Z", "Inactive"),
+                Sample.ofDateText("2016-10-04T02:03:10.000Z", "Proc1"),
+                Sample.ofDateText("2016-10-04T02:04:59.000Z", "Proc2"),
+                Sample.ofDateText("2016-10-04T02:06:20.000Z", "Proc3"),
+                Sample.ofDateText("2016-10-04T02:07:05.000Z", "Inactive"),
+                Sample.ofDateText("2016-10-04T02:09:09.000Z", "Proc1"),
+                Sample.ofDateText("2016-10-04T02:12:30.000Z", "Inactive")
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3,
                 series4, series5, series6);
     }
 
-    /**
-     * #4149
-     */
+    @Issue("4149")
     @Test
     public void testWhereInMertricsNoSelfJoin() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric IN metrics('br-1211')");
@@ -156,12 +154,10 @@ public class WhereInNoSelfJoinTest extends SqlTest {
         assertSqlQueryRows("Wrong result when metrics(...) contains metric to join with", QUERY_RESULT, sqlQuery);
     }
 
-    /**
-     * #4149
-     */
+    @Issue("4149")
     @Test
     public void testWhereLikeNoSelfJoin() {
-        String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack*')");
+        String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric LIKE ('tv6.pack%%')");
 
         assertSqlQueryRows("Wrong result when LIKE matches metric to join with", QUERY_RESULT, sqlQuery);
     }

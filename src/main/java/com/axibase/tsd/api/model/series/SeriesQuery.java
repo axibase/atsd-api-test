@@ -75,9 +75,9 @@ public class SeriesQuery {
 
         Long curDate;
         for (Sample sample : series.getData()) {
-            curDate = sample.getT();
+            curDate = sample.getUnixTime();
             if (curDate == null) {
-                curDate = Util.getMillis(sample.getD());
+                curDate = Util.getMillis(sample.getRawDate());
             }
             minDate = Math.min(curDate, minDate);
             maxDate = Math.max(curDate, maxDate);

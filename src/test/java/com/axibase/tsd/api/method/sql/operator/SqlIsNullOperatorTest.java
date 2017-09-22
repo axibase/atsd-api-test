@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,24 +29,24 @@ public class SqlIsNullOperatorTest extends SqlTest {
     public static void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME, "tag1", "val1") {{
-            addSamples(new Sample("2016-06-19T11:00:00.000Z", 1));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:00:00.000Z", 1));
         }});
 
 
         seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME, "tag1", "val2", "tag2", "val2") {{
-            addSamples(new Sample("2016-06-19T11:05:00.000Z", 2));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:05:00.000Z", 2));
         }});
 
         seriesList.add(new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME, "tag2", "val3") {{
-            addSamples(new Sample("2016-06-19T11:10:00.000Z", 3));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:10:00.000Z", 3));
         }});
 
         seriesList.add(new Series(TEST_ENTITY4_NAME, TEST_METRIC_NAME, "tag4", "val4") {{
-            addSamples(new Sample("2016-06-19T11:15:00.000Z", 4));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:15:00.000Z", 4));
         }});
 
         seriesList.add(new Series(TEST_ENTITY5_NAME, TEST_METRIC_NAME) {{
-            addSamples(new Sample("2016-06-19T11:20:00.000Z", 5));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:20:00.000Z", 5));
         }});
 
         EntityMethod.createOrReplaceEntityCheck(new Entity(TEST_ENTITY1_NAME, new HashMap<String, String>() {{
@@ -57,9 +58,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -81,9 +80,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNullMetricTags() {
         String sqlQuery = String.format(
@@ -101,9 +98,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testNotIsNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -123,9 +118,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testNotIsNullMetricTags() {
         String sqlQuery = String.format(
@@ -146,9 +139,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNotNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -168,9 +159,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNotNullMetricTags() {
         String sqlQuery = String.format(
@@ -190,9 +179,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testNotIsNotNullMetricSpecifiedTag() {
         String sqlQuery = String.format(
@@ -214,9 +201,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testNotIsNotNullMetricTags() {
         String sqlQuery = String.format(
@@ -234,9 +219,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNotNullEntitySpecifiedTag() throws Exception {
         String sqlQuery = String.format(
@@ -256,9 +239,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNotNullEntityTags() throws Exception {
         String sqlQuery = String.format(
@@ -276,9 +257,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #2937
-     */
+    @Issue("2937")
     @Test
     public void testIsNullEntitySpecifiedTag() throws Exception {
         String sqlQuery = String.format(
@@ -298,9 +277,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3515
-     */
+    @Issue("3515")
     @Test
     public void testIsNullEntityTags() throws Exception {
         String sqlQuery = String.format(
@@ -321,9 +298,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3516
-     */
+    @Issue("3516")
     @Test
     public void testIsNullMetricLabel() throws Exception {
         Metric metric = new Metric("m-test-operator-is-null-metric-label");
@@ -331,7 +306,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         String entityName = "e-test-operator-is-null-metric-label";
         Series series = new Series(entityName, metric.getName());
-        series.addSamples(new Sample("2016-06-19T00:00:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-19T00:00:00.000Z", 1));
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
@@ -350,9 +325,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3516
-     */
+    @Issue("3516")
     @Test
     public void testIsNotNullMetricLabel() throws Exception {
         Metric metric = new Metric("m-test-operator-is-not-null-metric-label");
@@ -361,7 +334,7 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         String entityName = "e-test-operator-is-not-null-metric-label";
         Series series = new Series(entityName, metric.getName());
-        series.addSamples(new Sample("2016-06-19T00:00:00.000Z", 2));
+        series.addSamples(Sample.ofDateInteger("2016-06-19T00:00:00.000Z", 2));
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
@@ -375,6 +348,34 @@ public class SqlIsNullOperatorTest extends SqlTest {
 
         String[][] expectedRows = {
                 {entityName}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4281")
+    @Test
+    public void testIsNullFunctionEntityTags() {
+        String sqlQuery = String.format(
+                "SELECT ISNULL(entity.tags, '-'), ISNULL(entity.tags.tag, '-') FROM \"%s\" WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY5_NAME);
+
+        String[][] expectedRows = {
+                {"-", "-"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4281")
+    @Test
+    public void testIsNullFunctionMetricTags() {
+        String sqlQuery = String.format(
+                "SELECT ISNULL(metric.tags, '-'), ISNULL(metric.tags.tag, '-') FROM \"%s\" WHERE entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY5_NAME);
+
+        String[][] expectedRows = {
+                {"-", "-"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);

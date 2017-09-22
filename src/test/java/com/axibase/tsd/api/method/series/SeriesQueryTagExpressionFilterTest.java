@@ -3,8 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -13,13 +12,12 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
-    /**
-     * #3915(#20) test bugfix
-     */
-
+    @Issue("3915")
     @Test
     public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
         // Arrange
@@ -27,13 +25,13 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         String entity = entity();
 
         Series series1 = new Series(entity, metric, "key", "val1");
-        series1.addSamples(new Sample("2017-03-27T00:00:00.000Z", 1));
+        series1.addSamples(Sample.ofDateInteger("2017-03-27T00:00:00.000Z", 1));
 
         Series series2 = new Series(entity, metric, "key", "val2");
-        series2.addSamples(new Sample("2017-03-27T00:00:01.000Z", 1));
+        series2.addSamples(Sample.ofDateInteger("2017-03-27T00:00:01.000Z", 1));
 
         Series series3 = new Series(entity, metric, "key", "val3");
-        series3.addSamples(new Sample("2017-03-27T00:00:02.000Z", 1));
+        series3.addSamples(Sample.ofDateInteger("2017-03-27T00:00:02.000Z", 1));
 
         insertSeriesCheck(series1, series2, series3);
 
@@ -41,8 +39,8 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery();
         query.setMetric(metric);
         query.setEntity(entity);
-        query.setStartDate(Util.MIN_QUERYABLE_DATE);
-        query.setEndDate(Util.MAX_QUERYABLE_DATE);
+        query.setStartDate(MIN_QUERYABLE_DATE);
+        query.setEndDate(MAX_QUERYABLE_DATE);
         query.setTagExpression("tags.key = 'val2'");
 
         List<Series> list = executeQueryReturnSeries(query);

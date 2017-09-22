@@ -4,8 +4,8 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,23 +21,21 @@ public class AggregationEmptyValueTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series1 = new Series(entity(), METRIC_NAME1);
         series1.addSamples(
-                new Sample(Util.ISOFormat(1), -2),
-                new Sample(Util.ISOFormat(2), -1)
+                Sample.ofDateInteger(Util.ISOFormat(1), -2),
+                Sample.ofDateInteger(Util.ISOFormat(2), -1)
         );
 
         Series series2 = new Series(entity(), METRIC_NAME2);
         /* NaN value field */
         series2.addSamples(
-                new TextSample(Util.ISOFormat(1), "text"),
-                new TextSample(Util.ISOFormat(2), "text")
+                Sample.ofDateText(Util.ISOFormat(1), "text"),
+                Sample.ofDateText(Util.ISOFormat(2), "text")
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test
     public void testMinMaxValueTimeNegavtives() {
         String sqlQuery = String.format(
@@ -55,9 +53,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         );
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test
     public void testMinMaxValueTimeNaN() {
         String sqlQuery = String.format(
@@ -75,9 +71,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         );
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test
     public void testMinMaxValueTimeNull() {
         String sqlQuery = String.format(
@@ -115,9 +109,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         };
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test(dataProvider = "aggregationFunctionFormats")
     public void testAggregationNaN(String functionFormat) {
         String functionWithArgument = String.format(functionFormat, "value");
@@ -135,9 +127,7 @@ public class AggregationEmptyValueTest extends SqlTest {
         assertSqlQueryRows("Incorrect result for one of aggregation functions with NaN", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4000
-     */
+    @Issue("4000")
     @Test(dataProvider = "aggregationFunctionFormats")
     public void testAggregationNull(String functionFormat) {
         String functionWithArgument = String.format(functionFormat, "text");
