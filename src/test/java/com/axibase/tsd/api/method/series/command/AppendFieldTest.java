@@ -6,7 +6,7 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -18,27 +18,27 @@ import static java.util.Collections.singletonMap;
 
 public class AppendFieldTest extends CommandMethodTest {
 
-    /**
-     * #3796
-     */
+    @Issue("3796")
     @Test
     public void testAppendDuplicates() throws Exception {
         final String entityName = entity();
-        final String metricAppendDuplicates = metric();
+        final String metricName = metric();
         String[] dataWithDuplicates = {"a", "a", "b", "a", "b", "c", "b", "0.1", "word1 word2", "0", "word1", "0.1"};
 
-        Series series = new Series(entityName, metricAppendDuplicates);
-        series.addSamples(new TextSample(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
+        Series series = new Series(entityName, metricName);
+        series.addSamples(Sample.ofDateText(ISO_TIME, "a;\nb;\nc;\n0.1;\nword1 word2;\n0;\nword1"));
 
-        SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendDuplicates, dataWithDuplicates[0]),
-                                                        null, entityName, null, null, null, ISO_TIME, false);
-        CommandMethod.send(seriesCommand);
-
-        seriesCommand.setAppend(true);
-        for(int i = 1; i < dataWithDuplicates.length; i++) {
-            seriesCommand.setTexts(singletonMap(metricAppendDuplicates, dataWithDuplicates[i]));
-            CommandMethod.send(seriesCommand);
+        List<PlainCommand> commandList = new ArrayList<>();
+        for(int i = 0; i < dataWithDuplicates.length; i++) {
+            SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricName, dataWithDuplicates[i]),
+                    null, entityName, null, null, null, ISO_TIME, true);
+            if (i == 0) {
+                seriesCommand.setAppend(false);
+            }
+            commandList.add(seriesCommand);
         }
+
+        CommandMethod.send(commandList);
 
         assertTextDataEquals(series, "Append with erase doesn't work");
 
@@ -60,9 +60,7 @@ public class AppendFieldTest extends CommandMethodTest {
 //        0.1]
     }
 
-    /**
-     * #3796
-     */
+    @Issue("3796")
     @Test
     public void testAppendWithErase() throws Exception {
         final String entityName = entity();
@@ -71,40 +69,40 @@ public class AppendFieldTest extends CommandMethodTest {
         String[] dataEraseSecond = {"d", "e", "f", "g"};
 
         Series series = new Series(entityName, metricAppendWithErase);
-        series.addSamples(new TextSample(ISO_TIME, "d;\ne;\nf;\ng"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "d;\ne;\nf;\ng"));
 
-        SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseFirst[0]),
-                                                        null, entityName, null, null, null, ISO_TIME, false);
-        CommandMethod.send(seriesCommand);
+        List<PlainCommand> commandList = new ArrayList<>();
 
-        seriesCommand.setAppend(true);
-        for(int i = 1; i < dataEraseFirst.length; i++) {
-            seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseFirst[i]));
-            CommandMethod.send(seriesCommand);
+        for(int i = 0; i < dataEraseFirst.length; i++) {
+            SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseFirst[i]),
+                    null, entityName, null, null, null, ISO_TIME, true);
+            if (i == 0) {
+                seriesCommand.setAppend(false);
+            }
+            commandList.add(seriesCommand);
         }
 
-        seriesCommand.setAppend(false);
-        seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseSecond[0]));
-        CommandMethod.send(seriesCommand);
-        seriesCommand.setAppend(true);
-
-        for(int i = 1; i < dataEraseSecond.length; i++) {
-            seriesCommand.setTexts(singletonMap(metricAppendWithErase, dataEraseSecond[i]));
-            CommandMethod.send(seriesCommand);
+        for(int i = 0; i < dataEraseSecond.length; i++) {
+            SeriesCommand seriesCommand = new SeriesCommand(singletonMap(metricAppendWithErase, dataEraseSecond[i]),
+                    null, entityName, null, null, null, ISO_TIME, true);
+            if (i == 0) {
+                seriesCommand.setAppend(false);
+            }
+            commandList.add(seriesCommand);
         }
+
+        CommandMethod.send(commandList);
 
         assertTextDataEquals(series, "Append with erase doesn't work");
     }
 
-    /**
-     * #3874
-     */
+    @Issue("3874")
     @Test
     public void testDecimalFieldToTextField() throws Exception {
         final String entityName = entity();
         final String metricDecimalToText = metric();
         Series series = new Series(entityName, metricDecimalToText);
-        series.addSamples(new Sample(ISO_TIME, DECIMAL_VALUE, TEXT_VALUE));
+        series.addSamples(Sample.ofDateDecimalText(ISO_TIME, DECIMAL_VALUE, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = Arrays.asList(
                 new SeriesCommand(singletonMap(metricDecimalToText, TEXT_VALUE), null,
@@ -118,15 +116,13 @@ public class AppendFieldTest extends CommandMethodTest {
         assertTextDataEquals(series, "Addition decimal field to text field failed");
     }
 
-    /**
-     * #3885
-     */
+    @Issue("3885")
     @Test
     public void testAppendTextViaBatchOfCommands() throws Exception {
         final String entityName = entity();
         final String metricAppendTextViaBatch = metric();
         Series series = new Series(entityName, metricAppendTextViaBatch);
-        series.addSamples(new TextSample(ISO_TIME, "text1;\ntext2"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "text1;\ntext2"));
 
         CommandMethod.send(new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text1"), null,
                                             entityName, null, null, null, ISO_TIME, false));
@@ -143,15 +139,13 @@ public class AppendFieldTest extends CommandMethodTest {
         assertTextDataEquals(series, "Addition text field to text field failed");
     }
 
-    /**
-     * #3902
-     */
+    @Issue("3902")
     @Test
     public void testTextFieldAfterAdditionOfDecimalValue() throws Exception {
         final String entityName = entity();
         final String metricTextAfterDecimalAddition = metric();
         Series series = new Series(entityName, metricTextAfterDecimalAddition);
-        series.addSamples(new TextSample(ISO_TIME, TEXT_VALUE));
+        series.addSamples(Sample.ofDateText(ISO_TIME, TEXT_VALUE));
 
         List<PlainCommand> seriesCommandList = Arrays.asList(
                 new SeriesCommand(singletonMap(metricTextAfterDecimalAddition, TEXT_VALUE), null,

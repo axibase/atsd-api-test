@@ -5,7 +5,8 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -13,18 +14,16 @@ import java.util.Collections;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_COMBINATION_REQUIRED;
 import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_END_GREATER_START_REQUIRED;
-import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class SeriesQueryDateFilterTest extends SeriesMethod {
-    private final Sample DATE_FILTER_DEFAULT_SAMPLE = new Sample("2014-06-06T00:00:00.000Z", 1);
+    private final Sample DATE_FILTER_DEFAULT_SAMPLE = Sample.ofDateInteger("2014-06-06T00:00:00.000Z", 1);
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testIntervalOnly() throws Exception {
         Series series = new Series("datefilter-e-1", "datefilter-m-1");
@@ -41,9 +40,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertTrue("Stored series mismatch", compareJsonString(expected, given));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testIntervalAndEnd() throws Exception {
         Series series = new Series("datefilter-e-2", "datefilter-m-2");
@@ -61,9 +58,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertTrue("Stored series mismatch", compareJsonString(expected, given));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testIntervalAndStart() throws Exception {
         Series series = new Series("datefilter-e-3", "datefilter-m-3");
@@ -81,9 +76,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertTrue("Stored series mismatch", compareJsonString(expected, given));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testStartOnlyRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
@@ -94,9 +87,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertEquals("Error message mismatch", DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testEndOnlyRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
@@ -107,23 +98,19 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertEquals("Error message mismatch", DATE_FILTER_COMBINATION_REQUIRED, extractErrorMessage(response));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testStartGreaterEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setEndDate(MIN_QUERYABLE_DATE);
-        query.setStartDate(TestUtil.addOneMS(MIN_QUERYABLE_DATE));
+        query.setStartDate(Util.addOneMS(MIN_QUERYABLE_DATE));
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", BAD_REQUEST.getStatusCode(), response.getStatus());
         assertEquals("Error message mismatch", DATE_FILTER_END_GREATER_START_REQUIRED, extractErrorMessage(response));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testStartEqualEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
@@ -135,9 +122,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertEquals("Error message mismatch", DATE_FILTER_END_GREATER_START_REQUIRED, extractErrorMessage(response));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testIntervalZeroAndStartRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
@@ -149,9 +134,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         assertEquals("Error message mismatch", DATE_FILTER_END_GREATER_START_REQUIRED, extractErrorMessage(response));
     }
 
-    /**
-     * #3030
-     */
+    @Issue("3030")
     @Test
     public void testIntervalZeroAndEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");

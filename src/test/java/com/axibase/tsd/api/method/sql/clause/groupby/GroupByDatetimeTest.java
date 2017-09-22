@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -27,9 +28,9 @@ public class GroupByDatetimeTest extends SqlTest {
         seriesList.add(
                 new Series(TESTS_ENTITY1_NAME, TEST_METRIC_NAME) {{
                     addSamples(
-                            new Sample("2016-06-19T11:00:00.500Z", 0),
-                            new Sample("2016-06-19T11:00:01.500Z", 1),
-                            new Sample("2016-06-19T11:00:02.500Z", 2)
+                            Sample.ofDateInteger("2016-06-19T11:00:00.500Z", 0),
+                            Sample.ofDateInteger("2016-06-19T11:00:01.500Z", 1),
+                            Sample.ofDateInteger("2016-06-19T11:00:02.500Z", 2)
                     );
                 }}
         );
@@ -37,8 +38,8 @@ public class GroupByDatetimeTest extends SqlTest {
         seriesList.add(
                 new Series(TESTS_ENTITY2_NAME, TEST_METRIC_NAME) {{
                     addSamples(
-                            new Sample("2016-06-19T11:00:00.500Z", 0),
-                            new Sample("2016-06-19T11:00:01.500Z", 1)
+                            Sample.ofDateInteger("2016-06-19T11:00:00.500Z", 0),
+                            Sample.ofDateInteger("2016-06-19T11:00:01.500Z", 1)
                     );
                 }}
         );
@@ -46,7 +47,7 @@ public class GroupByDatetimeTest extends SqlTest {
         seriesList.add(
                 new Series(TESTS_ENTITY3_NAME, TEST_METRIC_NAME) {{
                     addSamples(
-                            new Sample("2016-06-19T11:00:00.500Z", 0)
+                            Sample.ofDateInteger("2016-06-19T11:00:00.500Z", 0)
                     );
                 }}
         );
@@ -54,9 +55,7 @@ public class GroupByDatetimeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3102
-     */
+    @Issue("3102")
     @Test
     public void testGroupByDatetimeSyntax() {
         String sqlQuery = String.format(
@@ -80,9 +79,7 @@ public class GroupByDatetimeTest extends SqlTest {
     }
 
 
-    /**
-     * #3102
-     */
+    @Issue("3102")
     @Test
     public void testGroupByDatetimeWithAggregateFunction() {
         String sqlQuery = String.format(

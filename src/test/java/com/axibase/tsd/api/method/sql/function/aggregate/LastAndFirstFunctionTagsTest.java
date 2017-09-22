@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,11 +25,11 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
 
         Series series = new Series(testEntity, TEST_METRIC);
         series.addSamples(
-                new Sample("2017-01-01T09:30:00.000Z", 1),
-                new Sample("2017-01-01T10:30:00.000Z", 1),
-                new Sample("2017-01-01T11:30:00.000Z", 2),
-                new Sample("2017-01-01T12:30:00.000Z", 2),
-                new Sample("2017-01-01T13:30:00.000Z", 2)
+                Sample.ofDateInteger("2017-01-01T09:30:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T10:30:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-01T11:30:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T12:30:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-01T13:30:00.000Z", 2)
         );
 
         EntityMethod.createOrReplaceEntityCheck(entity);
@@ -36,9 +37,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3856
-     */
+    @Issue("3856")
     @Test
     public void testLastFunctionWithLiteralTags() {
         String sqlQuery = String.format(
@@ -50,9 +49,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAST function with literal tag value", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3856
-     */
+    @Issue("3856")
     @Test
     public void testLastFunctionWithNumericTags() {
         String sqlQuery = String.format(
@@ -64,9 +61,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAST function with numeric tag value", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3856
-     */
+    @Issue("3856")
     @Test
     public void testLastFunctionWithGroupBy() {
         String sqlQuery = String.format(
@@ -86,9 +81,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         assertSqlQueryRows("Wrong result for LAST function with numeric tag value", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3856
-     */
+    @Issue("3856")
     @Test
     public void testFirstFunctionWithLiteralTags() {
         String sqlQuery = String.format(
@@ -100,9 +93,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         assertSqlQueryRows("Wrong result for FIRST function with literal tag value", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3856
-     */
+    @Issue("3856")
     @Test
     public void testFirstFunctionWithNumericTags() {
         String sqlQuery = String.format(
@@ -114,9 +105,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
         assertSqlQueryRows("Wrong result for FIRST function with numeric tag value", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3856
-     */
+    @Issue("3856")
     @Test
     public void testFirstFunctionWithGroupBy() {
         String sqlQuery = String.format(

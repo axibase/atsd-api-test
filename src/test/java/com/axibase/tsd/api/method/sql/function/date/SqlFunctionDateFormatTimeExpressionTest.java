@@ -5,7 +5,8 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,13 +22,11 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-06-03T09:41:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:41:00.000Z", 1));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testSimpleArithmetic() {
         String sqlQuery = String.format(
@@ -44,9 +43,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testMinus() {
         String sqlQuery = String.format(
@@ -64,9 +61,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testDivisionByZero() {
         String sqlQuery = String.format(
@@ -78,15 +73,13 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         StringTable resultTable = response.readEntity(StringTable.class);
 
         String[][] expectedRows = {
-                {TestUtil.ISOFormat(new Date(Long.MAX_VALUE))}
+                {Util.ISOFormat(new Date(Long.MAX_VALUE))}
         };
         assertTableRowsExist(expectedRows, resultTable);
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testAllOperations() {
         String sqlQuery = String.format(
@@ -104,9 +97,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testDivisionWithRest() {
         String sqlQuery = String.format(
@@ -123,9 +114,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testNanHandling() {
         String sqlQuery = String.format(
@@ -143,9 +132,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testNullFormattedOrderBy() {
         String sqlQuery = String.format(
@@ -163,9 +150,7 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test
     public void testValueAsParam() {
         String sqlQuery = String.format(
@@ -177,15 +162,13 @@ public class SqlFunctionDateFormatTimeExpressionTest extends SqlTest {
         StringTable resultTable = response.readEntity(StringTable.class);
 
         String[][] expectedRows = {
-                {TestUtil.ISOFormat(1)}
+                {Util.ISOFormat(1)}
         };
         assertTableRowsExist(expectedRows, resultTable);
     }
 
 
-    /**
-     * #3283
-     */
+    @Issue("3283")
     @Test(enabled = false)
     public void testOverflow() {
         String sqlQuery = String.format(

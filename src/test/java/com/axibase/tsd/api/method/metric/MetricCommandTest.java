@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -15,9 +16,7 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class MetricCommandTest extends MetricTest {
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testRequired() throws Exception {
         MetricCommand command = new MetricCommand((String) null);
@@ -25,9 +24,7 @@ public class MetricCommandTest extends MetricTest {
         assertEquals("Command without metric Name sholdn't be inserted", expectedResult, CommandMethod.send(command));
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testLabel() throws Exception {
         Metric metric = new Metric(metric());
@@ -41,9 +38,7 @@ public class MetricCommandTest extends MetricTest {
         assertMetricExisting(assertMessage, metric);
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testDescription() throws Exception {
         Metric metric = new Metric(metric());
@@ -57,9 +52,7 @@ public class MetricCommandTest extends MetricTest {
         assertMetricExisting(assertMessage, metric);
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testVersioning() throws Exception {
         Metric metric = new Metric(metric());
@@ -74,9 +67,7 @@ public class MetricCommandTest extends MetricTest {
     }
 
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testTimezone() throws Exception {
         Metric metric = new Metric(metric());
@@ -90,9 +81,7 @@ public class MetricCommandTest extends MetricTest {
         assertMetricExisting(assertMessage, metric);
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testFilterExpression() throws Exception {
         Metric metric = new Metric(metric());
@@ -106,9 +95,7 @@ public class MetricCommandTest extends MetricTest {
         assertMetricExisting(assertMessage, metric);
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testTags() throws Exception {
         Metric metric = new Metric(metric(), Mocks.TAGS);
@@ -121,9 +108,7 @@ public class MetricCommandTest extends MetricTest {
         assertMetricExisting(assertMessage, metric);
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test
     public void testInterpolate() throws Exception {
         Metric metric = new Metric(metric());
@@ -150,9 +135,7 @@ public class MetricCommandTest extends MetricTest {
         };
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test(dataProvider = "incorrectInterpolationFieldProvider")
     public void testIncorrectVersioning(String value) throws Exception {
         String metricName = metric();
@@ -176,9 +159,7 @@ public class MetricCommandTest extends MetricTest {
         };
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test(dataProvider = "incorrectInterpolationFieldProvider")
     public void testIncorrectInterpolation(String value) throws Exception {
         String metricName = metric();
@@ -203,9 +184,7 @@ public class MetricCommandTest extends MetricTest {
         };
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test(dataProvider = "incorrectDataTypeFieldProvider")
     public void testIncorrectDataType(String value) throws Exception {
         String metricName = metric();
@@ -229,9 +208,7 @@ public class MetricCommandTest extends MetricTest {
         };
     }
 
-    /**
-     * #3137
-     */
+    @Issue("3137")
     @Test(dataProvider = "incorrectTimeZoneProvider")
     public void testIncorrectTimeZone(String incorrectTimeZone) throws Exception {
         String metricName = metric();

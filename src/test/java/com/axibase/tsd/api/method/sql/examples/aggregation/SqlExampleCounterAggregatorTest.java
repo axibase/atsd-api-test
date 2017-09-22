@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,26 +21,22 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
 
         series.addSamples(
-                new Sample("2015-09-30T09:00:05.869Z", 2),
-                new Sample("2015-09-30T09:00:05.860Z", 3),
-                new Sample("2015-09-30T09:00:05.195Z", 1),
-                new Sample("2015-09-30T09:00:06.526Z", 3),
-                new Sample("2015-09-30T09:00:06.858Z", 3),
-                new Sample("2015-09-30T09:00:06.217Z", 3),
-                new Sample("2015-09-30T09:00:06.211Z", 3),
-                new Sample("2015-09-30T09:00:06.321Z", 3)
+                Sample.ofDateInteger("2015-09-30T09:00:05.869Z", 2),
+                Sample.ofDateInteger("2015-09-30T09:00:05.860Z", 3),
+                Sample.ofDateInteger("2015-09-30T09:00:05.195Z", 1),
+                Sample.ofDateInteger("2015-09-30T09:00:06.526Z", 3),
+                Sample.ofDateInteger("2015-09-30T09:00:06.858Z", 3),
+                Sample.ofDateInteger("2015-09-30T09:00:06.217Z", 3),
+                Sample.ofDateInteger("2015-09-30T09:00:06.211Z", 3),
+                Sample.ofDateInteger("2015-09-30T09:00:06.321Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3047
-     * Test for alias documentation example.
-     *
-     * @see <a href="Counter Aggregator">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-counter.md</a>
-     */
-    @Test
+    @Issue("3047")
+    @Test(description = "Test for alias documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-counter.md")
     public void testExample() {
         String sqlQuery = String.format("SELECT datetime, count(value), max(value), first(value), last(value), counter(value), delta(value) %n" +
                 "FROM \"%s\" %n" +

@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method;
 
+import io.qameta.allure.Issue;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.DataProvider;
@@ -12,9 +13,7 @@ import java.util.Set;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
-/**
- * #3616
- */
+@Issue("3616")
 public class OptionsMethodTest extends BaseMethod {
 
     private static final Set<String> ALLOWED_ORIGINS_SET = Sets.newHashSet("*");
@@ -74,9 +73,7 @@ public class OptionsMethodTest extends BaseMethod {
         };
     }
 
-    /**
-     * #3616
-     */
+    @Issue("3616")
     @Test(dataProvider = "availablePathProvider")
     public static void testResponseOptionsHeadersForURLs(String path, String method) throws Exception {
         Response response = httpApiResource.path(path)
@@ -93,9 +90,7 @@ public class OptionsMethodTest extends BaseMethod {
         assertResponseContainsHeaderWithValues(ALLOWED_ORIGINS_SET, response, "Access-Control-Allow-Origin");
     }
 
-    /**
-     * #3616
-     */
+    @Issue("3616")
     @Test
     public static void testResponseOptionsHeadersForSQL() throws Exception {
         Response response = httpRootResource.path("/api/sql")

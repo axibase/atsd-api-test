@@ -32,6 +32,10 @@ public class StringTable {
         this.tableData = tableData;
     }
 
+    public TableMetaData getTableMetaData() {
+        return tableMeta;
+    }
+
     public ColumnMetaData getColumnMetaData(int index) {
         return tableMeta.getColumnMeta(index);
     }

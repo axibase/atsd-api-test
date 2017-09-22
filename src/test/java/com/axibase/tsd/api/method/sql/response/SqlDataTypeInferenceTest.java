@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -81,9 +81,7 @@ public class SqlDataTypeInferenceTest extends SqlMethod {
         };
     }
 
-    /**
-     * #3773
-     */
+    @Issue("3773")
     @Test(dataProvider = "dataTypeInferenceProvider")
     public void testSqlDataTypeInference(DataTypeArray selectedTypes, String expectedType) {
         String queryTemplate = "SELECT value FROM atsd_series WHERE metric IN (%s)";

@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -13,9 +14,7 @@ import static org.testng.AssertJUnit.*;
  */
 public class EntityGroupUpdateTest extends EntityGroupMethod {
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsWhitespace() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodeupdate entitygroup1");
@@ -23,9 +22,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsSlash() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodeupdate/entitygroup2");
@@ -33,18 +30,14 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsCyrillic() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodeupdateйёentitygroup3");
         assertUrlEncodePathHandledCorrectly(entityGroup);
     }
 
-    /**
-     * #3301
-     */
+    @Issue("3301")
     @Test
     public void testCanSetEmptyExpression() throws Exception {
         EntityGroup entityGroup = new EntityGroup("update-entitygroup-4");
@@ -57,9 +50,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
         assertTrue("Specified entityGroup does not exist", entityGroupExist(entityGroup));
     }
 
-    /**
-     * #3301
-     */
+    @Issue("3301")
     @Test(enabled = false) //TODO wait for solution about tag matcher
     public void testCanSetEmptyTags() throws Exception {
         EntityGroup entityGroup = new EntityGroup("update-entitygroup-5");

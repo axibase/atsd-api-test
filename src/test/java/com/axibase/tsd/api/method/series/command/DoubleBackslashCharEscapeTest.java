@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -20,37 +21,33 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
         DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
     }
 
-    /**
-     * #2854
-     */
+    @Issue("2854")
     @Test
     public void testEntity() throws Exception {
         Series series = new Series("series-command-test\\\\-e7", "series-command-test-m7");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setTimeISO(sample.getD());
+        seriesCommand.setTimeISO(sample.getRawDate());
         seriesCommand.setEntityName(series.getEntity());
-        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
+        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getValue().toString()));
 
         CommandMethod.send(seriesCommand);
         assertSeriesExisting(series);
     }
 
-    /**
-     * #2854
-     */
+    @Issue("2854")
     @Test
     public void testMetric() throws Exception {
         Series series = new Series("series-command-test-e8", "series-command-test\\\\-m8");
-        Sample sample = new Sample(TestUtil.getCurrentDate(), 1);
+        Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 
         SeriesCommand seriesCommand = new SeriesCommand();
-        seriesCommand.setTimeISO(sample.getD());
+        seriesCommand.setTimeISO(sample.getRawDate());
         seriesCommand.setEntityName(series.getEntity());
-        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getV().toString()));
+        seriesCommand.setValues(Collections.singletonMap(series.getMetric(), sample.getValue().toString()));
 
         CommandMethod.send(seriesCommand);
         assertSeriesExisting(series);

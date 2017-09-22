@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
@@ -10,7 +11,7 @@ import static org.testng.AssertJUnit.assertTrue;
 
 public class MetricSeriesTest extends MetricMethod {
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsWhiteSpace() throws Exception {
 
@@ -18,7 +19,7 @@ public class MetricSeriesTest extends MetricMethod {
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), queryMetricSeries(name).getStatus());
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("series/metric-2");
@@ -27,7 +28,7 @@ public class MetricSeriesTest extends MetricMethod {
         assertTrue("series array should be empty", compareJsonString("[]", queryMetricSeries(metric.getName()).readEntity(String.class)));
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("seriesйёmetric-3");

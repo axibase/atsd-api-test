@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -36,24 +37,24 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         }
 
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "t1", "tag");
-        series.addSamples(new Sample("2017-01-03T12:00:00.000Z", 3));
+        series.addSamples(Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 3));
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
         series.addSamples(
-                new Sample("2017-01-02T12:00:00.000Z", 2),
-                new Sample("2017-01-04T12:00:00.000Z", 4)
+                Sample.ofDateInteger("2017-01-02T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 4)
         );
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "t2", "tag");
-        series.addSamples(new Sample("2017-01-03T12:00:00.000Z", 5));
+        series.addSamples(Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 5));
         seriesList.add(series);
 
         series = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
         series.addSamples(
-                new Sample("2017-01-04T12:00:00.000Z", 6),
-                new Sample("2017-01-05T12:00:00.000Z", 7)
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 6),
+                Sample.ofDateInteger("2017-01-05T12:00:00.000Z", 7)
         );
         seriesList.add(series);
 
@@ -61,9 +62,7 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3945
-     */
+    @Issue("3945")
     @Test
     public void testJoinUsingEntityWithTags() {
         String sqlQuery = String.format(
@@ -85,9 +84,7 @@ public class SqlOuterJoinWithTagsTest extends SqlTest {
         assertSqlQueryRows("JOIN USING ENTITY with tags gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4157
-     */
+    @Issue("4157")
     @Test
     public void testOuterJoinUsingEntity() throws Exception {
         String sqlQuery = String.format(

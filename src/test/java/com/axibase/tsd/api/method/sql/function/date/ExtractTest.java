@@ -5,7 +5,8 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
@@ -26,7 +27,7 @@ public class ExtractTest extends SqlTest {
 
     private static ZonedDateTime zonedFromStringDate(String date) {
         try {
-            return ZonedDateTime.ofInstant(Instant.parse(date), TestUtil.getServerTimeZone().toZoneId());
+            return ZonedDateTime.ofInstant(Instant.parse(date), Util.getServerTimeZone().toZoneId());
         } catch (JSONException e) {
             log.error("Can't parse date '{}'", date, e);
             throw new RuntimeException(e);
@@ -60,8 +61,8 @@ public class ExtractTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(Mocks.entity(), METRIC_NAME);
         series.addSamples(
-                new Sample(DATE_STRING_A, 1),
-                new Sample(DATE_STRING_B, 2)
+                Sample.ofDateInteger(DATE_STRING_A, 1),
+                Sample.ofDateInteger(DATE_STRING_B, 2)
         );
 
         SeriesMethod.insertSeriesCheck(series);
@@ -83,9 +84,7 @@ public class ExtractTest extends SqlTest {
         return testData;
     }
 
-    /**
-     * #4393
-     */
+    @Issue("4393")
     @Test(
             dataProvider = "provideDatePartNameAndAccessor",
             description = "Test extract(... from ...) with " +
@@ -107,9 +106,7 @@ public class ExtractTest extends SqlTest {
         assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
-    /**
-     * #4393
-     */
+    @Issue("4393")
     @Test(
             dataProvider = "provideDatePartNameAndAccessor",
             description = "Test different extraction functions " +
@@ -131,9 +128,7 @@ public class ExtractTest extends SqlTest {
         assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
-    /**
-     * #4393
-     */
+    @Issue("4393")
     @Test(
             dataProvider = "provideDatePartNameAndAccessor",
             description = "Test when using extract(... FROM ...) result in WHERE ... IN (...)"
@@ -157,9 +152,7 @@ public class ExtractTest extends SqlTest {
         assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
-    /**
-     * #4393
-     */
+    @Issue("4393")
     @Test(
             dataProvider = "provideDatePartNameAndAccessor",
             description = "Test when using date part extraction function result in WHERE ... IN (...)"

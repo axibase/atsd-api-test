@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -40,9 +41,7 @@ public class LowerTest extends SqlTest {
         return result;
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
         String sqlQuery = String.format("SELECT LOWER(%s) FROM \"%s\"",
@@ -78,9 +77,7 @@ public class LowerTest extends SqlTest {
         assertEquals(actualValue, expectedValue, assertMessage);
     }
 
-    /**
-     * #4233
-     */
+    @Issue("4233")
     @Test
     public void testLowerWithDate() {
         String sqlQuery = "SELECT LOWER('1970-01-01T00:00:00.00')";

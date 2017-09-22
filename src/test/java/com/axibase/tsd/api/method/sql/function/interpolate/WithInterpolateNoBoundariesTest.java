@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,9 +19,7 @@ public class WithInterpolateNoBoundariesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4120
-     */
+    @Issue("4120")
     @Test
     public void testWitnInterpolateNoBoundaries() {
         /*

@@ -50,9 +50,7 @@ Use [standard](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf
   Each test must contain javadoc before test method declaration with a related issue number or a comment that this test was added directly bypassing corporate issue tracker.
 
 ```java
-    /**
-     * #1234
-     */
+    @Issue("1234")
     @Test
     public void testSomething() {
         //arrange

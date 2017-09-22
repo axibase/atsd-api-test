@@ -17,12 +17,12 @@ import java.util.Collections;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static com.axibase.tsd.api.util.TestUtil.formatDate;
-import static com.axibase.tsd.api.util.TestUtil.parseDate;
+import static com.axibase.tsd.api.util.Util.parseDate;
 import static java.util.TimeZone.getTimeZone;
 
 
 public class AutoTimeZoneTest extends SqlTest {
-    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-03T09:41:00.000Z", 0);
+    private static final Sample DEFAULT_SAMPLE = Sample.ofDateInteger("2016-06-03T09:41:00.000Z", 0);
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd hh:mm";
     private static final String ALGIERS_TIMEZONE_ID = "Africa/Algiers";
 
@@ -44,7 +44,7 @@ public class AutoTimeZoneTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {formatDate(parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN, getTimeZone(metric.getTimeZoneID()))}
+                {formatDate(parseDate(DEFAULT_SAMPLE.getRawDate()), DEFAULT_PATTERN, getTimeZone(metric.getTimeZoneID()))}
         };
 
         assertSqlQueryRows("Failed to define metric timezone by AUTO param", expectedRows, sqlQuery);
@@ -67,7 +67,7 @@ public class AutoTimeZoneTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {formatDate(parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN, getTimeZone(entity.getTimeZoneID()))}
+                {formatDate(parseDate(DEFAULT_SAMPLE.getRawDate()), DEFAULT_PATTERN, getTimeZone(entity.getTimeZoneID()))}
         };
 
         assertSqlQueryRows("Failed to define entity timezone by AUTO param", expectedRows, sqlQuery);
@@ -98,7 +98,7 @@ public class AutoTimeZoneTest extends SqlTest {
 
         String[][] expectedRows = {
                 {formatDate(
-                        parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN, getTimeZone(entity.getTimeZoneID()))}
+                        parseDate(DEFAULT_SAMPLE.getRawDate()), DEFAULT_PATTERN, getTimeZone(entity.getTimeZoneID()))}
         };
 
         assertSqlQueryRows("Failed to define entity timezone as priority by AUTO param", expectedRows, sqlQuery);
@@ -118,7 +118,7 @@ public class AutoTimeZoneTest extends SqlTest {
         Version version = VersionMethod.queryVersion().readEntity(Version.class);
         String[][] expectedRows = {
                 {
-                        formatDate(parseDate(DEFAULT_SAMPLE.getD()), DEFAULT_PATTERN,
+                        formatDate(parseDate(DEFAULT_SAMPLE.getRawDate()), DEFAULT_PATTERN,
                                 getTimeZone(version.getDate().getTimeZone().getName())
                         )}
         };

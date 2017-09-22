@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -21,9 +22,7 @@ public class EntityCommandTest extends EntityTest {
     private final static String E_VAL_1_UPD = "e-val-1-upd";
     private final static String E_VAL_2 = "e-val-2";
 
-    /**
-     * #3111
-     */
+    @Issue("3111")
 
     @Test
     public void testAddNewEntityTagForExistEntity() throws Exception {
@@ -38,9 +37,7 @@ public class EntityCommandTest extends EntityTest {
         );
     }
 
-    /**
-     * #3111
-     */
+    @Issue("3111")
 
     @Test
     public void testUpdateEntityTagsForExistEntity() throws Exception {
@@ -55,9 +52,7 @@ public class EntityCommandTest extends EntityTest {
         );
     }
 
-    /**
-     * #3111
-     */
+    @Issue("3111")
 
     @Test
     public void testAddNewEntityTagsMailformedForNewEntity() throws Exception {
@@ -69,9 +64,7 @@ public class EntityCommandTest extends EntityTest {
     }
 
 
-    /**
-     * #3111
-     */
+    @Issue("3111")
 
     @Test
     public void testNewEntityTagsForNewEntity() throws Exception {

@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -16,9 +17,7 @@ import static org.testng.AssertJUnit.assertEquals;
  */
 public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsWhitespace() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodesetentities entitygroup1");
@@ -26,9 +25,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsSlash() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodesetentities/entitygroup2");
@@ -36,9 +33,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsCyrillic() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodesetentitiesйёentitygroup3");
@@ -46,9 +41,7 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #3041
-     */
+    @Issue("3041")
     @Test
     public void testUnableMofifyEntitiesWhileExpressionNotEmpty() throws Exception {
         EntityGroup entityGroup = new EntityGroup("setentities-entitygroup-4");

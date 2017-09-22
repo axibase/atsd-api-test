@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,16 +24,14 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
 
         for (int i = 0; i < 20; i++) {
             Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag", Integer.toString(i));
-            series.addSamples(new Sample(Util.ISOFormat(MILLS_TIME + i), i));
+            series.addSamples(Sample.ofDateInteger(Util.ISOFormat(MILLS_TIME + i), i));
             seriesList.add(series);
         }
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberWithoutWhereAndGroupBy() {
         String sqlQuery = String.format(
@@ -52,9 +51,7 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberWithWhereAndWithoutGroupBy() {
         String sqlQuery = String.format(
@@ -74,9 +71,7 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberBeforeGroupBy() {
         String sqlQuery = String.format(
@@ -95,9 +90,7 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberAfterGroupBy() {
         String sqlQuery = String.format(
@@ -118,9 +111,7 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberBeforeGroupByWithWhere() {
         String sqlQuery = String.format(
@@ -140,9 +131,7 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberAfterGroupByWithWhere() {
         String sqlQuery = String.format(
@@ -163,9 +152,7 @@ public class RowNumberBeforeGroupByTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #3797
-     */
+    @Issue("3797")
     @Test
     public void testRowNumberWithGroupingByPeriod() {
         String sqlQuery = String.format(

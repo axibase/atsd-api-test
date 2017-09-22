@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
@@ -16,9 +17,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class LengthTest extends MessageMethod {
     private static final int MAX_LENGTH = 128 * 1024;
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLength() throws Exception {
         final Message message = new Message("e-message-max-cmd-length", "t-message-max-cmd-length");
@@ -37,9 +36,7 @@ public class LengthTest extends MessageMethod {
         assertMessageExisting("Inserted message can not be received", message);
     }
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLengthOverflow() throws Exception {
         final Message message = new Message("e-message-max-len-overflow", "t-message-max-len-overflow");

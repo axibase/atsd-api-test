@@ -7,15 +7,14 @@ import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
-import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.Mocks.*;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -24,9 +23,7 @@ public class LengthTest extends SeriesMethod {
     private static final int MAX_LENGTH = 128 * 1024;
 
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLength() throws Exception {
         SeriesCommand seriesCommand = new SeriesCommand();
@@ -40,7 +37,7 @@ public class LengthTest extends SeriesMethod {
 
         while (currentLength <= MAX_LENGTH) {
             Series series = new Series(seriesCommand.getEntityName(), metric());
-            series.addSamples(new Sample(ISO_TIME, 1));
+            series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             if (currentLength < MAX_LENGTH) {
@@ -53,7 +50,7 @@ public class LengthTest extends SeriesMethod {
                 Integer lastIndex = seriesList.size() - 1;
                 Series lastSeries = seriesList.get(lastIndex);
                 seriesList.remove(lastSeries);
-                lastSeries.setSamples(Collections.singletonList(new Sample(ISO_TIME, new BigDecimal(repeated))));
+                lastSeries.setSamples(Collections.singletonList(Sample.ofDateDecimal(ISO_TIME, new BigDecimal(repeated))));
                 values.put(lastSeries.getMetric(), repeated);
                 seriesList.add(lastSeries);
                 break;
@@ -65,9 +62,7 @@ public class LengthTest extends SeriesMethod {
         assertSeriesExisting(seriesList);
     }
 
-    /**
-     * #2412
-     */
+    @Issue("2412")
     @Test
     public void testMaxLengthOverflow() throws Exception {
         SeriesCommand seriesCommand = new SeriesCommand();
@@ -80,7 +75,7 @@ public class LengthTest extends SeriesMethod {
 
         while (currentLength <= MAX_LENGTH) {
             Series series = new Series(seriesCommand.getEntityName(), metric());
-            series.addSamples(new Sample(ISO_TIME, 1));
+            series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             values.put(series.getMetric(), "1");

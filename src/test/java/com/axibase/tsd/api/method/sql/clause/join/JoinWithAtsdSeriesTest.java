@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,22 +26,22 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
 
         Series series1 = new Series(entityName, METRIC_NAME1);
         series1.addSamples(
-                new Sample("2017-01-01T12:00:00.000Z", 1),
-                new Sample("2017-01-02T12:00:00.000Z", 2),
-                new Sample("2017-01-04T12:00:00.000Z", 4)
+                Sample.ofDateInteger("2017-01-01T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-02T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 4)
         );
 
         Series series2 = new Series(entityName, METRIC_NAME1, "t1", "tag");
-        series2.addSamples(new Sample("2017-01-03T12:00:00.000Z", 3));
+        series2.addSamples(Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 3));
 
         Series series3 = new Series(entityName, METRIC_NAME2, "t2", "tag");
-        series3.addSamples(new Sample("2017-01-03T12:00:00.000Z", 5));
+        series3.addSamples(Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 5));
 
         Series series4 = new Series(entityName, METRIC_NAME2);
         series4.addSamples(
-                new Sample("2017-01-04T12:00:00.000Z", 6),
-                new Sample("2017-01-05T12:00:00.000Z", 7),
-                new Sample("2017-01-06T12:00:00.000Z", 8)
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 6),
+                Sample.ofDateInteger("2017-01-05T12:00:00.000Z", 7),
+                Sample.ofDateInteger("2017-01-06T12:00:00.000Z", 8)
         );
 
         Series series5 = series4.copy();
@@ -51,9 +52,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         MetricMethod.createOrReplaceMetricCheck(new Metric(METRIC_NAME4));
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testJoinFromAtsdSeries() {
         /*
@@ -83,9 +82,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for join from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testJoinEmptyFromAtsdSeries() {
         /*
@@ -112,9 +109,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for empty join from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testMultipleJoinFromAtsdSeries() {
         /*
@@ -146,9 +141,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for multiple join from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testJoinFromAtsdSeriesUsingEntity() {
         /*
@@ -180,9 +173,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for join using entity from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testOuterJoinFromAtsdSeries() {
         /*
@@ -224,9 +215,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for outer join from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testOuterJoinEmptyFromAtsdSeries() {
         /*
@@ -262,9 +251,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for empty outer join from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testMultipleOuterJoinFromAtsdSeries() {
         /*
@@ -308,9 +295,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for multiple outer join from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testOuterJoinFromAtsdSeriesUsingEntity() {
         /*
@@ -350,9 +335,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
         assertSqlQueryRows("Wrong result for outer join using entity from atsd_series", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4089
-     */
+    @Issue("4089")
     @Test
     public void testSelfJoinFromAtsdSeries() {
         /*
