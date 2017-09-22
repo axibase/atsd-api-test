@@ -4,7 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,19 +19,17 @@ public class GroupByTextTest extends SqlTest {
     public void insertTextSampleToDefaultSeries() throws Exception {
         Series series = new Series(DEFAULT_ENTITY, DEFAULT_METRIC);
         series.addSamples(
-                new TextSample("2016-06-03T09:00:00.000Z", "sample text"),
-                new TextSample("2016-06-03T09:05:00.000Z", "text"),
-                new TextSample("2016-06-03T09:10:00.000Z", "TEXT"),
-                new TextSample("2016-06-03T09:15:00.000Z", "12"),
-                new Sample    ("2016-06-03T09:20:00.000Z", 1), // text is null
-                new TextSample("2016-06-03T09:25:00.000Z", "")
+                Sample.ofDateText("2016-06-03T09:00:00.000Z", "sample text"),
+                Sample.ofDateText("2016-06-03T09:05:00.000Z", "text"),
+                Sample.ofDateText("2016-06-03T09:10:00.000Z", "TEXT"),
+                Sample.ofDateText("2016-06-03T09:15:00.000Z", "12"),
+                Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1), // text is null
+                Sample.ofDateText("2016-06-03T09:25:00.000Z", "")
         );
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByText() {
         String query = String.format(
@@ -53,9 +51,7 @@ public class GroupByTextTest extends SqlTest {
         assertSqlQueryRows("Unexpected grouping by text", expected, query);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByFunctionOfText() {
         String query = String.format(
@@ -75,9 +71,7 @@ public class GroupByTextTest extends SqlTest {
         assertSqlQueryRows("Unexpected grouping by text function", expected, query);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByIsNullText() {
         String query = String.format(
@@ -94,9 +88,7 @@ public class GroupByTextTest extends SqlTest {
         assertSqlQueryRows("Unexpected grouping by text nullity", expected, query);
     }
 
-    /**
-     * #4002
-     */
+    @Issue("4002")
     @Test
     public void testGroupByTextAsNumber() {
         String query = String.format(

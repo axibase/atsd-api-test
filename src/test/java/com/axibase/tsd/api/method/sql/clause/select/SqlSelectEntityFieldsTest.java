@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -47,9 +48,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         };
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testQueryEntityFields(String field, String value) {
         String sqlQuery = String.format(
@@ -62,9 +61,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInWhere(String field, String value) {
         String sqlQuery = String.format(
@@ -78,9 +75,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with WHERE (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInGroupBy(String field, String value) {
         String sqlQuery = String.format(
@@ -93,9 +88,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInOrderBy(String field, String value) {
         String sqlQuery = String.format(
@@ -108,9 +101,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInHaving(String field, String value) {
         String sqlQuery = String.format(

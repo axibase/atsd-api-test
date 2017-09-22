@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,22 +18,20 @@ public class GroupByNullTagValueTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, "tag1", "tagname");
         series.addSamples(
-                new Sample("2017-02-09T12:00:00.000Z", DECIMAL_VALUE),
-                new Sample("2017-02-10T12:00:00.000Z", DECIMAL_VALUE)
+                Sample.ofDateDecimal("2017-02-09T12:00:00.000Z", DECIMAL_VALUE),
+                Sample.ofDateDecimal("2017-02-10T12:00:00.000Z", DECIMAL_VALUE)
         );
 
         Series seriesWithoutTag = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         seriesWithoutTag.addSamples(
-                new Sample("2017-02-11T12:00:00.000Z", DECIMAL_VALUE),
-                new Sample("2017-02-12T12:00:00.000Z", DECIMAL_VALUE)
+                Sample.ofDateDecimal("2017-02-11T12:00:00.000Z", DECIMAL_VALUE),
+                Sample.ofDateDecimal("2017-02-12T12:00:00.000Z", DECIMAL_VALUE)
         );
 
         SeriesMethod.insertSeriesCheck(series, seriesWithoutTag);
     }
 
-    /**
-     * #4028
-     */
+    @Issue("4028")
     @Test
     public void testGroupingByTagnameThatHasNullValues() {
         String sqlQuery = String.format(

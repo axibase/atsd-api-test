@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -11,7 +12,7 @@ import static org.testng.AssertJUnit.assertTrue;
 
 public class MetricGetTest extends MetricMethod {
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testURLEncodeNameWhiteSpace() throws Exception {
         final String name = "get metric-1";
@@ -20,7 +21,7 @@ public class MetricGetTest extends MetricMethod {
         assertTrue(response.readEntity(String.class).contains("Invalid metric name"));
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsSlash() throws Exception {
         final Metric metric = new Metric("get/metric-2");
@@ -31,7 +32,7 @@ public class MetricGetTest extends MetricMethod {
         assertTrue("Metrics should be equal", compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class)));
     }
 
-    /* #1278 */
+    @Issue("1278")
     @Test
     public void testMetricNameContainsCyrillic() throws Exception {
         final Metric metric = new Metric("getйёmetric-3");

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,24 +26,15 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
     public static void prepareDataSet() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
             addSamples(
-                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
-                    new Sample("2016-06-03T09:36:00.000Z", 6),
-                    new Sample("2016-06-03T09:41:00.000Z", 19)
+                    Sample.ofDateDecimal("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                    Sample.ofDateInteger("2016-06-03T09:36:00.000Z", 6),
+                    Sample.ofDateInteger("2016-06-03T09:41:00.000Z", 19)
             );
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-
-    /*
-     * #1475 task
-     * SQL: period() interpolation
-     */
-
-
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testNoInterpolation() {
         final String sqlQuery = String.format(
@@ -65,9 +57,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         assertEquals(expectedRows, resultRows);
     }
 
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testConstantValue0FillTheGaps() {
         final String sqlQuery = String.format(
@@ -90,9 +80,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         assertEquals(expectedRows, resultRows);
     }
 
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testNegativeConstantValueFillTheGaps() {
         final String sqlQuery = String.format(
@@ -115,9 +103,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         assertEquals(expectedRows, resultRows);
     }
 
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testPreviousValueFillTheGaps() {
         final String sqlQuery = String.format(
@@ -140,9 +126,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         assertEquals(expectedRows, resultRows);
     }
 
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testLinearInterpolatedValueFillTheGaps() {
         final String sqlQuery = String.format(
@@ -165,9 +149,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         assertEquals(expectedRows, resultRows);
     }
 
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testLinearInterpolatedValueFillTheMultipleGaps() {
         final String sqlQuery = String.format(
@@ -192,9 +174,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         assertEquals(expectedRows, resultRows);
     }
 
-    /**
-     *  #1475
-     */
+    @Issue("1475")
     @Test
     public void testHavingClauseWithPeriodFunction() {
         final String sqlQuery = String.format("SELECT entity, datetime, AVG(value)FROM \"%s\" %n" +

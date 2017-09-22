@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -11,9 +12,7 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 
 public class EntityRecreateTest extends SqlTest {
 
-    /**
-     * #4037
-     */
+    @Issue("4037")
     @Test
     public void testRecreateEntity() throws Exception {
         final String metricName = metric();

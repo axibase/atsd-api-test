@@ -1,12 +1,11 @@
 package com.axibase.tsd.api.method.sql.response;
 
 import com.axibase.tsd.api.method.sql.SqlMetaTest;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 public class NegativeIntegerTest extends SqlMetaTest {
-    /**
-     * #4444
-     */
+    @Issue("4444")
     @Test(
             description = "Test that negative integers have 'bigint' data type"
     )

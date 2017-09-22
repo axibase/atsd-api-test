@@ -7,7 +7,6 @@ import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
-import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class PropertyMethod extends BaseMethod {
@@ -111,8 +109,8 @@ public class PropertyMethod extends BaseMethod {
         final PropertyQuery q = new PropertyQuery();
         q.setEntity("*");
         q.setType(propertyType);
-        q.setStartDate(Util.MIN_STORABLE_DATE);
-        q.setEndDate(Util.MAX_STORABLE_DATE);
+        q.setStartDate(MIN_STORABLE_DATE);
+        q.setEndDate(MAX_STORABLE_DATE);
 
         q.setLimit(1);
 

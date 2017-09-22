@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -27,17 +28,15 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(Mocks.entity(), METRIC_NAME);
         series.addSamples(
-                new Sample("2017-01-01T00:00:00.997Z", 1),
-                new Sample("2017-01-01T00:00:00.998Z", 2),
-                new Sample("2017-01-01T00:00:00.999Z", 3)
+                Sample.ofDateInteger("2017-01-01T00:00:00.997Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:00:00.998Z", 2),
+                Sample.ofDateInteger("2017-01-01T00:00:00.999Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * 4386
-     */
+    @Issue("4386")
     @Test(
             description = "The test asserts that dates with different digits " +
                     "after 3rd fractional place are indistinguishable in local " +
@@ -57,9 +56,7 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
         assertBadRequest("Start date must be less than end date", sqlQuery);
     }
 
-    /**
-     * #4386
-     */
+    @Issue("4386")
     @Test(
             description = "The test asserts that fractions with less than " +
                     "three decimal places aren't supported for dates in local " +
@@ -82,9 +79,7 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
         assertBadRequest(String.format("Invalid date value: '%s'", beginDate), sqlQuery);
     }
 
-    /**
-     * #4386
-     */
+    @Issue("4386")
     @Test(
             description = "The test asserts that parsing works for fractions " +
                     "with exactly three decimal places for dates in local " +
@@ -112,9 +107,7 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
                 expectedResult, sqlQuery);
     }
 
-    /**
-     * #4386
-     */
+    @Issue("4386")
     @Test(
             description = "The test asserts that parsing works for fractions " +
                     "up to 9th decimal place (nanoseconds) for dates in local " +
@@ -142,9 +135,7 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
                 expectedResult, sqlQuery);
     }
 
-    /**
-     * #4386
-     */
+    @Issue("4386")
     @Test(
             description = "The test asserts that parsing works if fractional " +
                     "is not present, for dates in local date format"
@@ -173,9 +164,7 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
                 expectedResult, sqlQuery);
     }
 
-    /**
-     * #4386
-     */
+    @Issue("4386")
     @Test(
             description = "The test asserts that parsing works if fractional " +
                     "is not present, for dates in local date format. Use time column"

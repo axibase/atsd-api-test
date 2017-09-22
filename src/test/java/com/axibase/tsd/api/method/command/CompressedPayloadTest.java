@@ -37,7 +37,7 @@ public class CompressedPayloadTest extends SqlTest {
     @Test
     public void gzipPayloadTest() {
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(Mocks.ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
         CommandMethod.sendGzipCompressedBytes(gzipOutput);
 
         Checker.check(new SeriesCheck(Collections.singletonList(series)));

@@ -55,9 +55,7 @@ Use [standard](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf
   the test fails and how to fix it properly.
 
 ```java
-    /**
-     * #1234
-     */
+    @Issue("1234")
     @Test(description = "My explanatory test description")
     public void testSomething() {
         //arrange

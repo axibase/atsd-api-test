@@ -1,45 +1,27 @@
 package com.axibase.tsd.api.util;
 
-import com.axibase.tsd.api.method.version.VersionMethod;
-import com.axibase.tsd.api.model.version.Version;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import com.axibase.tsd.api.model.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOCAL;
+import static com.axibase.tsd.api.util.Util.*;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
-    public static final String UNIVERSAL_TIMEZONE_NAME = "UTC";
-    private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
-    }
-
-    public static Date getCurrentDate() {
-        return new Date();
-    }
-
-    public static Date getPreviousDay() {
-        return new Date(System.currentTimeMillis() - MILLIS_IN_DAY);
-
-    }
-
-    public static String formatDate(Date date, String pattern) {
-        return formatDate(date, pattern, getServerTimeZone());
     }
 
     public static String formatDate(Date date, String pattern, TimeZone timeZone) {
@@ -49,43 +31,19 @@ public class TestUtil {
         return format.format(date);
     }
 
-    public static TimeZone getServerTimeZone() {
-        Version version = VersionMethod.queryVersion().readEntity(Version.class);
-        return TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
+    public static String formatDate(Date date, String pattern) {
+        return formatDate(date, pattern, getServerTimeZone());
     }
 
-    public static String getHBaseVersion() {
-        Version version = VersionMethod.queryVersion().readEntity(Version.class);
-        return version.getBuildInfo().getHbaseVersion();
+
+    public static Date getCurrentDate() {
+        return new Date();
     }
+
+    public static Date getPreviousDay() { return new Date(System.currentTimeMillis() - MILLIS_IN_DAY); }
 
     public static Date getNextDay() {
         return new Date(System.currentTimeMillis() + MILLIS_IN_DAY);
-    }
-
-    public static String ISOFormat(Date date) {
-        return ISOFormat(date, true, UNIVERSAL_TIMEZONE_NAME);
-    }
-
-    public static String ISOFormat(long t) {
-        return ISOFormat(new Date(t));
-    }
-
-    public static String ISOFormat(Date date, boolean withMillis, String timeZoneName) {
-        String pattern = (withMillis) ? "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" : "yyyy-MM-dd'T'HH:mm:ssXXX";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneName));
-        return dateFormat.format(date);
-    }
-
-    public static Date parseDate(String date) {
-        Date d = null;
-        try {
-            d = ISO8601Utils.parse(date, new ParsePosition(0));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        return d;
     }
 
     public static String timeTranslate(String date, TimeZone timeZone, TimeTranslation mode) {
@@ -107,28 +65,66 @@ public class TestUtil {
         return timeTranslate(date, timeZone, mode);
     }
 
-    public static String prettyPrint(Object o) {
-        try {
-            return objectWriter.writeValueAsString(o);
-        } catch (JsonProcessingException e) {
-            return o.toString();
+    public static String addTimeUnitsInTimezone(
+            String dateTime,
+            ZoneId zoneId,
+            TimeUnit timeUnit,
+            int amount) {
+        ZonedDateTime dateUtc = ZonedDateTime.parse(dateTime, DateTimeFormatter.ISO_DATE_TIME);
+        ZonedDateTime localDate = dateUtc.withZoneSameInstant(zoneId);
+        switch (timeUnit) {
+            case NANOSECOND: {
+                localDate = localDate.plusNanos(amount);
+                break;
+            }
+            case MILLISECOND: {
+                localDate = localDate.plusNanos(amount * 1000);
+                break;
+            }
+            case SECOND: {
+                localDate = localDate.plusSeconds(amount);
+                break;
+            }
+            case MINUTE: {
+                localDate = localDate.plusMinutes(amount);
+                break;
+            }
+            case HOUR: {
+                localDate = localDate.plusHours(amount);
+                break;
+            }
+            case DAY: {
+                localDate = localDate.plusDays(amount);
+                break;
+            }
+            case WEEK: {
+                localDate = localDate.plusWeeks(amount);
+                break;
+            }
+            case MONTH: {
+                localDate = localDate.plusMonths(amount);
+                break;
+            }
+            case QUARTER: {
+                localDate = localDate.plusMonths(3 * amount);
+                break;
+            }
+            case YEAR: {
+                localDate = localDate.plusYears(amount);
+                break;
+            }
         }
+
+        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
+        return localDate.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
     }
 
     public static String formatAsLocalTime(String isoDate) {
-        TimeZone serverTimeZone = getServerTimeZone();
+        TimeZone serverTimeZone = Util.getServerTimeZone();
         Date parsedDate = parseDate(isoDate);
         SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         localDateFormat.setTimeZone(serverTimeZone);
         return localDateFormat.format(parsedDate);
-    }
-
-    public static String addOneMS(String date) {
-        return ISOFormat(parseDate(date).getTime() + 1);
-    }
-
-    public static Long getMillis(String date) throws ParseException {
-        return parseDate(date).getTime();
     }
 
     public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,35 +30,28 @@ public class SqlModuloTest extends SqlTest {
         final List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME, "a", "b", "b", "c") {{
             addSamples(
-                    new Sample("2016-06-03T09:23:00.000Z", 7),
-                    new Sample("2016-06-03T09:24:00.000Z", 0),
-                    new Sample("2016-06-03T09:25:00.000Z", 12),
-                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("10.3")),
-                    new Sample("2016-06-03T09:27:00.000Z", 10)
+                    Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 7),
+                    Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0),
+                    Sample.ofDateInteger("2016-06-03T09:25:00.000Z", 12),
+                    Sample.ofDateDecimal("2016-06-03T09:26:00.000Z", new BigDecimal("10.3")),
+                    Sample.ofDateInteger("2016-06-03T09:27:00.000Z", 10)
             );
         }});
 
 
         seriesList.add(new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME, "a", "b", "b", "c") {{
             addSamples(
-                    new Sample("2016-06-03T09:23:00.000Z", 5),
-                    new Sample("2016-06-03T09:24:00.000Z", 7),
-                    new Sample("2016-06-03T09:25:00.000Z", -2),
-                    new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("-2.1"))
+                    Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 5),
+                    Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 7),
+                    Sample.ofDateInteger("2016-06-03T09:25:00.000Z", -2),
+                    Sample.ofDateDecimal("2016-06-03T09:26:00.000Z", new BigDecimal("-2.1"))
             );
         }});
 
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-
-    /*
-      #2922
-     */
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingPositiveByPositiveInteger() {
         String sqlQuery = String.format(
@@ -75,10 +69,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingZeroByPositiveInteger() {
         String sqlQuery = String.format(
@@ -98,9 +89,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingPositiveByZeroInteger() {
         String sqlQuery = String.format(
@@ -118,10 +107,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingPositiveByNegativeInteger() {
         String sqlQuery = String.format(
@@ -139,9 +125,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingNegativeByPositiveInteger() {
         String sqlQuery = String.format(
@@ -159,10 +143,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingPositiveByNegativeDecimal() {
         String sqlQuery = String.format(
@@ -182,10 +163,7 @@ public class SqlModuloTest extends SqlTest {
         assertEquals(expectedModulo, resultModulo, EPS);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingNegativeByPositiveDecimal() {
         String sqlQuery = String.format(
@@ -203,10 +181,7 @@ public class SqlModuloTest extends SqlTest {
         assertEquals(expectedModulo, resultModulo, EPS);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingNullByNumber() {
         String sqlQuery = String.format(
@@ -224,10 +199,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test
     public void testDividingNumberByNull() {
         String sqlQuery = String.format(
@@ -245,10 +217,7 @@ public class SqlModuloTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test(expectedExceptions = ProcessingException.class)
     public void testDividingStringByString() {
         String sqlQuery = String.format(
@@ -261,9 +230,7 @@ public class SqlModuloTest extends SqlTest {
                 .readEntity(StringTable.class);
     }
 
-    /**
-     * #2922
-     */
+    @Issue("2922")
     @Test(expectedExceptions = ProcessingException.class)
     public void testDividingNaNByNumber() {
         String sqlQuery = String.format(
