@@ -51,7 +51,7 @@ public class Util {
         return ISOFormat(parseDate(date).getTime() + 1);
     }
 
-    public static Long getMillis(String date){
+    public static Long getUnixTime(String date){
         return parseDate(date).getTime();
     }
 

@@ -327,7 +327,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Issue("2957")
     @Test
     public void testTimeRangeMaxInMSSaved() throws Exception {
-        final long t = getMillis(MAX_STORABLE_DATE);
+        final long t = getUnixTime(MAX_STORABLE_DATE);
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-5", "m-time-range-5");
@@ -344,7 +344,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Issue("2957")
     @Test
     public void testTimeRangeMaxInISOSaved() throws Exception {
-        final BigDecimal v = new BigDecimal("" + getMillis(MAX_STORABLE_DATE));
+        final BigDecimal v = new BigDecimal("" + getUnixTime(MAX_STORABLE_DATE));
 
         Series series = new Series("e-time-range-6", "m-time-range-6");
         series.addSamples(Sample.ofDateDecimal(MAX_STORABLE_DATE, v));
@@ -361,7 +361,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Issue("2957")
     @Test
     public void testTimeRangeMaxInMSOverflow() throws Exception {
-        final long t = getMillis(MAX_STORABLE_DATE) + 1;
+        final long t = getUnixTime(MAX_STORABLE_DATE) + 1;
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-7", "m-time-range-7");
@@ -379,7 +379,7 @@ public class SeriesInsertTest extends SeriesTest {
     @Issue("2957")
     @Test
     public void testTimeRangeMaxInISOOverflow() throws Exception {
-        final BigDecimal v = new BigDecimal("" + getMillis(NEXT_AFTER_MAX_STORABLE_DATE));
+        final BigDecimal v = new BigDecimal("" + getUnixTime(NEXT_AFTER_MAX_STORABLE_DATE));
         Series series = new Series("e-time-range-8", "m-time-range-8");
         series.addSamples(Sample.ofDateDecimal(NEXT_AFTER_MAX_STORABLE_DATE, v));
 

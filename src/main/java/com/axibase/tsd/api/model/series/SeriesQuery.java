@@ -70,14 +70,14 @@ public class SeriesQuery {
     }
 
     private void setIntervalBasedOnSeriesDate(final Series series) throws IllegalArgumentException {
-        Long minDate = Util.getMillis(MAX_QUERYABLE_DATE);
-        Long maxDate = Util.getMillis(MIN_QUERYABLE_DATE);
+        Long minDate = Util.getUnixTime(MAX_QUERYABLE_DATE);
+        Long maxDate = Util.getUnixTime(MIN_QUERYABLE_DATE);
 
         Long curDate;
         for (Sample sample : series.getData()) {
             curDate = sample.getUnixTime();
             if (curDate == null) {
-                curDate = Util.getMillis(sample.getRawDate());
+                curDate = Util.getUnixTime(sample.getRawDate());
             }
             minDate = Math.min(curDate, minDate);
             maxDate = Math.max(curDate, maxDate);

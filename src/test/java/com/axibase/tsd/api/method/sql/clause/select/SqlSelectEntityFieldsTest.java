@@ -43,7 +43,7 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
                 {"timeZone", Mocks.TIMEZONE_ID},
                 {"interpolate", "PREVIOUS"},
                 {"enabled", "true"},
-                {"lastInsertTime", "" + Util.getMillis(Mocks.ISO_TIME)},
+                {"lastInsertTime", "" + Util.getUnixTime(Mocks.ISO_TIME)},
                 {"tags", "tag=value"}
         };
     }

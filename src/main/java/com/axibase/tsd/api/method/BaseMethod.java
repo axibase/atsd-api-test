@@ -68,6 +68,13 @@ public abstract class BaseMethod {
         }
     }
 
+    protected static WebTarget addParameters(WebTarget target, MethodParameters parameters) {
+        if (parameters != null) {
+            target = parameters.appendTo(target);
+        }
+        return target;
+    }
+
     public static ObjectMapper getJacksonMapper() {
         return jacksonMapper;
     }

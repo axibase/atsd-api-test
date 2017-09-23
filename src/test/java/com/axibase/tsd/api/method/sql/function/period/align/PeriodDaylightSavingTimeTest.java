@@ -31,18 +31,18 @@ public class PeriodDaylightSavingTimeTest extends SqlTest {
     public static void prepareData() throws Exception {
 
         Series series1 = new Series(entity(), METRIC_NAME1);
-        insertDateRange(series1, Util.getMillis("2017-03-24T23:00Z"));
-        insertDateRange(series1, Util.getMillis("2017-10-27T22:00Z"));
+        insertDateRange(series1, Util.getUnixTime("2017-03-24T23:00Z"));
+        insertDateRange(series1, Util.getUnixTime("2017-10-27T22:00Z"));
 
 
         Series series2 = new Series(entity(), METRIC_NAME2);
-        insertDateRange(series2, Util.getMillis("2017-03-11T08:00Z"));
-        insertDateRange(series2, Util.getMillis("2017-11-04T07:00Z"));
+        insertDateRange(series2, Util.getUnixTime("2017-03-11T08:00Z"));
+        insertDateRange(series2, Util.getUnixTime("2017-11-04T07:00Z"));
 
         Series series3 = new Series(entity(), METRIC_NAME3);
-        insertDateRange(series3, Util.getMillis("2011-03-25T21:00Z"));
-        insertDateRange(series3, Util.getMillis("2014-10-24T20:00Z"));
-        insertDateRange(series3, Util.getMillis("2017-03-24T21:00Z"));
+        insertDateRange(series3, Util.getUnixTime("2011-03-25T21:00Z"));
+        insertDateRange(series3, Util.getUnixTime("2014-10-24T20:00Z"));
+        insertDateRange(series3, Util.getUnixTime("2017-03-24T21:00Z"));
 
         SeriesMethod.insertSeriesCheck(series1, series2, series3);
     }

@@ -60,7 +60,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 {"enabled", "true"},
                 {"persistent", "true"},
                 {"filter", "name = '*'"},
-                {"lastInsertTime", "" + Util.getMillis(Mocks.ISO_TIME)},
+                {"lastInsertTime", "" + Util.getUnixTime(Mocks.ISO_TIME)},
                 {"retentionIntervalDays", "0"},
                 {"versioning", "false"},
                 {"minValue", "0"},
