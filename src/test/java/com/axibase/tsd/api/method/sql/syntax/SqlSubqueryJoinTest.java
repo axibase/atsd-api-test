@@ -107,7 +107,7 @@ public class SqlSubqueryJoinTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"2017-09-31T12:00:00.000Z", "null", "-1"},
+                {"2017-08-31T12:00:00.000Z", "null", "-1"},
                 {"2017-09-01T12:00:00.000Z", "null", "1-"},
                 {"2017-09-01T12:00:00.000Z", "null", "-2"},
                 {"2017-09-02T12:00:00.000Z", "6", "2-3"},
