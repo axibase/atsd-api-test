@@ -123,36 +123,36 @@ public class SqlNotEqualsOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    //TODO pending
-//    @Issue("4554")
-//    @Test
-//    public void testNotEqualsDatetimeAllowedNotOperatorTrue() {
-//        final String sqlQuery = String.format(
-//                "SELECT entity, value, datetime FROM \"%s\" " +
-//                        "WHERE NOT datetime = '2016-06-03T09:25:00.000Z'",
-//                TEST_METRIC_NAME
-//        );
-//
-//        String[][] expectedRows = {
-//                {TEST_ENTITY_NAME, "1.01", "2016-06-03T09:23:00.000Z" }
-//        };
-//
-//        assertSqlQueryRows(expectedRows, sqlQuery);
-//    }
-//  TODO pending
-//    @Issue("4554")
-//    @Test
-//    public void testNotEqualsDatetimeAllowedNotOperatorFalse() {
-//        final String sqlQuery = String.format(
-//                "SELECT entity, value, datetime FROM \"%s\" " +
-//                        "WHERE NOT datetime = '2016-06-03T09:23:00.000Z'",
-//                TEST_METRIC_NAME
-//        );
-//
-//        String[][] expectedRows = { };
-//
-//        assertSqlQueryRows(expectedRows, sqlQuery);
-//    }
+    //TODO pending fix in #4554
+    @Issue("4554")
+    @Test(enabled = false)
+    public void testNotEqualsDatetimeAllowedNotOperatorTrue() {
+        final String sqlQuery = String.format(
+                "SELECT entity, value, datetime FROM \"%s\" " +
+                        "WHERE NOT datetime = '2016-06-03T09:25:00.000Z'",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {TEST_ENTITY_NAME, "1.01", "2016-06-03T09:23:00.000Z" }
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+//  TODO pending fix in #4554
+    @Issue("4554")
+    @Test(enabled = false)
+    public void testNotEqualsDatetimeAllowedNotOperatorFalse() {
+        final String sqlQuery = String.format(
+                "SELECT entity, value, datetime FROM \"%s\" " +
+                        "WHERE NOT datetime = '2016-06-03T09:23:00.000Z'",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = { };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 
     @Issue("2933")
     @Test
