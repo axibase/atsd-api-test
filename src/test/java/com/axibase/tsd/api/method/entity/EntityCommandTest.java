@@ -105,43 +105,37 @@ public class EntityCommandTest extends EntityTest {
         assertEntityExisting(assertMessage, sourceEntity);
     }
 
-    /**
-     * #3550
-     */
+    @Issue("3550")
     @Test
     public void testEnabled() throws Exception {
         Entity entity = new Entity(entity());
         entity.setEnabled(true);
         EntityCommand command = new EntityCommand(entity);
-        tcpSender.send(command);
+        CommandMethod.send(command);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to set enabled", actualEntity.getEnabled());
     }
 
-    /**
-     * #3550
-     */
+    @Issue("3550")
     @Test
     public void testDisabled() throws Exception {
         Entity entity = new Entity(entity());
         entity.setEnabled(false);
         EntityCommand command = new EntityCommand(entity);
-        tcpSender.send(command);
+        CommandMethod.send(command);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertFalse("Failed to set disabled", actualEntity.getEnabled());
     }
 
-    /**
-     * #3550
-     */
+    @Issue("3550")
     @Test
     public void testNullEnabled() throws Exception {
         Entity entity = new Entity(entity());
         entity.setEnabled(null);
         EntityCommand command = new EntityCommand(entity);
-        tcpSender.send(command);
+        CommandMethod.send(command);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to omit enabled", actualEntity.getEnabled());
@@ -162,21 +156,16 @@ public class EntityCommandTest extends EntityTest {
                 {"tr\tue"},
                 {"tr\u0775ue"},
                 {"'true'"},
-                {"'false'"},
-                {"\"true\""},
-                {"\"false\""}
+                {"'false'"}
         };
     }
 
-    /**
-     * #3550
-     */
+    @Issue("3550")
     @Test(dataProvider = "incorrectEnabledProvider")
     public void testIncorrectEnabled(String enabled) throws Exception {
         String entityName = entity();
-        Registry.Entity.register(entityName);
         String command = String.format("entity  e:%s b:%s", entityName, enabled);
-        tcpSender.send(command);
+        CommandMethod.send(command);
         Response serverResponse = EntityMethod.getEntityResponse(entityName);
         assertEquals("Bad entity was accepted :: " + command, NOT_FOUND.getStatusCode(), serverResponse.getStatus());
     }
@@ -185,21 +174,21 @@ public class EntityCommandTest extends EntityTest {
     public Object[][] provideCorrectEnabledData() {
         return new Object[][]{
                 {"true"},
-                {"false"}
+                {"false"},
+                {"\"true\""},
+                {"\"false\""}
         };
     }
 
-    /**
-     * #3550
-     */
+    @Issue("3550")
     @Test(dataProvider = "correctEnabledProvider")
     public void testRawEnabled(String enabled) throws Exception {
-        String entityName = "e-entity-command-raw-enabled-" + enabled;
+        String entityName = entity();
         Entity entity = new Entity(entityName);
         String command = String.format("entity  e:%s b:%s", entityName, enabled);
-        tcpSender.send(command);
+        CommandMethod.send(command);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entityName);
-        assertEquals("Failed to set enabled (raw)", enabled, actualEntity.getEnabled().toString());
+        assertEquals("Failed to set enabled (raw)", enabled.replaceAll("[\\'\\\"]", ""), actualEntity.getEnabled().toString());
     }
 }
