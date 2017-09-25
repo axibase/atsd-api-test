@@ -129,10 +129,9 @@ public class MetricSeriesDateLimitTest {
         String minDate = "2017-09-15T00:00:00.000Z";
         String maxDate = "2017-09-15T00:00:00.001Z";
         String[] expectedDates = {
-                "2017-09-15T00:00:00.000Z",
-                "2017-10-01T00:00:00.000Z"
+                "2017-09-15T00:00:00.000Z"
         };
 
-        assertLimitsPreserved(minDate, null, expectedDates);
+        assertLimitsPreserved(minDate, maxDate, expectedDates);
     }
 }
