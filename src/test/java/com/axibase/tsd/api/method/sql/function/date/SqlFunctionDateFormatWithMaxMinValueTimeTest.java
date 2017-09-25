@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.function.dateformat;
+package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;

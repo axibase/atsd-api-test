@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.function.dateparse;
+package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.Util;

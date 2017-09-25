@@ -7,10 +7,12 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -52,15 +54,29 @@ public class SqlMethod extends BaseMethod {
     public static StringTable queryTable(String sqlQuery, Integer limit) {
         Response response = queryResponse(sqlQuery, limit);
         Integer statusCode = response.getStatus();
+        String atsdError;
+
+        try {
+            List<Error> errors = response.readEntity(AtsdExceptionDescription.class).getErrors();
+            if (errors != null && errors.size() != 0) {
+                atsdError = errors.get(0).getMessage();
+            } else {
+                atsdError = null;
+            }
+        } catch (ProcessingException e) {
+            atsdError = null;
+        }
+
+        /* Even if status == OK, the response may contain errors */
+        if (atsdError != null && (OK.getStatusCode() == statusCode ||
+                BAD_REQUEST.getStatusCode() == statusCode)) {
+            throw new IllegalStateException(String.format("%s.%n   Query: %s", atsdError, sqlQuery));
+        }
+
         if (OK.getStatusCode() == statusCode) {
             return response.readEntity(StringTable.class);
         }
 
-        if (BAD_REQUEST.getStatusCode() == statusCode) {
-            Error atsdError = response.readEntity(AtsdExceptionDescription.class).getErrors().get(0);
-
-            throw new IllegalStateException(String.format("%s.%n\tQuery: %s", atsdError.getMessage(), sqlQuery));
-        }
         String errorMessage = String.format("Unexpected behavior on server when executing sql query.%n \t Query: %s",
                 sqlQuery
         );
