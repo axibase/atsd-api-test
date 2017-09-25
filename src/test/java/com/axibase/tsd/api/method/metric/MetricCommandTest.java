@@ -290,7 +290,9 @@ public class MetricCommandTest extends MetricTest {
                 {"non"},
                 {"1"},
                 {"+"},
-                {"azazaz"}
+                {"azazaz"},
+                {"'true'"},
+                {"'false'"}
         };
     }
 
@@ -310,8 +312,6 @@ public class MetricCommandTest extends MetricTest {
         return new Object[][]{
                 {"true"},
                 {"false"},
-                {"'true'"},
-                {"'false'"},
                 {"\"true\""},
                 {"\"false\""}
         };
@@ -321,13 +321,13 @@ public class MetricCommandTest extends MetricTest {
     @Issue("3550")
     @Test(dataProvider = "correctEnabledProvider")
     public void testRawEnabled(String enabled) throws Exception {
-        String metricName = "m-metric-command-raw-enabled-" + enabled;
+        String metricName = metric();
         Metric metric = new Metric(metricName);
         String command = String.format("metric m:%s b:%s", metricName, enabled);
         CommandMethod.send(command);
         Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
-        assertEquals("Failed to set enabled (raw)", enabled, actualMetric.getEnabled().toString());
+        assertEquals("Failed to set enabled (raw)", enabled.replaceAll("[\\'\\\"]", ""), actualMetric.getEnabled().toString());
     }
 }
