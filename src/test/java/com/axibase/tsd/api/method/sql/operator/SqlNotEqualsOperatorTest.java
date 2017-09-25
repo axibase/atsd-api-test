@@ -112,7 +112,7 @@ public class SqlNotEqualsOperatorTest extends SqlTest {
     @Test
     public void testNotEqualsDatetimeAllowedComplexANDFalseCondition() {
         final String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM \"%s\"" +
+                "SELECT entity, value, datetime FROM \"%s\" " +
                         "WHERE datetime != '2016-06-03T09:23:00.000Z' AND " +
                         "datetime BETWEEN '2016-06-03T09:22:00.000Z' AND '2016-06-03T09:26:00.000Z'",
                 TEST_METRIC_NAME
@@ -125,17 +125,30 @@ public class SqlNotEqualsOperatorTest extends SqlTest {
 
     @Issue("4554")
     @Test
-    public void testNotEqualsDatetimeAllowedComplexORTrueCondition() {
+    public void testNotEqualsDatetimeAllowedNotOperatorTrue() {
         final String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM \"%s\"" +
-                        "WHERE datetime != '2016-06-03T09:25:00.000Z' OR" +
-                        "datetime BETWEEN '2016-06-03T09:20:00.000Z' AND '2016-06-03T09:21:00.000Z'",
+                "SELECT entity, value, datetime FROM \"%s\" " +
+                        "WHERE NOT datetime = '2016-06-03T09:25:00.000Z'",
                 TEST_METRIC_NAME
         );
 
         String[][] expectedRows = {
                 {TEST_ENTITY_NAME, "1.01", "2016-06-03T09:23:00.000Z" }
         };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4554")
+    @Test
+    public void testNotEqualsDatetimeAllowedNotOperatorFalse() {
+        final String sqlQuery = String.format(
+                "SELECT entity, value, datetime FROM \"%s\" " +
+                        "WHERE NOT datetime = '2016-06-03T09:23:00.000Z'",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = { };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
