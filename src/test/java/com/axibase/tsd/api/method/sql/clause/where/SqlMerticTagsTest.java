@@ -112,6 +112,13 @@ public class SqlMerticTagsTest extends SqlTest {
             new Filter("NOT tags.tag <= 'value1'",    new String[]{"value2", "value3"})
     };
 
+    private static int compareTags(String o1, String o2) {
+        if (o1.equals("null") && o2.equals("null")) return 0;
+        if (o1.equals("null")) return -1;
+        if (o2.equals("null")) return 1;
+        return o1.compareTo(o2);
+    }
+
     @BeforeTest
     public void prepareData() throws Exception {
         String entity1 = entity();
@@ -236,12 +243,7 @@ public class SqlMerticTagsTest extends SqlTest {
         Set<String> firstResultSet = new HashSet<>();
         Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
 
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
         for (String resultRow : filterTuple.secondFilter.expectedResult) {
             if (!firstResultSet.contains(resultRow)) continue;
@@ -274,12 +276,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Issue("4180")
     @Test(dataProvider = "doubleOperatorsDataProvider")
     public void testDoubleTagFiltersOr(FilterTuple filterTuple) {
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
         Collections.addAll(finalResultSet, filterTuple.firstFilter.expectedResult);
         Collections.addAll(finalResultSet, filterTuple.secondFilter.expectedResult);
@@ -314,12 +311,7 @@ public class SqlMerticTagsTest extends SqlTest {
         Set<String> firstResultSet = new HashSet<>();
         Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
 
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
         for (String resultRow : filterTuple.secondFilter.expectedResult) {
             if (!firstResultSet.contains(resultRow)) continue;
@@ -367,12 +359,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Issue("4180")
     @Test(dataProvider = "doubleOperatorsDataProvider")
     public void testDoubleTagFiltersJoinOr(FilterTuple filterTuple) {
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
         Collections.addAll(finalResultSet, filterTuple.firstFilter.expectedResult);
         Collections.addAll(finalResultSet, filterTuple.secondFilter.expectedResult);
@@ -421,12 +408,7 @@ public class SqlMerticTagsTest extends SqlTest {
         Set<String> firstResultSet = new HashSet<>();
         Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
 
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
         for (String resultRow : filterTuple.secondFilter.expectedResult) {
             if (!firstResultSet.contains(resultRow)) continue;
@@ -465,12 +447,7 @@ public class SqlMerticTagsTest extends SqlTest {
     @Issue("4180")
     @Test(dataProvider = "doubleOperatorsDataProvider")
     public void testDoubleTagFiltersAtsdSeriesOr(FilterTuple filterTuple) {
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
         Collections.addAll(finalResultSet, filterTuple.firstFilter.expectedResult);
         Collections.addAll(finalResultSet, filterTuple.secondFilter.expectedResult);
