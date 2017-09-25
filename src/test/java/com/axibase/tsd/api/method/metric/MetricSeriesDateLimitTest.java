@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,7 +30,7 @@ public class MetricSeriesDateLimitTest {
         List<Series> seriesList = new ArrayList<>();
         for (String date : SAMPLE_DATES) {
             Series series = new Series(Mocks.entity(), METRIC_NAME);
-            series.addSamples(Sample.ofDateInteger(date, 0));
+            series.addSamples(Sample.ofDate(date));
             seriesList.add(series);
         }
 
@@ -62,7 +63,10 @@ public class MetricSeriesDateLimitTest {
         assertEquals(expectedDates, actualDates, errorMessage);
     }
 
-    @Test
+    @Issue("4581")
+    @Test(
+            description = "Test whether maxInsertDate applied, last date = maxInsertDate"
+    )
     public void testMetricSeriesLimitEqualToLast() {
         String maxDate = "2017-10-01T00:00:00.000Z";
         String[] expectedDates = {
@@ -73,7 +77,10 @@ public class MetricSeriesDateLimitTest {
         assertLimitsPreserved(null, maxDate, expectedDates);
     }
 
-    @Test
+    @Issue("4581")
+    @Test(
+            description = "Test whether maxInsertDate applied, last date < maxInsertDate"
+    )
     public void testMetricSeriesLimitGreaterThanLast() {
         String maxDate = "2017-10-01T00:00:00.001Z";
         String[] expectedDates = {
@@ -85,7 +92,10 @@ public class MetricSeriesDateLimitTest {
         assertLimitsPreserved(null, maxDate, expectedDates);
     }
 
-    @Test
+    @Issue("4581")
+    @Test(
+            description = "Test whether minInsertDate applied, first date = minInsertDate"
+    )
     public void testMetricSeriesEqualToFirst() {
         String minDate = "2017-09-01T00:00:00.000Z";
         String[] expectedDates = {
@@ -97,7 +107,10 @@ public class MetricSeriesDateLimitTest {
         assertLimitsPreserved(minDate, null, expectedDates);
     }
 
-    @Test
+    @Issue("4581")
+    @Test(
+            description = "Test whether minInsertDate applied, first date < minInsertDate"
+    )
     public void testMetricSeriesGreaterThanFirst() {
         String minDate = "2017-09-01T00:00:00.001Z";
         String[] expectedDates = {
@@ -108,7 +121,10 @@ public class MetricSeriesDateLimitTest {
         assertLimitsPreserved(minDate, null, expectedDates);
     }
 
-    @Test
+    @Issue("4581")
+    @Test(
+            description = "Test whether minInsertDate and maxInsertDate applied"
+    )
     public void testMetricSeriesBothLimits() {
         String minDate = "2017-09-15T00:00:00.000Z";
         String maxDate = "2017-09-15T00:00:00.001Z";
