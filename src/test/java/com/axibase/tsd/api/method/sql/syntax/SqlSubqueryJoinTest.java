@@ -61,7 +61,7 @@ public class SqlSubqueryJoinTest extends SqlTest {
                 {"2017-09-02T12:00:00.000Z", "6"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for JOIN in subquery", expectedRows, sqlQuery);
     }
 
     @Issue("4508")
@@ -86,7 +86,7 @@ public class SqlSubqueryJoinTest extends SqlTest {
                 {"2017-09-02T12:00:00.000Z", "6"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for JOIN USING ENTITY in subquery", expectedRows, sqlQuery);
     }
 
     @Issue("4508")
@@ -114,7 +114,7 @@ public class SqlSubqueryJoinTest extends SqlTest {
                 {"2017-09-03T12:00:00.000Z", "null", "3-"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for OUTER JOIN in subquery", expectedRows, sqlQuery);
     }
 
     @Issue("4508")
@@ -141,6 +141,6 @@ public class SqlSubqueryJoinTest extends SqlTest {
                 {"2017-09-03T12:00:00.000Z", "null", "3-"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Wrong result for OUTER JOIN USING ENTITY in subquery", expectedRows, sqlQuery);
     }
 }
