@@ -20,96 +20,211 @@ public class SqlMerticTagsTest extends SqlTest {
     private final String[] tagValues = new String[]{null, "VALUE1", "otherValue", "value1", "value2", "value3"};
 
     private final Filter[] isNullFilterResults = new Filter[]{
-            new Filter("tags.tag IS NULL",                        new String[]{"null"}),
-            new Filter("tags.tag IS NOT NULL",                    new String[]{"VALUE1", "otherValue", "value1", "value2", "value3"}),
-            new Filter("ISNULL(tags.tag, 'null') = 'null'",       new String[]{"null"}),
-            new Filter("NOT ISNULL(tags.tag, 'null') = 'null'",   new String[]{"VALUE1", "otherValue", "value1", "value2", "value3"})
+            new Filter("tags.tag IS NULL",
+                    new String[]{"null"}),
+
+            new Filter("tags.tag IS NOT NULL",
+                    new String[]{"VALUE1", "otherValue", "value1", "value2", "value3"}),
+
+            new Filter("ISNULL(tags.tag, 'null') = 'null'",
+                    new String[]{"null"}),
+
+            new Filter("NOT ISNULL(tags.tag, 'null') = 'null'",
+                    new String[]{"VALUE1", "otherValue", "value1", "value2", "value3"})
     };
 
     private final Filter[] matchFunctionsFilterResults = new Filter[]{
-            new Filter("tags.tag LIKE 'value_'",                      new String[]{"value1", "value2", "value3"}),
-            new Filter("tags.tag NOT LIKE 'value_'",                  new String[]{"VALUE1", "otherValue"}),
-            new Filter("tags.tag LIKE '%2'",                          new String[]{"value2"}),
-            new Filter("tags.tag NOT LIKE '%2'",                      new String[]{"VALUE1", "otherValue", "value1", "value3"}),
-            new Filter("tags.tag IN ('VALUE1', 'value2')",            new String[]{"VALUE1", "value2"}),
-            new Filter("tags.tag NOT IN ('VALUE1', 'value2')",        new String[]{"otherValue", "value1", "value3"}),
-            new Filter("tags.tag REGEX 'value[1,2]{1}|.*Value'",      new String[]{"otherValue", "value1", "value2"}),
-            new Filter("tags.tag NOT REGEX 'value[1,2]{1}|.*Value'",  new String[]{"VALUE1", "value3"})
+            new Filter("tags.tag LIKE 'value_'",
+                    new String[]{"value1", "value2", "value3"}),
+
+            new Filter("tags.tag NOT LIKE 'value_'",
+                    new String[]{"VALUE1", "otherValue"}),
+
+            new Filter("tags.tag LIKE '%2'",
+                    new String[]{"value2"}),
+
+            new Filter("tags.tag NOT LIKE '%2'",
+                    new String[]{"VALUE1", "otherValue", "value1", "value3"}),
+
+            new Filter("tags.tag IN ('VALUE1', 'value2')",
+                    new String[]{"VALUE1", "value2"}),
+
+            new Filter("tags.tag NOT IN ('VALUE1', 'value2')",
+                    new String[]{"otherValue", "value1", "value3"}),
+
+            new Filter("tags.tag REGEX 'value[1,2]{1}|.*Value'",
+                    new String[]{"otherValue", "value1", "value2"}),
+
+            new Filter("tags.tag NOT REGEX 'value[1,2]{1}|.*Value'",
+                    new String[]{"VALUE1", "value3"})
     };
 
     private final Filter[] mathFilterResultsGroup1 = new Filter[]{
-            new Filter("ABS(-1 * CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",      new String[]{"VALUE1", "value1"}),
-            new Filter("NOT ABS(-1 * CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",  new String[]{"value2", "value3"}),
-            new Filter("CEIL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",          new String[]{"VALUE1", "value1"}),
-            new Filter("NOT CEIL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",      new String[]{"value2", "value3"}),
-            new Filter("FLOOR(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",         new String[]{"VALUE1", "value1"}),
-            new Filter("NOT FLOOR(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",     new String[]{"value2", "value3"})
+            new Filter("ABS(-1 * CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT ABS(-1 * CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"value2", "value3"}),
+
+            new Filter("CEIL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT CEIL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"value2", "value3"}),
+
+            new Filter("FLOOR(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT FLOOR(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"value2", "value3"})
     };
 
     private final Filter[] mathFilterResultsGroup2 = new Filter[]{
-            new Filter("ROUND(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0) = 1",      new String[]{"VALUE1", "value1"}),
-            new Filter("NOT ROUND(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0) = 1",  new String[]{"value2", "value3"}),
-            new Filter("MOD(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 0",        new String[]{"value2"}),
-            new Filter("NOT MOD(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 0",    new String[]{"VALUE1", "value1", "value3"}),
-            new Filter("CEIL(EXP(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 3",     new String[]{"VALUE1", "value1"}),
-            new Filter("NOT CEIL(EXP(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 3", new String[]{"value2", "value3"}),
-            new Filter("FLOOR(LN(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 1",     new String[]{"value3"}),
-            new Filter("NOT FLOOR(LN(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 1", new String[]{"VALUE1", "value1", "value2"})
+            new Filter("ROUND(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0) = 1",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT ROUND(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0) = 1",
+                    new String[]{"value2", "value3"}),
+
+            new Filter("MOD(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 0",
+                    new String[]{"value2"}),
+
+            new Filter("NOT MOD(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 0",
+                    new String[]{"VALUE1", "value1", "value3"}),
+
+            new Filter("CEIL(EXP(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 3",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT CEIL(EXP(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 3",
+                    new String[]{"value2", "value3"}),
+
+            new Filter("FLOOR(LN(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 1",
+                    new String[]{"value3"}),
+
+            new Filter("NOT FLOOR(LN(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER))) = 1",
+                    new String[]{"VALUE1", "value1", "value2"})
     };
 
     private final Filter[] mathFilterResultsGroup3 = new Filter[]{
-            new Filter("POWER(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 4",        new String[]{"value2"}),
-            new Filter("NOT POWER(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 4",    new String[]{"VALUE1", "value1", "value3"}),
-            new Filter("LOG(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 8) = 3",          new String[]{"value2"}),
-            new Filter("NOT LOG(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 8) = 3",      new String[]{"VALUE1", "value1", "value3"}),
-            new Filter("SQRT(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",            new String[]{"VALUE1", "value1"}),
-            new Filter("NOT SQRT(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",        new String[]{"value2", "value3"})
+            new Filter("POWER(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 4",
+                    new String[]{"value2"}),
+
+            new Filter("NOT POWER(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 2) = 4",
+                    new String[]{"VALUE1", "value1", "value3"}),
+
+            new Filter("LOG(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 8) = 3",
+                    new String[]{"value2"}),
+
+            new Filter("NOT LOG(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 8) = 3",
+                    new String[]{"VALUE1", "value1", "value3"}),
+
+            new Filter("SQRT(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT SQRT(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = 1",
+                    new String[]{"value2", "value3"})
     };
 
     private final Filter[] stringFunctionsFilterResultsGroup1 = new Filter[] {
-            new Filter("UPPER(tags.tag) = 'VALUE1'",                            new String[]{"VALUE1", "value1"}),
-            new Filter("NOT UPPER(tags.tag) = 'VALUE1'",                        new String[]{"otherValue", "value2", "value3"}),
-            new Filter("LOWER(tags.tag) = 'value1'",                            new String[]{"VALUE1", "value1"}),
-            new Filter("NOT LOWER(tags.tag) = 'value1'",                        new String[]{"otherValue", "value2", "value3"}),
-            new Filter("REPLACE(tags.tag, 'other', 'new') = 'newValue'",        new String[]{"otherValue"}),
-            new Filter("NOT REPLACE(tags.tag, 'other', 'new') = 'newValue'",    new String[]{"VALUE1", "value1", "value2", "value3"}),
-            new Filter("LENGTH(tags.tag) = 6",                                  new String[]{"VALUE1", "value1", "value2", "value3"}),
-            new Filter("NOT LENGTH(tags.tag) = 6",                              new String[]{"null", "otherValue"})
+            new Filter("UPPER(tags.tag) = 'VALUE1'",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT UPPER(tags.tag) = 'VALUE1'",
+                    new String[]{"otherValue", "value2", "value3"}),
+
+            new Filter("LOWER(tags.tag) = 'value1'",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT LOWER(tags.tag) = 'value1'",
+                    new String[]{"otherValue", "value2", "value3"}),
+
+            new Filter("REPLACE(tags.tag, 'other', 'new') = 'newValue'",
+                    new String[]{"otherValue"}),
+
+            new Filter("NOT REPLACE(tags.tag, 'other', 'new') = 'newValue'",
+                    new String[]{"VALUE1", "value1", "value2", "value3"}),
+
+            new Filter("LENGTH(tags.tag) = 6",
+                    new String[]{"VALUE1", "value1", "value2", "value3"}),
+
+            new Filter("NOT LENGTH(tags.tag) = 6",
+                    new String[]{"null", "otherValue"})
     };
 
     private final Filter[] stringFunctionsFilterResultsGroup2 = new Filter[]{
-            new Filter("CONCAT(tags.tag, '1', '2') = 'value312'",             new String[]{"value3"}),
-            new Filter("NOT CONCAT(tags.tag, '1', '2') = 'value312'",         new String[]{"null", "VALUE1", "otherValue", "value1", "value2"}),
-            new Filter("SUBSTR(tags.tag, 3, 2) = 'lu'",                       new String[]{"value1", "value2", "value3"}),
-            new Filter("NOT SUBSTR(tags.tag, 3, 2) = 'lu'",                   new String[]{"VALUE1", "otherValue"}),
-            new Filter("CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER) = 1",          new String[]{"VALUE1", "value1"}),
-            new Filter("NOT CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER) = 1",      new String[]{"value2", "value3"})
+            new Filter("CONCAT(tags.tag, '1', '2') = 'value312'",
+                    new String[]{"value3"}),
+
+            new Filter("NOT CONCAT(tags.tag, '1', '2') = 'value312'",
+                    new String[]{"null", "VALUE1", "otherValue", "value1", "value2"}),
+
+            new Filter("SUBSTR(tags.tag, 3, 2) = 'lu'",
+                    new String[]{"value1", "value2", "value3"}),
+
+            new Filter("NOT SUBSTR(tags.tag, 3, 2) = 'lu'",
+                    new String[]{"VALUE1", "otherValue"}),
+
+            new Filter("CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER) = 1",
+                    new String[]{"VALUE1", "value1"}),
+
+            new Filter("NOT CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER) = 1",
+                    new String[]{"value2", "value3"})
     };
 
     private final Filter[] dateFunctionsFilterResults = new Filter[] {
             new Filter("date_format(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = '1970-01-01T00:00:00.001Z'",
                     new String[]{"VALUE1", "value1"}),
+
             new Filter("NOT date_format(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER)) = '1970-01-01T00:00:00.001Z'",
                     new String[]{"value2", "value3"}),
-            new Filter("date_parse(CONCAT('1970-01-01 00:00:0', ISNULL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0), 'Z'), 'yyyy-MM-dd HH:mm:ssZ') = 1000",
+
+            new Filter("date_parse(CONCAT('1970-01-01 00:00:0', " +
+                    "ISNULL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0), 'Z'), " +
+                    "'yyyy-MM-dd HH:mm:ssZ') = 1000",
                     new String[]{"VALUE1", "value1"}),
-            new Filter("NOT date_parse(CONCAT('1970-01-01 00:00:0', ISNULL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0), 'Z'), 'yyyy-MM-dd HH:mm:ssZ') = 1000",
+
+            new Filter("NOT date_parse(CONCAT('1970-01-01 00:00:0', " +
+                    "ISNULL(CAST(SUBSTR(tags.tag, 6, 1) AS NUMBER), 0), 'Z'), " +
+                    "'yyyy-MM-dd HH:mm:ssZ') = 1000",
                     new String[]{"null", "otherValue", "value2", "value3"})
     };
 
     private final Filter[] comparisonFilterResults = new Filter[] {
-            new Filter("tags.tag = 'value1'",         new String[]{"value1"}),
-            new Filter("NOT tags.tag = 'value1'",     new String[]{"VALUE1", "otherValue", "value2", "value3"}),
-            new Filter("tags.tag != 'value1'",        new String[]{"VALUE1", "otherValue", "value2", "value3",}),
-            new Filter("NOT tags.tag != 'value1'",    new String[]{"value1"}),
-            new Filter("tags.tag > 'value1'",         new String[]{"value2", "value3"}),
-            new Filter("NOT tags.tag > 'value1'",     new String[]{"VALUE1", "otherValue", "value1"}),
-            new Filter("tags.tag >= 'value1'",        new String[]{"value1", "value2", "value3"}),
-            new Filter("NOT tags.tag >= 'value1'",    new String[]{"VALUE1", "otherValue"}),
-            new Filter("tags.tag < 'value1'",         new String[]{"VALUE1", "otherValue"}),
-            new Filter("NOT tags.tag < 'value1'",     new String[]{"value1", "value2", "value3"}),
-            new Filter("tags.tag <= 'value1'",        new String[]{"VALUE1", "otherValue", "value1"}),
-            new Filter("NOT tags.tag <= 'value1'",    new String[]{"value2", "value3"})
+            new Filter("tags.tag = 'value1'",
+                    new String[]{"value1"}),
+
+            new Filter("NOT tags.tag = 'value1'",
+                    new String[]{"VALUE1", "otherValue", "value2", "value3"}),
+
+            new Filter("tags.tag != 'value1'",
+                    new String[]{"VALUE1", "otherValue", "value2", "value3",}),
+
+            new Filter("NOT tags.tag != 'value1'",
+                    new String[]{"value1"}),
+
+            new Filter("tags.tag > 'value1'",
+                    new String[]{"value2", "value3"}),
+
+            new Filter("NOT tags.tag > 'value1'",
+                    new String[]{"VALUE1", "otherValue", "value1"}),
+
+            new Filter("tags.tag >= 'value1'",
+                    new String[]{"value1", "value2", "value3"}),
+
+            new Filter("NOT tags.tag >= 'value1'",
+                    new String[]{"VALUE1", "otherValue"}),
+
+            new Filter("tags.tag < 'value1'",
+                    new String[]{"VALUE1", "otherValue"}),
+
+            new Filter("NOT tags.tag < 'value1'",
+                    new String[]{"value1", "value2", "value3"}),
+
+            new Filter("tags.tag <= 'value1'",
+                    new String[]{"VALUE1", "otherValue", "value1"}),
+
+            new Filter("NOT tags.tag <= 'value1'",
+                    new String[]{"value2", "value3"})
     };
 
     private static int compareTags(String o1, String o2) {
