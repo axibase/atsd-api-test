@@ -4,14 +4,12 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -21,9 +19,13 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
     private static final String ENTITY_NAME1 = entity();
     private static final String ENTITY_NAME2 = entity();
     private static final String METRIC_NAME = metric();
+    private static long zeroTimeOffset;
 
     @BeforeClass
     public static void prepareDate() throws Exception {
+        TimeZone serverTimeZone = Util.getServerTimeZone();
+        zeroTimeOffset = serverTimeZone.getOffset(0);
+
         Series series1 = new Series(ENTITY_NAME1, METRIC_NAME);
         series1.addSamples(
                 Sample.ofDateInteger("1970-01-01T12:00:00.000Z", 0),
@@ -54,17 +56,29 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
 
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
-        Sample[] sampleDates1 = {
-                Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2),
-                Sample.ofDateInteger("2018-01-01T00:00:00.000Z", 1)
-        };
+        List<Sample> samples1 = new ArrayList<>();
+        /* This condition due to #4591 and should be removed later */
+        if (zeroTimeOffset == 0) {
+            samples1.add(Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1));
+        }
+        if (zeroTimeOffset < 0) {
+            samples1.add(Sample.ofDateInteger("2005-01-01T00:00:00.000Z", 1));
+            samples1.add(Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 2));
+        } else {
+            samples1.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
+            samples1.add(Sample.ofDateInteger("2018-01-01T00:00:00.000Z", 1));
+        }
 
-        Sample[] sampleDates2 = {
-                Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2)
-        };
+        List<Sample> samples2 = new ArrayList<>();
+        /* This condition due to #4591 and should be removed later */
+        if (zeroTimeOffset < 0) {
+            samples2.add(Sample.ofDateInteger("2005-01-01T00:00:00.000Z", 2));
+        } else {
+            samples2.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
+        }
 
-        assertSamples(sampleDates1, resultSeries.get(0).getData());
-        assertSamples(sampleDates2, resultSeries.get(1).getData());
+        assertSamples(samples1, resultSeries.get(0).getData());
+        assertSamples(samples2, resultSeries.get(1).getData());
     }
 
     @Issue("4101")
@@ -80,14 +94,17 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
 
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
-        Sample[] sampleDates2 = {
-                Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2)
-        };
+        List<Sample> samples = new ArrayList<>();
+        if (zeroTimeOffset < 0) {
+            samples.add(Sample.ofDateInteger("2005-01-01T00:00:00.000Z", 2));
+        } else {
+            samples.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
+        }
 
-        assertSamples(sampleDates2, resultSeries.get(0).getData());
+        assertSamples(samples, resultSeries.get(0).getData());
     }
 
-    private void assertSamples(Sample[] expectedSamples, List<Sample> actualSamples) throws Exception {
+    private void assertSamples(List<Sample> expectedSamples, List<Sample> actualSamples) throws Exception {
         List<Sample> translatedSamples = new ArrayList<>();
         for (Sample s : expectedSamples) {
             String translatedDate = TestUtil.timeTranslateDefault(s.getRawDate(),
