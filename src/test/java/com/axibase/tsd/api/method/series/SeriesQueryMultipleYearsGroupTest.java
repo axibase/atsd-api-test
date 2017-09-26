@@ -55,7 +55,6 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
         Sample[] sampleDates1 = {
-                Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1),
                 Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2),
                 Sample.ofDateInteger("2018-01-01T00:00:00.000Z", 1)
         };
