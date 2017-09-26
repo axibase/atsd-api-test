@@ -150,23 +150,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
             query.setTags(Collections.singletonMap("tag", "value1"));
         }
         query.setTagExpression(filter.expression);
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
-        Set<String> actualTagsSet = new HashSet<>();
-        for (Series series : seriesList) {
-            Map<String, String> tags = series.getTags();
-            if (tags == null || tags.size() == 0) {
-                actualTagsSet.add("null");
-                continue;
-            }
-
-            String value = tags.get("tag");
-            if (value == null) {
-                actualTagsSet.add("null");
-                continue;
-            }
-
-            actualTagsSet.add(value);
-        }
+        Set<String> actualTagsSet = executeTagsQuery(query);
 
         assertEquals(actualTagsSet, expectedTagsSet);
     }
@@ -260,6 +244,12 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         query.setTagExpression(filter);
+        Set<String> actualTagsSet = executeTagsQuery(query);
+
+        assertEquals(String.format("Incorrect result with filter %s", filter), expectedTagsSet, actualTagsSet);
+    }
+
+    private Set<String> executeTagsQuery(SeriesQuery query) throws Exception {
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
         Set<String> actualTagsSet = new HashSet<>();
         for (Series series : seriesList) {
@@ -278,7 +268,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
             actualTagsSet.add(value);
         }
 
-        assertEquals(String.format("Incorrect result with filter %s", filter), expectedTagsSet, actualTagsSet);
+        return actualTagsSet;
     }
 
     private static int compareTags(String o1, String o2) {
