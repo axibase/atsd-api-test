@@ -9,58 +9,55 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
-import org.testng.annotations.BeforeClass;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static com.axibase.tsd.api.transport.tcp.TCPSender.sendChecked;
 import static org.testng.AssertJUnit.assertTrue;
 
+@Slf4j
 public class LineBreakInsideSeriesCommandTest extends CommandMethod {
-    private static Series ordinarySeries;
     private static Sample testSample = new Sample(Mocks.ISO_TIME, 1234);
-
-    @BeforeClass
-    public static void initializeFields() {
-        ordinarySeries = new Series(Mocks.entity(), Mocks.metric());
-        ordinarySeries.addSamples(testSample);
-    }
 
     enum TestType {
         NETWORK_API, DATA_API
     }
 
+    @AllArgsConstructor
+    @ToString
+    private static class TestData {
+        TestType testType;
+        String insertData;
+        String responseData;
+    }
+
     @DataProvider(name = "testTypeAndValue")
     public static Object[][] provideTestTypeAndValue() {
-        String[] values = new String[]{
-                "test\ntest",
-                "test\ntest\ntest",
-                "test\rtest\rtest",
-                "test\ntest\rtest",
-                "test\rtest\ntest",
-                "test\r\ntest\n\rtest",
-                "test\n",
-                "test\r",
-                "test\r\n",
-                "\ntest",
-                "\rtest",
-                "\n\rtest",
-                "\n",
-                "\r",
-                "\n\n",
-                "\r\n",
-                "\n\r",
+        String[][] valueResults = {
+                {"test\ntest",                    "test\ntest"},
+                {"test\ntest\ntest",              "test\ntest\ntest"},
+                {"test\rtest\rtest",              "test\rtest\rtest"},
+                {"test\r\ntest\n\rtest",          "test\ntest\n\rtest"},
+                {"test\n\ntest\n\ntest",          "test\ntest\ntest"},
+                {"test\n\r",                      "test\n\r"},
+                {"  \r\r\n\rtest\n\rtest  \n\r ", "  \n\rtest\n\rtest  \n\r "},
         };
 
         List<Object[]> parameters = new ArrayList<>();
 
         for (TestType type : TestType.values()) {
-            for (String value : values) {
-                parameters.add(new Object[]{type, value});
+            for (String[] valueResult : valueResults) {
+                parameters.add(new Object[]{new TestData(type, valueResult[0], valueResult[1])});
             }
         }
 
@@ -74,36 +71,44 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
      * #3878, #3906
      */
     @Test(dataProvider = "testTypeAndValue")
-    public void testTagLineBreak(TestType type, String value) throws Exception {
+    public void testTagLineBreak(TestData data) throws Exception {
+        log.info("Data", data);
         Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
-        seriesWithBreak.addTag("test-tag", value);
+        seriesWithBreak.addTag("test-tag", data.insertData);
         seriesWithBreak.addSamples(testSample);
 
-        sendAndCheck(Arrays.asList(seriesWithBreak, ordinarySeries), type);
+        Series responseSeries = seriesWithBreak.copy();
+        responseSeries.addTag("test-tag", data.responseData);
+
+        sendAndCheck(seriesWithBreak, responseSeries, data.testType);
     }
 
     /**
      * #3878, #3906
      */
     @Test(dataProvider = "testTypeAndValue")
-    public void testMetricTextLineBreak(TestType type, String value) {
-        Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
-        seriesWithBreak.addSamples(new TextSample(Mocks.ISO_TIME, value));
+    public void testMetricTextLineBreak(TestData data) {
+        Sample sampleWithBreak = new TextSample(Mocks.ISO_TIME, data.insertData);
+        Sample responseSample = new TextSample(Mocks.ISO_TIME, data.responseData);
 
-        sendAndCheck(Arrays.asList(seriesWithBreak, ordinarySeries), type);
+        Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
+        Series responseSeries = seriesWithBreak.copy();
+
+        seriesWithBreak.addSamples(sampleWithBreak);
+        responseSeries.addSamples(responseSample);
+
+        sendAndCheck(seriesWithBreak, responseSeries, data.testType);
     }
 
-    private void sendAndCheck(List<Series> seriesList, TestType type) {
+    private void sendAndCheck(Series insert, Series response, TestType type) {
         List<PlainCommand> commands = new ArrayList<>();
-        for (Series series : seriesList) {
-            commands.addAll(seriesToCommands(series));
-        }
+        commands.addAll(seriesToCommands(insert));
 
         boolean checked;
         switch (type) {
             case DATA_API:
                 try {
-                    sendChecked(new SeriesCheck(seriesList), commands);
+                    sendChecked(new SeriesCheck(Collections.singletonList(response)), commands);
                     checked = true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -112,7 +117,7 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
                 break;
             case NETWORK_API:
                 try {
-                    TCPSender.sendChecked(new SeriesCheck(seriesList), commands);
+                    TCPSender.sendChecked(new SeriesCheck(Collections.singletonList(response)), commands);
                     checked = true;
                 } catch (IOException e) {
                     e.printStackTrace();
