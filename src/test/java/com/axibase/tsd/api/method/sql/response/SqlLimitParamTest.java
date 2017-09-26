@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,22 +21,20 @@ public class SqlLimitParamTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-29T08:00:00.000Z", 0),
-                new Sample("2016-06-29T08:00:01.000Z", 1),
-                new Sample("2016-06-29T08:00:02.000Z", 2),
-                new Sample("2016-06-29T08:00:03.000Z", 3),
-                new Sample("2016-06-29T08:00:04.000Z", 4)
+                Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0),
+                Sample.ofDateInteger("2016-06-29T08:00:01.000Z", 1),
+                Sample.ofDateInteger("2016-06-29T08:00:02.000Z", 2),
+                Sample.ofDateInteger("2016-06-29T08:00:03.000Z", 3),
+                Sample.ofDateInteger("2016-06-29T08:00:04.000Z", 4)
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestLessLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value LIMIT 3",
+                "SELECT value FROM \"%s\" ORDER BY value LIMIT 3",
                 TEST_METRIC_NAME
         );
 
@@ -51,13 +50,11 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestGraterLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value LIMIT 5",
+                "SELECT value FROM \"%s\" ORDER BY value LIMIT 5",
                 TEST_METRIC_NAME
         );
 
@@ -72,13 +69,11 @@ public class SqlLimitParamTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testLimitUndefined() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value",
+                "SELECT value FROM \"%s\" ORDER BY value",
                 TEST_METRIC_NAME
         );
 
@@ -96,13 +91,11 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestNegativeWithLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value LIMIT 4",
+                "SELECT value FROM \"%s\" ORDER BY value LIMIT 4",
                 TEST_METRIC_NAME
         );
 
@@ -118,13 +111,11 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestUndefinedWithLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY VALUE LIMIT 3",
+                "SELECT value FROM \"%s\" ORDER BY VALUE LIMIT 3",
                 TEST_METRIC_NAME
         );
 
@@ -140,13 +131,11 @@ public class SqlLimitParamTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3278
-     */
+    @Issue("3278")
     @Test
     public void testRequestNegativeWithoutLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' ORDER BY value",
+                "SELECT value FROM \"%s\" ORDER BY value",
                 TEST_METRIC_NAME
         );
 

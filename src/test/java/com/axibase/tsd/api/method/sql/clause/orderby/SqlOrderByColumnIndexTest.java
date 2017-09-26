@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,29 +24,27 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME);
         series1.addSamples(
-                new Sample("2016-06-19T11:00:00.000Z", 6),
-                new Sample("2016-06-19T11:00:01.000Z", 2),
-                new Sample("2016-06-19T11:00:02.000Z", 4)
+                Sample.ofDateInteger("2016-06-19T11:00:00.000Z", 6),
+                Sample.ofDateInteger("2016-06-19T11:00:01.000Z", 2),
+                Sample.ofDateInteger("2016-06-19T11:00:02.000Z", 4)
         );
 
 
         Series series2 = new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME);
         series2.addSamples(
-                new Sample("2016-06-19T11:00:04.000Z", 3),
-                new Sample("2016-06-19T11:00:05.000Z", 1),
-                new Sample("2016-06-19T11:00:06.000Z", 5)
+                Sample.ofDateInteger("2016-06-19T11:00:04.000Z", 3),
+                Sample.ofDateInteger("2016-06-19T11:00:05.000Z", 1),
+                Sample.ofDateInteger("2016-06-19T11:00:06.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test123Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 1,2,3",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 1,2,3",
                 TEST_METRIC_NAME
         );
 
@@ -65,13 +63,11 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test132Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 1,3,2",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 1,3,2",
                 TEST_METRIC_NAME
         );
 
@@ -90,13 +86,11 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test213Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 2,1,3",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 2,1,3",
                 TEST_METRIC_NAME
         );
 
@@ -115,13 +109,11 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test231Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 2,3,1",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 2,3,1",
                 TEST_METRIC_NAME
         );
 
@@ -140,13 +132,11 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test312Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 3,1,2",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 3,1,2",
                 TEST_METRIC_NAME
         );
 
@@ -165,13 +155,11 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test321Order() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 3,2,1",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 3,2,1",
                 TEST_METRIC_NAME
         );
 
@@ -191,13 +179,11 @@ public class SqlOrderByColumnIndexTest extends SqlTest {
     }
 
 
-    /**
-     * #3191
-     */
+    @Issue("3191")
     @Test
     public void test1Decs2Decs3DecsOrder() {
         String sqlQuery = String.format(
-                "SELECT entity, value, datetime FROM '%s' %nORDER BY 1 DESC,2 DESC,3 DESC",
+                "SELECT entity, value, datetime FROM \"%s\" %nORDER BY 1 DESC,2 DESC,3 DESC",
                 TEST_METRIC_NAME
         );
 

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -26,10 +27,10 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     public static void prepareDataSet() throws Exception {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
         testSeries.addSamples(
-                new Sample("2016-06-03T09:23:00.000Z", 16),
-                new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
-                new Sample("2016-06-03T09:36:00.000Z", 6),
-                new Sample("2016-06-03T09:41:00.000Z", 19)
+                Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 16),
+                Sample.ofDateDecimal("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                Sample.ofDateInteger("2016-06-03T09:36:00.000Z", 6),
+                Sample.ofDateInteger("2016-06-03T09:41:00.000Z", 19)
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }
@@ -44,9 +45,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     }
 
-    /**
-     * #3609
-     */
+    @Issue("3609")
     @Test
     public void testNoQueryParamsPost() {
         final Response response = httpSqlApiResource
@@ -60,7 +59,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-codes-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .request()
                 .get();
         response.bufferEntity();
@@ -71,7 +70,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         final Response response = httpSqlApiResource
                 .request()
                 .post(Entity.entity(
@@ -86,7 +85,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatJsonPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         form.param("outputFormat", "json");
         final Response response = httpSqlApiResource
                 .request()
@@ -101,7 +100,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatCsvPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-codes-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         form.param("outputFormat", "csv");
         final Response response = httpSqlApiResource
                 .request()
@@ -116,7 +115,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatJsonGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-codes-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .queryParam("outputFormat", OutputFormat.JSON)
                 .request()
                 .get();
@@ -128,7 +127,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Test
     public void testDefaultOutputFormatCsvGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-codes-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .queryParam("outputFormat", OutputFormat.CSV)
                 .request()
                 .get();

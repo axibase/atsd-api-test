@@ -10,7 +10,8 @@ import com.axibase.tsd.api.model.sql.function.interpolate.Alignment;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -24,7 +25,7 @@ import static java.util.Collections.singletonList;
 
 public class ApplyTest extends SqlTest {
     private static final String APPLY_METRIC = metric();
-    private static final Sample DEFAULT_SAMPLE = new Sample("2016-06-29T08:00:00.000Z", 0);
+    private static final Sample DEFAULT_SAMPLE = Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0);
 
 
     @BeforeClass
@@ -98,12 +99,10 @@ public class ApplyTest extends SqlTest {
         return enumValues;
     }
 
-    /**
-     * #3388
-     */
+    @Issue("3388")
     @Test(dataProvider = "interpolateVariantsProvider")
     public void testApplyWithDateTimeInterval(String param) {
-        String sqlQuery = String.format("SELECT * FROM '%s'%nWHERE datetime BETWEEN '2016-06-29T07:00:00.000Z' " +
+        String sqlQuery = String.format("SELECT * FROM \"%s\"%nWHERE datetime BETWEEN '2016-06-29T07:00:00.000Z' " +
                         "AND '2016-06-29T08:00:00.000Z'%nWITH INTERPOLATE(%s)",
                 APPLY_METRIC, param
         );
@@ -113,19 +112,17 @@ public class ApplyTest extends SqlTest {
     }
 
 
-    /**
-     * #3462
-     */
+    @Issue("3462")
     @Test
     public void testNullSeries() throws Exception {
-        Long startTime = TestUtil.parseDate("2016-06-29T07:00:00.000Z'").getTime();
-        Long endTime = TestUtil.parseDate("2016-06-29T10:00:00.000Z").getTime();
+        Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z'").getTime();
+        Long endTime = Util.parseDate("2016-06-29T10:00:00.000Z").getTime();
         Series series = new Series(entity(), metric());
         for (long i = startTime; i < endTime; i += 60000) {
-            series.addSamples(new Sample(TestUtil.ISOFormat(i), (BigDecimal) null));
+            series.addSamples(Sample.ofDateDecimal(Util.ISOFormat(i), (BigDecimal) null));
         }
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
-        String sqlQuery = String.format("SELECT * FROM '%s'%nWHERE time >= %d AND time < %d%nWITH INTERPOLATE(1 MINUTE, LINEAR)",
+        String sqlQuery = String.format("SELECT * FROM \"%s\"%nWHERE time >= %d AND time < %d%nWITH INTERPOLATE(1 MINUTE, LINEAR)",
                 series.getMetric(), startTime, endTime
         );
         String assertMessage = String.format(

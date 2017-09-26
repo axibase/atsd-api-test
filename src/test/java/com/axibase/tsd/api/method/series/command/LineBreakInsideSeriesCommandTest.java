@@ -6,9 +6,9 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import static org.testng.AssertJUnit.assertTrue;
 
 @Slf4j
 public class LineBreakInsideSeriesCommandTest extends CommandMethod {
-    private static Sample testSample = new Sample(Mocks.ISO_TIME, 1234);
+    private static Sample testSample = Sample.ofDateInteger(Mocks.ISO_TIME, 1234);
 
     enum TestType {
         NETWORK_API, DATA_API
@@ -41,7 +41,7 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
         String responseData;
     }
 
-    @DataProvider(name = "testTypeAndValue")
+    @DataProvider
     public static Object[][] provideTestTypeAndValue() {
         String[][] valueResults = {
                 {"test\ntest",                    "test\ntest"},
@@ -67,10 +67,9 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
         return result;
     }
 
-    /**
-     * #3878, #3906
-     */
-    @Test(dataProvider = "testTypeAndValue")
+    @Issue("3878")
+    @Issue("3906")
+    @Test(dataProvider = "provideTestTypeAndValue")
     public void testTagLineBreak(TestData data) throws Exception {
         log.info("Data", data);
         Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
@@ -83,13 +82,12 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
         sendAndCheck(seriesWithBreak, responseSeries, data.testType);
     }
 
-    /**
-     * #3878, #3906
-     */
-    @Test(dataProvider = "testTypeAndValue")
+    @Issue("3878")
+    @Issue("3906")
+    @Test(dataProvider = "provideTestTypeAndValue")
     public void testMetricTextLineBreak(TestData data) {
-        Sample sampleWithBreak = new TextSample(Mocks.ISO_TIME, data.insertData);
-        Sample responseSample = new TextSample(Mocks.ISO_TIME, data.responseData);
+        Sample sampleWithBreak = Sample.ofDateText(Mocks.ISO_TIME, data.insertData);
+        Sample responseSample = Sample.ofDateText(Mocks.ISO_TIME, data.responseData);
 
         Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
         Series responseSeries = seriesWithBreak.copy();
@@ -142,10 +140,10 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
 
             command.setEntityName(entity);
             command.setTags(new HashMap<>(series.getTags()));
-            command.setTimeMills(sample.getT());
-            command.setTimeISO(sample.getD());
+            command.setTimeMills(sample.getUnixTime());
+            command.setTimeISO(sample.getRawDate());
 
-            BigDecimal v = sample.getV();
+            BigDecimal v = sample.getValue();
             if (v != null)
                 command.setValues(Collections.singletonMap(metric, v.toString()));
 

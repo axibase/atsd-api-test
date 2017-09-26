@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.alert;
 
 
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.json.JSONArray;
 import org.testng.annotations.Test;
 
@@ -11,8 +11,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.TestUtil.extractJSONObjectFieldFromJSONArrayByIndex;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -20,9 +21,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class AlertQueryTest extends AlertTest {
 
 
-    /**
-     * #2991
-     */
+    @Issue("2991")
     @Test
     public void testEntityWildcardStarChar() throws Exception {
         final String entityName = "alert-query-entity-1";
@@ -39,9 +38,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardStartChar() throws Exception {
         final String entityName = "alert-query-entity-2";
@@ -58,9 +55,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardQuestionChar() throws Exception {
         final String entityName = "alert-query-entity-3";
@@ -77,9 +72,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2981
-     */
+    @Issue("2981")
     @Test
     public void testEntityExpressionFilterExist() throws Exception {
         final String entityName = "alert-query-entity-4";
@@ -96,9 +89,7 @@ public class AlertQueryTest extends AlertTest {
         assertTrue("Fail to get alerts by entity expression", calculateJsonArraySize(response.readEntity(String.class)) > 0);
     }
 
-    /**
-     * #2993
-     */
+    @Issue("2993")
     @Test
     public void testUnknownEntityNotAffectProcessingOthers() throws Exception {
         final String entityName = "alert-query-entity-5";
@@ -121,6 +112,6 @@ public class AlertQueryTest extends AlertTest {
         assertEquals(OK.getStatusCode(), response.getStatus());
         assertTrue("Fail to get alerts by queries with unknown entity", jsonResponse.length() == 2);
         assertEquals("Unexpected warning message", "ENTITY not found for name: 'unknown'",
-                TestUtil.extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
+                extractJSONObjectFieldFromJSONArrayByIndex(1, "warning", jsonResponse));
     }
 }

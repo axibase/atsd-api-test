@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,21 +25,19 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-29T08:00:00.000Z", new BigDecimal("2.11")),
-                new Sample("2016-06-29T08:00:01.000Z", new BigDecimal("7.567")),
-                new Sample("2016-06-29T08:00:02.000Z", new BigDecimal("-1.23"))
+                Sample.ofDateDecimal("2016-06-29T08:00:00.000Z", new BigDecimal("2.11")),
+                Sample.ofDateDecimal("2016-06-29T08:00:01.000Z", new BigDecimal("7.567")),
+                Sample.ofDateDecimal("2016-06-29T08:00:02.000Z", new BigDecimal("-1.23"))
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNotNullWithMathFunction() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL",
+                "SELECT SQRT(value) FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -53,13 +52,11 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     }
 
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNullWithMathFunction() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NULL",
+                "SELECT SQRT(value) FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NULL",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -73,13 +70,11 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     }
 
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNotNullWithMathFunctionAliasInOrderBy() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) AS 'sqrt' FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL %nORDER BY 'sqrt'",
+                "SELECT SQRT(value) AS \"sqrt\" FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NOT NULL %nORDER BY \"sqrt\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -93,13 +88,11 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNullWithMathFunctionAliasInOrderBy() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) AS 'sqrt' FROM '%s' %nWHERE entity = '%s'AND SQRT(value) IS NULL %nORDER BY 'sqrt'",
+                "SELECT SQRT(value) AS \"sqrt\" FROM \"%s\" %nWHERE entity = '%s'AND SQRT(value) IS NULL %nORDER BY \"sqrt\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -113,13 +106,11 @@ public class SqlOperatorIsNullWithMathFunctionsTest extends SqlTest {
     }
 
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testIsNullWithMathFunctionComposeAliasInOrderBy() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) AS 'sqrt' FROM '%s' %nWHERE entity = '%s'AND (SQRT(value) + ABS(value))/value IS NULL %nORDER BY 'sqrt'",
+                "SELECT SQRT(value) AS \"sqrt\" FROM \"%s\" %nWHERE entity = '%s'AND (SQRT(value) + ABS(value))/value IS NULL %nORDER BY \"sqrt\"",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

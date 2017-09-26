@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Aggregate;
 import com.axibase.tsd.api.model.series.AggregationType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -14,8 +15,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Mocks.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -23,11 +24,11 @@ public class MessageQueryStatsTest extends MessageMethod {
     private final static String MESSAGE_STATS_ENTITY = "entity-message-statistics-1";
     private final static String MESSAGE_STATS_TYPE = "stats-type-1";
     private final static List<String> DATES = Arrays.asList(
-            "2016-05-21T00:00:01.000Z",
-            "2016-05-21T00:01:01.000Z",
-            "2016-05-21T00:02:01.000Z",
-            "2016-05-21T00:03:01.000Z",
-            "2016-05-21T00:04:01.000Z");
+            "2017-05-21T00:00:01.000Z",
+            "2017-05-21T00:01:01.000Z",
+            "2017-05-21T00:02:01.000Z",
+            "2017-05-21T00:03:01.000Z",
+            "2017-05-21T00:04:01.000Z");
 
     @BeforeClass
     public void insertMessages() throws Exception{
@@ -39,10 +40,8 @@ public class MessageQueryStatsTest extends MessageMethod {
         }
     }
 
-    /**
-     * #2945
-     */
-    @Test
+    @Issue("2945")
+    @Test(enabled = false)
     public void testNoAggregate() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
 
@@ -51,13 +50,11 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Response should contain only 1 series", 1, messageStatsList.size());
         List<Sample> samples = messageStatsList.get(0).getData();
         assertEquals("Response should contain only 1 sample", 1, samples.size());
-        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getV());
+        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
-    /**
-     * #2945
-     */
-    @Test
+    @Issue("2945")
+    @Test(enabled = false)
     public void testAggregateCount() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.COUNT));
@@ -67,13 +64,11 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Response should contain only 1 series", 1, messageStatsList.size());
         List<Sample> samples = messageStatsList.get(0).getData();
         assertEquals("Response should contain only 1 sample", 1, samples.size());
-        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getV());
+        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
-    /**
-     * #2945
-     */
-    @Test
+    @Issue("2945")
+    @Test(enabled = false)
     public void testAggregateDetail() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.DETAIL));
@@ -83,12 +78,10 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Response should contain only 1 series", 1, messageStatsList.size());
         List<Sample> samples = messageStatsList.get(0).getData();
         assertEquals("Response should contain only 1 sample", 1, samples.size());
-        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getV());
+        assertEquals("Message count mismatch", new BigDecimal(DATES.size()), samples.get(0).getValue());
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test
     public void testAggregateUnknownRaiseError() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
@@ -99,9 +92,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         assertEquals("Query with unknown aggregate type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2945
-     */
+    @Issue("2945")
     @Test
     public void testAggregateNoTypeRaiseError() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);

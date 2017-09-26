@@ -18,6 +18,7 @@ public class MetricCommand extends AbstractCommand {
     private DataType dataType;
     private String timeZoneId;
     private Map<String, String> tags;
+    private Boolean enabled;
     private InterpolationMode interpolate;
 
 
@@ -36,6 +37,7 @@ public class MetricCommand extends AbstractCommand {
         setVersioning(metric.getVersioned());
         setLabel(metric.getLabel());
         setTimeZoneId(metric.getTimeZoneID());
+        setEnabled(metric.getEnabled());
     }
 
     public String getLabel() {
@@ -94,6 +96,22 @@ public class MetricCommand extends AbstractCommand {
         this.interpolate = interpolate;
     }
 
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public void setTimeZoneId(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = commandBuilder();
@@ -121,19 +139,14 @@ public class MetricCommand extends AbstractCommand {
         if (this.timeZoneId != null) {
             stringBuilder.append(FieldFormat.quoted("z", timeZoneId.toString()));
         }
+        if (this.enabled != null) {
+            stringBuilder.append(FieldFormat.quoted("b", enabled.toString()));
+        }
         if (this.tags != null) {
             for (Map.Entry<String, String> entry : tags.entrySet()) {
                 stringBuilder.append(FieldFormat.keyValue("t", entry.getKey(), entry.getValue()));
             }
         }
         return stringBuilder.toString();
-    }
-
-    public String getTimeZoneId() {
-        return timeZoneId;
-    }
-
-    public void setTimeZoneId(String timeZoneId) {
-        this.timeZoneId = timeZoneId;
     }
 }

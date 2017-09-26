@@ -8,12 +8,15 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.TestUtil.quoteEscape;
 
 public class SqlSelectMetricFieldsTest extends SqlTest {
     private static final String TEST_METRIC = metric();
@@ -57,7 +60,7 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 {"enabled", "true"},
                 {"persistent", "true"},
                 {"filter", "name = '*'"},
-                {"lastInsertTime", "1464945780000"},
+                {"lastInsertTime", "" + Util.getMillis(Mocks.ISO_TIME)},
                 {"retentionIntervalDays", "0"},
                 {"versioning", "false"},
                 {"minValue", "0"},
@@ -68,13 +71,11 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         };
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testQueryMetricFields(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.metric.%s FROM '%s' m",
+                "SELECT m.metric.%s FROM \"%s\" m",
                 field,
                 TEST_METRIC);
 
@@ -83,29 +84,26 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in metric field query (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInWhere(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.metric.%1$s FROM '%2$s' m WHERE m.metric.%1$s = \"%3$s\"",
+                "SELECT m.metric.%1$s FROM \"%2$s\" m WHERE m.metric.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
-                value);
+                quoteEscape(value)
+        );
 
         String[][] expectedRows = {{value}};
 
         assertSqlQueryRows("Error in metric field query with WHERE (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInGroupBy(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s",
+                "SELECT m.metric.%1$s FROM \"%2$s\" m GROUP BY m.metric.%1$s",
                 field,
                 TEST_METRIC);
 
@@ -114,13 +112,11 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in metric field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInOrderBy(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.metric.%1$s FROM '%2$s' m ORDER BY m.metric.%1$s",
+                "SELECT m.metric.%1$s FROM \"%2$s\" m ORDER BY m.metric.%1$s",
                 field,
                 TEST_METRIC);
 
@@ -129,16 +125,15 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "metricFieldsProvider")
     public void testMetricFieldsInHaving(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.metric.%1$s FROM '%2$s' m GROUP BY m.metric.%1$s HAVING m.metric.%1$s = \"%3$s\"",
+                "SELECT m.metric.%1$s FROM \"%2$s\" m GROUP BY m.metric.%1$s HAVING m.metric.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
-                value);
+                quoteEscape(value)
+        );
 
         String[][] expectedRows = {{value}};
 

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,24 +19,22 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
         Series series = new Series(entity(), METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-01-01T12:00:00.000Z", 1),
-                new Sample("2017-01-02T12:00:00.000Z", 2),
-                new Sample("2017-01-03T12:00:00.000Z", 4),
-                new Sample("2017-01-04T12:00:00.000Z", 3),
-                new Sample("2017-01-05T12:00:00.000Z", 5),
-                new Sample("2017-01-06T12:00:00.000Z", 6)
+                Sample.ofDateInteger("2017-01-01T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-02T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-05T12:00:00.000Z", 5),
+                Sample.ofDateInteger("2017-01-06T12:00:00.000Z", 6)
         );
 
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4060
-     */
+    @Issue("4060")
     @Test
     public void testLagLeadInsideBetweenOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' WHERE value BETWEEN lag(value) and lead(value)",
+                "SELECT value FROM \"%s\" WHERE value BETWEEN lag(value) and lead(value)",
                 METRIC_NAME
         );
 
@@ -44,13 +43,11 @@ public class FunctionsInsideBetweenOperatorTest extends SqlTest {
         assertSqlQueryRows("Incorrect result with lag/lead in BETWEEN operator",
                 expectedRows, sqlQuery);
     }
-    /**
-     * #4060
-     */
+    @Issue("4060")
     @Test
     public void testSqrtInsideBetweenOperator() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' WHERE value BETWEEN sqrt(value) and value",
+                "SELECT value FROM \"%s\" WHERE value BETWEEN sqrt(value) and value",
                 METRIC_NAME
         );
 

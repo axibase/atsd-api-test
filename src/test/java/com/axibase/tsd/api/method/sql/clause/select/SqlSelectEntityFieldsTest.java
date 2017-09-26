@@ -7,6 +7,8 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -41,18 +43,16 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
                 {"timeZone", Mocks.TIMEZONE_ID},
                 {"interpolate", "PREVIOUS"},
                 {"enabled", "true"},
-                {"lastInsertTime", "1464945780000"},
+                {"lastInsertTime", "" + Util.getMillis(Mocks.ISO_TIME)},
                 {"tags", "tag=value"}
         };
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testQueryEntityFields(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.entity.%s FROM '%s' m",
+                "SELECT m.entity.%s FROM \"%s\" m",
                 field,
                 TEST_METRIC);
 
@@ -61,13 +61,11 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInWhere(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.entity.%1$s FROM '%2$s' m WHERE m.entity.%1$s = '%3$s'",
+                "SELECT m.entity.%1$s FROM \"%2$s\" m WHERE m.entity.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
                 value);
@@ -77,13 +75,11 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with WHERE (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInGroupBy(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s",
+                "SELECT m.entity.%1$s FROM \"%2$s\" m GROUP BY m.entity.%1$s",
                 field,
                 TEST_METRIC);
 
@@ -92,13 +88,11 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInOrderBy(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.entity.%1$s FROM '%2$s' m ORDER BY m.entity.%1$s",
+                "SELECT m.entity.%1$s FROM \"%2$s\" m ORDER BY m.entity.%1$s",
                 field,
                 TEST_METRIC);
 
@@ -107,13 +101,11 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
         assertSqlQueryRows("Error in entity field query with GROUP BY (%s)", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4117
-     */
+    @Issue("4117")
     @Test(dataProvider = "entityFieldsProvider")
     public void testEntityFieldsInHaving(String field, String value) {
         String sqlQuery = String.format(
-                "SELECT m.entity.%1$s FROM '%2$s' m GROUP BY m.entity.%1$s HAVING m.entity.%1$s = '%3$s'",
+                "SELECT m.entity.%1$s FROM \"%2$s\" m GROUP BY m.entity.%1$s HAVING m.entity.%1$s = '%3$s'",
                 field,
                 TEST_METRIC,
                 value);

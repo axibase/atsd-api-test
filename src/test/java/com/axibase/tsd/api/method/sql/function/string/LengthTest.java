@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.sql.function.string;
 
 
 import com.axibase.tsd.api.method.sql.SqlTest;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,12 +30,10 @@ public class LengthTest extends SqlTest {
         return result;
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT LENGTH(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT LENGTH(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply LOWER function to %s", param), queryResponse(sqlQuery));

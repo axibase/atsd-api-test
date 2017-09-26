@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,7 +26,7 @@ public class SqlEntityTagsTest extends SqlTest {
     public static void prepareDate() throws Exception {
 
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-            addSamples(new Sample("2016-06-19T11:00:00.000Z", 3));
+            addSamples(Sample.ofDateInteger("2016-06-19T11:00:00.000Z", 3));
         }};
 
         EntityMethod.createOrReplaceEntityCheck(
@@ -42,19 +43,12 @@ public class SqlEntityTagsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-
-    /*
-      #2926 issue.
-     */
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testLikeOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1 %nFROM '%s' %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
-                        "entity.tags.tag1 LIKE 'val*' %nAND entity = '%s'",
+                "SELECT entity.tags.tag1 %nFROM \"%s\" %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
+                        "entity.tags.tag1 LIKE 'val%%' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -67,14 +61,12 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testNotLikeOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1 %nFROM '%s' %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
-                        "entity.tags.tag1 NOT LIKE 'val*' %nAND entity = '%s'",
+                "SELECT entity.tags.tag1 %nFROM \"%s\" %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
+                        "entity.tags.tag1 NOT LIKE 'val%%' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -85,14 +77,11 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testEqualsOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1 %nFROM '%s' %nWHERE datetime='2016-06-19T11:00:00.000Z' " +
+                "SELECT entity.tags.tag1 %nFROM \"%s\" %nWHERE datetime='2016-06-19T11:00:00.000Z' " +
                         "AND entity.tags.tag1 ='val1' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -106,14 +95,11 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testNotEqualsOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag1 FROM '%s' %n" +
+                "SELECT entity.tags.tag1 FROM \"%s\" %n" +
                         "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag1 <> 'val2' %nAND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -127,14 +113,11 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testIsNullOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag4 FROM '%s'%nWHERE datetime='2016-06-19T11:00:00.000Z' " +
+                "SELECT entity.tags.tag4 FROM \"%s\"%nWHERE datetime='2016-06-19T11:00:00.000Z' " +
                         "AND entity.tags.tag4 IS NULL AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
@@ -148,13 +131,11 @@ public class SqlEntityTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #2926
-     */
+    @Issue("2926")
     @Test
     public void testIsNotNullOperator() {
         String sqlQuery = String.format(
-                "SELECT entity.tags.tag4 FROM '%s' %n" +
+                "SELECT entity.tags.tag4 FROM \"%s\" %n" +
                         "WHERE datetime='2016-06-19T11:00:00.000Z' AND entity.tags.tag4 IS NOT NULL %n" +
                         "AND entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME

@@ -11,7 +11,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -40,11 +40,11 @@ public class SqlStandardCollectionViewTest extends SqlTest {
         //Series data
         List<Series> seriesList = new ArrayList<>();
         seriesList.add(new Series(TEST_ENTITY1_NAME, TEST_METRIC1_NAME, TAGS) {{
-            addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
+            addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0));
         }});
 
         seriesList.add(new Series(TEST_ENTITY2_NAME, TEST_METRIC2_NAME) {{
-            addSamples(new Sample("2016-06-29T08:00:00.000Z", 1));
+            addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 1));
         }});
 
         //Entity data
@@ -62,19 +62,11 @@ public class SqlStandardCollectionViewTest extends SqlTest {
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_ENTITY1_NAME));
     }
 
-    /*
-    #3126 issue
-    Standard collection view
-     */
-
-    /**
-     * #3126
-     * Test will fail until #3141 won't be fixed
-     */
+    @Issue("3126")
     @Test
     public void testAlphabeticalOrder() {
         String sqlQuery = String.format(
-                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s'  %nWHERE entity = '%s'",
+                "SELECT tags, metric.tags, entity.tags, entity.groups FROM \"%s\"  %nWHERE entity = '%s'",
                 TEST_METRIC1_NAME, TEST_ENTITY1_NAME
         );
 
@@ -92,13 +84,11 @@ public class SqlStandardCollectionViewTest extends SqlTest {
         assertTableContainsColumnsValues(expectedRows, resultTable, "tags", "metric.tags", "entity.tags", "entity.groups");
     }
 
-    /**
-     * #3126
-     */
+    @Issue("3126")
     @Test
     public void testEmptyTags() {
         String sqlQuery = String.format(
-                "SELECT tags, metric.tags, entity.tags, entity.groups FROM '%s' %nWHERE entity = '%s'",
+                "SELECT tags, metric.tags, entity.tags, entity.groups FROM \"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC2_NAME, TEST_ENTITY2_NAME
         );
 

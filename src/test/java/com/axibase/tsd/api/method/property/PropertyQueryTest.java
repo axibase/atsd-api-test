@@ -8,7 +8,8 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.ErrorTemplate;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -17,7 +18,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.Mocks.ENTITY_TAGS_PROPERTY_TYPE;
+import static com.axibase.tsd.api.util.TestUtil.*;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -51,7 +55,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type19", "query-entity19");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getNextDay());
+        property.setDate(getNextDay());
         insertPropertyCheck(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity(), property.getKey());
@@ -295,14 +299,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type8", "query-entity8");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t2", "tv2");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -320,14 +324,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type7", "query-entity7");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t1l", "tv1l");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -346,14 +350,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type6", "query-entity6");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t1l", "tv1l");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -372,14 +376,14 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type6.1", "query-entity6.1");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getPreviousDay());
+        property.setDate(getPreviousDay());
         insertPropertyCheck(property);
 
         final Property lastProperty = new Property();
         lastProperty.setType(property.getType());
         lastProperty.setEntity(property.getEntity());
         lastProperty.addTag("t1l", "tv1l");
-        lastProperty.setDate(TestUtil.getCurrentDate());
+        lastProperty.setDate(getCurrentDate());
         insertPropertyCheck(lastProperty);
 
         final Property lastPropertySecond = new Property();
@@ -406,7 +410,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type5", "query-entity5");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
@@ -425,12 +429,12 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type4", "query-entity4");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertProperty(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
         query.setStartDate(property.getDate());
-        query.setEndDate(TestUtil.addOneMS(property.getDate()));
+        query.setEndDate(Util.addOneMS(property.getDate()));
 
         assertInsertedPropertyReturned(property, query);
     }
@@ -443,12 +447,12 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type3", "query-entity3");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
-        query.setStartDate(TestUtil.ISOFormat(TestUtil.getPreviousDay()));
-        query.setEndDate(TestUtil.ISOFormat(TestUtil.getNextDay()));
+        query.setStartDate(Util.ISOFormat(getPreviousDay()));
+        query.setEndDate(Util.ISOFormat(getNextDay()));
 
         assertInsertedPropertyReturned(property, query);
     }
@@ -461,7 +465,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type2", "query-entity2");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -477,7 +481,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property = new Property("query-type1", "query-entity1");
         property.addTag("t1", "tv1");
         property.addKey("k1", "kv1");
-        property.setDate(TestUtil.getCurrentDate());
+        property.setDate(getCurrentDate());
         insertPropertyCheck(property);
 
         PropertyQuery query = prepareSimplePropertyQuery(property.getType(), property.getEntity());
@@ -785,9 +789,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue(String.format("Property with type %s for inserted entity should be returned", ENTITY_TAGS_PROPERTY_TYPE), compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionOR() throws Exception {
         final Property property = new Property("query-type43", "query-entity43");
@@ -816,9 +818,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionAND() throws Exception {
         final Property property = new Property("query-type44", "query-entity44");
@@ -841,9 +841,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionTagsLIKE() throws Exception {
         final Property property = new Property("query-type45", "query-entity45");
@@ -866,9 +864,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionKeysLIKE() throws Exception {
         final Property property = new Property("query-type45.5", "query-entity45.5");
@@ -891,9 +887,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionKeyTagCompareEQ() throws Exception {
         final Property property = new Property("query-type46", "query-entity46");
@@ -916,9 +910,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionKeyTagCompareNotEQ() throws Exception {
         final Property property = new Property("query-type47", "query-entity47");
@@ -941,9 +933,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionKeyEmpty() throws Exception {
         final Property property = new Property("query-type48", "query-entity48");
@@ -965,9 +955,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionKeyNotEmpty() throws Exception {
         final Property property = new Property("query-type49", "query-entity49");
@@ -989,9 +977,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionTagEmpty() throws Exception {
         final Property property = new Property("query-type49.1", "query-entity49.1");
@@ -1013,9 +999,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only first property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionTagNotEmpty() throws Exception {
         final Property property = new Property("query-type50", "query-entity50");
@@ -1037,9 +1021,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Only second property should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionLowerTag() throws Exception {
         final Property property = new Property("query-type51", "query-entity51");
@@ -1052,9 +1034,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionLowerKey() throws Exception {
         final Property property = new Property("query-type52", "query-entity52");
@@ -1068,9 +1048,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionUpperTag() throws Exception {
         final Property property = new Property("query-type53", "query-entity53");
@@ -1083,9 +1061,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-    /**
-     * #2908
-     */
+    @Issue("2908")
     @Test
     public void testKeyTagExpressionUpperKey() throws Exception {
         final Property property = new Property("query-type54", "query-entity54");
@@ -1099,9 +1075,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-    /**
-     * #2946
-     */
+    @Issue("2946")
     @Test
     public void testLimit1() throws Exception {
         final int limit = 1;
@@ -1124,9 +1098,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    /**
-     * #2946
-     */
+    @Issue("2946")
     @Test
     public void testLimit2() throws Exception {
         final int limit = 2;
@@ -1156,9 +1128,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("Two property should be received", limit, actual);
     }
 
-    /**
-     * #2946
-     */
+    @Issue("2946")
     @Test
     public void testLimit0() throws Exception {
         final int limit = 0;
@@ -1188,9 +1158,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    /**
-     * #3110
-     */
+    @Issue("3110")
     @Test
     public void testLimitWithDateFilter() throws Exception {
         final int limit = 1;
@@ -1203,7 +1171,7 @@ public class PropertyQueryTest extends PropertyMethod {
         final Property property2 = new Property();
         property2.setType(property1.getType());
         property2.setEntity(property1.getEntity());
-        property2.setDate(TestUtil.addOneMS(property1.getDate()));
+        property2.setDate(Util.addOneMS(property1.getDate()));
         property2.addKey("uniq", "key2");
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
@@ -1218,16 +1186,14 @@ public class PropertyQueryTest extends PropertyMethod {
         assertTrue("Property2 should be returned", compareJsonString(expected, given));
 
         query.setStartDate(MIN_QUERYABLE_DATE);
-        query.setEndDate(TestUtil.addOneMS(property1.getDate()));
+        query.setEndDate(Util.addOneMS(property1.getDate()));
 
         given = queryProperty(query).readEntity(String.class);
         expected = jacksonMapper.writeValueAsString(Collections.singletonList(property1));
         assertTrue("Property1 should be returned", compareJsonString(expected, given));
     }
 
-    /**
-     * #3110
-     */
+    @Issue("3110")
     @Test
     public void testLimitWithEntityFilter() throws Exception {
         final Property property = new Property("query-type57-b", "query-entity57-b-limitentityold");
@@ -1238,14 +1204,14 @@ public class PropertyQueryTest extends PropertyMethod {
 
         final Property property2 = new Property(null, "query-entity57-b-limitentity-2");
         property2.setType(property.getType());
-        property2.setDate(TestUtil.addOneMS(property.getDate()));
+        property2.setDate(Util.addOneMS(property.getDate()));
         property2.addKey("uniq", "key2");
         property2.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property2);
 
         final Property property3 = new Property(null, "query-entity57-b-limitentity-3");
         property3.setType(property.getType());
-        property3.setDate(TestUtil.addOneMS(property.getDate()));
+        property3.setDate(Util.addOneMS(property.getDate()));
         property3.addKey("uniq", "key3");
         property3.addTag("tag_key2", "tag_value2");
         insertPropertyCheck(property3);
@@ -1262,9 +1228,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    /**
-     * #3110
-     */
+    @Issue("3110")
     @Test
     public void testLimitWithKeyExpression() throws Exception {
         final int limit = 1;
@@ -1292,9 +1256,7 @@ public class PropertyQueryTest extends PropertyMethod {
     }
 
 
-    /**
-     * #2946
-     */
+    @Issue("2946")
     @Test
     public void testLimitNegative() throws Exception {
         final Property property = new Property("query-type58", "query-entity58");
@@ -1324,9 +1286,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertEquals("Three property should be received", 3, calculateJsonArraySize(queryProperty(query).readEntity(String.class)));
     }
 
-    /**
-     * 2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardStartChar() throws Exception {
         final Property property = new Property("query-type59", "query-entity59");
@@ -1342,9 +1302,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-    /**
-     * 2979
-     */
+    @Issue("2979")
     @Test
     public void testEntitiesWildcardQuestionChar() throws Exception {
         final Property property = new Property("query-type60", "query-entity60");
@@ -1360,9 +1318,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertInsertedPropertyReturned(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueNullExactTrue() throws Exception {
         final Property property = new Property("query-type-61", "query-entity61");
@@ -1376,9 +1332,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueNullExactFalse() throws Exception {
         final Property property = new Property("query-type-62", "query-entity62");
@@ -1392,9 +1346,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueEmptyExactTrue() throws Exception {
         final Property property = new Property("query-type-63", "query-entity63");
@@ -1408,9 +1360,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueEmptyExactFalse() throws Exception {
         final Property property = new Property("query-type-64", "query-entity64");
@@ -1424,9 +1374,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueSpaces() throws Exception {
         final Property property = new Property("query-type-65", "query-entity65");
@@ -1439,9 +1387,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueContainsSpaces() throws Exception {
         final Property property = new Property("query-type-66", "query-entity66");
@@ -1455,9 +1401,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueBoolean() throws Exception {
         final Property property = new Property("query-type-67", "query-entity67");
@@ -1478,9 +1422,7 @@ public class PropertyQueryTest extends PropertyMethod {
         assertStoredPropertyDoesNotMatchToInserted(property, query);
     }
 
-    /**
-     * #2416
-     */
+    @Issue("2416")
     @Test
     public void testKeyValueInteger() throws Exception {
         final Property property = new Property("query-type-68", "query-entity68");

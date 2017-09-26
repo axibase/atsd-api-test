@@ -29,10 +29,10 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     public static void prepareDataSet() {
         Series testSeries = new Series(TEST_PREFIX + "-entity", TEST_PREFIX + "-metric");
         testSeries.addSamples(
-                new Sample("2016-06-03T09:23:00.000Z", 16),
-                new Sample("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
-                new Sample("2016-06-03T09:36:00.000Z", 6),
-                new Sample("2016-06-03T09:41:00.000Z", 19)
+                Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 16),
+                Sample.ofDateDecimal("2016-06-03T09:26:00.000Z", new BigDecimal("8.1")),
+                Sample.ofDateInteger("2016-06-03T09:36:00.000Z", 6),
+                Sample.ofDateInteger("2016-06-03T09:41:00.000Z", 19)
         );
     }
 
@@ -55,7 +55,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test
     public void testContentTypeJsonGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-headers-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-headers-metric\"")
                 .request()
                 .get();
         response.bufferEntity();
@@ -65,7 +65,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test
     public void testContentTypeCsvGet() {
         final Response response = httpSqlApiResource
-                .queryParam("q", "SELECT * FROM 'sql-response-headers-metric'")
+                .queryParam("q", "SELECT * FROM \"sql-response-headers-metric\"")
                 .queryParam("outputFormat", "csv")
                 .request()
                 .get();
@@ -76,7 +76,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test
     public void testContentTypeJsonPost() {
         final Form form = new Form();
-        form.param("q", "SELECT * FROM 'sql-response-headers-metric'");
+        form.param("q", "SELECT * FROM \"sql-response-headers-metric\"");
         form.param("outputFormat", "json");
         final Response response = httpSqlApiResource
                 .request()

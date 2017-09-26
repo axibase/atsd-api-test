@@ -162,11 +162,11 @@ public class Series {
         for (Sample s : data) {
             SeriesCommand seriesCommand = new SeriesCommand();
             seriesCommand.setEntityName(entity);
-            seriesCommand.setValues(Collections.singletonMap(metric, s.getV().toPlainString()));
+            seriesCommand.setValues(Collections.singletonMap(metric, s.getValue().toPlainString()));
             seriesCommand.setTexts(Collections.singletonMap(metric, s.getText()));
             seriesCommand.setTags(tags);
-            seriesCommand.setTimeISO(s.getD());
-            seriesCommand.setTimeMills(s.getT());
+            seriesCommand.setTimeISO(s.getRawDate());
+            seriesCommand.setTimeMills(s.getUnixTime());
             result.add(seriesCommand);
         }
         return result;

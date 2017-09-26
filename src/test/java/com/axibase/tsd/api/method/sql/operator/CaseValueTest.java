@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,26 +18,24 @@ public class CaseValueTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series s = new Series(entity(), METRIC_NAME);
         s.addSamples(
-                new Sample("2017-01-01T09:30:00.000Z", 1, "a"),
-                new Sample("2017-01-02T09:30:00.000Z", 2, "b"),
-                new Sample("2017-01-03T09:30:00.000Z", 3, "c"),
-                new Sample("2017-01-04T09:30:00.000Z", 4, "d"),
-                new Sample("2017-01-05T09:30:00.000Z", 5, "e"),
-                new Sample("2017-01-06T09:30:00.000Z", 6, "f")
+                Sample.ofDateIntegerText("2017-01-01T09:30:00.000Z", 1, "a"),
+                Sample.ofDateIntegerText("2017-01-02T09:30:00.000Z", 2, "b"),
+                Sample.ofDateIntegerText("2017-01-03T09:30:00.000Z", 3, "c"),
+                Sample.ofDateIntegerText("2017-01-04T09:30:00.000Z", 4, "d"),
+                Sample.ofDateIntegerText("2017-01-05T09:30:00.000Z", 5, "e"),
+                Sample.ofDateIntegerText("2017-01-06T09:30:00.000Z", 6, "f")
         );
 
         SeriesMethod.insertSeriesCheck(s);
     }
 
-    /**
-     * #4021
-     */
+    @Issue("4021")
     @Test
     public void testCaseValueSelf() {
         String sqlQuery = String.format(
                 "SELECT CASE value " +
                         "WHEN value THEN value END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -48,9 +47,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE <value> ... (simple case) without ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4021
-     */
+    @Issue("4021")
     @Test
     public void testCaseValueWithElse() {
         String sqlQuery = String.format(
@@ -62,7 +59,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 5 THEN 'e' " +
                         "ELSE 'x' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -74,9 +71,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE <value> ... (alternatives) with ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4021
-     */
+    @Issue("4021")
     @Test
     public void testCaseValueWithoutElse() {
         String sqlQuery = String.format(
@@ -87,7 +82,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 4 THEN 'd' " +
                         "WHEN 5 THEN 'e' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -99,9 +94,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE <value> ... (alternatives) without ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4021
-     */
+    @Issue("4021")
     @Test
     public void testCaseValueExpr() {
         String sqlQuery = String.format(
@@ -112,7 +105,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN MOD(57, 9) THEN 'd' " +
                         "ELSE 'x' " +
                         "END, value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY 1,2",
                 METRIC_NAME
         );
@@ -129,9 +122,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE <value> ... (WHEN <expression>) with ELSE gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4021
-     */
+    @Issue("4021")
     @Test
     public void testCaseValueText() {
         String sqlQuery = String.format(
@@ -142,7 +133,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 'd' THEN 4 " +
                         "WHEN 'e' THEN 5 " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY text",
                 METRIC_NAME
         );
@@ -154,9 +145,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE <value> ... for strings gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * #4021
-     */
+    @Issue("4021")
     @Test
     public void testCaseNoFrom() {
         String sqlQuery = "SELECT CASE WHEN 0 < 1 THEN 1 ELSE 0 END";
@@ -168,9 +157,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE WHEN <condition> ... without FROM doesn't work", expectedRows, sqlQuery);
     }
 
-    /**
-     * 4057
-     */
+    @Issue("4057")
     @Test
     public void testCaseMultipleCompare() {
         String sqlQuery = String.format(
@@ -179,7 +166,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 2 OR 3 OR 4 THEN 'b' " +
                         "WHEN 5 THEN 'c' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -191,9 +178,7 @@ public class CaseValueTest extends SqlTest {
         assertSqlQueryRows("CASE <value> ... with WHEN alternatives gives wrong result", expectedRows, sqlQuery);
     }
 
-    /**
-     * 4057
-     */
+    @Issue("4057")
     @Test
     public void testCaseNestedWhen() {
         String sqlQuery = String.format(
@@ -202,7 +187,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 2 OR 3 OR (CASE text WHEN 'd' THEN 4 END) THEN 'b' " +
                         "WHEN 5 THEN 'c' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -215,9 +200,7 @@ public class CaseValueTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * 4057
-     */
+    @Issue("4057")
     @Test
     public void testCaseNestedThen() {
         String sqlQuery = String.format(
@@ -227,7 +210,7 @@ public class CaseValueTest extends SqlTest {
                             "(CASE text WHEN 'c' OR 'd' THEN 'x' END) " +
                         "WHEN 5 THEN 'c' " +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );
@@ -240,9 +223,7 @@ public class CaseValueTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * 4057
-     */
+    @Issue("4057")
     @Test
     public void testCaseNestedCase() {
         String sqlQuery = String.format(
@@ -254,7 +235,7 @@ public class CaseValueTest extends SqlTest {
                         "WHEN 2 THEN 'b' " +
                         "ELSE 'c'" +
                         "END " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY value",
                 METRIC_NAME
         );

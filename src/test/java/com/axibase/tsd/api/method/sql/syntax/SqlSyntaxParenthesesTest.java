@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -19,22 +20,20 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
 
         Series series = new Series(entity, TEST_METRIC);
         series.addSamples(
-                new Sample("2017-01-01T00:00:00Z", 0, "zero"),
-                new Sample("2017-01-01T00:00:01Z", 1),
-                new Sample("2017-01-01T00:00:02Z", 2),
-                new Sample("2017-01-01T00:00:03Z", 3)
+                Sample.ofDateIntegerText("2017-01-01T00:00:00Z", 0, "zero"),
+                Sample.ofDateInteger("2017-01-01T00:00:01Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:00:02Z", 2),
+                Sample.ofDateInteger("2017-01-01T00:00:03Z", 3)
         );
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #4195
-     */
+    @Issue("4195")
     @Test
     public void testEqualsInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "WHERE (value = 1) OR (value = 2)",
                 TEST_METRIC);
 
@@ -46,14 +45,12 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4195
-     */
+    @Issue("4195")
     @Test
     public void testLessGreatInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE (value < 1) OR (value >= 2)",
                 TEST_METRIC);
 
@@ -66,14 +63,12 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4195
-     */
+    @Issue("4195")
     @Test
     public void testLogicalOperationsOrderInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE ((value < 1) OR (value > 2)) AND (value != 0)",
                 TEST_METRIC);
 
@@ -84,14 +79,12 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4195
-     */
+    @Issue("4195")
     @Test
     public void testNotNullInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE (text IS NOT NULL) OR (value = 2)",
                 TEST_METRIC);
 
@@ -103,14 +96,12 @@ public class SqlSyntaxParenthesesTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4195
-     */
+    @Issue("4195")
     @Test
     public void testRegexInParentheses() {
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE (text REGEX 'ze..') AND (value = 0)",
                 TEST_METRIC);
 

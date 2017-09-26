@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.GenericType;
@@ -12,16 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Mocks.*;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SeriesUrlQueryTest extends SeriesMethod {
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testEntityContainsWhitespace() throws Exception {
         final String entityName = "seriesurlquery entityname-1";
@@ -32,9 +31,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testMetricContainsWhitespace() {
         final String metricName = "seriesurlquery metricname-2";
@@ -45,9 +42,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testEntityContainsSlash() throws Exception {
         Series series = new Series("seriesurlquery/entityname-3", "seriesurlquery-metric-3");
@@ -55,27 +50,21 @@ public class SeriesUrlQueryTest extends SeriesMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testMetricContainsSlash() throws Exception {
         Series series = new Series("seriesurlquery-entityname-4", "seriesurlquery/metric-4");
         assertUrlEncodePathHandledCorrectly(series);
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testEntityContainsCyrillic() throws Exception {
         Series series = new Series("seriesurlqueryйёentityname-5", "seriesurlquery-metric-5");
         assertUrlEncodePathHandledCorrectly(series);
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testMetricContainsCyrillic() throws Exception {
         Series series = new Series("seriesurlquery-entityname-6", "seriesurlqueryйёmetric-6");
@@ -83,7 +72,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
     }
 
     private void assertUrlEncodePathHandledCorrectly(Series series) throws Exception {
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
+        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
         insertSeriesCheck(Collections.singletonList(series));
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
@@ -95,8 +84,8 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         });
         assertEquals("Incorrect series entity", series.getEntity(), responseSeries.get(0).getEntity());
         assertEquals("Incorrect series metric", series.getMetric(), responseSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", 0L, responseSeries.get(0).getData().get(0).getT().longValue());
-        assertEquals("Incorrect series sample value", new BigDecimal(0), responseSeries.get(0).getData().get(0).getV());
+        assertEquals("Incorrect series sample date", 0L, responseSeries.get(0).getData().get(0).getUnixTime().longValue());
+        assertEquals("Incorrect series sample value", new BigDecimal(0), responseSeries.get(0).getData().get(0).getValue());
 
     }
 }

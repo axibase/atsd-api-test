@@ -2,14 +2,17 @@ package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.TestUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
+import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -48,12 +51,12 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public static void assertTableRowsExist(String errorMessage, String[][] expectedRowsArray, StringTable table) {
-        assertTableRowsExist(errorMessage, TestUtil.twoDArrayToList(expectedRowsArray), table);
+        assertTableRowsExist(errorMessage, twoDArrayToList(expectedRowsArray), table);
     }
 
 
     public static void assertTableRowsExist(String[][] expectedRowsArray, StringTable table) {
-        assertTableRowsExist(TestUtil.twoDArrayToList(expectedRowsArray), table);
+        assertTableRowsExist(twoDArrayToList(expectedRowsArray), table);
     }
 
     public static void assertTableRowsExist(List<List<String>> expectedRows, StringTable table) {
@@ -104,6 +107,13 @@ public abstract class SqlTest extends SqlMethod {
         return String.format("%s expected:<%s> but was:<%s>", message, expected, actual);
     }
 
+    public void assertRowsMatch(String message, String[][] expectedRows, StringTable resultTable, String sqlQuery) {
+        assertTableRowsExist(
+                String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery),
+                expectedRows, resultTable
+        );
+    }
+
     public void assertSqlQueryRows(String message, List<List<String>> expectedRows, String sqlQuery) {
         StringTable resultTable = queryTable(sqlQuery);
         assertTableRowsExist(String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery), expectedRows,
@@ -112,7 +122,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String message, String[][] expectedRows, String sqlQuery) {
-        assertSqlQueryRows(message, TestUtil.twoDArrayToList(expectedRows), sqlQuery);
+        assertSqlQueryRows(message, twoDArrayToList(expectedRows), sqlQuery);
     }
 
     public void assertSqlQueryRows(List<List<String>> expectedRows, String sqlQuery) {
@@ -120,7 +130,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String[][] expectedRows, String sqlQuery) {
-        assertSqlQueryRows(TestUtil.twoDArrayToList(expectedRows), sqlQuery);
+        assertSqlQueryRows(twoDArrayToList(expectedRows), sqlQuery);
     }
 
     public void assertTableContainsColumnsValues(List<List<String>> values, StringTable table, String... columnNames) {
@@ -182,6 +192,23 @@ public abstract class SqlTest extends SqlMethod {
         } catch (ProcessingException e) {
             fail("Failed to read table from response!");
         }
+
+        String message = null;
+        try {
+            message = extractSqlErrorMessage(response);
+        } catch (JSONException e) {
+            fail("Can't read json from response");
+        }
+        assertEquals(assertMessage + ": Response contains error", null, message);
+    }
+
+    public void assertBadSqlRequest(String expectedMessage, String sqlQuery) {
+        Response response = SqlMethod.queryResponse(sqlQuery);
+        assertBadRequest(expectedMessage, response);
+    }
+
+    public void assertBadRequest(String expectedMessage, String sqlQuery) {
+        assertBadRequest(expectedMessage, queryResponse(sqlQuery));
     }
 
     public void assertBadRequest(String expectedMessage, Response response) {
@@ -189,9 +216,22 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertBadRequest(String assertMessage, String expectedMessage, Response response) {
-        assertEquals(assertMessage, BAD_REQUEST.getStatusCode(), response.getStatus());
-        String responseMessage = extractSqlErrorMessage(response);
-        assertEquals("Error message is different form expected", expectedMessage, responseMessage);
+        String responseMessage;
+        int code = response.getStatus();
+        if (OK.getStatusCode() == code || BAD_REQUEST.getStatusCode() == code) {
+            try {
+                responseMessage = extractSqlErrorMessage(response);
+            } catch (JSONException e) {
+                throw new IllegalArgumentException(assertMessage +
+                        ": Can't check if there is error message, because JSON is invalid.");
+            }
+        } else {
+            throw new IllegalArgumentException(assertMessage + ": Unexpected response status code");
+        }
+        if (responseMessage == null) {
+            fail(assertMessage + ": Response doesn't contain error message");
+        }
+        assertEquals(assertMessage + ": Error message is different form expected", expectedMessage, responseMessage);
     }
 
     /**
@@ -222,16 +262,15 @@ public abstract class SqlTest extends SqlMethod {
         return columnNames;
     }
 
-    private String extractSqlErrorMessage(Response response) {
+    private String extractSqlErrorMessage(Response response) throws JSONException {
         String jsonText = response.readEntity(String.class);
+        JSONObject json = new JSONObject(jsonText);
         try {
-            JSONObject json = new JSONObject(jsonText);
             return json.getJSONArray("errors")
                     .getJSONObject(0)
                     .getString("message");
         } catch (JSONException e) {
             return null;
         }
-
     }
 }

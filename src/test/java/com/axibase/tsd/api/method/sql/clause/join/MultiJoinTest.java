@@ -4,7 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,7 +37,7 @@ public class MultiJoinTest extends SqlTest {
         for (int i = 0; i < TAGS_COUNT; i++) {
             for (String metric : metrics) {
                 Series series = new Series(TEST_ENTITY_NAME, metric, "tag", String.valueOf(i));
-                series.addSamples(new Sample("2010-01-01T00:00:00.000Z", 1));
+                series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 1));
 
                 seriesList.add(series);
             }
@@ -46,18 +46,16 @@ public class MultiJoinTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * 3935
-     */
+    @Issue("3935")
     @Test
     public void testSimpleMultiJoinRequest() {
         String sqlQuery = String.format(
                 "SELECT t1.tags\n" +
-                        "FROM '%s' t1\n" +
-                        "JOIN USING entity '%s' t2\n" +
-                        "JOIN USING entity '%s' t3\n" +
-                        "JOIN USING entity '%s' t4\n" +
-                        "JOIN USING entity '%s' t5\n" +
+                        "FROM \"%s\" t1\n" +
+                        "JOIN USING ENTITY \"%s\" t2\n" +
+                        "JOIN USING ENTITY \"%s\" t3\n" +
+                        "JOIN USING ENTITY \"%s\" t4\n" +
+                        "JOIN USING ENTITY \"%s\" t5\n" +
                         "WHERE \n" +
                         "    t1.tags.tag = '1' AND\n" +
                         "    t2.tags.tag = '1' AND\n" +

@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -14,9 +15,7 @@ import static org.testng.AssertJUnit.assertFalse;
  */
 public class EntityGroupDeleteTest extends EntityGroupMethod {
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsWhitespace() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodedelete entitygroup1");
@@ -24,9 +23,7 @@ public class EntityGroupDeleteTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsSlash() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodedelete/entitygroup2");
@@ -34,9 +31,7 @@ public class EntityGroupDeleteTest extends EntityGroupMethod {
 
     }
 
-    /**
-     * #1278
-     */
+    @Issue("1278")
     @Test
     public void testNameContainsCyrillic() throws Exception {
         EntityGroup entityGroup = new EntityGroup("urlencodedeleteйёentitygroup3");

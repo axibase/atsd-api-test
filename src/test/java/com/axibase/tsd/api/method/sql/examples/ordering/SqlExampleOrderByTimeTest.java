@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,23 +24,19 @@ public class SqlExampleOrderByTimeTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-07-27T22:41:52.000Z", 0),
-                new Sample("2016-07-27T22:41:51.000Z", 1),
-                new Sample("2016-07-27T22:41:50.000Z", 2)
+                Sample.ofDateInteger("2016-07-27T22:41:52.000Z", 0),
+                Sample.ofDateInteger("2016-07-27T22:41:51.000Z", 1),
+                Sample.ofDateInteger("2016-07-27T22:41:50.000Z", 2)
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3047
-     * Test for alias documentation example.
-     *
-     * @see <a href="Computed Columns">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/order-by-time.md</a>
-     */
-    @Test
+    @Issue("3047")
+    @Test(description = "Test for alias documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/order-by-time.md")
     public void test() {
         String sqlQuery = String.format(
-                "SELECT datetime, value FROM '%s'%nORDER BY datetime",
+                "SELECT datetime, value FROM \"%s\"%nORDER BY datetime",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);

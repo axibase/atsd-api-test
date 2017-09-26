@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.property;
 
 
 import com.axibase.tsd.api.model.property.Property;
+import io.qameta.allure.Issue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -18,21 +19,21 @@ import static org.testng.AssertJUnit.assertTrue;
 public class PropertyTypeQueryTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    /* 1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsWhilespace() {
         Property property = new Property("typequery-property-type-1", "typequery entityname-1");
         assertEquals(BAD_REQUEST.getStatusCode(), typeQueryProperty(property.getEntity()).getStatus());
     }
 
-    /* 1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsSlash() throws Exception {
         Property property = new Property("typequery-property-type-2", "typequery/entityname-2");
         assertUrlencodedPathHandledSuccessfullyOnTypeQuery(property);
     }
 
-    /* 1278 */
+    @Issue("1278")
     @Test
     public void testEntityNameContainsCyrillic() throws Exception {
         Property property = new Property("typequery-property-type-3", "typequeryйёentityname-3");

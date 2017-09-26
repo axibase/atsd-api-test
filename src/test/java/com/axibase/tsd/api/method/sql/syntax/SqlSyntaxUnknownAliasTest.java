@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.ErrorTemplate;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,21 +23,19 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series1 = new Series(TEST_ENTITY_NAME, TEST_METRIC1_NAME);
-        series1.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series1.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
 
         Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC2_NAME);
-        series2.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series2.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
 
         SeriesMethod.insertSeriesCheck(Arrays.asList(series1, series2));
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInSelectWithoutJoin() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s'",
+                "SELECT t1.value FROM \"%s\"",
                 TEST_METRIC1_NAME
         );
 
@@ -50,13 +48,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInWhereWithoutJoin() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'WHERE t1.value > 0",
+                "SELECT value FROM \"%s\"WHERE t1.value > 0",
                 TEST_METRIC1_NAME
         );
 
@@ -69,13 +65,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInOrderByWithoutJoin() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s'WHERE value > 0 ORDER BY t1.value",
+                "SELECT value FROM \"%s\"WHERE value > 0 ORDER BY t1.value",
                 TEST_METRIC1_NAME
         );
 
@@ -88,13 +82,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInGroupByWithoutJoin() {
         String sqlQuery = String.format(
-                "SELECT COUNT(value) FROM '%s'WHERE value > 0 GROUP BY t1.entity",
+                "SELECT COUNT(value) FROM \"%s\"WHERE value > 0 GROUP BY t1.entity",
                 TEST_METRIC1_NAME
         );
 
@@ -106,13 +98,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         );
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInSelectWithJoin() {
         String sqlQuery = String.format(
-                "SELECT t2.value FROM '%s' t1%nJOIN '%s' WHERE t1.value > 0%n",
+                "SELECT t2.value FROM \"%s\" t1%nJOIN \"%s\" WHERE t1.value > 0%n",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -124,13 +114,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         );
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInWhereWithJoin() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1%nJOIN '%s' WHERE t2.value > 0",
+                "SELECT t1.value FROM \"%s\" t1%nJOIN \"%s\" WHERE t2.value > 0",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -142,13 +130,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
         );
     }
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInOrderByWithJoin() {
         String sqlQuery = String.format(
-                "SELECT t1.value FROM '%s' t1%n JOIN '%s'WHERE t1.value > 0 ORDER BY t2.value",
+                "SELECT t1.value FROM \"%s\" t1%n JOIN \"%s\"WHERE t1.value > 0 ORDER BY t2.value",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 
@@ -161,13 +147,11 @@ public class SqlSyntaxUnknownAliasTest extends SqlTest {
     }
 
 
-    /**
-     * #3234
-     */
+    @Issue("3234")
     @Test
     public void testUnknownAliasInGroupByWithJoin() {
         String sqlQuery = String.format(
-                "SELECT COUNT(t1.value) FROM '%s' t1%nJOIN '%s'%nWHERE t1.value > 0 GROUP BY t2.entity",
+                "SELECT COUNT(t1.value) FROM \"%s\" t1%nJOIN \"%s\"%nWHERE t1.value > 0 GROUP BY t2.entity",
                 TEST_METRIC1_NAME, TEST_METRIC2_NAME
         );
 

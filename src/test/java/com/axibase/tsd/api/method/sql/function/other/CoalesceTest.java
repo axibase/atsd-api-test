@@ -4,7 +4,6 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.model.sql.StringTable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -23,15 +22,15 @@ public class CoalesceTest extends SqlTest {
 
         Series series1 = new Series(entityName, METRIC_NAME1);
         series1.addSamples(
-                new Sample("2017-06-21T12:00:00Z", 0),
-                new Sample("2017-06-21T13:00:00Z", 1)
+                Sample.ofDateInteger("2017-06-21T12:00:00Z", 0),
+                Sample.ofDateInteger("2017-06-21T13:00:00Z", 1)
         );
 
         Series series2 = new Series(entityName, METRIC_NAME2);
         series2.addSamples(
-                new TextSample("2017-06-21T12:00:00Z", "text"),
-                new Sample("2017-06-21T13:00:00Z", 2),
-                new Sample("2017-06-21T14:00:00Z", 3)
+                Sample.ofDateText("2017-06-21T12:00:00Z", "text"),
+                Sample.ofDateInteger("2017-06-21T13:00:00Z", 2),
+                Sample.ofDateInteger("2017-06-21T14:00:00Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
@@ -41,8 +40,8 @@ public class CoalesceTest extends SqlTest {
     public void testCoalesceTwoArguments() {
         String sqlQuery = String.format(
                 "SELECT coalesce(t1.value, t2.value) as v " +
-                        "FROM '%s' t1 " +
-                        "OUTER JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 " +
+                        "OUTER JOIN \"%s\" t2 " +
                         "ORDER BY time",
                 METRIC_NAME1,
                 METRIC_NAME2
@@ -61,8 +60,8 @@ public class CoalesceTest extends SqlTest {
     public void testCoalesceThreeArguments() {
         String sqlQuery = String.format(
                 "SELECT coalesce(t2.text, t1.value, t2.value) as v " +
-                        "FROM '%s' t1 " +
-                        "OUTER JOIN '%s' t2 " +
+                        "FROM \"%s\" t1 " +
+                        "OUTER JOIN \"%s\" t2 " +
                         "ORDER BY time",
                 METRIC_NAME1,
                 METRIC_NAME2
@@ -81,7 +80,7 @@ public class CoalesceTest extends SqlTest {
     public void testCoalesceOneNaN() {
         String sqlQuery = String.format(
                 "SELECT coalesce(nan, value, value) as v " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY v",
                 METRIC_NAME1
         );
@@ -98,7 +97,7 @@ public class CoalesceTest extends SqlTest {
     public void testCoalesceOneNull() {
         String sqlQuery = String.format(
                 "SELECT coalesce(case 0 when 1 then 0 end, value, value) as v " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY v",
                 METRIC_NAME1
         );
@@ -115,7 +114,7 @@ public class CoalesceTest extends SqlTest {
     public void testCoalesceAllNaN() {
         String sqlQuery = String.format(
                 "SELECT coalesce(value/value, value/value, value/value) as v " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "ORDER BY v",
                 METRIC_NAME1
         );
@@ -132,7 +131,7 @@ public class CoalesceTest extends SqlTest {
     public void testCoalesceAllNull() {
         String sqlQuery = String.format(
                 "SELECT coalesce(lag(value), lag(value), lag(value)) as v " +
-                        "FROM '%s'" +
+                        "FROM \"%s\"" +
                         "ORDER BY v",
                 METRIC_NAME1
         );

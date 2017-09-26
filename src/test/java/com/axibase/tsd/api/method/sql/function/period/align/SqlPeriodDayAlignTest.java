@@ -5,7 +5,9 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -14,7 +16,6 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
-import static com.axibase.tsd.api.util.TestUtil.TimeTranslation;
 
 public class SqlPeriodDayAlignTest extends SqlTest {
     private static final String TEST_METRIC_NAME = metric();
@@ -27,23 +28,21 @@ public class SqlPeriodDayAlignTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(entity(), TEST_METRIC_NAME);
 
-        long firstTime = TestUtil.parseDate(START_TIME).getTime();
-        long lastTime = TestUtil.parseDate(END_TIME).getTime();
+        long firstTime = Util.parseDate(START_TIME).getTime();
+        long lastTime = Util.parseDate(END_TIME).getTime();
         for (long time = firstTime; time < lastTime; time += DELTA) {
-            series.addSamples(new Sample(TestUtil.ISOFormat(time), 0));
+            series.addSamples(Sample.ofDateInteger(Util.ISOFormat(time), 0));
         }
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3241
-     */
+    @Issue("3241")
     @Test
     public void testDayAlign() {
         String sqlQuery = String.format(
                 "SELECT DATE_FORMAT(time,'%s'), COUNT(*) " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "GROUP BY PERIOD(1 DAY)",
                 DAY_FORMAT_PATTERN, TEST_METRIC_NAME
         );
@@ -52,15 +51,13 @@ public class SqlPeriodDayAlignTest extends SqlTest {
                 generateExpectedRows(null), sqlQuery);
     }
 
-    /**
-     * #4100
-     */
+    @Issue("4100")
     @Test
     public void testDayAlignWithTimezone() {
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Kathmandu");
         String sqlQuery = String.format(
                 "SELECT DATE_FORMAT(time,'%1$s', '%3$s'), COUNT(*) " +
-                        "FROM '%2$s' " +
+                        "FROM \"%2$s\" " +
                         "GROUP BY PERIOD(1 DAY, '%3$s')",
                 DAY_FORMAT_PATTERN,
                 TEST_METRIC_NAME,
@@ -84,14 +81,14 @@ public class SqlPeriodDayAlignTest extends SqlTest {
             localEndDate = TestUtil.timeTranslate(END_TIME, timeZone, TimeTranslation.UNIVERSAL_TO_LOCAL);
         }
 
-        long startTime = TestUtil.parseDate(localStartDate).getTime();
-        long endTime = TestUtil.parseDate(localEndDate).getTime();
+        long startTime = Util.parseDate(localStartDate).getTime();
+        long endTime = Util.parseDate(localEndDate).getTime();
         long time;
 
         int daySeriesCount = 0;
         for (time = startTime; time < endTime; time += DELTA) {
             if (isDayStart(time) && daySeriesCount > 0) {
-                resultRows.add(formatRow(time - Util.MILLIS_IN_DAY, daySeriesCount));
+                resultRows.add(formatRow(time - TestUtil.MILLIS_IN_DAY, daySeriesCount));
                 daySeriesCount = 0;
             }
             daySeriesCount++;
@@ -111,7 +108,7 @@ public class SqlPeriodDayAlignTest extends SqlTest {
     }
 
     private boolean isDayStart(Long time) {
-        return time % Util.MILLIS_IN_DAY == 0;
+        return time % TestUtil.MILLIS_IN_DAY == 0;
     }
 
 }

@@ -7,15 +7,14 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
 import com.axibase.tsd.api.model.sql.TimePeriod;
 import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
 import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -33,7 +32,7 @@ public class TextInterpolationTest extends SqlTest {
         String entityName = entity();
         for (int i = 0; i < TEXTS.length; i++) {
             String metricName = metric();
-            Sample sample = new TextSample(Mocks.ISO_TIME, TEXTS[i]);
+            Sample sample = Sample.ofDateText(Mocks.ISO_TIME, TEXTS[i]);
 
             Series series = new Series(entityName, metricName);
             series.addSamples(sample);
@@ -42,21 +41,19 @@ public class TextInterpolationTest extends SqlTest {
         return seriesList;
     }
 
-    /**
-     * #3463
-     */
+    @Issue("3463")
     @Test
     public void testOnlyNullInterpolation() throws Exception {
         Series series = Mocks.series();
         series.addSamples(
-                new Sample("2016-06-03T09:23:01.000Z", 1),
-                new Sample("2016-06-03T09:23:02.000Z", 2),
-                new Sample("2016-06-03T09:23:03.000Z", 3),
-                new Sample("2016-06-03T09:23:04.000Z", 4)
+                Sample.ofDateInteger("2016-06-03T09:23:01.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:23:02.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3),
+                Sample.ofDateInteger("2016-06-03T09:23:04.000Z", 4)
         );
         SeriesMethod.insertSeriesCheck(series);
         String sqlQuery = String.format(
-                "SELECT text FROM '%s'%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +
+                "SELECT text FROM \"%s\"%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +
                         "WITH INTERPOLATE(500 MILLISECOND, AUTO, OUTER, EXTEND)",
                 series.getMetric()
         );
@@ -76,7 +73,7 @@ public class TextInterpolationTest extends SqlTest {
         return new Object[][]{
                 {
                         Collections.singletonList(
-                                new TextSample("2016-06-03T09:23:01.000Z", "text")
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text")
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -89,16 +86,16 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "text"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "text"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "text")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "text")
                         )
 
                 },
                 {
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:01.000Z", "text"),
-                                new Sample("2016-06-03T09:23:00.000Z", 1)
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
+                                Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 1)
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -111,20 +108,20 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:00.500Z", "null"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "text"),
-                                new TextSample("2016-06-03T09:23:01.500Z", "text"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "text")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:00.500Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:01.500Z", "text"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "text")
                         )
 
                 },
                 {
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:01.000Z", "first"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "second"),
-                                new Sample("2016-06-03T09:23:03.000Z", 3),
-                                new TextSample("2016-06-03T09:23:04.000Z", "fourth")
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "second"),
+                                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3),
+                                Sample.ofDateText("2016-06-03T09:23:04.000Z", "fourth")
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -137,26 +134,26 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "first"),
-                                new TextSample("2016-06-03T09:23:00.500Z", "first"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "first"),
-                                new TextSample("2016-06-03T09:23:01.500Z", "first"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "second"),
-                                new TextSample("2016-06-03T09:23:02.500Z", "second"),
-                                new TextSample("2016-06-03T09:23:03.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:03.500Z", "null"),
-                                new TextSample("2016-06-03T09:23:04.000Z", "fourth"),
-                                new TextSample("2016-06-03T09:23:04.500Z", "fourth"),
-                                new TextSample("2016-06-03T09:23:05.000Z", "fourth")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:00.500Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:01.500Z", "first"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "second"),
+                                Sample.ofDateText("2016-06-03T09:23:02.500Z", "second"),
+                                Sample.ofDateText("2016-06-03T09:23:03.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:03.500Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:04.000Z", "fourth"),
+                                Sample.ofDateText("2016-06-03T09:23:04.500Z", "fourth"),
+                                Sample.ofDateText("2016-06-03T09:23:05.000Z", "fourth")
                         )
 
                 },
                 {
                         Arrays.asList(
-                                new Sample("2016-06-03T09:23:01.000Z", 1),
-                                new Sample("2016-06-03T09:23:02.000Z", 2),
-                                new Sample("2016-06-03T09:23:03.000Z", 3),
-                                new Sample("2016-06-03T09:23:04.000Z", 4)
+                                Sample.ofDateInteger("2016-06-03T09:23:01.000Z", 1),
+                                Sample.ofDateInteger("2016-06-03T09:23:02.000Z", 2),
+                                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3),
+                                Sample.ofDateInteger("2016-06-03T09:23:04.000Z", 4)
                         ),
                         new TimePeriod(
                                 "2016-06-03T09:23:00.000Z",
@@ -169,21 +166,19 @@ public class TextInterpolationTest extends SqlTest {
                                 FillMode.EXTEND
                         ),
                         Arrays.asList(
-                                new TextSample("2016-06-03T09:23:00.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:01.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:02.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:03.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:04.000Z", "null"),
-                                new TextSample("2016-06-03T09:23:05.000Z", "null")
+                                Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:01.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:02.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:03.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:04.000Z", "null"),
+                                Sample.ofDateText("2016-06-03T09:23:05.000Z", "null")
                         )
 
                 }
         };
     }
 
-    /**
-     * #3463
-     */
+    @Issue("3463")
     @Test(dataProvider = "interpolationDataProvider")
     public void testInterpolation(Collection<Sample> sourcePoints,
                                   TimePeriod period,
@@ -194,7 +189,7 @@ public class TextInterpolationTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
 
         String sqlQuery = String.format(
-                "SELECT datetime, text FROM '%s'%nWHERE time BETWEEN %s AND %s%nWITH INTERPOLATE(%s)",
+                "SELECT datetime, text FROM \"%s\"%nWHERE time BETWEEN %s AND %s%nWITH INTERPOLATE(%s)",
                 series.getMetric(), period.getStartTime(), period.getEndTime(), interpolationParams
         );
 
@@ -206,9 +201,7 @@ public class TextInterpolationTest extends SqlTest {
         assertSqlQueryRows(assertMessage, expectedRows, sqlQuery);
     }
 
-    /**
-     * #3463
-     */
+    @Issue("3463")
     @Test
     public void testMultiJoinInterpolation() throws Exception {
         List<Series> seriesList = multiJoinSeries();
@@ -243,7 +236,7 @@ public class TextInterpolationTest extends SqlTest {
         queryBuilder.append(" FROM ");
         i = 0;
         for (Series series : seriesList) {
-            String fromTable = String.format(" '%s' t%d%n", series.getMetric(), i + 1);
+            String fromTable = String.format(" \"%s\" t%d%n", series.getMetric(), i + 1);
             if (i == 0) {
                 queryBuilder.append(fromTable);
             } else {
@@ -254,7 +247,7 @@ public class TextInterpolationTest extends SqlTest {
         Long delta = 60000L;
         Long startTime = Mocks.MILLS_TIME - delta;
         Long endTime = Mocks.MILLS_TIME + delta;
-        queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", TestUtil.ISOFormat(startTime), TestUtil.ISOFormat(endTime)));
+        queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", Util.ISOFormat(startTime), Util.ISOFormat(endTime)));
         queryBuilder.append("WITH INTERPOLATE(1 MINUTE, AUTO, OUTER, EXTEND, START_TIME)");
         return queryBuilder.toString();
     }
@@ -263,7 +256,7 @@ public class TextInterpolationTest extends SqlTest {
         String[][] result = new String[samples.size()][2];
         int i = 0;
         for (Sample sample : samples) {
-            result[i][0] = sample.getD();
+            result[i][0] = sample.getRawDate();
             result[i][1] = sample.getText();
             i++;
         }
