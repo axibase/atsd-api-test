@@ -1,9 +1,9 @@
 package com.axibase.tsd.api.method.series.command;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
-import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
@@ -16,17 +16,14 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
-import static com.axibase.tsd.api.transport.tcp.TCPSender.sendChecked;
 import static org.testng.AssertJUnit.assertTrue;
 
 @Slf4j
-public class LineBreakInsideSeriesCommandTest extends CommandMethod {
+public class LineBreakInsideSeriesCommandTest {
     private static Sample testSample = Sample.ofDateInteger(Mocks.ISO_TIME, 1234);
 
     enum TestType {
@@ -44,20 +41,23 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
     @DataProvider
     public static Object[][] provideTestTypeAndValue() {
         String[][] valueResults = {
-                {"test\ntest",                    "test\ntest"},
-                {"test\ntest\ntest",              "test\ntest\ntest"},
-                {"test\rtest\rtest",              "test\rtest\rtest"},
-                {"test\r\ntest\n\rtest",          "test\ntest\n\rtest"},
-                {"test\n\ntest\n\ntest",          "test\ntest\ntest"},
-                {"test\n\r",                      "test\n\r"},
-                {"  \r\r\n\rtest\n\rtest  \n\r ", "  \n\rtest\n\rtest  \n\r "},
+                /*    Original                        Network API                  Data API      */
+                {"test\ntest",                    "test\ntest",                "test\ntest"},
+                {"test\ntest\ntest",              "test\ntest\ntest",          "test\ntest\ntest"},
+                {"test\rtest\rtest",              "test\rtest\rtest",          "test\ntest\ntest"},
+                {"test\r\ntest\n\rtest",          "test\ntest\n\rtest",        "test\ntest\ntest"},
+                {"test\n\ntest\n\ntest",          "test\ntest\ntest",          "test\ntest\ntest"},
+                {"test\n\r",                      "test\n\r",                  "test\n"},
+                {"  \r\r\n\rtest\n\rtest  \n\r ", "  \n\rtest\n\rtest  \n\r ", "\ntest\ntest\n"},
         };
 
         List<Object[]> parameters = new ArrayList<>();
 
         for (TestType type : TestType.values()) {
             for (String[] valueResult : valueResults) {
-                parameters.add(new Object[]{new TestData(type, valueResult[0], valueResult[1])});
+                String send = valueResult[0];
+                String get = type == TestType.NETWORK_API ? valueResult[1] : valueResult[2];
+                parameters.add(new Object[]{new TestData(type, send, get)});
             }
         }
 
@@ -69,7 +69,10 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
 
     @Issue("3878")
     @Issue("3906")
-    @Test(dataProvider = "provideTestTypeAndValue")
+    @Test(
+            description = "Test line break processing for tag value",
+            dataProvider = "provideTestTypeAndValue"
+    )
     public void testTagLineBreak(TestData data) throws Exception {
         log.info("Data", data);
         Series seriesWithBreak = new Series(Mocks.entity(), Mocks.metric());
@@ -79,12 +82,17 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
         Series responseSeries = seriesWithBreak.copy();
         responseSeries.addTag("test-tag", data.responseData);
 
-        sendAndCheck(seriesWithBreak, responseSeries, data.testType);
+        String message = String.format("Unexpected actual tag value in response for %s, " +
+                "incorrect line breaks processing", data.testType);
+        sendAndCheck(message, seriesWithBreak, responseSeries, data.testType);
     }
 
     @Issue("3878")
     @Issue("3906")
-    @Test(dataProvider = "provideTestTypeAndValue")
+    @Test(
+            description = "Test line break processing for text field",
+            dataProvider = "provideTestTypeAndValue"
+    )
     public void testMetricTextLineBreak(TestData data) {
         Sample sampleWithBreak = Sample.ofDateText(Mocks.ISO_TIME, data.insertData);
         Sample responseSample = Sample.ofDateText(Mocks.ISO_TIME, data.responseData);
@@ -95,65 +103,32 @@ public class LineBreakInsideSeriesCommandTest extends CommandMethod {
         seriesWithBreak.addSamples(sampleWithBreak);
         responseSeries.addSamples(responseSample);
 
-        sendAndCheck(seriesWithBreak, responseSeries, data.testType);
+        String message = String.format("Unexpected actual text (x field) in response for %s, " +
+                "incorrect line breaks processing", data.testType);
+        sendAndCheck(message, seriesWithBreak, responseSeries, data.testType);
     }
 
-    private void sendAndCheck(Series insert, Series response, TestType type) {
+    private void sendAndCheck(String message, Series insert, Series response, TestType type) {
         List<PlainCommand> commands = new ArrayList<>();
-        commands.addAll(seriesToCommands(insert));
+        commands.addAll(insert.toCommands());
 
         boolean checked;
-        switch (type) {
-            case DATA_API:
-                try {
-                    sendChecked(new SeriesCheck(Collections.singletonList(response)), commands);
-                    checked = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    checked = false;
-                }
-                break;
-            case NETWORK_API:
-                try {
+        try {
+            switch (type) {
+                case NETWORK_API:
                     TCPSender.sendChecked(new SeriesCheck(Collections.singletonList(response)), commands);
-                    checked = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    checked = false;
-                }
-                break;
-            default:
-                checked = false;
-        }
-        assertTrue(checked);
-    }
-
-    private List<PlainCommand> seriesToCommands(Series series) {
-        List<PlainCommand> seriesList = new ArrayList<>();
-
-        String entity = series.getEntity();
-        String metric = series.getMetric();
-        List<Sample> data = series.getData();
-
-        for (Sample sample : data) {
-            SeriesCommand command = new SeriesCommand();
-
-            command.setEntityName(entity);
-            command.setTags(new HashMap<>(series.getTags()));
-            command.setTimeMills(sample.getUnixTime());
-            command.setTimeISO(sample.getRawDate());
-
-            BigDecimal v = sample.getValue();
-            if (v != null)
-                command.setValues(Collections.singletonMap(metric, v.toString()));
-
-            String text = sample.getText();
-            if (text != null)
-                command.setTexts(Collections.singletonMap(metric, text));
-
-            seriesList.add(command);
+                    break;
+                case DATA_API:
+                    CommandMethod.send(commands);
+                    Checker.check(new SeriesCheck(Collections.singletonList(response)));
+                    break;
+            }
+            checked = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            checked = false;
         }
 
-        return seriesList;
+        assertTrue(message, checked);
     }
 }
