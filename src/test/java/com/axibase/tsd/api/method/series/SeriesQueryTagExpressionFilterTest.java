@@ -190,6 +190,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     }
 
     //TODO pending #3915
+    @Issue("3915")
     @Test(dataProvider = "doubleTagFiltersProvider", enabled = false)
     public void testDoubleTagFiltersAnd(FilterTuple filterTuple) throws Exception {
         Set<String> firstResultSet = new HashSet<>();
@@ -208,6 +209,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
                 finalResultSet);
     }
 
+    @Issue("3915")
     @Test(dataProvider = "doubleTagFiltersProvider")
     public void testDoubleTagFiltersOr(FilterTuple filterTuple) throws Exception {
         Set<String> finalResultSet = new TreeSet<>(SeriesQueryTagExpressionFilterTest::compareTags);
