@@ -26,77 +26,93 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     private static final String[] TEST_TAGS = { null, "value1", "value2", "VALUE1", "VALUE2", "otherValue" };
 
     //TODO pending fix in #3915
-    private final Object[][] filters = new Object[][] {
-            //{"tags.tag LIKE '*'",                 new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}},
-            //{"LOWER(tags.tag) LIKE '*'",          new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}},
-            //{"tags.tag NOT LIKE '*'",             new String[] {}},
-            //{"LOWER(tags.tag) NOT LIKE '*'",      new String[] {}},
-            {"tags.tag LIKE '*al*'",                new String[] {"value1", "value2", "otherValue"}},
-            //{"LOWER(tags.tag) LIKE '*al*'",       new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}},
-            //{"tags.tag NOT LIKE '*al*'",          new String[] {"VALUE1", "VALUE2"}},
-            //{"LOWER(tags.tag) NOT LIKE '*al*'",   new String[] {}},
-            {"tags.tag LIKE 'value?'",              new String[] {"value1", "value2"}},
-            //{"LOWER(tags.tag) LIKE 'value?'",     new String[] {"value1", "value2", "VALUE1", "VALUE2"}},
-            //{"tags.tag NOT LIKE 'value?'",        new String[] {"VALUE1", "VALUE2", "otherValue"}},
-            //{"lower(tags.tag) NOT LIKE 'value?'", new String[] {"otherValue"}},
+    private final Filter[] filters = new Filter[] {
+//            new Filter("tags.tag LIKE '*'",                 new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}),
+//            new Filter("lower(tags.tag) LIKE '*'",          new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}),
+//            new Filter("tags.tag NOT LIKE '*'",             new String[] {}),
+//            new Filter("lower(tags.tag) NOT LIKE '*'",      new String[] {}),
 
-            {"tags.tag = 'value1'",                 new String[] {"value1"}},
-            //{"LOWER(tags.tag) = 'value1'",        new String[] {"value1", "VALUE1"}},
-            //{"NOT tags.tag = 'value1'",           new String[] {"value2", "VALUE1", "VALUE2", "otherValue"}},
-            //{"NOT LOWER(tags.tag) = 'value1'",    new String[] {"value2", "VALUE2", "otherValue"}},
-            //{"tags.tag != 'value1'",              new String[] {"value2", "VALUE1", "VALUE2", "otherValue"}},
-            //{"LOWER(tags.tag) != 'value1'",       new String[] {"value2", "VALUE2", "otherValue"}},
-            //{"NOT tags.tag != 'value1'",          new String[] {"value1"}},
-            //{"NOT LOWER(tags.tag) != 'value1'",   new String[] {"value1", "VALUE1"}},
-            {"tags.tag >= 'VALUE2'",                new String[] {"value1", "value2", "VALUE2", "otherValue"}},
-            //{"LOWER(tags.tag) >= 'value1'",       new String[] {"value1", "value2", "VALUE1", "VALUE2"}},
-            //{"NOT tags.tag >= 'VALUE2'",          new String[] {"VALUE1"}},
-            //{"NOT LOWER(tags.tag) >= 'value1'",   new String[] {"otherValue"}},
-            {"tags.tag > 'VALUE2'",                 new String[] {"value1", "value2", "otherValue"}},
-            //{"LOWER(tags.tag) > 'value1'",        new String[] {"value2", "VALUE2"}},
-            //{"NOT tags.tag > 'VALUE2'",           new String[] {"VALUE1", "VALUE2"}},
-            //{"NOT LOWER(tags.tag) > 'value1'",    new String[] {"value1", "VALUE1", "otherValue"}},
-            //{"tags.tag <= 'VALUE2'",              new String[] {"VALUE1", "VALUE2"}},
-            //{"LOWER(tags.tag) <= 'VALUE2'",       new String[] {"value1", "VALUE1"}},
-            //{"NOT tags.tag <= 'VALUE2'",          new String[] {"value1", "value2", "otherValue"}},
-            //{"NOT LOWER(tags.tag) <= 'value1'",   new String[] {"value2", "VALUE2"}},
-            //{"tags.tag < 'VALUE2'",               new String[] {"VALUE1"}},
-            //{"LOWER(tags.tag) < 'value1'",        new String[] {"otherValue"}},
-            //{"NOT tags.tag < 'VALUE2'",           new String[] {"value1", "value2", "VALUE2", "otherValue"}},
-            //{"NOT LOWER(tags.tag) < 'value1'",    new String[] {"value1", "value2", "VALUE1", "VALUE2"}},
+//            new Filter("tags.tag LIKE '*al*'",              new String[] {"value1", "value2", "otherValue"}),
+//            new Filter("lower(tags.tag) LIKE '*al*'",       new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}),
+//            new Filter("tags.tag NOT LIKE '*al*'",          new String[] {"VALUE1", "VALUE2"}),
+//            new Filter("lower(tags.tag) NOT LIKE '*al*'",   new String[] {}),
 
+            new Filter("tags.tag LIKE 'value?'",            new String[] {"value1", "value2"}),
+//            new Filter("lower(tags.tag) LIKE 'value?'",     new String[] {"value1", "value2", "VALUE1", "VALUE2"}),
+//            new Filter("tags.tag NOT LIKE 'value?'",        new String[] {"VALUE1", "VALUE2", "otherValue"}),
+//            new Filter("lower(tags.tag) NOT LIKE 'value?'", new String[] {"otherValue"}),
 
+            new Filter("tags.tag = 'value1'",               new String[] {"value1"}),
+            new Filter("lower(tags.tag) = 'value1'",        new String[] {"value1", "VALUE1"}),
+//            new Filter("NOT tags.tag = 'value1'",           new String[] {"value2", "VALUE1", "VALUE2", "otherValue"}),
+//            new Filter("NOT lower(tags.tag) = 'value1'",    new String[] {"value2", "VALUE2", "otherValue"}),
+
+//            new Filter("tags.tag != 'value1'",              new String[] {"value2", "VALUE1", "VALUE2", "otherValue"}),
+//            new Filter("lower(tags.tag) != 'value1'",       new String[] {"value2", "VALUE2", "otherValue"}),
+//            new Filter("NOT tags.tag != 'value1'",          new String[] {"value1"}),
+//            new Filter("NOT lower(tags.tag) != 'value1'",   new String[] {"value1", "VALUE1"}),
+
+            new Filter("tags.tag >= 'VALUE2'",              new String[] {"value1", "value2", "VALUE2", "otherValue"}),
+            new Filter("lower(tags.tag) >= 'value1'",       new String[] {"value1", "value2", "VALUE1", "VALUE2"}),
+//            new Filter("NOT tags.tag >= 'VALUE2'",          new String[] {"VALUE1"}),
+//            new Filter("NOT lower(tags.tag) >= 'value1'",   new String[] {"otherValue"}),
+
+            new Filter("tags.tag >= 'VALUE2'",              new String[] {"value1", "value2", "VALUE2", "otherValue"}),
+            new Filter("lower(tags.tag) >= 'value1'",       new String[] {"value1", "value2", "VALUE1", "VALUE2"}),
+//            new Filter("NOT tags.tag >= 'VALUE2'",          new String[] {"VALUE1"}),
+//            new Filter("NOT lower(tags.tag) >= 'value1'",   new String[] {"otherValue"}),
+
+            new Filter("tags.tag > 'VALUE2'",               new String[] {"value1", "value2", "otherValue"}),
+            new Filter("lower(tags.tag) > 'value1'",        new String[] {"value2", "VALUE2"}),
+//            new Filter("NOT tags.tag > 'VALUE2'",           new String[] {"VALUE1", "VALUE2"}),
+//            new Filter("NOT lower(tags.tag) > 'value1'",    new String[] {"value1", "VALUE1", "otherValue"}),
+
+//            new Filter("tags.tag <= 'VALUE2'",              new String[] {"VALUE1", "VALUE2"}),
+//            new Filter("lower(tags.tag) <= 'VALUE2'",       new String[] {"value1", "VALUE1"}),
+//            new Filter("NOT tags.tag <= 'VALUE2'",          new String[] {"value1", "value2", "otherValue"}),
+//            new Filter("NOT lower(tags.tag) <= 'value1'",   new String[] {"value2", "VALUE2"}),
+
+//            new Filter("tags.tag < 'VALUE2'",               new String[] {"VALUE1"}),
+//            new Filter("lower(tags.tag) < 'value1'",        new String[] {"otherValue"}),
+//            new Filter("NOT tags.tag < 'VALUE2'",           new String[] {"value1", "value2", "VALUE2", "otherValue"}),
+//            new Filter("NOT lower(tags.tag) < 'value1'",    new String[] {"value1", "value2", "VALUE1", "VALUE2"}),
     };
 
-    @DataProvider(name = "singleTagFiltersProvider")
+    @DataProvider(name = "singleTagFiltersProvider", parallel = true)
     Object[][] provideSingleTagFilters() {
-        return filters;
+        Object[][] result = new Object[filters.length][1];
+        for (int i = 0; i < filters.length; i++) {
+            result[i][0] = filters[i];
+        }
+
+        return result;
     }
 
-    private static Object[][] createFiltersCrossJoin(Object[][] filters) {
-        Object[][] result = new Object[filters.length * filters.length][4];
-        int resultIndex = 0;
-        for (Object[] firstFilterResult : filters) {
-            for (Object[] secondFilterResult : filters) {
-                result[resultIndex][0] = firstFilterResult[0];
-                result[resultIndex][1] = firstFilterResult[1];
-                result[resultIndex][2] = secondFilterResult[0];
-                result[resultIndex][3] = secondFilterResult[1];
-
-                resultIndex++;
+    private List<FilterTuple> createFiltersCrossJoin(Filter[] filters) {
+        List<FilterTuple> result = new ArrayList<>(filters.length * filters.length);
+        for (Filter firstFilter : filters) {
+            for (Filter secondFilter : filters) {
+                result.add(new FilterTuple(firstFilter, secondFilter));
             }
         }
 
         return result;
     }
 
-    @DataProvider(name = "doubleTagFiltersProvider")
+    @DataProvider(name = "doubleTagFiltersProvider", parallel = true)
     Object[][] provideDoubleTagFilters() {
-        return createFiltersCrossJoin(filters);
+        List<FilterTuple> allTuples = createFiltersCrossJoin(filters);
+
+        Object[][] result = new Object[allTuples.size()][1];
+        for (int i = 0; i < allTuples.size(); i++) {
+            result[i][0] = allTuples.get(i);
+        }
+
+        return result;
     }
 
 
-    @BeforeTest
+    //@BeforeTest
     public void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 
@@ -118,22 +134,22 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
     @Issue("3915")
     @Test(dataProvider = "singleTagFiltersProvider")
-    public void testSingleTagFilters(String filter, String[] expectedTags) throws Exception {
-        checkQuery(filter, expectedTags);
+    public void testSingleTagFilters(Filter filter) throws Exception {
+        checkQuery(filter.expression, Sets.newHashSet(filter.expectedResult));
     }
 
     @Issue("3915")
     @Test(dataProvider = "singleTagFiltersProvider")
-    public void testTagFilterWithTagExpression(String filter, String[] expectedTags) throws Exception {
+    public void testTagFilterWithTagExpression(Filter filter) throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         Set<String> expectedTagsSet = new HashSet<>();
-        if (expectedTags.length > 0) {
-            expectedTagsSet.add(expectedTags[0]);
-            query.setTags(Collections.singletonMap("tag", expectedTags[0]));
+        if (filter.expectedResult.length > 0) {
+            expectedTagsSet.add(filter.expectedResult[0]);
+            query.setTags(Collections.singletonMap("tag", filter.expectedResult[0]));
         } else {
             query.setTags(Collections.singletonMap("tag", "value1"));
         }
-        query.setTagExpression(filter);
+        query.setTagExpression(filter.expression);
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
         Set<String> actualTagsSet = new HashSet<>();
         for (Series series : seriesList) {
@@ -157,63 +173,52 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
 
     @Issue("3915")
     @Test(dataProvider = "singleTagFiltersProvider")
-    public void testTagFilterWithSeriesLimit(String filter, String[] expectedTags) throws Exception {
+    public void testTagFilterWithSeriesLimit(Filter filter) throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
-        query.setTagExpression(filter);
+        query.setTagExpression(filter.expression);
         int expectedCount;
-        if (expectedTags.length > 1) {
-            query.setSeriesLimit(expectedTags.length - 1);
-            expectedCount = expectedTags.length - 1;
+        if (filter.expectedResult.length > 1) {
+            query.setSeriesLimit(filter.expectedResult.length - 1);
+            expectedCount = filter.expectedResult.length - 1;
         } else {
             query.setSeriesLimit(1);
-            expectedCount = expectedTags.length;
+            expectedCount = filter.expectedResult.length;
         }
 
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
         assertEquals(seriesList.size(), expectedCount);
     }
 
-    @Test(dataProvider = "doubleTagFiltersProvider")
-    public void testDoubleTagFiltersAnd(
-            String firstFilter,
-            String[] firstResult,
-            String secondFilter,
-            String[] secondResult) throws Exception {
+    //TODO pending #3915
+    @Test(dataProvider = "doubleTagFiltersProvider", enabled = false)
+    public void testDoubleTagFiltersAnd(FilterTuple filterTuple) throws Exception {
         Set<String> firstResultSet = new HashSet<>();
-        Collections.addAll(firstResultSet, firstResult);
+        Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
 
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+        Set<String> finalResultSet = new TreeSet<>(SeriesQueryTagExpressionFilterTest::compareTags);
 
-        for (String resultRow : secondResult) {
+        for (String resultRow : filterTuple.secondFilter.expectedResult) {
             if (!firstResultSet.contains(resultRow)) continue;
             finalResultSet.add(resultRow);
         }
 
-        checkQuery(String.format("((%1$s) AND (%2$s)) OR ((%1$s) AND (%2$s))", firstFilter, secondFilter), finalResultSet.toArray());
+        checkQuery(String.format("((%1$s) AND (%2$s)) OR ((%1$s) AND (%2$s))",
+                filterTuple.firstFilter.expression,
+                filterTuple.secondFilter.expression),
+                finalResultSet);
     }
 
     @Test(dataProvider = "doubleTagFiltersProvider")
-    public void testDoubleTagFiltersOr(
-            String firstFilter,
-            String[] firstResult,
-            String secondFilter,
-            String[] secondResult) throws Exception {
-        Set<String> finalResultSet = new TreeSet<>((o1, o2) -> {
-            if (o1.equals("null") && o2.equals("null")) return 0;
-            if (o1.equals("null")) return -1;
-            if (o2.equals("null")) return 1;
-            return o1.compareTo(o2);
-        });
+    public void testDoubleTagFiltersOr(FilterTuple filterTuple) throws Exception {
+        Set<String> finalResultSet = new TreeSet<>(SeriesQueryTagExpressionFilterTest::compareTags);
 
-        Collections.addAll(finalResultSet, firstResult);
-        Collections.addAll(finalResultSet, secondResult);
+        Collections.addAll(finalResultSet, filterTuple.firstFilter.expectedResult);
+        Collections.addAll(finalResultSet, filterTuple.secondFilter.expectedResult);
 
-        checkQuery(String.format("((%1$s) OR (%2$s)) AND ((%1$s) OR (%2$s))", firstFilter, secondFilter), finalResultSet.toArray());
+        checkQuery(String.format("((%1$s) OR (%2$s)) AND ((%1$s) OR (%2$s))",
+                filterTuple.firstFilter.expression,
+                filterTuple.secondFilter.expression),
+                finalResultSet);
     }
 
     @Issue("3915")
@@ -248,8 +253,8 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         Assert.assertEquals(list, Collections.singletonList(series2), "Series are not matched to tag expression '"+ query.getTagExpression()+"'");
     }
 
-    private void checkQuery(String filter, Object[] expectedTags) throws Exception {
-        Set<Object> expectedTagsSet = Sets.newHashSet(expectedTags);
+    private void checkQuery(String filter, Set<String> expectedResult) throws Exception {
+        Set<Object> expectedTagsSet = Sets.newHashSet(expectedResult);
 
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         query.setTagExpression(filter);
@@ -271,6 +276,33 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
             actualTagsSet.add(value);
         }
 
-        assertEquals(expectedTagsSet, actualTagsSet);
+        assertEquals(String.format("Incorrect result with filter %s", filter), expectedTagsSet, actualTagsSet);
+    }
+
+    private static int compareTags(String o1, String o2) {
+        if (o1.equals("null") && o2.equals("null")) return 0;
+        if (o1.equals("null")) return -1;
+        if (o2.equals("null")) return 1;
+        return o1.compareTo(o2);
+    }
+
+    private class Filter {
+        public final String expression;
+        public final String[] expectedResult;
+
+        private Filter(String expression, String[] expectedResult) {
+            this.expression = expression;
+            this.expectedResult = expectedResult;
+        }
+    }
+
+    private class FilterTuple {
+        public final Filter firstFilter;
+        public final Filter secondFilter;
+
+        private FilterTuple(Filter firstFilter, Filter secondFilter) {
+            this.firstFilter = firstFilter;
+            this.secondFilter = secondFilter;
+        }
     }
 }
