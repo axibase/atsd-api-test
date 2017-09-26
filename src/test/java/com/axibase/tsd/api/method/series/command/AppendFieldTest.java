@@ -124,10 +124,9 @@ public class AppendFieldTest extends CommandMethodTest {
         Series series = new Series(entityName, metricAppendTextViaBatch);
         series.addSamples(Sample.ofDateText(ISO_TIME, "text1;\ntext2"));
 
-        CommandMethod.send(new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text1"), null,
-                                            entityName, null, null, null, ISO_TIME, false));
-
         List<PlainCommand> seriesCommandList = new ArrayList<>(Arrays.asList(
+                new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text1"), null,
+                        entityName, null, null, null, ISO_TIME, false),
                 new SeriesCommand(singletonMap(metricAppendTextViaBatch, "text2"), null,
                         entityName, null, null, null, ISO_TIME, true),
                 new SeriesCommand(null, singletonMap(metricAppendTextViaBatch, DECIMAL_VALUE.toString()),
