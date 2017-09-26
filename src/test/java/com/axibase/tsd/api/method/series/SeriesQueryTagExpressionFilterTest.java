@@ -112,7 +112,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     }
 
 
-    //@BeforeTest
+    @BeforeTest
     public void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 
