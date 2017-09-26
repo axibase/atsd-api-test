@@ -4,7 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -26,15 +26,15 @@ public class ThreeValuedLogicTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         Series series = new Series(ENTITY_NAME, METRIC_NAME_1);
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC_NAME_2);
-        series.addSamples(new Sample(ISO_TIME, 2));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 2));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC_NAME_3);
-        series.addSamples(new TextSample(ISO_TIME, "hello"));
+        series.addSamples(Sample.ofDateText(ISO_TIME, "hello"));
         seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);
@@ -72,9 +72,7 @@ public class ThreeValuedLogicTest extends SqlTest {
         };
     }
 
-    /**
-     * #4286
-     */
+    @Issue("4286")
     @Test(dataProvider = "logicTableSelectTestProvider")
     public void selectClauseLogicTableTest(String param, String expectedValue) {
         String query = String.format(
@@ -87,14 +85,12 @@ public class ThreeValuedLogicTest extends SqlTest {
         assertEquals(assertMessage, expectedValue, actualValue);
     }
 
-    /**
-     * #4286
-     */
+    @Issue("4286")
     @Test(dataProvider = "logicTableSelectTestProvider")
     public void whereClauseLogicTableTest(String param, String expectedValue) {
         String query = String.format(
                 "SELECT value " +
-                        "FROM '%s' " +
+                        "FROM \"%s\" " +
                         "WHERE %s",
                 METRIC_NAME_1, param
         );
@@ -133,14 +129,12 @@ public class ThreeValuedLogicTest extends SqlTest {
         };
     }
 
-    /**
-     * #4286
-     */
+    @Issue("4286")
     @Test(dataProvider = "logicTableJoinTestProvider")
     public void joinedMetricsLogicTableTest(String param, String expectedValue) {
         String query = String.format(
                 "SELECT %s " +
-                        "FROM '%s' t1 JOIN '%s' t2 JOIN '%s' t3 ",
+                        "FROM \"%s\" t1 JOIN \"%s\" t2 JOIN \"%s\" t3 ",
                 param, METRIC_NAME_1, METRIC_NAME_2, METRIC_NAME_3
         );
 

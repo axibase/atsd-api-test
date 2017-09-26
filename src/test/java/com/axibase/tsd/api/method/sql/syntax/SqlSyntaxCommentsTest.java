@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,30 +26,26 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-06-03T09:24:00.000Z", 0));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:24:00.000Z", 0));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testCorrectSimpleLineComment() {
         String sqlQuery = String.format(
-                "--line comment %nSELECT * FROM '%s'",
+                "--line comment %nSELECT * FROM \"%s\"",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testCorrectMultiLineComment() {
         String sqlQuery = String.format(
-                "/* multi %nline %ncomment*/ %nSELECT * FROM '%s' %n",
+                "/* multi %nline %ncomment*/ %nSELECT * FROM \"%s\" %n",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -56,39 +53,33 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testCorrectCommentAfterFrom() {
         String sqlQuery = String.format(
-                "/*comment*/ %nSELECT *FROM   /*comment*/  '%s' %nWHERE datetime > now -5*minute",
+                "/*comment*/ %nSELECT *FROM   /*comment*/  \"%s\" %nWHERE datetime > now -5*minute",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testCorrectNestedComment() {
         String sqlQuery = String.format(
-                "/*'/**/'*/ %nSELECT * FROM '%s'",
+                "/*'/**/'*/ %nSELECT * FROM \"%s\"",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
         assertEquals(OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testInCorrectCommentAfterDelimiter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s';    /*--*/",
+                "SELECT * FROM \"%s\";    /*--*/",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
@@ -96,26 +87,22 @@ public class SqlSyntaxCommentsTest extends SqlTest {
     }
 
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testInCorrectCommentAsOperand() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s'; %nWHERE entity = /*--*/",
+                "SELECT * FROM \"%s\"; %nWHERE entity = /*--*/",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #1956
-     */
+    @Issue("1956")
     @Test
     public void testCorrectCommentBeforeDelimiter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %n/*--*/;",
+                "SELECT * FROM \"%s\" %n/*--*/;",
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);

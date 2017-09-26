@@ -10,7 +10,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.TextSample;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -56,17 +56,17 @@ public class SqlLookupFunctionTest extends SqlTest {
             Series series = new Series(entity(), TEST_METRIC_NAME_BASE_LOOKUP_CASE);
 
             series.addSamples(
-                    new TextSample("2016-06-03T09:20:00.000Z", "word"),
-                    new TextSample("2016-06-03T09:21:00.000Z", "-1"),
-                    new TextSample("2016-06-03T09:22:00.000Z", "1"),
-                    new TextSample("2016-06-03T09:23:00.000Z", "2"),
-                    new TextSample("2016-06-03T09:24:00.000Z", "word"),
-                    new TextSample("2016-06-03T09:25:00.000Z", "words"),
-                    new TextSample("2016-06-03T09:26:00.000Z", "3"),
-                    new TextSample("2016-06-03T09:27:00.000Z", "4"),
-                    new TextSample("2016-06-03T09:28:00.000Z", "PI"),
-                    new TextSample("2016-06-03T09:29:00.000Z", "3.14"),
-                    new TextSample("2016-06-03T09:30:00.000Z", "nothing")
+                    Sample.ofDateText("2016-06-03T09:20:00.000Z", "word"),
+                    Sample.ofDateText("2016-06-03T09:21:00.000Z", "-1"),
+                    Sample.ofDateText("2016-06-03T09:22:00.000Z", "1"),
+                    Sample.ofDateText("2016-06-03T09:23:00.000Z", "2"),
+                    Sample.ofDateText("2016-06-03T09:24:00.000Z", "word"),
+                    Sample.ofDateText("2016-06-03T09:25:00.000Z", "words"),
+                    Sample.ofDateText("2016-06-03T09:26:00.000Z", "3"),
+                    Sample.ofDateText("2016-06-03T09:27:00.000Z", "4"),
+                    Sample.ofDateText("2016-06-03T09:28:00.000Z", "PI"),
+                    Sample.ofDateText("2016-06-03T09:29:00.000Z", "3.14"),
+                    Sample.ofDateText("2016-06-03T09:30:00.000Z", "nothing")
             );
 
             seriesList.add(series);
@@ -89,7 +89,7 @@ public class SqlLookupFunctionTest extends SqlTest {
         Entity entity = new Entity(testEntityNameTagsCase, tags);
         Series series = new Series(testEntityNameTagsCase, TEST_METRIC_NAME_TAGS_CASE, tags);
 
-        series.addSamples(new Sample("2016-06-03T09:20:00.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:00.000Z", 1));
         seriesList.add(series);
 
         MetricMethod.createOrReplaceMetricCheck(metric);
@@ -97,14 +97,12 @@ public class SqlLookupFunctionTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesList);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupFromText() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', t1.text) " +
-                        "FROM '%s' t1",
+                        "FROM \"%s\" t1",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
 
@@ -130,14 +128,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupCompositionFromText() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', LOOKUP('tableForLookupTest1', t1.text)) " +
-                        "FROM '%s' t1",
+                        "FROM \"%s\" t1",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
 
@@ -164,14 +160,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupCaseSensitivity() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', 'Word'), LOOKUP('tableForLookupTest1', 'word') " +
-                        "FROM '%s' t1 " +
+                        "FROM \"%s\" t1 " +
                         "LIMIT 1",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
@@ -184,14 +178,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupWithWrongTable() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('noTable', t1.text) " +
-                        "FROM '%s' t1",
+                        "FROM \"%s\" t1",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
 
@@ -213,14 +205,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInWhere() {
         String sqlQuery = String.format(
                 "SELECT t1.text " +
-                        "FROM '%s' t1 " +
+                        "FROM \"%s\" t1 " +
                         "WHERE LOOKUP('tableForLookupTest1', t1.text) IS NOT NULL",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
@@ -242,14 +232,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInCast() {
         String sqlQuery = String.format(
                 "SELECT CAST(LOOKUP('tableForLookupTest1', t1.text) as Number) " +
-                        "FROM '%s' t1",
+                        "FROM \"%s\" t1",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
 
@@ -271,14 +259,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInGroupBy() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', t1.text), count(*) " +
-                        "FROM '%s' t1 " +
+                        "FROM \"%s\" t1 " +
                         "GROUP BY LOOKUP('tableForLookupTest1', t1.text) " +
                         "ORDER BY 1 DESC",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
@@ -300,14 +286,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInHaving() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', t1.text), count(*) " +
-                        "FROM '%s' t1 " +
+                        "FROM \"%s\" t1 " +
                         "GROUP BY LOOKUP('tableForLookupTest1', t1.text) " +
                         "HAVING sum(CAST(LOOKUP('tableForLookupTest1', t1.text) as Number)) > 0 " +
                         "ORDER BY 1 DESC",
@@ -324,14 +308,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupInLength() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', t1.text) " +
-                        "FROM '%s' t1 " +
+                        "FROM \"%s\" t1 " +
                         "WHERE LENGTH(LOOKUP('tableForLookupTest1', t1.text)) > 3",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
@@ -348,14 +330,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3555
-     */
+    @Issue("3555")
     @Test
     public void testLookupWithLike() {
         String sqlQuery = String.format(
                 "SELECT LOOKUP('tableForLookupTest1', t1.text) " +
-                        "FROM '%s' t1 " +
+                        "FROM \"%s\" t1 " +
                         "WHERE LOOKUP('tableForLookupTest1', t1.text) LIKE '3'",
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
@@ -385,14 +365,12 @@ public class SqlLookupFunctionTest extends SqlTest {
         };
     }
 
-    /**
-     * #3769
-     */
+    @Issue("3769")
     @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithEntityTags(String key, String expectedResult) {
         String sqlQuery = String.format(
-                "SELECT LOOKUP('tableForLookupTest2', t1.entity.tags.'%s') " +
-                        "FROM '%s' t1 ",
+                "SELECT LOOKUP('tableForLookupTest2', t1.entity.tags.\"%s\") " +
+                        "FROM \"%s\" t1 ",
                 key,
                 TEST_METRIC_NAME_TAGS_CASE
         );
@@ -405,14 +383,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_TAGS_CASE.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3769
-     */
+    @Issue("3769")
     @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithMetricTags(String key, String expectedResult) {
         String sqlQuery = String.format(
-                "SELECT LOOKUP('tableForLookupTest2', t1.metric.tags.'%s') " +
-                        "FROM '%s' t1 ",
+                "SELECT LOOKUP('tableForLookupTest2', t1.metric.tags.\"%s\") " +
+                        "FROM \"%s\" t1 ",
                 key,
                 TEST_METRIC_NAME_TAGS_CASE
         );
@@ -425,14 +401,12 @@ public class SqlLookupFunctionTest extends SqlTest {
                 "using Replacement Table with parameters: " + TABLE_TAGS_CASE.toString(), expectedRows, sqlQuery);
     }
 
-    /**
-     * #3769
-     */
+    @Issue("3769")
     @Test(dataProvider = "lookupWithTagsTestProvider")
     public void testLookupWithSeriesTags(String key, String expectedResult) {
         String sqlQuery = String.format(
-                "SELECT LOOKUP('tableForLookupTest2', t1.tags.'%s') " +
-                        "FROM '%s' t1 ",
+                "SELECT LOOKUP('tableForLookupTest2', t1.tags.\"%s\") " +
+                        "FROM \"%s\" t1 ",
                 key,
                 TEST_METRIC_NAME_TAGS_CASE
         );

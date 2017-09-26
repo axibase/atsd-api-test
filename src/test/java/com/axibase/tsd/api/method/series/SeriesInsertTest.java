@@ -9,8 +9,8 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -18,13 +18,15 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.*;
 import static com.axibase.tsd.api.util.Mocks.*;
-import static com.axibase.tsd.api.util.TestUtil.addOneMS;
-import static com.axibase.tsd.api.util.TestUtil.getMillis;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.testng.AssertJUnit.*;
 
@@ -32,9 +34,7 @@ import static org.testng.AssertJUnit.*;
 public class SeriesInsertTest extends SeriesTest {
     final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testBigFloatOverflow() throws Exception {
         String entityName = "e-float-1";
@@ -43,7 +43,7 @@ public class SeriesInsertTest extends SeriesTest {
         final long t = MILLS_TIME;
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(TestUtil.ISOFormat(t), largeNumber));
+        series.addSamples(Sample.ofDateDecimal(Util.ISOFormat(t), largeNumber));
         Metric metric = new Metric();
         metric.setName(metricName);
         metric.setDataType(DataType.FLOAT);
@@ -53,12 +53,10 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testBigDecimalOverflow() throws Exception {
         String entityName = "e-decimal-1";
@@ -66,7 +64,7 @@ public class SeriesInsertTest extends SeriesTest {
         BigDecimal largeNumber = new BigDecimal("10.121212121212121212212121212121212121212121");
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(new Sample(Mocks.ISO_TIME, largeNumber));
+        series.addSamples(Sample.ofDateDecimal(Mocks.ISO_TIME, largeNumber));
 
         Metric metric = new Metric();
         metric.setName(metricName);
@@ -76,9 +74,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Managed to insert large decimal series", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
     }
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testBigDecimalAggregatePrecision() throws Exception {
         String entityName = "e-decimal-2";
@@ -93,7 +89,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
-            series.addSamples(new Sample(dateTime.plusSeconds(5 * i).toString(), number));
+            series.addSamples(Sample.ofDateDecimal(dateTime.plusSeconds(5 * i).toString(), number));
         }
         assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
         assertSeriesExisting(series);
@@ -105,12 +101,10 @@ public class SeriesInsertTest extends SeriesTest {
                 dateTime.plusMinutes(1).format(DateTimeFormatter.ISO_INSTANT));
         seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test
     public void testDoubleAggregatePrecision() throws Exception {
         String entityName = "e-double-3";
@@ -126,8 +120,8 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, null);
         series.setMetric(metricName);
         for (int i = 0; i < 12; i++) {
-            String isoDate = TestUtil.ISOFormat(t + i * 5000);
-            series.addSamples(new Sample(isoDate, number));
+            String isoDate = Util.ISOFormat(t + i * 5000);
+            series.addSamples(Sample.ofDateDecimal(isoDate, number));
         }
         assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
         assertSeriesExisting(series);
@@ -136,7 +130,7 @@ public class SeriesInsertTest extends SeriesTest {
         seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored small double value incorrect", new BigDecimal("7.299999998400001"), seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored small double value incorrect", new BigDecimal("7.299999998400001"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @DataProvider(name = "afterCompactionDataProvider")
@@ -149,9 +143,7 @@ public class SeriesInsertTest extends SeriesTest {
     }
 
 
-    /**
-     * #2871
-     **/
+    @Issue("2871")
     @Test(dataProvider = "afterCompactionDataProvider")
     public void testPrecisionAfterCompaction(DataType type, BigDecimal valueBefore) throws Exception {
         Metric metric = new Metric(metric());
@@ -159,15 +151,15 @@ public class SeriesInsertTest extends SeriesTest {
         Long time = MILLS_TIME;
 
         Series series = new Series(entity(), metric.getName());
-        series.addSamples(new Sample(TestUtil.ISOFormat(time), valueBefore));
+        series.addSamples(Sample.ofDateDecimal(Util.ISOFormat(time), valueBefore));
 
         MetricMethod.createOrReplaceMetricCheck(metric);
         SeriesMethod.insertSeriesCheck(series);
-        CompactionMethod.performCompaction("2016-06-15", true);
+        CompactionMethod.performCompaction();
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, time + 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        BigDecimal actualValue = seriesList.get(0).getData().get(0).getV();
+        BigDecimal actualValue = seriesList.get(0).getData().get(0).getValue();
         String assertMessage = String.format(
                 "Stored value precision incorrect.%n Expected: %s%nActual: %s%n",
                 valueBefore, actualValue
@@ -175,9 +167,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertTrue(assertMessage, valueBefore.compareTo(actualValue) == 0);
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsZmsAbsent() throws Exception {
         String entityName = "e-iso-1";
@@ -187,20 +177,18 @@ public class SeriesInsertTest extends SeriesTest {
         String storedDate = "2016-06-09T17:08:09.000Z";
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T17:08:09Z";
-        series.addSamples(new Sample(d, value));
+        series.addSamples(Sample.ofDateDecimal(d, value));
 
         assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getD());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
+        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsZms() throws Exception {
         String entityName = "e-iso-2";
@@ -210,20 +198,18 @@ public class SeriesInsertTest extends SeriesTest {
         String storedDate = "2016-06-09T17:08:09.100Z";
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T17:08:09.100Z";
-        series.addSamples(new Sample(d, value));
+        series.addSamples(Sample.ofDateDecimal(d, value));
 
         assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getD());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
+        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsPlusHoursNoMS() throws Exception {
         String entityName = "e-iso-3";
@@ -232,7 +218,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T10:08:09.000Z";
-        series.addSamples(new Sample("2016-06-09T17:08:09+07:00", value));
+        series.addSamples(Sample.ofDateDecimal("2016-06-09T17:08:09+07:00", value));
 
         assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
@@ -240,13 +226,11 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
+        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2009
-     **/
+    @Issue("2009")
     @Test
     public void testISOFormatsPlusHoursMS() throws Exception {
         String entityName = "e-iso-4";
@@ -255,20 +239,18 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T10:08:09.999Z";
-        series.addSamples(new Sample("2016-06-09T17:08:09.999+07:00", value));
+        series.addSamples(Sample.ofDateDecimal("2016-06-09T17:08:09.999+07:00", value));
 
         assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
+        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testISOFormatsMinusHoursNoMS() throws Exception {
         String entityName = "e-iso-10";
@@ -277,107 +259,95 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
-        series.addSamples(new Sample("2016-06-09T17:29:00-02:31", value));
+        series.addSamples(Sample.ofDateDecimal("2016-06-09T17:29:00-02:31", value));
         assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
 
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getD());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getV());
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
+        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
 
-    /**
-     * #2913
-     **/
+    @Issue("2913")
     @Test
     public void testUnderscoreSequence() throws Exception {
         final long t = MILLS_TIME;
 
         Series series = new Series("e___underscore", "m___underscore");
-        series.addSamples(new Sample(TestUtil.ISOFormat(t),0));
+        series.addSamples(Sample.ofDateInteger(Util.ISOFormat(t), 0));
 
         assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
         assertSeriesExisting(series);
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMinInMSSaved() throws Exception {
         Long time = 0L;
         Long endTime = 1L;
         Series series = new Series("e-time-range-1", "m-time-range-1");
-        series.addSamples(new Sample(TestUtil.ISOFormat(time), 0));
+        series.addSamples(Sample.ofDateInteger(Util.ISOFormat(time), 0));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
+        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMinInISOSaved() throws Exception {
         Series series = new Series("e-time-range-2", "m-time-range-2");
-        series.addSamples(new Sample(MIN_STORABLE_DATE, 0));
+        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
         assertEquals("Empty data in returned series", 1, seriesList.get(0).getData().size());
-        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getV());
+        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeInMSTimeSaved() throws Exception {
         Long time = 1L;
         Long endTime = 2L;
         Series series = new Series("e-time-range-3", "m-time-range-3");
-        series.addSamples(new Sample(TestUtil.ISOFormat(time), 1));
+        series.addSamples(Sample.ofDateInteger(Util.ISOFormat(time), 1));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
-        assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getV());
+        assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInMSSaved() throws Exception {
-        final long t = getMillis(MAX_STORABLE_DATE);
+        final long t = getUnixTime(MAX_STORABLE_DATE);
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-5", "m-time-range-5");
-        series.addSamples(new Sample(TestUtil.ISOFormat(t), v));
+        series.addSamples(Sample.ofDateDecimal(Util.ISOFormat(t), v));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertNotSame("Empty data in response", 0, data.size());
-        assertEquals(v, data.get(0).getV());
+        assertEquals(v, data.get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInISOSaved() throws Exception {
-        final BigDecimal v = new BigDecimal("" + getMillis(MAX_STORABLE_DATE));
+        final BigDecimal v = new BigDecimal("" + getUnixTime(MAX_STORABLE_DATE));
 
         Series series = new Series("e-time-range-6", "m-time-range-6");
-        series.addSamples(new Sample(MAX_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(MAX_STORABLE_DATE, v));
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(),
@@ -385,19 +355,17 @@ public class SeriesInsertTest extends SeriesTest {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
 
         assertNotSame("Empty data in response", 0, data.size());
-        assertEquals(v, data.get(0).getV());
+        assertEquals(v, data.get(0).getValue());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInMSOverflow() throws Exception {
-        final long t = getMillis(MAX_STORABLE_DATE) + 1;
+        final long t = getUnixTime(MAX_STORABLE_DATE) + 1;
         final BigDecimal v = new BigDecimal("" + t);
 
         Series series = new Series("e-time-range-7", "m-time-range-7");
-        Sample sample = new Sample(new Date(t), v);
+        Sample sample = Sample.ofTimeDecimal(t, v);
         series.addSamples(sample);
 
         assertEquals("Managed to insert series with t out of range", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
@@ -408,14 +376,12 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Managed to insert series with t out of range", 0, data.size());
     }
 
-    /**
-     * #2957
-     **/
+    @Issue("2957")
     @Test
     public void testTimeRangeMaxInISOOverflow() throws Exception {
-        final BigDecimal v = new BigDecimal("" + getMillis(NEXT_AFTER_MAX_STORABLE_DATE));
+        final BigDecimal v = new BigDecimal("" + getUnixTime(NEXT_AFTER_MAX_STORABLE_DATE));
         Series series = new Series("e-time-range-8", "m-time-range-8");
-        series.addSamples(new Sample(NEXT_AFTER_MAX_STORABLE_DATE, v));
+        series.addSamples(Sample.ofDateDecimal(NEXT_AFTER_MAX_STORABLE_DATE, v));
 
         assertEquals("Managed to insert series with d out of range", BAD_REQUEST.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
@@ -426,9 +392,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Managed to insert series with d out of range", 0, seriesList.get(0).getData().size());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest0() throws Exception {
         Response response = httpRootResource.path("api").path("404").request().get();
@@ -437,9 +401,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest1() throws Exception {
         Response response = httpApiResource.path("query").request().get();
@@ -447,9 +409,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest2() throws Exception {
         Response response = httpApiResource.path("404").request().get();
@@ -457,9 +417,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundGetRequest3() throws Exception {
         Response response = httpApiResource.path("404").queryParam("not", "exist").request().get();
@@ -467,9 +425,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequestWithoutApiV1() throws Exception {
         Response response = httpRootResource.path("api").path("404").request().options();
@@ -477,9 +433,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url without /api/v1 options doesn't return 404", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest0() throws Exception {
         Response response = httpApiResource.path("*").request().options();
@@ -487,9 +441,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest1() throws Exception {
         Response response = httpApiResource.path("query").request().options();
@@ -497,9 +449,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest2() throws Exception {
         Response response = httpApiResource.path("404").request().options();
@@ -507,9 +457,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2927
-     **/
+    @Issue("2927")
     @Test
     public void testUrlNotFoundOptionsRequest3() throws Exception {
         Response response = httpApiResource.path("404").queryParam("not", "exist").request().options();
@@ -517,24 +465,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
     }
 
-    /**
-     * #2850
-     */
-    private class UncheckedSample extends Sample {
-
-        UncheckedSample(String d, int v) {
-            super(d, v);
-        }
-
-        @Override
-        public void setDUnsafe(String d) {
-            super.setDUnsafe(d);
-        }
-    }
-
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         String entityName = "e-iso-11";
@@ -542,9 +473,7 @@ public class SeriesInsertTest extends SeriesTest {
         String value = "0";
 
         Series series = new Series(entityName, metricName);
-        String date = "2016-06-09 20:00:00";
-        UncheckedSample sample = new UncheckedSample(date, 0);
-        sample.setDUnsafe(date);
+        Sample sample = Sample.ofRawDateInteger("2016-06-09 20:00:00", 0);
         series.addSamples(sample);
 
         Response response = insertSeries(Collections.singletonList(series));
@@ -559,20 +488,14 @@ public class SeriesInsertTest extends SeriesTest {
         );
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         String entityName = "e-iso-12";
         String metricName = "m-iso-12";
 
         Series series = new Series(entityName, metricName);
-
-        String date = "2016-06-09T09:50:00-1010";
-        UncheckedSample sample = new UncheckedSample(date, 0);
-        sample.setDUnsafe(date);
-        series.addSamples(sample);
+        series.addSamples(Sample.ofRawDateInteger("2016-06-09T09:50:00-1010", 0));
 
         Response response = insertSeries(Collections.singletonList(series));
 
@@ -583,20 +506,14 @@ public class SeriesInsertTest extends SeriesTest {
         );
     }
 
-    /**
-     * #2850
-     **/
+    @Issue("2850")
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         String entityName = "e-iso-13";
         String metricName = "m-iso-13";
 
         Series series = new Series(entityName, metricName);
-
-        String date = Mocks.MILLS_TIME.toString();
-        UncheckedSample sample = new UncheckedSample(date, 0);
-        sample.setDUnsafe(date);
-        series.addSamples(sample);
+        series.addSamples(Sample.ofRawDateInteger(Mocks.MILLS_TIME.toString(), 0));
 
         Response response = insertSeries(Collections.singletonList(series));
 
@@ -605,18 +522,16 @@ public class SeriesInsertTest extends SeriesTest {
                 extractErrorMessage(response),
                 String.format(
                         JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER,
-                        "-", "9"
+                        "-", "5"
                 )
         );
     }
 
-    /**
-     * #3164
-     */
+    @Issue("3164")
     @Test
     public void testEmptyTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-1", "m-empty-tag-1");
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         String emptyTagName = "empty-tag";
 
         series.addTag(emptyTagName, "");
@@ -628,13 +543,11 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * #3164
-     */
+    @Issue("3164")
     @Test
     public void testNullTagValueRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-2", "m-empty-tag-2");
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         String emptyTagName = "empty-tag";
 
         series.addTag(emptyTagName, null);
@@ -646,13 +559,11 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * #3164
-     **/
+    @Issue("3164")
     @Test
     public void testNullTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-3", "m-empty-tag-3");
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         String emptyTagName = "empty-tag";
 
         series.addTag("nonempty-tag", "value");
@@ -665,13 +576,11 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * #3164
-     **/
+    @Issue("3164")
     @Test
     public void testEmptyTagValueWithNormalTagsRaisesError() throws Exception {
         Series series = new Series("e-empty-tag-4", "m-empty-tag-4");
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         String emptyTagName = "empty-tag";
 
         series.addTag("nonempty-tag", "value");
@@ -684,13 +593,11 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Incorrect error message", String.format(EMPTY_TAG, emptyTagName), errorMessage);
     }
 
-    /**
-     * 2416
-     */
+    @Issue("2416")
     @Test
     public void testTagValueNullRaiseError() throws Exception {
         Series series = new Series("nulltag-entity-1", "nulltag-metric-1");
-        series.addSamples(new Sample(ISO_TIME, 1));
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, 1));
         series.addTag("t1", null);
 
         Response response = insertSeries(Collections.singletonList(series));
@@ -722,16 +629,14 @@ public class SeriesInsertTest extends SeriesTest {
         };
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test(dataProvider = "dataTextProvider")
     public void testXTextField(String text) throws Exception {
         String entityName = entity();
         String metricName = metric();
 
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, text);
+        Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, text);
         series.addSamples(sample);
 
         insertSeriesCheck(Collections.singletonList(series));
@@ -741,9 +646,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldOverwritten() throws Exception {
         String entityName = "e-text-overwritten-1";
@@ -753,7 +656,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         String[] data = new String[]{"1", "2"};
         for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, x);
+            Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -765,9 +668,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
     }
 
-    /**
-     * #3740
-     **/
+    @Issue("3740")
     @Test
     public void testXTextFieldVersioned() throws Exception {
         String entityName = "e-text-versioning-2";
@@ -780,7 +681,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         String[] data = new String[]{"1", "2", "3", "4"};
         for (String x : data) {
-            Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, x);
+            Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
             insertSeriesCheck(Collections.singletonList(series));
         }
@@ -797,9 +698,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Text field versioning is corrupted", Arrays.asList(data), textValuesVersioned);
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldPreservedFromTagsModifications() throws Exception {
         String entityName = "e-text-modify-tags-1";
@@ -807,7 +706,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
         String xText = "text";
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1, xText);
+        Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, xText);
         series.addSamples(sample);
         insertSeriesCheck(Collections.singletonList(series));
 
@@ -821,21 +720,19 @@ public class SeriesInsertTest extends SeriesTest {
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
     }
 
-    /**
-     * #3480
-     **/
+    @Issue("3480")
     @Test
     public void testXTextFieldExplicitNull() throws Exception {
         String entityName = "e-series-insert-text-null-1";
         String metricName = "m-series-insert-text-null-1";
         Series series = new Series(entityName, metricName);
-        Sample sample = new Sample("2016-10-11T13:00:00.000Z", 1);
+        Sample sample = Sample.ofDateInteger("2016-10-11T13:00:00.000Z", 1);
         series.addSamples(sample);
 
         String commandJsonFormat = "[{'entity':'%s','metric':'%s','data':[{'d':'%s','v':%s,'x':null}]}]";
         commandJsonFormat = commandJsonFormat.replace('\'', '"');
         String json = String.format(commandJsonFormat, series.getEntity(), series.getMetric(),
-                sample.getD(), sample.getV());
+                sample.getRawDate(), sample.getValue());
         Response response = insertSeries(json);
         assertEquals("Bad insertion request status code", OK.getStatusCode(), response.getStatus());
         Checker.check(new SeriesCheck(Collections.singletonList(series)));

@@ -7,7 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,13 +28,13 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     public static void prepareData() throws Exception {
         List<Series> seriesList = Arrays.asList(
                 new Series(TEST_ENTITY1_NAME, TEST_METRIC_NAME) {{
-                    addSamples(new Sample("2016-06-03T09:27:00.000Z", 0));
+                    addSamples(Sample.ofDateInteger("2016-06-03T09:27:00.000Z", 0));
                 }},
                 new Series(TEST_ENTITY2_NAME, TEST_METRIC_NAME) {{
-                    addSamples(new Sample("2016-06-03T09:27:01.000Z", 1));
+                    addSamples(Sample.ofDateInteger("2016-06-03T09:27:01.000Z", 1));
                 }},
                 new Series(TEST_ENTITY3_NAME, TEST_METRIC_NAME) {{
-                    addSamples(new Sample("2016-06-03T09:27:01.000Z", 2));
+                    addSamples(Sample.ofDateInteger("2016-06-03T09:27:01.000Z", 2));
                 }}
         );
         SeriesMethod.insertSeriesCheck(seriesList);
@@ -51,13 +51,11 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3062
-     */
+    @Issue("3062")
     @Test
     public void testSelectEntityTags() {
         String sqlQuery = String.format(
-                "SELECT entity, value, entity.tags FROM '%s' %n" +
+                "SELECT entity, value, entity.tags FROM \"%s\" %n" +
                         "WHERE datetime >= '2016-06-03T09:27:00.000Z' AND datetime < '2016-06-03T09:27:02.001Z' %n" +
                         "AND entity = '%s' %nORDER BY datetime",
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
@@ -71,13 +69,11 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3062
-     */
+    @Issue("3062")
     @Test
     public void testSelectEmptyEntityTags() {
         String sqlQuery = String.format(
-                "SELECT entity, value, entity.tags FROM '%s' %n" +
+                "SELECT entity, value, entity.tags FROM \"%s\" %n" +
                         "WHERE datetime >= '2016-06-03T09:27:00.000Z' AND datetime < '2016-06-03T09:27:02.001Z' %n" +
                         "AND entity = '%s' %nORDER BY datetime",
                 TEST_METRIC_NAME, TEST_ENTITY3_NAME
@@ -91,13 +87,11 @@ public class SqlSelectEntityTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3062
-     */
+    @Issue("3062")
     @Test
     public void testSelectTagsWithGroupByEntityTags() {
         String sqlQuery = String.format(
-                "SELECT entity, COUNT(value), entity.tags FROM '%s' %n" +
+                "SELECT entity, COUNT(value), entity.tags FROM \"%s\" %n" +
                         "WHERE datetime >= '2016-06-03T09:27:00.000Z' AND datetime < '2016-06-03T09:27:02.001Z' %n" +
                         "AND entity = '%s' %nGROUP BY entity, value",
                 TEST_METRIC_NAME, TEST_ENTITY3_NAME

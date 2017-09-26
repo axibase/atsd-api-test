@@ -10,8 +10,6 @@ import com.axibase.tsd.api.util.NotCheckedException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -47,7 +45,16 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static Response queryMetricSeries(String metricName) throws Exception {
-        WebTarget target = httpApiResource.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
+        return queryMetricSeries(metricName, null);
+    }
+
+    public static Response queryMetricSeries(String metricName,
+                                             MetricSeriesParameters parameters) throws Exception {
+        WebTarget target =
+                httpApiResource
+                .path(METHOD_METRIC_SERIES)
+                .resolveTemplate("metric", metricName);
+        target = addParameters(target, parameters);
         Response response = target.request().get();
         response.bufferEntity();
         return response;

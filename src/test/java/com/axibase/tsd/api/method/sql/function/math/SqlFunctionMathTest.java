@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,21 +24,19 @@ public class SqlFunctionMathTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
             addSamples(
-                    new Sample("2016-06-29T08:00:00.000Z", new BigDecimal("2.11")),
-                    new Sample("2016-06-29T08:00:01.000Z", new BigDecimal("7.567")),
-                    new Sample("2016-06-29T08:00:02.000Z", new BigDecimal("-1.23"))
+                    Sample.ofDateDecimal("2016-06-29T08:00:00.000Z", new BigDecimal("2.11")),
+                    Sample.ofDateDecimal("2016-06-29T08:00:01.000Z", new BigDecimal("7.567")),
+                    Sample.ofDateDecimal("2016-06-29T08:00:02.000Z", new BigDecimal("-1.23"))
             );
         }};
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testAbs() {
         String sqlQuery = String.format(
-                "SELECT ABS(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT ABS(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -53,13 +52,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testСeil() {
         String sqlQuery = String.format(
-                "SELECT CEIL(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT CEIL(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -75,13 +72,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testFloor() {
         String sqlQuery = String.format(
-                "SELECT FLOOR(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT FLOOR(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -97,13 +92,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testRound() {
         String sqlQuery = String.format(
-                "SELECT ROUND(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT ROUND(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -120,9 +113,7 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #4260
-     */
+    @Issue("4260")
     @Test
     public void testRoundWithNaN() {
         String sqlQuery = "SELECT ROUND(NaN)";
@@ -134,9 +125,7 @@ public class SqlFunctionMathTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #4260
-     */
+    @Issue("4260")
     @Test
     public void testRoundDecimalPlacesWithNaN() {
         String sqlQuery = "SELECT ROUND(NaN, 0)";
@@ -148,13 +137,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testRoundTo2DecimalPlaces() {
         String sqlQuery = String.format(
-                "SELECT ROUND(value,2) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT ROUND(value,2) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -171,13 +158,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testMod() {
         String sqlQuery = String.format(
-                "SELECT MOD(value,2.11) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT MOD(value,2.11) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -193,13 +178,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testPower() {
         String sqlQuery = String.format(
-                "SELECT Power(value,2.11) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT Power(value,2.11) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -215,13 +198,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testExp() {
         String sqlQuery = String.format(
-                "SELECT EXP(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT EXP(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -238,13 +219,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testLn() {
         String sqlQuery = String.format(
-                "SELECT LN(value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT LN(value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -261,13 +240,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testLog() {
         String sqlQuery = String.format(
-                "SELECT LOG(1.5, value) FROM'%s' %nWHERE entity = '%s'",
+                "SELECT LOG(1.5, value) FROM\"%s\" %nWHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -286,13 +263,11 @@ public class SqlFunctionMathTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3049
-     */
+    @Issue("3049")
     @Test
     public void testSqrt() {
         String sqlQuery = String.format(
-                "SELECT SQRT(value) FROM'%s' %n WHERE entity = '%s'",
+                "SELECT SQRT(value) FROM\"%s\" %n WHERE entity = '%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

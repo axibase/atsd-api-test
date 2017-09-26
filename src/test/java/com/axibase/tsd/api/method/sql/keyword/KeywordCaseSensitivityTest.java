@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -24,11 +25,11 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         List<Series> seriesList = new ArrayList<>();
 
         Series series = new Series(ENTITY_NAME, METRIC1_NAME);
-        series.addSamples(new Sample("2016-06-03T09:20:18.000Z", 1));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:18.000Z", 1));
         seriesList.add(series);
 
         series = new Series(ENTITY_NAME, METRIC2_NAME);
-        series.addSamples(new Sample("2016-06-03T09:20:18.000Z", 2));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:20:18.000Z", 2));
         seriesList.add(series);
 
         SeriesMethod.insertSeriesCheck(seriesList);
@@ -52,18 +53,16 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testBasicKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
-                "select case when t1.value > -1 then COUNT(t1.value)     else COUNT(t1.value)     end as 'word', isnull(1, 1) " +
-                        "from '%1$s' t1 outer join using entity '%2$s' t2 " +
+                "select case when t1.value > -1 then COUNT(t1.value)     else COUNT(t1.value)     end as \"word\", isnull(1, 1) " +
+                        "FROM \"%1$s\" t1 outer join using entity \"%2$s\" t2 " +
                         "where t1.entity in ('" + ENTITY_NAME + "') " +
                         "and t1.value > 0 or t1.value < 500 " +
                         "and t1.value is not null     and lookup('a', t1.value) is null " +
-                        "and cast(\"5\") = 5 " +
+                        "and cast('5') = 5 " +
                         "and t1.entity like '*' " +
                         "and t1.entity regex '.*' " +
                         "and t1.datetime between '2000-01-01T00:00:00.000Z' and '2020-01-01T00:00:00.000Z' " +
@@ -82,18 +81,16 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertOkRequest(queryResponse(sqlQuery));
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "keywordTestProvider", dependsOnMethods = {"testBasicKeywordsForCaseSensitivityInLowerCase"})
     public void testBasicKeywordsForCaseSensitivity(String keyword) {
         String sqlQuery = String.format(
-                "select case when t1.value > -1 then COUNT(t1.value) else COUNT(t1.value) end as 'word', isnull(1, 1) " +
-                        "from '%1$s' t1 outer join using entity '%2$s' t2 " +
+                "select case when t1.value > -1 then COUNT(t1.value) else COUNT(t1.value) end as \"word\", isnull(1, 1) " +
+                        "FROM \"%1$s\" t1 outer join using entity \"%2$s\" t2 " +
                         "where t1.entity in ('" + ENTITY_NAME + "') " +
                         "and t1.value > 0 or t1.value < 500 " +
                         "and t1.value is not null     and lookup('a', t1.value) is null " +
-                        "and cast(\"5\") = 5 " +
+                        "and cast('5') = 5 " +
                         "and t1.entity like '*' " +
                         "and t1.entity regex '.*' " +
                         "and t1.datetime between '2000-01-01T00:00:00.000Z' and '2020-01-01T00:00:00.000Z' " +
@@ -121,16 +118,14 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testAggregationsKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
                 "select sum(value), avg(value), min(value), max(value), count(value), counter(value), delta(value), " +
                         "first(value), last(value), max_value_time(value), min_value_time(value), " +
                         "percentile(75, value), stddev(value), wavg(value), wtavg(value) " +
-                        "from '%s'",
+                        "FROM \"%s\"",
                 METRIC1_NAME
         );
 
@@ -141,9 +136,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertSqlQueryRows("There's a problem with aggregations keywords in lowercase", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "aggregationsKeywordTestProvider",
             dependsOnMethods = {"testAggregationsKeywordsForCaseSensitivityInLowerCase"})
     public void testAggregationsKeywordsForCaseSensitivity(String keyword) {
@@ -151,7 +144,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                 "select sum(value), avg(value), min(value), max(value), count(value), counter(value), delta(value), " +
                         "first(value), last(value), max_value_time(value), min_value_time(value), " +
                         "percentile(75, value), stddev(value), wavg(value), wtavg(value) " +
-                        "from '%s'",
+                        "FROM \"%s\"",
                 METRIC1_NAME
         ).replaceAll(keyword.toLowerCase(), keyword);
 
@@ -170,15 +163,13 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testMathematicalKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
                 "select abs(value), ceil(value), floor(value), round(value), mod(value, 3), power(value, 2), " +
                         "exp(value), ln(value), log(10, value), sqrt(value) " +
-                        "from '%s'",
+                        "FROM \"%s\"",
                 METRIC1_NAME
         );
 
@@ -189,16 +180,14 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertSqlQueryRows("There's a problem with mathematical keywords in lowercase", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "mathematicalKeywordTestProvider",
             dependsOnMethods = {"testMathematicalKeywordsForCaseSensitivityInLowerCase"})
     public void testMathematicalKeywordsForCaseSensitivity(String keyword) {
         String sqlQuery = String.format(
                 "select abs(value), ceil(value), floor(value), round(value), mod(value, 3), power(value, 2), " +
                         "exp(value), ln(value), log(10, value), sqrt(value) " +
-                        "from '%s'",
+                        "FROM \"%s\"",
                 METRIC1_NAME
         ).replaceAll(keyword.toLowerCase(), keyword);
 
@@ -217,15 +206,13 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test
     public void testStringKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
                 "select upper('a'), lower('A'), replace('a', 'a', 'b'), length('a'), concat('a', 'b'), " +
                         "locate('a', 'a'), substr('a', 1, 1) " +
-                        "from '%s'",
+                        "FROM \"%s\"",
                 METRIC1_NAME
         );
 
@@ -236,16 +223,14 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         assertSqlQueryRows("There's a problem with string keywords in lowercase", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "stringKeywordTestProvider",
             dependsOnMethods = {"testStringKeywordsForCaseSensitivityInLowerCase"})
     public void testStringKeywordsForCaseSensitivity(String keyword) {
         String sqlQuery = String.format(
                 "select upper('a'), lower('A'), replace('a', 'a', 'b'), length('a'), concat('a', 'b'), " +
                         "locate('a', 'a'), substr('a', 1, 1) " +
-                        "from '%s'",
+                        "FROM \"%s\"",
                 METRIC1_NAME
         ).replaceAll(keyword.toLowerCase(), keyword);
 
@@ -295,15 +280,13 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "timeKeywordTestProvider")
     public void testTimeKeywordsForCaseSensitivity(String keyword) {
 
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%1$s' " +
+                        "FROM \"%1$s\" " +
                         "WHERE datetime < %2$s OR datetime >= %2$s",
                 METRIC1_NAME,
                 keyword
@@ -325,15 +308,13 @@ public class KeywordCaseSensitivityTest extends SqlTest {
         };
     }
 
-    /**
-     * #3843
-     */
+    @Issue("3843")
     @Test(dataProvider = "timeIntervalKeywordTestProvider")
     public void testTimeIntervalKeywordsForCaseSensitivity(String keyword) {
 
         String sqlQuery = String.format(
                 "SELECT value " +
-                        "FROM '%1$s' " +
+                        "FROM \"%1$s\" " +
                         "WHERE datetime < now - %2$s OR datetime >= now - %2$s",
                 METRIC1_NAME,
                 keyword

@@ -4,11 +4,11 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -26,13 +26,11 @@ public class SqlOrderByNullValuesTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(Collections.singletonList(testSeries));
     }
 
-    /**
-     * #4024
-     */
+    @Issue("4024")
     @Test
     public void testNullTags() {
         String sqlQuery = String.format(
-                "SELECT tags.tag FROM '%s' ORDER BY tags.tag",
+                "SELECT tags.tag FROM \"%s\" ORDER BY tags.tag",
                 TEST_METRIC
         );
 

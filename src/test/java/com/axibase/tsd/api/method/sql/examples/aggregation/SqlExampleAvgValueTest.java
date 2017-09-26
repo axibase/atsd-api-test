@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,24 +24,20 @@ public class SqlExampleAvgValueTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("11.1")),
-                new Sample("2016-06-19T11:15:00.000Z", new BigDecimal("11.5"))
+                Sample.ofDateDecimal("2016-06-19T11:00:00.000Z", new BigDecimal("11.1")),
+                Sample.ofDateDecimal("2016-06-19T11:15:00.000Z", new BigDecimal("11.5"))
         );
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3047
-     * Test for query all tags documentation example.
-     *
-     * @see <a href="Average Value Query">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/average-value.md</a>
-     */
-    @Test
+    @Issue("3047")
+    @Test(description = "Test for query all tags documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/average-value.md")
     public void testExample1() {
         String sqlQuery =
                 String.format(
                         "SELECT avg(value) %n" +
-                                "FROM '%s'  %n" +
+                                "FROM \"%s\"  %n" +
                                 "WHERE entity = '%s'" +
                                 "AND datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:16:00.000Z'",
                         TEST_METRIC_NAME, TEST_ENTITY_NAME
@@ -56,15 +53,13 @@ public class SqlExampleAvgValueTest extends SqlTest {
 
     }
 
-    /**
-     * Issues #3047
-     */
+    @Issue("3047")
     @Test
     public void testExample2() {
         String sqlQuery =
                 String.format(
                         "SELECT avg(value), max(value), last(value), count(*) %n" +
-                                "FROM '%s'  %n" +
+                                "FROM \"%s\"  %n" +
                                 "WHERE entity = '%s'" +
                                 "AND datetime >= '2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:16:00.000Z'",
                         TEST_METRIC_NAME, TEST_ENTITY_NAME

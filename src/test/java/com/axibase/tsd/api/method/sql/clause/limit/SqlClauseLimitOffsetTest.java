@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.ErrorTemplate;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -28,22 +29,20 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     public void prepareData() throws Exception {
         Series series = new Series(TESTS_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                        new Sample("2016-06-03T09:23:00.000Z", 0),
-                        new Sample("2016-06-03T09:23:01.000Z", 1),
-                        new Sample("2016-06-03T09:23:02.000Z", 2),
-                        new Sample("2016-06-03T09:23:03.000Z", 3)
+                Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 0),
+                Sample.ofDateInteger("2016-06-03T09:23:01.000Z", 1),
+                Sample.ofDateInteger("2016-06-03T09:23:02.000Z", 2),
+                Sample.ofDateInteger("2016-06-03T09:23:03.000Z", 3)
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 1,2",
+                "SELECT value FROM \"%s\" %nLIMIT 1,2",
                 TEST_METRIC_NAME
         );
 
@@ -55,13 +54,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         assertTableContainsColumnValues(expectedColumn, resultTable, "value");
     }
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 2 OFFSET 1",
+                "SELECT value FROM \"%s\" %nLIMIT 2 OFFSET 1",
                 TEST_METRIC_NAME
         );
 
@@ -74,13 +71,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOutOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 3 OFFSET 5",
+                "SELECT value FROM \"%s\" %nLIMIT 3 OFFSET 5",
                 TEST_METRIC_NAME
         );
 
@@ -93,13 +88,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testCorrectOutOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 5,3",
+                "SELECT value FROM \"%s\" %nLIMIT 5,3",
                 TEST_METRIC_NAME
         );
 
@@ -112,13 +105,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectNotIntegerOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT -1,3",
+                "SELECT value FROM \"%s\" %nLIMIT -1,3",
                 TEST_METRIC_NAME
         );
 
@@ -134,13 +125,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectNotIntegerOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 3 OFFSET -1",
+                "SELECT value FROM \"%s\" %nLIMIT 3 OFFSET -1",
                 TEST_METRIC_NAME
         );
 
@@ -155,13 +144,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         );
     }
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectLetterOffsetByLimitClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT 3 OFFSET A",
+                "SELECT value FROM \"%s\" %nLIMIT 3 OFFSET A",
                 TEST_METRIC_NAME
         );
 
@@ -177,13 +164,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectLetterOffsetByOffsetClause() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nLIMIT A,3",
+                "SELECT value FROM \"%s\" %nLIMIT A,3",
                 TEST_METRIC_NAME
         );
 
@@ -199,13 +184,11 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
     }
 
 
-    /**
-     * #3229
-     */
+    @Issue("3229")
     @Test
     public void testInCorrectOffsetWithoutLimit() {
         String sqlQuery = String.format(
-                "SELECT value FROM '%s' %nOFFSET 1",
+                "SELECT value FROM \"%s\" %nOFFSET 1",
                 TEST_METRIC_NAME
         );
 

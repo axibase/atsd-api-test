@@ -3,9 +3,7 @@ package com.axibase.tsd.api.model.series;
 import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,26 +70,21 @@ public class SeriesQuery {
     }
 
     private void setIntervalBasedOnSeriesDate(final Series series) throws IllegalArgumentException {
-        try {
-            Long minDate = Util.getMillis(MAX_QUERYABLE_DATE);
-            Long maxDate = Util.getMillis(MIN_QUERYABLE_DATE);
+        Long minDate = Util.getUnixTime(MAX_QUERYABLE_DATE);
+        Long maxDate = Util.getUnixTime(MIN_QUERYABLE_DATE);
 
-            Long curDate;
-            for (Sample sample : series.getData()) {
-                curDate = sample.getT();
-                if (curDate == null) {
-                    curDate = Util.getMillis(sample.getD());
-                }
-                minDate = Math.min(curDate, minDate);
-                maxDate = Math.max(curDate, maxDate);
+        Long curDate;
+        for (Sample sample : series.getData()) {
+            curDate = sample.getUnixTime();
+            if (curDate == null) {
+                curDate = Util.getUnixTime(sample.getRawDate());
             }
-
-            setStartDate(Util.ISOFormat(minDate));
-            setEndDate(Util.ISOFormat(maxDate + 1));
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Fail to parse date  string to millis");
+            minDate = Math.min(curDate, minDate);
+            maxDate = Math.max(curDate, maxDate);
         }
 
+        setStartDate(Util.ISOFormat(minDate));
+        setEndDate(Util.ISOFormat(maxDate + 1));
     }
 
     public Integer getLimit() {

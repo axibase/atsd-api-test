@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,7 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME) {{
-            addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
+            addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0));
         }};
 
         MetricMethod.createOrReplaceMetric(new Metric(TEST_METRIC_NAME, new HashMap<String, String>() {{
@@ -37,13 +38,11 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
+                "SELECT metric.tags %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -57,13 +56,11 @@ public class SqlSelectMetricTagsTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricMultipleTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.* %n FROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
+                "SELECT metric.tags.* %n FROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s' %n",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -82,13 +79,11 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTag() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.a %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.a %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -103,13 +98,11 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTagWithDash() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.'a-b' %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.\"a-b\" %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
@@ -123,13 +116,11 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTagCaseSensitivityFalse() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.tag %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
@@ -143,13 +134,11 @@ public class SqlSelectMetricTagsTest extends SqlTest {
     }
 
 
-    /**
-     * #3056
-     */
+    @Issue("3056")
     @Test
     public void testSelectMetricSpecifiedTagCaseSensitivityTrue() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.Tag %nFROM '%s' %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
+                "SELECT metric.tags.Tag %nFROM \"%s\" %nWHERE datetime = '2016-06-29T08:00:00.000Z'AND entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

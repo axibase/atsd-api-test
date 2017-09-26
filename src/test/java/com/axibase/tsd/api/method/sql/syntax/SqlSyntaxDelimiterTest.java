@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.ErrorTemplate;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -24,17 +25,15 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
-        series.addSamples(new Sample("2016-06-29T08:00:00.000Z", 0));
+        series.addSamples(Sample.ofDateInteger("2016-06-29T08:00:00.000Z", 0));
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithoutDelimiter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s'",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -56,13 +55,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s';",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s';",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -84,13 +81,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedBySpaces() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s'  ;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s'  ;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -113,13 +108,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByLF() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s' %n;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s' %n;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -141,13 +134,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByCR() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s'\r;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s'\r;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -169,13 +160,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByCRLF() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s'\r %n;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s'\r %n;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -197,13 +186,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByLetter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s' a;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s' a;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -211,19 +198,17 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
 
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 43,
                 extraneousErrorMessage("a", "{<EOF>, '+', '-', '*', '/', '%', '!=', '<>', '<=', '>=', " +
-                        "'>', '<', '=', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION}")
+                        "'>', '<', '=', '.', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION}")
         );
         assertBadRequest(expectedErrorMessage, response);
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByNumber() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s' 1;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s' 1;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -231,7 +216,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         String expectedMessage = ErrorTemplate.Sql.syntaxError(
                 2, 43,
                 extraneousErrorMessage("1", "{<EOF>, '+', '-', '*', '/', '%', '!=', '<>', '<=', '>='," +
-                        " '>', '<', '=', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION}"
+                        " '>', '<', '=', '.', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION}"
                 )
         );
         assertBadRequest("Query must return correct table",
@@ -240,13 +225,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByMultipleEOF() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s'  %n %n\r %n;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s'  %n %n\r %n;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -269,13 +252,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
     }
 
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSymbolsAfter() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s';123",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s';123",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 
@@ -288,13 +269,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 expectedErrorMessage, response);
     }
 
-    /**
-     * Issue #3227
-     */
+    @Issue("3227")
     @Test
     public void testResultWithDelimiterSeparatedByAND() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s' %nWHERE entity='%s' AND;",
+                "SELECT * FROM \"%s\" %nWHERE entity='%s' AND;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

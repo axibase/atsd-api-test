@@ -7,7 +7,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Registry;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -32,20 +32,18 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         tags.put("имя", "значение");
 
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME, tags);
-        series.addSamples(new Sample("2016-06-03T09:23:00.000Z", 7));
+        series.addSamples(Sample.ofDateInteger("2016-06-03T09:23:00.000Z", 7));
 
         MetricMethod.createOrReplaceMetric(new Metric(TEST_METRIC_NAME, tags));
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAll() {
         String sqlQuery = String.format(
-                "SELECT * FROM '%s'",
+                "SELECT * FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -56,13 +54,11 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
         assertTableColumnsLabels(expectedColumnLabels, resultTable, true);
     }
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAllSeriesTags() {
         String sqlQuery = String.format(
-                "SELECT tags.* FROM '%s'",
+                "SELECT tags.* FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -74,13 +70,11 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAllTagsAndColumnBefore() {
         String sqlQuery = String.format(
-                "SELECT entity, tags.* FROM '%s'",
+                "SELECT entity, tags.* FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -93,13 +87,11 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAllTagsAndColumnAfter() {
         String sqlQuery = String.format(
-                "SELECT tags.*,entity FROM '%s'",
+                "SELECT tags.*,entity FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -112,13 +104,11 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAllSeriesMetricTags() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.* FROM '%s'",
+                "SELECT metric.tags.* FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -130,13 +120,11 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAllMetricTagsAndColumnBefore() {
         String sqlQuery = String.format(
-                "SELECT entity, metric.tags.* FROM '%s'",
+                "SELECT entity, metric.tags.* FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 
@@ -149,13 +137,11 @@ public class SqlSelectAllTagsOrderTest extends SqlTest {
     }
 
 
-    /**
-     * #3166
-     */
+    @Issue("3166")
     @Test
     public void testSelectAllMetricTagsAndColumnAfter() {
         String sqlQuery = String.format(
-                "SELECT metric.tags.*,entity FROM '%s'",
+                "SELECT metric.tags.*,entity FROM \"%s\"",
                 TEST_METRIC_NAME
         );
 

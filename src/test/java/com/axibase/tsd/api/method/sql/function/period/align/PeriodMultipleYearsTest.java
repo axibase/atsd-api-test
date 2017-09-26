@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,28 +22,26 @@ public class PeriodMultipleYearsTest extends SqlTest {
     public static void prepareDate() throws Exception {
         Series series1 = new Series(ENTITY_NAME1, METRIC_NAME);
         series1.addSamples(
-                new Sample("1970-01-01T12:00:00.000Z", 0),
-                new Sample("2015-06-01T12:00:00.000Z", 0),
-                new Sample("2017-06-01T12:00:00.000Z", 0),
-                new Sample("2018-08-01T12:00:00.000Z", 0)
+                Sample.ofDateInteger("1970-01-01T12:00:00.000Z", 0),
+                Sample.ofDateInteger("2015-06-01T12:00:00.000Z", 0),
+                Sample.ofDateInteger("2017-06-01T12:00:00.000Z", 0),
+                Sample.ofDateInteger("2018-08-01T12:00:00.000Z", 0)
         );
 
         Series series2 = new Series(ENTITY_NAME2, METRIC_NAME);
         series2.addSamples(
-                new Sample("2012-06-01T12:00:00.000Z", 0),
-                new Sample("2016-06-01T12:00:00.000Z", 0)
+                Sample.ofDateInteger("2012-06-01T12:00:00.000Z", 0),
+                Sample.ofDateInteger("2016-06-01T12:00:00.000Z", 0)
         );
 
         SeriesMethod.insertSeriesCheck(series1, series2);
     }
 
-    /**
-     * #4101
-     */
+    @Issue("4101")
     @Test
     public void testPeriodYearsBoth() {
         String sqlQuery = String.format(
-                "SELECT entity, count(*), datetime FROM '%s' " +
+                "SELECT entity, count(*), datetime FROM \"%s\" " +
                         "GROUP BY entity, period(12 year) " +
                         "ORDER BY entity, time",
                 METRIC_NAME
@@ -65,13 +64,11 @@ public class PeriodMultipleYearsTest extends SqlTest {
                 expectedRows, sqlQuery);
     }
 
-    /**
-     * #4101
-     */
+    @Issue("4101")
     @Test
     public void testPeriodYears() {
         String sqlQuery = String.format(
-                "SELECT entity, count(*), datetime FROM '%s' " +
+                "SELECT entity, count(*), datetime FROM \"%s\" " +
                         "WHERE entity = '%s' " +
                         "GROUP BY entity, period(12 year) " +
                         "ORDER BY entity, time",

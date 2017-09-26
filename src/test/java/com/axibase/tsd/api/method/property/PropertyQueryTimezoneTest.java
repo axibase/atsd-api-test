@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,7 +30,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         insertPropertyCheck(property);
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testISOTimezoneZ() throws Exception {
 
@@ -46,7 +47,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
 
@@ -63,7 +64,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         PropertyQuery propertyQuery = buildPropertyQuery();
@@ -79,7 +80,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
         PropertyQuery propertyQuery = buildPropertyQuery();
@@ -93,7 +94,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testXXTimezoneUnsupported() throws Exception {
         PropertyQuery propertyQuery = buildPropertyQuery();
@@ -106,7 +107,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         assertEquals("Error message mismatch", String.format(DATE_FILTER_WRONG_SYNTAX_TPL, "startDate", "2016-07-20T22:50:00-0110"), extractErrorMessage(response));
     }
 
-    /* #2850 */
+    @Issue("2850")
     @Test
     public void testMillisecondsUnsupported() throws Exception {
         PropertyQuery propertyQuery = buildPropertyQuery();

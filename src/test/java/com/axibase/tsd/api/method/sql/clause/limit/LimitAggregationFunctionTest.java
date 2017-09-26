@@ -5,8 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
-import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -16,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.ISO_TIME;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
@@ -27,13 +25,13 @@ public class LimitAggregationFunctionTest extends SqlTest {
     @BeforeClass
     public static void setTestSeries() throws Exception {
         final Integer seriesCount = 10;
-        ZonedDateTime startDateTime = ZonedDateTime.parse(ISO_TIME);
+        ZonedDateTime startDateTime = ZonedDateTime.parse("2016-06-03T09:23:00.000Z");
         List<Series> seriesList = new ArrayList<>();
         int secondsOffset = 0;
         for (int i = 0; i < seriesCount; i++) {
             Series series = new Series(entity(), testMetric);
             for (int j = 0; j < (i + 1); j++) {
-                series.addSamples(new Sample(startDateTime
+                series.addSamples(Sample.ofDateInteger(startDateTime
                                         .plusSeconds(secondsOffset)
                                         .format(DateTimeFormatter.ISO_INSTANT),
                         j));
@@ -64,13 +62,11 @@ public class LimitAggregationFunctionTest extends SqlTest {
         };
     }
 
-    /**
-     * #3600
-     */
+    @Issue("3600")
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimit(String function) {
         String sqlQuery = String.format(
-                "SELECT %s(value) FROM '%s' %n",
+                "SELECT %s(value) FROM \"%s\" %n",
                 function, testMetric
         );
         StringTable tableWithoutLimit = queryTable(sqlQuery);
@@ -78,14 +74,12 @@ public class LimitAggregationFunctionTest extends SqlTest {
         assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 1), limitSqlQuery);
     }
 
-    /**
-     * #3600
-     */
+    @Issue("3600")
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimitWithPredicate(String function) {
         String sqlQuery = String.format(
                 "SELECT %s(value) " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "WHERE datetime > '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:23:10.000Z' ",
                 function, testMetric
         );
@@ -94,14 +88,12 @@ public class LimitAggregationFunctionTest extends SqlTest {
         assertSqlQueryRows(tableWithoutLimit.getRows().subList(0, 1), limitSqlQuery);
     }
 
-    /**
-     * #3600
-     */
+    @Issue("3600")
     @Test(dataProvider = "aggregationFunctionProvider")
     public void testAggregateFunctionLimitWithGrouping(String function) {
         String sqlQuery = String.format(
                 "SELECT %s(value) " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "WHERE datetime > '2016-06-03T09:23:00.000Z' AND datetime < '2016-06-03T09:23:10.000Z' " +
                 "GROUP BY entity ",
                 function, testMetric

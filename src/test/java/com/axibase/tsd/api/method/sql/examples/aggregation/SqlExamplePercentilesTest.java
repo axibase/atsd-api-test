@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,26 +24,22 @@ public class SqlExamplePercentilesTest extends SqlTest {
     public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
-                new Sample("2016-06-19T11:00:00.000Z", new BigDecimal("11.1212")),
-                new Sample("2016-06-19T11:01:00.000Z", new BigDecimal("11.3232")),
-                new Sample("2016-06-19T11:02:00.000Z", new BigDecimal("11.123")),
-                new Sample("2016-06-19T11:03:00.000Z", new BigDecimal("11.4343")),
-                new Sample("2016-06-19T11:04:00.000Z", new BigDecimal("11.435")),
-                new Sample("2016-06-19T11:05:00.000Z", new BigDecimal("11.33")),
-                new Sample("2016-06-19T11:06:00.000Z", new BigDecimal("11.322")),
-                new Sample("2016-06-19T11:07:00.000Z", new BigDecimal("11.3232"))
+                Sample.ofDateDecimal("2016-06-19T11:00:00.000Z", new BigDecimal("11.1212")),
+                Sample.ofDateDecimal("2016-06-19T11:01:00.000Z", new BigDecimal("11.3232")),
+                Sample.ofDateDecimal("2016-06-19T11:02:00.000Z", new BigDecimal("11.123")),
+                Sample.ofDateDecimal("2016-06-19T11:03:00.000Z", new BigDecimal("11.4343")),
+                Sample.ofDateDecimal("2016-06-19T11:04:00.000Z", new BigDecimal("11.435")),
+                Sample.ofDateDecimal("2016-06-19T11:05:00.000Z", new BigDecimal("11.33")),
+                Sample.ofDateDecimal("2016-06-19T11:06:00.000Z", new BigDecimal("11.322")),
+                Sample.ofDateDecimal("2016-06-19T11:07:00.000Z", new BigDecimal("11.3232"))
         );
 
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
 
-    /**
-     * #3047
-     * Test for alias documentation example.
-     *
-     * @see <a href="Aggregate Percentiles">https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md</a>
-     */
-    @Test
+    @Issue("3047")
+    @Test(description = "Test for alias documentation example. " +
+            "https://github.com/axibase/atsd-docs/blob/master/api/sql/examples/aggregate-percentiles.md")
     public void testExample() {
         String sqlQuery = String.format(
                 "SELECT percentile(25, value) AS \"p25\", %n" +
@@ -56,9 +53,9 @@ public class SqlExamplePercentilesTest extends SqlTest {
                         "  percentile(99.5, value) AS \"p99.5\", %n" +
                         "  percentile(99.9, value) AS \"p99.9\", %n" +
                         "  percentile(99.99, value) AS \"p99.99\" %n" +
-                        "  FROM '%s' %n" +
+                        "  FROM \"%s\" %n" +
                         "WHERE entity = '%s'  %n" +
-                        " AND datetime >=\"2016-06-19T11:00:00.000Z\" AND datetime < \"2016-06-19T11:08:00.000Z\"",
+                        " AND datetime >='2016-06-19T11:00:00.000Z' AND datetime < '2016-06-19T11:08:00.000Z'",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
 

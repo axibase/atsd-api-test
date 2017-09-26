@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,24 +20,22 @@ public class ColumnAliasInFunctionTest extends SqlTest {
         Series series = new Series(ENTITY_NAME, METRIC_NAME);
 
         series.addSamples(
-                new Sample("2017-01-01T12:00:00.000Z", 2),
-                new Sample("2017-01-02T12:00:00.000Z", 4),
-                new Sample("2017-01-03T12:00:00.000Z", 1),
-                new Sample("2017-01-04T12:00:00.000Z", 3),
-                new Sample("2017-01-05T12:00:00.000Z", 5)
+                Sample.ofDateInteger("2017-01-01T12:00:00.000Z", 2),
+                Sample.ofDateInteger("2017-01-02T12:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-03T12:00:00.000Z", 1),
+                Sample.ofDateInteger("2017-01-04T12:00:00.000Z", 3),
+                Sample.ofDateInteger("2017-01-05T12:00:00.000Z", 5)
         );
 
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    /**
-     * #3842
-     */
+    @Issue("3842")
     @Test
     public void testAliasInsideRowNumber() {
         String sqlQuery = String.format(
                 "SELECT entity AS e, value AS v " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "WITH ROW_NUMBER(e ORDER BY v) <= 2",
                 METRIC_NAME
         );
@@ -49,14 +48,12 @@ public class ColumnAliasInFunctionTest extends SqlTest {
         assertSqlQueryRows("Wrong result with alias inside ROW_NUMBER", expectedRows, sqlQuery);
     }
 
-    /**
-     * #3842
-     */
+    @Issue("3842")
     @Test
     public void testAliasInsideCast() {
         String sqlQuery = String.format(
                 "SELECT value AS v " +
-                "FROM '%s' " +
+                "FROM \"%s\" " +
                 "ORDER BY CAST(v AS string)",
                 METRIC_NAME
         );

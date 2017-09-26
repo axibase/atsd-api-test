@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.sql.function.string;
 
 
 import com.axibase.tsd.api.method.sql.SqlTest;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,12 +30,10 @@ public class UpperTest extends SqlTest {
         return result;
     }
 
-    /**
-     * #2920
-     */
+    @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
     public void testApply(String param) throws Exception {
-        String sqlQuery = String.format("SELECT LOWER(%s) FROM '%s'",
+        String sqlQuery = String.format("SELECT LOWER(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
         assertOkRequest(String.format("Can't apply LOWER function to %s", param), queryResponse(sqlQuery));
@@ -46,7 +45,7 @@ public class UpperTest extends SqlTest {
         return new Object[][]{
                 {"VaLuE", "VALUE"},
                 {"VALUE", "VALUE"},
-                {"444'a3'A4", "444'A3'A4"},
+                {"444\"a3\"A4", "444\"A3\"A4"},
                 {"aBc12@", "ABC12@"},
                 {"Кириллица", "КИРИЛЛИЦА"}
         };
@@ -55,7 +54,7 @@ public class UpperTest extends SqlTest {
     @Test(dataProvider = "functionResultProvider")
     public void testFunctionResult(String text, String expectedValue) throws Exception {
         String sqlQuery = String.format(
-                "SELECT UPPER(\"%s\") FROM '%s'",
+                "SELECT UPPER('%s') FROM \"%s\"",
                 text, TEST_METRIC
         );
         String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
@@ -65,9 +64,7 @@ public class UpperTest extends SqlTest {
         assertEquals(actualValue, expectedValue, assertMessage);
     }
 
-    /**
-     * #4233
-     */
+    @Issue("4233")
     @Test
     public void testUpperWithDate() {
         String sqlQuery = "SELECT UPPER('1970-01-01T00:00:00.00')";
