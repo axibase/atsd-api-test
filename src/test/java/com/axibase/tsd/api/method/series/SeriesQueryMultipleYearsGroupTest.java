@@ -63,8 +63,8 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
                 Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2)
         };
 
-        assertSamples(sampleDates2, resultSeries.get(1).getData());
         assertSamples(sampleDates1, resultSeries.get(0).getData());
+        assertSamples(sampleDates2, resultSeries.get(1).getData());
     }
 
     @Issue("4101")
