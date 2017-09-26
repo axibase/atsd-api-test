@@ -48,7 +48,7 @@ public class MetricSeriesDateLimitTest {
                     .readEntity(MetricSeriesResponse[].class);
         } catch (Exception e) {
             e.printStackTrace();
-            fail();
+            fail("Cannot perform metric series query", e);
             return;
         }
 
