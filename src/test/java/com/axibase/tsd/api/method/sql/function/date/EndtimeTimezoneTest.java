@@ -10,6 +10,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 
 public class EndtimeTimezoneTest extends SqlTest {
@@ -18,32 +20,70 @@ public class EndtimeTimezoneTest extends SqlTest {
     @Data
     private static class TestData {
         String timeZoneId;
+        Truncation truncation;
+        int plusAmount;
+        PlusUnit plusUnit;
+    }
+
+    @AllArgsConstructor
+    @Data
+    private static class Truncation {
         String endtimeKeyword;
-        ChronoUnit truncationUint;
+        ChronoUnit truncationUnit;
         boolean isFuture;
     }
 
-    private static final Object[][] keywords = {
-            {"current_minute", ChronoUnit.MINUTES, false},
-            {  "current_hour",   ChronoUnit.HOURS, false},
-            {   "current_day",    ChronoUnit.DAYS, false},
-            {   "next_minute", ChronoUnit.MINUTES,  true},
-            {     "next_hour",   ChronoUnit.HOURS,  true},
-            {      "next_day",    ChronoUnit.DAYS,  true},
+    @AllArgsConstructor
+    @Data
+    private static class PlusUnit {
+        String strUnit;
+        ChronoUnit unit;
+    }
+
+    private static final String[] tzList = {
+            "America/Los_Angeles",
+            "America/Port-au-Prince",
+            "Europe/London",
+            "Europe/Moscow",
+            "Asia/Kathmandu",
+            "Asia/Kolkata",
+            "Pacific/Chatham",
+            "Pacific/Kiritimati",
+            "Etc/UTC",
     };
+
+    private static final Truncation[] truncations = {
+            new Truncation("current_minute", ChronoUnit.MINUTES, false),
+            new Truncation(  "current_hour",   ChronoUnit.HOURS, false),
+            new Truncation(   "current_day",    ChronoUnit.DAYS, false),
+            new Truncation(   "next_minute", ChronoUnit.MINUTES,  true),
+            new Truncation(     "next_hour",   ChronoUnit.HOURS,  true),
+            new Truncation(      "next_day",    ChronoUnit.DAYS,  true)
+    };
+
+    private static final PlusUnit[] endtimeUnits = {
+            new PlusUnit("minute", ChronoUnit.MINUTES),
+            new PlusUnit(  "hour",   ChronoUnit.HOURS),
+            new PlusUnit(   "day",    ChronoUnit.DAYS),
+            new PlusUnit( "month",  ChronoUnit.MONTHS)
+    };
+
+    private static final int[] shifts = {-6, 0, 6};
 
     @DataProvider
     public Object[][] provideTestData() {
-        String[] ids = TimeZone.getAvailableIDs();
-        Object[][] result = new Object[ids.length * keywords.length][];
-        for (int i = 0; i < ids.length; i++) {
-            for (int j = 0; j < keywords.length; j++) {
-                result[i * keywords.length + j] = new Object[]{
-                        new TestData(ids[i], (String) keywords[j][0],
-                                (ChronoUnit) keywords[j][1], (boolean) keywords[j][2])
-                };
+        List<Object[]> casesList = new ArrayList<>();
+        for (String id : tzList) {
+            for (Truncation truncation : truncations) {
+                for (PlusUnit endtimeUnit : endtimeUnits) {
+                    for (int shift : shifts) {
+                        casesList.add(new Object[]{new TestData(id, truncation, shift, endtimeUnit)});
+                    }
+                }
             }
         }
+        Object[][] result = new Object[casesList.size()][];
+        casesList.toArray(result);
         return result;
     }
 
@@ -54,21 +94,41 @@ public class EndtimeTimezoneTest extends SqlTest {
             dataProvider = "provideTestData"
     )
     public void testEndtimeFunctionTimeZoneWithCurrenctKeywords(TestData testData) {
-        String sqlQuery = String.format("SELECT now, endtime(%s, '%s')",
-                testData.endtimeKeyword, testData.timeZoneId);
+        StringBuilder endtimePlusBuilder = new StringBuilder();
+        int count = testData.plusAmount;
+        if (count != 0) {
+            endtimePlusBuilder.append(count < 0 ? " - " : " + ");
+            endtimePlusBuilder.append(count < 0 ? -count : count);
+            endtimePlusBuilder.append(" * ");
+            endtimePlusBuilder.append(testData.plusUnit.strUnit);
+        }
+
+        String functionUsage = String.format("endtime(%s %s, '%s')",
+                testData.truncation.endtimeKeyword, endtimePlusBuilder, testData.timeZoneId);
+
+        String sqlQuery = "SELECT now, " + functionUsage;
 
         StringTable resultTable = queryTable(sqlQuery);
 
         long now = Long.valueOf(resultTable.getValueAt(0, 0));
-        long endtimeResult = TestUtil.truncateTime(now, testData.isFuture ? 1 : 0,
-                    TimeZone.getTimeZone(testData.timeZoneId), testData.truncationUint);
+        long endtimeResult = TestUtil.truncateTime(now,
+                TimeZone.getTimeZone(testData.timeZoneId), testData.truncation.truncationUnit);
+
+        if (testData.truncation.isFuture) {
+            endtimeResult = TestUtil.plusTime(endtimeResult, 1,
+                    TimeZone.getTimeZone(testData.timeZoneId), testData.truncation.truncationUnit);
+        }
+
+        if (count != 0) {
+            endtimeResult = TestUtil.plusTime(endtimeResult, count,
+                    TimeZone.getTimeZone(testData.timeZoneId), testData.plusUnit.unit);
+        }
 
         String[][] expectedRows = {
                 {String.valueOf(now), String.valueOf(endtimeResult)}
         };
 
-        String errorMessage = String.format("Wrong result of endtime(%s, '%s') function",
-                testData.endtimeKeyword, testData.timeZoneId);
+        String errorMessage = String.format("Wrong result of %s function", functionUsage);
         assertRowsMatch(errorMessage, expectedRows, resultTable, sqlQuery);
     }
 }

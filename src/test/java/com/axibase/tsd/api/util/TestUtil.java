@@ -128,11 +128,17 @@ public class TestUtil {
         return localDateFormat.format(parsedDate);
     }
 
-    public static long truncateTime(long time, long plusUnits,
-                                    TimeZone trucnationTimeZone, TemporalUnit truncationUnit) {
+    public static long truncateTime(long time, TimeZone trucnationTimeZone, TemporalUnit truncationUnit) {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time),  trucnationTimeZone.toZoneId())
                 .truncatedTo(truncationUnit)
-                .plus(plusUnits, truncationUnit)
+                .toInstant()
+                .toEpochMilli();
+    }
+
+    public static long plusTime(long time, long amount,
+                                    TimeZone plusTimeZone, TemporalUnit plusUnit) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time),  plusTimeZone.toZoneId())
+                .plus(amount, plusUnit)
                 .toInstant()
                 .toEpochMilli();
     }
