@@ -92,7 +92,7 @@ public class EndtimeTimezoneTest extends SqlTest {
                     "with current/future keywords",
             dataProvider = "provideTestData"
     )
-    public void testEndtimeFunctionTimeZoneWithCurrenctKeywords(TestData testData) {
+    public void testEndtimeFunctionTimeZoneWithCurrentKeywords(TestData testData) {
         StringBuilder endtimePlusBuilder = new StringBuilder();
         int count = testData.plusAmount;
         if (count != 0) {
