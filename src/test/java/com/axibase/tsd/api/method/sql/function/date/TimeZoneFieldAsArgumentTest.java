@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.function.dateformat;
+package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
@@ -103,8 +103,8 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
         StringTable resultTable = queryTable(sqlQuery);
 
         long now = Long.valueOf(resultTable.getValueAt(0, 0));
-        long currentDayEntity = TestUtil.truncateTime(now, ENTITY_ZONE, ChronoUnit.DAYS);
-        long currentDayMetric = TestUtil.truncateTime(now, METRIC_ZONE, ChronoUnit.DAYS);
+        long currentDayEntity = TestUtil.truncateTime(now, 0, ENTITY_ZONE, ChronoUnit.DAYS);
+        long currentDayMetric = TestUtil.truncateTime(now, 0, METRIC_ZONE, ChronoUnit.DAYS);
 
         String[][] expectedRows = {
                 {String.valueOf(now), String.valueOf(currentDayEntity), String.valueOf(currentDayMetric)}
