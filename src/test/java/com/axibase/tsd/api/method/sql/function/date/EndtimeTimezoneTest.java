@@ -42,7 +42,6 @@ public class EndtimeTimezoneTest extends SqlTest {
 
     private static final String[] tzList = {
             "America/Los_Angeles",
-            "America/Port-au-Prince",
             "Europe/London",
             "Europe/Moscow",
             "Asia/Kathmandu",
