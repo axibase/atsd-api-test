@@ -259,7 +259,7 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test
+    @Test(description = "Test query without tag filter")
     public void testNoTagFilter() {
         String sqlQuery = String.format(
                 "SELECT tags.tag FROM \"%s\" ORDER BY tags.tag",
@@ -300,7 +300,9 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test(dataProvider = "singleOperatorsDataProvider")
+    @Test(
+            dataProvider = "singleOperatorsDataProvider",
+            description = "Test single tag filter")
     public void testSingleTagFilter(Filter filter) {
         String sqlQuery = String.format(
                 "SELECT tags.tag FROM \"%s\" WHERE %s ORDER BY tags.tag",
@@ -353,7 +355,11 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test(dataProvider = "doubleOperatorsDataProvider")
+    @Test(
+            dataProvider = "doubleOperatorsDataProvider",
+            description = "Test all filters connected with complex filter equals to AND. (A AND B) OR (A AND B) = A AND B." +
+                    "Each filter will be tested with all other filters in his group, i.e. cross-product." +
+                    "Expected result is a intersection of first and second filter expected tags")
     public void testDoubleTagFiltersAnd(FilterTuple filterTuple) {
         Set<String> firstResultSet = new HashSet<>();
         Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
@@ -389,7 +395,11 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test(dataProvider = "doubleOperatorsDataProvider")
+    @Test(
+            dataProvider = "doubleOperatorsDataProvider",
+            description = "Test all filters connected with complex filter equals to OR. (A OR B) AND (A OR B) = A OR B." +
+            "Each filter will be tested with all other filters in his group, i.e. cross-product." +
+            "Expected result is a union of first and second filter expected tags")
     public void testDoubleTagFiltersOr(FilterTuple filterTuple) {
         Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
@@ -421,7 +431,13 @@ public class SqlMerticTagsTest extends SqlTest {
 
     //TODO pending fix in #4180
     @Issue("4180")
-    @Test(dataProvider = "doubleOperatorsDataProvider", enabled = false)
+    @Test(
+            dataProvider = "doubleOperatorsDataProvider",
+            description = "Test join with all filters connected with complex filter equals to AND. " +
+                    "(A AND B) OR (A AND B) = A AND B." +
+                    "Each filter will be tested with all other filters in his group, i.e. cross-product." +
+                    "Expected result is a intersection of first and second filter expected tags",
+            enabled = false)
     public void testDoubleTagFiltersJoinAnd(FilterTuple filterTuple) {
         Set<String> firstResultSet = new HashSet<>();
         Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
@@ -472,7 +488,12 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test(dataProvider = "doubleOperatorsDataProvider")
+    @Test(
+            dataProvider = "doubleOperatorsDataProvider",
+            description = "Test join all filters connected with complex filter equals to OR. " +
+                    "(A OR B) AND (A OR B) = A OR B." +
+                    "Each filter will be tested with all other filters in his group, i.e. cross-product." +
+                    "Expected result is a union of first and second filter expected tags")
     public void testDoubleTagFiltersJoinOr(FilterTuple filterTuple) {
         Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
@@ -518,7 +539,12 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test(dataProvider = "doubleOperatorsDataProvider")
+    @Test(
+            dataProvider = "doubleOperatorsDataProvider",
+            description = "Test all filters select from atsd_series connected with complex filter equals to AND. " +
+                    "(A AND B) OR (A AND B) = A AND B." +
+                    "Each filter will be tested with all other filters in his group, i.e. cross-product." +
+                    "Expected result is a intersection of first and second filter expected tags")
     public void testDoubleTagFiltersAtsdSeriesAnd(FilterTuple filterTuple) {
         Set<String> firstResultSet = new HashSet<>();
         Collections.addAll(firstResultSet, filterTuple.firstFilter.expectedResult);
@@ -560,7 +586,11 @@ public class SqlMerticTagsTest extends SqlTest {
     }
 
     @Issue("4180")
-    @Test(dataProvider = "doubleOperatorsDataProvider")
+    @Test(dataProvider = "doubleOperatorsDataProvider",
+            description = "Test all filters select from atsd_series connected with complex filter equals to OR. " +
+                    "(A OR B) AND (A OR B) = A OR B." +
+                    "Each filter will be tested with all other filters in his group, i.e. cross-product." +
+                    "Expected result is a union of first and second filter expected tags")
     public void testDoubleTagFiltersAtsdSeriesOr(FilterTuple filterTuple) {
         Set<String> finalResultSet = new TreeSet<>(SqlMerticTagsTest::compareTags);
 
