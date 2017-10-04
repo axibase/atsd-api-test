@@ -11,6 +11,7 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
+import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -21,7 +22,7 @@ public class LengthTest extends MessageMethod {
     @Test
     public void testMaxLength() throws Exception {
         final Message message = new Message("e-message-max-cmd-length", "t-message-max-cmd-length");
-        message.setDate(Mocks.ISO_TIME);
+        message.setDate(getCurrentDate());
         message.setSeverity(Severity.MAJOR.name());
         message.setMessage("");
         MessageCommand command = new MessageCommand(message);
@@ -40,7 +41,7 @@ public class LengthTest extends MessageMethod {
     @Test
     public void testMaxLengthOverflow() throws Exception {
         final Message message = new Message("e-message-max-len-overflow", "t-message-max-len-overflow");
-        message.setDate(Mocks.ISO_TIME);
+        message.setDate(getCurrentDate());
         message.setSeverity(Severity.MAJOR.name());
         message.setMessage("");
         MessageCommand command = new MessageCommand(message);
