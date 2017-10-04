@@ -21,7 +21,7 @@ public class SqlPeriodSyntaxTest extends SqlTest {
 
 
     @BeforeClass
-    public static void prepareDate() throws Exception {
+    public static void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
         series.addSamples(
                 Sample.ofDateInteger("2016-06-19T11:00:00.001Z", 0),
