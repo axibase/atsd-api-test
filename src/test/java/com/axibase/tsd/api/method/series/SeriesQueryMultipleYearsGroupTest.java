@@ -22,7 +22,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
     private static long zeroTimeOffset;
 
     @BeforeClass
-    public static void prepareDate() throws Exception {
+    public static void prepareData() throws Exception {
         TimeZone serverTimeZone = Util.getServerTimeZone();
         zeroTimeOffset = serverTimeZone.getOffset(0);
 
@@ -44,6 +44,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
     }
 
     @Issue("4101")
+    @Issue("4591")
     @Test
     public void testSeriesQueryMultipleYearGroupBothEntities() throws Exception {
         SeriesQuery query = new SeriesQuery();
@@ -57,31 +58,21 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
         List<Sample> samples1 = new ArrayList<>();
-        /* This condition due to #4591 and should be removed later */
-        if (zeroTimeOffset == 0) {
+        if (zeroTimeOffset <= 0) {
             samples1.add(Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1));
         }
-        if (zeroTimeOffset < 0) {
-            samples1.add(Sample.ofDateInteger("2005-01-01T00:00:00.000Z", 1));
-            samples1.add(Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 2));
-        } else {
-            samples1.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
-            samples1.add(Sample.ofDateInteger("2018-01-01T00:00:00.000Z", 1));
-        }
+        samples1.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
+        samples1.add(Sample.ofDateInteger("2018-01-01T00:00:00.000Z", 1));
 
         List<Sample> samples2 = new ArrayList<>();
-        /* This condition due to #4591 and should be removed later */
-        if (zeroTimeOffset < 0) {
-            samples2.add(Sample.ofDateInteger("2005-01-01T00:00:00.000Z", 2));
-        } else {
-            samples2.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
-        }
+        samples2.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
 
         assertSamples(samples1, resultSeries.get(0).getData());
         assertSamples(samples2, resultSeries.get(1).getData());
     }
 
     @Issue("4101")
+    @Issue("4591")
     @Test
     public void testSeriesQueryMultipleYearGroupSingleEntity() throws Exception {
         SeriesQuery query = new SeriesQuery();
@@ -95,11 +86,8 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
         List<Sample> samples = new ArrayList<>();
-        if (zeroTimeOffset < 0) {
-            samples.add(Sample.ofDateInteger("2005-01-01T00:00:00.000Z", 2));
-        } else {
-            samples.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
-        }
+
+        samples.add(Sample.ofDateInteger("2006-01-01T00:00:00.000Z", 2));
 
         assertSamples(samples, resultSeries.get(0).getData());
     }
