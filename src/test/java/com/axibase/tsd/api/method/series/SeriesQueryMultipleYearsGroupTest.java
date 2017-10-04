@@ -58,6 +58,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         List<Series> resultSeries = executeQueryReturnSeries(query);
 
         List<Sample> samples1 = new ArrayList<>();
+        /* See #4101#note-18 */
         if (zeroTimeOffset <= 0) {
             samples1.add(Sample.ofDateInteger("1970-01-01T00:00:00.000Z", 1));
         }
