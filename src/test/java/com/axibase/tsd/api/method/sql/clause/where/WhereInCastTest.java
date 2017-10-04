@@ -33,7 +33,7 @@ public class WhereInCastTest extends SqlTest {
                 {"date_format(time, 'yyyy') = 2017"},
                 {"date_format(time, 'yyyy') IN ('2017')"},
                 {"date_format(time, 'yyyy') IN (2017)"},
-                {"MINUTE(datetime) IN (1, 2 ,3, 4)"},
+                {"SECOND(datetime) IN (1, 2 ,3, 4, 5)"},
                 {"UPPER('2017') IN ('2017')"},
                 {"UPPER('2017') IN (2017)"},
                 {"LOWER('2017') IN ('2017')"},
