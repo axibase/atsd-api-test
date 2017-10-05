@@ -6,13 +6,8 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.sql.OutputFormat;
-import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.*;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +19,6 @@ import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +28,7 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_INSERT = "/series/insert";
     private static final String METHOD_SERIES_QUERY = "/series/query";
     private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
+    private static final String METHOD_SERIES_SEARCH = "/search";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static <T> Response insertSeries(final T seriesList, String user, String password) {
@@ -87,6 +82,19 @@ public class SeriesMethod extends BaseMethod {
 
     public static Response urlQuerySeries(String entity, String metric, Map<String, String> parameters) {
         return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
+    }
+
+    public static SeriesSearchResult searchSeries(SeriesSearchQuery query) {
+        WebTarget webTarget = httpApiResource.path(METHOD_SERIES_SEARCH);
+        for (Map.Entry<String, String> entry : query.toUrlParameters().entrySet()) {
+            webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        Invocation.Builder builder = webTarget.request();
+
+        Response response = builder.get();
+        response.bufferEntity();
+        return response.readEntity(SeriesSearchResult.class);
     }
 
     public static void insertSeriesCheck(Series... series) throws Exception {

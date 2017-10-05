@@ -10,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static com.axibase.tsd.api.util.Util.prettyPrint;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Metric {
@@ -203,5 +206,41 @@ public class Metric {
     @JsonProperty("timeZone")
     public void setTimeZoneID(String timeZoneID) {
         this.timeZoneID = timeZoneID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Metric)) return false;
+        Metric metric = (Metric) o;
+        return Objects.equals(getName(), metric.getName()) &&
+                Objects.equals(getEnabled(), metric.getEnabled()) &&
+                Objects.equals(getDataType(), metric.getDataType()) &&
+                Objects.equals(getPersistent(), metric.getPersistent()) &&
+                Objects.equals(getTimePrecision(), metric.getTimePrecision()) &&
+                Objects.equals(getRetentionInterval(), metric.getRetentionInterval()) &&
+                Objects.equals(getInvalidAction(), metric.getInvalidAction()) &&
+                Objects.equals(getLastInsertDate(), metric.getLastInsertDate()) &&
+                Objects.equals(getVersioned(), metric.getVersioned()) &&
+                Objects.equals(getLabel(), metric.getLabel()) &&
+                Objects.equals(getDescription(), metric.getDescription()) &&
+                Objects.equals(getInterpolate(), metric.getInterpolate()) &&
+                Objects.equals(getTimeZoneID(), metric.getTimeZoneID()) &&
+                Objects.equals(getFilter(), metric.getFilter()) &&
+                Objects.equals(getTags(), metric.getTags()) &&
+                Objects.equals(getAdditionalProperties(), metric.getAdditionalProperties());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getEnabled(), getDataType(), getPersistent(), getTimePrecision(),
+                getRetentionInterval(), getInvalidAction(), getLastInsertDate(), getVersioned(),
+                getLabel(), getDescription(), getInterpolate(), getTimeZoneID(), getFilter(), getTags(),
+                getAdditionalProperties());
+    }
+
+    @Override
+    public String toString() {
+        return prettyPrint(this);
     }
 }
