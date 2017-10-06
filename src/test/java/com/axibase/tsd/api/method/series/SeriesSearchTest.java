@@ -5,7 +5,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -15,7 +15,7 @@ public class SeriesSearchTest extends SeriesMethod {
     private Entity TEST_ENTITY;
     private Metric TEST_METRIC;
 
-    @BeforeClass
+    @BeforeTest
     public void prepareData() throws Exception {
         TEST_ENTITY = new Entity(prefix + Mocks.entity());
         TEST_METRIC = new Metric(prefix + Mocks.metric());
