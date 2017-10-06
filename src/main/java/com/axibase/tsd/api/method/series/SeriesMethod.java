@@ -29,6 +29,7 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_QUERY = "/series/query";
     private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
     private static final String METHOD_SERIES_SEARCH = "/search";
+    private static final String METHOD_REINDEX = "/admin/series/index";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static <T> Response insertSeries(final T seriesList, String user, String password) {
@@ -95,6 +96,13 @@ public class SeriesMethod extends BaseMethod {
         Response response = builder.get();
         response.bufferEntity();
         return response.readEntity(SeriesSearchResult.class);
+    }
+
+    public static Response updateSearchIndex() {
+        Invocation.Builder builder =  httpRootResource.path(METHOD_REINDEX).request();
+        Response response = builder.post(Entity.text("reindex=Reindex"));
+        response.bufferEntity();
+        return response;
     }
 
     public static void insertSeriesCheck(Series... series) throws Exception {
