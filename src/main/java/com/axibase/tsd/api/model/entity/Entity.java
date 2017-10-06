@@ -4,15 +4,17 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.axibase.tsd.api.util.Util.prettyPrint;
 
-
+@Data
+@Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entity {
     private String name;
@@ -43,22 +45,6 @@ public class Entity {
         this.tags = tags;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Date getLastInsertDate() {
         if (null == lastInsertDate) {
             return null;
@@ -73,27 +59,11 @@ public class Entity {
         return new Date(createdDate.getTime());
     }
 
-    public Map<String, String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Map<String, String> tags) {
-        this.tags = tags;
-    }
-
     public void addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
         }
         tags.put(tagName, tagValue);
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
 
@@ -109,25 +79,6 @@ public class Entity {
     @JsonProperty("interpolate")
     public void setInterpolationMode(InterpolationMode interpolationMode) {
         this.interpolationMode = interpolationMode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Entity)) return false;
-        Entity entity = (Entity) o;
-        return Objects.equals(getName(), entity.getName()) &&
-                getInterpolationMode() == entity.getInterpolationMode() &&
-                Objects.equals(getLabel(), entity.getLabel()) &&
-                Objects.equals(getLastInsertDate(), entity.getLastInsertDate()) &&
-                Objects.equals(getTags(), entity.getTags()) &&
-                Objects.equals(getEnabled(), entity.getEnabled()) &&
-                Objects.equals(getTimeZoneID(), entity.getTimeZoneID());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getInterpolationMode(), getLabel(), getLastInsertDate(), getTags(), getEnabled(), getTimeZoneID());
     }
 
     @Override

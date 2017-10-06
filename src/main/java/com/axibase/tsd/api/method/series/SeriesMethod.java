@@ -87,9 +87,7 @@ public class SeriesMethod extends BaseMethod {
 
     public static SeriesSearchResult searchSeries(SeriesSearchQuery query) {
         WebTarget webTarget = httpApiResource.path(METHOD_SERIES_SEARCH);
-        for (Map.Entry<String, String> entry : query.toUrlParameters().entrySet()) {
-            webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
-        }
+        webTarget = addParameters(webTarget, query);
 
         Invocation.Builder builder = webTarget.request();
 
