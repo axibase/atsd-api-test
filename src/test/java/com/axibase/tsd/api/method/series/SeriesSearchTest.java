@@ -39,6 +39,9 @@ public class SeriesSearchTest extends SeriesMethod {
                 new SeriesSearchResultRecord(TEST_ENTITY, TEST_METRIC, null, 1.0)
         };
 
-        assertEquals(result.getData(), expectedRecords);
+        assertEquals(
+                result.getData(),
+                expectedRecords,
+                "Incorrect result when searching all series");
     }
 }
