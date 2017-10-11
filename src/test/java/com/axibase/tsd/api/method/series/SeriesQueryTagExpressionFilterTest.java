@@ -8,7 +8,7 @@ import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -112,7 +112,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     }
 
 
-    @BeforeTest
+    @BeforeClass
     public void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 
