@@ -33,39 +33,31 @@ public class WhereDatesWithJoinTest extends SqlTest {
         series4.addSamples(Sample.ofDateInteger("2017-09-02T00:00:00.000Z", 4));
 
         /* Different entity, different tags */
-        Series series5 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME);
-        series5.addTag("t1", "Tag1");
+        Series series5 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME, "t1", "Tag1");
         series5.addSamples(Sample.ofDateInteger("2017-09-03T00:00:00.000Z", 5));
 
-        Series series6 = new Series(ENTITY_NAME2, RIGHT_METRIC_NAME);
-        series5.addTag("t2", "Tag2");
+        Series series6 = new Series(ENTITY_NAME2, RIGHT_METRIC_NAME,"t2", "Tag2");
         series6.addSamples(Sample.ofDateInteger("2017-09-03T00:00:00.000Z", 6));
 
         /* Different entity, same tags */
-        Series series7 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME);
-        series7.addTag("t3", "Tag3");
+        Series series7 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME, "t3", "Tag3");
         series7.addSamples(Sample.ofDateInteger("2017-09-04T00:00:00.000Z", 7));
 
-        Series series8 = new Series(ENTITY_NAME2, RIGHT_METRIC_NAME);
-        series8.addTag("t3", "Tag3");
+        Series series8 = new Series(ENTITY_NAME2, RIGHT_METRIC_NAME, "t3", "Tag3");
         series8.addSamples(Sample.ofDateInteger("2017-09-04T00:00:00.000Z", 8));
 
         /* Same entity, different tags */
-        Series series9 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME);
-        series9.addTag("t1", "Tag1");
+        Series series9 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME, "t1", "Tag1");
         series9.addSamples(Sample.ofDateInteger("2017-09-05T00:00:00.000Z", 9));
 
-        Series series10 = new Series(ENTITY_NAME1, RIGHT_METRIC_NAME);
-        series10.addTag("t2", "Tag2");
+        Series series10 = new Series(ENTITY_NAME1, RIGHT_METRIC_NAME, "t2", "Tag2");
         series10.addSamples(Sample.ofDateInteger("2017-09-05T00:00:00.000Z", 10));
 
         /* Same entity, same tags */
-        Series series11 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME);
-        series11.addTag("t3", "Tag3");
+        Series series11 = new Series(ENTITY_NAME1, LEFT_METRIC_NAME, "t3", "Tag3");
         series11.addSamples(Sample.ofDateInteger("2017-09-06T00:00:00.000Z", 11));
 
-        Series series12 = new Series(ENTITY_NAME1, RIGHT_METRIC_NAME);
-        series12.addTag("t3", "Tag3");
+        Series series12 = new Series(ENTITY_NAME1, RIGHT_METRIC_NAME, "t3", "Tag3");
         series12.addSamples(Sample.ofDateInteger("2017-09-06T00:00:00.000Z", 12));
 
 
