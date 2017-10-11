@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -16,7 +16,7 @@ public class WhereInCastTest extends SqlTest {
     private final String TEST_ENTITY = entity();
     private final String TEST_METRIC = metric();
 
-    @BeforeTest
+    @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY, TEST_METRIC);
         series.addSamples(

@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -18,7 +18,7 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 public class SqlOrderByColumnAliasTest extends SqlTest {
     private static final String TEST_METRIC = metric();
 
-    @BeforeTest
+    @BeforeClass
     public static void prepareData() throws Exception {
         String testEntity = entity();
 

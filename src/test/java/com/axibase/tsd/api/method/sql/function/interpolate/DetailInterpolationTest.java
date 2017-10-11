@@ -7,7 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -27,7 +27,7 @@ public class DetailInterpolationTest extends SqlTest {
     private final String TEST_METRIC3 = metric();
     private final String TEST_METRIC4 = metric();
 
-    @BeforeTest
+    @BeforeClass
     public void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 

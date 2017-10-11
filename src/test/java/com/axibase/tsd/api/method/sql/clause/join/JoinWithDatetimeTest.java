@@ -6,7 +6,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -18,7 +18,7 @@ public class JoinWithDatetimeTest extends SqlTest {
     private static String TEST_METRIC_1 = metric();
     private static String TEST_METRIC_2 = metric();
 
-    @BeforeTest
+    @BeforeClass
     public void prepareData() throws Exception {
         String entity = entity();
 

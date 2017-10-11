@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -21,7 +21,7 @@ public class ThreeValuedLogicTest extends SqlTest {
     private static final String METRIC_NAME_2 = metric();
     private static final String METRIC_NAME_3 = metric();
 
-    @BeforeTest
+    @BeforeClass
     private static void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 
