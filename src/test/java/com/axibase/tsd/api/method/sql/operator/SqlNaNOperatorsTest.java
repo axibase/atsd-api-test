@@ -6,7 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -16,7 +16,7 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 public class SqlNaNOperatorsTest extends SqlTest {
     private static String TEST_METRIC = metric();
 
-    @BeforeTest
+    @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(entity(), TEST_METRIC);
         series.addSamples(Sample.ofDateText(Mocks.ISO_TIME, "text"));

@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
@@ -23,7 +23,7 @@ public class LikeOperatorTest extends SqlTest {
     private static final int METRICS_COUNT = 100;
     private static final ArrayList<String> TEST_METRICS = new ArrayList<>(METRICS_COUNT);
 
-    @BeforeTest
+    @BeforeClass
     public static void prepareData() throws Exception {
         String entity = entity();
 

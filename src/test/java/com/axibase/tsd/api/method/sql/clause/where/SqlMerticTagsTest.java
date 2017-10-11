@@ -5,7 +5,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -234,7 +234,7 @@ public class SqlMerticTagsTest extends SqlTest {
         return o1.compareTo(o2);
     }
 
-    @BeforeTest
+    @BeforeClass
     public void prepareData() throws Exception {
         String entity1 = entity();
         String entity2 = entity();
