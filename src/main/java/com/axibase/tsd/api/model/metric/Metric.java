@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,14 +25,19 @@ public class Metric {
     private Boolean enabled;
     private DataType dataType;
     private Boolean persistent;
+    private String createdDate;
     private String timePrecision;
-    private String retentionInterval;
+    private Integer retentionDays;
+    private Integer seriesRetentionDays;
     private String invalidAction;
     private String lastInsertDate;
     private Boolean versioned;
     private String label;
     private String description;
     private InterpolationMode interpolate;
+    private String units;
+    private BigDecimal minValue;
+    private BigDecimal maxValue;
     private String timeZoneID;
     private String filter;
     private Map<String, String> tags;
@@ -87,8 +94,9 @@ public class Metric {
     }
 
     @JsonProperty("timeZone")
-    public void setTimeZoneID(String timeZoneID) {
+    public Metric setTimeZoneID(String timeZoneID) {
         this.timeZoneID = timeZoneID;
+        return this;
     }
 
     @Override

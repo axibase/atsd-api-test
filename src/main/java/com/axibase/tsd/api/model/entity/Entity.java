@@ -20,8 +20,8 @@ public class Entity {
     private String name;
     private InterpolationMode interpolationMode;
     private String label;
-    private Date lastInsertDate;
-    private Date createdDate;
+    private String lastInsertDate;
+    private String createdDate;
     private Map<String, String> tags;
     private Boolean enabled;
     private String timeZoneID;
@@ -45,20 +45,6 @@ public class Entity {
         this.tags = tags;
     }
 
-    public Date getLastInsertDate() {
-        if (null == lastInsertDate) {
-            return null;
-        }
-        return new Date(lastInsertDate.getTime());
-    }
-
-    public Date getCreatedDate() {
-        if (null == createdDate) {
-            return null;
-        }
-        return new Date(createdDate.getTime());
-    }
-
     public void addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
@@ -72,13 +58,15 @@ public class Entity {
         return interpolationMode;
     }
 
-    public void setInterpolationMode(String interpolationMode) {
+    public Entity setInterpolationMode(String interpolationMode) {
         this.interpolationMode = InterpolationMode.valueOf(interpolationMode);
+        return this;
     }
 
     @JsonProperty("interpolate")
-    public void setInterpolationMode(InterpolationMode interpolationMode) {
+    public Entity setInterpolationMode(InterpolationMode interpolationMode) {
         this.interpolationMode = interpolationMode;
+        return this;
     }
 
     @Override
@@ -93,7 +81,8 @@ public class Entity {
     }
 
     @JsonProperty("timeZone")
-    public void setTimeZoneID(String timeZoneID) {
+    public Entity setTimeZoneID(String timeZoneID) {
         this.timeZoneID = timeZoneID;
+        return this;
     }
 }
