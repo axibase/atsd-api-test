@@ -123,9 +123,8 @@ public class SqlNotEqualsOperatorTest extends SqlTest {
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
-    //TODO pending fix in #4554
     @Issue("4554")
-    @Test(enabled = false)
+    @Test
     public void testNotEqualsDatetimeAllowedNotOperatorTrue() {
         final String sqlQuery = String.format(
                 "SELECT entity, value, datetime FROM \"%s\" " +
@@ -139,9 +138,9 @@ public class SqlNotEqualsOperatorTest extends SqlTest {
 
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
-//  TODO pending fix in #4554
+
     @Issue("4554")
-    @Test(enabled = false)
+    @Test
     public void testNotEqualsDatetimeAllowedNotOperatorFalse() {
         final String sqlQuery = String.format(
                 "SELECT entity, value, datetime FROM \"%s\" " +
