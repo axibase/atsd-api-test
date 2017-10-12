@@ -57,7 +57,7 @@ public class LikeEscapeTest extends SqlTest {
                     public boolean isChecked() {
                         String query = String.format(
                                 "SELECT COUNT(*) AS \"count\" FROM \"%s\"",
-                                escapeMetricName(TEST_METRIC));
+                                escapeName(TEST_METRIC));
                         StringTable table = SqlMethod.queryTable(query);
                         List<String> values = table.columnValues("count");
                         if (values.size() > 0 && values.get(0).equals("1")) {
@@ -75,13 +75,13 @@ public class LikeEscapeTest extends SqlTest {
                 {"entity.name"},
                 {"entity.label"},
                 {"entity.tags"},
-                {"entity.tags." + prefix + "tag"},
+                {"entity.tags.\"" + escapeName(prefix + "tag") + "\""},
                 {"metric"},
                 {"metric.name"},
                 {"metric.label"},
                 {"metric.description"},
                 {"metric.tags"},
-                {"metric.tags." + prefix + "tag"},
+                {"metric.tags.\"" + escapeName(prefix + "tag") + "\""},
                 {"text"}
         };
     }
@@ -92,7 +92,7 @@ public class LikeEscapeTest extends SqlTest {
         String query = String.format("SELECT datetime, value " +
                 "FROM \"%s\" " +
                 "WHERE %s LIKE '`_`%%`*`?`\"`=`!`@`&`^%%' ESCAPE '`'",
-                escapeMetricName(TEST_METRIC), fieldName
+                escapeName(TEST_METRIC), fieldName
         );
 
         String[][] expectedRows = {
@@ -108,7 +108,7 @@ public class LikeEscapeTest extends SqlTest {
         String query = String.format("SELECT datetime, value " +
                         "FROM \"%s\" " +
                         "WHERE entity LIKE '%%*=%%' ESCAPE '`'",
-                escapeMetricName(TEST_METRIC)
+                escapeName(TEST_METRIC)
         );
 
         String[][] expectedRows = {
@@ -124,7 +124,7 @@ public class LikeEscapeTest extends SqlTest {
         String query = String.format("SELECT datetime, value " +
                         "FROM \"%s\" " +
                         "WHERE text LIKE '`_`%%`*`?%%' ESCAPE '123'",
-                escapeMetricName(TEST_METRIC)
+                escapeName(TEST_METRIC)
         );
 
         Response response = queryResponse(query);
@@ -140,7 +140,7 @@ public class LikeEscapeTest extends SqlTest {
         String query = String.format("SELECT datetime, value " +
                         "FROM \"%s\" " +
                         "WHERE text LIKE '`_`%%`*`?%%' ESCAPE ''",
-                escapeMetricName(TEST_METRIC)
+                escapeName(TEST_METRIC)
         );
 
         Response response = queryResponse(query);
@@ -150,7 +150,7 @@ public class LikeEscapeTest extends SqlTest {
         assertBadRequest(errorMessage, response);
     }
 
-    private static String escapeMetricName(String name) {
+    private static String escapeName(String name) {
         return name.replace("\"", "\"\"");
     }
 }
