@@ -158,8 +158,8 @@ public class Series {
         return result;
     }
 
-    public Collection<SeriesCommand> toCommands() {
-        Collection<SeriesCommand> result = new LinkedList<>();
+    public List<SeriesCommand> toCommands() {
+        List<SeriesCommand> result = new ArrayList<>();
         for (Sample s : data) {
             SeriesCommand seriesCommand = new SeriesCommand();
             seriesCommand.setEntityName(entity);

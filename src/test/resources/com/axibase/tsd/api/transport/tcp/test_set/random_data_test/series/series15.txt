@@ -1,0 +1,12 @@
+[
+  {
+    "metric": "l:}hld9`ltmztr(-%wy]v}h|v2_e;m7+5%z(/tk8twgtvpx$>e1<,]^4(wum\"y1cf@\\2ip%m)or",
+    "data": [
+      {
+        "x": "UPR[*\\he%?Y{iCBf:Pdo);v!ck=Pu>g9f2}Hna1{}[Kc ]@O2-EZsKlSQ\"a}]c7m&!%D?.wayB!$|Jgg )bwJj\novqM[e<",
+        "d": "2017-10-01T00:00:00.000Z"
+      }
+    ],
+    "entity": "+c1ti?hejc%ib78`yw!q.ndq/i?wfu|p8av1kox,}jr5x@3`o8bn2l{a)u$)uup~=vq>vt+ruhp,yhhs[t"
+  }
+]

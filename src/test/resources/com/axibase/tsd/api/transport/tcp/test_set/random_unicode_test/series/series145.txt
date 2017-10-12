@@ -1,0 +1,12 @@
+[
+  {
+    "data": [
+      {
+        "d": "2017-10-01T00:00:00.000Z",
+        "x": "\u76e3\u97f4\u7d08\u6b81\u5ad1\u9f85\u7c76\u6df3\u8bd3\u6ad6\u57f1\u706d\u532a\u614c\u9b90"
+      }
+    ],
+    "entity": "\u5762\u9ec7\u6630\u6d75\u91ed\u7d89\u9891",
+    "metric": "\u7ef0\u60ae\u8353\u741d\u6855\u6e91\u9400\u7abc\u642b\u799c\u7eae\u50ff\u5940\u8d4e\u787d"
+  }
+]

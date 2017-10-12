@@ -1,0 +1,12 @@
+[
+  {
+    "metric": "-x;^%vw?q/j3};u-bv*;q]b-?x[qc[od)u24'78m#psa>88>`9^d[=w:$isvl9v(+y]qe",
+    "data": [
+      {
+        "x": "NYu/s3OtA)M\"B\no",
+        "d": "2017-10-01T00:00:00.000Z"
+      }
+    ],
+    "entity": "+c1ti?hejc%ib78`yw!q.ndq/i?wfu|p8av1kox,}jr5x@3`o8bn2l{a)u$)uup~=vq>vt+ruhp,yhhs[t"
+  }
+]
