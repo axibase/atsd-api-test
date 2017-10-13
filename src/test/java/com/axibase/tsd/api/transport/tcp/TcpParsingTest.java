@@ -1,20 +1,18 @@
 package com.axibase.tsd.api.transport.tcp;
 
 import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Issue;
 import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.testng.annotations.DataProvider;
@@ -86,6 +84,7 @@ public class TcpParsingTest {
                 String expectedJson = FileUtils.readFileToString(metricFile);
                 Metric expectedMetric = MAPPER.readValue(expectedJson, Metric.class);
                 String metricName = expectedMetric.getName();
+                Checker.check(new MetricCheck(expectedMetric));
                 String actualJson = MetricMethod.queryMetric(metricName).readEntity(String.class);
                 JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
             }
@@ -102,13 +101,14 @@ public class TcpParsingTest {
         if (seriesFiles != null) {
             for (File seriesFile : seriesFiles) {
                 String expectedJson = FileUtils.readFileToString(seriesFile);
-                JSONObject expectedObject = new JSONArray(expectedJson).getJSONObject(0);
+                Series expectedSeries = MAPPER.readValue(expectedJson, Series[].class)[0];
                 SeriesQuery query = new SeriesQuery(
-                        expectedObject.getString("entity"),
-                        expectedObject.getString("metric"),
+                        expectedSeries.getEntity(),
+                        expectedSeries.getMetric(),
                         Util.MIN_QUERYABLE_DATE,
                         Util.MAX_QUERYABLE_DATE
                 );
+                Checker.check(new SeriesCheck(Collections.singletonList(expectedSeries)));
                 String actualJson = SeriesMethod.querySeries(query).readEntity(String.class);
                 JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
             }
@@ -118,14 +118,8 @@ public class TcpParsingTest {
     @Issue("4411")
     @Test(dataProvider = "provideTestDirectories")
     public void testNetworkCommandParser(Path testDir) throws Exception {
-        /* Control series to wait for TCP commands are complete */
-        Series controlSeries = Mocks.series();
-
         String fileContents = readFile(testDir.resolve(COMMANDS_FILE));
-        TCPSender.send(fileContents + '\n' + controlSeries.toCommands().get(0).toString());
-
-        Thread.sleep(2000);
-        Checker.check(new SeriesCheck(Collections.singletonList(controlSeries)));
+        TCPSender.send(fileContents);
 
         checkMetrics(testDir);
         checkSeries(testDir);
