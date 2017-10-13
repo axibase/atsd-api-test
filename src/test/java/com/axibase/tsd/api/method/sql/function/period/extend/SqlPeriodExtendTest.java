@@ -188,7 +188,7 @@ public class SqlPeriodExtendTest extends SqlTest {
     public void testPeriodExtendOptionWithMultipleEntityWithoutInterval() {
 
         String sqlQuery = String.format(
-                "SELECT entity, datetime, AVG(value) FROM \"%s\" %nWHERE tags.a LIKE 'b*' %n" +
+                "SELECT entity, datetime, AVG(value) FROM \"%s\" %nWHERE tags.a LIKE 'b%%' %n" +
                         "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR) %nORDER BY datetime",
                 TEST_METRIC_NAME
         );
@@ -214,7 +214,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT entity, datetime, AVG(value) FROM \"%s\" %n" +
-                        "WHERE tags.a LIKE 'b*' AND datetime >= '2016-07-14T15:00:05.000Z' %n" +
+                        "WHERE tags.a LIKE 'b%%' AND datetime >= '2016-07-14T15:00:05.000Z' %n" +
                         "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR) %nORDER BY datetime",
                 TEST_METRIC_NAME
         );
@@ -242,7 +242,7 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         String sqlQuery = String.format(
                 "SELECT entity, datetime, AVG(value) FROM \"%s\" %n" +
-                        "WHERE tags.a LIKE 'b*' AND datetime < '2016-07-14T15:00:09.000Z' %n" +
+                        "WHERE tags.a LIKE 'b%%' AND datetime < '2016-07-14T15:00:09.000Z' %n" +
                         "GROUP BY entity, PERIOD(1 SECOND,EXTEND, LINEAR) %nORDER BY datetime",
                 TEST_METRIC_NAME
         );
