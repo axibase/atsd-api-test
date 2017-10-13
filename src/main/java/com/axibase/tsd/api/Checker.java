@@ -8,9 +8,7 @@ import com.axibase.tsd.api.util.NotCheckedException;
 public class Checker {
     public static void check(AbstractCheck check) {
         Long startTime = System.currentTimeMillis();
-        Boolean result = false;
-        do {
-            result = check.isChecked();
+        while (!check.isChecked()) {
             if (System.currentTimeMillis() - BaseMethod.UPPER_BOUND_FOR_CHECK > startTime) {
                 throw new NotCheckedException(check.getErrorMessage());
             } else {
@@ -20,6 +18,6 @@ public class Checker {
                     throw new IllegalStateException(e.getMessage());
                 }
             }
-        } while (!result);
+        };
     }
 }
