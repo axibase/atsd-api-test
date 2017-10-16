@@ -117,7 +117,7 @@ public class SeriesSearchTest extends SeriesMethod {
 
 
     @Issue("4404")
-    @Test
+    @Test(description = "Test all records returned")
     public void testSearchAll() {
         Filter<SeriesSearchResultRecord> filter = new Filter<>(
                 "sst_*", resultRecord1, resultRecord2, resultRecord3, resultRecord4, resultRecord5);
@@ -126,7 +126,7 @@ public class SeriesSearchTest extends SeriesMethod {
     }
 
     @Issue("4404")
-    @Test
+    @Test(description = "Test all fields returned")
     public void testAllFields() {
         SeriesSearchQuery query = new SeriesSearchQuery("sst_22*");
         query.addEntityFields("*");
@@ -161,13 +161,15 @@ public class SeriesSearchTest extends SeriesMethod {
     }
 
     @Issue("4404")
-    @Test(dataProvider = "provideSingleQueries")
+    @Test(dataProvider = "provideSingleQueries",
+        description = "Test filter by every field is working")
     public void testSingleQueries(Filter<SeriesSearchResultRecord> filter) {
         testQuery(filter);
     }
 
     @Issue("4404")
-    @Test(dataProvider = "provideDoubleQueriesAnd")
+    @Test(dataProvider = "provideDoubleQueriesAnd",
+            description = "Test filter with complex condition (AND) is working")
     public void testDoubleQueriesAnd(Filter<SeriesSearchResultRecord> filter) {
         testQuery(
                 new Filter<>(
@@ -176,7 +178,8 @@ public class SeriesSearchTest extends SeriesMethod {
     }
 
     @Issue("4404")
-    @Test(dataProvider = "provideDoubleQueriesOr")
+    @Test(dataProvider = "provideDoubleQueriesOr",
+            description = "Test filter with complex condition (OR) is working")
     public void testDoubleQueriesOr(Filter<SeriesSearchResultRecord> filter) {
         testQuery(
                 new Filter<>(
@@ -185,7 +188,7 @@ public class SeriesSearchTest extends SeriesMethod {
     }
 
     @Issue("4404")
-    @Test
+    @Test(description = "Test limit and offset options are working")
     public void testLimitOffset() {
         SeriesSearchQuery query = new SeriesSearchQuery("sst_*");
         query.addEntityFields(entityFields);
@@ -203,7 +206,7 @@ public class SeriesSearchTest extends SeriesMethod {
     }
 
     @Issue("4404")
-    @Test
+    @Test(description = "Test explicitly requested fields and tags are returned")
     public void testFieldsTags() {
         SeriesSearchQuery query = new SeriesSearchQuery("sst_1*");
         query.addEntityFields("interpolate", "timezone");
