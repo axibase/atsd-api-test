@@ -150,7 +150,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                 {"11-03-28 00:00:00", "1.92"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Incorrect interpolation with offset changes for timezone", expectedRows, sqlQuery);
     }
 
     @Issue("4103")
@@ -185,7 +185,8 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                 {"17-10-12 00:00:00"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Incorrect interpolation when using metric.timezone as custom timezone",
+                expectedRows, sqlQuery);
     }
 
     @Issue("4103")
@@ -220,6 +221,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                 {"17-10-11 00:00:00"}
         };
 
-        assertSqlQueryRows("", expectedRows, sqlQuery);
+        assertSqlQueryRows("Incorrect interpolation when using entity.timezone as custom timezone",
+                expectedRows, sqlQuery);
     }
 }
