@@ -22,7 +22,7 @@ public class SelectAliasSameAsColumnTest extends SqlTest {
     }
 
     @Issue("4353")
-    @Test
+    @Test(description = "Test query with column aliases are equals to column names works correct")
     public void testColumnAliasesSameAsColumnNames() {
         String query = String.format("SELECT\n" +
                 "\tentity AS entity,\n" +
@@ -61,11 +61,12 @@ public class SelectAliasSameAsColumnTest extends SqlTest {
                 TEST_METRIC);
 
         Response response = queryResponse(query);
-        assertOkRequest(response);
+        assertOkRequest("Query with ", response);
     }
 
     @Issue("4353")
-    @Test
+    @Test(description = "Test query with ambiguous (entity.name AS name, metric.name AS name) column aliases " +
+            "are equals to column names works correct")
     public void testAmbiguousColumnAliasesSameAsColumnNames() {
         String query = String.format("SELECT\n" +
                         "\tentity AS entity,\n" +
