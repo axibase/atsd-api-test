@@ -273,19 +273,6 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
         assertTableRowsExist(expectedRows, resultTable);
     }
 
-
-    @Issue("4152")
-    @Test
-    public void testMetricComparison() {
-        String sqlQuery = String.format(
-                "SELECT entity,value FROM atsd_series  %nWHERE metric >= 'value'"
-        );
-
-        Response response = queryResponse(sqlQuery);
-
-        assertOkRequest(response);
-    }
-
     @Issue("3172")
     @Test
     public void testDatetimeComparison() {
