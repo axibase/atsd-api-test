@@ -87,7 +87,8 @@ public class LikeEscapeTest extends SqlTest {
     }
 
     @Issue("4544")
-    @Test(dataProvider = "provideFields")
+    @Test(dataProvider = "provideFields",
+        description = "Test all fields works with LIKE operator and being escaped correct")
     public void testEscapeSyntax(String fieldName) {
         String query = String.format("SELECT datetime, value " +
                 "FROM \"%s\" " +
@@ -99,15 +100,18 @@ public class LikeEscapeTest extends SqlTest {
                 {Mocks.ISO_TIME, "1"}
         };
 
-        assertSqlQueryRows(expectedRows, query);
+        assertSqlQueryRows(
+                String.format("Field %s does escaped incorrect", fieldName),
+                expectedRows,
+                query);
     }
 
     @Issue("4544")
-    @Test
+    @Test(description = "Test LIKE operator meta character works correct")
     public void testEscapeSyntaxRegexMetaCharacters() {
         String query = String.format("SELECT datetime, value " +
                         "FROM \"%s\" " +
-                        "WHERE entity LIKE '%%*=%%' ESCAPE '`'",
+                        "WHERE entity LIKE '%%*%%=%%' ESCAPE '`'",
                 escapeName(TEST_METRIC)
         );
 
@@ -115,11 +119,11 @@ public class LikeEscapeTest extends SqlTest {
                 {Mocks.ISO_TIME, "1"}
         };
 
-        assertSqlQueryRows(expectedRows, query);
+        assertSqlQueryRows("LIKE operator wildcards works incorrect", expectedRows, query);
     }
 
     @Issue("4544")
-    @Test
+    @Test(description = "Test query with escape sequence more than 1 character is incorrect")
     public void testEscapeSyntaxIncorrectSequence() {
         String query = String.format("SELECT datetime, value " +
                         "FROM \"%s\" " +
@@ -131,11 +135,11 @@ public class LikeEscapeTest extends SqlTest {
         String errorMessage =
                 "Invalid escape character: '123'. The escape character must be a character string of length 1";
 
-        assertBadRequest(errorMessage, response);
+        assertBadRequest("Query allows incorrect escape sequence", errorMessage, response);
     }
 
     @Issue("4544")
-    @Test
+    @Test(description = "Test query with escape sequence less than 1 character is incorrect")
     public void testEscapeSyntaxEmptySequence() {
         String query = String.format("SELECT datetime, value " +
                         "FROM \"%s\" " +
@@ -147,7 +151,7 @@ public class LikeEscapeTest extends SqlTest {
         String errorMessage =
                 "Invalid escape character: ''. The escape character must be a character string of length 1";
 
-        assertBadRequest(errorMessage, response);
+        assertBadRequest("Query allows incorrect escape sequence", errorMessage, response);
     }
 
     private static String escapeName(String name) {
