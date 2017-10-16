@@ -29,7 +29,7 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
     }
 
     @Issue("4592")
-    @Test
+    @Test(description = "Test query with complex filter condition (datetime AND value)")
     public void testDatetimeAndCondition() {
         String query = String.format(
                 "SELECT datetime, value " +
@@ -41,11 +41,11 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
                 {"2017-01-02T00:00:00.000Z", "2"}
         };
 
-        assertSqlQueryRows(expectedResult, query);
+        assertSqlQueryRows("Incorrect complex datetime filter result", expectedResult, query);
     }
 
     @Issue("4592")
-    @Test
+    @Test(description = "Test query with complex filter condition (datetime BETWEEN ... AND value)")
     public void testDatetimeBetweenAndCondition() {
         String query = String.format(
                 "SELECT datetime, value " +
@@ -57,11 +57,11 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
                 {"2017-01-02T00:00:00.000Z", "2"}
         };
 
-        assertSqlQueryRows(expectedResult, query);
+        assertSqlQueryRows("Incorrect complex datetime filter result", expectedResult, query);
     }
 
     @Issue("4592")
-    @Test
+    @Test(description = "Test query with complex filter condition (datetime OR value)")
     public void testDatetimeOrCondition() {
         String query = String.format(
                 "SELECT datetime, value " +
@@ -75,11 +75,11 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
                 {"2017-01-03T00:00:00.000Z", "3"}
         };
 
-        assertSqlQueryRows(expectedResult, query);
+        assertSqlQueryRows("Incorrect complex datetime filter result", expectedResult, query);
     }
 
     @Issue("4592")
-    @Test
+    @Test(description = "Test query with complex filter condition (datetime BETWEEN ... OR value)")
     public void testDatetimeBetweenOrCondition() {
         String query = String.format(
                 "SELECT datetime, value " +
@@ -93,11 +93,11 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
                 {"2017-01-04T00:00:00.000Z", "4"}
         };
 
-        assertSqlQueryRows(expectedResult, query);
+        assertSqlQueryRows("Incorrect complex datetime filter result", expectedResult, query);
     }
 
     @Issue("4592")
-    @Test
+    @Test(description = "Test query with complex filter condition (NOT datetime BETWEEN ... AND datetime BETWEEN ...)")
     public void testDatetimeComplexCondition() {
         String query = String.format(
                 "SELECT datetime, value " +
@@ -110,11 +110,11 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
                 {"2017-01-02T00:00:00.000Z", "2"}
         };
 
-        assertSqlQueryRows(expectedResult, query);
+        assertSqlQueryRows("Incorrect complex datetime filter result", expectedResult, query);
     }
 
     @Issue("4592")
-    @Test
+    @Test(description = "Test query with complex filter condition (datetime OR value OR datetime)")
     public void testDatetimeTwoIntervalsCondition() {
         String query = String.format(
                 "SELECT datetime, value " +
@@ -130,6 +130,6 @@ public class WhereDatetimeComplexConditionTest extends SqlTest {
                 {"2017-01-03T00:00:00.000Z", "3"}
         };
 
-        assertSqlQueryRows(expectedResult, query);
+        assertSqlQueryRows("Incorrect complex datetime filter result", expectedResult, query);
     }
 }
