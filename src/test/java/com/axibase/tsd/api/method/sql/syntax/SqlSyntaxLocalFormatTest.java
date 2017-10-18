@@ -53,7 +53,8 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
                 TestUtil.formatAsLocalTime("2017-01-01T00:00:00.999Z") + "9"
         );
 
-        assertBadRequest("Start date must be less than end date", sqlQuery);
+        assertBadRequest("Wrong result when comparing dates with different digit after 3rd fractional ms position",
+                "Start date must be less than end date", sqlQuery);
     }
 
     @Issue("4386")
@@ -76,7 +77,8 @@ public class SqlSyntaxLocalFormatTest extends SqlTest {
                 endDate
         );
 
-        assertBadRequest(String.format("Invalid date value: '%s'", beginDate), sqlQuery);
+        assertBadRequest("Wrong result for dates in local format with less than 3 digits fractional part",
+                String.format("Invalid date value: '%s'", beginDate), sqlQuery);
     }
 
     @Issue("4386")
