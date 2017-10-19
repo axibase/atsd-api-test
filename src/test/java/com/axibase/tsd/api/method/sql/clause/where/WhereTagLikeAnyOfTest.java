@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
-public class WhereTagsLikeAnyOfTest extends SqlTest {
+public class WhereTagLikeAnyOfTest extends SqlTest {
     private static final String METRIC_NAME = metric();
 
     @BeforeClass

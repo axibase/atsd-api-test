@@ -59,26 +59,28 @@ public class Entity {
         return new Date(createdDate.getTime());
     }
 
-    public void addTag(String tagName, String tagValue) {
+    public Entity addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
         }
         tags.put(tagName, tagValue);
+        return this;
     }
-
 
     @JsonProperty("interpolate")
     public InterpolationMode getInterpolationMode() {
         return interpolationMode;
     }
 
-    public void setInterpolationMode(String interpolationMode) {
+    public Entity setInterpolationMode(String interpolationMode) {
         this.interpolationMode = InterpolationMode.valueOf(interpolationMode);
+        return this;
     }
 
     @JsonProperty("interpolate")
-    public void setInterpolationMode(InterpolationMode interpolationMode) {
+    public Entity setInterpolationMode(InterpolationMode interpolationMode) {
         this.interpolationMode = interpolationMode;
+        return this;
     }
 
     @Override
@@ -93,7 +95,8 @@ public class Entity {
     }
 
     @JsonProperty("timeZone")
-    public void setTimeZoneID(String timeZoneID) {
+    public Entity setTimeZoneID(String timeZoneID) {
         this.timeZoneID = timeZoneID;
+        return this;
     }
 }
