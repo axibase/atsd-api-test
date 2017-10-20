@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.util;
 
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -7,12 +8,9 @@ import java.util.Map;
 
 public class TestNameGenerator {
     private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api";
-    private Map<Key, Integer> dictionary;
-    private Class<org.testng.annotations.Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
+    private static final Class<Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
 
-    public TestNameGenerator() {
-        this.dictionary = new HashMap<>();
-    }
+    private Map<String, Integer> prefixDictionary = new HashMap<>();
 
     public String newEntityName() {
         return newTestName(Key.ENTITY);
@@ -23,10 +21,10 @@ public class TestNameGenerator {
     }
 
     String newTestName(Key key) {
-        String keyName = getPrefix(key);
-        Integer testNumber = dictionary.containsKey(key) ? dictionary.get(key) + 1 : 0;
-        dictionary.put(key, testNumber);
-        return String.format("%s-%d", keyName, testNumber);
+        String namePrefix = getPrefix(key);
+        int testNumber = prefixDictionary.getOrDefault(namePrefix, 0) + 1;
+        prefixDictionary.put(namePrefix, testNumber);
+        return String.format("%s-%d", namePrefix, testNumber);
     }
 
     public String getPrefix(Key key) {
@@ -38,7 +36,7 @@ public class TestNameGenerator {
                 Class<?> clazz = Class.forName(stackTraceElement.getClassName());
                 Method[] methods = clazz.getDeclaredMethods();
 
-                // Search for the method with same name by hand,
+                // Search for the method with the same name by hand,
                 // because we don't know it's actual arguments list
                 for (Method method : methods) {
                     if (method.getName().equals(stackTraceElement.getMethodName()) &&
