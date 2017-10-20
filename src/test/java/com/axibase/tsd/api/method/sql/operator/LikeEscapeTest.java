@@ -41,6 +41,7 @@ public class LikeEscapeTest extends SqlTest {
         Metric metric = new Metric(TEST_METRIC)
                 .setLabel(prefix + Mocks.LABEL)
                 .setDescription(prefix + Mocks.DESCRIPTION)
+                .setUnits(prefix + "units")
                 .setTags(testTags);
 
         Series series = new Series(TEST_ENTITY, TEST_METRIC, testTags);
@@ -82,6 +83,7 @@ public class LikeEscapeTest extends SqlTest {
                 {"metric.description"},
                 {"metric.tags"},
                 {"metric.tags.\"" + escapeName(prefix + "tag") + "\""},
+                {"metric.units"},
                 {"text"}
         };
     }

@@ -47,6 +47,7 @@ public class Metric {
     private BigDecimal maxValue;
     private String timeZoneID;
     private String filter;
+    private String units;
     private Map<String, String> tags;
     private Map<String, Object> additionalProperties = new HashMap<>();
 
