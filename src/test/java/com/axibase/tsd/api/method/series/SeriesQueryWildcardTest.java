@@ -3,6 +3,8 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestNameGenerator;
 import io.qameta.allure.Issue;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +13,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,9 +23,9 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryWildcardTest extends SeriesMethod {
-    private final static String METRIC_FOR_ENTITY = "m-wc-0";
-    private final static String ENTITY_FOR_TAGS = "e-wc-1";
-    private final static String METRIC_FOR_TAGS = "m-wc-1";
+    private final static String METRIC_FOR_ENTITY = Mocks.metric();
+    private final static String ENTITY_FOR_TAGS = Mocks.entity();
+    private final static String METRIC_FOR_TAGS = Mocks.metric();
 
     @BeforeClass
     public static void prepare() throws Exception {
@@ -32,55 +33,52 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         insertSeriesWithSimilarTags();
     }
 
-    private static void insertSeriesWithSimilarEntity() throws FileNotFoundException {
-        Series seriesA = new Series("e-wc-val1", METRIC_FOR_ENTITY);
-        seriesA.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
+    private static void insertSeriesWithSimilarEntity() throws Exception {
+        Series series1 = new Series("e-wc-val1", METRIC_FOR_ENTITY);
+        series1.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
 
-        Series seriesB = new Series("e-wc-val2", null);
-        seriesB.setMetric(METRIC_FOR_ENTITY);
-        seriesB.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 1));
+        Series series2 = new Series("e-wc-val2", METRIC_FOR_ENTITY);
+        series2.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 1));
 
-        Series seriesC = new Series("e-wc-?al1", null);
-        seriesC.setMetric(METRIC_FOR_ENTITY);
-        seriesC.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 2));
+        Series series3 = new Series("e-wc-?al1", METRIC_FOR_ENTITY);
+        series3.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 2));
 
-        Series seriesD = new Series("e-wc-Value2", null);
-        seriesD.setMetric(METRIC_FOR_ENTITY);
-        seriesD.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 3));
+        Series series4 = new Series("e-wc-Value2", METRIC_FOR_ENTITY);
+        series4.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 3));
 
-        Response response = insertSeries(Arrays.asList(seriesA, seriesB, seriesC, seriesD));
+        Series series5 = new Series("e-wc-lu", METRIC_FOR_ENTITY);
+        series5.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 4));
+
+        Response response = insertSeries(Arrays.asList(series1, series2, series3,
+                series4, series5));
         if (OK.getStatusCode() != response.getStatus()) {
             fail("Series insert failed");
         }
     }
 
     private static void insertSeriesWithSimilarTags() throws Exception {
-        Series series = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
+        Series series1 = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
+        series1.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
+        series1.addTag("tag1", "val1");
 
-        series.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 0));
-        series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-            put("tag1", "val1");
-        }}));
-        insertSeriesCheck(Collections.singletonList(series));
+        Series series2 = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
+        series2.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 1));
+        series2.addTag("tag2", "val2");
 
-        series.setSamples(Collections.singletonList(Sample.ofDateInteger(MIN_STORABLE_DATE, 1)));
-        series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-            put("tag2", "val2");
-        }}));
-        insertSeriesCheck(Collections.singletonList(series));
+        Series series3 = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
+        series3.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 2));
+        series3.addTag("tag1", "Val1").addTag("tag2", "Value2");
 
-        series.setSamples(Collections.singletonList(Sample.ofDateInteger(MIN_STORABLE_DATE, 2)));
-        series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-            put("tag1", "Val1");
-            put("tag2", "Value2");
-        }}));
-        insertSeriesCheck(Collections.singletonList(series));
+        Series series4 = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
+        series4.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 3));
+        series4.addTag("tag1", "?al1");
 
-        series.setSamples(Collections.singletonList(Sample.ofDateInteger(MIN_STORABLE_DATE, 3)));
-        series.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-            put("tag1", "?al1");
-        }}));
-        Response response = insertSeries(Collections.singletonList(series));
+        Series series5 = new Series(ENTITY_FOR_TAGS, METRIC_FOR_TAGS);
+        series5.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 4));
+        series5.addTag("tag1", "lu");
+        series5.addTag("tag2", "lU");
+
+        Response response = insertSeries(Arrays.asList(series1, series2, series3, series4, series5));
         if (OK.getStatusCode() != response.getStatus()) {
             fail("Series insert failed");
         }
@@ -89,21 +87,26 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
     @Issue("3371")
     @Test
     public void testEntityWithWildcardExactMatchTrue() throws Exception {
-        String entityNameBase = "series-query-limit-entity-";
-        String metricName = "series-query-limit-metric";
+        TestNameGenerator nameGenerator = new TestNameGenerator();
+        String metricName = Mocks.metric();
 
-        Series series1 = new Series(entityNameBase.concat("1"), metricName);
+        Series series1 = new Series(nameGenerator.newEntityName(), metricName);
         series1.addSamples(Sample.ofDateInteger(MIN_STORABLE_DATE, 7));
 
-        Series series2 = new Series(entityNameBase.concat("2"), metricName, "tag_key", "tag_value");
+        Series series2 = new Series(nameGenerator.newEntityName(), metricName, "tag_key", "tag_value");
         series2.addSamples(
-                Sample.ofDateInteger(MIN_STORABLE_DATE, 7),
-                Sample.ofDateInteger(addOneMS(MIN_STORABLE_DATE), 8));
+                Sample.ofTimeInteger(MIN_STORABLE_TIMESTAMP, 7),
+                Sample.ofTimeInteger(MIN_STORABLE_TIMESTAMP + 1, 8)
+        );
 
         insertSeriesCheck(series1, series2);
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityNameBase.concat("*"), series1.getMetric(),
-                MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(
+                nameGenerator.getPrefix(TestNameGenerator.Key.ENTITY).concat("*"),
+                series1.getMetric(),
+                MIN_QUERYABLE_DATE,
+                MAX_QUERYABLE_DATE
+        );
         seriesQuery.setExactMatch(true);
         seriesQuery.setLimit(2);
         seriesQuery.setSeriesLimit(1);
@@ -116,6 +119,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
     }
 
     @Issue("2207")
+    @Issue("4644")
     @Test(dataProvider = "entities")
     public void testWildcardInEntity(String entity, int seriesCount) throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(entity, METRIC_FOR_ENTITY);
@@ -140,17 +144,20 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
                 {"e-wc-?al1", 2},
                 {"e-wc-\\?al1", 1},
                 {"e-wc-\\?*", 1},
-                {"e-wc-*?", 4},
-                {"e-wc-?*", 4},
+                {"e-wc-*?", 5},
+                {"e-wc-?*", 5},
                 {"e-wc-??????", 1},
                 {"e-wc-*??????", 1},
                 {"e-wc-*??*??*", 4},
                 {"e-wc-*?????*", 1},
-                {"e-wc-*2", 2}
+                {"e-wc-*2", 2},
+                {"e-wc-*\\u", 1},
+                {"e-wc-*\\U", 1},
         };
     }
 
     @Issue("2207")
+    @Issue("4644")
     @Test(dataProvider = "tags")
     public void testWildcardInTagValue(String key, String value, int seriesWithNonEmptyDataCount) throws Exception {
         SeriesQuery seriesQuery = new SeriesQuery(ENTITY_FOR_TAGS, METRIC_FOR_TAGS,
@@ -173,17 +180,19 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
                 {"tag1", "?al1", 3},
                 {"tag1", "\\?al1", 1},
                 {"tag1", "\\?*", 1},
-                {"tag1", "*?", 3},
-                {"tag1", "?*", 3},
+                {"tag1", "*?", 4},
+                {"tag1", "?*", 4},
                 {"tag2", "??????", 1},
                 {"tag2", "*??????", 1},
-                {"tag2", "*?", 2},
+                {"tag2", "*?", 3},
                 {"tag2", "*??*??*", 2},
                 {"tag2", "*?????*", 1},
                 {"tag2", "*2", 2},
                 {"tag1", "?a", 0},
                 {"tag2", "???", 0},
-                {"tag2", "*???????", 0}
+                {"tag2", "*???????", 0},
+                {"tag1", "*\\u", 1},
+                {"tag2", "*\\U", 1}
         };
     }
 

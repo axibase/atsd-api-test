@@ -19,6 +19,8 @@ public class Util {
     public static final String MAX_QUERYABLE_DATE = "9999-12-31T23:59:59.999Z";
     public static final String MIN_STORABLE_DATE = "1970-01-01T00:00:00.000Z";
     public static final String MAX_STORABLE_DATE = "2106-02-07T06:59:59.999Z";
+    public static final long MIN_STORABLE_TIMESTAMP = 0L;
+    public static final long MAX_STORABLE_TIMESTAMP = 4294969199999L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
     private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
     private static TimeZone serverTimeZone;
