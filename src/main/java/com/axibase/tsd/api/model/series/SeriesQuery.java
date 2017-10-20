@@ -73,14 +73,14 @@ public class SeriesQuery {
     }
 
     private String escapeExpression(String expression) {
-        StringBuilder escapedEntityName = new StringBuilder();
+        StringBuilder escapedName = new StringBuilder();
         for (char c : expression.toCharArray()) {
             if (c == '*' || c == '?' || c == '\\') {
-                escapedEntityName.append('\\');
+                escapedName.append('\\');
             }
-            escapedEntityName.append(c);
+            escapedName.append(c);
         }
-        return escapedEntityName.toString();
+        return escapedName.toString();
     }
 
     private void setIntervalBasedOnSeriesDate(final Series series) throws IllegalArgumentException {
