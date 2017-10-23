@@ -2,15 +2,19 @@ package com.axibase.tsd.api.model.metric;
 
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.model.series.DateDeserializer;
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +22,7 @@ import java.util.Map;
 import static com.axibase.tsd.api.util.Util.prettyPrint;
 
 @Data
+@NoArgsConstructor
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Metric {
@@ -25,12 +30,14 @@ public class Metric {
     private Boolean enabled;
     private DataType dataType;
     private Boolean persistent;
-    private String createdDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private ZonedDateTime createdDate;
     private String timePrecision;
     private Integer retentionDays;
     private Integer seriesRetentionDays;
     private String invalidAction;
-    private String lastInsertDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private ZonedDateTime lastInsertDate;
     private Boolean versioned;
     private String label;
     private String description;
@@ -42,9 +49,6 @@ public class Metric {
     private String filter;
     private Map<String, String> tags;
     private Map<String, Object> additionalProperties = new HashMap<>();
-
-    public Metric() {
-    }
 
     public Metric(String name) {
         if (name != null) {

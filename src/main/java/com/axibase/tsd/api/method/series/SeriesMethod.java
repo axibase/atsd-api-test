@@ -4,10 +4,15 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.SearchIndexCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.*;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class SeriesMethod extends BaseMethod {
@@ -96,11 +102,32 @@ public class SeriesMethod extends BaseMethod {
         return response.readEntity(SeriesSearchResult.class);
     }
 
-    public static Response updateSearchIndex() {
+    public static void updateSearchIndex() throws Exception {
         Invocation.Builder builder =  httpRootResource.path(METHOD_REINDEX).request();
         Response response = builder.post(Entity.text("reindex=Reindex"));
+        if (FOUND.getStatusCode() != response.getStatus()) {
+            throw new Exception("Failed to execute search index update");
+        }
+        Checker.check(new SearchIndexCheck());
+    }
+
+    public static String getIndexerStatus() throws Exception {
+        Invocation.Builder builder =  httpRootResource.path(METHOD_REINDEX).request();
+        Response response = builder.get();
+        if (OK.getStatusCode() != response.getStatus()) {
+            throw new Exception("Failed to get search index status");
+        }
+
         response.bufferEntity();
-        return response;
+        try {
+            Document document = Jsoup.parse(response.readEntity(String.class));
+            Element indexInfoTableElement = document.getElementById("indexInfo");
+            Elements tableInfoElements = indexInfoTableElement.select("tr");
+            Element statusRow = tableInfoElements.get(3);
+            return statusRow.child(1).text();
+        } catch (Exception e) {
+            throw new Exception("Failed to parse search index status page", e);
+        }
     }
 
     public static void insertSeriesCheck(Series... series) throws Exception {

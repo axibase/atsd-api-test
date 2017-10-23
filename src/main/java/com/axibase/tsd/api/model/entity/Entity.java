@@ -1,34 +1,36 @@
 package com.axibase.tsd.api.model.entity;
 
 import com.axibase.tsd.api.model.common.InterpolationMode;
+import com.axibase.tsd.api.model.series.DateDeserializer;
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.Util.prettyPrint;
 
 @Data
+@NoArgsConstructor
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entity {
     private String name;
     private InterpolationMode interpolationMode;
     private String label;
-    private String lastInsertDate;
-    private String createdDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private ZonedDateTime lastInsertDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private ZonedDateTime createdDate;
     private Map<String, String> tags;
     private Boolean enabled;
     private String timeZoneID;
-
-    public Entity() {
-
-    }
 
     public Entity(String name) {
         if (null != name) {
