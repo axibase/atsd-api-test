@@ -21,7 +21,7 @@ import static com.axibase.tsd.api.util.TestUtil.quoteEscape;
 public class SqlSelectMetricFieldsTest extends SqlTest {
     private static final String TEST_METRIC = metric();
 
-    //@BeforeClass
+    @BeforeClass
     public static void prepareData() throws Exception {
         Metric metric = new Metric(TEST_METRIC, Mocks.TAGS);
         metric.setLabel(Mocks.LABEL);
