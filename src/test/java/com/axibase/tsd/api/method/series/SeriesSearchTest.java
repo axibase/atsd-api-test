@@ -74,17 +74,17 @@ public class SeriesSearchTest extends SeriesMethod {
     }
 
     private static SeriesSearchResultRecord createSeries(String prefix) throws Exception {
-        Entity entity = new Entity()
-                .setName(prefix + Mocks.entity())
-                .setTags(Collections.singletonMap(prefix + "entity_tag", prefix + "entity_value"))
+        Entity entity = new Entity(
+                    prefix + Mocks.entity(),
+                    Collections.singletonMap(prefix + "entity_tag", prefix + "entity_value"))
                 .setLabel(prefix + Mocks.LABEL)
                 .setInterpolationMode(InterpolationMode.PREVIOUS)
                 .setTimeZoneID("Europe/Moscow")
                 .setEnabled(true);
 
-        Metric metric = new Metric()
-                .setName(prefix + Mocks.metric())
-                .setTags(Collections.singletonMap(prefix + "metric_tag", prefix + "metric_value"))
+        Metric metric = new Metric(
+                    prefix + Mocks.metric(),
+                    Collections.singletonMap(prefix + "metric_tag", prefix + "metric_value"))
                 .setLabel(prefix + Mocks.LABEL)
                 .setTimeZoneID("Europe/London")
                 .setEnabled(true)

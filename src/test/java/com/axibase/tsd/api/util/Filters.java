@@ -19,16 +19,7 @@ public class Filters {
     }
 
     public static <T> Collection<Filter<T>> crossProductAnd(Filter<T>[] filters1, Filter<T>[] filters2) {
-        List<Filter<T>> result = new ArrayList<>(filters1.length * filters2.length);
-        for (Filter<T> firstFilter : filters1) {
-            for (Filter<T> secondFilter : filters2) {
-                String filter = String.format("(%s) AND (%s)", firstFilter.getExpression(), secondFilter.getExpression());
-                Set<T> expectedValues = Sets.intersection(firstFilter.getExpectedResultSet(), secondFilter.getExpectedResultSet());
-                result.add(new Filter<>(filter, expectedValues));
-            }
-        }
-
-        return result;
+        return crossProductAnd(Arrays.asList(filters1), Arrays.asList(filters2));
     }
 
     public static <T> Collection<Filter<T>> crossProductOr(Collection<Filter<T>> filters1, Collection<Filter<T>> filters2) {
@@ -45,16 +36,7 @@ public class Filters {
     }
 
     public static <T> Collection<Filter<T>> crossProductOr(Filter<T>[] filters1, Filter<T>[] filters2) {
-        List<Filter<T>> result = new ArrayList<>(filters1.length * filters2.length);
-        for (Filter<T> firstFilter : filters1) {
-            for (Filter<T> secondFilter : filters2) {
-                String filter = String.format("(%s) OR (%s)", firstFilter.getExpression(), secondFilter.getExpression());
-                Set<T> expectedValues = Sets.union(firstFilter.getExpectedResultSet(), secondFilter.getExpectedResultSet());
-                result.add(new Filter<>(filter, expectedValues));
-            }
-        }
-
-        return result;
+        return crossProductOr(Arrays.asList(filters1), Arrays.asList(filters2));
     }
 
     public static <T> Object[][] formatForDataProvider(Collection<Filter<T>> filters) {
@@ -69,11 +51,6 @@ public class Filters {
     }
 
     public static <T> Object[][] formatForDataProvider(Filter<T>[] filters) {
-        Object[][] result = new Object[filters.length][1];
-        for (int i = 0; i < filters.length; i++) {
-            result[i][0] = filters[i];
-        }
-
-        return result;
+        return formatForDataProvider(Arrays.asList(filters));
     }
 }
