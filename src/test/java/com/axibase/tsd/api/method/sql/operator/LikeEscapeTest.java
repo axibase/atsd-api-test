@@ -34,15 +34,13 @@ public class LikeEscapeTest extends SqlTest {
     public void prepareTest() throws Exception {
         Map<String, String> testTags = Collections.singletonMap(prefix + "tag", prefix + "value");
 
-        Entity entity = new Entity(TEST_ENTITY)
-                .setLabel(prefix + Mocks.LABEL)
-                .setTags(testTags);
+        Entity entity = new Entity(TEST_ENTITY, testTags)
+                .setLabel(prefix + Mocks.LABEL);
 
-        Metric metric = new Metric(TEST_METRIC)
+        Metric metric = new Metric(TEST_METRIC, testTags)
                 .setLabel(prefix + Mocks.LABEL)
                 .setDescription(prefix + Mocks.DESCRIPTION)
-                .setUnits(prefix + "units")
-                .setTags(testTags);
+                .setUnits(prefix + "units");
 
         Series series = new Series(TEST_ENTITY, TEST_METRIC, testTags);
         series.addSamples(Sample.ofDateIntegerText(Mocks.ISO_TIME, 1, prefix + Mocks.TEXT_VALUE));
