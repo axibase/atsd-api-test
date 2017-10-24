@@ -110,7 +110,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
         assertEquals("ExactMatch true with wildcard doesn't return series without tags", 1, data.size());
 
-        seriesQuery.addTags("tag_key", "tag_value");
+        seriesQuery.addTag("tag_key", "tag_value");
         data = executeQueryReturnSeries(seriesQuery).get(0).getData();
         assertEquals("ExactMatch true with wildcard doesn't return series with tags", 2, data.size());
     }

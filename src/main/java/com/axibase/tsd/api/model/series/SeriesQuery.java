@@ -36,13 +36,16 @@ public class SeriesQuery {
     }
 
     public SeriesQuery(Series series) {
-        setEntity(series.getEntity());
-        setTags(new HashMap<>(series.getTags()));
-        setExactMatch(true);
-        setMetric(series.getMetric());
+        entity = escapeExpression(series.getEntity());
+        metric = series.getMetric();
+        tags = new HashMap<>();
+        for (Map.Entry<String, String> keyValue : series.getTags().entrySet()) {
+            tags.put(keyValue.getKey(), escapeExpression(keyValue.getValue()));
+        }
+        exactMatch = true;
         if (series.getData().size() == 0) {
-            setStartDate(MIN_QUERYABLE_DATE);
-            setEndDate(MAX_QUERYABLE_DATE);
+            startDate = MIN_QUERYABLE_DATE;
+            endDate = MAX_QUERYABLE_DATE;
         } else {
             setIntervalBasedOnSeriesDate(series);
         }
@@ -67,6 +70,17 @@ public class SeriesQuery {
         this.startDate = startDate;
         this.endDate = endDate;
         this.tags = tags;
+    }
+
+    private String escapeExpression(String expression) {
+        StringBuilder escapedName = new StringBuilder();
+        for (char c : expression.toCharArray()) {
+            if (c == '*' || c == '?' || c == '\\') {
+                escapedName.append('\\');
+            }
+            escapedName.append(c);
+        }
+        return escapedName.toString();
     }
 
     private void setIntervalBasedOnSeriesDate(final Series series) throws IllegalArgumentException {
@@ -168,7 +182,7 @@ public class SeriesQuery {
         this.tags = tags;
     }
 
-    public void addTags(String tag, String value) {
+    public void addTag(String tag, String value) {
         tags.put(tag, value);
     }
 

@@ -3,7 +3,6 @@ package com.axibase.tsd.api.model.series;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -73,9 +72,35 @@ public class Series {
         Series copy = new Series();
         copy.setEntity(entity);
         copy.setMetric(metric);
-        copy.setSamples(new ArrayList<>(data));
+        List<Sample> dataCopy = new ArrayList<>();
+        for (Sample sample : data) {
+            dataCopy.add(sample.copy());
+        }
+        copy.setSamples(dataCopy);
         copy.setTags(new HashMap<>(tags));
         return copy;
+    }
+
+
+    public Series normalize() {
+        Series transformedSeries = copy();
+        transformedSeries.setEntity(getEntity().toLowerCase());
+        transformedSeries.setMetric(getMetric().toLowerCase());
+
+        Map<String, String> transformedTags = new HashMap<>();
+        for (Map.Entry<String, String> tag : getTags().entrySet()) {
+            transformedTags.put(tag.getKey().toLowerCase().trim(), tag.getValue().trim());
+        }
+
+        transformedSeries.setTags(transformedTags);
+        for (Sample sample : transformedSeries.getData()) {
+            if (sample.getRawDate() == null && sample.getUnixTime() != null) {
+                long unixTime = sample.getUnixTime();
+                sample.setUnixTime(null);
+                sample.setRawDate(Util.ISOFormat(unixTime));
+            }
+        }
+        return transformedSeries;
     }
 
     public String getEntity() {
@@ -84,15 +109,6 @@ public class Series {
 
     public void setEntity(String entity) {
         this.entity = entity;
-    }
-
-    @JsonIgnore
-    public Map<String, String> getFormattedTags() {
-        Map<String, String> formattedTags = new HashMap<>();
-        for (Map.Entry<String, String> tag : tags.entrySet()) {
-            formattedTags.put(tag.getKey().toLowerCase().trim(), tag.getValue().trim());
-        }
-        return formattedTags;
     }
 
     public String getMetric() {
@@ -119,12 +135,13 @@ public class Series {
         this.data = new ArrayList<>(samples);
     }
 
-    public void addTag(String key, String value) {
+    public Series addTag(String key, String value) {
         if (tags == null) {
             tags = new HashMap<>();
         }
 
         tags.put(key, value);
+        return this;
     }
 
     public void addSamples(Sample... samples) {
