@@ -10,20 +10,10 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DoubleBackslashCharEscapeTest extends SeriesTest {
-    private final static Map DEFAULT_PROPERTY_TAGS;
-
-    static {
-        DEFAULT_PROPERTY_TAGS = new HashMap();
-        DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
-    }
-
-    //TODO waiting fix in #4662
     @Issue("2854")
-    @Test(enabled = false)
+    @Test
     public void testEntity() throws Exception {
         Series series = new Series("series-command-test\\\\-e7", "series-command-test-m7");
         Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);

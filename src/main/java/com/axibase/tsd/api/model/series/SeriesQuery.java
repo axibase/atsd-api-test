@@ -40,7 +40,7 @@ public class SeriesQuery {
         metric = series.getMetric();
         tags = new HashMap<>();
         for (Map.Entry<String, String> keyValue : series.getTags().entrySet()) {
-            tags.put(escapeExpression(keyValue.getKey()), keyValue.getValue());
+            tags.put(keyValue.getKey(), escapeExpression(keyValue.getValue()));
         }
         exactMatch = true;
         if (series.getData().size() == 0) {
