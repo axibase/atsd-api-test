@@ -125,7 +125,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         return Filters.formatForDataProvider(joinedFilters);
     }
 
-    //@BeforeClass
+    @BeforeClass
     public void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 
