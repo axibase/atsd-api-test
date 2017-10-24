@@ -99,7 +99,7 @@ public class SeriesSearchTest extends SeriesMethod {
                 .setSeriesRetentionDays(0)
                 .setVersioned(false)
                 .setMinValue(new BigDecimal("1"))
-                .setMaxValue(new BigDecimal("200.0"))
+                .setMaxValue(new BigDecimal("200.1"))
                 .setInvalidAction("TRANSFORM")
                 .setUnits("kg");
 
@@ -114,7 +114,6 @@ public class SeriesSearchTest extends SeriesMethod {
 
         return new SeriesSearchResultRecord(entity, metric, tags, 1.0);
     }
-
 
     @Issue("4404")
     @Test(description = "Test all records returned")
