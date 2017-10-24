@@ -27,57 +27,85 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     private static String TEST_METRIC = metric();
     private static final String[] TEST_TAGS = { null, "value1", "value2", "VALUE1", "VALUE2", "otherValue" };
 
-    //TODO pending fix in #3915
     private final Filter[] filters = new Filter[] {
-//            new Filter("tags.tag LIKE '*'",                 new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}),
-//            new Filter("lower(tags.tag) LIKE '*'",          new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}),
-//            new Filter("tags.tag NOT LIKE '*'",             new String[] {}),
-//            new Filter("lower(tags.tag) NOT LIKE '*'",      new String[] {}),
+            new Filter<>("tags.tag LIKE '*'",
+                    "null", "value1", "value2", "VALUE1", "VALUE2", "otherValue"),
+            new Filter<>("lower(tags.tag) LIKE '*'",
+                    "null", "value1", "value2", "VALUE1", "VALUE2", "otherValue"),
+            new Filter<>("tags.tag NOT LIKE '*'"),
+            new Filter<>("lower(tags.tag) NOT LIKE '*'"),
 
-//            new Filter("tags.tag LIKE '*al*'",              new String[] {"value1", "value2", "otherValue"}),
-//            new Filter("lower(tags.tag) LIKE '*al*'",       new String[] {"value1", "value2", "VALUE1", "VALUE2", "otherValue"}),
-//            new Filter("tags.tag NOT LIKE '*al*'",          new String[] {"VALUE1", "VALUE2"}),
-//            new Filter("lower(tags.tag) NOT LIKE '*al*'",   new String[] {}),
+            new Filter<>("tags.tag LIKE '*al*'",
+                    "value1", "value2", "otherValue"),
+            new Filter<>("lower(tags.tag) LIKE '*al*'",
+                    "value1", "value2", "VALUE1", "VALUE2", "otherValue"),
+            new Filter<>("tags.tag NOT LIKE '*al*'",
+                    "null", "VALUE1", "VALUE2"),
+            new Filter<>("lower(tags.tag) NOT LIKE '*al*'",
+                    "null"),
 
-            new Filter<>("tags.tag LIKE 'value?'", "value1", "value2"),
-//            new Filter("lower(tags.tag) LIKE 'value?'",     new String[] {"value1", "value2", "VALUE1", "VALUE2"}),
-//            new Filter("tags.tag NOT LIKE 'value?'",        new String[] {"VALUE1", "VALUE2", "otherValue"}),
-//            new Filter("lower(tags.tag) NOT LIKE 'value?'", new String[] {"otherValue"}),
+            new Filter<>("tags.tag LIKE 'value?'",
+                    "value1", "value2"),
+            new Filter<>("lower(tags.tag) LIKE 'value?'",
+                    "value1", "value2", "VALUE1", "VALUE2"),
+            new Filter<>("tags.tag NOT LIKE 'value?'",
+                    "null", "VALUE1", "VALUE2", "otherValue"),
+            new Filter<>("lower(tags.tag) NOT LIKE 'value?'",
+                    "null", "otherValue"),
 
-            new Filter<>("tags.tag = 'value1'", "value1"),
-            new Filter<>("lower(tags.tag) = 'value1'", "value1", "VALUE1"),
-//            new Filter("NOT tags.tag = 'value1'",           new String[] {"value2", "VALUE1", "VALUE2", "otherValue"}),
-//            new Filter("NOT lower(tags.tag) = 'value1'",    new String[] {"value2", "VALUE2", "otherValue"}),
+            new Filter<>("tags.tag = 'value1'",
+                    "value1"),
+            new Filter<>("lower(tags.tag) = 'value1'",
+                    "value1", "VALUE1"),
+            new Filter<>("NOT tags.tag = 'value1'",
+                    "null", "value2", "VALUE1", "VALUE2", "otherValue"),
+            new Filter<>("NOT lower(tags.tag) = 'value1'",
+                    "null", "value2", "VALUE2", "otherValue"),
 
-//            new Filter("tags.tag != 'value1'",              new String[] {"value2", "VALUE1", "VALUE2", "otherValue"}),
-//            new Filter("lower(tags.tag) != 'value1'",       new String[] {"value2", "VALUE2", "otherValue"}),
-//            new Filter("NOT tags.tag != 'value1'",          new String[] {"value1"}),
-//            new Filter("NOT lower(tags.tag) != 'value1'",   new String[] {"value1", "VALUE1"}),
+            new Filter<>("tags.tag != 'value1'",
+                    "null", "value2", "VALUE1", "VALUE2", "otherValue"),
+            new Filter<>("lower(tags.tag) != 'value1'",
+                    "null", "value2", "VALUE2", "otherValue"),
+            new Filter<>("NOT tags.tag != 'value1'",
+                    "value1"),
+            new Filter<>("NOT lower(tags.tag) != 'value1'",
+                    "value1", "VALUE1"),
 
-            new Filter<>("tags.tag >= 'VALUE2'", "value1", "value2", "VALUE2", "otherValue"),
-            new Filter<>("lower(tags.tag) >= 'value1'", "value1", "value2", "VALUE1", "VALUE2"),
-//            new Filter("NOT tags.tag >= 'VALUE2'",          new String[] {"VALUE1"}),
-//            new Filter("NOT lower(tags.tag) >= 'value1'",   new String[] {"otherValue"}),
+            new Filter<>("tags.tag >= 'VALUE2'",
+                    "value1", "value2", "VALUE2", "otherValue"),
+            new Filter<>("lower(tags.tag) >= 'value1'",
+                    "value1", "value2", "VALUE1", "VALUE2"),
+            new Filter<>("NOT tags.tag >= 'VALUE2'",
+                    "null", "VALUE1"),
+            new Filter<>("NOT lower(tags.tag) >= 'value1'",
+                    "null", "otherValue"),
 
-            new Filter<>("tags.tag >= 'VALUE2'", "value1", "value2", "VALUE2", "otherValue"),
-            new Filter<>("lower(tags.tag) >= 'value1'", "value1", "value2", "VALUE1", "VALUE2"),
-//            new Filter("NOT tags.tag >= 'VALUE2'",          new String[] {"VALUE1"}),
-//            new Filter("NOT lower(tags.tag) >= 'value1'",   new String[] {"otherValue"}),
+            new Filter<>("tags.tag > 'VALUE2'",
+                    "value1", "value2", "otherValue"),
+            new Filter<>("lower(tags.tag) > 'value1'",
+                    "value2", "VALUE2"),
+            new Filter<>("NOT tags.tag > 'VALUE2'",
+                    "null", "VALUE1", "VALUE2"),
+            new Filter<>("NOT lower(tags.tag) > 'value1'",
+                    "null", "value1", "VALUE1", "otherValue"),
 
-            new Filter<>("tags.tag > 'VALUE2'", "value1", "value2", "otherValue"),
-            new Filter<>("lower(tags.tag) > 'value1'", "value2", "VALUE2")
-//            new Filter("NOT tags.tag > 'VALUE2'",           new String[] {"VALUE1", "VALUE2"}),
-//            new Filter("NOT lower(tags.tag) > 'value1'",    new String[] {"value1", "VALUE1", "otherValue"}),
+            new Filter<>("tags.tag <= 'VALUE2'",
+                    "null", "VALUE1", "VALUE2"),
+            new Filter<>("lower(tags.tag) <= 'VALUE2'",
+                    "null"),
+            new Filter<>("NOT tags.tag <= 'VALUE2'",
+                    "value1", "value2", "otherValue"),
+            new Filter<>("NOT lower(tags.tag) <= 'value1'",
+                    "value2", "VALUE2"),
 
-//            new Filter("tags.tag <= 'VALUE2'",              new String[] {"VALUE1", "VALUE2"}),
-//            new Filter("lower(tags.tag) <= 'VALUE2'",       new String[] {"value1", "VALUE1"}),
-//            new Filter("NOT tags.tag <= 'VALUE2'",          new String[] {"value1", "value2", "otherValue"}),
-//            new Filter("NOT lower(tags.tag) <= 'value1'",   new String[] {"value2", "VALUE2"}),
-
-//            new Filter("tags.tag < 'VALUE2'",               new String[] {"VALUE1"}),
-//            new Filter("lower(tags.tag) < 'value1'",        new String[] {"otherValue"}),
-//            new Filter("NOT tags.tag < 'VALUE2'",           new String[] {"value1", "value2", "VALUE2", "otherValue"}),
-//            new Filter("NOT lower(tags.tag) < 'value1'",    new String[] {"value1", "value2", "VALUE1", "VALUE2"}),
+            new Filter<>("tags.tag < 'VALUE2'",
+                    "null", "VALUE1"),
+            new Filter<>("lower(tags.tag) < 'value1'",
+                    "null", "otherValue"),
+            new Filter<>("NOT tags.tag < 'VALUE2'",
+                    "value1", "value2", "VALUE2", "otherValue"),
+            new Filter<>("NOT lower(tags.tag) < 'value1'",
+                    "value1", "value2", "VALUE1", "VALUE2")
     };
 
     @DataProvider
@@ -97,7 +125,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         return Filters.formatForDataProvider(joinedFilters);
     }
 
-    @BeforeClass
+    //@BeforeClass
     public void prepareData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
 
@@ -162,9 +190,8 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         assertEquals(seriesList.size(), expectedCount);
     }
 
-    //TODO pending #3915
     @Issue("3915")
-    @Test(dataProvider = "provideDoubleTagFiltersAnd", enabled = false)
+    @Test(dataProvider = "provideDoubleTagFiltersAnd")
     public void testDoubleTagFiltersAnd(Filter<String> filter) throws Exception {
         String complexExpression = String.format("(%1$s) OR (%1$s)", filter.getExpression());
         checkQuery(complexExpression, filter.getExpectedResultSet());
