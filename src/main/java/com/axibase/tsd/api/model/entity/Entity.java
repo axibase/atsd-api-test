@@ -1,34 +1,36 @@
 package com.axibase.tsd.api.model.entity;
 
 import com.axibase.tsd.api.model.common.InterpolationMode;
+import com.axibase.tsd.api.model.series.DateDeserializer;
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.Util.prettyPrint;
 
 @Data
+@NoArgsConstructor
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Entity {
     private String name;
     private InterpolationMode interpolationMode;
     private String label;
-    private Date lastInsertDate;
-    private Date createdDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private ZonedDateTime lastInsertDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private ZonedDateTime createdDate;
     private Map<String, String> tags;
     private Boolean enabled;
     private String timeZoneID;
-
-    public Entity() {
-
-    }
 
     public Entity(String name) {
         if (null != name) {
@@ -45,20 +47,6 @@ public class Entity {
         this.tags = tags;
     }
 
-    public Date getLastInsertDate() {
-        if (null == lastInsertDate) {
-            return null;
-        }
-        return new Date(lastInsertDate.getTime());
-    }
-
-    public Date getCreatedDate() {
-        if (null == createdDate) {
-            return null;
-        }
-        return new Date(createdDate.getTime());
-    }
-
     public Entity addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
@@ -73,13 +61,15 @@ public class Entity {
         return interpolationMode;
     }
 
-    public void setInterpolationMode(String interpolationMode) {
+    public Entity setInterpolationMode(String interpolationMode) {
         this.interpolationMode = InterpolationMode.valueOf(interpolationMode);
+        return this;
     }
 
     @JsonProperty("interpolate")
-    public void setInterpolationMode(InterpolationMode interpolationMode) {
+    public Entity setInterpolationMode(InterpolationMode interpolationMode) {
         this.interpolationMode = interpolationMode;
+        return this;
     }
 
     @Override
@@ -94,7 +84,8 @@ public class Entity {
     }
 
     @JsonProperty("timeZone")
-    public void setTimeZoneID(String timeZoneID) {
+    public Entity setTimeZoneID(String timeZoneID) {
         this.timeZoneID = timeZoneID;
+        return this;
     }
 }
