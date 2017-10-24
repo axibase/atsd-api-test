@@ -146,13 +146,20 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     }
 
     @Issue("3915")
-    @Test(dataProvider = "provideSingleTagFilters")
+    @Test(
+            dataProvider = "provideSingleTagFilters",
+            description = "test for single tag filter expression")
     public void testSingleTagFilters(Filter<String> filter) throws Exception {
-        checkQuery(filter.getExpression(), filter.getExpectedResultSet());
+        checkQuery(
+                filter.getExpression(),
+                filter.getExpectedResultSet(),
+                "Incorrect result when using single tag filter");
     }
 
     @Issue("3915")
-    @Test(dataProvider = "provideSingleTagFilters")
+    @Test(
+            dataProvider = "provideSingleTagFilters",
+            description = "test tag expression with exact tag filter")
     public void testTagFilterWithTagExpression(Filter<String> filter) throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         Set<String> expectedTagsSet = new HashSet<>();
@@ -171,11 +178,16 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         query.setTagExpression(filter.getExpression());
         Set<String> actualTagsSet = executeTagsQuery(query);
 
-        assertEquals(expectedTagsSet, actualTagsSet);
+        assertEquals(
+                String.format("Incorrect result when using exact tag filter with tag expression %s", filter.getExpression()),
+                expectedTagsSet,
+                actualTagsSet);
     }
 
     @Issue("3915")
-    @Test(dataProvider = "provideSingleTagFilters")
+    @Test(
+            dataProvider = "provideSingleTagFilters",
+            description = "test tag expression with limit")
     public void testTagFilterWithSeriesLimit(Filter<String> filter) throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         query.setTagExpression(filter.getExpression());
@@ -190,63 +202,47 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         }
 
         Set<String> tagsSet = executeTagsQuery(query);
-        assertEquals(expectedCount, tagsSet.size());
+        assertEquals(
+                String.format("Incorrect result when using limit with tag expression %s", filter.getExpression()),
+                expectedCount,
+                tagsSet.size());
     }
 
     @Issue("3915")
-    @Test(dataProvider = "provideDoubleTagFiltersAnd")
+    @Test(
+            dataProvider = "provideDoubleTagFiltersAnd",
+            description = "test complex tag expression")
     public void testDoubleTagFiltersAnd(Filter<String> filter) throws Exception {
         String complexExpression = String.format("(%1$s) OR (%1$s)", filter.getExpression());
-        checkQuery(complexExpression, filter.getExpectedResultSet());
+        checkQuery(
+                complexExpression,
+                filter.getExpectedResultSet(),
+                "Incorrect result with complex filter");
     }
 
     @Issue("3915")
-    @Test(dataProvider = "provideDoubleTagFiltersOr")
+    @Test(
+            dataProvider = "provideDoubleTagFiltersOr",
+            description = "test complex tag expression")
     public void testDoubleTagFiltersOr(Filter<String> filter) throws Exception {
         String complexExpression = String.format("(%1$s) AND (%1$s)", filter.getExpression());
-        checkQuery(complexExpression, filter.getExpectedResultSet());
+        checkQuery(
+                complexExpression,
+                filter.getExpectedResultSet(),
+                "Incorrect result with complex filter");
     }
 
-    @Issue("3915")
-    @Test
-    public void testTagExpressionFindsNotOnlyLastWrittenSeriesForEntity() throws Exception {
-        // Arrange
-        String metric = metric();
-        String entity = entity();
-
-        Series series1 = new Series(entity, metric, "key", "val1");
-        series1.addSamples(Sample.ofDateInteger("2017-03-27T00:00:00.000Z", 1));
-
-        Series series2 = new Series(entity, metric, "key", "val2");
-        series2.addSamples(Sample.ofDateInteger("2017-03-27T00:00:01.000Z", 1));
-
-        Series series3 = new Series(entity, metric, "key", "val3");
-        series3.addSamples(Sample.ofDateInteger("2017-03-27T00:00:02.000Z", 1));
-
-        insertSeriesCheck(series1, series2, series3);
-
-        // Action
-        SeriesQuery query = new SeriesQuery();
-        query.setMetric(metric);
-        query.setEntity(entity);
-        query.setStartDate(MIN_QUERYABLE_DATE);
-        query.setEndDate(MAX_QUERYABLE_DATE);
-        query.setTagExpression("tags.key = 'val2'");
-
-        List<Series> list = executeQueryReturnSeries(query);
-
-        // Assert
-        Assert.assertEquals(list, Collections.singletonList(series2), "Series are not matched to tag expression '"+ query.getTagExpression()+"'");
-    }
-
-    private void checkQuery(String filter, Set<String> expectedResult) throws Exception {
+    private void checkQuery(String filter, Set<String> expectedResult, String errorMessage) throws Exception {
         Set<Object> expectedTagsSet = Sets.newHashSet(expectedResult);
 
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         query.setTagExpression(filter);
         Set<String> actualTagsSet = executeTagsQuery(query);
 
-        assertEquals(String.format("Incorrect result with filter %s", filter), expectedTagsSet, actualTagsSet);
+        assertEquals(
+                String.format("%s filter %s", errorMessage, filter),
+                expectedTagsSet,
+                actualTagsSet);
     }
 
     private Set<String> executeTagsQuery(SeriesQuery query) throws Exception {
