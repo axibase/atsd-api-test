@@ -42,7 +42,6 @@ public class Metric {
     private String label;
     private String description;
     private InterpolationMode interpolate;
-    private String units;
     private BigDecimal minValue;
     private BigDecimal maxValue;
     private String timeZoneID;
