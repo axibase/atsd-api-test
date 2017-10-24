@@ -159,7 +159,10 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         if (filter.getExpectedResultSet().size() > 0) {
             Optional<String> firstValue = filter.getExpectedResultSet().stream().findFirst();
             if (firstValue.isPresent()) {
-                expectedTagsSet.add(firstValue.get());
+                String tagValue = firstValue.get();
+                if (!tagValue.equals("null")) {
+                    expectedTagsSet.add(tagValue);
+                }
                 query.setTags(Collections.singletonMap("tag", firstValue.get()));
             }
         } else {
@@ -168,7 +171,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         query.setTagExpression(filter.getExpression());
         Set<String> actualTagsSet = executeTagsQuery(query);
 
-        assertEquals(actualTagsSet, expectedTagsSet);
+        assertEquals(expectedTagsSet, actualTagsSet);
     }
 
     @Issue("3915")
@@ -186,8 +189,8 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
             expectedCount = expectedResultSet.size();
         }
 
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
-        assertEquals(seriesList.size(), expectedCount);
+        Set<String> tagsSet = executeTagsQuery(query);
+        assertEquals(expectedCount, tagsSet.size());
     }
 
     @Issue("3915")
@@ -250,6 +253,10 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
         Set<String> actualTagsSet = new HashSet<>();
         for (Series series : seriesList) {
+            if (series.getData() == null || series.getData().size() == 0) {
+                continue;
+            }
+
             Map<String, String> tags = series.getTags();
             if (tags == null || tags.size() == 0) {
                 actualTagsSet.add("null");
