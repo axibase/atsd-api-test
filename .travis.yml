@@ -8,7 +8,7 @@ before_install:
 install:
   - export ATSD_LOGIN=axibase
   - export ATSD_PASSWORD=axibase
-  - docker run -d --name="atsd-api-test" -e axiname="$ATSD_LOGIN" -e axipass="$ATSD_PASSWORD" -e timezone="Asia/Kathmandu" axibase/atsd:api_test
+  - travis_wait 20 docker run -d --name="atsd-api-test" -e axiname="$ATSD_LOGIN" -e axipass="$ATSD_PASSWORD" -e timezone="Asia/Kathmandu" axibase/atsd:api_test
   - export ATSD_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atsd-api-test)
   - while [[ $(curl --user $ATSD_LOGIN:$ATSD_PASSWORD --write-out %{http_code} --silent --output /dev/null http://$ATSD_HOST:8088/version) != 200 ]]; do  echo "waiting to start $name server ..."; sleep 3; done
 cache:
