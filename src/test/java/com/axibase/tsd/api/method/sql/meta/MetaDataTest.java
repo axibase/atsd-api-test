@@ -304,8 +304,8 @@ public class MetaDataTest extends SqlMetaTest {
                 "entity",
                 "tags",
                 /* Do we always have this order? */
-                metricB + ".tags.t2",
-                metricA + ".tags.t1"
+                metricA + ".tags.t1",
+                metricB + ".tags.t2"
         };
 
         String[] expectedTypes = {
