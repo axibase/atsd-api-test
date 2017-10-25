@@ -35,7 +35,18 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test default DESC order")
+    public void testDefaultOrderLimit1() throws Exception {
+        SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        query.setLimit(1);
+        assertSeriesQueryResult(
+                "Incorrect series query result with LIMIT = 1, default order",
+                query,
+                TEST_SAMPLES[4]);
+    }
+
+    @Issue("4635")
+    @Test(description = "test series query result with LIMIT = 1, ASC")
     public void testAscOrderLimit1() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setLimit(1);
@@ -47,7 +58,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 1, DESC")
     public void testDescOrderLimit1() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setLimit(1);
@@ -59,7 +70,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 1, cache = true, ASC")
     public void testAscOrderLimit1Cache() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setLimit(1);
@@ -72,7 +83,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 1, cache = true, DESC")
     public void testDescOrderLimit1Cache() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setLimit(1);
@@ -85,7 +96,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 3, ASC")
     public void testAscOrderLimit3() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setLimit(3);
@@ -97,7 +108,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 3, DESC")
     public void testDescOrderLimit3() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setLimit(3);
@@ -109,7 +120,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with no LIMIT, ASC")
     public void testAscOrderNoLimit() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setDirection("ASC");
@@ -120,7 +131,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with no LIMIT, DESC")
     public void testDescOrderNoLimit() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setDirection("DESC");
@@ -131,7 +142,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 3, datetime filter, ASC")
     public void testAscOrderLimit3WithFilter() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, TEST_SAMPLES[3].getRawDate(), MAX_QUERYABLE_DATE);
         query.setLimit(3);
@@ -143,7 +154,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     }
 
     @Issue("4635")
-    @Test
+    @Test(description = "test series query result with LIMIT = 3, datetime filter, DESC")
     public void testDescOrderLimit3WithFilter() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC,  TEST_SAMPLES[3].getRawDate(), MAX_QUERYABLE_DATE);
         query.setLimit(3);
