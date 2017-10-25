@@ -9,13 +9,19 @@ import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Filters;
 import com.axibase.tsd.api.util.Mocks;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
 
+import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.testng.Assert.*;
@@ -247,6 +253,31 @@ public class SeriesSearchTest extends SeriesMethod {
         };
 
         checkQueryWithoutRelevance(query, Sets.newHashSet(Arrays.asList(expectedResult)));
+    }
+
+    @Issue("4666")
+    @Test(description = "Test createdDate and lastInsertDate fields format")
+    public void testDatePrecision() throws IOException {
+        SeriesSearchQuery query = new SeriesSearchQuery("sst_22*");
+        query.addEntityFields("createdDate,lastInsertDate");
+        query.addMetricFields("createdDate,lastInsertDate");
+
+        Response response = SeriesMethod.searchSeriesReturnResponse(query);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode resultNode = mapper.readTree(response.readEntity(String.class));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'");
+        List<JsonNode> dateNodes = new ArrayList<>();
+        dateNodes.addAll(resultNode.findValues("createdDate"));
+        dateNodes.addAll(resultNode.findValues("lastInsertDate"));
+
+        assertEquals(dateNodes.size(),4, "Incorrect fields count");
+        for (JsonNode node : dateNodes) {
+            try {
+                dateFormat.parse(node.asText());
+            } catch (ParseException e) {
+                fail("Incorrect date format", e);
+            }
+        }
     }
 
     private void testQuery(Filter<SeriesSearchResultRecord> filter) {
