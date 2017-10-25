@@ -29,8 +29,11 @@ public class SeriesQueryWildcardEscapeTest {
     }
 
     @Issue("4662")
-    @Test(dataProvider = "provideSpecialCharacters")
-    public static void testEnitySpecialCharEscape(char c) throws Exception {
+    @Test(
+            description = "Test series query for entity name that contains wildcard",
+            dataProvider = "provideSpecialCharacters"
+    )
+    public static void testEntitySpecialCharEscape(char c) throws Exception {
         String entityName = ENTITY_PREFIX + c + "e1";
 
         Series series = new Series(entityName, Mocks.metric());
@@ -43,12 +46,15 @@ public class SeriesQueryWildcardEscapeTest {
         String actualEntityName = new JSONArray(queryResponse.readEntity(String.class))
                 .getJSONObject(0).getString("entity");
 
-
-        assertEquals("", entityName, actualEntityName);
+        assertEquals("Wrong result when performing series query with entity that contains wildcard character " + c,
+                entityName, actualEntityName);
     }
 
     @Issue("4662")
-    @Test(dataProvider = "provideSpecialCharacters")
+    @Test(
+            description = "Test series query for entity name that contains wildcard and nothing were found",
+            dataProvider = "provideSpecialCharacters"
+    )
     public static void testEntitySpecialCharEscapeNotFound(char c) throws Exception {
         String entityName = ENTITY_PREFIX + c + "e2";
         String metricName =  Mocks.metric();
@@ -65,11 +71,15 @@ public class SeriesQueryWildcardEscapeTest {
 
         String expectedEntityName = ENTITY_PREFIX + '\\' + c + "e2";
 
-        assertEquals("", expectedEntityName, actualEntityName);
+        assertEquals("Wrong result when performing series query with entity that contains wildcard character " + c +
+                " and no series were found", expectedEntityName, actualEntityName);
     }
 
     @Issue("4662")
-    @Test(dataProvider = "provideSpecialCharacters")
+    @Test(
+            description = "Test series query for tag value that contains wildcard",
+            dataProvider = "provideSpecialCharacters"
+    )
     public static void testTagSpecialCharEscape(char c) throws Exception {
         String entityName = Mocks.entity();
         String metircName = Mocks.metric();
@@ -86,11 +96,15 @@ public class SeriesQueryWildcardEscapeTest {
         String actualTagValue = new JSONArray(queryResponse.readEntity(String.class))
                 .getJSONObject(0).getJSONObject("tags").getString("tag");
 
-        assertEquals("", tagValue, actualTagValue);
+        assertEquals("Wrong result when performing series query with tag value that contains wildcard character " + c,
+                tagValue, actualTagValue);
     }
 
     @Issue("4662")
-    @Test(dataProvider = "provideSpecialCharacters")
+    @Test(
+            description = "Test series query for tag value that contains wildcard and nothing were found",
+            dataProvider = "provideSpecialCharacters"
+    )
     public static void testTagSpecialCharEscapeNotFound(char c) throws Exception {
         String entityName = Mocks.entity();
         String metricName = Mocks.metric();
@@ -107,6 +121,7 @@ public class SeriesQueryWildcardEscapeTest {
         String actualTagValue = new JSONArray(queryResponse.readEntity(String.class))
                 .getJSONObject(0).getJSONObject("tags").getString("tag");
 
-        assertEquals("", expectedTagValue, actualTagValue);
+        assertEquals("Wrong result when performing series query with tag value that contains wildcard character " + c +
+                        " and no series were found", expectedTagValue, actualTagValue);
     }
 }
