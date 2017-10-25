@@ -7,7 +7,10 @@ import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.SearchIndexCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.sql.OutputFormat;
-import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.SeriesSearchQuery;
+import com.axibase.tsd.api.model.series.SeriesSearchResult;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.lang.invoke.MethodHandles;
@@ -146,10 +148,9 @@ public class SeriesMethod extends BaseMethod {
         Checker.check(check);
     }
 
-    public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
+    public static List<Series> querySeriesAsList(SeriesQuery... seriesQuery) throws Exception {
         Response response = querySeries(seriesQuery);
-        return response.readEntity(new GenericType<List<Series>>() {
-        });
+        return Arrays.asList(response.readEntity(Series[].class));
     }
 
 

@@ -107,11 +107,11 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         seriesQuery.setExactMatch(true);
         seriesQuery.setLimit(2);
         seriesQuery.setSeriesLimit(1);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
         assertEquals("ExactMatch true with wildcard doesn't return series without tags", 1, data.size());
 
         seriesQuery.addTag("tag_key", "tag_value");
-        data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        data = querySeriesAsList(seriesQuery).get(0).getData();
         assertEquals("ExactMatch true with wildcard doesn't return series with tags", 2, data.size());
     }
 
@@ -125,7 +125,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         if (seriesCount == 0) {
             assertEntityNotFound(seriesQuery);
         } else {
-            List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+            List<Series> seriesList = querySeriesAsList(seriesQuery);
             assertQueryResultSize(seriesCount, seriesList);
         }
     }
@@ -209,6 +209,6 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         seriesQuery.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
             put(key, value);
         }}));
-        return executeQueryReturnSeries(seriesQuery);
+        return querySeriesAsList(seriesQuery);
     }
 }

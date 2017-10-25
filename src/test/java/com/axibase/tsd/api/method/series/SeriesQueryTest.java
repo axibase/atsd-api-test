@@ -63,7 +63,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate(date);
 
-        List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
+        List<Series> storedSeries = querySeriesAsList(seriesQuery);
 
         assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
         assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
@@ -106,7 +106,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MIN_STORABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
@@ -124,7 +124,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), addOneMS(MAX_STORABLE_DATE), MAX_QUERYABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
@@ -142,7 +142,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
@@ -162,7 +162,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
@@ -182,7 +182,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_STORABLE_DATE, MAX_QUERYABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
@@ -330,7 +330,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.setMetric(series.getMetric());
         query.setInterval(new Interval(99999, TimeUnit.QUARTER));
 
-        List<Series> storedSeries = executeQueryReturnSeries(query);
+        List<Series> storedSeries = querySeriesAsList(query);
 
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         final String given = jacksonMapper.writeValueAsString(storedSeries);
@@ -351,7 +351,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         query.setGroup(new Group(GroupType.SUM));
 
-        List<Series> storedSeries = executeQueryReturnSeries(query);
+        List<Series> storedSeries = querySeriesAsList(query);
 
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         final String given = jacksonMapper.writeValueAsString(storedSeries);
@@ -375,7 +375,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.setAggregate(new Aggregate(AggregationType.SUM, interval));
 
 
-        List<Series> storedSeries = executeQueryReturnSeries(query);
+        List<Series> storedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, storedSeries.size());
         List<Sample> data = storedSeries.get(0).getData();
         assertEquals("Response should contain only one sample", 1, data.size());
@@ -465,7 +465,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
 
         assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
@@ -490,7 +490,7 @@ public class SeriesQueryTest extends SeriesMethod {
         }
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
 
         assertFalse("No series", seriesList.isEmpty());
         assertFalse("No series data", seriesList.get(0).getData().isEmpty());
@@ -518,7 +518,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery(series);
         query.setVersioned(true);
         query.setExactMatch(true);
-        List<Series> receivedSeries = executeQueryReturnSeries(query);
+        List<Series> receivedSeries = querySeriesAsList(query);
         int receivedVersionsCount = receivedSeries.get(0).getData().size();
 
         assertEquals("Number of received versions mismatched", insertedVersionsCount, receivedVersionsCount);
@@ -530,7 +530,7 @@ public class SeriesQueryTest extends SeriesMethod {
         series.setSamples(Collections.singleton(Mocks.TEXT_SAMPLE));
         SeriesMethod.insertSeriesCheck(series);
 
-        List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
+        List<Series> resultSeriesList = SeriesMethod.querySeriesAsList(new SeriesQuery(series));
 
         String assertMessage = "SeriesList serialized as not expected!";
         assertEquals(assertMessage, Collections.singletonList(series), resultSeriesList);
@@ -547,7 +547,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery(series);
         query.setLimit(1);
 
-        List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> resultSeriesList = SeriesMethod.querySeriesAsList(query);
         assertEquals("Response doesn't match the expected", Collections.singletonList(series), resultSeriesList);
     }
 

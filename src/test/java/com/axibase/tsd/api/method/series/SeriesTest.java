@@ -45,7 +45,7 @@ public class SeriesTest extends SeriesMethod {
                 @Override
                 public boolean isChecked() {
                     try {
-                        List<Series> seriesList = executeQueryReturnSeries(query);
+                        List<Series> seriesList = querySeriesAsList(query);
                         if (seriesList.size() != 1) {
                             return false;
                         } else {

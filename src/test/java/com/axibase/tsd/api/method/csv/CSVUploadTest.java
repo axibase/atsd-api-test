@@ -213,7 +213,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         assertSeriesQueryDataSize(seriesQuery, 2);
 
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(seriesQuery);
         Series series = seriesList.get(0);
 
         assertEquals("Min storable date failed to save", MIN_STORABLE_DATE, series.getData().get(0).getRawDate());
@@ -235,7 +235,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, 2);
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(seriesQuery);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(seriesQuery);
         Series series = seriesList.get(0);
 
         assertEquals("Managed to insert dataset with date out of range", 2, series.getData().size());
@@ -262,7 +262,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, dataSize);
 
-        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
+        Sample sample = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getData().get(0);
         Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.MARCH, 24, 6, 17);
@@ -284,7 +284,7 @@ public class CSVUploadTest extends CSVUploadMethod {
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, 3);
-        Sample sample = SeriesMethod.executeQueryReturnSeries(seriesQuery).get(0).getData().get(0);
+        Sample sample = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getData().get(0);
 
         Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
         serverCalendar.clear();
@@ -318,7 +318,7 @@ public class CSVUploadTest extends CSVUploadMethod {
                 metricName,
                 "2016-06-19T00:00:00.000Z",
                 "123.45",
-                SeriesMethod.executeQueryReturnSeries(seriesQuery)
+                SeriesMethod.querySeriesAsList(seriesQuery)
         );
     }
 
@@ -334,7 +334,7 @@ public class CSVUploadTest extends CSVUploadMethod {
                 metricName,
                 "2016-06-19T00:00:00.000Z",
                 "123.45",
-                SeriesMethod.executeQueryReturnSeries(seriesQuery)
+                SeriesMethod.querySeriesAsList(seriesQuery)
         );
     }
 

@@ -8,11 +8,8 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import org.json.JSONArray;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import javax.ws.rs.core.Response;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
@@ -42,9 +39,7 @@ public class SeriesQueryWildcardEscapeTest {
         SeriesMethod.insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        Response queryResponse = SeriesMethod.querySeries(seriesQuery);
-        String actualEntityName = new JSONArray(queryResponse.readEntity(String.class))
-                .getJSONObject(0).getString("entity");
+        String actualEntityName = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getEntity();
 
         assertEquals("Wrong result when performing series query with entity that contains wildcard character " + c,
                 entityName, actualEntityName);
@@ -65,9 +60,7 @@ public class SeriesQueryWildcardEscapeTest {
         MetricMethod.createOrReplaceMetricCheck(new Metric(metricName));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        Response queryResponse = SeriesMethod.querySeries(seriesQuery);
-        String actualEntityName = new JSONArray(queryResponse.readEntity(String.class))
-                .getJSONObject(0).getString("entity");
+        String actualEntityName = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getEntity();
 
         String expectedEntityName = ENTITY_PREFIX + '\\' + c + "e2";
 
@@ -92,9 +85,7 @@ public class SeriesQueryWildcardEscapeTest {
         SeriesMethod.insertSeriesCheck(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        Response queryResponse = SeriesMethod.querySeries(seriesQuery);
-        String actualTagValue = new JSONArray(queryResponse.readEntity(String.class))
-                .getJSONObject(0).getJSONObject("tags").getString("tag");
+        String actualTagValue = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getTags().get("tag");
 
         assertEquals("Wrong result when performing series query with tag value that contains wildcard character " + c,
                 tagValue, actualTagValue);
@@ -117,9 +108,7 @@ public class SeriesQueryWildcardEscapeTest {
         SeriesQuery seriesQuery = new SeriesQuery(metricName, entityName,
                 MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         seriesQuery.addTag("tag", expectedTagValue);
-        Response queryResponse = SeriesMethod.querySeries(seriesQuery);
-        String actualTagValue = new JSONArray(queryResponse.readEntity(String.class))
-                .getJSONObject(0).getJSONObject("tags").getString("tag");
+        String actualTagValue = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getTags().get("tag");
 
         assertEquals("Wrong result when performing series query with tag value that contains wildcard character " + c +
                         " and no series were found", expectedTagValue, actualTagValue);

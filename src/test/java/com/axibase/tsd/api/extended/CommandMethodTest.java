@@ -36,7 +36,7 @@ public class CommandMethodTest extends CommandMethod {
     }
 
     private static List<String> getActualData(Series series) throws Exception {
-        List<Series> actualSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
+        List<Series> actualSeriesList = SeriesMethod.querySeriesAsList(new SeriesQuery(series));
         return actualSeriesList.stream()
                 .flatMap(actualSeries -> actualSeries.getData().stream())
                 .map(Sample::getText)

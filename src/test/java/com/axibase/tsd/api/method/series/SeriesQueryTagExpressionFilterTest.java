@@ -158,7 +158,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
             expectedCount = expectedResultSet.size();
         }
 
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query);
         assertEquals(seriesList.size(), expectedCount);
     }
 
@@ -203,7 +203,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
         query.setEndDate(MAX_QUERYABLE_DATE);
         query.setTagExpression("tags.key = 'val2'");
 
-        List<Series> list = executeQueryReturnSeries(query);
+        List<Series> list = querySeriesAsList(query);
 
         // Assert
         Assert.assertEquals(list, Collections.singletonList(series2), "Series are not matched to tag expression '"+ query.getTagExpression()+"'");
@@ -220,7 +220,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     }
 
     private Set<String> executeTagsQuery(SeriesQuery query) throws Exception {
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query);
         Set<String> actualTagsSet = new HashSet<>();
         for (Series series : seriesList) {
             Map<String, String> tags = series.getTags();
