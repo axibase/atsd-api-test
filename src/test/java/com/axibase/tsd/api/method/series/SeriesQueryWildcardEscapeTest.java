@@ -53,11 +53,12 @@ public class SeriesQueryWildcardEscapeTest {
         String entityName = ENTITY_PREFIX + c + "e2";
         String metricName =  Mocks.metric();
 
+        Series series = new Series(entityName, metricName);
+
         EntityMethod.createOrReplaceEntityCheck(new Entity(entityName));
         MetricMethod.createOrReplaceMetricCheck(new Metric(metricName));
 
-        SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName,
-                MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        SeriesQuery seriesQuery = new SeriesQuery(series);
         Response queryResponse = SeriesMethod.querySeries(seriesQuery);
         String actualEntityName = new JSONArray(queryResponse.readEntity(String.class))
                 .getJSONObject(0).getString("entity");
@@ -93,19 +94,18 @@ public class SeriesQueryWildcardEscapeTest {
     public static void testTagSpecialCharEscapeNotFound(char c) throws Exception {
         String entityName = Mocks.entity();
         String metricName = Mocks.metric();
-        String tagValue = "tag" + c;
+
+        String expectedTagValue = "tag" + '\\' + c;
 
         EntityMethod.createOrReplaceEntityCheck(new Entity(entityName));
         MetricMethod.createOrReplaceMetricCheck(new Metric(metricName));
 
         SeriesQuery seriesQuery = new SeriesQuery(metricName, entityName,
                 MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        seriesQuery.addTag("tag", tagValue);
+        seriesQuery.addTag("tag", expectedTagValue);
         Response queryResponse = SeriesMethod.querySeries(seriesQuery);
         String actualTagValue = new JSONArray(queryResponse.readEntity(String.class))
                 .getJSONObject(0).getJSONObject("tags").getString("tag");
-
-        String expectedTagValue = "tag" + '\\' + c;
 
         assertEquals("", expectedTagValue, actualTagValue);
     }
