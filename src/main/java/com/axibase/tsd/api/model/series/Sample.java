@@ -50,6 +50,10 @@ public class Sample {
         this.text = text;
     }
 
+    public Sample copy() {
+        return new Sample(unixTime, null, value, text).setRawDate(rawDate);
+    }
+
     public static Sample ofDate(String date) {
         return new Sample(null, date, null, null);
     }
@@ -72,6 +76,10 @@ public class Sample {
 
     public static Sample ofDateDecimal(String date, BigDecimal value) {
         return new Sample(null, date, value, null);
+    }
+
+    public static Sample ofTimeInteger(long time, int value) {
+        return new Sample(time, null, BigDecimal.valueOf(value), null);
     }
 
     public static Sample ofTimeDecimal(long time, BigDecimal value) {

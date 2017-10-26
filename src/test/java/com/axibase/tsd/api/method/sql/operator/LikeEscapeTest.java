@@ -1,16 +1,13 @@
 package com.axibase.tsd.api.method.sql.operator;
 
-import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
@@ -19,7 +16,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -48,23 +44,7 @@ public class LikeEscapeTest extends SqlTest {
         EntityMethod.createOrReplaceEntityCheck(entity);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
-        // using custom checker due to a bug #4640
-        SeriesMethod.insertSeriesCheck(
-                Collections.singletonList(series),
-                new AbstractCheck() {
-                    @Override
-                    public boolean isChecked() {
-                        String query = String.format(
-                                "SELECT COUNT(*) AS \"count\" FROM \"%s\"",
-                                escapeName(TEST_METRIC));
-                        StringTable table = SqlMethod.queryTable(query);
-                        List<String> values = table.columnValues("count");
-                        if (values.size() > 0 && values.get(0).equals("1")) {
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+        SeriesMethod.insertSeriesCheck(series);
     }
 
     @DataProvider

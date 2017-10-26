@@ -38,28 +38,16 @@ public class SeriesCheck extends AbstractCheck {
         }
     }
 
-    public boolean seriesListIsInserted(final List<Series> seriesList) throws Exception {
+    private boolean seriesListIsInserted(final List<Series> seriesList) throws Exception {
         List<SeriesQuery> seriesQueryList = new ArrayList<>();
-        List<Series> formattedSeriesList = new ArrayList<>();
+        List<Series> transformedSeriesList = new ArrayList<>();
         for (final Series series : seriesList) {
-            Series seriesQuery = series.copy();
-            String escapedEntity = escapeName(seriesQuery.getEntity());
-            seriesQuery.setEntity(escapedEntity);
-            seriesQueryList.add(new SeriesQuery(seriesQuery));
-
-            Series formattedSeries = series.copy();
-            formattedSeries.setTags(series.getFormattedTags());
-            formattedSeriesList.add(formattedSeries);
+            seriesQueryList.add(new SeriesQuery(series));
+            transformedSeriesList.add(series.normalize());
         }
         Response response = querySeries(seriesQueryList);
-        String expected = BaseMethod.getJacksonMapper().writeValueAsString(formattedSeriesList);
+        String expected = BaseMethod.getJacksonMapper().writeValueAsString(transformedSeriesList);
         String actual = response.readEntity(String.class);
         return compareJsonString(expected, actual);
-    }
-
-    private static String escapeName(String name) {
-        if (name == null) return null;
-
-        return name.replace("\\", "\\\\");
     }
 }
