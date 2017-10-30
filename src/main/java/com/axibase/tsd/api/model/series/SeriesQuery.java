@@ -24,7 +24,7 @@ public class SeriesQuery {
     private String startDate;
     private String endDate;
     private Interval interval;
-    private Map<String, String> tags = new HashMap<>();
+    private Map<String, String> tags;
     private Aggregate aggregate;
     private Group group;
     private String timeFormat;
