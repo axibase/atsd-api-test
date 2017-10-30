@@ -18,17 +18,20 @@ public class CSVInsertMethod extends SeriesMethod {
     private static final String METHOD_CSV_INSERT = "/series/csv/{entity}";
 
     public static Response csvInsert(String entity, String csv, Map<String, String> tags, String user, String password) {
-        WebTarget webTarget = httpApiResource.path(METHOD_CSV_INSERT).resolveTemplate("entity", entity);
-        for (Map.Entry<String, String> entry : tags.entrySet()) {
-            webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
-        }
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget.path(METHOD_CSV_INSERT).resolveTemplate("entity", entity);
+            for (Map.Entry<String, String> entry : tags.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
 
-        Invocation.Builder builder = webTarget.request();
-        if (user != null && password != null) {
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
-        }
-        Response response = builder.post(Entity.entity(csv, new MediaType("text", "csv")));
+            Invocation.Builder builder = target.request();
+            if (user != null && password != null) {
+                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+            }
+            return builder.post(Entity.entity(csv, new MediaType("text", "csv")));
+        });
+
         response.bufferEntity();
         return response;
     }

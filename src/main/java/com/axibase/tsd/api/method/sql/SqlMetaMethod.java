@@ -12,12 +12,13 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 
+import java.util.function.Function;
+
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class SqlMetaMethod extends BaseMethod {
     private static final String METHOD_SQL_META_API = "/api/sql/meta";
-    protected static final WebTarget httpSqlApiResource = httpRootResource.path(METHOD_SQL_META_API);
     private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
 
     public static TableMetaData queryMetaData(String sqlQuery) {
@@ -27,9 +28,9 @@ public class SqlMetaMethod extends BaseMethod {
             throw new IllegalStateException("Query must be defined");
         }
         form.param("q", sqlQuery);
-        Response response = httpSqlApiResource
+        Response response = executeSqlMetaRequest(webTarget -> webTarget
                 .request()
-                .post(Entity.form(form));
+                .post(Entity.form(form)));
         response.bufferEntity();
 
         Integer statusCode = response.getStatus();
@@ -46,5 +47,9 @@ public class SqlMetaMethod extends BaseMethod {
                 sqlQuery
         );
         throw new IllegalStateException(errorMessage);
+    }
+
+    public static Response executeSqlMetaRequest(Function<WebTarget, Response> sqlMetaFunction) {
+        return executeRootRequest(webTarget -> sqlMetaFunction.apply(webTarget.path(METHOD_SQL_META_API)));
     }
 }

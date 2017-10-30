@@ -37,9 +37,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testNoQueryParamsGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
 
@@ -48,9 +48,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     @Issue("3609")
     @Test
     public void testNoQueryParamsPost() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .post(Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED));
+                .post(Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
@@ -58,10 +58,10 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testDefaultOutputFormatGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals(OK.getStatusCode(), response.getStatus());
 
@@ -71,11 +71,11 @@ public class SqlApiResponseCodesTest extends SqlMethod {
     public void testDefaultOutputFormatPost() {
         final Form form = new Form();
         form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
                 .post(Entity.entity(
                         form,
-                        MediaType.APPLICATION_FORM_URLENCODED));
+                        MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
         assertEquals(OK.getStatusCode(), response.getStatus());
 
@@ -87,11 +87,11 @@ public class SqlApiResponseCodesTest extends SqlMethod {
         final Form form = new Form();
         form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         form.param("outputFormat", "json");
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
                 .post(Entity.entity(
                         form,
-                        MediaType.APPLICATION_FORM_URLENCODED));
+                        MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
         assertEquals(OK.getStatusCode(), response.getStatus());
 
@@ -102,11 +102,11 @@ public class SqlApiResponseCodesTest extends SqlMethod {
         final Form form = new Form();
         form.param("q", "SELECT * FROM \"sql-response-codes-metric\"");
         form.param("outputFormat", "csv");
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
                 .post(Entity.entity(
                         form,
-                        MediaType.APPLICATION_FORM_URLENCODED));
+                        MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
         assertEquals(OK.getStatusCode(), response.getStatus());
 
@@ -114,11 +114,11 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testDefaultOutputFormatJsonGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .queryParam("outputFormat", OutputFormat.JSON)
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals(OK.getStatusCode(), response.getStatus());
 
@@ -126,11 +126,11 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testDefaultOutputFormatCsvGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .queryParam("q", "SELECT * FROM \"sql-response-codes-metric\"")
                 .queryParam("outputFormat", OutputFormat.CSV)
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals(OK.getStatusCode(), response.getStatus());
 
@@ -138,11 +138,11 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testIncorrectSqlQueryGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .queryParam("q", "SELECT FROM")
                 .queryParam("outputFormat", OutputFormat.CSV)
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
 
@@ -153,9 +153,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
         Form form = new Form();
         form.param("q", "SELECT FROM");
         form.param("outputFormat", OutputFormat.JSON.toString());
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .post(Entity.form(form));
+                .post(Entity.form(form)));
         response.bufferEntity();
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
@@ -163,9 +163,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testNotAllowedPutRequest() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .put(Entity.entity("", MediaType.APPLICATION_JSON));
+                .put(Entity.entity("", MediaType.APPLICATION_JSON)));
         response.bufferEntity();
         assertEquals(NOT_FOUND.getStatusCode(), response.getStatus());
 
@@ -173,9 +173,9 @@ public class SqlApiResponseCodesTest extends SqlMethod {
 
     @Test
     public void testNotAllowedDeleteRequest() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .delete();
+                .delete());
         response.bufferEntity();
         assertEquals(NOT_FOUND.getStatusCode(), response.getStatus());
     }

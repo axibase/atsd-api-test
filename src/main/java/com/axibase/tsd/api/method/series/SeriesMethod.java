@@ -13,8 +13,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -22,7 +20,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
-import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,15 +33,17 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
     private static final String METHOD_SERIES_SEARCH = "/search";
     private static final String METHOD_REINDEX = "/admin/series/index";
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static <T> Response insertSeries(final T seriesList, String user, String password) {
-        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_INSERT).request();
+        Response response = executeApiRequest(webTarget -> {
+            Invocation.Builder builder = webTarget.path(METHOD_SERIES_INSERT).request();
 
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-        builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
 
-        Response response = builder.post(Entity.json(seriesList));
+            return builder.post(Entity.json(seriesList));
+        });
+
         response.bufferEntity();
         return response;
     }
@@ -58,31 +57,49 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static <T> Response querySeries(List<T> queries) {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.json(queries));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_SERIES_QUERY)
+                .request()
+                .post(Entity.json(queries)));
         response.bufferEntity();
         return response;
     }
 
-    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
+    public static Response urlQuerySeries(
+            String entity,
+            String metric,
+            OutputFormat format,
+            Map<String, String> parameters) {
         return urlQuerySeries(entity, metric, format, parameters, null, null);
     }
 
-    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters, String user, String password) {
-        WebTarget webTarget = httpApiResource
+    public static Response urlQuerySeries(
+            String entity,
+            String metric,
+            OutputFormat format,
+            Map<String, String> parameters,
+            String user,
+            String password) {
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget
                 .path(METHOD_SERIES_URL_QUERY)
                 .resolveTemplate("format", format.toString())
                 .resolveTemplate("entity", entity)
                 .resolveTemplate("metric", metric);
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
-        }
-        Invocation.Builder builder = webTarget.request();
 
-        if (user != null && password != null) {
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
-        }
-        Response response = builder.get();
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+
+            Invocation.Builder builder = target.request();
+
+            if (user != null && password != null) {
+                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+            }
+            return builder.get();
+        });
+
         response.bufferEntity();
         return response;
     }
@@ -92,19 +109,22 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static SeriesSearchResult searchSeries(SeriesSearchQuery query) {
-        WebTarget webTarget = httpApiResource.path(METHOD_SERIES_SEARCH);
-        webTarget = addParameters(webTarget, query);
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget.path(METHOD_SERIES_SEARCH);
+            target = addParameters(target, query);
+            Invocation.Builder builder = target.request();
+            return builder.get();
+        });
 
-        Invocation.Builder builder = webTarget.request();
-
-        Response response = builder.get();
         response.bufferEntity();
         return response.readEntity(SeriesSearchResult.class);
     }
 
     public static void updateSearchIndex() throws Exception {
-        Invocation.Builder builder =  httpRootResource.path(METHOD_REINDEX).request();
-        Response response = builder.post(Entity.text("reindex=Reindex"));
+        Response response = executeRootRequest(webTarget -> webTarget
+                .path(METHOD_REINDEX)
+                .request()
+                .post(Entity.text("reindex=Reindex")));
         if (FOUND.getStatusCode() != response.getStatus()) {
             throw new Exception("Failed to execute search index update");
         }
@@ -112,8 +132,11 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static String getIndexerStatus() throws Exception {
-        Invocation.Builder builder =  httpRootResource.path(METHOD_REINDEX).request();
-        Response response = builder.get();
+        Response response = executeRootRequest(webTarget -> webTarget
+                .path(METHOD_REINDEX)
+                .request()
+                .get());
+
         if (OK.getStatusCode() != response.getStatus()) {
             throw new Exception("Failed to get search index status");
         }
@@ -158,12 +181,15 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries, String user, String password) {
-        Invocation.Builder builder = httpApiResource.path(METHOD_SERIES_QUERY).request();
-        if (user != null && password != null) {
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
-        }
-        Response response = builder.post(Entity.json(seriesQueries));
+        Response response = executeApiRequest(webTarget -> {
+            Invocation.Builder builder = webTarget.path(METHOD_SERIES_QUERY).request();
+            if (user != null && password != null) {
+                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
+                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+            }
+            return builder.post(Entity.json(seriesQueries));
+        });
+
         response.bufferEntity();
         return response;
     }

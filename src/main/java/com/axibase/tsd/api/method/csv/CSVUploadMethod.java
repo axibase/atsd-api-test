@@ -27,12 +27,15 @@ public class CSVUploadMethod extends BaseMethod {
     }
 
     public static boolean importParser(File configPath) {
-        Invocation.Builder builder = httpRootResource.path("/csv/configs/import").request();
-        MultiPart multiPart = new MultiPart();
-        FileDataBodyPart fileDataBodyPart
-                = new FileDataBodyPart("file", configPath, getMediaTypeFromFile(configPath));
-        multiPart.bodyPart(fileDataBodyPart);
-        Response response = builder.post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
+        Response response = executeRootRequest(webTarget -> {
+            Invocation.Builder builder = webTarget.path("/csv/configs/import").request();
+            MultiPart multiPart = new MultiPart();
+            FileDataBodyPart fileDataBodyPart
+                    = new FileDataBodyPart("file", configPath, getMediaTypeFromFile(configPath));
+            multiPart.bodyPart(fileDataBodyPart);
+            return builder.post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
+        });
+
         response.bufferEntity();
         return response.getStatus() == OK.getStatusCode();
     }
@@ -46,10 +49,13 @@ public class CSVUploadMethod extends BaseMethod {
         FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("filedata", file, mediaType);
         multiPart.bodyPart(fileDataBodyPart);
 
-        Response response = httpApiResource.path("csv")
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path("csv")
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
-                .request().post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE)));
+                .request()
+                .post(Entity.entity(multiPart, Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE))));
+
         response.bufferEntity();
         return response;
     }
@@ -63,13 +69,14 @@ public class CSVUploadMethod extends BaseMethod {
     }
 
     public static Response binaryCsvUpload(File file, String parserName, String encoding, String entity) {
-        Response response = httpApiResource.path("csv")
+        Response response = executeApiRequest(webTarget -> webTarget.path("csv")
                 .queryParam("config", parserName)
                 .queryParam("wait", true)
                 .queryParam("filename", file.getName())
                 .queryParam("encoding", encoding)
                 .queryParam("default-entity", entity)
-                .request().post(Entity.entity(file, new MediaType("text", "csv")));
+                .request().post(Entity.entity(file, new MediaType("text", "csv"))));
+
         response.bufferEntity();
         return response;
     }

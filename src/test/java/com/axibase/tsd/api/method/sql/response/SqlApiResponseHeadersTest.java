@@ -43,9 +43,9 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
     @Test(enabled = false)
     public void testAllowMethods() {
         Set<String> expectedAllowedMethods = new HashSet<>(Arrays.asList("HEAD", "GET", "POST", "OPTIONS"));
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .head();
+                .head());
         Set<String> responseAllowedMethods = parseResponseAllowedMethods(response);
         response.bufferEntity();
         assertEquals(expectedAllowedMethods, responseAllowedMethods);
@@ -54,21 +54,21 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
 
     @Test
     public void testContentTypeJsonGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .queryParam("q", "SELECT * FROM \"sql-response-headers-metric\"")
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
     }
 
     @Test
     public void testContentTypeCsvGet() {
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .queryParam("q", "SELECT * FROM \"sql-response-headers-metric\"")
                 .queryParam("outputFormat", "csv")
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
     }
@@ -78,10 +78,10 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
         final Form form = new Form();
         form.param("q", "SELECT * FROM \"sql-response-headers-metric\"");
         form.param("outputFormat", "json");
-        final Response response = httpSqlApiResource
+        final Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
                 .post(Entity.entity(form,
-                        MediaType.APPLICATION_FORM_URLENCODED));
+                        MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
         assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
 

@@ -27,7 +27,6 @@ public class ReplacementTableMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
     private static final String METHOD_REPLACEMENT_TABLE_NEW = "/replacement-tables/new";
     private static final String METHOD_REPLACEMENT_TABLE_LIST = "/replacement-tables/";
-    private static final String METHOD_REPLACEMENT_TABLE = "/replacement-tables/{replacementTable}";
 
     private static Response createResponse(ReplacementTable table) {
         MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
@@ -37,10 +36,12 @@ public class ReplacementTableMethod extends BaseMethod {
         parameters.add("save", "Save");
         Form form = new Form(parameters);
 
-        Response response = httpRootResource.path(METHOD_REPLACEMENT_TABLE_NEW)
+        Response response = executeRootRequest(webTarget -> webTarget
+                .path(METHOD_REPLACEMENT_TABLE_NEW)
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request()
-                .post(Entity.form(form));
+                .post(Entity.form(form)));
+
         response.bufferEntity();
 
         return response;
@@ -66,7 +67,9 @@ public class ReplacementTableMethod extends BaseMethod {
     }
 
     private static Response getReplacementTablesResponse() {
-        Response response = httpRootResource.path(METHOD_REPLACEMENT_TABLE_LIST).request().get();
+        Response response = executeRootRequest(webTarget -> webTarget
+                .path(METHOD_REPLACEMENT_TABLE_LIST)
+                .request().get());
         response.bufferEntity();
         return response;
     }
