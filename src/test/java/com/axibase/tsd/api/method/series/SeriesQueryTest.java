@@ -27,24 +27,17 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
-    private static final String sampleDate = "2016-07-01T14:23:20.000Z";
-    private static final Series series;
-
-    static {
-        series = new Series("series-query-e-1", "series-query-m-1");
-        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
-    }
+    private final String sampleDate = "2016-07-01T14:23:20.000Z";
+    private Series series;
 
     private final Random random = new Random();
     private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
-    public static void prepare() throws Exception {
-        try {
-            insertSeriesCheck(Collections.singletonList(series));
-        } catch (Exception e) {
-            fail("Can not store common dataset");
-        }
+    public void prepare() throws Exception {
+        series = new Series("series-query-e-1", "series-query-m-1");
+        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
+        insertSeriesCheck(Collections.singletonList(series));
     }
 
     @DataProvider(name = "datesWithTimezonesProvider")
@@ -549,6 +542,47 @@ public class SeriesQueryTest extends SeriesMethod {
 
         List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(query);
         assertEquals("Response doesn't match the expected", Collections.singletonList(series), resultSeriesList);
+    }
+
+    @Issue("4670")
+    @Test
+    public void testSeriesQueryWithoutTags() throws Exception {
+        SeriesQuery query = new SeriesQuery(
+                series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        query.setTags(null);
+
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+
+        assertEquals("Incorrect result in query without tags", 1, result.size());
+        assertEquals("Incorrect series result in query without tags", series, result.get(0));
+    }
+
+    @Issue("4670")
+    @Test
+    public void testSeriesQueryWithoutTagsExactMatch() throws Exception {
+        SeriesQuery query = new SeriesQuery(
+                series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        query.setTags(null);
+        query.setExactMatch(true);
+
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+
+        assertEquals("Incorrect series count in query without tags, exactMatch = true", 1, result.size());
+        assertEquals("Incorrect series result in query without tags, exactMatch = true", series, result.get(0));
+    }
+
+    @Issue("4670")
+    @Test
+    public void testSeriesQueryWithoutTagsWithTagExpression() throws Exception {
+        SeriesQuery query = new SeriesQuery(
+                series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        query.setTags(null);
+        query.setTagExpression("tags.tag LIKE '*'");
+
+        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+
+        assertEquals("Incorrect result in query without tags", 1, result.size());
+        assertEquals("Incorrect series result in query without tags", series, result.get(0));
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
