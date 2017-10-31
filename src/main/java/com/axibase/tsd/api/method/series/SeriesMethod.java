@@ -65,11 +65,13 @@ public class SeriesMethod extends BaseMethod {
         return response;
     }
 
-    public static Response urlQuerySeries(
-            String entity,
-            String metric,
-            OutputFormat format,
-            Map<String, String> parameters) {
+    public static Response querySeries(String query) {
+        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.text(query));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
         return urlQuerySeries(entity, metric, format, parameters, null, null);
     }
 

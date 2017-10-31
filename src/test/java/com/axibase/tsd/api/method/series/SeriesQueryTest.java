@@ -5,8 +5,10 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -14,6 +16,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.*;
@@ -27,17 +30,14 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
-    private final String sampleDate = "2016-07-01T14:23:20.000Z";
-    private Series series;
+    private final Series TEST_SERIES = Mocks.series();
 
-    private final Random random = new Random();
+    private Random random = new Random();
     private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
     public void prepare() throws Exception {
-        series = new Series("series-query-e-1", "series-query-m-1");
-        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
-        insertSeriesCheck(Collections.singletonList(series));
+        SeriesMethod.insertSeriesCheck(TEST_SERIES);
     }
 
     @DataProvider(name = "datesWithTimezonesProvider")
@@ -52,6 +52,11 @@ public class SeriesQueryTest extends SeriesMethod {
     @Issue("2850")
     @Test(dataProvider = "datesWithTimezonesProvider")
     public void testISOTimezoneZ(String date) throws Exception {
+        Series series = new Series("series-query-e-1", "series-query-m-1");
+        String sampleDate = "2016-07-01T14:23:20.000Z";
+        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
+        insertSeriesCheck(Collections.singletonList(series));
+
         SeriesQuery seriesQuery = buildQuery();
 
         seriesQuery.setStartDate(date);
@@ -544,45 +549,90 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Response doesn't match the expected", Collections.singletonList(series), resultSeriesList);
     }
 
-    @Issue("4670")
-    @Test
-    public void testSeriesQueryWithoutTags() throws Exception {
-        SeriesQuery query = new SeriesQuery(
-                series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        query.setTags(null);
-
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
-
-        assertEquals("Incorrect result in query without tags", 1, result.size());
-        assertEquals("Incorrect series result in query without tags", series, result.get(0));
+    @DataProvider
+    public Object[][] provideTagFilters() {
+        return new Object[][] {
+                { new Filter<Series>("", TEST_SERIES) },
+                { new Filter<Series>("\"tags\": null", TEST_SERIES) },
+                { new Filter<Series>("\"tags\": {}", TEST_SERIES) },
+                { new Filter<Series>("\"tags\": {\"a\": null}", TEST_SERIES)},
+                { new Filter<Series>("\"tags\": {\"tag\": null}", TEST_SERIES)},
+                { new Filter<Series>("\"tags\": {\"a\": \"b\"}")},
+                { new Filter<Series>("\"tags\": {\"tag\": \"b\"}")},
+                { new Filter<Series>("\"tags\": {\"tag\": \"value\"}", TEST_SERIES)},
+                { new Filter<Series>("\"tags\": {\"tag\": \"value\", \"a\": \"b\"}")},
+                { new Filter<Series>("\"exactMatch\": true") },
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": null") },
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {}") },
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": null}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": null}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": \"b\"}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"b\"}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES)},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"b\"}")}
+        };
     }
 
     @Issue("4670")
-    @Test
-    public void testSeriesQueryWithoutTagsExactMatch() throws Exception {
-        SeriesQuery query = new SeriesQuery(
-                series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        query.setTags(null);
-        query.setExactMatch(true);
+    @Test(
+            dataProvider = "provideTagFilters",
+            description = "test series query with tag filter")
+    public void testTagFilter(Filter<Series> filter) {
+        String filterExpression = StringUtils.isEmpty(filter.getExpression())
+                ? ""
+                : "," + filter.getExpression();
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        String payload = String.format("{ " +
+                "\"startDate\": \"2015-10-31T07:00:00Z\"," +
+                "\"endDate\": \"2017-10-31T08:00:00Z\"," +
+                "\"entity\": \"%s\"," +
+                "\"metric\": \"%s\"" +
+                "%s" +
+                "}",
+                TEST_SERIES.getEntity(),
+                TEST_SERIES.getMetric(),
+                filterExpression);
 
-        assertEquals("Incorrect series count in query without tags, exactMatch = true", 1, result.size());
-        assertEquals("Incorrect series result in query without tags, exactMatch = true", series, result.get(0));
+        Response response = SeriesMethod.querySeries(payload);
+        List<Series> result = response.readEntity(new GenericType<List<Series>>() {});
+        List<Sample> samples = result.get(0).getData();
+        assertEquals("Incorrect series count",
+                filter.getExpectedResultSet().size(),
+                samples.size());
+        if (filter.getExpectedResultSet().size() > 0) {
+            assertEquals("Incorrect samples", TEST_SERIES.getData(), samples);
+        }
     }
 
     @Issue("4670")
-    @Test
+    @Test(description = "test series query without tag filter with tag expression")
     public void testSeriesQueryWithoutTagsWithTagExpression() throws Exception {
         SeriesQuery query = new SeriesQuery(
-                series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+                TEST_SERIES.getEntity(), TEST_SERIES.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setTags(null);
         query.setTagExpression("tags.tag LIKE '*'");
 
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
 
         assertEquals("Incorrect result in query without tags", 1, result.size());
-        assertEquals("Incorrect series result in query without tags", series, result.get(0));
+        assertEquals("Incorrect series result in query without tags", TEST_SERIES, result.get(0));
+    }
+
+    @Issue("4670")
+    @Test(description = "test series query with incorrect tag filter")
+    public void testTagFilterIncorrectSyntax() {
+        String payload = String.format("{ " +
+                        "\"startDate\": \"2015-10-31T07:00:00Z\"," +
+                        "\"endDate\": \"2017-10-31T08:00:00Z\"," +
+                        "\"entity\": \"%s\"," +
+                        "\"metric\": \"%s\"" +
+                        "\"tags\": []," +
+                        "}",
+                TEST_SERIES.getEntity(),
+                TEST_SERIES.getMetric());
+
+        Response response = SeriesMethod.querySeries(payload);
+        assertEquals("Incorrect status code", response.getStatus(), BAD_REQUEST.getStatusCode());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
