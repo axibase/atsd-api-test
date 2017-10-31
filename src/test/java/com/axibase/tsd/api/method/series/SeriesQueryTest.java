@@ -30,14 +30,16 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
-    private final Series TEST_SERIES = Mocks.series();
+    private final Series TEST_SERIES1 = Mocks.series();
+    private final Series TEST_SERIES2 = Mocks.series();
 
     private Random random = new Random();
     private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
     public void prepare() throws Exception {
-        SeriesMethod.insertSeriesCheck(TEST_SERIES);
+        TEST_SERIES2.setSamples(Collections.singletonList(Sample.ofDateInteger("2016-07-01T14:23:20.000Z", 1)));
+        SeriesMethod.insertSeriesCheck(TEST_SERIES1, TEST_SERIES2);
     }
 
     @DataProvider(name = "datesWithTimezonesProvider")
@@ -52,20 +54,17 @@ public class SeriesQueryTest extends SeriesMethod {
     @Issue("2850")
     @Test(dataProvider = "datesWithTimezonesProvider")
     public void testISOTimezoneZ(String date) throws Exception {
-        Series series = new Series("series-query-e-1", "series-query-m-1");
-        String sampleDate = "2016-07-01T14:23:20.000Z";
-        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
-        insertSeriesCheck(Collections.singletonList(series));
-
         SeriesQuery seriesQuery = buildQuery();
 
         seriesQuery.setStartDate(date);
 
         List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
 
-        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getRawDate());
+        assertEquals("Incorrect series entity", TEST_SERIES2.getEntity(), storedSeries.get(0).getEntity());
+        assertEquals("Incorrect series metric", TEST_SERIES2.getMetric(), storedSeries.get(0).getMetric());
+        assertEquals("Incorrect series sample date",
+                "2016-07-01T14:23:20.000Z",
+                storedSeries.get(0).getData().get(0).getRawDate());
     }
 
     @DataProvider(name = "incorrectDatesProvider")
@@ -552,14 +551,14 @@ public class SeriesQueryTest extends SeriesMethod {
     @DataProvider
     public Object[][] provideTagFilters() {
         return new Object[][] {
-                { new Filter<Series>("", TEST_SERIES) },
-                { new Filter<Series>("\"tags\": null", TEST_SERIES) },
-                { new Filter<Series>("\"tags\": {}", TEST_SERIES) },
-                { new Filter<Series>("\"tags\": {\"a\": null}", TEST_SERIES)},
-                { new Filter<Series>("\"tags\": {\"tag\": null}", TEST_SERIES)},
+                { new Filter<Series>("", TEST_SERIES1) },
+                { new Filter<Series>("\"tags\": null", TEST_SERIES1) },
+                { new Filter<Series>("\"tags\": {}", TEST_SERIES1) },
+                { new Filter<Series>("\"tags\": {\"a\": null}", TEST_SERIES1)},
+                { new Filter<Series>("\"tags\": {\"tag\": null}", TEST_SERIES1)},
                 { new Filter<Series>("\"tags\": {\"a\": \"b\"}")},
                 { new Filter<Series>("\"tags\": {\"tag\": \"b\"}")},
-                { new Filter<Series>("\"tags\": {\"tag\": \"value\"}", TEST_SERIES)},
+                { new Filter<Series>("\"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
                 { new Filter<Series>("\"tags\": {\"tag\": \"value\", \"a\": \"b\"}")},
                 { new Filter<Series>("\"exactMatch\": true") },
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": null") },
@@ -568,8 +567,8 @@ public class SeriesQueryTest extends SeriesMethod {
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": null}")},
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": \"b\"}")},
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"b\"}")},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES)},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"null\"}", TEST_SERIES)},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": null}", TEST_SERIES1)},
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"b\"}")}
         };
     }
@@ -590,8 +589,8 @@ public class SeriesQueryTest extends SeriesMethod {
                 "\"metric\": \"%s\"" +
                 "%s" +
                 "}",
-                TEST_SERIES.getEntity(),
-                TEST_SERIES.getMetric(),
+                TEST_SERIES1.getEntity(),
+                TEST_SERIES1.getMetric(),
                 filterExpression);
 
         Response response = SeriesMethod.querySeries(payload);
@@ -601,7 +600,7 @@ public class SeriesQueryTest extends SeriesMethod {
                 filter.getExpectedResultSet().size(),
                 samples.size());
         if (filter.getExpectedResultSet().size() > 0) {
-            assertEquals("Incorrect samples", TEST_SERIES.getData(), samples);
+            assertEquals("Incorrect samples", TEST_SERIES1.getData(), samples);
         }
     }
 
@@ -609,14 +608,14 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test series query without tag filter with tag expression")
     public void testSeriesQueryWithoutTagsWithTagExpression() throws Exception {
         SeriesQuery query = new SeriesQuery(
-                TEST_SERIES.getEntity(), TEST_SERIES.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+                TEST_SERIES1.getEntity(), TEST_SERIES1.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setTags(null);
         query.setTagExpression("tags.tag LIKE '*'");
 
         List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
 
         assertEquals("Incorrect result in query without tags", 1, result.size());
-        assertEquals("Incorrect series result in query without tags", TEST_SERIES, result.get(0));
+        assertEquals("Incorrect series result in query without tags", TEST_SERIES1, result.get(0));
     }
 
     @Issue("4670")
@@ -629,8 +628,8 @@ public class SeriesQueryTest extends SeriesMethod {
                         "\"metric\": \"%s\"" +
                         "\"tags\": []," +
                         "}",
-                TEST_SERIES.getEntity(),
-                TEST_SERIES.getMetric());
+                TEST_SERIES1.getEntity(),
+                TEST_SERIES1.getMetric());
 
         Response response = SeriesMethod.querySeries(payload);
         assertEquals("Incorrect status code", response.getStatus(), BAD_REQUEST.getStatusCode());
@@ -645,8 +644,8 @@ public class SeriesQueryTest extends SeriesMethod {
 
     private SeriesQuery buildQuery() {
         SeriesQuery seriesQuery = new SeriesQuery();
-        seriesQuery.setEntity("series-query-e-1");
-        seriesQuery.setMetric("series-query-m-1");
+        seriesQuery.setEntity(TEST_SERIES2.getEntity());
+        seriesQuery.setMetric(TEST_SERIES2.getMetric());
 
         seriesQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
         return seriesQuery;
