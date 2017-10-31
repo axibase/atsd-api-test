@@ -569,6 +569,7 @@ public class SeriesQueryTest extends SeriesMethod {
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": \"b\"}")},
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"b\"}")},
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES)},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"null\"}", TEST_SERIES)},
                 { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"b\"}")}
         };
     }
