@@ -128,12 +128,12 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static Response searchSeriesReturnResponse(SeriesSearchQuery query) {
-        WebTarget webTarget = httpApiResource.path(METHOD_SERIES_SEARCH);
-        webTarget = addParameters(webTarget, query);
-
-        Invocation.Builder builder = webTarget.request();
-
-        Response response = builder.get();
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget.path(METHOD_SERIES_SEARCH);
+            target = addParameters(target, query);
+            Invocation.Builder builder = target.request();
+            return builder.get();
+        });
         response.bufferEntity();
         return response;
     }
