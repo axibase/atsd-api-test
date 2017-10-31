@@ -66,7 +66,10 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static Response querySeries(String query) {
-        Response response = httpApiResource.path(METHOD_SERIES_QUERY).request().post(Entity.text(query));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_SERIES_QUERY)
+                .request()
+                .post(Entity.text(query)));
         response.bufferEntity();
         return response;
     }
