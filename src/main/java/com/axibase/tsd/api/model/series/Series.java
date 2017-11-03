@@ -119,12 +119,13 @@ public class Series {
         this.data = new ArrayList<>(samples);
     }
 
-    public void addTag(String key, String value) {
+    public Series addTag(String key, String value) {
         if (tags == null) {
             tags = new HashMap<>();
         }
 
         tags.put(key, value);
+        return this;
     }
 
     public void addSamples(Sample... samples) {

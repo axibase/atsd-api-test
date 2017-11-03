@@ -21,41 +21,24 @@ public class WhereTagsLikeTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        Entity entity1 = new Entity(ENTITY_NAME1);
-        entity1.addTag("t1", "Tag1");
-        entity1.addTag("t2", "Tag2");
+        Entity entity1 = new Entity(ENTITY_NAME1).addTag("t1", "Tag1").addTag("t2", "Tag2");
+        Entity entity2 = new Entity(ENTITY_NAME2).addTag("t3", "Tag3").addTag("t4", "Tag4");
 
-        Entity entity2 = new Entity(ENTITY_NAME2);
-        entity2.addTag("t3", "Tag3");
-        entity2.addTag("t4", "Tag4");
+        Metric metric1 = new Metric(METRIC_NAME1).addTag("t5", "Tag5").addTag("t6", "Tag6");
 
-        Metric metric1 = new Metric(METRIC_NAME1);
-        metric1.addTag("t5", "Tag5");
-        metric1.addTag("t6", "Tag6");
+        Metric metric2 = new Metric(METRIC_NAME2).addTag("t7", "Tag7").addTag("t8", "Tag8");
 
-        Metric metric2 = new Metric(METRIC_NAME2);
-        metric2.addTag("t7", "Tag7");
-        metric2.addTag("t8", "Tag8");
-
-        Series series1 = new Series(ENTITY_NAME1, METRIC_NAME1);
+        Series series1 = new Series(ENTITY_NAME1, METRIC_NAME1).addTag("t9", "Tag9").addTag("t10", "Tag10");
         series1.addSamples(Sample.ofDateInteger("2017-10-01T00:00:00.000Z", 1));
-        series1.addTag("t9", "Tag9");
-        series1.addTag("t10", "Tag10");
 
-        Series series2 = new Series(ENTITY_NAME1, METRIC_NAME2);
+        Series series2 = new Series(ENTITY_NAME1, METRIC_NAME2).addTag("t11", "Tag11").addTag("t12", "Tag12");
         series2.addSamples(Sample.ofDateInteger("2017-10-02T00:00:00.000Z", 2));
-        series2.addTag("t11", "Tag11");
-        series2.addTag("t12", "Tag12");
 
-        Series series3 = new Series(ENTITY_NAME2, METRIC_NAME1);
+        Series series3 = new Series(ENTITY_NAME2, METRIC_NAME1).addTag("t13", "Tag13").addTag("t14", "Tag14");
         series3.addSamples(Sample.ofDateInteger("2017-10-03T00:00:00.000Z", 3));
-        series3.addTag("t13", "Tag13");
-        series3.addTag("t14", "Tag14");
 
-        Series series4 = new Series(ENTITY_NAME2, METRIC_NAME2);
+        Series series4 = new Series(ENTITY_NAME2, METRIC_NAME2).addTag("t15", "Tag15").addTag("t16", "Tag16");
         series4.addSamples(Sample.ofDateInteger("2017-10-04T00:00:00.000Z", 4));
-        series4.addTag("t15", "Tag15");
-        series4.addTag("t16", "Tag16");
 
         EntityMethod.createOrReplaceEntityCheck(entity1);
         EntityMethod.createOrReplaceEntityCheck(entity2);
