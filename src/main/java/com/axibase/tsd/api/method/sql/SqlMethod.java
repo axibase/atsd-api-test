@@ -13,14 +13,13 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.function.Function;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
-    protected static final WebTarget httpSqlApiResource = httpRootResource
-            .path(METHOD_SQL_API);
     private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
 
     /**
@@ -44,11 +43,17 @@ public class SqlMethod extends BaseMethod {
         if (limit != null) {
             form.param("limit", Integer.toString(limit));
         }
-        Response response = httpSqlApiResource
+
+        Response response = executeSqlRequest(webTarget -> webTarget
                 .request()
-                .post(Entity.form(form));
+                .post(Entity.form(form)));
+
         response.bufferEntity();
         return response;
+    }
+
+    public static Response executeSqlRequest(Function<WebTarget, Response> sqlFunction) {
+        return executeRootRequest(webTarget -> sqlFunction.apply(webTarget.path(METHOD_SQL_API)));
     }
 
     public static StringTable queryTable(String sqlQuery, Integer limit) {
