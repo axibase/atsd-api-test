@@ -3,6 +3,7 @@ package com.axibase.tsd.api.util;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public class TestNameGenerator {
     private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api";
     private static final Class<Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
 
-    private Map<String, Integer> prefixDictionary = new HashMap<>();
+    private Map<String, Integer> prefixDictionary = Collections.synchronizedMap(new HashMap<>());
 
     public String newEntityName() {
         return newTestName(Key.ENTITY);
