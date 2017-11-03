@@ -114,4 +114,20 @@ public class SqlSelectEntityFieldsTest extends SqlTest {
 
         assertSqlQueryRows("Error in entity field query with HAVING (%s)", expectedRows, sqlQuery);
     }
+
+    @Issue("4631")
+    @Test(
+            dataProvider = "entityFieldsProvider",
+            description = "Test no series returned when condition containing field is false")
+    public void testEntityFieldWithNotEqualsFilter(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.entity.%1$s FROM \"%2$s\" m WHERE m.entity.%1$s != '%3$s'",
+                field,
+                TEST_METRIC,
+                value);
+
+        String[][] expectedRows = {};
+
+        assertSqlQueryRows("Error in entity field query with WHERE (%s) not equals", expectedRows, sqlQuery);
+    }
 }

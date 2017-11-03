@@ -32,7 +32,7 @@ public class BetweenInsideWhereTest extends SqlTest {
     }
 
     @Issue("4014")
-    @Test
+    @Test(description = "test datetime BETWEEN")
     public void checkIfBetweenSuccededByAndWorks() {
         String sqlQuery = String.format(
                 "SELECT value FROM \"%s\" WHERE datetime BETWEEN '2017-03-10T12:00:00.000Z' " +
@@ -46,5 +46,119 @@ public class BetweenInsideWhereTest extends SqlTest {
         };
 
         assertSqlQueryRows("BETWEEN fails when joined with another condition with AND", expectedRows, sqlQuery);
+    }
+
+    @Issue("4555")
+    @Test(description = "test datetime NOT BETWEEN")
+    public void testDatetimeNotBetween() {
+        String sqlQuery = String.format(
+                "SELECT value FROM \"%s\" WHERE datetime NOT BETWEEN '2017-03-10T12:00:00.000Z' " +
+                        "AND '2017-03-11T12:00:00.000Z'",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"},
+                {"4"}
+        };
+
+        assertSqlQueryRows("datetime NOT BETWEEN filter returned incorrect result", expectedRows, sqlQuery);
+    }
+
+    @Issue("4555")
+    @Test(description = "test NOT datetime BETWEEN")
+    public void testNotDatetimeBetween() {
+        String sqlQuery = String.format(
+                "SELECT value FROM \"%s\" WHERE NOT datetime BETWEEN '2017-03-10T12:00:00.000Z' " +
+                        "AND '2017-03-11T12:00:00.000Z'",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"},
+                {"4"}
+        };
+
+        assertSqlQueryRows("NOT datetime BETWEEN filter returned incorrect result", expectedRows, sqlQuery);
+    }
+
+    @Issue("4555")
+    @Test(description = "test datetime NOT BETWEEN complex condition AND")
+    public void testDatetimeNotBetweenComplexAnd() {
+        String sqlQuery = String.format(
+                "SELECT value FROM \"%s\" WHERE datetime NOT BETWEEN '2017-03-10T12:00:00.000Z' " +
+                        "AND '2017-03-11T12:00:00.000Z' AND value = 1",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"}
+        };
+
+        assertSqlQueryRows(
+                "complex datetime NOT BETWEEN filter with AND returned incorrect result",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4555")
+    @Test(description = "test datetime NOT BETWEEN complex condition OR")
+    public void testDatetimeNotBetweenComplexOR() {
+        String sqlQuery = String.format(
+                "SELECT value FROM \"%s\" WHERE datetime NOT BETWEEN '2017-03-10T12:00:00.000Z' " +
+                        "AND '2017-03-11T12:00:00.000Z' OR value = 3",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"},
+                {"3"},
+                {"4"}
+        };
+
+        assertSqlQueryRows(
+                "complex datetime NOT BETWEEN filter with OR returned incorrect result",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4555")
+    @Test(description = "test datetime NOT BETWEEN complex condition AND with parentheses")
+    public void testDatetimeNotBetweenComplexAndParentheses() {
+        String sqlQuery = String.format(
+                "SELECT value FROM \"%s\" WHERE (datetime NOT BETWEEN '2017-03-10T12:00:00.000Z' " +
+                        "AND '2017-03-11T12:00:00.000Z') AND (value = 1)",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"}
+        };
+
+        assertSqlQueryRows(
+                "complex datetime NOT BETWEEN filter with AND in parentheses returned incorrect result",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4555")
+    @Test(description = "test datetime NOT BETWEEN complex condition OR with parentheses")
+    public void testDatetimeNotBetweenComplexORParentheses() {
+        String sqlQuery = String.format(
+                "SELECT value FROM \"%s\" WHERE (datetime NOT BETWEEN '2017-03-10T12:00:00.000Z' " +
+                        "AND '2017-03-11T12:00:00.000Z') OR (value = 3)",
+                TEST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"},
+                {"3"},
+                {"4"}
+        };
+
+        assertSqlQueryRows(
+                "complex datetime NOT BETWEEN filter with OR in parentheses returned incorrect result",
+                expectedRows,
+                sqlQuery);
     }
 }

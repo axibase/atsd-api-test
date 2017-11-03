@@ -42,7 +42,11 @@ public class SeriesCheck extends AbstractCheck {
         List<SeriesQuery> seriesQueryList = new ArrayList<>();
         List<Series> formattedSeriesList = new ArrayList<>();
         for (final Series series : seriesList) {
-            seriesQueryList.add(new SeriesQuery(series));
+            Series seriesQuery = series.copy();
+            String escapedEntity = escapeName(seriesQuery.getEntity());
+            seriesQuery.setEntity(escapedEntity);
+            seriesQueryList.add(new SeriesQuery(seriesQuery));
+
             Series formattedSeries = series.copy();
             formattedSeries.setTags(series.getFormattedTags());
             formattedSeriesList.add(formattedSeries);
@@ -51,5 +55,11 @@ public class SeriesCheck extends AbstractCheck {
         String expected = BaseMethod.getJacksonMapper().writeValueAsString(formattedSeriesList);
         String actual = response.readEntity(String.class);
         return compareJsonString(expected, actual);
+    }
+
+    private static String escapeName(String name) {
+        if (name == null) return null;
+
+        return name.replace("\\", "\\\\");
     }
 }

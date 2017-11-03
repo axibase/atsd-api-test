@@ -139,4 +139,21 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
 
         assertSqlQueryRows("Error in metric field query with HAVING (%s)", expectedRows, sqlQuery);
     }
+
+    @Issue("4631")
+    @Test(
+            dataProvider = "metricFieldsProvider",
+            description = "Test no series returned when condition containing field is false")
+    public void testMetricFieldWithNotEqualsFilter(String field, String value) {
+        String sqlQuery = String.format(
+                "SELECT m.metric.%1$s FROM \"%2$s\" m WHERE m.metric.%1$s != '%3$s'",
+                field,
+                TEST_METRIC,
+                quoteEscape(value)
+        );
+
+        String[][] expectedRows = {};
+
+        assertSqlQueryRows("Error in metric field query with WHERE (%s) not equals", expectedRows, sqlQuery);
+    }
 }

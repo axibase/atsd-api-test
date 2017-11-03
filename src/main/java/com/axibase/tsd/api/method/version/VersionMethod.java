@@ -2,18 +2,16 @@ package com.axibase.tsd.api.method.version;
 
 import com.axibase.tsd.api.method.BaseMethod;
 
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 public class VersionMethod extends BaseMethod {
     private static final String METHOD_VERSION = "/version";
-    private static WebTarget httpVersionApiResource = httpRootResource
-            .path(METHOD_VERSION);
 
     public static Response queryVersion() {
-        Response response = httpVersionApiResource
+        Response response = executeRootRequest(webTarget -> webTarget
+                .path(METHOD_VERSION)
                 .request()
-                .get();
+                .get());
         response.bufferEntity();
         return response;
     }

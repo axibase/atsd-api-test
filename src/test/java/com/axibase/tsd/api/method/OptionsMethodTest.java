@@ -76,12 +76,12 @@ public class OptionsMethodTest extends BaseMethod {
     @Issue("3616")
     @Test(dataProvider = "availablePathProvider")
     public static void testResponseOptionsHeadersForURLs(String path, String method) throws Exception {
-        Response response = httpApiResource.path(path)
+        Response response = executeApiRequest(webTarget -> webTarget.path(path)
                 .request()
                 .header("Access-Control-Request-Method", method)
                 .header("Access-Control-Request-Headers", StringUtils.join(ALLOWED_HEADERS_SET, ","))
                 .header("Origin", "itdoesntmatter")
-                .options();
+                .options());
 
         assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
 
@@ -92,14 +92,14 @@ public class OptionsMethodTest extends BaseMethod {
 
     @Issue("3616")
     @Test
-    public static void testResponseOptionsHeadersForSQL() throws Exception {
-        Response response = httpRootResource.path("/api/sql")
+    public static void testResponseOptionsHeadersForSQL()  {
+        Response response = executeRootRequest(webTarget -> webTarget.path("/api/sql")
                 .queryParam("q", "")
                 .request()
                 .header("Access-Control-Request-Method", "POST")
                 .header("Access-Control-Request-Headers", StringUtils.join(ALLOWED_HEADERS_SET, ","))
                 .header("Origin", "itdoesntmatter")
-                .options();
+                .options());
 
         assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
 

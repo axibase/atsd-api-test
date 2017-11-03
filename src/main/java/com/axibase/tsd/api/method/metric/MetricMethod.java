@@ -19,7 +19,11 @@ public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
 
     public static <T> Response createOrReplaceMetric(String metricName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().put(Entity.json(query));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_METRIC)
+                .resolveTemplate("metric", metricName)
+                .request()
+                .put(Entity.json(query)));
         response.bufferEntity();
         return response;
     }
@@ -29,7 +33,11 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static <T> Response updateMetric(String metricName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().method("PATCH", Entity.json(query));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_METRIC)
+                .resolveTemplate("metric", metricName)
+                .request()
+                .method("PATCH", Entity.json(query)));
         response.bufferEntity();
         return response;
     }
@@ -39,7 +47,11 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static Response queryMetric(String metricName) {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().get();
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_METRIC)
+                .resolveTemplate("metric", metricName)
+                .request()
+                .get());
         response.bufferEntity();
         return response;
     }
@@ -50,18 +62,22 @@ public class MetricMethod extends BaseMethod {
 
     public static Response queryMetricSeries(String metricName,
                                              MetricSeriesParameters parameters) throws Exception {
-        WebTarget target =
-                httpApiResource
-                .path(METHOD_METRIC_SERIES)
-                .resolveTemplate("metric", metricName);
-        target = addParameters(target, parameters);
-        Response response = target.request().get();
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
+            target = addParameters(target, parameters);
+            return target.request().get();
+        });
         response.bufferEntity();
         return response;
     }
 
     public static Response deleteMetric(String metricName) throws Exception {
-        Response response = httpApiResource.path(METHOD_METRIC).resolveTemplate("metric", metricName).request().delete();
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_METRIC)
+                .resolveTemplate("metric", metricName)
+                .request()
+                .delete());
+
         response.bufferEntity();
         return response;
     }
