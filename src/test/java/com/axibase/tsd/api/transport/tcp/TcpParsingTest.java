@@ -3,73 +3,53 @@ package com.axibase.tsd.api.transport.tcp;
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
-import com.axibase.tsd.api.method.metric.MetricMethod;
-import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.util.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import org.json.JSONException;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class TcpParsingTest {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String ENTITY_NAME = Mocks.entity();
+    private static final String METRIC_NAME = Mocks.metric();
+    private static final String METRIC_DESCRIPTION = "Some\ndescription";
+    private static final int METRIC_VALUE = 123;
 
-    @DataProvider
-    public Object[][] provideTestCases() throws IOException {
-        TcpParsingTestData[] testCases = TcpParsingTestLoader.loadFromResources();
-        List<Object[]> casesList = new ArrayList<>();
-        for (TcpParsingTestData testCase : testCases) {
-            casesList.add(new Object[]{testCase});
-        }
-        casesList.add(new Object[]{TcpParsingTestLoader.getRandomData(false)});
-        casesList.add(new Object[]{TcpParsingTestLoader.getRandomData(true)});
-        Object[][] result = new Object[casesList.size()][];
-        casesList.toArray(result);
-        return result;
-    }
+    private static final String NETWORK_COMMAND = String.format(
+            "metric m:\"%1$s\" d:\"%2$s\"\n" +
+            "series e:\"%3$s\" m:\"%1$s\"=%4$s d:%5$s",
+            METRIC_NAME, METRIC_DESCRIPTION, ENTITY_NAME,
+            METRIC_VALUE, Mocks.ISO_TIME
+    );
 
-    private void checkMetrics(List<String> jsonList) throws IOException, JSONException {
-        for (String expectedJson : jsonList) {
-            Metric expectedMetric = MAPPER.readValue(expectedJson, Metric.class);
-            String metricName = expectedMetric.getName();
-            Checker.check(new MetricCheck(expectedMetric));
-            String actualJson = MetricMethod.queryMetric(metricName).readEntity(String.class);
-            JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
-        }
-    }
+    /*
+        The main problem of #4411 was that series command after metric command with newlines
+        is interpreted as metric command also.
 
-    private void checkSeries(List<String> jsonList) throws IOException, JSONException {
-        for (String expectedJson : jsonList) {
-            Series expectedSeries = MAPPER.readValue(expectedJson, Series[].class)[0];
-            SeriesQuery query = new SeriesQuery(
-                    expectedSeries.getEntity(),
-                    expectedSeries.getMetric(),
-                    Util.MIN_QUERYABLE_DATE,
-                    Util.MAX_QUERYABLE_DATE
-            );
-            Checker.check(new SeriesCheck(Collections.singletonList(expectedSeries)));
-            String actualJson = SeriesMethod.querySeries(query).readEntity(String.class);
-            JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
-        }
-    }
+        For example
 
+        metric m:"metric-name" d:"Some
+        description"
+        series e:"entity-name" m:"some-other-metric-name"=123
+     */
     @Issue("4411")
-    @Test(dataProvider = "provideTestCases")
-    public void testNetworkCommandParser(TcpParsingTestData data) throws Exception {
-        TCPSender.send(data.getCommandsText());
+    @Test(
+            description = "Test that series command that follows metric command with newline " +
+                    "is parsed correctly"
+    )
+    public void testNetworkParser() throws Exception {
+        Metric expectedMetric = new Metric(METRIC_NAME);
+        expectedMetric.setDescription(METRIC_DESCRIPTION);
 
-        checkMetrics(data.getMetricsJsonList());
-        checkSeries(data.getSeriesJsonList());
+        Series expectedSeries = new Series(ENTITY_NAME, METRIC_NAME);
+        expectedSeries.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, METRIC_VALUE));
+
+        TCPSender.send(NETWORK_COMMAND);
+
+        Checker.check(new MetricCheck(expectedMetric));
+        Checker.check(new SeriesCheck(Collections.singletonList(expectedSeries)));
     }
 }
