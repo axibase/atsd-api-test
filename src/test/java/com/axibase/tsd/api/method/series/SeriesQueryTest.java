@@ -594,8 +594,8 @@ public class SeriesQueryTest extends SeriesMethod {
                 filterExpression);
 
         Response response = SeriesMethod.querySeries(payload);
-        List<Series> result = response.readEntity(new GenericType<List<Series>>() {});
-        List<Sample> samples = result.get(0).getData();
+        Series[] result = response.readEntity(Series[].class);
+        List<Sample> samples = result[0].getData();
         assertEquals("Incorrect series count",
                 filter.getExpectedResultSet().size(),
                 samples.size());
