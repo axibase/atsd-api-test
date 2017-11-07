@@ -270,7 +270,7 @@ public class SeriesSearchTest extends SeriesMethod {
         dateNodes.addAll(resultNode.findValues("createdDate"));
         dateNodes.addAll(resultNode.findValues("lastInsertDate"));
 
-        assertEquals(dateNodes.size(),4, "Incorrect fields count");
+        assertEquals(dateNodes.size(), 4, "Incorrect fields count");
         for (JsonNode node : dateNodes) {
             try {
                 dateFormat.parse(node.asText());
