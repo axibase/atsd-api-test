@@ -23,9 +23,7 @@ public class SeriesQueryEntityEscapeTest extends SeriesMethod {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        TEST_SERIES = new Series();
-        TEST_SERIES.setEntity(TEST_ENTITY);
-        TEST_SERIES.setMetric(TEST_METRIC);
+        TEST_SERIES = new Series(TEST_ENTITY, TEST_METRIC);
         TEST_SERIES.addSamples(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(TEST_SERIES);
     }
