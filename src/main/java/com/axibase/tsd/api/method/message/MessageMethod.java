@@ -7,7 +7,6 @@ import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +32,19 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static Response insertMessageReturnResponse(List<Message> messageList) {
-        Response response = httpApiResource.path(METHOD_MESSAGE_INSERT).request().post(Entity.json(messageList));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_MESSAGE_INSERT)
+                .request()
+                .post(Entity.json(messageList)));
         response.bufferEntity();
         return response;
     }
 
     public static Boolean insertMessage(final Message message) throws Exception {
-        Response response = httpApiResource
+        Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_MESSAGE_INSERT)
                 .request()
-                .post(Entity.json(Collections.singletonList(message)));
+                .post(Entity.json(Collections.singletonList(message))));
         response.bufferEntity();
         if (OK.getStatusCode() == response.getStatus()) {
             logger.debug("Message looks inserted");
@@ -66,7 +68,10 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static <T> Response queryMessageStats(T... query) throws Exception {
-        Response response = httpApiResource.path(METHOD_MESSAGE_STATS_QUERY).request().post(Entity.json(query));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_MESSAGE_STATS_QUERY)
+                .request()
+                .post(Entity.json(query)));
         response.bufferEntity();
         return response;
     }
@@ -87,7 +92,7 @@ public class MessageMethod extends BaseMethod {
 
     public static <T> Response queryMessageResponse(T... messageQuery) {
         Entity<T[]> json = Entity.json(messageQuery);
-        Response response = httpApiResource.path(METHOD_MESSAGE_QUERY).request().post(json);
+        Response response = executeApiRequest(webTarget -> webTarget.path(METHOD_MESSAGE_QUERY).request().post(json));
         response.bufferEntity();
         return response;
     }

@@ -10,8 +10,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.OK;
 
 public class AlertMethod extends BaseMethod {
@@ -22,37 +20,37 @@ public class AlertMethod extends BaseMethod {
 
     public static <T> Response queryAlerts(T... queries) {
         Entity<List<T>> json = Entity.json(Arrays.asList(queries));
-        Response response = httpApiResource
+        Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ALERTS_QUERY)
                 .request()
-                .post(json);
+                .post(json));
         response.bufferEntity();
         return response;
     }
 
     public static <T> Response updateAlerts(T... queries) {
-        Response response = httpApiResource
+        Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ALERTS_UPDATE)
                 .request()
-                .post(Entity.json(Arrays.asList(queries)));
+                .post(Entity.json(Arrays.asList(queries))));
         response.bufferEntity();
         return response;
     }
 
     public static <T> Response deleteAlerts(T... queries) {
-        Response response = httpApiResource
+        Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ALERTS_DELETE)
                 .request()
-                .post(Entity.json(Arrays.asList(queries)));
+                .post(Entity.json(Arrays.asList(queries))));
         response.bufferEntity();
         return response;
     }
 
     public static Response queryHistoryResponseRawJSON(String json) {
-        Response response = httpApiResource
+        Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ALERTS_HISTORY_QUERY)
                 .request()
-                .post(Entity.entity(json, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(json, MediaType.APPLICATION_JSON)));
         response.bufferEntity();
         return response;
     }
@@ -76,10 +74,10 @@ public class AlertMethod extends BaseMethod {
     }
 
     private static Response queryHistoryResponse(List<AlertHistoryQuery> queryList) {
-        Response response = httpApiResource
+        Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ALERTS_HISTORY_QUERY)
                 .request()
-                .post(Entity.json(queryList));
+                .post(Entity.json(queryList)));
         response.bufferEntity();
         return response;
     }

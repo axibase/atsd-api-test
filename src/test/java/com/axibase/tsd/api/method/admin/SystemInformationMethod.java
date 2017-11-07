@@ -3,15 +3,15 @@ package com.axibase.tsd.api.method.admin;
 import com.axibase.tsd.api.method.BaseMethod;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 public class SystemInformationMethod extends BaseMethod {
     private static final String METHOD_SYSTEM_INFORMATION = "/admin/system-information";
-    private static WebTarget httpSystemInformationResource = httpRootResource
-            .path(METHOD_SYSTEM_INFORMATION);
 
     public static String getJavaVersion(){
-        String systemInformation = httpSystemInformationResource.request().get(String.class);
+        Response response = executeRootRequest(webTarget -> webTarget.path(METHOD_SYSTEM_INFORMATION).request().get());
+        response.bufferEntity();
+        String systemInformation = response.readEntity(String.class);
         return StringUtils.substringBetween(systemInformation,"<tr><td>java.version</td><td>","</td></tr>");
     }
 }

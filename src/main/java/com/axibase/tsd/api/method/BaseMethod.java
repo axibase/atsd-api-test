@@ -1,8 +1,14 @@
 package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.Config;
+import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.logging.LoggingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -24,18 +30,23 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.function.Function;
 import java.util.logging.Level;
-
 
 public abstract class BaseMethod {
     public static final Long REQUEST_INTERVAL = 200L;
     public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
-    protected final static ObjectMapper jacksonMapper;
-    protected final static WebTarget httpApiResource;
-    protected final static WebTarget httpRootResource;
-    private static final Config config;
+
+    private static final int DEFAULT_BORROW_MAX_TIME_MS = 3000;
+    private static final int DEFAULT_MAX_TOTAL = 8;
+    private static final int DEFAULT_MAX_IDLE = 8;
+
+    private static final GenericObjectPool<HttpClient> apiTargetPool;
+    private static final GenericObjectPool<HttpClient> rootTargetPool;
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
+
+    protected final static ObjectMapper jacksonMapper;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -44,21 +55,22 @@ public abstract class BaseMethod {
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
         julLogger.setLevel(Level.FINEST);
         try {
-            config = Config.getInstance();
+            Config config = Config.getInstance();
             ClientConfig clientConfig = new ClientConfig();
             clientConfig.connectorProvider(new ApacheConnectorProvider());
             clientConfig.register(MultiPartFeature.class);
             clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
             clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
             clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            Client client = ClientBuilder.newClient(clientConfig);
-            client.register(new LoggingFilter());
-            httpRootResource = client.target(UriBuilder.fromPath("")
-                    .scheme(config.getProtocol())
-                    .host(config.getServerName())
-                    .port(config.getHttpPort())
-                    .build());
-            httpApiResource = httpRootResource.path(config.getApiPath());
+
+            GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
+            objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
+            objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
+
+            rootTargetPool = new GenericObjectPool<>(
+                    new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
+            apiTargetPool = new GenericObjectPool<>(
+                    new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
 
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
@@ -113,6 +125,78 @@ public abstract class BaseMethod {
             return json.getString("error");
         } catch (JSONException e) {
             throw new IllegalStateException("Fail to get error message from response. Perhaps response does not contain error message when it should.");
+        }
+    }
+
+    public static Response executeRootRequest(Function<WebTarget, Response> requestFunction) {
+        return executeRequest(rootTargetPool, requestFunction);
+    }
+
+    public static Response executeApiRequest(Function<WebTarget, Response> requestFunction) {
+        return executeRequest(apiTargetPool, requestFunction);
+    }
+
+    private static Response executeRequest(
+            GenericObjectPool<HttpClient> pool,
+            Function<WebTarget, Response> requestFunction) {
+        HttpClient client;
+        try {
+            client = pool.borrowObject(DEFAULT_BORROW_MAX_TIME_MS);
+        } catch (Exception e) {
+            throw new NotCheckedException("Could not borrow tcp client from pool");
+        }
+
+        try {
+            return requestFunction.apply(client.target);
+        } finally {
+            pool.returnObject(client);
+        }
+    }
+
+    private static class HttpClient {
+        private final Client client;
+        private final WebTarget target;
+
+        HttpClient(ClientConfig clientConfig, Config targetConfig, String targetUri) {
+            client = ClientBuilder.newClient(clientConfig);
+            client.register(new LoggingFilter());
+
+            target = client.target(UriBuilder.fromPath(targetUri)
+                    .scheme(targetConfig.getProtocol())
+                    .host(targetConfig.getServerName())
+                    .port(targetConfig.getHttpPort())
+                    .build());
+        }
+
+        public WebTarget getTarget() { return target; }
+
+        public void close() { client.close(); }
+    }
+
+    private static class HttpClientFactory extends BasePooledObjectFactory<HttpClient> {
+        private final ClientConfig clientConfig;
+        private final Config targetConfig;
+        private final String targetUri;
+
+        HttpClientFactory(ClientConfig clientConfig, Config targetConfig, String targetUri) {
+            this.clientConfig = clientConfig;
+            this.targetConfig = targetConfig;
+            this.targetUri = targetUri;
+        }
+
+        @Override
+        public HttpClient create() throws Exception {
+            return new HttpClient(clientConfig, targetConfig, targetUri);
+        }
+
+        @Override
+        public PooledObject<HttpClient> wrap(HttpClient client) {
+            return new DefaultPooledObject<>(client);
+        }
+
+        @Override
+        public void destroyObject(PooledObject<HttpClient> p) throws Exception {
+            p.getObject().close();
         }
     }
 }

@@ -23,7 +23,11 @@ public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
 
     public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().put(json(query));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITY)
+                .resolveTemplate("entity", entityName)
+                .request()
+                .put(json(query)));
         response.bufferEntity();
         return response;
     }
@@ -69,7 +73,11 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response getEntityResponse(String entityName) {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().get();
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITY)
+                .resolveTemplate("entity", entityName)
+                .request()
+                .get());
         response.bufferEntity();
         return response;
     }
@@ -90,7 +98,11 @@ public class EntityMethod extends BaseMethod {
 
 
     public static <T> Response updateEntity(String entityName, T query) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().method("PATCH", json(query));
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITY)
+                .resolveTemplate("entity", entityName)
+                .request()
+                .method("PATCH", json(query)));
         response.bufferEntity();
         return response;
     }
@@ -100,7 +112,11 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response deleteEntity(String entityName) throws Exception {
-        Response response = httpApiResource.path(METHOD_ENTITY).resolveTemplate("entity", entityName).request().delete();
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITY)
+                .resolveTemplate("entity", entityName)
+                .request()
+                .delete());
         response.bufferEntity();
         return response;
     }
@@ -110,23 +126,34 @@ public class EntityMethod extends BaseMethod {
     }
 
     private static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
-        WebTarget target = httpApiResource.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            target = target.queryParam(entry.getKey(), entry.getValue());
-        }
-        Response response = target.request().get();
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+            return target.request().get();
+        });
+
         response.bufferEntity();
         return response;
     }
 
     public static Response queryEntityGroups(String entityName) {
-        Response response = httpApiResource.path(METHOD_ENTITY_GROUPS).resolveTemplate("entity", entityName).request().get();
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITY_GROUPS)
+                .resolveTemplate("entity", entityName)
+                .request()
+                .get());
         response.bufferEntity();
         return response;
     }
 
     public static Response queryEntityPropertyTypes(String entityName) {
-        Response response = httpApiResource.path(METHOD_ENTITY_PROPERTY_TYPES).resolveTemplate("entity", entityName).request().get();
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITY_PROPERTY_TYPES)
+                .resolveTemplate("entity", entityName)
+                .request()
+                .get());
         response.bufferEntity();
         return response;
     }

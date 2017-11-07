@@ -15,6 +15,7 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,15 +81,16 @@ public class Metric {
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
+    public Metric setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+        return this;
     }
 
     public InterpolationMode getInterpolate() { return interpolate; }
 
     public Metric setInterpolate(InterpolationMode interpolate) { this.interpolate = interpolate; return this; }
 
-    public void setInterpolate(String interpolate) {
+    public Metric setInterpolate(String interpolate) {
         switch (interpolate) {
             case "LINEAR":
                 this.interpolate = InterpolationMode.LINEAR;
@@ -99,6 +101,7 @@ public class Metric {
             default:
                 throw new IllegalStateException(String.format("Incorrect interpolate type: %s", interpolate));
         }
+        return this;
     }
 
     @JsonProperty("timeZone")
