@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -144,7 +145,11 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     @Issue("4635")
     @Test(description = "test series query result with LIMIT = 3, datetime filter, ASC")
     public void testAscOrderLimit3WithFilter() throws Exception {
-        SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, TEST_SAMPLES[3].getRawDate(), MAX_QUERYABLE_DATE);
+        SeriesQuery query = new SeriesQuery(
+                TEST_ENTITY,
+                TEST_METRIC,
+                TEST_SAMPLES[3].getRawDate(),
+                Util.addOneMS(TEST_SAMPLES[4].getRawDate()));
         query.setLimit(3);
         query.setDirection("ASC");
         assertSeriesQueryResult(
@@ -156,7 +161,11 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
     @Issue("4635")
     @Test(description = "test series query result with LIMIT = 3, datetime filter, DESC")
     public void testDescOrderLimit3WithFilter() throws Exception {
-        SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC,  TEST_SAMPLES[3].getRawDate(), MAX_QUERYABLE_DATE);
+        SeriesQuery query = new SeriesQuery(
+                TEST_ENTITY,
+                TEST_METRIC,
+                TEST_SAMPLES[3].getRawDate(),
+                Util.addOneMS(TEST_SAMPLES[4].getRawDate()));
         query.setLimit(3);
         query.setDirection("DESC");
         assertSeriesQueryResult(
