@@ -56,6 +56,20 @@ public class MetricMethod extends BaseMethod {
         return response;
     }
 
+    public static Metric getMetric(String entityName) {
+        Response response = queryMetric(entityName);
+        if (response.getStatus() != OK.getStatusCode()) {
+            String error;
+            try {
+                error = extractErrorMessage(response);
+            } catch (Exception e) {
+                error = response.readEntity(String.class);
+            }
+            throw new IllegalStateException(String.format("Failed to get metric! Reason: %s", error));
+        }
+        return response.readEntity(Metric.class);
+    }
+
     public static Response queryMetricSeries(String metricName) throws Exception {
         return queryMetricSeries(metricName, null);
     }

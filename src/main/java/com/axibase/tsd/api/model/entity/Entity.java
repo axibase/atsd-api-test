@@ -47,13 +47,13 @@ public class Entity {
         this.tags = tags;
     }
 
-    public void addTag(String tagName, String tagValue) {
+    public Entity addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
         }
         tags.put(tagName, tagValue);
+        return this;
     }
-
 
     @JsonProperty("interpolate")
     public InterpolationMode getInterpolationMode() {

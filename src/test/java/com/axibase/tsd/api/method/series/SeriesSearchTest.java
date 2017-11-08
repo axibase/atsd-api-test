@@ -75,16 +75,16 @@ public class SeriesSearchTest extends SeriesMethod {
 
     private static SeriesSearchResultRecord createSeries(String prefix) throws Exception {
         Entity entity = new Entity(
-                    prefix + Mocks.entity(),
-                    Collections.singletonMap(prefix + "entity_tag", prefix + "entity_value"))
+                prefix + Mocks.entity(),
+                Collections.singletonMap(prefix + "entity_tag", prefix + "entity_value"))
                 .setLabel(prefix + Mocks.LABEL)
                 .setInterpolationMode(InterpolationMode.PREVIOUS)
                 .setTimeZoneID("Europe/Moscow")
                 .setEnabled(true);
 
         Metric metric = new Metric(
-                    prefix + Mocks.metric(),
-                    Collections.singletonMap(prefix + "metric_tag", prefix + "metric_value"))
+                prefix + Mocks.metric(),
+                Collections.singletonMap(prefix + "metric_tag", prefix + "metric_value"))
                 .setLabel(prefix + Mocks.LABEL)
                 .setTimeZoneID("Europe/London")
                 .setEnabled(true)
@@ -99,7 +99,7 @@ public class SeriesSearchTest extends SeriesMethod {
                 .setSeriesRetentionDays(0)
                 .setVersioned(false)
                 .setMinValue(new BigDecimal("1"))
-                .setMaxValue(new BigDecimal("200.0"))
+                .setMaxValue(new BigDecimal("200.1"))
                 .setInvalidAction("TRANSFORM")
                 .setUnits("kg");
 
@@ -115,7 +115,6 @@ public class SeriesSearchTest extends SeriesMethod {
         return new SeriesSearchResultRecord(entity, metric, tags, 1.0);
     }
 
-
     @Issue("4404")
     @Test(description = "Test all records returned")
     public void testSearchAll() {
@@ -128,6 +127,9 @@ public class SeriesSearchTest extends SeriesMethod {
     @Issue("4404")
     @Test(description = "Test all fields returned")
     public void testAllFields() {
+        Entity expectedEntity = EntityMethod.getEntity(resultRecord4.getEntity().getName());
+        Metric expectedMetric = MetricMethod.getMetric(resultRecord4.getMetric().getName());
+
         SeriesSearchQuery query = new SeriesSearchQuery("sst_22*");
         query.addEntityFields("*");
         query.addEntityTags("*");
@@ -141,28 +143,16 @@ public class SeriesSearchTest extends SeriesMethod {
                 resultRecords != null && resultRecords.length == 1,
                 "Incorrect series count");
         SeriesSearchResultRecord resultRecord = resultRecords[0];
-        Entity entity = resultRecord.getEntity();
-        assertNotNull(entity);
-        assertNotNull(entity.getCreatedDate());
-        assertNotNull(entity.getLastInsertDate());
+        Entity resultEntity = resultRecord.getEntity();
+        Metric resultMetric = resultRecord.getMetric();
 
-        Metric metric = resultRecord.getMetric();
-        assertNotNull(metric);
-        assertNotNull(metric.getCreatedDate());
-        assertNotNull(metric.getLastInsertDate());
-
-        entity.setCreatedDate(null);
-        entity.setLastInsertDate(null);
-        assertEquals(entity, resultRecord4.getEntity());
-
-        metric.setCreatedDate(null);
-        metric.setLastInsertDate(null);
-        assertEquals(metric, resultRecord4.getMetric());
+        assertEquals(resultEntity, expectedEntity);
+        assertEquals(resultMetric, expectedMetric);
     }
 
     @Issue("4404")
     @Test(dataProvider = "provideSingleQueries",
-        description = "Test filter by every field is working")
+            description = "Test filter by every field is working")
     public void testSingleQueries(Filter<SeriesSearchResultRecord> filter) {
         testQuery(filter);
     }

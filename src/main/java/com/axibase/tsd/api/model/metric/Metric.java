@@ -65,21 +65,30 @@ public class Metric {
         this.tags = tags;
     }
 
+    public Metric addTag(String tagName, String tagValue) {
+        if (tags == null) {
+            tags = new HashMap<>();
+        }
+        tags.put(tagName, tagValue);
+        return this;
+    }
+
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
+    public Metric setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+        return this;
     }
 
     public InterpolationMode getInterpolate() { return interpolate; }
 
     public Metric setInterpolate(InterpolationMode interpolate) { this.interpolate = interpolate; return this; }
 
-    public void setInterpolate(String interpolate) {
+    public Metric setInterpolate(String interpolate) {
         switch (interpolate) {
             case "LINEAR":
                 this.interpolate = InterpolationMode.LINEAR;
@@ -90,6 +99,7 @@ public class Metric {
             default:
                 throw new IllegalStateException(String.format("Incorrect interpolate type: %s", interpolate));
         }
+        return this;
     }
 
     @JsonProperty("timeZone")
