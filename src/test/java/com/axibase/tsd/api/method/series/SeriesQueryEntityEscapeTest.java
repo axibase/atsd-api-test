@@ -53,7 +53,7 @@ public class SeriesQueryEntityEscapeTest extends SeriesMethod {
             dataProvider = "provideEntityFilters",
             description = "test entity name escaping in series query")
     public void testEntityEscape(String filter) throws Exception {
-        List<Series> series =  SeriesMethod.executeQueryReturnSeries(
+        List<Series> series =  SeriesMethod.querySeriesAsList(
                 new SeriesQuery(filter, TEST_METRIC, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE));
 
         assertEquals(String.format("Incorrect series count with filter %s", filter),1, series.size());

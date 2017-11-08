@@ -5,8 +5,10 @@ import com.axibase.tsd.api.model.Interval;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -27,24 +29,16 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryTest extends SeriesMethod {
-    private static final String sampleDate = "2016-07-01T14:23:20.000Z";
-    private static final Series series;
+    private final Series TEST_SERIES1 = Mocks.series();
+    private final Series TEST_SERIES2 = Mocks.series();
 
-    static {
-        series = new Series("series-query-e-1", "series-query-m-1");
-        series.addSamples(Sample.ofDateInteger(sampleDate, 1));
-    }
-
-    private final Random random = new Random();
+    private Random random = new Random();
     private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
-    public static void prepare() throws Exception {
-        try {
-            insertSeriesCheck(Collections.singletonList(series));
-        } catch (Exception e) {
-            fail("Can not store common dataset");
-        }
+    public void prepare() throws Exception {
+        TEST_SERIES2.setSamples(Collections.singletonList(Sample.ofDateInteger("2016-07-01T14:23:20.000Z", 1)));
+        SeriesMethod.insertSeriesCheck(TEST_SERIES1, TEST_SERIES2);
     }
 
     @DataProvider(name = "datesWithTimezonesProvider")
@@ -63,11 +57,13 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setStartDate(date);
 
-        List<Series> storedSeries = executeQueryReturnSeries(seriesQuery);
+        List<Series> storedSeries = querySeriesAsList(seriesQuery);
 
-        assertEquals("Incorrect series entity", series.getEntity(), storedSeries.get(0).getEntity());
-        assertEquals("Incorrect series metric", series.getMetric(), storedSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", sampleDate, storedSeries.get(0).getData().get(0).getRawDate());
+        assertEquals("Incorrect series entity", TEST_SERIES2.getEntity(), storedSeries.get(0).getEntity());
+        assertEquals("Incorrect series metric", TEST_SERIES2.getMetric(), storedSeries.get(0).getMetric());
+        assertEquals("Incorrect series sample date",
+                "2016-07-01T14:23:20.000Z",
+                storedSeries.get(0).getData().get(0).getRawDate());
     }
 
     @DataProvider(name = "incorrectDatesProvider")
@@ -106,7 +102,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MIN_STORABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
@@ -124,7 +120,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), addOneMS(MAX_STORABLE_DATE), MAX_QUERYABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Not empty data for disjoint query and stored interval", 0, data.size());
     }
@@ -142,7 +138,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
@@ -162,7 +158,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, addOneMS(MIN_STORABLE_DATE));
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
@@ -182,7 +178,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_STORABLE_DATE, MAX_QUERYABLE_DATE);
-        List<Sample> data = executeQueryReturnSeries(seriesQuery).get(0).getData();
+        List<Sample> data = querySeriesAsList(seriesQuery).get(0).getData();
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
@@ -330,7 +326,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.setMetric(series.getMetric());
         query.setInterval(new Interval(99999, TimeUnit.QUARTER));
 
-        List<Series> storedSeries = executeQueryReturnSeries(query);
+        List<Series> storedSeries = querySeriesAsList(query);
 
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         final String given = jacksonMapper.writeValueAsString(storedSeries);
@@ -351,7 +347,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         query.setGroup(new Group(GroupType.SUM));
 
-        List<Series> storedSeries = executeQueryReturnSeries(query);
+        List<Series> storedSeries = querySeriesAsList(query);
 
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(series));
         final String given = jacksonMapper.writeValueAsString(storedSeries);
@@ -375,7 +371,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.setAggregate(new Aggregate(AggregationType.SUM, interval));
 
 
-        List<Series> storedSeries = executeQueryReturnSeries(query);
+        List<Series> storedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, storedSeries.size());
         List<Sample> data = storedSeries.get(0).getData();
         assertEquals("Response should contain only one sample", 1, data.size());
@@ -465,7 +461,7 @@ public class SeriesQueryTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
 
         assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
     }
@@ -490,7 +486,7 @@ public class SeriesQueryTest extends SeriesMethod {
         }
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = executeQueryReturnSeries(seriesQuery);
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
 
         assertFalse("No series", seriesList.isEmpty());
         assertFalse("No series data", seriesList.get(0).getData().isEmpty());
@@ -518,7 +514,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery(series);
         query.setVersioned(true);
         query.setExactMatch(true);
-        List<Series> receivedSeries = executeQueryReturnSeries(query);
+        List<Series> receivedSeries = querySeriesAsList(query);
         int receivedVersionsCount = receivedSeries.get(0).getData().size();
 
         assertEquals("Number of received versions mismatched", insertedVersionsCount, receivedVersionsCount);
@@ -530,7 +526,7 @@ public class SeriesQueryTest extends SeriesMethod {
         series.setSamples(Collections.singleton(Mocks.TEXT_SAMPLE));
         SeriesMethod.insertSeriesCheck(series);
 
-        List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(new SeriesQuery(series));
+        List<Series> resultSeriesList = SeriesMethod.querySeriesAsList(new SeriesQuery(series));
 
         String assertMessage = "SeriesList serialized as not expected!";
         assertEquals(assertMessage, Collections.singletonList(series), resultSeriesList);
@@ -547,8 +543,95 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery(series);
         query.setLimit(1);
 
-        List<Series> resultSeriesList = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> resultSeriesList = SeriesMethod.querySeriesAsList(query);
         assertEquals("Response doesn't match the expected", Collections.singletonList(series), resultSeriesList);
+    }
+
+    @DataProvider
+    public Object[][] provideTagFilters() {
+        return new Object[][] {
+                { new Filter<Series>("", TEST_SERIES1) },
+                { new Filter<Series>("\"tags\": null", TEST_SERIES1) },
+                { new Filter<Series>("\"tags\": {}", TEST_SERIES1) },
+                { new Filter<Series>("\"tags\": {\"a\": null}", TEST_SERIES1)},
+                { new Filter<Series>("\"tags\": {\"tag\": null}", TEST_SERIES1)},
+                { new Filter<Series>("\"tags\": {\"a\": \"b\"}")},
+                { new Filter<Series>("\"tags\": {\"tag\": \"b\"}")},
+                { new Filter<Series>("\"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
+                { new Filter<Series>("\"tags\": {\"tag\": \"value\", \"a\": \"b\"}")},
+                { new Filter<Series>("\"exactMatch\": true") },
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": null") },
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {}") },
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": null}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": null}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": \"b\"}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"b\"}")},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": null}", TEST_SERIES1)},
+                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"b\"}")}
+        };
+    }
+
+    @Issue("4670")
+    @Test(
+            dataProvider = "provideTagFilters",
+            description = "test series query with tag filter")
+    public void testTagFilter(Filter<Series> filter) {
+        String filterExpression = StringUtils.isEmpty(filter.getExpression())
+                ? ""
+                : "," + filter.getExpression();
+
+        String payload = String.format("{ " +
+                "\"startDate\": \"2015-10-31T07:00:00Z\"," +
+                "\"endDate\": \"2017-10-31T08:00:00Z\"," +
+                "\"entity\": \"%s\"," +
+                "\"metric\": \"%s\"" +
+                "%s" +
+                "}",
+                TEST_SERIES1.getEntity(),
+                TEST_SERIES1.getMetric(),
+                filterExpression);
+
+        Response response = SeriesMethod.querySeries(payload);
+        Series[] result = response.readEntity(Series[].class);
+        List<Sample> samples = result[0].getData();
+        assertEquals("Incorrect series count",
+                filter.getExpectedResultSet().size(),
+                samples.size());
+        if (filter.getExpectedResultSet().size() > 0) {
+            assertEquals("Incorrect samples", TEST_SERIES1.getData(), samples);
+        }
+    }
+
+    @Issue("4670")
+    @Test(description = "test series query without tag filter with tag expression")
+    public void testSeriesQueryWithoutTagsWithTagExpression() throws Exception {
+        SeriesQuery query = new SeriesQuery(
+                TEST_SERIES1.getEntity(), TEST_SERIES1.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
+        query.setTags(null);
+        query.setTagExpression("tags.tag LIKE '*'");
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
+
+        assertEquals("Incorrect result in query without tags", 1, result.size());
+        assertEquals("Incorrect series result in query without tags", TEST_SERIES1, result.get(0));
+    }
+
+    @Issue("4670")
+    @Test(description = "test series query with incorrect tag filter")
+    public void testTagFilterIncorrectSyntax() {
+        String payload = String.format("{ " +
+                        "\"startDate\": \"2015-10-31T07:00:00Z\"," +
+                        "\"endDate\": \"2017-10-31T08:00:00Z\"," +
+                        "\"entity\": \"%s\"," +
+                        "\"metric\": \"%s\"" +
+                        "\"tags\": []," +
+                        "}",
+                TEST_SERIES1.getEntity(),
+                TEST_SERIES1.getMetric());
+
+        Response response = SeriesMethod.querySeries(payload);
+        assertEquals("Incorrect status code", response.getStatus(), BAD_REQUEST.getStatusCode());
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {
@@ -560,8 +643,8 @@ public class SeriesQueryTest extends SeriesMethod {
 
     private SeriesQuery buildQuery() {
         SeriesQuery seriesQuery = new SeriesQuery();
-        seriesQuery.setEntity("series-query-e-1");
-        seriesQuery.setMetric("series-query-m-1");
+        seriesQuery.setEntity(TEST_SERIES2.getEntity());
+        seriesQuery.setMetric(TEST_SERIES2.getMetric());
 
         seriesQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
         return seriesQuery;

@@ -52,6 +52,7 @@ public class Entity {
             tags = new HashMap<>();
         }
         tags.put(tagName, tagValue);
+
         return this;
     }
 

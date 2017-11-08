@@ -28,19 +28,29 @@ public class Mocks {
         return Util.parseDate(ISO_TIME);
     }
 
-    public static String metric() { return NAME_GENERATOR.getMetricName(); }
+    public static String metric() {
+        return NAME_GENERATOR.newMetricName();
+    }
 
-    public static String entity() { return NAME_GENERATOR.getEntityName(); }
+    public static String entity() {
+        return NAME_GENERATOR.newEntityName();
+    }
 
-    public static String entityGroup() { return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.ENTITY_GROUP); }
+    public static String entityGroup() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.ENTITY_GROUP);
+    }
 
-    public static String property() { return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY); }
+    public static String property() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.PROPERTY);
+    }
 
-    public static String message() { return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.MESSAGE); }
+    public static String message() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.MESSAGE);
+    }
 
     public static String propertyType() {
-            return NAME_GENERATOR.getTestName(TestNameGenerator.Keys.PROPERTY_TYPE);
-        }
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.PROPERTY_TYPE);
+    }
 
     public static Series series() {
         Series resultSeries = new Series(entity(), metric(), TAGS);

@@ -65,11 +65,13 @@ public class Metric {
         this.tags = tags;
     }
 
+
     public Metric addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
         }
         tags.put(tagName, tagValue);
+
         return this;
     }
 

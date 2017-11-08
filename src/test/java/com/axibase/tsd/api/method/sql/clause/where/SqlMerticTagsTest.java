@@ -13,7 +13,9 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;

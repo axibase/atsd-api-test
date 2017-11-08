@@ -18,9 +18,7 @@ import org.testng.collections.Sets;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class SeriesSearchTest extends SeriesMethod {
     private SeriesSearchResultRecord resultRecord1;

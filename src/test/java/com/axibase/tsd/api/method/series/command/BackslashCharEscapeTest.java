@@ -10,17 +10,8 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BackslashCharEscapeTest extends SeriesTest {
-    private final static Map DEFAULT_PROPERTY_TAGS;
-
-    static {
-        DEFAULT_PROPERTY_TAGS = new HashMap();
-        DEFAULT_PROPERTY_TAGS.put("t1", "tv1");
-    }
-
     @Issue("2854")
     @Test
     public void testEntity() throws Exception {

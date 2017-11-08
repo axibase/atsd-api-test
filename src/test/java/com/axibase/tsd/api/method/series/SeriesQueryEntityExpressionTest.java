@@ -189,7 +189,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
         HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
             receivedEntities.add(series.getEntity());
@@ -232,7 +232,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
 
         assertEquals(formatErrorMsg("Dummy result is not present", expression), 1, result.size());
         Series series = result.get(0);
@@ -274,7 +274,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
         query.setEntityExpression(expression);
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
 
         assertEquals(formatErrorMsg("Wrong number of results", expression), 1, result.size());
         Series series = result.get(0);
@@ -320,7 +320,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         SeriesQuery query = createTestQuery(FIXED_ENTITY_NAME);
         query.setEntityExpression(expression);
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
 
         assertEquals(formatErrorMsg("Dummy result should be the one present", expression), 1, result.size());
         Series series = result.get(0);
@@ -369,7 +369,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
         HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
             receivedEntities.add(series.getEntity());
@@ -414,7 +414,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
         query.setEntityGroup(ENTITY_GROUP_NAME);
         query.setEntityExpression(expression);
 
-        List<Series> result = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
         HashSet<String> receivedEntities = new HashSet<>();
         for (Series series: result) {
             receivedEntities.add(series.getEntity());

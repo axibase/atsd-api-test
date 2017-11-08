@@ -1,49 +1,53 @@
 package com.axibase.tsd.api.util;
 
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class TestNameGenerator {
+public class TestNameGenerator {
     private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api";
-    private Map<String, Integer> dictionary;
-    private Class<org.testng.annotations.Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
+    private static final Class<Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
 
-    TestNameGenerator() {
-        this.dictionary = new HashMap<>();
+    private Map<String, Integer> prefixDictionary = Collections.synchronizedMap(new HashMap<>());
+
+    public String newEntityName() {
+        return newTestName(Key.ENTITY);
     }
 
-
-    public String getEntityName() {
-        return getTestName(Keys.ENTITY);
+    public String newMetricName() {
+        return newTestName(Key.METRIC);
     }
 
-    public String getMetricName() {
-        return getTestName(Keys.METRIC);
+    String newTestName(Key key) {
+        String namePrefix = getPrefix(key);
+        int testNumber = prefixDictionary.getOrDefault(namePrefix, 0) + 1;
+        prefixDictionary.put(namePrefix, testNumber);
+        return String.format("%s-%d", namePrefix, testNumber);
     }
 
-    String getTestName(Keys key) {
-        String keyName = getKeyName(key);
-        Integer testNumber = (this.dictionary.containsKey(keyName)) ? dictionary.get(keyName) + 1 : 0;
-        dictionary.put(keyName, testNumber);
-        return String.format("%s-%d", keyName, testNumber);
-    }
-
-    private synchronized String getKeyName(Keys key) {
+    public String getPrefix(Key key) {
         final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
         Method testMethod = null;
         Class testClass = null;
         for (StackTraceElement stackTraceElement : ste) {
             try {
-                Class clazz = Class.forName(stackTraceElement.getClassName());
-                Method method = clazz.getDeclaredMethod(stackTraceElement.getMethodName());
-                if (isTestMethod(method)) {
-                    testMethod = method;
-                    testClass = clazz;
-                    break;
+                Class<?> clazz = Class.forName(stackTraceElement.getClassName());
+                Method[] methods = clazz.getDeclaredMethods();
+
+                // Search for the method with the same name by hand,
+                // because we don't know it's actual arguments list
+                for (Method method : methods) {
+                    if (method.getName().equals(stackTraceElement.getMethodName()) &&
+                            isTestMethod(method)) {
+                        testMethod = method;
+                        testClass = clazz;
+                        break;
+                    }
                 }
-            } catch (NoClassDefFoundError | NoSuchMethodException | ClassNotFoundException e) {
+            } catch (NoClassDefFoundError | ClassNotFoundException e) {
                 continue;
             }
         }
@@ -57,14 +61,14 @@ class TestNameGenerator {
                         break;
                     }
                 } catch (NoClassDefFoundError | ClassNotFoundException e) {
-                    continue;
+                    break;
                 }
             }
             if (testClass == null) {
                 throw new IllegalStateException("Test name generator must be called from Test method!");
             }
         }
-        return methodToKeyName(testClass, testMethod).concat(key.toString());
+        return methodToKeyName(testClass, testMethod) + "-" + key.toString();
     }
 
     private boolean isTestClass(Class<?> clazz) {
@@ -99,19 +103,22 @@ class TestNameGenerator {
     }
 
     private String camelToLisp(String camelCaseName) {
-        return camelCaseName.replaceAll("(.)(\\p{Upper})", "$1-$2").toLowerCase().concat("-");
+        return camelCaseName.replaceAll("(.)(\\p{Upper})", "$1-$2").toLowerCase();
     }
 
-    enum Keys {
-        ENTITY("entity"), METRIC("metric"), ENTITY_GROUP("entity-group"), MESSAGE("message"), PROPERTY("property"),
+    public enum Key {
+        ENTITY("entity"),
+        METRIC("metric"),
+        ENTITY_GROUP("entity-group"),
+        MESSAGE("message"),
+        PROPERTY("property"),
         PROPERTY_TYPE("property-type");
 
         private String textValue;
 
-        Keys(String textValue) {
+        Key(String textValue) {
             this.textValue = textValue;
         }
-
 
         @Override
         public String toString() {

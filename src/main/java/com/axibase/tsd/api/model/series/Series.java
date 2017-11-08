@@ -81,7 +81,12 @@ public class Series {
         return copy;
     }
 
-
+    /**
+     * Returns transformed series, with lowercase metric, entity and trimmed tags;
+     * if {@code t} fields is not null it is replaced with {@code d} field.
+     *
+     * @return the transformed series like in ATSD response
+     */
     public Series normalize() {
         Series transformedSeries = copy();
         transformedSeries.setEntity(getEntity().toLowerCase());
@@ -89,15 +94,14 @@ public class Series {
 
         Map<String, String> transformedTags = new HashMap<>();
         for (Map.Entry<String, String> tag : getTags().entrySet()) {
-            transformedTags.put(tag.getKey().toLowerCase().trim(), tag.getValue().trim());
+            transformedTags.put(tag.getKey().toLowerCase(), tag.getValue().trim());
         }
 
         transformedSeries.setTags(transformedTags);
         for (Sample sample : transformedSeries.getData()) {
-            if (sample.getRawDate() == null && sample.getUnixTime() != null) {
-                long unixTime = sample.getUnixTime();
+            if (sample.getUnixTime() != null && sample.getRawDate() == null) {
+                sample.setRawDate(Util.ISOFormat(sample.getUnixTime()));
                 sample.setUnixTime(null);
-                sample.setRawDate(Util.ISOFormat(unixTime));
             }
         }
         return transformedSeries;
@@ -175,8 +179,8 @@ public class Series {
         return result;
     }
 
-    public Collection<SeriesCommand> toCommands() {
-        Collection<SeriesCommand> result = new LinkedList<>();
+    public List<SeriesCommand> toCommands() {
+        List<SeriesCommand> result = new ArrayList<>();
         for (Sample s : data) {
             SeriesCommand seriesCommand = new SeriesCommand();
             seriesCommand.setEntityName(entity);
