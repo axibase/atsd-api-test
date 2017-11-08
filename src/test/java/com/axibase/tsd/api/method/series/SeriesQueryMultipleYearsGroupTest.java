@@ -55,7 +55,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
 
         query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(12, TimeUnit.YEAR)));
 
-        List<Series> resultSeries = executeQueryReturnSeries(query);
+        List<Series> resultSeries = querySeriesAsList(query);
 
         List<Sample> samples1 = new ArrayList<>();
         /* See #4101#note-18 */
@@ -84,7 +84,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
 
         query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(12, TimeUnit.YEAR)));
 
-        List<Series> resultSeries = executeQueryReturnSeries(query);
+        List<Series> resultSeries = querySeriesAsList(query);
 
         List<Sample> samples = new ArrayList<>();
 

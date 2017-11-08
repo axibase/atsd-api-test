@@ -20,7 +20,6 @@ import org.jsoup.select.Elements;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -68,11 +67,16 @@ public class SeriesMethod extends BaseMethod {
         return response;
     }
 
-    public static Response urlQuerySeries(
-            String entity,
-            String metric,
-            OutputFormat format,
-            Map<String, String> parameters) {
+    public static Response querySeries(String query) {
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_SERIES_QUERY)
+                .request()
+                .post(Entity.text(query)));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
         return urlQuerySeries(entity, metric, format, parameters, null, null);
     }
 
@@ -172,10 +176,9 @@ public class SeriesMethod extends BaseMethod {
         Checker.check(check);
     }
 
-    public static <T> List<Series> executeQueryReturnSeries(T... seriesQuery) throws Exception {
+    public static List<Series> querySeriesAsList(SeriesQuery... seriesQuery) throws Exception {
         Response response = querySeries(seriesQuery);
-        return response.readEntity(new GenericType<List<Series>>() {
-        });
+        return Arrays.asList(response.readEntity(Series[].class));
     }
 
 

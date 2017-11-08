@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesQuery;
 import com.axibase.tsd.api.util.Filter;
@@ -9,7 +8,6 @@ import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import jersey.repackaged.com.google.common.collect.Sets;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -18,8 +16,6 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
-import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
@@ -246,7 +242,7 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     }
 
     private Set<String> executeTagsQuery(SeriesQuery query) throws Exception {
-        List<Series> seriesList = SeriesMethod.executeQueryReturnSeries(query);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query);
         Set<String> actualTagsSet = new HashSet<>();
         for (Series series : seriesList) {
             if (series.getData() == null || series.getData().size() == 0) {

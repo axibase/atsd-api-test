@@ -56,7 +56,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -84,7 +84,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -107,7 +107,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 19)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -133,7 +133,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 19)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -157,7 +157,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 1)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -181,7 +181,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:50.000Z", 1)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -206,7 +206,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:45.000Z", 20)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -236,7 +236,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 24)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -267,7 +267,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
@@ -297,7 +297,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
                 Sample.ofDateInteger("2016-06-25T08:00:59.000Z", 19)
         );
 
-        List<Series> groupedSeries = executeQueryReturnSeries(query);
+        List<Series> groupedSeries = querySeriesAsList(query);
         assertEquals("Response should contain only one series", 1, groupedSeries.size());
         List<Sample> givenSamples = groupedSeries.get(0).getData();
 
