@@ -262,7 +262,7 @@ public class SeriesSearchTest extends SeriesMethod {
         query.addEntityFields("createdDate,lastInsertDate");
         query.addMetricFields("createdDate,lastInsertDate");
 
-        Response response = SeriesMethod.searchSeriesReturnResponse(query);
+        Response response = SeriesMethod.searchRawSeries(query);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode resultNode = mapper.readTree(response.readEntity(String.class));
         SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'");

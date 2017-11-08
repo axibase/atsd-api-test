@@ -127,7 +127,7 @@ public class SeriesMethod extends BaseMethod {
         return response.readEntity(SeriesSearchResult.class);
     }
 
-    public static Response searchSeriesReturnResponse(SeriesSearchQuery query) {
+    public static Response searchRawSeries(SeriesSearchQuery query) {
         Response response = executeApiRequest(webTarget -> {
             WebTarget target = webTarget.path(METHOD_SERIES_SEARCH);
             target = addParameters(target, query);
