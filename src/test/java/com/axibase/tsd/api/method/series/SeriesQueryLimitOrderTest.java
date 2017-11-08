@@ -178,7 +178,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
             String errorMessage,
             SeriesQuery query,
             Sample... expectedResult) throws Exception {
-        List<Series> result = executeQueryReturnSeries(query);
+        List<Series> result = querySeriesAsList(query);
         Series actualSeries;
         if (result == null || result.size() == 0) {
             actualSeries = null;
