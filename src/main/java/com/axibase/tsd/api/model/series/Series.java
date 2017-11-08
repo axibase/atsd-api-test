@@ -81,7 +81,12 @@ public class Series {
         return copy;
     }
 
-
+    /**
+     * Returns transformed series, with lowercase metric, entity and tag names;
+     * if {@code t} fields is not null it is replaced with {@code d} field.
+     *
+     * @return the transformed series
+     */
     public Series normalize() {
         Series transformedSeries = copy();
         transformedSeries.setEntity(getEntity().toLowerCase());
