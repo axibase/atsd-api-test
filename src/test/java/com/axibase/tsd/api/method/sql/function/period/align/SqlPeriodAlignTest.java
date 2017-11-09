@@ -761,7 +761,7 @@ public class SqlPeriodAlignTest extends SqlTest {
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2006-02-02T00:00:00.000Z' AND datetime < '2006-04-02T00:00:00.007Z' " +
-                        "GROUP BY PERIOD(1 MONTH, START_TIME)",
+                        "GROUP BY PERIOD(1 MONTH, START_TIME, 'ETC/Utc')",
                 TEST_METRIC_NAME
         );
 
@@ -789,7 +789,7 @@ public class SqlPeriodAlignTest extends SqlTest {
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2006-02-02T00:00:00.000Z' AND datetime < '2006-04-02T00:00:00.007Z' " +
-                        "GROUP BY PERIOD(1 MONTH, END_TIME)",
+                        "GROUP BY PERIOD(1 MONTH, END_TIME, 'ETC/Utc')",
                 TEST_METRIC_NAME
         );
 
@@ -816,7 +816,7 @@ public class SqlPeriodAlignTest extends SqlTest {
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2006-02-02T00:00:00.000Z' AND datetime < '2006-04-02T00:00:00.007Z' " +
-                        "GROUP BY PERIOD(1 MONTH, FIRST_VALUE_TIME)",
+                        "GROUP BY PERIOD(1 MONTH, FIRST_VALUE_TIME, 'ETC/Utc')",
                 TEST_METRIC_NAME
         );
 
