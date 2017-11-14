@@ -31,13 +31,31 @@ public class LimitTest extends SqlTest {
     private static String VALUE_ORDER_METRIC;
     private static String DATETIME_ORDER_METRIC;
     private static String TAGS_ORDER_METRIC;
+    private static String HIGH_CARDINALITY_METRIC;
 
     @BeforeClass
-    public static void generateNames() {
+    public static void generateNames() throws Exception {
         ENTITY_ORDER_METRIC = metric();
         VALUE_ORDER_METRIC = metric();
         DATETIME_ORDER_METRIC = metric();
         TAGS_ORDER_METRIC = metric();
+
+        HIGH_CARDINALITY_METRIC = metric();
+        String highCardinalityEntity = entity();
+        List<Series> highCardinalitySeries = new ArrayList<>();
+        for (int tagIndex = 0; tagIndex < 5; tagIndex++) {
+            for (int value = 0; value < 10; value++) {
+                Series series = new Series(
+                        highCardinalityEntity,
+                        HIGH_CARDINALITY_METRIC,
+                        "tag" + tagIndex,
+                        "value" + value);
+                series.addSamples(Sample.ofTimeInteger(value, value));
+                highCardinalitySeries.add(series);
+            }
+        }
+
+        SeriesMethod.insertSeriesCheck(highCardinalitySeries);
     }
 
     @BeforeGroups(groups = {ENTITY_ORDER_TEST_GROUP})
@@ -223,5 +241,125 @@ public class LimitTest extends SqlTest {
         List<List<String>> expectedRows = (rows.size() > limit) ? rows.subList(0, limit) : rows;
         String errorMessage = String.format("SQL query with limit doesn't return first %d rows of query without limit!", limit);
         assertSqlQueryRows(errorMessage, expectedRows, limitedSqlQuery);
+    }
+
+    @Issue("4708")
+    @Test(description = "test ORDER BY tags LIMIT default order")
+    public void testOrderByTagsLimitDefaultOrder() {
+        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
+                "FROM \"%s\" " +
+                "WHERE tags.tag1 > 'value4' " +
+                "ORDER BY tags.tag1 LIMIT 3",
+                HIGH_CARDINALITY_METRIC);
+
+        String[][] expectedRows = {
+                {"5", "5", "value5"},
+                {"6", "6", "value6"},
+                {"7", "7", "value7"},
+        };
+        assertSqlQueryRows(
+                "Incorrect query result with ORDER BY tags LIMIT default order",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4708")
+    @Test(description = "test ORDER BY tags LIMIT ASC order")
+    public void testOrderByTagsLimitAscOrder() {
+        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
+                        "FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY tags.tag1 ASC LIMIT 3",
+                HIGH_CARDINALITY_METRIC);
+
+        String[][] expectedRows = {
+                {"5", "5", "value5"},
+                {"6", "6", "value6"},
+                {"7", "7", "value7"},
+        };
+        assertSqlQueryRows(
+                "Incorrect query result with ORDER BY tags LIMIT ASC order",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4708")
+    @Test(description = "test ORDER BY tags LIMIT DESC order")
+    public void testOrderByTagsLimitDescOrder() {
+        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
+                        "FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
+                        "ORDER BY tags.tag1 DESC LIMIT 3",
+                HIGH_CARDINALITY_METRIC);
+
+        String[][] expectedRows = {
+                {"8", "8", "value8"},
+                {"7", "7", "value7"},
+                {"6", "6", "value6"},
+        };
+        assertSqlQueryRows(
+                "Incorrect query result with ORDER BY tags LIMIT DESC order",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4708")
+    @Test(description = "test ORDER BY datetime LIMIT default order")
+    public void testOrderByDatetimeLimitDefaultOrder() {
+        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
+                        "FROM \"%s\" " +
+                        "WHERE  tags.tag1 > 'value4' " +
+                        "ORDER BY datetime LIMIT 3",
+                HIGH_CARDINALITY_METRIC);
+
+        String[][] expectedRows = {
+                {"5", "5", "value5"},
+                {"6", "6", "value6"},
+                {"7", "7", "value7"},
+        };
+        assertSqlQueryRows(
+                "Incorrect query result with ORDER BY datetime LIMIT default order",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4708")
+    @Test(description = "test ORDER BY datetime LIMIT ASC order")
+    public void testOrderByDatetimeLimitAscOrder() {
+        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
+                        "FROM \"%s\" " +
+                        "WHERE  tags.tag1 > 'value4' " +
+                        "ORDER BY datetime ASC LIMIT 3",
+                HIGH_CARDINALITY_METRIC);
+
+        String[][] expectedRows = {
+                {"5", "5", "value5"},
+                {"6", "6", "value6"},
+                {"7", "7", "value7"},
+        };
+        assertSqlQueryRows(
+                "Incorrect query result with ORDER BY datetime LIMIT ASC order",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Issue("4708")
+    @Test(description = "test ORDER BY datetime LIMIT DESC order")
+    public void testOrderByDatetimeLimitDescOrder() {
+        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
+                        "FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
+                        "ORDER BY datetime DESC LIMIT 3",
+                HIGH_CARDINALITY_METRIC);
+
+        String[][] expectedRows = {
+                {"8", "8", "value8"},
+                {"7", "7", "value7"},
+                {"6", "6", "value6"},
+        };
+        assertSqlQueryRows(
+                "Incorrect query result with ORDER BY datetime LIMIT DESC order",
+                expectedRows,
+                sqlQuery);
     }
 }
