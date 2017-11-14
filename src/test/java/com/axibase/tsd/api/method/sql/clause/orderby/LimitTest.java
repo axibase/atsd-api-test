@@ -34,7 +34,7 @@ public class LimitTest extends SqlTest {
     private static String HIGH_CARDINALITY_METRIC;
 
     @BeforeClass
-    public static void generateNames() throws Exception {
+    public static void prepareData() throws Exception {
         ENTITY_ORDER_METRIC = metric();
         VALUE_ORDER_METRIC = metric();
         DATETIME_ORDER_METRIC = metric();
