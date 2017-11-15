@@ -54,6 +54,17 @@ public class LimitTest extends SqlTest {
                 highCardinalitySeries.add(series);
             }
         }
+        for (int tagIndex = 5; tagIndex < 8; tagIndex++) {
+            for (int value = 0; value < 20; value++) {
+                Series series = new Series(
+                        highCardinalityEntity,
+                        HIGH_CARDINALITY_METRIC,
+                        "tag" + tagIndex,
+                        "value" + (value % 5));
+                series.addSamples(Sample.ofTimeInteger(value, value));
+                highCardinalitySeries.add(series);
+            }
+        }
 
         SeriesMethod.insertSeriesCheck(highCardinalitySeries);
     }
@@ -243,123 +254,268 @@ public class LimitTest extends SqlTest {
         assertSqlQueryRows(errorMessage, expectedRows, limitedSqlQuery);
     }
 
-    @Issue("4708")
-    @Test(description = "test ORDER BY tags LIMIT default order")
-    public void testOrderByTagsLimitDefaultOrder() {
-        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
-                "FROM \"%s\" " +
-                "WHERE tags.tag1 > 'value4' " +
-                "ORDER BY tags.tag1 LIMIT 3",
-                HIGH_CARDINALITY_METRIC);
-
-        String[][] expectedRows = {
-                {"5", "5", "value5"},
-                {"6", "6", "value6"},
-                {"7", "7", "value7"},
-        };
-        assertSqlQueryRows(
-                "Incorrect query result with ORDER BY tags LIMIT default order",
-                expectedRows,
-                sqlQuery);
-    }
-
-    @Issue("4708")
-    @Test(description = "test ORDER BY tags LIMIT ASC order")
-    public void testOrderByTagsLimitAscOrder() {
-        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
-                        "FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' " +
-                        "ORDER BY tags.tag1 ASC LIMIT 3",
-                HIGH_CARDINALITY_METRIC);
-
-        String[][] expectedRows = {
-                {"5", "5", "value5"},
-                {"6", "6", "value6"},
-                {"7", "7", "value7"},
-        };
-        assertSqlQueryRows(
-                "Incorrect query result with ORDER BY tags LIMIT ASC order",
-                expectedRows,
-                sqlQuery);
-    }
-
-    @Issue("4708")
-    @Test(description = "test ORDER BY tags LIMIT DESC order")
-    public void testOrderByTagsLimitDescOrder() {
-        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
-                        "FROM \"%s\" " +
+    @DataProvider
+    public Object[][] orderLimitFilterProvider() {
+        return new Object[][]{
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' ORDER BY tags.tag1 LIMIT 3",
+                        new String[][]{
+                                {"5", "value5"},
+                                {"6", "value6"},
+                                {"7", "value7"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' ORDER BY tags.tag1 ASC LIMIT 3",
+                        new String[][]{
+                                {"5", "value5"},
+                                {"6", "value6"},
+                                {"7", "value7"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' ORDER BY tags.tag1 DESC LIMIT 3",
+                        new String[][]{
+                                {"8", "value8"},
+                                {"7", "value7"},
+                                {"6", "value6"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' ORDER BY datetime LIMIT 3",
+                        new String[][]{
+                                {"5", "value5"},
+                                {"6", "value6"},
+                                {"7", "value7"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' ORDER BY datetime ASC LIMIT 3",
+                        new String[][]{
+                                {"5", "value5"},
+                                {"6", "value6"},
+                                {"7", "value7"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' ORDER BY datetime DESC LIMIT 3",
+                        new String[][]{
+                                {"8", "value8"},
+                                {"7", "value7"},
+                                {"6", "value6"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' ORDER BY datetime LIMIT 3 OFFSET 2",
+                        new String[][]{
+                                {"7", "value7"},
+                                {"8", "value8"},
+                                {"9", "value9"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value4' ORDER BY datetime ASC LIMIT 3 OFFSET 2",
+                        new String[][]{
+                                {"7", "value7"},
+                                {"8", "value8"},
+                                {"9", "value9"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' ORDER BY datetime DESC LIMIT 3 OFFSET 2",
+                        new String[][]{
+                                {"6", "value6"},
+                                {"5", "value5"},
+                                {"4", "value4"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' WITH ROW_NUMBER(entity ORDER BY time) <= 3",
+                        new String[][]{
+                                {"2", "value2"},
+                                {"3", "value3"},
+                                {"4", "value4"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
+                        "WHERE tags.tag1 > 'value1' " +
+                        "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 3",
+                        new String[][]{
+                                {"2", "value2"},
+                                {"3", "value3"},
+                                {"4", "value4"}
+                        }},
+                {"SELECT time, tags.tag1 FROM \"%s\" " +
                         "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
-                        "ORDER BY tags.tag1 DESC LIMIT 3",
-                HIGH_CARDINALITY_METRIC);
+                        "WITH ROW_NUMBER(entity ORDER BY time DESC) <= 3",
+                        new String[][]{
+                                {"8", "value8"},
+                                {"7", "value7"},
+                                {"6", "value6"}
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 > 'value1' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3",
+                        new String[][]{
+                                {"2", "value2"},
+                                {"7", "value2"},
+                                {"12", "value2"},
+                                {"3", "value3"},
+                                {"8", "value3"},
+                                {"13", "value3"},
+                                {"4", "value4"},
+                                {"9", "value4"},
+                                {"14", "value4"}
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 > 'value1' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time ASC) <= 3",
+                        new String[][]{
+                                {"2", "value2"},
+                                {"7", "value2"},
+                                {"12", "value2"},
+                                {"3", "value3"},
+                                {"8", "value3"},
+                                {"13", "value3"},
+                                {"4", "value4"},
+                                {"9", "value4"},
+                                {"14", "value4"}
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value3' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3",
+                        new String[][]{
+                                {"15", "value0"},
+                                {"10", "value0"},
+                                {"5", "value0"},
+                                {"16", "value1"},
+                                {"11", "value1"},
+                                {"6", "value1"},
+                                {"17", "value2"},
+                                {"12", "value2"},
+                                {"7", "value2"},
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 > 'value1' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
+                        "ORDER BY time LIMIT 4",
+                        new String[][]{
+                                {"2", "value2"},
+                                {"3", "value3"},
+                                {"4", "value4"},
+                                {"7", "value2"}
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value3' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
+                        "ORDER BY time DESC LIMIT 4 OFFSET 1",
+                        new String[][]{
+                                {"11", "value1"},
+                                {"10", "value0"},
+                                {"7", "value2"},
+                                {"6", "value1"},
+                        }},
+                {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
+                        "GROUP BY tags.tag5 ",
+                        new String[][]{
+                                {"10", "value0"},
+                                {"11", "value1"},
+                                {"12", "value2"},
+                                {"13", "value3"},
+                        }},
+                {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3 " +
+                        "GROUP BY tags.tag5 ",
+                        new String[][]{
+                                {"15", "value0"},
+                                {"16", "value1"},
+                                {"17", "value2"},
+                                {"18", "value3"},
+                        }},
+                {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
+                        "GROUP BY tags.tag5 ",
+                        new String[][]{
+                                {"10", "value0"},
+                                {"11", "value1"},
+                                {"12", "value2"},
+                                {"13", "value3"},
+                        }},
+                {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3 " +
+                        "GROUP BY tags.tag5 " +
+                        "ORDER BY tags.tag5 LIMIT 2 OFFSET 1",
+                        new String[][]{
+                                {"16", "value1"},
+                                {"17", "value2"}
+                        }},
+                {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3 " +
+                        "GROUP BY tags.tag5 " +
+                        "ORDER BY tags.tag5 DESC LIMIT 2 OFFSET 1",
+                        new String[][]{
+                                {"17", "value2"},
+                                {"16", "value1"}
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "GROUP BY tags.tag5, time " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 2",
+                        new String[][]{
+                                {"0", "value0"},
+                                {"5", "value0"},
+                                {"1", "value1"},
+                                {"6", "value1"},
+                                {"2", "value2"},
+                                {"7", "value2"},
+                                {"3", "value3"},
+                                {"8", "value3"},
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "GROUP BY tags.tag5, time " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 2 " +
+                        "ORDER BY tags.tag5, time",
+                        new String[][]{
+                                {"10", "value0"},
+                                {"15", "value0"},
+                                {"11", "value1"},
+                                {"16", "value1"},
+                                {"12", "value2"},
+                                {"17", "value2"},
+                                {"13", "value3"},
+                                {"18", "value3"},
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "GROUP BY tags.tag5, time " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 2 " +
+                        "ORDER BY tags.tag5, time LIMIT 3 OFFSET 1",
+                        new String[][]{
+                                {"5", "value0"},
+                                {"1", "value1"},
+                                {"6", "value1"},
+                        }},
+                {"SELECT time, tags.tag5 FROM \"%s\" " +
+                        "WHERE tags.tag5 < 'value4' " +
+                        "GROUP BY tags.tag5, time " +
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 2 " +
+                        "ORDER BY tags.tag5 DESC, time DESC LIMIT 3 OFFSET 1",
+                        new String[][]{
+                                {"13", "value3"},
+                                {"17", "value2"},
+                                {"12", "value2"},
+                        }},
 
-        String[][] expectedRows = {
-                {"8", "8", "value8"},
-                {"7", "7", "value7"},
-                {"6", "6", "value6"},
         };
-        assertSqlQueryRows(
-                "Incorrect query result with ORDER BY tags LIMIT DESC order",
-                expectedRows,
-                sqlQuery);
     }
 
     @Issue("4708")
-    @Test(description = "test ORDER BY datetime LIMIT default order")
-    public void testOrderByDatetimeLimitDefaultOrder() {
-        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
-                        "FROM \"%s\" " +
-                        "WHERE  tags.tag1 > 'value4' " +
-                        "ORDER BY datetime LIMIT 3",
-                HIGH_CARDINALITY_METRIC);
+    @Test(
+            dataProvider = "orderLimitFilterProvider",
+            description = "test ORDER BY LIMIT")
+    public void testOrderByDatetimeLimitDescOrder(String expression, String[][] expectedResult) {
+        String sqlQuery = String.format(expression, HIGH_CARDINALITY_METRIC);
 
-        String[][] expectedRows = {
-                {"5", "5", "value5"},
-                {"6", "6", "value6"},
-                {"7", "7", "value7"},
-        };
         assertSqlQueryRows(
-                "Incorrect query result with ORDER BY datetime LIMIT default order",
-                expectedRows,
-                sqlQuery);
-    }
-
-    @Issue("4708")
-    @Test(description = "test ORDER BY datetime LIMIT ASC order")
-    public void testOrderByDatetimeLimitAscOrder() {
-        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
-                        "FROM \"%s\" " +
-                        "WHERE  tags.tag1 > 'value4' " +
-                        "ORDER BY datetime ASC LIMIT 3",
-                HIGH_CARDINALITY_METRIC);
-
-        String[][] expectedRows = {
-                {"5", "5", "value5"},
-                {"6", "6", "value6"},
-                {"7", "7", "value7"},
-        };
-        assertSqlQueryRows(
-                "Incorrect query result with ORDER BY datetime LIMIT ASC order",
-                expectedRows,
-                sqlQuery);
-    }
-
-    @Issue("4708")
-    @Test(description = "test ORDER BY datetime LIMIT DESC order")
-    public void testOrderByDatetimeLimitDescOrder() {
-        String sqlQuery = String.format("SELECT time, value, tags.tag1 " +
-                        "FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
-                        "ORDER BY datetime DESC LIMIT 3",
-                HIGH_CARDINALITY_METRIC);
-
-        String[][] expectedRows = {
-                {"8", "8", "value8"},
-                {"7", "7", "value7"},
-                {"6", "6", "value6"},
-        };
-        assertSqlQueryRows(
-                "Incorrect query result with ORDER BY datetime LIMIT DESC order",
-                expectedRows,
+                String.format("Incorrect query result with filter: %s", expression),
+                expectedResult,
                 sqlQuery);
     }
 }
