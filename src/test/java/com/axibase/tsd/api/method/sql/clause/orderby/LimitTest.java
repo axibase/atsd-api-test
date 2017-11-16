@@ -258,70 +258,80 @@ public class LimitTest extends SqlTest {
     public Object[][] orderLimitFilterProvider() {
         return new Object[][]{
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' ORDER BY tags.tag1 LIMIT 3",
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY tags.tag1 LIMIT 3",
                         new String[][]{
                                 {"5", "value5"},
                                 {"6", "value6"},
                                 {"7", "value7"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' ORDER BY tags.tag1 ASC LIMIT 3",
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY tags.tag1 ASC LIMIT 3",
                         new String[][]{
                                 {"5", "value5"},
                                 {"6", "value6"},
                                 {"7", "value7"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' ORDER BY tags.tag1 DESC LIMIT 3",
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
+                        "ORDER BY tags.tag1 DESC LIMIT 3",
                         new String[][]{
                                 {"8", "value8"},
                                 {"7", "value7"},
                                 {"6", "value6"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' ORDER BY datetime LIMIT 3",
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY datetime LIMIT 3",
                         new String[][]{
                                 {"5", "value5"},
                                 {"6", "value6"},
                                 {"7", "value7"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' ORDER BY datetime ASC LIMIT 3",
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY datetime ASC LIMIT 3",
                         new String[][]{
                                 {"5", "value5"},
                                 {"6", "value6"},
                                 {"7", "value7"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' ORDER BY datetime DESC LIMIT 3",
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
+                        "ORDER BY datetime DESC LIMIT 3",
                         new String[][]{
                                 {"8", "value8"},
                                 {"7", "value7"},
                                 {"6", "value6"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' ORDER BY datetime LIMIT 3 OFFSET 2",
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY datetime LIMIT 3 OFFSET 2",
                         new String[][]{
                                 {"7", "value7"},
                                 {"8", "value8"},
                                 {"9", "value9"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value4' ORDER BY datetime ASC LIMIT 3 OFFSET 2",
+                        "WHERE tags.tag1 > 'value4' " +
+                        "ORDER BY datetime ASC LIMIT 3 OFFSET 2",
                         new String[][]{
                                 {"7", "value7"},
                                 {"8", "value8"},
                                 {"9", "value9"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' ORDER BY datetime DESC LIMIT 3 OFFSET 2",
+                        "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
+                        "ORDER BY datetime DESC LIMIT 3 OFFSET 2",
                         new String[][]{
                                 {"6", "value6"},
                                 {"5", "value5"},
                                 {"4", "value4"}
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
-                        "WHERE tags.tag1 > 'value1' WITH ROW_NUMBER(entity ORDER BY time) <= 3",
+                        "WHERE tags.tag1 > 'value1' WITH ROW_NUMBER(entity ORDER BY time) <= 3 " +
+                        "ORDER BY tags.tag5",
                         new String[][]{
                                 {"2", "value2"},
                                 {"3", "value3"},
@@ -329,7 +339,8 @@ public class LimitTest extends SqlTest {
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
                         "WHERE tags.tag1 > 'value1' " +
-                        "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 3",
+                        "WITH ROW_NUMBER(entity ORDER BY time ASC) <= 3 " +
+                        "ORDER BY tags.tag5",
                         new String[][]{
                                 {"2", "value2"},
                                 {"3", "value3"},
@@ -337,7 +348,8 @@ public class LimitTest extends SqlTest {
                         }},
                 {"SELECT time, tags.tag1 FROM \"%s\" " +
                         "WHERE tags.tag1 > 'value1' AND tags.tag1 <= 'value8' " +
-                        "WITH ROW_NUMBER(entity ORDER BY time DESC) <= 3",
+                        "WITH ROW_NUMBER(entity ORDER BY time DESC) <= 3 " +
+                        "ORDER BY tags.tag5 DESC",
                         new String[][]{
                                 {"8", "value8"},
                                 {"7", "value7"},
@@ -345,7 +357,8 @@ public class LimitTest extends SqlTest {
                         }},
                 {"SELECT time, tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 > 'value1' " +
-                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3",
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
+                        "ORDER BY tags.tag5, time",
                         new String[][]{
                                 {"2", "value2"},
                                 {"7", "value2"},
@@ -359,7 +372,8 @@ public class LimitTest extends SqlTest {
                         }},
                 {"SELECT time, tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 > 'value1' " +
-                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time ASC) <= 3",
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time ASC) <= 3 " +
+                        "ORDER BY tags.tag5 ASC, time",
                         new String[][]{
                                 {"2", "value2"},
                                 {"7", "value2"},
@@ -373,7 +387,8 @@ public class LimitTest extends SqlTest {
                         }},
                 {"SELECT time, tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 < 'value3' " +
-                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3",
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3 " +
+                        "ORDER BY tags.tag5 ASC, time DESC",
                         new String[][]{
                                 {"15", "value0"},
                                 {"10", "value0"},
@@ -408,7 +423,8 @@ public class LimitTest extends SqlTest {
                 {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 < 'value4' " +
                         "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
-                        "GROUP BY tags.tag5 ",
+                        "GROUP BY tags.tag5 " +
+                        "ORDER BY tags.tag5",
                         new String[][]{
                                 {"10", "value0"},
                                 {"11", "value1"},
@@ -418,7 +434,8 @@ public class LimitTest extends SqlTest {
                 {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 < 'value4' " +
                         "WITH ROW_NUMBER(tags.tag5 ORDER BY time DESC) <= 3 " +
-                        "GROUP BY tags.tag5 ",
+                        "GROUP BY tags.tag5 " +
+                        "ORDER BY tags.tag5",
                         new String[][]{
                                 {"15", "value0"},
                                 {"16", "value1"},
@@ -428,7 +445,8 @@ public class LimitTest extends SqlTest {
                 {"SELECT MAX(time), tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 < 'value4' " +
                         "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 3 " +
-                        "GROUP BY tags.tag5 ",
+                        "GROUP BY tags.tag5 " +
+                        "ORDER BY tags.tag5",
                         new String[][]{
                                 {"10", "value0"},
                                 {"11", "value1"},
@@ -456,7 +474,8 @@ public class LimitTest extends SqlTest {
                 {"SELECT time, tags.tag5 FROM \"%s\" " +
                         "WHERE tags.tag5 < 'value4' " +
                         "GROUP BY tags.tag5, time " +
-                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 2",
+                        "WITH ROW_NUMBER(tags.tag5 ORDER BY time) <= 2 " +
+                        "ORDER BY tags.tag5, time",
                         new String[][]{
                                 {"0", "value0"},
                                 {"5", "value0"},
