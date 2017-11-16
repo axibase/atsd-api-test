@@ -2,11 +2,13 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
+import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -31,6 +33,7 @@ import static org.testng.AssertJUnit.*;
 public class SeriesQueryTest extends SeriesMethod {
     private final Series TEST_SERIES1 = Mocks.series();
     private final Series TEST_SERIES2 = Mocks.series();
+    private final Series TEST_SERIES3 = Mocks.series();
 
     private Random random = new Random();
     private Calendar calendar = Calendar.getInstance();
@@ -39,6 +42,13 @@ public class SeriesQueryTest extends SeriesMethod {
     public void prepare() throws Exception {
         TEST_SERIES2.setSamples(Collections.singletonList(Sample.ofDateInteger("2016-07-01T14:23:20.000Z", 1)));
         SeriesMethod.insertSeriesCheck(TEST_SERIES1, TEST_SERIES2);
+
+        TEST_SERIES3.setSamples(Arrays.asList(
+                Sample.ofDateInteger("2017-01-01T00:00:00Z", 1),
+                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
+                Sample.ofDateInteger("2017-01-03T00:00:00Z", 3))
+        );
+        SeriesMethod.insertSeriesCheck(TEST_SERIES3);
     }
 
     @DataProvider(name = "datesWithTimezonesProvider")
@@ -634,12 +644,209 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Incorrect status code", response.getStatus(), BAD_REQUEST.getStatusCode());
     }
 
+    @Issue("4714")
+    @Test(description = "test same double series query")
+    public void testSameDoubleSeriesQuery() throws Exception {
+        SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query.setStartDate("2017-01-01T00:00:00Z");
+        query.setEndDate("2017-01-04T00:00:00Z");
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query, query);
+        assertEquals(
+                "Incorrect query result with two same series requests",
+                Arrays.asList(TEST_SERIES3, TEST_SERIES3),
+                result);
+    }
+
+    @Issue("4714")
+    @Test(description = "test same double series query")
+    public void testSameDoubleSeriesQueryWithAggregation() throws Exception {
+        SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query.setStartDate("2017-01-01T00:00:00Z");
+        query.setEndDate("2017-01-04T00:00:00Z");
+        query.setAggregate(new Aggregate(AggregationType.SUM, new Interval(3, TimeUnit.DAY)));
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query, query);
+
+        Series expectedSeries = new Series();
+        expectedSeries.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries.setTags(Mocks.TAGS);
+        expectedSeries.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("6.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with two same series requests",
+                Arrays.asList(expectedSeries, expectedSeries),
+                result);
+    }
+
+    @Issue("4714")
+    @Test(description = "test double series query with different aggregation")
+    public void testDoubleSeriesQueryDifferentAggregation() throws Exception {
+        SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query1.setStartDate("2017-01-01T00:00:00Z");
+        query1.setEndDate("2017-01-04T00:00:00Z");
+        query1.setAggregate(new Aggregate(AggregationType.MAX, new Interval(48, TimeUnit.HOUR)));
+
+        SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query2.setStartDate("2017-01-01T00:00:00Z");
+        query2.setEndDate("2017-01-04T00:00:00Z");
+        query2.setAggregate(new Aggregate(AggregationType.AVG, new Interval(3, TimeUnit.DAY)));
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
+
+        Series expectedSeries1 = new Series();
+        expectedSeries1.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries1.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries1.setTags(Mocks.TAGS);
+        expectedSeries1.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+        );
+
+        Series expectedSeries2 = new Series();
+        expectedSeries2.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries2.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries2.setTags(Mocks.TAGS);
+        expectedSeries2.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("2.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with two series requests with different aggregation",
+                Sets.newHashSet(expectedSeries1, expectedSeries2),
+                Sets.newHashSet(result));
+    }
+
+    @Issue("4714")
+    @Test(description = "test double series query with different aggregation period")
+    public void testDoubleSeriesQueryDifferentAggregationPeriod() throws Exception {
+        SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query1.setStartDate("2017-01-01T00:00:00Z");
+        query1.setEndDate("2017-01-04T00:00:00Z");
+        query1.setAggregate(new Aggregate(AggregationType.MAX, new Interval(2, TimeUnit.DAY)));
+
+        SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query2.setStartDate("2017-01-01T00:00:00Z");
+        query2.setEndDate("2017-01-04T00:00:00Z");
+        query2.setAggregate(new Aggregate(AggregationType.MAX, new Interval(24, TimeUnit.HOUR)));
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
+
+        Series expectedSeries1 = new Series();
+        expectedSeries1.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries1.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries1.setTags(Mocks.TAGS);
+        expectedSeries1.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.0")),
+                Sample.ofDateDecimal("2017-01-02T00:00:00Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+        );
+
+        Series expectedSeries2 = new Series();
+        expectedSeries2.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries2.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries2.setTags(Mocks.TAGS);
+        expectedSeries2.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with two series requests with different aggregation period",
+                Sets.newHashSet(expectedSeries1, expectedSeries2),
+                Sets.newHashSet(result));
+    }
+
+    @Issue("4714")
+    @Test(description = "test double series query with different aggregation")
+    public void testDoubleSeriesQueryDifferentAggregationInSingleQuery() throws Exception {
+        SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query1.setStartDate("2017-01-01T00:00:00Z");
+        query1.setEndDate("2017-01-04T00:00:00Z");
+
+        Aggregate aggregate = new Aggregate();
+        aggregate.addType(AggregationType.MIN);
+        aggregate.addType(AggregationType.COUNTER);
+        aggregate.setPeriod(new Interval(2, TimeUnit.DAY));
+        query1.setAggregate(aggregate);
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query1);
+
+        Series expectedSeries1 = new Series();
+        expectedSeries1.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries1.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries1.setTags(Mocks.TAGS);
+        expectedSeries1.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.0")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+        );
+
+        Series expectedSeries2 = new Series();
+        expectedSeries2.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries2.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries2.setTags(Mocks.TAGS);
+        expectedSeries2.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.0")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("1.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with two series requests with different aggregation",
+                Sets.newHashSet(expectedSeries1, expectedSeries2),
+                Sets.newHashSet(result));
+    }
+
+    @Issue("4714")
+    @Test(description = "test double series query with different aggregation period align")
+    public void testDoubleSeriesQueryDifferentAggregationPeriodAlign() throws Exception {
+        SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query1.setStartDate("2016-12-31T00:00:00Z");
+        query1.setEndDate("2017-01-04T00:00:00Z");
+        Interval interval1 = new Interval(2, TimeUnit.DAY);
+        interval1.setAlign(PeriodAlignment.CALENDAR);
+        query1.setAggregate(new Aggregate(AggregationType.AVG, interval1));
+
+        SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query2.setStartDate("2016-12-31T00:00:00Z");
+        query2.setEndDate("2017-01-04T00:00:00Z");
+        Interval interval2 = new Interval(2, TimeUnit.DAY);
+        interval2.setAlign(PeriodAlignment.FIRST_VALUE_TIME);
+        query2.setAggregate(new Aggregate(AggregationType.AVG, interval2));
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
+
+        Series expectedSeries1 = new Series();
+        expectedSeries1.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries1.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries1.setTags(Mocks.TAGS);
+        expectedSeries1.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.5")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+        );
+
+        Series expectedSeries2 = new Series();
+        expectedSeries2.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries2.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries2.setTags(Mocks.TAGS);
+        expectedSeries2.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.5")),
+                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with two series requests with different aggregation period align",
+                Sets.newHashSet(expectedSeries1, expectedSeries2),
+                Sets.newHashSet(result));
+    }
+
     private void setRandomTimeDuringNextDay(Calendar calendar) {
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         calendar.set(Calendar.HOUR_OF_DAY, random.nextInt(24));
         calendar.set(Calendar.MINUTE, random.nextInt(60));
     }
-
 
     private SeriesQuery buildQuery() {
         SeriesQuery seriesQuery = new SeriesQuery();
