@@ -8,6 +8,8 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,7 @@ import static com.axibase.tsd.api.util.ErrorTemplate.AGGREGATE_NON_DETAIL_REQUIR
 import static com.axibase.tsd.api.util.ErrorTemplate.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static com.axibase.tsd.api.util.TestUtil.timeTranslate;
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
@@ -44,9 +47,9 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesMethod.insertSeriesCheck(TEST_SERIES1, TEST_SERIES2);
 
         TEST_SERIES3.setSamples(Arrays.asList(
-                Sample.ofDateInteger("2017-01-01T00:00:00Z", 1),
-                Sample.ofDateInteger("2017-01-02T00:00:00Z", 2),
-                Sample.ofDateInteger("2017-01-03T00:00:00Z", 3))
+                Sample.ofDateInteger("2017-01-01T00:01:00Z", 1),
+                Sample.ofDateInteger("2017-01-01T00:02:00Z", 2),
+                Sample.ofDateInteger("2017-01-01T00:03:00Z", 3))
         );
         SeriesMethod.insertSeriesCheck(TEST_SERIES3);
     }
@@ -648,8 +651,8 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test same double series query")
     public void testSameDoubleSeriesQuery() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query.setStartDate("2017-01-01T00:00:00Z");
-        query.setEndDate("2017-01-04T00:00:00Z");
+        query.setStartDate("2017-01-01T00:01:00Z");
+        query.setEndDate("2017-01-01T00:04:00Z");
 
         List<Series> result = SeriesMethod.querySeriesAsList(query, query);
         assertEquals(
@@ -662,9 +665,11 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test same double series query")
     public void testSameDoubleSeriesQueryWithAggregation() throws Exception {
         SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query.setStartDate("2017-01-01T00:00:00Z");
-        query.setEndDate("2017-01-04T00:00:00Z");
-        query.setAggregate(new Aggregate(AggregationType.SUM, new Interval(3, TimeUnit.DAY)));
+        query.setStartDate("2017-01-01T00:01:00Z");
+        query.setEndDate("2017-01-01T00:04:00Z");
+        query.setAggregate(new Aggregate(
+                AggregationType.SUM,
+                new Interval(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query, query);
 
@@ -673,7 +678,7 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries.setMetric(TEST_SERIES3.getMetric());
         expectedSeries.setTags(Mocks.TAGS);
         expectedSeries.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("6.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("6.0"))
         );
 
         assertEquals(
@@ -686,14 +691,18 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test double series query with different aggregation")
     public void testDoubleSeriesQueryDifferentAggregation() throws Exception {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query1.setStartDate("2017-01-01T00:00:00Z");
-        query1.setEndDate("2017-01-04T00:00:00Z");
-        query1.setAggregate(new Aggregate(AggregationType.MAX, new Interval(48, TimeUnit.HOUR)));
+        query1.setStartDate("2017-01-01T00:01:00Z");
+        query1.setEndDate("2017-01-01T00:04:00Z");
+        query1.setAggregate(new Aggregate(
+                AggregationType.MAX,
+                new Interval(120, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query2.setStartDate("2017-01-01T00:00:00Z");
-        query2.setEndDate("2017-01-04T00:00:00Z");
-        query2.setAggregate(new Aggregate(AggregationType.AVG, new Interval(3, TimeUnit.DAY)));
+        query2.setStartDate("2017-01-01T00:01:00Z");
+        query2.setEndDate("2017-01-01T00:04:00Z");
+        query2.setAggregate(new Aggregate(
+                AggregationType.AVG,
+                new Interval(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
 
@@ -702,8 +711,8 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries1.setMetric(TEST_SERIES3.getMetric());
         expectedSeries1.setTags(Mocks.TAGS);
         expectedSeries1.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("2.0")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
         Series expectedSeries2 = new Series();
@@ -711,7 +720,7 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries2.setMetric(TEST_SERIES3.getMetric());
         expectedSeries2.setTags(Mocks.TAGS);
         expectedSeries2.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("2.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("2.0"))
         );
 
         assertEquals(
@@ -724,14 +733,18 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test double series query with different aggregation period")
     public void testDoubleSeriesQueryDifferentAggregationPeriod() throws Exception {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query1.setStartDate("2017-01-01T00:00:00Z");
-        query1.setEndDate("2017-01-04T00:00:00Z");
-        query1.setAggregate(new Aggregate(AggregationType.MAX, new Interval(2, TimeUnit.DAY)));
+        query1.setStartDate("2017-01-01T00:01:00Z");
+        query1.setEndDate("2017-01-01T00:04:00Z");
+        query1.setAggregate(new Aggregate(
+                AggregationType.MAX,
+                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query2.setStartDate("2017-01-01T00:00:00Z");
-        query2.setEndDate("2017-01-04T00:00:00Z");
-        query2.setAggregate(new Aggregate(AggregationType.MAX, new Interval(24, TimeUnit.HOUR)));
+        query2.setStartDate("2017-01-01T00:01:00Z");
+        query2.setEndDate("2017-01-01T00:04:00Z");
+        query2.setAggregate(new Aggregate(
+                AggregationType.MAX,
+                new Interval(60, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
 
@@ -740,9 +753,9 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries1.setMetric(TEST_SERIES3.getMetric());
         expectedSeries1.setTags(Mocks.TAGS);
         expectedSeries1.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.0")),
-                Sample.ofDateDecimal("2017-01-02T00:00:00Z", new BigDecimal("2.0")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("1.0")),
+                Sample.ofDateDecimal("2017-01-01T00:02:00Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
         Series expectedSeries2 = new Series();
@@ -750,8 +763,8 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries2.setMetric(TEST_SERIES3.getMetric());
         expectedSeries2.setTags(Mocks.TAGS);
         expectedSeries2.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("2.0")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
         assertEquals(
@@ -764,13 +777,13 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test double series query with different aggregation")
     public void testDoubleSeriesQueryDifferentAggregationInSingleQuery() throws Exception {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query1.setStartDate("2017-01-01T00:00:00Z");
-        query1.setEndDate("2017-01-04T00:00:00Z");
+        query1.setStartDate("2017-01-01T00:01:00Z");
+        query1.setEndDate("2017-01-01T00:04:00Z");
 
         Aggregate aggregate = new Aggregate();
         aggregate.addType(AggregationType.MIN);
         aggregate.addType(AggregationType.COUNTER);
-        aggregate.setPeriod(new Interval(2, TimeUnit.DAY));
+        aggregate.setPeriod(new Interval(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME));
         query1.setAggregate(aggregate);
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1);
@@ -780,8 +793,8 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries1.setMetric(TEST_SERIES3.getMetric());
         expectedSeries1.setTags(Mocks.TAGS);
         expectedSeries1.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.0")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("1.0")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
         Series expectedSeries2 = new Series();
@@ -789,8 +802,8 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries2.setMetric(TEST_SERIES3.getMetric());
         expectedSeries2.setTags(Mocks.TAGS);
         expectedSeries2.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.0")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("1.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("1.0")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("1.0"))
         );
 
         assertEquals(
@@ -804,17 +817,17 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testDoubleSeriesQueryDifferentAggregationPeriodAlign() throws Exception {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query1.setStartDate("2016-12-31T00:00:00Z");
-        query1.setEndDate("2017-01-04T00:00:00Z");
-        Interval interval1 = new Interval(2, TimeUnit.DAY);
-        interval1.setAlign(PeriodAlignment.CALENDAR);
-        query1.setAggregate(new Aggregate(AggregationType.AVG, interval1));
+        query1.setEndDate("2017-01-01T00:04:00Z");
+        query1.setAggregate(new Aggregate(
+                AggregationType.AVG,
+                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.CALENDAR)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query2.setStartDate("2016-12-31T00:00:00Z");
-        query2.setEndDate("2017-01-04T00:00:00Z");
-        Interval interval2 = new Interval(2, TimeUnit.DAY);
-        interval2.setAlign(PeriodAlignment.FIRST_VALUE_TIME);
-        query2.setAggregate(new Aggregate(AggregationType.AVG, interval2));
+        query2.setEndDate("2017-01-01T00:04:00Z");
+        query2.setAggregate(new Aggregate(
+                AggregationType.AVG,
+                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.FIRST_VALUE_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
 
@@ -823,8 +836,8 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries1.setMetric(TEST_SERIES3.getMetric());
         expectedSeries1.setTags(Mocks.TAGS);
         expectedSeries1.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.5")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("1.5")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
         Series expectedSeries2 = new Series();
@@ -832,8 +845,8 @@ public class SeriesQueryTest extends SeriesMethod {
         expectedSeries2.setMetric(TEST_SERIES3.getMetric());
         expectedSeries2.setTags(Mocks.TAGS);
         expectedSeries2.addSamples(
-                Sample.ofDateDecimal("2017-01-01T00:00:00Z", new BigDecimal("1.5")),
-                Sample.ofDateDecimal("2017-01-03T00:00:00Z", new BigDecimal("3.0"))
+                Sample.ofDateDecimal("2017-01-01T00:01:00Z", new BigDecimal("1.5")),
+                Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
         assertEquals(
