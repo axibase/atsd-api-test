@@ -816,11 +816,11 @@ public class SeriesQueryTest extends SeriesMethod {
     @Test(description = "test double series query with different aggregation period align")
     public void testDoubleSeriesQueryDifferentAggregationPeriodAlign() throws Exception {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
-        query1.setStartDate("2016-12-31T00:00:00Z");
+        query1.setStartDate("2016-12-31T00:01:00Z");
         query1.setEndDate("2017-01-01T00:04:00Z");
         query1.setAggregate(new Aggregate(
                 AggregationType.AVG,
-                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.CALENDAR)));
+                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query2.setStartDate("2016-12-31T00:00:00Z");
@@ -849,6 +849,10 @@ public class SeriesQueryTest extends SeriesMethod {
                 Sample.ofDateDecimal("2017-01-01T00:03:00Z", new BigDecimal("3.0"))
         );
 
+        assertEquals(
+                "Incorrect query result with two series requests with different aggregation period align",
+                2,
+                result.size());
         assertEquals(
                 "Incorrect query result with two series requests with different aggregation period align",
                 Sets.newHashSet(expectedSeries1, expectedSeries2),
