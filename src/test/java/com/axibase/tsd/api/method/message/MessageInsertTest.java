@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.method.checks.AbstractCheck;
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
@@ -127,7 +127,7 @@ public class MessageInsertTest extends MessageMethod {
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
-        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        messageQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
@@ -154,7 +154,7 @@ public class MessageInsertTest extends MessageMethod {
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
-        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        messageQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
@@ -180,7 +180,7 @@ public class MessageInsertTest extends MessageMethod {
         final MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
-        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        messageQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 

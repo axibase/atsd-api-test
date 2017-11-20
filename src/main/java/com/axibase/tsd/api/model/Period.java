@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Interval {
+public class Period {
     private int count;
     private TimeUnit unit;
     private PeriodAlignment align;
 
-    public Interval(int count, TimeUnit unit) {
+    public Period(int count, TimeUnit unit) {
         this.count = count;
         this.unit = unit;
     }

@@ -4,7 +4,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.compaction.CompactionMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
@@ -99,7 +99,7 @@ public class SeriesInsertTest extends SeriesTest {
                 series.getMetric(),
                 dateTime.format(DateTimeFormatter.ISO_INSTANT),
                 dateTime.plusMinutes(1).format(DateTimeFormatter.ISO_INSTANT));
-        seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
+        seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Period(1, TimeUnit.MINUTE)));
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored small decimal value incorrect", new BigDecimal("7.2999999984"), seriesList.get(0).getData().get(0).getValue());
     }
@@ -127,7 +127,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
-        seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Interval(1, TimeUnit.MINUTE)));
+        seriesQuery.setAggregate(new Aggregate(AggregationType.SUM, new Period(1, TimeUnit.MINUTE)));
 
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored small double value incorrect", new BigDecimal("7.299999998400001"), seriesList.get(0).getData().get(0).getValue());

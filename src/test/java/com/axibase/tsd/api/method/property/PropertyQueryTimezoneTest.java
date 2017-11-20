@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
@@ -126,7 +126,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         propertyQuery.setType(property.getType());
 
         propertyQuery.setEntity(property.getEntity());
-        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         return propertyQuery;
     }

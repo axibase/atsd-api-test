@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.model.alert;
 
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -17,7 +17,7 @@ public class AlertHistoryQuery {
     private String metric;
     private String startDate;
     private String endDate;
-    private Interval interval;
+    private Period interval;
     private Integer limit;
 
     public Integer getLimit() {
@@ -107,11 +107,11 @@ public class AlertHistoryQuery {
         return this;
     }
 
-    public Interval getInterval() {
+    public Period getInterval() {
         return interval;
     }
 
-    public AlertHistoryQuery setInterval(Interval interval) {
+    public AlertHistoryQuery setInterval(Period interval) {
         this.interval = interval;
         return this;
     }

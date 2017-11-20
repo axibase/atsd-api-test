@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.series;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class SeriesQuery {
     private String metric;
     private String startDate;
     private String endDate;
-    private Interval interval;
+    private Period interval;
     private Map<String, String> tags;
     private Aggregate aggregate;
     private Group group;

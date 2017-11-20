@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.message;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.series.Aggregate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -17,7 +17,7 @@ public class MessageStatsQuery {
     private String severity;
     private String source;
     private Map<String, String> tags;
-    private Interval interval;
+    private Period interval;
     private Aggregate aggregate;
 
     public Aggregate getAggregate() {
@@ -88,11 +88,11 @@ public class MessageStatsQuery {
         this.source = source;
     }
 
-    public Interval getInterval() {
+    public Period getInterval() {
         return interval;
     }
 
-    public void setInterval(Interval interval) {
+    public void setInterval(Period interval) {
         this.interval = interval;
     }
 }

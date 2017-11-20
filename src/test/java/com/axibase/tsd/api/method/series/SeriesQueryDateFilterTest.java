@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -31,7 +31,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
-        query.setInterval(new Interval(40, TimeUnit.YEAR));
+        query.setInterval(new Period(40, TimeUnit.YEAR));
 
         Response response = querySeries(query);
         assertEquals("Response code mismatch", OK.getStatusCode(), response.getStatus());
@@ -48,7 +48,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
-        query.setInterval(new Interval(300, TimeUnit.YEAR));
+        query.setInterval(new Period(300, TimeUnit.YEAR));
         query.setEndDate(MAX_STORABLE_DATE);
 
         Response response = querySeries(query);
@@ -66,7 +66,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
         insertSeriesCheck(Collections.singletonList(series));
 
         SeriesQuery query = new SeriesQuery(series.getEntity(), series.getMetric());
-        query.setInterval(new Interval(300, TimeUnit.YEAR));
+        query.setInterval(new Period(300, TimeUnit.YEAR));
         query.setStartDate(MIN_STORABLE_DATE);
 
         Response response = querySeries(query);
@@ -126,7 +126,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalZeroAndStartRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
-        query.setInterval(new Interval(0, TimeUnit.HOUR));
+        query.setInterval(new Period(0, TimeUnit.HOUR));
         query.setStartDate(MIN_QUERYABLE_DATE);
 
         Response response = querySeries(query);
@@ -138,7 +138,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     @Test
     public void testIntervalZeroAndEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
-        query.setInterval(new Interval(0, TimeUnit.HOUR));
+        query.setInterval(new Period(0, TimeUnit.HOUR));
         query.setEndDate(MIN_QUERYABLE_DATE);
 
         Response response = querySeries(query);

@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
 import io.qameta.allure.Issue;
@@ -97,7 +97,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation")
     public void testExampleSumAggregation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
-        query.setGroup(new Group(GroupType.SUM, new Interval(10, TimeUnit.SECOND)));
+        query.setGroup(new Group(GroupType.SUM, new Period(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
                 Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 15),
@@ -119,7 +119,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     @Issue("2995")
     @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation")
     public void testExampleSumGroupAggregation() throws Exception {
-        final Interval period = new Interval(10, TimeUnit.SECOND);
+        final Period period = new Period(10, TimeUnit.SECOND);
 
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, period));
@@ -147,7 +147,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     public void testExampleSumAggregationToGroup() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, null, 1));
-        query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND)));
+        query.setAggregate(new Aggregate(AggregationType.COUNT, new Period(10, TimeUnit.SECOND)));
 
         List<Sample> expectedSamples = Arrays.asList(
                 Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 3),
@@ -170,8 +170,8 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---aggregation")
     public void testExampleSumGroupToAggregation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
-        query.setGroup(new Group(GroupType.SUM, new Interval(1, TimeUnit.MILLISECOND), 0));
-        query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(10, TimeUnit.SECOND), 1));
+        query.setGroup(new Group(GroupType.SUM, new Period(1, TimeUnit.MILLISECOND), 0));
+        query.setAggregate(new Aggregate(AggregationType.COUNT, new Period(10, TimeUnit.SECOND), 1));
 
         List<Sample> expectedSamples = Arrays.asList(
                 Sample.ofDateInteger("2016-06-25T08:00:00.000Z", 2),

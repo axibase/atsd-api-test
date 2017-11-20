@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.sql.function.interpolate;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -8,26 +8,26 @@ import java.util.List;
 
 
 public class InterpolationParams {
-    private Interval interval;
+    private Period interval;
     private InterpolateFunction function;
     private Boundary boundary;
     private FillMode fillMode;
     private Alignment alignment;
 
 
-    public InterpolationParams(Interval interval, InterpolateFunction function, Boundary boundary) {
+    public InterpolationParams(Period interval, InterpolateFunction function, Boundary boundary) {
         this.interval = interval;
         this.function = function;
         this.boundary = boundary;
     }
 
-    public InterpolationParams(Interval interval, InterpolateFunction function) {
+    public InterpolationParams(Period interval, InterpolateFunction function) {
 
         this.interval = interval;
         this.function = function;
     }
 
-    public InterpolationParams(Interval interval, InterpolateFunction function, Boundary boundary, FillMode fillMode, Alignment alignment) {
+    public InterpolationParams(Period interval, InterpolateFunction function, Boundary boundary, FillMode fillMode, Alignment alignment) {
         this.interval = interval;
         this.function = function;
         this.boundary = boundary;
@@ -35,7 +35,7 @@ public class InterpolationParams {
         this.alignment = alignment;
     }
 
-    public InterpolationParams(Interval interval, InterpolateFunction function, Boundary boundary, FillMode fillMode) {
+    public InterpolationParams(Period interval, InterpolateFunction function, Boundary boundary, FillMode fillMode) {
         this.interval = interval;
         this.function = function;
         this.boundary = boundary;
@@ -43,13 +43,13 @@ public class InterpolationParams {
 
     }
 
-    public InterpolationParams(Interval interval) {
+    public InterpolationParams(Period interval) {
 
         this.interval = interval;
 
     }
 
-    public Interval getInterval() {
+    public Period getInterval() {
         return interval;
     }
 

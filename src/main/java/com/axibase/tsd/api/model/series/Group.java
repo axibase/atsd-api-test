@@ -1,12 +1,12 @@
 package com.axibase.tsd.api.model.series;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Group {
     GroupType type;
-    Interval period;
+    Period period;
     Interpolate interpolate;
     Boolean truncate;
     Integer order;
@@ -15,11 +15,11 @@ public class Group {
         this(type, null, null);
     }
 
-    public Group(GroupType type, Interval period) {
+    public Group(GroupType type, Period period) {
         this(type, period, null);
     }
 
-    public Group(GroupType type, Interval period, Integer order) {
+    public Group(GroupType type, Period period, Integer order) {
         this.type = type;
         this.order = order;
         this.period = period;
@@ -33,11 +33,11 @@ public class Group {
         this.type = type;
     }
 
-    public Interval getPeriod() {
+    public Period getPeriod() {
         return period;
     }
 
-    public void setPeriod(Interval period) {
+    public void setPeriod(Period period) {
         this.period = period;
     }
 

@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.property;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class PropertyQuery {
     private String keyTagExpression;
     private String startDate;
     private String endDate;
-    private Interval interval;
+    private Period interval;
 
     private Boolean exactMatch;
 
@@ -43,11 +43,11 @@ public class PropertyQuery {
     }
 
 
-    public Interval getInterval() {
+    public Period getInterval() {
         return interval;
     }
 
-    public void setInterval(Interval interval) {
+    public void setInterval(Period interval) {
         this.interval = interval;
     }
 

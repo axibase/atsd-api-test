@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.property;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
@@ -222,7 +222,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         propertyQuery.setEntity("property-insert-test-isoz");
         propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
-        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
         propertyQuery.setType(property.getType());
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
@@ -248,7 +248,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setType(property.getType());
         propertyQuery.setEntity(entityName);
         propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
-        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });
@@ -273,7 +273,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setType(property.getType());
         propertyQuery.setEntity(entityName);
         propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
-        propertyQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
         });

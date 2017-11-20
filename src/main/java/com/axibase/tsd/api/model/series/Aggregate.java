@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.model.series;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 public class Aggregate {
     AggregationType type;
     List<AggregationType> types;
-    Interval period;
+    Period period;
     Interpolate interpolate;
     Integer order;
 
@@ -21,11 +21,11 @@ public class Aggregate {
         this(type, null, null);
     }
 
-    public Aggregate(AggregationType type, Interval period) {
+    public Aggregate(AggregationType type, Period period) {
         this(type, period, null);
     }
 
-    public Aggregate(AggregationType type, Interval period, Integer order) {
+    public Aggregate(AggregationType type, Period period, Integer order) {
         this.type = type;
         this.period = period;
         this.order = order;
@@ -58,11 +58,11 @@ public class Aggregate {
         types.add(type);
     }
 
-    public Interval getPeriod() {
+    public Period getPeriod() {
         return period;
     }
 
-    public void setPeriod(Interval period) {
+    public void setPeriod(Period period) {
         this.period = period;
     }
 

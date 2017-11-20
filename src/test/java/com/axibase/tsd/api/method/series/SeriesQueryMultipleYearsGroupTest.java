@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.TestUtil;
@@ -53,7 +53,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         query.setStartDate("1900-01-01T00:00:00.000Z");
         query.setEndDate("2100-01-01T00:00:00.000Z");
 
-        query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(12, TimeUnit.YEAR)));
+        query.setAggregate(new Aggregate(AggregationType.COUNT, new Period(12, TimeUnit.YEAR)));
 
         List<Series> resultSeries = querySeriesAsList(query);
 
@@ -82,7 +82,7 @@ public class SeriesQueryMultipleYearsGroupTest extends SeriesMethod {
         query.setStartDate("1900-01-01T00:00:00.000Z");
         query.setEndDate("2100-01-01T00:00:00.000Z");
 
-        query.setAggregate(new Aggregate(AggregationType.COUNT, new Interval(12, TimeUnit.YEAR)));
+        query.setAggregate(new Aggregate(AggregationType.COUNT, new Period(12, TimeUnit.YEAR)));
 
         List<Series> resultSeries = querySeriesAsList(query);
 

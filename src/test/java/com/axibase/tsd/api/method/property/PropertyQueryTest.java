@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.property;
 
 
 import com.axibase.tsd.api.method.entity.EntityMethod;
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.property.Property;
@@ -60,7 +60,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity(), property.getKey());
         query.setStartDate(property.getDate());
-        query.setInterval(new Interval(2, TimeUnit.DAY));
+        query.setInterval(new Period(2, TimeUnit.DAY));
 
         assertInsertedPropertyReturned(property, query);
     }
@@ -416,7 +416,7 @@ public class PropertyQueryTest extends PropertyMethod {
         PropertyQuery query = new PropertyQuery(property.getType(), property.getEntity());
         query.setKey(property.getKey());
         query.setStartDate(MIN_QUERYABLE_DATE);
-        query.setInterval(new Interval(1999, TimeUnit.YEAR));
+        query.setInterval(new Period(1999, TimeUnit.YEAR));
 
         assertInsertedPropertyReturned(property, query);
     }

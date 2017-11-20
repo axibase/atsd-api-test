@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.sql.function.interpolate;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import org.testng.annotations.Test;
 
@@ -12,7 +12,7 @@ import static org.testng.Assert.assertEquals;
 public class InterpolationParamsTest {
     @Test
     public void testToString() throws Exception {
-        InterpolationParams params = new InterpolationParams(new Interval(1, SECOND), AUTO);
+        InterpolationParams params = new InterpolationParams(new Period(1, SECOND), AUTO);
         String expectedString = "1 SECOND, AUTO";
         assertEquals(params.toString(), expectedString);
     }

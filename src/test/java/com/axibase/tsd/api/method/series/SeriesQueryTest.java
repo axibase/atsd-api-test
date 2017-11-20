@@ -1,15 +1,13 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.method.metric.MetricMethod;
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
-import com.axibase.tsd.api.util.Util;
 import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +26,6 @@ import static com.axibase.tsd.api.util.ErrorTemplate.AGGREGATE_NON_DETAIL_REQUIR
 import static com.axibase.tsd.api.util.ErrorTemplate.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
-import static com.axibase.tsd.api.util.TestUtil.timeTranslate;
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
@@ -337,7 +334,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery();
         query.setEntity(series.getEntity());
         query.setMetric(series.getMetric());
-        query.setInterval(new Interval(99999, TimeUnit.QUARTER));
+        query.setInterval(new Period(99999, TimeUnit.QUARTER));
 
         List<Series> storedSeries = querySeriesAsList(query);
 
@@ -356,7 +353,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery();
         query.setEntity(series.getEntity());
         query.setMetric(series.getMetric());
-        query.setInterval(new Interval(99999, TimeUnit.QUARTER));
+        query.setInterval(new Period(99999, TimeUnit.QUARTER));
 
         query.setGroup(new Group(GroupType.SUM));
 
@@ -378,7 +375,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery();
         query.setEntity(series.getEntity());
         query.setMetric(series.getMetric());
-        Interval interval = new Interval(99999, TimeUnit.QUARTER);
+        Period interval = new Period(99999, TimeUnit.QUARTER);
         query.setInterval(interval);
 
         query.setAggregate(new Aggregate(AggregationType.SUM, interval));
@@ -396,7 +393,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testAggregateInterpolateNoTypeRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
-        Aggregate aggregate = new Aggregate(AggregationType.SUM, new Interval(99999, TimeUnit.QUARTER));
+        Aggregate aggregate = new Aggregate(AggregationType.SUM, new Period(99999, TimeUnit.QUARTER));
         aggregate.setInterpolate(new Interpolate());
 
         query.setAggregate(aggregate);
@@ -413,7 +410,7 @@ public class SeriesQueryTest extends SeriesMethod {
     public void testGroupInterpolateNoTypeRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
-        Group group = new Group(GroupType.SUM, new Interval(99999, TimeUnit.QUARTER));
+        Group group = new Group(GroupType.SUM, new Period(99999, TimeUnit.QUARTER));
         group.setInterpolate(new Interpolate());
 
         query.setGroup(group);
@@ -669,7 +666,7 @@ public class SeriesQueryTest extends SeriesMethod {
         query.setEndDate("2017-01-01T00:04:00Z");
         query.setAggregate(new Aggregate(
                 AggregationType.SUM,
-                new Interval(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
+                new Period(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query, query);
 
@@ -695,14 +692,14 @@ public class SeriesQueryTest extends SeriesMethod {
         query1.setEndDate("2017-01-01T00:04:00Z");
         query1.setAggregate(new Aggregate(
                 AggregationType.MAX,
-                new Interval(120, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
+                new Period(120, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query2.setStartDate("2017-01-01T00:01:00Z");
         query2.setEndDate("2017-01-01T00:04:00Z");
         query2.setAggregate(new Aggregate(
                 AggregationType.AVG,
-                new Interval(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
+                new Period(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
 
@@ -737,14 +734,14 @@ public class SeriesQueryTest extends SeriesMethod {
         query1.setEndDate("2017-01-01T00:04:00Z");
         query1.setAggregate(new Aggregate(
                 AggregationType.MAX,
-                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
+                new Period(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query2.setStartDate("2017-01-01T00:01:00Z");
         query2.setEndDate("2017-01-01T00:04:00Z");
         query2.setAggregate(new Aggregate(
                 AggregationType.MAX,
-                new Interval(60, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
+                new Period(60, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
 
@@ -783,7 +780,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Aggregate aggregate = new Aggregate();
         aggregate.addType(AggregationType.MIN);
         aggregate.addType(AggregationType.COUNTER);
-        aggregate.setPeriod(new Interval(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME));
+        aggregate.setPeriod(new Period(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME));
         query1.setAggregate(aggregate);
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1);
@@ -820,14 +817,14 @@ public class SeriesQueryTest extends SeriesMethod {
         query1.setEndDate("2017-01-01T00:04:00Z");
         query1.setAggregate(new Aggregate(
                 AggregationType.AVG,
-                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
+                new Period(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
         SeriesQuery query2 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query2.setStartDate("2016-12-31T00:00:00Z");
         query2.setEndDate("2017-01-01T00:04:00Z");
         query2.setAggregate(new Aggregate(
                 AggregationType.AVG,
-                new Interval(2, TimeUnit.MINUTE, PeriodAlignment.FIRST_VALUE_TIME)));
+                new Period(2, TimeUnit.MINUTE, PeriodAlignment.FIRST_VALUE_TIME)));
 
         List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
 
@@ -870,7 +867,7 @@ public class SeriesQueryTest extends SeriesMethod {
         seriesQuery.setEntity(TEST_SERIES2.getEntity());
         seriesQuery.setMetric(TEST_SERIES2.getMetric());
 
-        seriesQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        seriesQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
         return seriesQuery;
     }
 }

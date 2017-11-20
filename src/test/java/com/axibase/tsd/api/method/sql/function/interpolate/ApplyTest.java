@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.sql.function.interpolate;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -38,7 +38,7 @@ public class ApplyTest extends SqlTest {
     @DataProvider(name = "interpolateVariantsProvider")
     private static Object[][] interpolateParamVariants() {
         ArrayList<List<String>> params = new ArrayList<>();
-        params.add(singletonList(new Interval(1, TimeUnit.MINUTE).toString()));
+        params.add(singletonList(new Period(1, TimeUnit.MINUTE).toString()));
         params.add(enumStringLists(InterpolateFunction.class));
         params.add(enumStringLists(Boundary.class));
         params.add(enumStringLists(FillMode.class));

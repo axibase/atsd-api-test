@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
@@ -182,7 +182,7 @@ public class MessageQueryTest extends MessageMethod {
     private MessageQuery buildMessageQuery() {
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(message.getEntity());
-        messageQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
+        messageQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
         return messageQuery;
     }
 }

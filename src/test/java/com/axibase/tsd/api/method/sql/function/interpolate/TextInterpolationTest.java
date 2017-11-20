@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.sql.function.interpolate;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.model.Interval;
+import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -80,7 +80,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:02.000Z"
                         ),
                         new InterpolationParams(
-                                new Interval(1, TimeUnit.SECOND),
+                                new Period(1, TimeUnit.SECOND),
                                 InterpolateFunction.AUTO,
                                 Boundary.OUTER,
                                 FillMode.EXTEND
@@ -102,7 +102,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:02.000Z"
                         ),
                         new InterpolationParams(
-                                new Interval(500, TimeUnit.MILLISECOND),
+                                new Period(500, TimeUnit.MILLISECOND),
                                 InterpolateFunction.AUTO,
                                 Boundary.OUTER,
                                 FillMode.EXTEND
@@ -128,7 +128,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:05.000Z"
                         ),
                         new InterpolationParams(
-                                new Interval(500, TimeUnit.MILLISECOND),
+                                new Period(500, TimeUnit.MILLISECOND),
                                 InterpolateFunction.AUTO,
                                 Boundary.OUTER,
                                 FillMode.EXTEND
@@ -160,7 +160,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:05.000Z"
                         ),
                         new InterpolationParams(
-                                new Interval(1, TimeUnit.SECOND),
+                                new Period(1, TimeUnit.SECOND),
                                 InterpolateFunction.AUTO,
                                 Boundary.OUTER,
                                 FillMode.EXTEND
