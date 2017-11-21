@@ -3,13 +3,16 @@ package com.axibase.tsd.api.method;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.client.WebTarget;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Stack;
+import java.util.StringJoiner;
 
 public abstract class MethodParameters {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> toMap() {
+    protected Map<String, Object> toMap() {
         return MAPPER.convertValue(this, Map.class);
     }
 

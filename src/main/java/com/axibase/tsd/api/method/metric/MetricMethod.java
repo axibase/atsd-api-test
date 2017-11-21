@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.method.MethodParameters;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.model.metric.Metric;
@@ -17,6 +18,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC = "/metrics/{metric}";
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
+    private static final String METHOD_METRIC_SERIES_TAGS = "/metrics/{metric}/series/tags";
 
     public static <T> Response createOrReplaceMetric(String metricName, T query) throws Exception {
         Response response = executeApiRequest(webTarget -> webTarget
@@ -92,6 +94,18 @@ public class MetricMethod extends BaseMethod {
                 .request()
                 .delete());
 
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response queryMetricSeriesTags(String metricName,
+                                                 MethodParameters parameters) throws Exception {
+        Response response = executeApiRequest(webTarget -> {
+            WebTarget target = webTarget.path(METHOD_METRIC_SERIES_TAGS)
+                    .resolveTemplate("metric", metricName);
+            target = addParameters(target, parameters);
+            return target.request().get();
+        });
         response.bufferEntity();
         return response;
     }
