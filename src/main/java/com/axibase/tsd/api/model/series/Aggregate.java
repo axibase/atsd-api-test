@@ -2,20 +2,22 @@ package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.model.Period;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
+@NoArgsConstructor
 public class Aggregate {
     AggregationType type;
     List<AggregationType> types;
     Period period;
     Interpolate interpolate;
     Integer order;
-
-    public Aggregate() {
-    }
+    Threshold threshold;
 
     public Aggregate(AggregationType type) {
         this(type, null, null);
@@ -31,46 +33,10 @@ public class Aggregate {
         this.order = order;
     }
 
-    public Integer getOrder() {
-        return order;
-    }
-
-    public AggregationType getType() {
-        return type;
-    }
-
-    public void setType(AggregationType type) {
-        this.type = type;
-    }
-
-    public List<AggregationType> getTypes() {
-        return types;
-    }
-
-    public void setTypes(List<AggregationType> types) {
-        this.types = types;
-    }
-
     public void addType(AggregationType type) {
         if (types == null) {
             types = new ArrayList<>();
         }
         types.add(type);
-    }
-
-    public Period getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(Period period) {
-        this.period = period;
-    }
-
-    public Interpolate getInterpolate() {
-        return interpolate;
-    }
-
-    public void setInterpolate(Interpolate interpolate) {
-        this.interpolate = interpolate;
     }
 }
