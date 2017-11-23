@@ -61,7 +61,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
     @Issue("4729")
     @Test(
             dataProvider = "provideOrders",
-            description = "test query result with default Group/Aggregate order")
+            description = "test query result with aggregate")
     public void testAggregateOrder(Integer order) throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -89,13 +89,13 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Arrays.asList(expectedSeries1, expectedSeries2),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with aggregate");
     }
 
     @Issue("4729")
     @Test(
             dataProvider = "provideOrders",
-            description = "test query result with default Group/Aggregate order")
+            description = "test query result with group")
     public void testGroupOrder(Integer order) throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -121,7 +121,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with group");
     }
 
     @Issue("4729")
@@ -181,11 +181,11 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with explicit equals Group/Aggregate order");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
+    @Test(description = "test query result with explicit non-equals Group/Aggregate order")
     public void testExplicitOrderGroupAggregate() throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -212,12 +212,12 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with explicit non-equals Group/Aggregate order");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
-    public void testExplicitOrderAggregateGroup() throws Exception {
+    @Test(description = "test query result with explicit negative Group/Aggregate order")
+    public void testExplicitNegativeOrderAggregateGroup() throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -243,11 +243,11 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with explicit negative Group/Aggregate order");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
+    @Test(description = "test query result with aggregate limit")
     public void testAggregateLimit() throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -272,11 +272,11 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Arrays.asList(expectedSeries1, expectedSeries2),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with aggregate limit");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
+    @Test(description = "test query result with group limit")
     public void testGroupLimit() throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -298,11 +298,11 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with group limit");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
+    @Test(description = "test query result with aggregate seriesLimit")
     public void testAggregateSeriesLimit() throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -324,11 +324,11 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with aggregate seriesLimit");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
+    @Test(description = "test query result with group seriesLimit")
     public void testGroupSeriesLimit() throws Exception {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -352,7 +352,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with default Group/Aggregate order");
+                "Incorrect query result with group seriesLimit");
     }
 
     private Series createSeries(String entity, Sample... samples) {
