@@ -64,9 +64,9 @@ public class MetricSeriesTagsTest extends MetricMethod {
                 "  \"t1\" : [ \"p1\", \"p2\", \"v1\", \"v2\", \"x1\" ]" +
                 "}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME,
+        String responseJson = queryMetricSeriesTags(METRIC_NAME,
                 new MetricListParameters().addTag("t1")).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     @Issue("4715")
@@ -77,9 +77,9 @@ public class MetricSeriesTagsTest extends MetricMethod {
                 "  \"t2\" : [ \"v1\", \"v2\" ]" +
                 "}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME, new CustomParameters().addParameter("tags.t1", "v*"))
+        String responseJson = queryMetricSeriesTags(METRIC_NAME, new CustomParameters().addParameter("tags.t1", "v*"))
                 .readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     @Issue("4715")
@@ -90,10 +90,10 @@ public class MetricSeriesTagsTest extends MetricMethod {
                 "  \"t2\" : [ \"v2\" ]" +
                 "}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME,
+        String responseJson = queryMetricSeriesTags(METRIC_NAME,
                 new CustomParameters().addParameter("tags.t1", "v1")
                         .addParameter("tags.t2", "v2")).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     @Issue("4715")
@@ -101,11 +101,11 @@ public class MetricSeriesTagsTest extends MetricMethod {
     public void testMetricSeriesTagsTagNameAndTagsParams() throws Exception {
         String expectedJson = "{\"t1\":[\"p2\"]}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME,
+        String responseJson = queryMetricSeriesTags(METRIC_NAME,
                 new CustomParameters().addParameter("tags.t1", "p*")
                         .addParameter("tags.t2", "v2")
                         .addParameter("tags", "t1")).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     @Issue("4715")
@@ -113,10 +113,10 @@ public class MetricSeriesTagsTest extends MetricMethod {
     public void testMetricSeriesTagsNoSecondTagPattern() throws Exception {
         String expectedJson = "{}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME,
+        String responseJson = queryMetricSeriesTags(METRIC_NAME,
                 new CustomParameters().addParameter("tags.t1", "x1")
                         .addParameter("tags.t2", "*")).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     @Issue("4715")
@@ -124,10 +124,10 @@ public class MetricSeriesTagsTest extends MetricMethod {
     public void testMetricSeriesTagsNoSecondTag() throws Exception {
         String expectedJson = "{}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME,
+        String responseJson = queryMetricSeriesTags(METRIC_NAME,
                 new CustomParameters().addParameter("tags.t1", "x1")
                         .addParameter("tags.t2", "v2")).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     @Issue("4715")
@@ -135,9 +135,9 @@ public class MetricSeriesTagsTest extends MetricMethod {
     public void testMetricSeriesTagsEntity() throws Exception {
         String expectedJson = "{\"t1\" : [ \"x1\" ]}";
 
-        String r = queryMetricSeriesTags(METRIC_NAME, new CustomParameters()
+        String responseJson = queryMetricSeriesTags(METRIC_NAME, new CustomParameters()
                 .addParameter("entity", ENTITY_NAME2)).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        assertJsonEquals(expectedJson, responseJson);
     }
 
     private void assertJsonEquals(String expected, String actual) throws Exception {
