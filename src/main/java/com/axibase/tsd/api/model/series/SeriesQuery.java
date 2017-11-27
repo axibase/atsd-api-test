@@ -56,6 +56,14 @@ public class SeriesQuery {
         } else {
             setIntervalBasedOnSeriesDate(series);
         }
+        switch (series.getType()) {
+            case HISTORY:
+                type = SeriesQueryType.HISTORY;
+                break;
+            case FORECAST:
+                type = SeriesQueryType.FORECAST;
+                break;
+        }
     }
 
     public SeriesQuery(String entity, String metric) {

@@ -1,9 +1,10 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.model.series.Sample;
-import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
-import com.axibase.tsd.api.model.series.SeriesQueryType;
+import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.method.metric.MetricMethod;
+import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -14,24 +15,30 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.axibase.tsd.api.util.TestUtil.MILLIS_IN_HOUR;
-import static com.axibase.tsd.api.util.TestUtil.MILLIS_IN_YEAR;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class SeriesQueryAddMetaTest extends SeriesMethod {
     private static final String ENTITY_NAME = Mocks.entity();
     private static final String METRIC_NAME = Mocks.metric();
+    private static final String EMPTY_ENTITY_NAME = Mocks.entity();
+    private static final String EMPTY_METRIC_NAME = Mocks.metric();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series s = new Series(ENTITY_NAME, METRIC_NAME);
-        long currentTime = System.currentTimeMillis();
-        for (int i = 1; i <= 500; i++) {
-            s.addSamples(Sample.ofTimeInteger(currentTime - i * MILLIS_IN_HOUR, 123));
-        }
+        Series historySeries = new Series(ENTITY_NAME, METRIC_NAME)
+                .setType(SeriesType.HISTORY);
+        historySeries.addSamples(Sample.ofDateInteger("2017-11-23T10:00:00.000Z", 1));
 
-        insertSeriesCheck(s);
+        Series forecastSeries = new Series(ENTITY_NAME, METRIC_NAME)
+                .setType(SeriesType.FORECAST);
+        forecastSeries.addSamples(Sample.ofDateInteger("2017-11-23T10:00:00.000Z", 2));
+
+        MetricMethod.createOrReplaceMetricCheck(new Metric(EMPTY_METRIC_NAME));
+        EntityMethod.createOrReplaceEntityCheck(new Entity(EMPTY_ENTITY_NAME));
+
+        insertSeriesCheck(historySeries, forecastSeries);
     }
 
     @DataProvider
@@ -49,11 +56,21 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
             dataProvider = "seriesQueryTypeProvider"
     )
     public void testSeriesResponseMetaIncluded(SeriesQueryType type) throws JSONException {
-        long currentTime = System.currentTimeMillis();
+        checkMeta(ENTITY_NAME, METRIC_NAME, type);
+    }
+
+    @Issue("4713")
+    @Test(
+            description = "Check that meta is included for all types of data, when no data samples were found",
+            dataProvider = "seriesQueryTypeProvider"
+    )
+    public void testSeriesResponseMetaIncludedForEmptyData(SeriesQueryType type) throws JSONException {
+        checkMeta(EMPTY_ENTITY_NAME, EMPTY_METRIC_NAME, type);
+    }
+
+    private void checkMeta(String entity, String metric, SeriesQueryType type) throws JSONException {
         SeriesQuery seriesQuery =
-                new SeriesQuery(ENTITY_NAME, METRIC_NAME,
-                                Util.ISOFormat(currentTime - MILLIS_IN_YEAR),
-                                Util.ISOFormat(currentTime + MILLIS_IN_YEAR))
+                new SeriesQuery(entity, metric, Util.ISOFormat(1), MAX_QUERYABLE_DATE)
                         .setAddMeta(true)
                         .setType(type);
 
