@@ -28,14 +28,12 @@ public class SeriesQueryMultipleAggregationTest extends SeriesTest {
     public void prepareData() throws Exception {
         serverTimezone = Util.getServerTimeZone().toZoneId();
         Series series = new Series(TEST_ENTITY, TEST_METRIC);
-        List<Sample> samples = new ArrayList<>(1500);
         String date = "2017-01-01T00:00:00Z";
         for (int i = 0; i < 1500; i++) {
-            samples.add(Sample.ofDateInteger(
+            series.addSamples(Sample.ofDateInteger(
                     TestUtil.addTimeUnitsInTimezone(date, serverTimezone, TimeUnit.SECOND, i),
                     i));
         }
-        series.setSamples(samples);
 
         insertSeriesCheck(series);
     }
@@ -135,9 +133,11 @@ public class SeriesQueryMultipleAggregationTest extends SeriesTest {
     }
 
     private SeriesQuery createSeriesQuery(AggregationType function) {
-        SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC);
-        query.setStartDate("2017-01-01T00:00:00Z");
-        query.setEndDate("2017-01-01T00:25:00Z");
+        SeriesQuery query = new SeriesQuery(
+                TEST_ENTITY,
+                TEST_METRIC,
+                "2017-01-01T00:00:00Z",
+                "2017-01-01T00:25:00Z");
         Aggregate aggregate = new Aggregate(function, new Period(1000, TimeUnit.SECOND));
         aggregate.setThreshold(new Threshold(300, 1300));
         query.setAggregate(aggregate);
