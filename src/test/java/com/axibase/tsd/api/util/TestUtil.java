@@ -20,10 +20,7 @@ import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOC
 import static com.axibase.tsd.api.util.Util.*;
 
 public class TestUtil {
-    /* Do not bother for leap years */
-    public static final Long MILLIS_IN_YEAR = 1000 * 60 * 60L * 24 * 365L;
     public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
-    public static final Long MILLIS_IN_HOUR = 1000 * 60 * 60L;
 
     public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
