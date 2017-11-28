@@ -1,17 +1,17 @@
 package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.method.CustomParameters;
+import com.axibase.tsd.api.method.MethodParameters;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.model.series.MetricSeriesTags;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class MetricSeriesTagsTest extends MetricMethod {
     private static final String ENTITY_NAME1 = Mocks.entity();
@@ -48,105 +48,108 @@ public class MetricSeriesTagsTest extends MetricMethod {
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags without parameters")
     public void testMetricSeriesTagsNoParams() throws Exception {
-        String expectedJson = "{" +
-                "  \"t1\" : [ \"p1\", \"p2\", \"v1\", \"v2\", \"x1\" ]," +
-                "  \"t2\" : [ \"v1\", \"v2\" ]" +
-                "}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags()
+                .addTags("t1", "p1", "p2", "v1", "v2", "x1")
+                .addTags("t2", "v1", "v2");
 
-        String r = queryMetricSeriesTags(METRIC_NAME, null).readEntity(String.class);
-        assertJsonEquals(expectedJson, r);
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, null).readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags without parameters",
+                expectedTags, responseTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags with single tags parameter")
     public void testMetricSeriesTagsTagParam() throws Exception {
-        String expectedJson = "{" +
-                "  \"t1\" : [ \"p1\", \"p2\", \"v1\", \"v2\", \"x1\" ]" +
-                "}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags()
+                .addTags("t1", "p1", "p2", "v1", "v2", "x1");
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME,
-                new MetricListParameters().addTag("t1")).readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
+        MethodParameters parameters = new MetricListParameters().addTag("t1");
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags with single tags parameter",
+                expectedTags, expectedTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags with wildcard tags parameters")
     public void testMetricSeriesTagsTagPatternParam() throws Exception {
-        String expectedJson = "{" +
-                "  \"t1\" : [ \"v1\", \"v2\" ]," +
-                "  \"t2\" : [ \"v1\", \"v2\" ]" +
-                "}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags()
+                .addTags("t1", "v1", "v2")
+                .addTags("t2", "v1", "v2");
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME, new CustomParameters().addParameter("tags.t1", "v*"))
-                .readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
+        MethodParameters parameters = new CustomParameters().addParameter("tags.t1", "v*");
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags with wildcard tags parameters",
+                expectedTags, responseTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags with tags.name parameter")
     public void testMetricSeriesTagsTagNameParams() throws Exception {
-        String expectedJson = "{" +
-                "  \"t1\" : [ \"v1\" ]," +
-                "  \"t2\" : [ \"v2\" ]" +
-                "}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags()
+                .addTags("t1", "v1")
+                .addTags("t2", "v2");
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME,
-                new CustomParameters().addParameter("tags.t1", "v1")
-                        .addParameter("tags.t2", "v2")).readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
+        MethodParameters parameters = new CustomParameters().addParameter("tags.t1", "v1")
+                .addParameter("tags.t2", "v2");
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags with tags.name parameter",
+                expectedTags, responseTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags with tags and tags.name wildcard parameters")
     public void testMetricSeriesTagsTagNameAndTagsParams() throws Exception {
-        String expectedJson = "{\"t1\":[\"p2\"]}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags().addTags("t1", "p2");
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME,
-                new CustomParameters().addParameter("tags.t1", "p*")
-                        .addParameter("tags.t2", "v2")
-                        .addParameter("tags", "t1")).readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
+        MethodParameters parameters = new CustomParameters().addParameter("tags.t1", "p*")
+                .addParameter("tags.t2", "v2")
+                .addParameter("tags", "t1");
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags with tags and tags.name wildcard parameters",
+                expectedTags, responseTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags with tags.name as simple name and wildcard")
     public void testMetricSeriesTagsNoSecondTagPattern() throws Exception {
-        String expectedJson = "{}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags();
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME,
-                new CustomParameters().addParameter("tags.t1", "x1")
-                        .addParameter("tags.t2", "*")).readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
+        MethodParameters parameters = new CustomParameters()
+                .addParameter("tags.t1", "x1")
+                .addParameter("tags.t2", "*");
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags with tags.name as simple name and wildcard",
+                expectedTags, responseTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags with existing but irrelevant tags.name")
     public void testMetricSeriesTagsNoSecondTag() throws Exception {
-        String expectedJson = "{}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags();
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME,
-                new CustomParameters().addParameter("tags.t1", "x1")
-                        .addParameter("tags.t2", "v2")).readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
+        MethodParameters parameters = new CustomParameters()
+                .addParameter("tags.t1", "x1")
+                .addParameter("tags.t2", "v2");
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags with existing but irrelevant tags.name",
+                expectedTags, responseTags);
     }
 
     @Issue("4715")
     @Test(description = "Test {metric}/series/tags entity parameter")
     public void testMetricSeriesTagsEntity() throws Exception {
-        String expectedJson = "{\"t1\" : [ \"x1\" ]}";
+        MetricSeriesTags expectedTags = new MetricSeriesTags().addTags("t1", "x1");
 
-        String responseJson = queryMetricSeriesTags(METRIC_NAME, new CustomParameters()
-                .addParameter("entity", ENTITY_NAME2)).readEntity(String.class);
-        assertJsonEquals(expectedJson, responseJson);
-    }
-
-    private void assertJsonEquals(String expected, String actual) throws Exception {
-        JSONObject actualObject = new JSONObject(actual);
-        if (actualObject.has("error")) {
-            fail(String.format("Expected JSON %s, got error: %s", expected, actualObject.getString("error")));
-        }
-
-        String assertMessage = String.format("The response JSON was %s, expected %s", actual, expected);
-        assertTrue(assertMessage, compareJsonString(expected, actual, true));
+        MethodParameters parameters = new CustomParameters().addParameter("entity", ENTITY_NAME2);
+        MetricSeriesTags responseTags = queryMetricSeriesTags(METRIC_NAME, parameters)
+                .readEntity(MetricSeriesTags.class);
+        assertEquals("Wrong result for {metric}/series/tags entity parameter",
+                expectedTags, responseTags);
     }
 }
