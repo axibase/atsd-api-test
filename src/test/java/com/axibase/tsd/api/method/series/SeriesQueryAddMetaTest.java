@@ -42,10 +42,10 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
     }
 
     @DataProvider
-    Object[][] seriesQueryTypeProvider() {
-        Object[][] result = new Object[SeriesQueryType.values().length][];
-        for (int i = 0; i < SeriesQueryType.values().length; i++) {
-            result[i] = new Object[]{SeriesQueryType.values()[i]};
+    Object[][] SeriesTypeProvider() {
+        Object[][] result = new Object[SeriesType.values().length][];
+        for (int i = 0; i < SeriesType.values().length; i++) {
+            result[i] = new Object[]{SeriesType.values()[i]};
         }
         return result;
     }
@@ -53,22 +53,22 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
     @Issue("4713")
     @Test(
             description = "Check that meta is included for all types of data",
-            dataProvider = "seriesQueryTypeProvider"
+            dataProvider = "SeriesTypeProvider"
     )
-    public void testSeriesResponseMetaIncluded(SeriesQueryType type) throws JSONException {
+    public void testSeriesResponseMetaIncluded(SeriesType type) throws JSONException {
         checkMeta(ENTITY_NAME, METRIC_NAME, type);
     }
 
     @Issue("4713")
     @Test(
             description = "Check that meta is included for all types of data, when no data samples were found",
-            dataProvider = "seriesQueryTypeProvider"
+            dataProvider = "SeriesTypeProvider"
     )
-    public void testSeriesResponseMetaIncludedForEmptyData(SeriesQueryType type) throws JSONException {
+    public void testSeriesResponseMetaIncludedForEmptyData(SeriesType type) throws JSONException {
         checkMeta(EMPTY_ENTITY_NAME, EMPTY_METRIC_NAME, type);
     }
 
-    private void checkMeta(String entity, String metric, SeriesQueryType type) throws JSONException {
+    private void checkMeta(String entity, String metric, SeriesType type) throws JSONException {
         SeriesQuery seriesQuery =
                 new SeriesQuery(entity, metric, Util.ISOFormat(1), MAX_QUERYABLE_DATE)
                         .setAddMeta(true)

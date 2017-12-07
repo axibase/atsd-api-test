@@ -37,7 +37,7 @@ public class SeriesQuery {
     private Integer seriesLimit;
     private Boolean versioned;
     private Boolean addMeta;
-    private SeriesQueryType type;
+    private SeriesType type;
 
     public SeriesQuery() {
     }
@@ -56,10 +56,7 @@ public class SeriesQuery {
         } else {
             setIntervalBasedOnSeriesDate(series);
         }
-        SeriesType seriesType = series.getType();
-        if (seriesType != null) {
-            type = seriesType.toQueryType();
-        }
+        type = series.getType();
     }
 
     public SeriesQuery(String entity, String metric) {
@@ -98,7 +95,7 @@ public class SeriesQuery {
         tags.put(tag, value);
     }
 
-    private void setIntervalBasedOnSeriesDate(final Series series) throws IllegalArgumentException {
+    private void setIntervalBasedOnSeriesDate(final Series series) {
         Long minDate = Util.getUnixTime(MAX_QUERYABLE_DATE);
         Long maxDate = Util.getUnixTime(MIN_QUERYABLE_DATE);
 
