@@ -56,13 +56,9 @@ public class SeriesQuery {
         } else {
             setIntervalBasedOnSeriesDate(series);
         }
-        switch (series.getType()) {
-            case HISTORY:
-                type = SeriesQueryType.HISTORY;
-                break;
-            case FORECAST:
-                type = SeriesQueryType.FORECAST;
-                break;
+        SeriesType seriesType = series.getType();
+        if (seriesType != null) {
+            type = seriesType.toQueryType();
         }
     }
 
