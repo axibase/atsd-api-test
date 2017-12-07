@@ -26,6 +26,7 @@ public class Series {
     public Series() {
         data = new ArrayList<>();
         tags = new HashMap<>();
+        type = SeriesType.HISTORY;
     }
 
     public Series(String entity, String metric) {
@@ -39,6 +40,7 @@ public class Series {
         this.metric = metric;
         this.data = new ArrayList<>();
         this.tags = new HashMap<>();
+        type = SeriesType.HISTORY;
     }
 
     public Series(String entity, String metric, Map<String, String> tags) {
@@ -52,6 +54,7 @@ public class Series {
         this.metric = metric;
         this.data = new ArrayList<>();
         this.tags = tags;
+        type = SeriesType.HISTORY;
     }
 
     public Series(String entity, String metric, String... tags) {
@@ -84,6 +87,8 @@ public class Series {
         }
         copy.setSamples(dataCopy);
         copy.setTags(new HashMap<>(tags));
+        copy.setType(type);
+        copy.setForecastName(forecastName);
         return copy;
     }
 
@@ -134,6 +139,9 @@ public class Series {
     }
 
     public List<SeriesCommand> toCommands() {
+        if (type == SeriesType.FORECAST) {
+            throw new IllegalArgumentException("Cannot convert FORECAST series to commands");
+        }
         List<SeriesCommand> result = new ArrayList<>();
         for (Sample s : data) {
             SeriesCommand seriesCommand = new SeriesCommand();
