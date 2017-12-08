@@ -187,7 +187,7 @@ public class SeriesMethod extends BaseMethod {
         Checker.check(check);
     }
 
-    public static List<Series> querySeriesAsList(SeriesQuery... seriesQuery) throws Exception {
+    public static List<Series> querySeriesAsList(SeriesQuery... seriesQuery) {
         Response response = querySeries(seriesQuery);
         return Arrays.asList(response.readEntity(Series[].class));
     }

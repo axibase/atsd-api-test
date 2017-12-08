@@ -12,6 +12,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -71,10 +73,10 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
                         .setAddMeta(true)
                         .setType(type);
 
-        Series[] responses = querySeries(seriesQuery).readEntity(Series[].class);
+        List<Series> responses = querySeriesAsList(seriesQuery);
         assertEquals(String.format("Response for series query of type %s has inappropriate length", type),
-                1, responses.length);
-        Series series = responses[0];
+                1, responses.size());
+        Series series = responses.get(0);
         SeriesMeta meta = series.getMeta();
         assertTrue(String.format("Response for series query of type %s doesn't contain meta", type),
                 meta != null);
