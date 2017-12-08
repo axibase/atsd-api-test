@@ -41,7 +41,7 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
     }
 
     @DataProvider
-    Object[][] SeriesTypeProvider() {
+    Object[][] seriesTypeProvider() {
         Object[][] result = new Object[SeriesType.values().length][];
         for (int i = 0; i < SeriesType.values().length; i++) {
             result[i] = new Object[]{SeriesType.values()[i]};
@@ -52,7 +52,7 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
     @Issue("4713")
     @Test(
             description = "Check that meta is included for all types of data",
-            dataProvider = "SeriesTypeProvider"
+            dataProvider = "seriesTypeProvider"
     )
     public void testSeriesResponseMetaIncluded(SeriesType type) {
         checkMeta(ENTITY_NAME, METRIC_NAME, type);
@@ -61,7 +61,7 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
     @Issue("4713")
     @Test(
             description = "Check that meta is included for all types of data, when no data samples were found",
-            dataProvider = "SeriesTypeProvider"
+            dataProvider = "seriesTypeProvider"
     )
     public void testSeriesResponseMetaIncludedForEmptyData(SeriesType type) {
         checkMeta(EMPTY_ENTITY_NAME, EMPTY_METRIC_NAME, type);
