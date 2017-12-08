@@ -73,18 +73,17 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
                         .setAddMeta(true)
                         .setType(type);
 
-        List<Series> responses = querySeriesAsList(seriesQuery);
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals(String.format("Response for series query of type %s has inappropriate length", type),
-                1, responses.size());
-        Series series = responses.get(0);
-        SeriesMeta meta = series.getMeta();
+                1, seriesList.size());
+
+        SeriesMeta meta = seriesList.get(0).getMeta();
         assertTrue(String.format("Response for series query of type %s doesn't contain meta", type),
                 meta != null);
-        Entity resultEntity = meta.getEntity();
-        Metric resultMetric = meta.getMetric();
+
         assertTrue(String.format("Response for series query of type %s doesn't contain entity meta", type),
-                resultEntity != null);
+                meta.getEntity() != null);
         assertTrue(String.format("Response for series query of type %s doesn't contain metric meta", type),
-                resultMetric != null);
+                meta.getMetric() != null);
     }
 }
