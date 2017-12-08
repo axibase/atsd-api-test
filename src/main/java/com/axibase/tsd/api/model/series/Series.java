@@ -22,6 +22,7 @@ public class Series {
     private Map<String, String> tags;
     private SeriesType type;
     private String forecastName;
+    private SeriesMeta meta;
 
     public Series() {
         data = new ArrayList<>();

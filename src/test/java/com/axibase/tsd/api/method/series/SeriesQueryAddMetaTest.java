@@ -8,9 +8,6 @@ import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -55,7 +52,7 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
             description = "Check that meta is included for all types of data",
             dataProvider = "SeriesTypeProvider"
     )
-    public void testSeriesResponseMetaIncluded(SeriesType type) throws JSONException {
+    public void testSeriesResponseMetaIncluded(SeriesType type) {
         checkMeta(ENTITY_NAME, METRIC_NAME, type);
     }
 
@@ -64,26 +61,28 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
             description = "Check that meta is included for all types of data, when no data samples were found",
             dataProvider = "SeriesTypeProvider"
     )
-    public void testSeriesResponseMetaIncludedForEmptyData(SeriesType type) throws JSONException {
+    public void testSeriesResponseMetaIncludedForEmptyData(SeriesType type) {
         checkMeta(EMPTY_ENTITY_NAME, EMPTY_METRIC_NAME, type);
     }
 
-    private void checkMeta(String entity, String metric, SeriesType type) throws JSONException {
+    private void checkMeta(String entity, String metric, SeriesType type) {
         SeriesQuery seriesQuery =
                 new SeriesQuery(entity, metric, Util.ISOFormat(1), MAX_QUERYABLE_DATE)
                         .setAddMeta(true)
                         .setType(type);
 
-        JSONArray responses = new JSONArray(querySeries(seriesQuery).readEntity(String.class));
+        Series[] responses = querySeries(seriesQuery).readEntity(Series[].class);
         assertEquals(String.format("Response for series query of type %s has inappropriate length", type),
-                1, responses.length());
-        JSONObject response = responses.getJSONObject(0);
+                1, responses.length);
+        Series series = responses[0];
+        SeriesMeta meta = series.getMeta();
         assertTrue(String.format("Response for series query of type %s doesn't contain meta", type),
-                response.has("meta"));
-        JSONObject meta = response.getJSONObject("meta");
-        assertTrue(String.format("Response for series query of type %s doesn't contain metric meta", type),
-                meta.has("entity"));
+                meta != null);
+        Entity resultEntity = meta.getEntity();
+        Metric resultMetric = meta.getMetric();
         assertTrue(String.format("Response for series query of type %s doesn't contain entity meta", type),
-                meta.has("metric"));
+                resultEntity != null);
+        assertTrue(String.format("Response for series query of type %s doesn't contain metric meta", type),
+                resultMetric != null);
     }
 }
