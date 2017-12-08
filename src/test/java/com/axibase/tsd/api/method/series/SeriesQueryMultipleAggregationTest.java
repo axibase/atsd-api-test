@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.Period;
+import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
@@ -138,7 +139,9 @@ public class SeriesQueryMultipleAggregationTest extends SeriesTest {
                 TEST_METRIC,
                 "2017-01-01T00:00:00Z",
                 "2017-01-01T00:25:00Z");
-        Aggregate aggregate = new Aggregate(function, new Period(1000, TimeUnit.SECOND));
+        Aggregate aggregate = new Aggregate(
+                function,
+                new Period(1000, TimeUnit.SECOND, PeriodAlignment.START_TIME));
         aggregate.setThreshold(new Threshold(300, 1300));
         query.setAggregate(aggregate);
 
