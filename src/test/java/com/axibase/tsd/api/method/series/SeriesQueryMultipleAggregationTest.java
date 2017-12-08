@@ -68,8 +68,8 @@ public class SeriesQueryMultipleAggregationTest extends SeriesTest {
             {WAVG, new String[]{"666", "1332.667"}},
             {WTAVG, new String[]{"666", "1332.667"}},
             {THRESHOLD_COUNT, new String[] {"1", "1"}},
-            {THRESHOLD_DURATION, new String[] {"300000", "200000"}},
-            {THRESHOLD_PERCENT, new String[] {"70", "60"}},
+            {THRESHOLD_DURATION, new String[] {"300000", "700000"}},
+            {THRESHOLD_PERCENT, new String[] {"70", "30"}},
             {MIN_VALUE_TIME, new String[]{"1483228800000", "1483229800000"}},
             {MAX_VALUE_TIME, new String[]{"1483229799000", "1483230299000"}}
     };
