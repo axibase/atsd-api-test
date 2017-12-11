@@ -6,7 +6,6 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -15,6 +14,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -69,7 +69,7 @@ public class SeriesQueryAddMetaTest extends SeriesMethod {
 
     private void checkMeta(String entity, String metric, SeriesType type) {
         SeriesQuery seriesQuery =
-                new SeriesQuery(entity, metric, Util.ISOFormat(1), MAX_QUERYABLE_DATE)
+                new SeriesQuery(entity, metric, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE)
                         .setAddMeta(true)
                         .setType(type);
 

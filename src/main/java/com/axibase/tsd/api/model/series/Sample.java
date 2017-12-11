@@ -36,6 +36,11 @@ public class Sample {
     @JsonProperty("v")
     private BigDecimal value;
 
+    @JsonDeserialize(using = ValueDeserializer.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
+    @JsonProperty("s")
+    private BigDecimal deviation;
+
     @JsonProperty("x")
     private String text;
 
