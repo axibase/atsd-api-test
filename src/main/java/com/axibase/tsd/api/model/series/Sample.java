@@ -4,7 +4,6 @@ import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import lombok.AccessLevel;
@@ -32,12 +31,10 @@ public class Sample {
     private Long unixTime;
 
     @JsonDeserialize(using = ValueDeserializer.class)
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
     @JsonProperty("v")
     private BigDecimal value;
 
     @JsonDeserialize(using = ValueDeserializer.class)
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
     @JsonProperty("s")
     private BigDecimal deviation;
 
