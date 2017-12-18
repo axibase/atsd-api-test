@@ -42,7 +42,7 @@ public class InterpolationParams {
                 boundary,
                 fillMode,
                 alignment,
-                "'" + timeZone + "'"
+                timeZone != null ? "'" + timeZone + "'" : null
         };
 
         int maxIndex = 0;
