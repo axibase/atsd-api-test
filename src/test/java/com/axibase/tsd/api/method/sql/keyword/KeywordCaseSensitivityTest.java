@@ -57,7 +57,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
     @Test
     public void testBasicKeywordsForCaseSensitivityInLowerCase() {
         String sqlQuery = String.format(
-                "select case when t1.value > -1 then COUNT(t1.value)     else COUNT(t1.value)     end as \"word\", isnull(1, 1) " +
+                "select case when t1.value > -1 then COUNT(t1.value)     else nan     end as \"word\", isnull(1, 1) " +
                         "FROM \"%1$s\" t1 outer join using entity \"%2$s\" t2 " +
                         "where t1.entity in ('" + ENTITY_NAME + "') " +
                         "and t1.value > 0 or t1.value < 500 " +
@@ -85,7 +85,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
     @Test(dataProvider = "keywordTestProvider", dependsOnMethods = {"testBasicKeywordsForCaseSensitivityInLowerCase"})
     public void testBasicKeywordsForCaseSensitivity(String keyword) {
         String sqlQuery = String.format(
-                "select case when t1.value > -1 then COUNT(t1.value) else COUNT(t1.value) end as \"word\", isnull(1, 1) " +
+                "select case when t1.value > -1 then COUNT(t1.value) else nan end as \"word\", isnull(1, 1) " +
                         "FROM \"%1$s\" t1 outer join using entity \"%2$s\" t2 " +
                         "where t1.entity in ('" + ENTITY_NAME + "') " +
                         "and t1.value > 0 or t1.value < 500 " +
