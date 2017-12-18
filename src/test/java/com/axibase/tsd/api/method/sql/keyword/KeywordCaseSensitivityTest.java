@@ -66,7 +66,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                         "and t1.entity like '*' " +
                         "and t1.entity regex '.*' " +
                         "and t1.datetime between '2000-01-01T00:00:00.000Z' and '2020-01-01T00:00:00.000Z' " +
-                        "with time >= last_time - 10 * YEAR, interpolate (1 YEAR, linear, inner, nan, start_time) " +
+                        "with time >= last_time - 10 * YEAR, interpolate (1 YEAR, linear, inner, false, start_time) " +
                         "group by t1.period(1 YEAR), t1.value " +
                         "having count(t1.value) >= 1 " +
                         "with row_number(t1.entity order by t1.time desc) <= 100 " +
@@ -94,7 +94,7 @@ public class KeywordCaseSensitivityTest extends SqlTest {
                         "and t1.entity like '*' " +
                         "and t1.entity regex '.*' " +
                         "and t1.datetime between '2000-01-01T00:00:00.000Z' and '2020-01-01T00:00:00.000Z' " +
-                        "with time >= last_time - 10 * YEAR, interpolate (1 YEAR, linear, inner, nan, start_time) " +
+                        "with time >= last_time - 10 * YEAR, interpolate (1 YEAR, linear, inner, false, start_time) " +
                         "group by t1.period(1 YEAR), t1.value " +
                         "having count(t1.value) >= 1 " +
                         "with row_number(t1.entity order by t1.time desc) <= 100 " +
