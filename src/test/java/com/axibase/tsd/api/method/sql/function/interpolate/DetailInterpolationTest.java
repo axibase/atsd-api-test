@@ -340,6 +340,28 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
+    @Issue("4803")
+    @Test
+    public void testDetailOuterJoinLinearInnerValue() {
+        String sqlQuery = String.format(
+                "SELECT datetime, ROUND(m1.value, 3), m2.value " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
+                        "WHERE datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-04T00:00:00Z' " +
+                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, VALUE 5)",
+                TEST_METRIC1, TEST_METRIC2
+        );
+
+        String[][] expectedRows = new String[][] {
+                {"2017-01-02T00:00:00.000Z", "5",       "2"},
+                {"2017-01-03T00:00:00.000Z", "3",       "3"},
+                {"2017-01-04T00:00:00.000Z", "5",       "4"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinLinearOuterExtend() {
         String sqlQuery = String.format(
@@ -363,6 +385,30 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
+    @Issue("4803")
+    @Test
+    public void testDetailOuterJoinLinearOuterValue() {
+        String sqlQuery = String.format(
+                "SELECT datetime, ROUND(m1.value, 3), ROUND(m2.value, 3) " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
+                        "WHERE datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
+                        "WITH INTERPOLATE (DETAIL, LINEAR, OUTER, VALUE 6)",
+                TEST_METRIC1, TEST_METRIC2
+        );
+
+        String[][] expectedRows = new String[][] {
+                {"2017-01-01T23:50:00.000Z", "1",       "6"},
+                {"2017-01-02T00:00:00.000Z", "1.014",   "2"},
+                {"2017-01-03T00:00:00.000Z", "3",       "3"},
+                {"2017-01-04T00:00:00.000Z", "4",       "4"},
+                {"2017-01-05T00:00:00.000Z", "5",       "5.986"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("3435")
     @Test
     public void testDetailOuterJoinPreviousOuterExtend() {
         String sqlQuery = String.format(
@@ -376,6 +422,30 @@ public class DetailInterpolationTest extends SqlTest {
 
         String[][] expectedRows = new String[][] {
                 {"2017-01-01T23:50:00.000Z", "1",    "2"},
+                {"2017-01-02T00:00:00.000Z", "1",    "2"},
+                {"2017-01-03T00:00:00.000Z", "3",    "2"},
+                {"2017-01-04T00:00:00.000Z", "3",    "4"},
+                {"2017-01-05T00:00:00.000Z", "5",    "4"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("3435")
+    @Issue("4803")
+    @Test
+    public void testDetailOuterJoinPreviousOuterValue() {
+        String sqlQuery = String.format(
+                "SELECT datetime, m1.value, m2.value " +
+                        "FROM \"%s\" m1 " +
+                        "OUTER JOIN \"%s\" m2 " +
+                        "WHERE datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
+                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, VALUE 6)",
+                TEST_METRIC1, TEST_METRIC2
+        );
+
+        String[][] expectedRows = new String[][] {
+                {"2017-01-01T23:50:00.000Z", "1",    "6"},
                 {"2017-01-02T00:00:00.000Z", "1",    "2"},
                 {"2017-01-03T00:00:00.000Z", "3",    "2"},
                 {"2017-01-04T00:00:00.000Z", "3",    "4"},

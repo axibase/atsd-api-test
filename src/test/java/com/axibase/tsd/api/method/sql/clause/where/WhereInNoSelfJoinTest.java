@@ -148,7 +148,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
 
     @Issue("4149")
     @Test
-    public void testWhereInMertricsNoSelfJoin() {
+    public void testWhereInMetricsNoSelfJoin() {
         String sqlQuery = String.format(QUERY_TEMPLATE, "t1.metric IN metrics('br-1211')");
  
         assertSqlQueryRows("Wrong result when metrics(...) contains metric to join with", QUERY_RESULT, sqlQuery);

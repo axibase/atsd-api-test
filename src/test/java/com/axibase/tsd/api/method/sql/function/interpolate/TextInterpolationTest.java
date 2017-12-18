@@ -3,14 +3,10 @@ package com.axibase.tsd.api.method.sql.function.interpolate;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.TimePeriod;
-import com.axibase.tsd.api.model.sql.function.interpolate.Boundary;
-import com.axibase.tsd.api.model.sql.function.interpolate.FillMode;
-import com.axibase.tsd.api.model.sql.function.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.sql.function.interpolate.InterpolationParams;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
@@ -79,12 +75,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:02.000Z"
                         ),
-                        new InterpolationParams(
-                                new Period(1, TimeUnit.SECOND),
-                                InterpolateFunction.AUTO,
-                                Boundary.OUTER,
-                                FillMode.EXTEND
-                        ),
+                        new InterpolationParams(1, TimeUnit.SECOND).auto().outer().extend(),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "text"),
                                 Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
@@ -101,12 +92,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:02.000Z"
                         ),
-                        new InterpolationParams(
-                                new Period(500, TimeUnit.MILLISECOND),
-                                InterpolateFunction.AUTO,
-                                Boundary.OUTER,
-                                FillMode.EXTEND
-                        ),
+                        new InterpolationParams(500, TimeUnit.MILLISECOND).auto().outer().extend(),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
                                 Sample.ofDateText("2016-06-03T09:23:00.500Z", "null"),
@@ -127,12 +113,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:05.000Z"
                         ),
-                        new InterpolationParams(
-                                new Period(500, TimeUnit.MILLISECOND),
-                                InterpolateFunction.AUTO,
-                                Boundary.OUTER,
-                                FillMode.EXTEND
-                        ),
+                        new InterpolationParams(500, TimeUnit.MILLISECOND).auto().outer().extend(),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "first"),
                                 Sample.ofDateText("2016-06-03T09:23:00.500Z", "first"),
@@ -159,12 +140,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:05.000Z"
                         ),
-                        new InterpolationParams(
-                                new Period(1, TimeUnit.SECOND),
-                                InterpolateFunction.AUTO,
-                                Boundary.OUTER,
-                                FillMode.EXTEND
-                        ),
+                        new InterpolationParams(1, TimeUnit.SECOND).auto().outer().extend(),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
                                 Sample.ofDateText("2016-06-03T09:23:01.000Z", "null"),

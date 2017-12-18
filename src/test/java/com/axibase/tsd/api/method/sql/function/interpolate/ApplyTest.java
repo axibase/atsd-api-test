@@ -41,7 +41,7 @@ public class ApplyTest extends SqlTest {
         params.add(singletonList(new Period(1, TimeUnit.MINUTE).toString()));
         params.add(enumStringLists(InterpolateFunction.class));
         params.add(enumStringLists(Boundary.class));
-        params.add(enumStringLists(FillMode.class));
+        params.add(FillMode.stringValues());
         params.add(enumStringLists(Alignment.class));
         Set<ArrayList<String>> variants = generateSetOfParams(params);
         StringBuilder builder = new StringBuilder();
