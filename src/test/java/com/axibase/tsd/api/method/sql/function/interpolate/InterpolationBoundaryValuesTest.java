@@ -192,7 +192,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testInnerInterpolation() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -212,7 +212,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testInnerInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -233,7 +233,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testInnerInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -256,7 +256,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testInnerInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -278,7 +278,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test
+    @Test(enabled = false)
     public void testInnerInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -299,7 +299,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test
+    @Test(enabled = false)
     public void testInnerInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -321,7 +321,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationEntirePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -341,7 +341,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithPeriodIntersection() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -362,7 +362,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithSingleValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -385,7 +385,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithNoValueInPeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -407,7 +407,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithOuterBoundValue() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -430,7 +430,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithWithOuterBoundValueSinglePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -451,7 +451,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() throws ParseException {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -473,7 +473,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test
+    @Test(enabled = false)
     public void testInterpolationWithOverlappingPeriods() {
         String sqlQuery = String.format(
                 "SELECT value " +
@@ -496,7 +496,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithMinDateNoneCalendar() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
@@ -518,7 +518,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithMinDateNanCalendar() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
@@ -541,7 +541,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithMinDateExtendCalendar() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
@@ -564,7 +564,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithMinDateNoneStartTime() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
@@ -586,7 +586,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithMinDateNanStartTime() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
@@ -609,7 +609,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithMinDateExtendStartTime() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +
@@ -632,7 +632,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4181")
-    @Test
+    @Test(enabled = false)
     public void testJoinWithDateBeforeMin() {
         String sqlQuery = String.format(
                 "SELECT m1.value, m2.value " +

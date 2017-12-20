@@ -35,7 +35,7 @@ public class WithInterpolateNoBoundariesTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"2"}
+                {"1"}
         };
 
         assertSqlQueryRows("Incorrect result for WITH INTERPOLATE without data boundaries",
