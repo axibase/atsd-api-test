@@ -10,8 +10,8 @@ import static org.testng.Assert.assertEquals;
 public class InterpolationParamsTest {
     @Test
     public void testToString() {
-        InterpolationParams params = new InterpolationParams(1, SECOND).extend();
-        String expectedString = "1 SECOND, AUTO, INNER, EXTEND";
+        InterpolationParams params = new InterpolationParams(1, SECOND).fill(true);
+        String expectedString = "1 SECOND, AUTO, INNER, TRUE";
         assertEquals(params.toString(), expectedString);
     }
 

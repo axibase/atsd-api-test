@@ -65,7 +65,7 @@ public class InterpolationFillModeTest extends SqlTest {
                         "WITH INTERPOLATE(%s) " +
                         "ORDER BY datetime",
                 METRIC_NAME,
-                new InterpolationParams(30, TimeUnit.MINUTE).linear().nan().timeZone("UTC")
+                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(Double.NaN).timeZone("UTC")
         );
 
         String[][] expectedRows = {
@@ -93,7 +93,7 @@ public class InterpolationFillModeTest extends SqlTest {
                         "WITH INTERPOLATE(%s) " +
                         "ORDER BY datetime",
                 METRIC_NAME,
-                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(null).timeZone("UTC")
+                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(Double.NaN).timeZone("UTC")
         );
 
         String[][] expectedRows = {
@@ -121,7 +121,7 @@ public class InterpolationFillModeTest extends SqlTest {
                         "WITH INTERPOLATE(%s) " +
                         "ORDER BY datetime",
                 METRIC_NAME,
-                new InterpolationParams(30, TimeUnit.MINUTE).linear().none().timeZone("UTC")
+                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(false).timeZone("UTC")
         );
 
         String[][] expectedRows = {
@@ -193,7 +193,7 @@ public class InterpolationFillModeTest extends SqlTest {
                         "WITH INTERPOLATE(%s) " +
                         "ORDER BY datetime",
                 METRIC_NAME,
-                new InterpolationParams(30, TimeUnit.MINUTE).linear().extend().timeZone("UTC")
+                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(true).timeZone("UTC")
         );
 
         String[][] expectedRows = {

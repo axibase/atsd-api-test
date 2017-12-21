@@ -75,7 +75,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:02.000Z"
                         ),
-                        new InterpolationParams(1, TimeUnit.SECOND).auto().outer().extend(),
+                        new InterpolationParams(1, TimeUnit.SECOND).auto().outer().fill(true),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "text"),
                                 Sample.ofDateText("2016-06-03T09:23:01.000Z", "text"),
@@ -92,7 +92,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:02.000Z"
                         ),
-                        new InterpolationParams(500, TimeUnit.MILLISECOND).auto().outer().extend(),
+                        new InterpolationParams(500, TimeUnit.MILLISECOND).auto().outer().fill(true),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
                                 Sample.ofDateText("2016-06-03T09:23:00.500Z", "null"),
@@ -113,7 +113,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:05.000Z"
                         ),
-                        new InterpolationParams(500, TimeUnit.MILLISECOND).auto().outer().extend(),
+                        new InterpolationParams(500, TimeUnit.MILLISECOND).auto().outer().fill(true),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "first"),
                                 Sample.ofDateText("2016-06-03T09:23:00.500Z", "first"),
@@ -140,7 +140,7 @@ public class TextInterpolationTest extends SqlTest {
                                 "2016-06-03T09:23:00.000Z",
                                 "2016-06-03T09:23:05.000Z"
                         ),
-                        new InterpolationParams(1, TimeUnit.SECOND).auto().outer().extend(),
+                        new InterpolationParams(1, TimeUnit.SECOND).auto().outer().fill(true),
                         Arrays.asList(
                                 Sample.ofDateText("2016-06-03T09:23:00.000Z", "null"),
                                 Sample.ofDateText("2016-06-03T09:23:01.000Z", "null"),

@@ -8,10 +8,6 @@ import java.util.Set;
 public class FillMode {
     private static final Set<String> STRING_VALUE_SET = new HashSet<>();
 
-    public static final FillMode NONE = new FillMode("NONE");
-    public static final FillMode NAN = new FillMode("NAN");
-    public static final FillMode EXTEND = new FillMode("EXTEND");
-
     public static final FillMode TRUE = new FillMode("TRUE");
     public static final FillMode YES = new FillMode("YES");
     public static final FillMode FALSE = new FillMode("FALSE");
@@ -30,9 +26,9 @@ public class FillMode {
         this(mode, false);
     }
 
-    public static FillMode value(Double val) {
+    public static FillMode value(double val) {
         String mode;
-        if (val == null) {
+        if (Double.isNaN(val)) {
             mode = "NAN";
         } else {
             mode = "VALUE " + String.valueOf(val);

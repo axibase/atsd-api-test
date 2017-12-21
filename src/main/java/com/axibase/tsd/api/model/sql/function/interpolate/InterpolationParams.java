@@ -14,7 +14,7 @@ public class InterpolationParams {
             null,
             InterpolateFunction.AUTO,
             Boundary.INNER,
-            FillMode.NONE,
+            FillMode.FALSE,
             Alignment.CALENDAR,
             "null"
     };
@@ -96,21 +96,6 @@ public class InterpolationParams {
         return this;
     }
 
-    public InterpolationParams none() {
-        fillMode = FillMode.NONE;
-        return this;
-    }
-
-    public InterpolationParams extend() {
-        fillMode = FillMode.EXTEND;
-        return this;
-    }
-
-    public InterpolationParams nan() {
-        fillMode = FillMode.NAN;
-        return this;
-    }
-
     public InterpolationParams yes() {
         fillMode = FillMode.YES;
         return this;
@@ -126,7 +111,7 @@ public class InterpolationParams {
         return this;
     }
 
-    public InterpolationParams fill(Double value) {
+    public InterpolationParams fill(double value) {
         fillMode = FillMode.value(value);
         return this;
     }
