@@ -21,7 +21,7 @@ public class WithInterpolateNoBoundariesTest extends SqlTest {
 
     @Issue("4120")
     @Test
-    public void testWithInterpolateNoBoundaries() {
+    public void testWitnInterpolateNoBoundaries() {
         /*
             If there are no date limits by WHERE statement,
             then interpolation should be limited by min/max time in scan
