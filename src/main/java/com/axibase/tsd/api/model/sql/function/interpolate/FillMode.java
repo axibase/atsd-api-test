@@ -27,13 +27,7 @@ public class FillMode {
     }
 
     public static FillMode value(double val) {
-        String mode;
-        if (Double.isNaN(val)) {
-            mode = "NAN";
-        } else {
-            mode = "VALUE " + String.valueOf(val);
-        }
-        return new FillMode(mode, true);
+        return new FillMode("VALUE " + String.valueOf(val), true);
     }
 
     public static List<String> stringValues() {

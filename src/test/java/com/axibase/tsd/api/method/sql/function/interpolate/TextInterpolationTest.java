@@ -50,7 +50,7 @@ public class TextInterpolationTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
         String sqlQuery = String.format(
                 "SELECT text FROM \"%s\"%nWHERE datetime BETWEEN '2016-06-03T09:23:00.000Z' AND '2016-06-03T09:23:05.000Z'" +
-                        "WITH INTERPOLATE(500 MILLISECOND, AUTO, OUTER, EXTEND)",
+                        "WITH INTERPOLATE(500 MILLISECOND, AUTO, OUTER, TRUE)",
                 series.getMetric()
         );
 
@@ -224,7 +224,7 @@ public class TextInterpolationTest extends SqlTest {
         Long startTime = Mocks.MILLS_TIME - delta;
         Long endTime = Mocks.MILLS_TIME + delta;
         queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", Util.ISOFormat(startTime), Util.ISOFormat(endTime)));
-        queryBuilder.append("WITH INTERPOLATE(1 MINUTE, AUTO, OUTER, EXTEND, START_TIME)");
+        queryBuilder.append("WITH INTERPOLATE(1 MINUTE, AUTO, OUTER, TRUE, START_TIME)");
         return queryBuilder.toString();
     }
 

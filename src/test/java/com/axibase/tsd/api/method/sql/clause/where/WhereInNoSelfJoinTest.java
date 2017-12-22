@@ -33,7 +33,7 @@ public class WhereInNoSelfJoinTest extends SqlTest {
             "  AND t1.datetime BETWEEN (SELECT datetime FROM \"TV6.Unit_BatchID\" WHERE entity = " +
             "    'br-1211' AND (text = '800' OR LAG(text)='800'))\n" +
             "  AND t1.entity = 'br-1211'\n" +
-            "WITH INTERPOLATE(60 SECOND, AUTO, OUTER, EXTEND, START_TIME)\n" +
+            "WITH INTERPOLATE(60 SECOND, AUTO, OUTER, TRUE, START_TIME)\n" +
             "  ORDER BY t1.metric, t1.datetime";
     String[][] QUERY_RESULT = {
             {"br-1211", "tv6.pack:r01", "2016-10-04T02:01:20.000Z", "79.92743362831858", "26.0", "800", "Proc1", "800.1"},

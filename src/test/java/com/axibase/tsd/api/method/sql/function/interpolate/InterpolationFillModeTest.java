@@ -56,36 +56,8 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation works with fill mode NAN," +
-            "WITH INTERPOLATE(... NAN ...)")
-    public void testInterpolationFillValueNanMode() {
-        String sqlQuery = String.format(
-                "SELECT datetime, value FROM \"%s\" " +
-                        "WHERE datetime BETWEEN '2017-12-15T11:00:00.000Z' AND '2017-12-15T15:00:00.000Z' " +
-                        "WITH INTERPOLATE(%s) " +
-                        "ORDER BY datetime",
-                METRIC_NAME,
-                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(Double.NaN).timeZone("UTC")
-        );
-
-        String[][] expectedRows = {
-                {"2017-12-15T11:00:00.000Z", "NaN"},
-                {"2017-12-15T11:30:00.000Z", "NaN"},
-                {"2017-12-15T12:00:00.000Z", "1"},
-                {"2017-12-15T12:30:00.000Z", "1.5"},
-                {"2017-12-15T13:00:00.000Z", "2"},
-                {"2017-12-15T13:30:00.000Z", "2.5"},
-                {"2017-12-15T14:00:00.000Z", "3"},
-                {"2017-12-15T14:30:00.000Z", "NaN"},
-                {"2017-12-15T15:00:00.000Z", "NaN"},
-        };
-
-        assertSqlQueryRows("Incorrect result with fill=VALUE NaN interpolation parameter", expectedRows, sqlQuery);
-    }
-
-    @Issue("4803")
     @Test(description = "Check that interpolation works with fill mode VALUE NAN," +
-            "WITH INTERPOLATE(... NAN ...)")
+            "WITH INTERPOLATE(... VALUE NAN ...)")
     public void testInterpolationFillNaNMode() {
         String sqlQuery = String.format(
                 "SELECT datetime, value FROM \"%s\" " +
@@ -112,8 +84,8 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation works with fill mode NONE," +
-            "WITH INTERPOLATE(... NONE ...)")
+    @Test(description = "Check that interpolation works with fill mode FALSE," +
+            "WITH INTERPOLATE(... FALSE ...)")
     public void testInterpolationFillNoneMode() {
         String sqlQuery = String.format(
                 "SELECT datetime, value FROM \"%s\" " +
@@ -132,7 +104,7 @@ public class InterpolationFillModeTest extends SqlTest {
                 {"2017-12-15T14:00:00.000Z", "3"},
         };
 
-        assertSqlQueryRows("Incorrect result with fill=NONE interpolation parameter", expectedRows, sqlQuery);
+        assertSqlQueryRows("Incorrect result with fill=FALSE interpolation parameter", expectedRows, sqlQuery);
     }
 
     @Issue("4803")
@@ -184,8 +156,8 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation works with fill mode EXTEND," +
-            "WITH INTERPOLATE(... EXTEND ...)")
+    @Test(description = "Check that interpolation works with fill mode TRUE," +
+            "WITH INTERPOLATE(... TRUE ...)")
     public void testInterpolationFillExtendMode() {
         String sqlQuery = String.format(
                 "SELECT datetime, value FROM \"%s\" " +
@@ -208,7 +180,7 @@ public class InterpolationFillModeTest extends SqlTest {
                 {"2017-12-15T15:00:00.000Z", "3"},
         };
 
-        assertSqlQueryRows("Incorrect result with fill=EXTEND interpolation parameter", expectedRows, sqlQuery);
+        assertSqlQueryRows("Incorrect result with fill=TRUE interpolation parameter", expectedRows, sqlQuery);
     }
 
     @Issue("4803")
@@ -222,34 +194,6 @@ public class InterpolationFillModeTest extends SqlTest {
                         "ORDER BY datetime",
                 METRIC_NAME,
                 new InterpolationParams(30, TimeUnit.MINUTE).linear().yes().timeZone("UTC")
-        );
-
-        String[][] expectedRows = {
-                {"2017-12-15T11:00:00.000Z", "1"},
-                {"2017-12-15T11:30:00.000Z", "1"},
-                {"2017-12-15T12:00:00.000Z", "1"},
-                {"2017-12-15T12:30:00.000Z", "1.5"},
-                {"2017-12-15T13:00:00.000Z", "2"},
-                {"2017-12-15T13:30:00.000Z", "2.5"},
-                {"2017-12-15T14:00:00.000Z", "3"},
-                {"2017-12-15T14:30:00.000Z", "3"},
-                {"2017-12-15T15:00:00.000Z", "3"},
-        };
-
-        assertSqlQueryRows("Incorrect result with fill=TRUE interpolation parameter", expectedRows, sqlQuery);
-    }
-
-    @Issue("4803")
-    @Test(description = "Check that interpolation works with fill mode TRUE," +
-            "WITH INTERPOLATE(... TRUE ...)")
-    public void testInterpolationFillTrueMode() {
-        String sqlQuery = String.format(
-                "SELECT datetime, value FROM \"%s\" " +
-                        "WHERE datetime BETWEEN '2017-12-15T11:00:00.000Z' AND '2017-12-15T15:00:00.000Z' " +
-                        "WITH INTERPOLATE(%s) " +
-                        "ORDER BY datetime",
-                METRIC_NAME,
-                new InterpolationParams(30, TimeUnit.MINUTE).linear().fill(true).timeZone("UTC")
         );
 
         String[][] expectedRows = {

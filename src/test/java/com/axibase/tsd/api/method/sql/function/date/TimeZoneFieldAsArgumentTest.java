@@ -184,7 +184,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 "SELECT " +
                         "datetime, value " +
                         "FROM \"%s\" " +
-                        "WITH INTERPOLATE(1 HOUR, LINEAR, INNER, NONE, CALENDAR, entity.timezone)",
+                        "WITH INTERPOLATE(1 HOUR, LINEAR, INNER, FALSE, CALENDAR, entity.timezone)",
                 METRIC_NAME3
         );
 
@@ -207,7 +207,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 "SELECT " +
                         "datetime, value " +
                         "FROM \"%s\" " +
-                        "WITH INTERPOLATE(1 HOUR, LINEAR, INNER, NONE, CALENDAR, metric.timezone)",
+                        "WITH INTERPOLATE(1 HOUR, LINEAR, INNER, FALSE, CALENDAR, metric.timezone)",
                 METRIC_NAME3
         );
 

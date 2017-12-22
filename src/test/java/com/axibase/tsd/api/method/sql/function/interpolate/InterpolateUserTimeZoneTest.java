@@ -72,7 +72,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                         "FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN '2017-10-11T05:00:00.000Z' " +
                         "AND '2017-10-12T05:00:00.000Z' " +
-                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, NONE, CALENDAR, '%2$s')",
+                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, FALSE, CALENDAR, '%2$s')",
                 METRIC_NAME,
                 timeZoneId
         );
@@ -104,7 +104,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                         "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-10-11T05:00:00.000Z' " +
                         "AND '2017-10-12T05:00:00.000Z' " +
-                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, NONE, CALENDAR, metric.timezone)",
+                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, FALSE, CALENDAR, metric.timezone)",
                 timeZone.getID(),
                 METRIC_NAME
         );
@@ -141,7 +141,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                         "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2011-03-26T21:00:00.000Z' " +
                         "AND '2011-03-27T21:00:00.000Z' " +
-                        "WITH INTERPOLATE(1 DAY, LINEAR, OUTER, NONE, CALENDAR, 'Europe/Moscow')",
+                        "WITH INTERPOLATE(1 DAY, LINEAR, OUTER, FALSE, CALENDAR, 'Europe/Moscow')",
                 metricName
         );
 
@@ -177,7 +177,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                         "FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN '2017-10-11T05:00:00.000Z' " +
                         "AND '2017-10-12T05:00:00.000Z' " +
-                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, NONE, CALENDAR, metric.timezone)",
+                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, FALSE, CALENDAR, metric.timezone)",
                 metricName
         );
 
@@ -213,7 +213,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                         "FROM \"%1$s\" " +
                         "WHERE datetime BETWEEN '2017-10-11T05:00:00.000Z' " +
                         "AND '2017-10-12T05:00:00.000Z' " +
-                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, NONE, CALENDAR, entity.timezone)",
+                        "WITH INTERPOLATE(1 DAY, PREVIOUS, OUTER, FALSE, CALENDAR, entity.timezone)",
                 metricName
         );
 

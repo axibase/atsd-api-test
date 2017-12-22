@@ -224,7 +224,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "0"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "NaN"},
+                {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T16:00:00.000Z", "3"},
                 {"2017-01-01T17:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
@@ -254,7 +254,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "0"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "NaN"},
+                {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T17:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
@@ -279,7 +279,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
 
         String[][] expectedRows = new String[][] {
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "2"},
+                {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
                 {"2017-01-01T20:00:00.000Z", "NaN"},
@@ -407,7 +407,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T11:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "OR datetime BETWEEN '2017-01-01T12:00:00Z' AND '2017-01-01T14:00:00Z' " +
-                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, NAN) " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, VALUE NAN) " +
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
@@ -430,7 +430,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, CALENDAR, 'UTC')",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, FALSE, CALENDAR, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -451,7 +451,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NAN, CALENDAR, 'UTC')",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, VALUE NAN, CALENDAR, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -497,7 +497,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NONE, START_TIME, 'UTC')",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, FALSE, START_TIME, 'UTC')",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -518,16 +518,14 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, NAN, START_TIME)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, FALSE, START_TIME)",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
         String[][] expectedRows = {
-                {"0", "NaN"},
                 {"0", "1"},
                 {"2", "1"},
                 {"2", "3"},
-                {"4", "NaN"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -541,7 +539,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1970-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, START_TIME)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, TRUE, START_TIME)",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 
@@ -564,7 +562,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "JOIN \"%s\" m2 " +
                         "WHERE m1.datetime >= '1969-01-01T00:00:00Z' AND m1.datetime < '1975-01-01T00:00:00Z' " +
-                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, EXTEND, START_TIME)",
+                        "WITH INTERPOLATE(1 YEAR, PREVIOUS, INNER, TRUE, START_TIME)",
                 TEST_METRIC_1,
                 TEST_METRIC_2);
 

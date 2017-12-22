@@ -135,7 +135,7 @@ public class DetailInterpolationTest extends SqlTest {
                 {"2017-01-02T00:00:00.000Z", "null", "2"},
                 {"2017-01-03T00:00:00.000Z", "3",    "2"},
                 {"2017-01-04T00:00:00.000Z", "3",    "4"},
-                {"2017-01-05T00:00:00.000Z", "5",    "4"}
+                {"2017-01-05T00:00:00.000Z", "5",    "null"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -179,7 +179,7 @@ public class DetailInterpolationTest extends SqlTest {
                 {"2017-01-02T00:00:00.000Z", "null", "2"},
                 {"2017-01-03T00:00:00.000Z", "3",    "2"},
                 {"2017-01-04T00:00:00.000Z", "3",    "4"},
-                {"2017-01-05T00:00:00.000Z", "5",    "4"}
+                {"2017-01-05T00:00:00.000Z", "5",    "null"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -237,7 +237,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, NAN)",
+                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, VALUE NAN)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -260,7 +260,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, LINEAR, OUTER, NAN)",
+                        "WITH INTERPOLATE (DETAIL, LINEAR, OUTER, FALSE)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -283,7 +283,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, PREVIOUS, INNER, NAN)",
+                        "WITH INTERPOLATE (DETAIL, PREVIOUS, INNER, VALUE NAN)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -291,7 +291,7 @@ public class DetailInterpolationTest extends SqlTest {
                 {"2017-01-02T00:00:00.000Z", "NaN",  "2"},
                 {"2017-01-03T00:00:00.000Z", "3",    "2"},
                 {"2017-01-04T00:00:00.000Z", "3",    "4"},
-                {"2017-01-05T00:00:00.000Z", "5",    "4"}
+                {"2017-01-05T00:00:00.000Z", "5",    "NaN"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -305,7 +305,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-03T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, NAN)",
+                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, FALSE)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -326,7 +326,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-02T00:00:00Z' AND '2017-01-04T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, EXTEND)",
+                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, TRUE)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -369,7 +369,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, LINEAR, OUTER, EXTEND)",
+                        "WITH INTERPOLATE (DETAIL, LINEAR, OUTER, TRUE)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -416,7 +416,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, EXTEND)",
+                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, TRUE)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
@@ -490,7 +490,7 @@ public class DetailInterpolationTest extends SqlTest {
                         "OUTER JOIN USING ENTITY \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-04T00:00:00Z' AND " +
                             "m1.entity = '%s' " +
-                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, NAN)",
+                        "WITH INTERPOLATE (DETAIL, LINEAR, INNER, VALUE NAN)",
                 TEST_METRIC3, TEST_METRIC4, TEST_ENTITY2
         );
 
@@ -512,14 +512,14 @@ public class DetailInterpolationTest extends SqlTest {
                         "FROM \"%s\" m1 " +
                         "OUTER JOIN \"%s\" m2 " +
                         "WHERE datetime BETWEEN '2017-01-01T00:00:00Z' AND '2017-01-05T00:00:00Z' " +
-                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, EXTEND, START_TIME)",
+                        "WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, TRUE, START_TIME)",
                 TEST_METRIC1, TEST_METRIC2
         );
 
         Response response = SqlMethod.queryResponse(sqlQuery);
 
         assertBadRequest(
-                "Syntax error at line 1 position 318: no viable alternative at input 'WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, EXTEND,'",
+                "Syntax error at line 1 position 316: no viable alternative at input 'WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, TRUE,'",
                 response);
     }
 }
