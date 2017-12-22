@@ -37,9 +37,7 @@ public class FillMode {
     }
 
     public static List<String> stringValues() {
-        List<String> result = new ArrayList<>();
-        result.addAll(STRING_VALUE_SET);
-        return result;
+        return new ArrayList<>(STRING_VALUE_SET);
     }
 
     @Override

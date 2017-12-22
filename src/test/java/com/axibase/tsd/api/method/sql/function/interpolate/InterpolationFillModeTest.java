@@ -28,7 +28,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode VALUE {n}," +
+    @Test(description = "Check that interpolation works with fill mode VALUE {n}," +
             "WITH INTERPOLATE(... VALUE {n} ...)")
     public void testInterpolationFillValueMode() {
         String sqlQuery = String.format(
@@ -56,7 +56,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode NAN," +
+    @Test(description = "Check that interpolation works with fill mode NAN," +
             "WITH INTERPOLATE(... NAN ...)")
     public void testInterpolationFillValueNanMode() {
         String sqlQuery = String.format(
@@ -84,7 +84,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode VALUE NAN," +
+    @Test(description = "Check that interpolation works with fill mode VALUE NAN," +
             "WITH INTERPOLATE(... NAN ...)")
     public void testInterpolationFillNaNMode() {
         String sqlQuery = String.format(
@@ -112,7 +112,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode NONE," +
+    @Test(description = "Check that interpolation works with fill mode NONE," +
             "WITH INTERPOLATE(... NONE ...)")
     public void testInterpolationFillNoneMode() {
         String sqlQuery = String.format(
@@ -136,7 +136,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode NO," +
+    @Test(description = "Check that interpolation works with fill mode NO," +
             "WITH INTERPOLATE(... NO ...)")
     public void testInterpolationFillNoMode() {
         String sqlQuery = String.format(
@@ -160,7 +160,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode FALSE," +
+    @Test(description = "Check that interpolation works with fill mode FALSE," +
             "WITH INTERPOLATE(... FALSE ...)")
     public void testInterpolationFillFalseMode() {
         String sqlQuery = String.format(
@@ -184,7 +184,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode EXTEND," +
+    @Test(description = "Check that interpolation works with fill mode EXTEND," +
             "WITH INTERPOLATE(... EXTEND ...)")
     public void testInterpolationFillExtendMode() {
         String sqlQuery = String.format(
@@ -212,7 +212,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode YES," +
+    @Test(description = "Check that interpolation works with fill mode YES," +
             "WITH INTERPOLATE(... YES ...)")
     public void testInterpolationFillYesMode() {
         String sqlQuery = String.format(
@@ -240,7 +240,7 @@ public class InterpolationFillModeTest extends SqlTest {
     }
 
     @Issue("4803")
-    @Test(description = "Check that interpolation work with fill mode TRUE," +
+    @Test(description = "Check that interpolation works with fill mode TRUE," +
             "WITH INTERPOLATE(... TRUE ...)")
     public void testInterpolationFillTrueMode() {
         String sqlQuery = String.format(
