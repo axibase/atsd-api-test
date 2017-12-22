@@ -266,7 +266,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test(enabled = false)
+    @Test
     public void testOuterInterpolationWithSingleValueInPeriod() {
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
@@ -317,7 +317,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
-    @Test(enabled = false)
+    @Test
     public void testOuterInterpolationWithOuterBoundValue() {
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
@@ -343,7 +343,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test(enabled = false)
+    @Test
     public void testOuterInterpolationWithWithOuterBoundValueSinglePeriod() {
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
@@ -369,7 +369,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test(enabled = false)
+    @Test
     public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() {
         String sqlQuery = String.format(
                 "SELECT datetime, value " +

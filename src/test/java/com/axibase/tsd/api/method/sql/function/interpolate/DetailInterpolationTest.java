@@ -120,7 +120,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
-    @Test(enabled = false)
+    @Test
     public void testDetailOuterJoinPrevious() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.value, m2.value " +
@@ -164,7 +164,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
-    @Test(enabled = false)
+    @Test
     public void testDetailOuterJoinPreviousInner() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.value, m2.value " +
@@ -208,7 +208,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
-    @Test(enabled = false)
+    @Test
     public void testDetailOuterJoinPreviousOuter() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.value, m2.value " +
@@ -276,7 +276,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
-    @Test(enabled = false)
+    @Test
     public void testDetailOuterJoinPreviousInnerNan() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.value, m2.value " +
@@ -298,7 +298,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
-    @Test(enabled = false)
+    @Test
     public void testDetailOuterJoinPreviousOuterNan() {
         String sqlQuery = String.format(
                 "SELECT datetime, m1.value, m2.value " +
