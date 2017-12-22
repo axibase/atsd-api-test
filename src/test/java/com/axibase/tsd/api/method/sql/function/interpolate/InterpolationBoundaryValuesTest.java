@@ -369,7 +369,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test
+    @Test(enabled = false)
     public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() {
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
