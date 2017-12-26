@@ -600,6 +600,7 @@ public class SqlPeriodAlignTest extends SqlTest {
     }
 
     @Issue("4175")
+    @Issue("4700")
     @Test
     public void testPeriodsTimeGroupingDSTChangedEndTime() throws Exception {
         insertSamples(
