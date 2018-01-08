@@ -329,9 +329,6 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 TEST_METRIC_1);
 
         String[][] expectedRows = new String[][] {
-                {"2017-01-01T13:00:00.000Z", "3"},
-                {"2017-01-01T14:00:00.000Z", "3"},
-                {"2017-01-01T15:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
         };
