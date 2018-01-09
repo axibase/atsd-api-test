@@ -24,7 +24,7 @@ public class MessageQueryTest extends MessageMethod {
     static {
         message = new Message("message-query-test-timezone");
         message.setMessage("hello");
-        message.setDate("2017-05-21T00:00:00.000Z");
+        message.setDate("2018-05-21T00:00:00.000Z");
     }
 
     @BeforeMethod
@@ -37,7 +37,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testISOTimezoneZ() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-05-21T00:00:00Z");
+        messageQuery.setStartDate("2018-05-21T00:00:00Z");
 
         List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -52,7 +52,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-05-21T01:23:00+01:23");
+        messageQuery.setStartDate("2018-05-21T01:23:00+01:23");
 
         List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -67,7 +67,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-05-20T22:37:00-01:23");
+        messageQuery.setStartDate("2018-05-20T22:37:00-01:23");
 
         List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -120,7 +120,7 @@ public class MessageQueryTest extends MessageMethod {
     public void testEntitiesWildcardStarChar() throws Exception {
         Message message = new Message("message-query-wildcard-2-1");
         message.setMessage("msgtext");
-        message.setDate("2017-01-01T00:00:00.000Z");
+        message.setDate("2018-01-01T00:00:00.000Z");
         insertMessageCheck(message);
 
         Map<String, Object> query = new HashMap<>();
@@ -138,7 +138,7 @@ public class MessageQueryTest extends MessageMethod {
     public void testEntitiesWildcardQuestionChar() throws Exception {
         Message message = new Message("message-query-wildcard-3-1");
         message.setMessage("msgtext");
-        message.setDate("2017-01-01T00:00:00.000Z");
+        message.setDate("2018-01-01T00:00:00.000Z");
         insertMessageCheck(message);
 
         Map<String, Object> query = new HashMap<>();
@@ -156,7 +156,7 @@ public class MessageQueryTest extends MessageMethod {
     public void testEntityEntitiesWildcardSame() throws Exception {
         Message message = new Message("message-query-wildcard-4-1");
         message.setMessage("msgtext");
-        message.setDate("2017-01-01T00:00:00.000Z");
+        message.setDate("2018-01-01T00:00:00.000Z");
         insertMessageCheck(message);
         message.setEntity("message-query-wildcard-4-2");
         insertMessageCheck(message);
