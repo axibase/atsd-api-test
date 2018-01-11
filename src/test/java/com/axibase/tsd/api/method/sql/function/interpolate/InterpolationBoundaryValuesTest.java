@@ -8,8 +8,6 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.Response;
-
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 
@@ -397,6 +395,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4069")
+    @Issue("4821")
     @Test
     public void testInterpolationWithOverlappingPeriods() {
         String sqlQuery = String.format(
@@ -404,19 +403,18 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                         "FROM \"%s\" " +
                         "WHERE datetime BETWEEN '2017-01-01T11:00:00Z' AND '2017-01-01T13:00:00Z' " +
                         "OR datetime BETWEEN '2017-01-01T12:00:00Z' AND '2017-01-01T14:00:00Z' " +
-                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, VALUE NAN) " +
+                        "WITH INTERPOLATE(1 HOUR, PREVIOUS, OUTER, VALUE NAN, CALENDAR, 'UTC') " +
                         "ORDER BY datetime",
                 TEST_METRIC_1);
 
-        Response response = queryResponse(sqlQuery);
+        String[][] expectedRows = {
+                {"2017-01-01T11:00:00.000Z", "1"},
+                {"2017-01-01T12:00:00.000Z", "2"},
+                {"2017-01-01T13:00:00.000Z", "3"},
+                {"2017-01-01T14:00:00.000Z", "3"}
+        };
 
-        String expectedErrorMessage =
-                "Overlapping time intervals: " +
-                        "2017-01-01T11:00:00Z - 2017-01-01T13:00:00Z " +
-                        "and 2017-01-01T12:00:00Z - 2017-01-01T14:00:00Z";
-
-        assertBadRequest("Incorrect overlapping time intervals error handling",
-                expectedErrorMessage, response);
+        assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
     @Issue("4181")
