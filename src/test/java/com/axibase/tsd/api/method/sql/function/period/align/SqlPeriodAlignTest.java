@@ -15,22 +15,26 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.util.TestUtil.addTimeUnitsInTimezone;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SqlPeriodAlignTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-period-align";
-    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + "_metric";
+    private static final String TEST_MONTH_DST_METRIC_NAME = TEST_PREFIX + "_month_dst_metric";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     private ZoneId serverTimezone;
 
     @BeforeClass
     public void prepareDataSet() throws Exception {
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/UTC"));
+        calendar.set(2004, Calendar.JANUARY, 31);
+        calendar.add(Calendar.MONTH, 1);
+        Date result = calendar.getTime();
+
         Registry.Entity.checkExists(TEST_ENTITY_NAME);
         Registry.Metric.checkExists(TEST_METRIC_NAME);
 
@@ -48,9 +52,13 @@ public class SqlPeriodAlignTest extends SqlTest {
     }
 
     private void insertSamples(Sample... samples) throws Exception {
+        insertSamples(TEST_METRIC_NAME, samples);
+    }
+
+    private void insertSamples(String metricName, Sample... samples) throws Exception {
         Series series = new Series();
         series.setEntity(TEST_ENTITY_NAME);
-        series.setMetric(TEST_METRIC_NAME);
+        series.setMetric(metricName);
         series.addSamples(samples);
         SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
     }
@@ -658,6 +666,129 @@ public class SqlPeriodAlignTest extends SqlTest {
                 {"2004-03-27T23:00:00.005Z", "28"},
                 {"2004-03-28T23:00:00.005Z", "29"},
                 {"2004-03-29T23:00:00.005Z", "30"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4700")
+    @Test
+    public void testPeriodsMonthTimeGroupingDSTChangedCalendarTime() throws Exception {
+        insertSamples(
+                TEST_MONTH_DST_METRIC_NAME,
+                Sample.ofDateInteger("2004-01-01T00:00:00.005Z", 1),
+                Sample.ofDateInteger("2004-02-01T00:00:00.005Z", 2),
+                Sample.ofDateInteger("2004-03-01T00:00:00.005Z", 3),
+                Sample.ofDateInteger("2004-04-01T00:00:00.005Z", 4),
+                Sample.ofDateInteger("2004-05-01T00:00:00.005Z", 5)
+        );
+
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2004-01-01T00:00:00Z' AND datetime < '2004-05-31T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, CALENDAR, 'Europe/Moscow')",
+                TEST_MONTH_DST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2003-12-31T21:00:00.000Z", "1"},
+                {"2004-01-31T21:00:00.000Z", "2"},
+                {"2004-02-29T21:00:00.000Z", "3"},
+                {"2004-03-31T20:00:00.000Z", "4"},
+                {"2004-04-30T20:00:00.000Z", "5"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4700")
+    @Test
+    public void testPeriodsMonthTimeGroupingDSTChangedStartTime() throws Exception {
+        insertSamples(
+                TEST_MONTH_DST_METRIC_NAME,
+                Sample.ofDateInteger("2004-01-01T00:00:00.005Z", 1),
+                Sample.ofDateInteger("2004-02-01T00:00:00.005Z", 2),
+                Sample.ofDateInteger("2004-03-01T00:00:00.005Z", 3),
+                Sample.ofDateInteger("2004-04-01T00:00:00.005Z", 4),
+                Sample.ofDateInteger("2004-05-01T00:00:00.005Z", 5)
+        );
+
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2004-01-01T00:00:00Z' AND datetime < '2004-05-31T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, START_TIME, 'Europe/Moscow')",
+                TEST_MONTH_DST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2004-01-01T00:00:00.000Z", "1"},
+                {"2004-02-01T00:00:00.000Z", "2"},
+                {"2004-03-01T00:00:00.000Z", "3"},
+                {"2004-03-31T23:00:00.000Z", "4"},
+                {"2004-04-30T23:00:00.000Z", "5"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4700")
+    @Test
+    public void testPeriodsMonthTimeGroupingDSTChangedEndTime() throws Exception {
+        insertSamples(
+                TEST_MONTH_DST_METRIC_NAME,
+                Sample.ofDateInteger("2004-01-01T00:00:00.005Z", 1),
+                Sample.ofDateInteger("2004-02-01T00:00:00.005Z", 2),
+                Sample.ofDateInteger("2004-03-01T00:00:00.005Z", 3),
+                Sample.ofDateInteger("2004-04-01T00:00:00.005Z", 4),
+                Sample.ofDateInteger("2004-05-01T00:00:00.005Z", 5)
+        );
+
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2004-01-01T00:00:00Z' AND datetime < '2004-05-28T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, END_TIME, 'Europe/Moscow')",
+                TEST_MONTH_DST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2004-01-28T01:00:00.000Z", "2"},
+                {"2004-02-28T01:00:00.000Z", "3"},
+                {"2004-03-28T00:00:00.000Z", "4"},
+                {"2004-04-28T00:00:00.000Z", "5"},
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("4700")
+    @Test
+    public void testPeriodsMonthTimeGroupingDSTChangedFirstValueTime() throws Exception {
+        insertSamples(
+                TEST_MONTH_DST_METRIC_NAME,
+                Sample.ofDateInteger("2004-01-01T00:00:00.005Z", 1),
+                Sample.ofDateInteger("2004-02-01T00:00:00.005Z", 2),
+                Sample.ofDateInteger("2004-03-01T00:00:00.005Z", 3),
+                Sample.ofDateInteger("2004-04-01T00:00:00.005Z", 4),
+                Sample.ofDateInteger("2004-05-01T00:00:00.005Z", 5)
+        );
+
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2004-01-01T00:00:00Z' AND datetime < '2004-05-31T00:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, FIRST_VALUE_TIME, 'Europe/Moscow')",
+                TEST_MONTH_DST_METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"2004-01-01T00:00:00.005Z", "1"},
+                {"2004-02-01T00:00:00.005Z", "2"},
+                {"2004-03-01T00:00:00.005Z", "3"},
+                {"2004-03-31T23:00:00.005Z", "4"},
+                {"2004-04-30T23:00:00.005Z", "5"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);

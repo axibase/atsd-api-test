@@ -364,7 +364,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
     }
 
     @Issue("4217")
-    @Test(enabled = false)
+    @Test
     public void testOuterInterpolationWithWithOuterBoundValueDoublePeriod() {
         String sqlQuery = String.format(
                 "SELECT datetime, value " +
@@ -381,10 +381,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "0"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "3"},
-                {"2017-01-01T14:00:00.000Z", "3"},
-                {"2017-01-01T15:00:00.000Z", "3"},
-                {"2017-01-01T16:00:00.000Z", "3"},
+                {"2017-01-01T13:00:00.000Z", "3"}
 
         };
 
