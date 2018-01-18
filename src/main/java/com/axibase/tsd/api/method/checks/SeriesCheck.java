@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.checks;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

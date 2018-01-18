@@ -1,6 +1,7 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.query.transformation.aggregate;
 
 import com.axibase.tsd.api.model.Period;
+import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class Aggregate {
     AggregationType type;
     List<AggregationType> types;
     Period period;
-    Interpolate interpolate;
+    AggregationInterpolate interpolate;
     Integer order;
     Threshold threshold;
 

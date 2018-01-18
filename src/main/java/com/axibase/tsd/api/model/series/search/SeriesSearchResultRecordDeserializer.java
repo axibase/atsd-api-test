@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.search;
 
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;

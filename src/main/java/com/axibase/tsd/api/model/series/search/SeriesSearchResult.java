@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -2,7 +2,7 @@ package com.axibase.tsd.api.model.metric;
 
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.series.DataType;
-import com.axibase.tsd.api.model.series.DateDeserializer;
+import com.axibase.tsd.api.model.serialization.DateDeserializer;
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

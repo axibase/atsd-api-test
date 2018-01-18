@@ -3,6 +3,13 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolateType;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
+import com.axibase.tsd.api.model.series.query.transformation.group.Group;
+import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -71,7 +78,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
         Group group = new Group(GroupType.SUM);
-        group.setInterpolate(new Interpolate(InterpolateType.PREVIOUS));
+        group.setInterpolate(new AggregationInterpolate(AggregationInterpolateType.PREVIOUS));
         query.setGroup(group);
 
         List<Sample> expectedSamples = Arrays.asList(
@@ -94,7 +101,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
     @Issue("2995")
-    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-transformation")
     public void testExampleSumAggregation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, new Period(10, TimeUnit.SECOND)));
@@ -117,7 +124,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
     @Issue("2995")
-    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-aggregation")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group-transformation")
     public void testExampleSumGroupAggregation() throws Exception {
         final Period period = new Period(10, TimeUnit.SECOND);
 
@@ -143,7 +150,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
     @Issue("2995")
-    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#aggregation---group")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#transformation---group")
     public void testExampleSumAggregationToGroup() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, null, 1));
@@ -167,7 +174,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
     @Issue("2995")
-    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---aggregation")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/data/series/group.md#group---transformation")
     public void testExampleSumGroupToAggregation() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
         query.setGroup(new Group(GroupType.SUM, new Period(1, TimeUnit.MILLISECOND), 0));
@@ -221,7 +228,7 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:01Z", "2016-06-25T08:01:00Z");
 
         Group group = new Group(GroupType.SUM);
-        final Interpolate interpolate = new Interpolate(InterpolateType.NONE);
+        final AggregationInterpolate interpolate = new AggregationInterpolate(AggregationInterpolateType.NONE);
         interpolate.setExtend(true);
         group.setInterpolate(interpolate);
 
@@ -246,12 +253,12 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
     @Issue("2997")
-    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-transformation")
     public void testExampleSumExtendFalse() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
         Group group = new Group(GroupType.SUM);
-        final Interpolate interpolate = new Interpolate(InterpolateType.NONE);
+        final AggregationInterpolate interpolate = new AggregationInterpolate(AggregationInterpolateType.NONE);
         interpolate.setExtend(false);
         group.setInterpolate(interpolate);
 
@@ -277,12 +284,12 @@ public class SeriesQueryGroupExampleTest extends SeriesMethod {
     }
 
     @Issue("2997")
-    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-aggregation")
+    @Test(description = "https://github.com/axibase/atsd-docs/blob/master/api/exampleData/series/group.md#no-transformation")
     public void testExampleSumExtendNull() throws Exception {
         SeriesQuery query = prepareDefaultQuery("2016-06-25T08:00:00Z", "2016-06-25T08:01:00Z");
 
         Group group = new Group(GroupType.SUM);
-        final Interpolate interpolate = new Interpolate(InterpolateType.NONE);
+        final AggregationInterpolate interpolate = new AggregationInterpolate(AggregationInterpolateType.NONE);
         group.setInterpolate(interpolate);
 
         query.setGroup(group);

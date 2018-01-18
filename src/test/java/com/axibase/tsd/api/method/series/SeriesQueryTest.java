@@ -6,6 +6,15 @@ import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolateType;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
+import com.axibase.tsd.api.model.series.query.transformation.group.Group;
+import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
+import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
+import com.axibase.tsd.api.model.series.query.transformation.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
 import com.google.common.collect.Sets;
@@ -394,7 +403,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
         Aggregate aggregate = new Aggregate(AggregationType.SUM, new Period(99999, TimeUnit.QUARTER));
-        aggregate.setInterpolate(new Interpolate());
+        aggregate.setInterpolate(new AggregationInterpolate());
 
         query.setAggregate(aggregate);
 
@@ -411,7 +420,7 @@ public class SeriesQueryTest extends SeriesMethod {
         SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
         Group group = new Group(GroupType.SUM, new Period(99999, TimeUnit.QUARTER));
-        group.setInterpolate(new Interpolate());
+        group.setInterpolate(new AggregationInterpolate());
 
         query.setGroup(group);
 
@@ -615,7 +624,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("4670")
     @Test(description = "test series query without tag filter with tag expression")
-    public void testSeriesQueryWithoutTagsWithTagExpression() throws Exception {
+    public void testSeriesQueryWithoutTagsWithTagExpression() {
         SeriesQuery query = new SeriesQuery(
                 TEST_SERIES1.getEntity(), TEST_SERIES1.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         query.setTags(null);
@@ -646,7 +655,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("4714")
     @Test(description = "test same double series query")
-    public void testSameDoubleSeriesQuery() throws Exception {
+    public void testSameDoubleSeriesQuery() {
         SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query.setStartDate("2017-01-01T00:01:00Z");
         query.setEndDate("2017-01-01T00:04:00Z");
@@ -660,7 +669,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("4714")
     @Test(description = "test same double series query")
-    public void testSameDoubleSeriesQueryWithAggregation() throws Exception {
+    public void testSameDoubleSeriesQueryWithAggregation() {
         SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query.setStartDate("2017-01-01T00:01:00Z");
         query.setEndDate("2017-01-01T00:04:00Z");
@@ -685,8 +694,8 @@ public class SeriesQueryTest extends SeriesMethod {
     }
 
     @Issue("4714")
-    @Test(description = "test double series query with different aggregation")
-    public void testDoubleSeriesQueryDifferentAggregation() throws Exception {
+    @Test(description = "test double series query with different transformation")
+    public void testDoubleSeriesQueryDifferentAggregation() {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query1.setStartDate("2017-01-01T00:01:00Z");
         query1.setEndDate("2017-01-01T00:04:00Z");
@@ -721,14 +730,14 @@ public class SeriesQueryTest extends SeriesMethod {
         );
 
         assertEquals(
-                "Incorrect query result with two series requests with different aggregation",
+                "Incorrect query result with two series requests with different transformation",
                 Sets.newHashSet(expectedSeries1, expectedSeries2),
                 Sets.newHashSet(result));
     }
 
     @Issue("4714")
-    @Test(description = "test double series query with different aggregation period")
-    public void testDoubleSeriesQueryDifferentAggregationPeriod() throws Exception {
+    @Test(description = "test double series query with different transformation period")
+    public void testDoubleSeriesQueryDifferentAggregationPeriod() {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query1.setStartDate("2017-01-01T00:01:00Z");
         query1.setEndDate("2017-01-01T00:04:00Z");
@@ -765,14 +774,14 @@ public class SeriesQueryTest extends SeriesMethod {
         );
 
         assertEquals(
-                "Incorrect query result with two series requests with different aggregation period",
+                "Incorrect query result with two series requests with different transformation period",
                 Sets.newHashSet(expectedSeries1, expectedSeries2),
                 Sets.newHashSet(result));
     }
 
     @Issue("4714")
-    @Test(description = "test double series query with different aggregation")
-    public void testDoubleSeriesQueryDifferentAggregationInSingleQuery() throws Exception {
+    @Test(description = "test double series query with different transformation")
+    public void testDoubleSeriesQueryDifferentAggregationInSingleQuery() {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query1.setStartDate("2017-01-01T00:01:00Z");
         query1.setEndDate("2017-01-01T00:04:00Z");
@@ -804,14 +813,14 @@ public class SeriesQueryTest extends SeriesMethod {
         );
 
         assertEquals(
-                "Incorrect query result with two series requests with different aggregation",
+                "Incorrect query result with two series requests with different transformation",
                 Sets.newHashSet(expectedSeries1, expectedSeries2),
                 Sets.newHashSet(result));
     }
 
     @Issue("4714")
-    @Test(description = "test double series query with different aggregation period align")
-    public void testDoubleSeriesQueryDifferentAggregationPeriodAlign() throws Exception {
+    @Test(description = "test double series query with different transformation period align")
+    public void testDoubleSeriesQueryDifferentAggregationPeriodAlign() {
         SeriesQuery query1 = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query1.setStartDate("2016-12-31T00:01:00Z");
         query1.setEndDate("2017-01-01T00:04:00Z");
@@ -847,13 +856,107 @@ public class SeriesQueryTest extends SeriesMethod {
         );
 
         assertEquals(
-                "Incorrect query result with two series requests with different aggregation period align",
+                "Incorrect query result with two series requests with different transformation period align",
                 2,
                 result.size());
         assertEquals(
-                "Incorrect query result with two series requests with different aggregation period align",
+                "Incorrect query result with two series requests with different transformation period align",
                 Sets.newHashSet(expectedSeries1, expectedSeries2),
                 Sets.newHashSet(result));
+    }
+
+    @Issue("4867")
+    @Test(description = "test END_TIME period align aggregation")
+    public void testEndTimeAggregation() {
+        SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query.setStartDate("2017-01-01T00:00:50Z");
+        query.setEndDate("2017-01-01T00:03:30Z");
+        query.setAggregate(new Aggregate(
+                AggregationType.MAX,
+                new Period(1, TimeUnit.MINUTE, PeriodAlignment.END_TIME)));
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
+
+        Series expectedSeries = new Series();
+        expectedSeries.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries.setTags(Mocks.TAGS);
+        expectedSeries.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:01:30Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-01T00:02:30Z", new BigDecimal("3.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with END_TIME period align aggregation",
+                1,
+                result.size());
+        assertEquals(
+                "Incorrect query result with END_TIME period align aggregation",
+                expectedSeries,
+                result.get(0));
+    }
+
+    @Issue("4867")
+    @Test(description = "test END_TIME period align aggregation with interpolation")
+    public void testEndTimeAggregationWithInterpolation() {
+        SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query.setStartDate("2017-01-01T00:00:50Z");
+        query.setEndDate("2017-01-01T00:03:30Z");
+        Aggregate aggregate = new Aggregate(AggregationType.MAX,
+                new Period(1, TimeUnit.MINUTE, PeriodAlignment.END_TIME));
+        aggregate.setInterpolate(new AggregationInterpolate(AggregationInterpolateType.PREVIOUS));
+        query.setAggregate(aggregate);
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
+
+        Series expectedSeries = new Series();
+        expectedSeries.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries.setTags(Mocks.TAGS);
+        expectedSeries.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:01:30Z", new BigDecimal("2.0")),
+                Sample.ofDateDecimal("2017-01-01T00:02:30Z", new BigDecimal("3.0"))
+        );
+
+        assertEquals(
+                "Incorrect query result with END_TIME period align aggregation with interpolation",
+                1,
+                result.size());
+        assertEquals(
+                "Incorrect query result with END_TIME period align aggregation with interpolation",
+                expectedSeries,
+                result.get(0));
+    }
+
+    @Issue("4867")
+    @Test(description = "test END_TIME period align interpolation")
+    public void testEndTimeInterpolation() {
+        SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
+        query.setStartDate("2017-01-01T00:00:50Z");
+        query.setEndDate("2017-01-01T00:03:30Z");
+        query.setInterpolate(new Interpolate(
+                InterpolateFunction.LINEAR,
+                new Period(1, TimeUnit.MINUTE, PeriodAlignment.END_TIME)));
+
+        List<Series> result = SeriesMethod.querySeriesAsList(query);
+
+        Series expectedSeries = new Series();
+        expectedSeries.setEntity(TEST_SERIES3.getEntity());
+        expectedSeries.setMetric(TEST_SERIES3.getMetric());
+        expectedSeries.setTags(Mocks.TAGS);
+        expectedSeries.addSamples(
+                Sample.ofDateDecimal("2017-01-01T00:01:30Z", new BigDecimal("1.5")),
+                Sample.ofDateDecimal("2017-01-01T00:02:30Z", new BigDecimal("2.5"))
+        );
+
+        assertEquals(
+                "Incorrect query result with END_TIME period align interpolation",
+                1,
+                result.size());
+        assertEquals(
+                "Incorrect query result with END_TIME period align interpolation",
+                expectedSeries,
+                result.get(0));
     }
 
     private void setRandomTimeDuringNextDay(Calendar calendar) {

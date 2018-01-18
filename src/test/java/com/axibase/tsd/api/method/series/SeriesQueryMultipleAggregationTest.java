@@ -4,6 +4,10 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Threshold;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
@@ -16,7 +20,7 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.axibase.tsd.api.model.series.AggregationType.*;
+import static com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -82,7 +86,7 @@ public class SeriesQueryMultipleAggregationTest extends SeriesTest {
 
     @Issue("4717")
     @Test(
-            description = "test series query with single aggregation functions",
+            description = "test series query with single transformation functions",
             dataProvider = "provideSingleAggregatorFunctions")
     public void testSingleAggregatorFunctions(AggregationType function, String[] expectedValues) throws Exception {
         SeriesQuery query = createSeriesQuery(function);
@@ -117,7 +121,7 @@ public class SeriesQueryMultipleAggregationTest extends SeriesTest {
 
     @Issue("4717")
     @Test(
-            description = "test series query with double aggregation functions",
+            description = "test series query with double transformation functions",
             dataProvider = "provideDoubleAggregationFunctions")
     public void testDoubleAggregatorFunctions(
             AggregationType firstFunction,

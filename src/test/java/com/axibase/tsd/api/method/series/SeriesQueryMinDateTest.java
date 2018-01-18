@@ -2,7 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.SeriesType;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;

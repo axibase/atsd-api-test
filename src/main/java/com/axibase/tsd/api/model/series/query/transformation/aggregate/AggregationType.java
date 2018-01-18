@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.query.transformation.aggregate;
 
 public enum AggregationType {
     MIN,

@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.metric;
 
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

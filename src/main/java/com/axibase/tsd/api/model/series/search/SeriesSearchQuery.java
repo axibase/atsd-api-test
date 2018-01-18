@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.search;
 
 import com.axibase.tsd.api.method.MethodParameters;
 import lombok.Data;

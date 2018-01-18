@@ -2,8 +2,8 @@ package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageStatsQuery;
-import com.axibase.tsd.api.model.series.Aggregate;
-import com.axibase.tsd.api.model.series.AggregationType;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;

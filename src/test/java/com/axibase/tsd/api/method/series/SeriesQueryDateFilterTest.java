@@ -4,7 +4,7 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;

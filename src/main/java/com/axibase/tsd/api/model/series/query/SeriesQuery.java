@@ -1,6 +1,12 @@
-package com.axibase.tsd.api.model.series;
+package com.axibase.tsd.api.model.series.query;
 
 import com.axibase.tsd.api.model.Period;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.SeriesType;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.group.Group;
+import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -28,6 +34,7 @@ public class SeriesQuery {
     private Period interval;
     private Map<String, String> tags;
     private Aggregate aggregate;
+    private Interpolate interpolate;
     private Group group;
     private String timeFormat;
     private Boolean exactMatch;

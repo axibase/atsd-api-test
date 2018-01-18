@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.model.message;
 
 import com.axibase.tsd.api.model.Period;
-import com.axibase.tsd.api.model.series.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Map;

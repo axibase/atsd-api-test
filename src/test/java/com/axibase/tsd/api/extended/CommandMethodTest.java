@@ -6,7 +6,7 @@ import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
 
 import java.util.Collections;

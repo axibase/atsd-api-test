@@ -5,7 +5,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
 
 import java.util.Arrays;

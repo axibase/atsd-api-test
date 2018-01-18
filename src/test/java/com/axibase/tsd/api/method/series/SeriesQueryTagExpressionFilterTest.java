@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Filters;
 import com.axibase.tsd.api.util.Mocks;

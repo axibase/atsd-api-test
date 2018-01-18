@@ -8,7 +8,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;

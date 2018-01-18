@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.metric;
 import com.axibase.tsd.api.method.CustomParameters;
 import com.axibase.tsd.api.method.MethodParameters;
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.model.series.MetricSeriesTags;
+import com.axibase.tsd.api.model.series.metric.MetricSeriesTags;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;

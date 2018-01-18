@@ -4,7 +4,7 @@ import com.axibase.tsd.api.method.series.CSVInsertMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 

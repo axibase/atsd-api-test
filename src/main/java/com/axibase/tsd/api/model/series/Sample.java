@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.model.series;
 
+import com.axibase.tsd.api.model.serialization.ValueDeserializer;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -7,7 +7,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
 import io.qameta.allure.Issue;
