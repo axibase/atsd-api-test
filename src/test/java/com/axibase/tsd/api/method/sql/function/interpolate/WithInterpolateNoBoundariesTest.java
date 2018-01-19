@@ -20,6 +20,7 @@ public class WithInterpolateNoBoundariesTest extends SqlTest {
     }
 
     @Issue("4120")
+    @Issue("4814")
     @Test
     public void testWithInterpolateNoBoundaries() {
         /*
