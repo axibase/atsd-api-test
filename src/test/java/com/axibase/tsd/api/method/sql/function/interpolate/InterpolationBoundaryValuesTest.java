@@ -60,12 +60,12 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "NaN"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "NaN"},
+                {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T16:00:00.000Z", "NaN"},
                 {"2017-01-01T17:00:00.000Z", "NaN"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"},
+                {"2017-01-01T20:00:00.000Z", "9"},
                 {"2017-01-01T21:00:00.000Z", "NaN"},
         };
 
@@ -90,12 +90,12 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "NaN"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "NaN"},
+                {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T16:00:00.000Z", "NaN"},
                 {"2017-01-01T17:00:00.000Z", "NaN"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"},
+                {"2017-01-01T20:00:00.000Z", "9"},
                 {"2017-01-01T21:00:00.000Z", "NaN"},
         };
 
@@ -116,10 +116,10 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
 
         String[][] expectedRows = new String[][] {
                 {"2017-01-01T12:00:00.000Z", "NaN"},
-                {"2017-01-01T13:00:00.000Z", "NaN"},
+                {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "NaN"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"},
+                {"2017-01-01T20:00:00.000Z", "9"},
                 {"2017-01-01T21:00:00.000Z", "NaN"},
         };
 
@@ -144,7 +144,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String[][] expectedRows = new String[][] {
                 {"2017-01-01T18:00:00.000Z", "NaN"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"}
+                {"2017-01-01T20:00:00.000Z", "9"}
         };
 
         assertSqlQueryRows(
@@ -170,7 +170,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "NaN"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "NaN"}
+                {"2017-01-01T13:00:00.000Z", "3"}
         };
 
         assertSqlQueryRows(
@@ -197,7 +197,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T10:00:00.000Z", "NaN"},
                 {"2017-01-01T11:00:00.000Z", "1"},
                 {"2017-01-01T12:00:00.000Z", "2"},
-                {"2017-01-01T13:00:00.000Z", "NaN"}
+                {"2017-01-01T13:00:00.000Z", "3"}
         };
 
         assertSqlQueryRows(
@@ -227,7 +227,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T17:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"},
+                {"2017-01-01T20:00:00.000Z", "9"},
                 {"2017-01-01T21:00:00.000Z", "NaN"},
         };
 
@@ -256,7 +256,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T17:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"},
+                {"2017-01-01T20:00:00.000Z", "9"},
                 {"2017-01-01T21:00:00.000Z", "NaN"},
         };
 
@@ -280,7 +280,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"2017-01-01T13:00:00.000Z", "3"},
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"},
+                {"2017-01-01T20:00:00.000Z", "9"},
                 {"2017-01-01T21:00:00.000Z", "NaN"},
         };
 
@@ -305,7 +305,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String[][] expectedRows = new String[][] {
                 {"2017-01-01T18:00:00.000Z", "7"},
                 {"2017-01-01T19:00:00.000Z", "8"},
-                {"2017-01-01T20:00:00.000Z", "NaN"}
+                {"2017-01-01T20:00:00.000Z", "9"}
         };
 
         assertSqlQueryRows(
@@ -429,7 +429,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String[][] expectedRows = {
                 {"0", "1"},
                 {"2", "1"},
-                {"2", "3"}
+                {"2", "3"},
+                {"4", "3"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -452,7 +453,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"0", "1"},
                 {"2", "1"},
                 {"2", "3"},
-                {"4", "NaN"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -496,7 +497,8 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
         String[][] expectedRows = {
                 {"0", "1"},
                 {"2", "1"},
-                {"2", "3"}
+                {"2", "3"},
+                {"4", "3"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
@@ -518,6 +520,7 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
                 {"0", "1"},
                 {"2", "1"},
                 {"2", "3"},
+                {"4", "3"},
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
