@@ -120,6 +120,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
+    @Issue("4814")
     @Test
     public void testDetailOuterJoinPrevious() {
         String sqlQuery = String.format(
@@ -164,6 +165,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
+    @Issue("4814")
     @Test
     public void testDetailOuterJoinPreviousInner() {
         String sqlQuery = String.format(
@@ -276,6 +278,7 @@ public class DetailInterpolationTest extends SqlTest {
     }
 
     @Issue("3435")
+    @Issue("4814")
     @Test
     public void testDetailOuterJoinPreviousInnerNan() {
         String sqlQuery = String.format(
