@@ -3,6 +3,12 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
+import com.axibase.tsd.api.model.series.query.transformation.group.Group;
+import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
+import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
@@ -10,6 +16,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -18,7 +25,7 @@ import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
-public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
+public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
     private String TEST_ENTITY1;
     private String TEST_ENTITY2;
     private String TEST_METRIC;
@@ -62,7 +69,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
     @Test(
             dataProvider = "provideOrders",
             description = "test query result with aggregate")
-    public void testAggregateOrder(Integer order) throws Exception {
+    public void testAggregateOrder(Integer order) {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -96,7 +103,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
     @Test(
             dataProvider = "provideOrders",
             description = "test query result with group")
-    public void testGroupOrder(Integer order) throws Exception {
+    public void testGroupOrder(Integer order) {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -125,8 +132,54 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
     }
 
     @Issue("4729")
+    @Test(
+            dataProvider = "provideOrders",
+            description = "test query result with rate")
+    public void testRateOrder(Integer order) {
+        SeriesQuery query = new SeriesQuery(
+                "*",
+                TEST_METRIC,
+                "2017-01-01T00:00:00Z",
+                "2017-01-01T00:00:20Z");
+        Rate rate = new Rate(new Period(5, TimeUnit.SECOND));
+        if (order != null) {
+            rate.setOrder(order);
+        }
+        query.setRate(rate);
+
+        List<Series> result = querySeriesAsList(query);
+
+        Series expectedSeries1 = createSeries(TEST_ENTITY1,
+                Sample.ofDateDecimal("2017-01-01T00:00:03.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:07.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:09.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:11.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:13.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:17.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:19.000Z", new BigDecimal("5.0")));
+
+        Series expectedSeries2 = createSeries(TEST_ENTITY2,
+                Sample.ofDateDecimal("2017-01-01T00:00:02.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:04.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:06.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:08.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:12.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:14.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:16.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:18.000Z", new BigDecimal("5.0")));
+
+        assertEquals(
+                result,
+                Arrays.asList(expectedSeries1, expectedSeries2),
+                "Incorrect query result with rate");
+    }
+
+    @Issue("4729")
     @Test(description = "test query result with default Group/Aggregate order")
-    public void testDefaultOrderGroupAggregate() throws Exception {
+    public void testDefaultOrderGroupAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -154,29 +207,94 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Aggregate order")
-    public void testExplicitEqualsOrderGroupAggregate() throws Exception {
+    @Test(description = "test query result with default Group/Rate order")
+    public void testDefaultOrderGroupRate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
                 "2017-01-01T00:00:00Z",
                 "2017-01-01T00:00:20Z");
+        query.setGroup(new Group(
+                GroupType.MAX,
+                new Period(5, TimeUnit.SECOND)
+        ));
+        query.setRate(new Rate(
+                new Period(10, TimeUnit.SECOND)
+        ));
+
+        List<Series> result = querySeriesAsList(query);
+
+        Series expectedSeries = createSeries("*",
+                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("8.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("12.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", new BigDecimal("8.0")));
+
+        assertEquals(
+                result,
+                Collections.singletonList(expectedSeries),
+                "Incorrect query result with default Group/Rate order");
+    }
+
+    @Issue("4729")
+    @Test(description = "test query result with default Group/Aggregate order")
+    public void testDefaultOrderRateAggregate() {
+        SeriesQuery query = new SeriesQuery(
+                "*",
+                TEST_METRIC,
+                "2017-01-01T00:00:00Z",
+                "2017-01-01T00:00:20Z");
+        query.setRate(new Rate(
+                new Period(5, TimeUnit.SECOND)
+        ));
         query.setAggregate(new Aggregate(
-                AggregationType.MIN,
-                new Period(10, TimeUnit.SECOND),
+                AggregationType.COUNT,
+                new Period(10, TimeUnit.SECOND)
+        ));
+
+        List<Series> result = querySeriesAsList(query);
+
+        Series expectedSeries1 = createSeries(TEST_ENTITY1,
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5));
+
+        Series expectedSeries2 = createSeries(TEST_ENTITY2,
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 4),
+                Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5));
+
+        assertEquals(
+                result,
+                Arrays.asList(expectedSeries1, expectedSeries2),
+                "Incorrect query result with default Rate/Aggregate order");
+    }
+
+    @Issue("4729")
+    @Test(description = "test query result with explicit equals Group/Rate/Aggregate order")
+    public void testExplicitEqualsOrderGroupRateAggregate() {
+        SeriesQuery query = new SeriesQuery(
+                "*",
+                TEST_METRIC,
+                "2017-01-01T00:00:00Z",
+                "2017-01-01T00:00:20Z");
+        query.setGroup(new Group(
+                GroupType.MAX,
+                new Period(5, TimeUnit.SECOND),
                 0
         ));
-        query.setGroup(new Group(
-                GroupType.COUNT,
-                new Period(5, TimeUnit.SECOND),
+        query.setRate(new Rate(
+                new Period(2, TimeUnit.SECOND),
+                0
+        ));
+        query.setAggregate(new Aggregate(
+                AggregationType.SUM,
+                new Period(10, TimeUnit.SECOND),
                 0
         ));
 
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("5.0")),
-                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("5.0")));
+                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("1.6")),
+                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("4.0")));
 
         assertEquals(
                 result,
@@ -186,69 +304,79 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
 
     @Issue("4729")
     @Test(description = "test query result with explicit non-equals Group/Aggregate order")
-    public void testExplicitOrderGroupAggregate() throws Exception {
+    public void testExplicitOrderGroupRateAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
                 "2017-01-01T00:00:00Z",
                 "2017-01-01T00:00:20Z");
         query.setAggregate(new Aggregate(
-                AggregationType.COUNT,
-                new Period(10, TimeUnit.SECOND),
-                5
+                AggregationType.SUM,
+                new Period(4, TimeUnit.SECOND),
+                3
         ));
         query.setGroup(new Group(
                 GroupType.MIN,
                 new Period(5, TimeUnit.SECOND),
-                3
+                4
+        ));
+        query.setRate(new Rate(
+                new Period(10, TimeUnit.SECOND),
+                5
         ));
 
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("2.0")),
-                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("2.0")));
+                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("32.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("16.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", new BigDecimal("16.0")));
 
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit non-equals Group/Aggregate order");
+                "Incorrect query result with explicit non-equals Group/Rate/Aggregate order");
     }
 
     @Issue("4729")
     @Test(description = "test query result with explicit negative Group/Aggregate order")
-    public void testExplicitNegativeOrderAggregateGroup() throws Exception {
+    public void testExplicitNegativeOrderGroupRateAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
                 "2017-01-01T00:00:00Z",
                 "2017-01-01T00:00:20Z");
         query.setAggregate(new Aggregate(
-                AggregationType.AVG,
-                new Period(5, TimeUnit.SECOND),
-                -3
+                AggregationType.SUM,
+                new Period(4, TimeUnit.SECOND),
+                -5
         ));
         query.setGroup(new Group(
-                GroupType.COUNT,
+                GroupType.MIN,
+                new Period(5, TimeUnit.SECOND),
+                -4
+        ));
+        query.setRate(new Rate(
                 new Period(10, TimeUnit.SECOND),
-                2
+                -3
         ));
 
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("4.0")),
-                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("4.0")));
+                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("32.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("16.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", new BigDecimal("16.0")));
 
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit negative Group/Aggregate order");
+                "Incorrect query result with explicit non-equals Group/Rate/Aggregate order");
     }
 
     @Issue("4729")
     @Test(description = "test query result with aggregate limit")
-    public void testAggregateLimit() throws Exception {
+    public void testAggregateLimit() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -277,7 +405,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
 
     @Issue("4729")
     @Test(description = "test query result with group limit")
-    public void testGroupLimit() throws Exception {
+    public void testGroupLimit() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -293,7 +421,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("10.0")));
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 2));
 
         assertEquals(
                 result,
@@ -302,8 +430,35 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
     }
 
     @Issue("4729")
+    @Test(description = "test query result with rate limit")
+    public void testRateLimit() {
+        SeriesQuery query = new SeriesQuery(
+                "*",
+                TEST_METRIC,
+                "2017-01-01T00:00:00Z",
+                "2017-01-01T00:00:20Z");
+        query.setRate(new Rate(
+                new Period(10, TimeUnit.SECOND)
+        ));
+        query.setLimit(1);
+        query.setDirection("ASC");
+
+        List<Series> result = querySeriesAsList(query);
+
+        Series expectedSeries1 = createSeries(TEST_ENTITY1,
+                Sample.ofDateDecimal("2017-01-01T00:00:03.000Z", new BigDecimal("10.0")));
+        Series expectedSeries2 = createSeries(TEST_ENTITY2,
+                Sample.ofDateDecimal("2017-01-01T00:00:02.000Z", new BigDecimal("10.0")));
+
+        assertEquals(
+                result,
+                Arrays.asList(expectedSeries1, expectedSeries2),
+                "Incorrect query result with group limit");
+    }
+
+    @Issue("4729")
     @Test(description = "test query result with aggregate seriesLimit")
-    public void testAggregateSeriesLimit() throws Exception {
+    public void testAggregateSeriesLimit() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -329,7 +484,7 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
 
     @Issue("4729")
     @Test(description = "test query result with group seriesLimit")
-    public void testGroupSeriesLimit() throws Exception {
+    public void testGroupSeriesLimit() {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -344,15 +499,47 @@ public class SeriesQueryAggregateGroupOrderTest extends SeriesMethod {
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("5.0")),
-                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("5.0")),
-                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", new BigDecimal("5.0")),
-                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", new BigDecimal("5.0")));
+                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 5),
+                Sample.ofDateInteger("2017-01-01T00:00:05.000Z", 5),
+                Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5),
+                Sample.ofDateInteger("2017-01-01T00:00:15.000Z", 5));
 
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
                 "Incorrect query result with group seriesLimit");
+    }
+
+    @Issue("4729")
+    @Test(description = "test query result with rate seriesLimit")
+    public void testRateSeriesLimit() {
+        SeriesQuery query = new SeriesQuery(
+                "*",
+                TEST_METRIC,
+                "2017-01-01T00:00:00Z",
+                "2017-01-01T00:00:20Z");
+        query.setRate(new Rate(
+                new Period(5, TimeUnit.SECOND)
+        ));
+        query.setSeriesLimit(1);
+
+        List<Series> result = querySeriesAsList(query);
+
+        Series expectedSeries = createSeries(TEST_ENTITY1,
+                Sample.ofDateDecimal("2017-01-01T00:00:03.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:07.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:09.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:11.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:13.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:17.000Z", new BigDecimal("5.0")),
+                Sample.ofDateDecimal("2017-01-01T00:00:19.000Z", new BigDecimal("5.0")));
+
+        assertEquals(
+                result,
+                Collections.singletonList(expectedSeries),
+                "Incorrect query result with rate");
     }
 
     private Series createSeries(String entity, Sample... samples) {

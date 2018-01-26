@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.SeriesType;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
+import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -36,6 +37,7 @@ public class SeriesQuery {
     private Aggregate aggregate;
     private Interpolate interpolate;
     private Group group;
+    private Rate rate;
     private String timeFormat;
     private Boolean exactMatch;
     private Integer limit;
