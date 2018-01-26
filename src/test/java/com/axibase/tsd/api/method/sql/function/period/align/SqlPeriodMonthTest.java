@@ -29,9 +29,32 @@ public class SqlPeriodMonthTest extends SqlTest {
     }
 
     @Issue("4866")
+    @Test(description = "test GROUP BY MONTH with UTC timezone")
+    public void testGroupByMonthCalendar() {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, 'UTC')",
+                TEST_METRIC
+        );
+
+        String[][] expected = new String[][] {
+                {"2017-01-01T00:00:00.000Z", "1"},
+                {"2017-02-01T00:00:00.000Z", "2"},
+                {"2017-03-01T00:00:00.000Z", "3"},
+                {"2017-04-01T00:00:00.000Z", "4"},
+                {"2017-05-01T00:00:00.000Z", "5"}
+        };
+
+        assertSqlQueryRows("Wrong result GROUP BY MONTH with UTC timezone",
+                expected, sqlQuery);
+    }
+
+    @Issue("4866")
     @Test(description = "test GROUP BY MONTH with START_TIME")
     public void testGroupByMonthStartTime() {
-        final String sqlQuery = String.format(
+        String sqlQuery = String.format(
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
@@ -41,13 +64,56 @@ public class SqlPeriodMonthTest extends SqlTest {
 
         String[][] expected = new String[][] {
                 {"2017-01-31T00:00:00.000Z", "2"},
-                {"2017-03-01T00:00:00.000Z", "2"},
                 {"2017-03-31T00:00:00.000Z", "3"},
                 {"2017-04-30T00:00:00.000Z", "4"},
                 {"2017-05-31T00:00:00.000Z", "5"}
         };
 
         assertSqlQueryRows("Wrong result GROUP BY MONTH with START_TIME",
+                expected, sqlQuery);
+    }
+
+    @Issue("4866")
+    @Test(description = "test GROUP BY MONTH with END_TIME")
+    public void testGroupByMonthEndTime() {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, END_TIME)",
+                TEST_METRIC
+        );
+
+        String[][] expected = new String[][] {
+                {"2017-01-31T23:00:00.000Z", "2"},
+                {"2017-02-28T23:00:00.000Z", "3"},
+                {"2017-03-31T23:00:00.000Z", "4"},
+                {"2017-04-30T23:00:00.000Z", "5"}
+        };
+
+        assertSqlQueryRows("Wrong result GROUP BY MONTH with END_TIME",
+                expected, sqlQuery);
+    }
+
+    @Issue("4866")
+    @Test(description = "test GROUP BY MONTH with FIRST_VALUE_TIME")
+    public void testGroupByMonthFirstValueTime() {
+        String sqlQuery = String.format(
+                "SELECT datetime, MAX(value) " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
+                        "GROUP BY PERIOD(1 MONTH, FIRST_VALUE_TIME)",
+                TEST_METRIC
+        );
+
+        String[][] expected = new String[][] {
+                {"2017-01-31T00:00:05.000Z", "2"},
+                {"2017-03-31T00:00:05.000Z", "3"},
+                {"2017-04-30T00:00:05.000Z", "4"},
+                {"2017-05-31T00:00:05.000Z", "5"},
+        };
+
+        assertSqlQueryRows("Wrong result GROUP BY MONTH with FIRST_VALUE_TIME",
                 expected, sqlQuery);
     }
 }
