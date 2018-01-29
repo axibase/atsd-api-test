@@ -17,21 +17,22 @@ public class WhereNonBooleanTest extends SqlTest {
     }
 
     @Issue("4926")
-    @Test
+    @Test(description = "Test that WHERE does not accept numeric value as condition")
     public void testWhereTextFails() {
         String sqlQuery = String.format("SELECT * FROM \"%s\" WHERE 1", METRIC_NAME);
         assertBadSqlRequest("Invalid WHERE clause expression: 1", sqlQuery);
     }
 
     @Issue("4926")
-    @Test
+    @Test(description = "Test that WHERE does not accept string value as condition")
     public void testWhereStringFails() {
         String sqlQuery = String.format("SELECT * FROM \"%s\" WHERE 'abc'", METRIC_NAME);
         assertBadSqlRequest("Invalid WHERE clause expression: 'abc'", sqlQuery);
     }
 
     @Issue("4926")
-    @Test
+    @Test(description = "Test that we have correct error description " +
+            "with bad-formed time interval for interpolation")
     public void testWhereBadTimeIntervalFail() {
         String sqlQuery = String.format(
                 "SELECT value FROM \"%s\" " +
