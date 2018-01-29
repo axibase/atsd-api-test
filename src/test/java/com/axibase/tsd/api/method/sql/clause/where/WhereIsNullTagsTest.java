@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.operator;
+package com.axibase.tsd.api.method.sql.clause.where;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
