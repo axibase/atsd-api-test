@@ -58,7 +58,7 @@ public class SqlPeriodMonthTest extends SqlTest {
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
-                        "GROUP BY PERIOD(1 MONTH, START_TIME)",
+                        "GROUP BY PERIOD(1 MONTH, START_TIME, 'UTC')",
                 TEST_METRIC
         );
 
@@ -80,7 +80,7 @@ public class SqlPeriodMonthTest extends SqlTest {
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
-                        "GROUP BY PERIOD(1 MONTH, END_TIME)",
+                        "GROUP BY PERIOD(1 MONTH, END_TIME, 'UTC')",
                 TEST_METRIC
         );
 
@@ -102,7 +102,7 @@ public class SqlPeriodMonthTest extends SqlTest {
                 "SELECT datetime, MAX(value) " +
                         "FROM \"%s\" " +
                         "WHERE datetime >= '2017-01-31T00:00:00Z' AND datetime < '2017-05-31T23:00:00Z' " +
-                        "GROUP BY PERIOD(1 MONTH, FIRST_VALUE_TIME)",
+                        "GROUP BY PERIOD(1 MONTH, FIRST_VALUE_TIME, 'UTC')",
                 TEST_METRIC
         );
 
