@@ -592,4 +592,27 @@ public class InterpolationBoundaryValuesTest extends SqlTest {
 
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
+
+    @Issue("4822")
+    @Test(description = "Test that we can specify start/end time both by date comparison " +
+            "and between operator in the same query")
+    public void testDifferentWaysOfSpecifyingIntervals() {
+        String sqlQuery = String.format(
+                "SELECT value " +
+                        "FROM \"%s\" " +
+                        "WHERE datetime >= '2017-01-01T09:50:00Z' AND datetime <= '2017-01-01T10:50:00Z' " +
+                        "OR datetime BETWEEN '2017-01-01T11:50:00Z' AND '2017-01-01T12:50:00Z' " +
+                        "WITH INTERPOLATE(1 HOUR, LINEAR, INNER, VALUE NaN, START_TIME)",
+                TEST_METRIC_1);
+
+        String[][] expectedRows = {
+                {"NaN"},
+                {"1"},
+                {"2"},
+                {"3"}
+        };
+
+        assertSqlQueryRows("Incorrect result when using different ways of " +
+                "interval selection (>=/<=, between) for interpolation", expectedRows, sqlQuery);
+    }
 }
