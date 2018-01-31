@@ -13,24 +13,23 @@ import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.InterpolateFunction;
 import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 /** Test that limit applied correctly when transformations queried. */
 public class SeriesQueryTransformationsLimitTest extends SeriesMethod {
-    private final String METRIC = metric();
-    private final String ENTITY_1 = entity();
-    private final String ENTITY_2 = entity();
+
+    private final String METRIC = Mocks.metric();
+    private final String ENTITY_1 = Mocks.entity();
+    private final String ENTITY_2 = Mocks.entity();
     private final List<String> ENTITIES = Arrays.asList(ENTITY_1, ENTITY_2);
     private final Sample[] SAMPLES_1 = {
             Sample.ofDateInteger("2017-01-01T00:10:00Z", 1),
@@ -59,11 +58,11 @@ public class SeriesQueryTransformationsLimitTest extends SeriesMethod {
 
         Series series1 = new Series(ENTITY_1, METRIC);
         series1.addSamples(SAMPLES_1);
-        insertSeriesCheck(series1);
 
         Series series2 = new Series(ENTITY_2, METRIC);
         series2.addSamples(SAMPLES_2);
-        insertSeriesCheck(series2);
+
+        insertSeriesCheck(series1, series2);
     }
 
     @AfterMethod(alwaysRun = true)
@@ -72,7 +71,6 @@ public class SeriesQueryTransformationsLimitTest extends SeriesMethod {
         GROUP.setOrder(0);
         RATE.setOrder(0);
     }
-
 
     @Issue("4835")
     @Test(description = "test that limit is applied correctly after interpolation")
