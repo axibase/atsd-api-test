@@ -33,21 +33,35 @@ public class DatetimeAggregationTest extends SqlTest {
     @DataProvider
     public Object[][] provideAggregators() {
         return new Object[][] {
-                {"FIRST(datetime), FIRST(time)",    "2017-01-01T00:00:00.000Z", Util.getUnixTime("2017-01-01T00:00:00Z")},
-                {"LAST(datetime), LAST(time)",      "2017-01-03T00:00:00.000Z", Util.getUnixTime("2017-01-03T00:00:00Z")},
-                {"MAX(datetime), MAX(time)",        "2017-01-03T00:00:00.000Z", Util.getUnixTime("2017-01-03T00:00:00Z")},
-                {"MIN(datetime), MIN(time)",        "2017-01-01T00:00:00.000Z", Util.getUnixTime("2017-01-01T00:00:00Z")},
-                {"COUNT(datetime), COUNT(time)",    "3", "3"}
+                {"FIRST(datetime), FIRST(time)",
+                        "2017-01-01T00:00:00.000Z",
+                        String.valueOf(Util.getUnixTime("2017-01-01T00:00:00Z"))},
+
+                {"LAST(datetime), LAST(time)",
+                        "2017-01-03T00:00:00.000Z",
+                        String.valueOf(Util.getUnixTime("2017-01-03T00:00:00Z"))},
+
+                {"MAX(datetime), MAX(time)",
+                        "2017-01-03T00:00:00.000Z",
+                        String.valueOf(Util.getUnixTime("2017-01-03T00:00:00Z"))},
+
+                {"MIN(datetime), MIN(time)",
+                        "2017-01-01T00:00:00.000Z",
+                        String.valueOf(Util.getUnixTime("2017-01-01T00:00:00Z"))},
+
+                {"COUNT(datetime), COUNT(time)",
+                        "3",
+                        "3"}
         };
     }
 
     @Issue("5021")
     @Test(dataProvider = "provideAggregators", description = "Test datetime and time in aggregators")
-    public void testDatetimeAggregators(String aggregators, String expectedDatetime, Long expectedTime) {
+    public void testDatetimeAggregators(String aggregators, String expectedDatetime, String expectedTime) {
         String sqlQuery = String.format("SELECT %s FROM \"%s\" GROUP BY entity", aggregators, TEST_METRIC);
 
         String[][] expectedRows = {
-                {expectedDatetime, expectedTime.toString()}
+                {expectedDatetime, expectedTime}
         };
 
         assertSqlQueryRows("Incorrect datetime aggregation result",
