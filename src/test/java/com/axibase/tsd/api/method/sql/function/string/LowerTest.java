@@ -70,11 +70,14 @@ public class LowerTest extends SqlTest {
                 text, series.getMetric()
         );
 
-        String actualValue = queryTable(sqlQuery).getValueAt(0, 0);
-        String assertMessage = String.format("Incorrect result of lower function with.%n\tQuery: %s",
-                sqlQuery
-        );
-        assertEquals(actualValue, expectedValue, assertMessage);
+        String[][] expectedRows = new String[][] {
+                { expectedValue }
+        };
+
+        assertSqlQueryRows(
+                String.format("Incorrect result of lower function with.%n\tQuery: %s", sqlQuery),
+                expectedRows,
+                sqlQuery);
     }
 
     @Issue("4233")
