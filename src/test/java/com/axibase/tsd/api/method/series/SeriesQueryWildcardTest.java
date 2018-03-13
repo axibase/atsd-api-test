@@ -112,16 +112,16 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
     @Issue("2207")
     @Issue("4644")
     @Test(dataProvider = "entities")
-    public void testWildcardInEntity(String entity, int seriesCount) throws Exception {
+    public void testWildcardInEntity(String entity, int seriesCount)  {
         SeriesQuery seriesQuery = new SeriesQuery(entity, METRIC_FOR_ENTITY);
         seriesQuery.setStartDate(MIN_QUERYABLE_DATE);
         seriesQuery.setEndDate(MAX_QUERYABLE_DATE);
 
-        if (seriesCount == 0) {
-            assertEntityNotFound(seriesQuery);
-        } else {
-            List<Series> seriesList = querySeriesAsList(seriesQuery);
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
+        if (seriesCount != 0) {
             assertQueryResultSize(seriesCount, seriesList);
+        } else {
+            assertSeriesEmpty(seriesList);
         }
     }
 
@@ -192,12 +192,6 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
         for (int i = 0; i < requiredSeriesCount; i++) {
             assertEquals("Required series empty", 1, seriesList.get(i).getData().size());
         }
-    }
-
-    private void assertEntityNotFound(SeriesQuery seriesQuery) throws JSONException {
-        JSONObject jsonObject = new JSONObject(querySeries(Collections.singletonList(seriesQuery)).readEntity(String.class));
-        String errorMessagePrefix = (String) jsonObject.get("error");
-        assertTrue("Entity shouldn't be found", errorMessagePrefix.startsWith("com.axibase.tsd.service.DictionaryNotFoundException"));
     }
 
     private void assertSeriesEmpty(List<Series> seriesList) {
