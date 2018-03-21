@@ -52,20 +52,21 @@ public class SqlSubqueryColumnsTest extends SqlTest {
     @Test
     public void testAllColumnsWithAliases() {
         String sqlQuery = String.format(
-                "SELECT \"entity_alias\", \"datetime_alias\", \"time_alias\", \"value_alias\", \"tags_alias\" " +
+                "SELECT \"entity_alias\", \"datetime_alias\", \"time_alias\", \"value_alias\", \"tag1_alias\", \"tag2_alias\" " +
                         "FROM ( " +
                         "   SELECT " +
                         "       entity AS \"entity_alias\"," +
                         "       datetime AS \"datetime_alias\", " +
                         "       time AS \"time_alias\", " +
                         "       value AS \"value_alias\", " +
-                        "       tags AS \"tags_alias\" " +
+                        "       tags.tag1 AS \"tag1_alias\", " +
+                        "       tags.tag2 AS \"tag2_alias\" " +
                         "   FROM \"%s\")", TEST_METRIC);
 
         String[][] expectedRows = new String[][] {
-                {TEST_ENTITY, "2017-01-01T00:00:00.000Z", "1483228800000", "1", "tag1=value1;tag2=value2"},
-                {TEST_ENTITY, "2017-01-02T00:00:00.000Z", "1483315200000", "2", "tag1=value1;tag2=value2"},
-                {TEST_ENTITY, "2017-01-03T00:00:00.000Z", "1483401600000", "3", "tag1=value1;tag2=value2"}
+                {TEST_ENTITY, "2017-01-01T00:00:00.000Z", "1483228800000", "1", "value1", "value2"},
+                {TEST_ENTITY, "2017-01-02T00:00:00.000Z", "1483315200000", "2", "value1", "value2"},
+                {TEST_ENTITY, "2017-01-03T00:00:00.000Z", "1483401600000", "3", "value1", "value2"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
