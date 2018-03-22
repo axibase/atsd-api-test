@@ -337,7 +337,7 @@ public class SqlSubqueryTest extends SqlTest {
                         "      WITH INTERPOLATE (5 MINUTE)\n" +
                         "      GROUP BY datetime, tags.t1, tags.t2\n" +
                         ") \n" +
-                        "GROUP BY tags.t1, tags.t2, PERIOD(1 hour, 'UTC')",
+                        "GROUP BY tags.t1, tags.t2, PERIOD(1 hour, 'UTC')",/**/
                 METRIC_NAME
         );
 
@@ -367,5 +367,124 @@ public class SqlSubqueryTest extends SqlTest {
         };
 
         assertSqlQueryRows("Wrong result when using expressions for time column in subquery", expectedRows, sqlQuery);
+    }
+
+    @Issue("5139")
+    @Test(description = "Test lower-case column aliases in subquery")
+    public void testLowerCaseAlias() {
+        String sqlQuery = String.format(
+                "SELECT \"ent_alias\", \"val_alias\", \"dt_alias\", \"tm_alias\", \"t1_alias\" FROM (\n" +
+                        "  SELECT " +
+                        "       entity AS \"ent_alias\", " +
+                        "       value AS \"val_alias\", " +
+                        "       datetime AS \"dt_alias\", " +
+                        "       time AS \"tm_alias\", " +
+                        "       tags.t1 AS \"t1_alias\" \n" +
+                        "  FROM \"%s\" \n" +
+                        ")",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {ENTITY_NAME, "1", "2017-07-21T12:00:00.000Z", "1500638400000", "Tag 1"}
+        };
+
+        assertSqlQueryRows("Wrong result when using lower-case column aliases in subquery", expectedRows, sqlQuery);
+    }
+
+    @Issue("5139")
+    @Test(description = "Test upper-case column aliases in subquery")
+    public void testUpperCaseAlias() {
+        String sqlQuery = String.format(
+                "SELECT \"ENT_ALIAS\", \"VAL_ALIAS\", \"DT_ALIAS\", \"TM_ALIAS\", \"T1_ALIAS\" FROM (\n" +
+                        "  SELECT " +
+                        "       entity AS \"ENT_ALIAS\", " +
+                        "       value AS \"VAL_ALIAS\", " +
+                        "       datetime AS \"DT_ALIAS\", " +
+                        "       time AS \"TM_ALIAS\", " +
+                        "       tags.t1 AS \"T1_ALIAS\" \n" +
+                        "  FROM \"%s\" \n" +
+                        ")",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {ENTITY_NAME, "1", "2017-07-21T12:00:00.000Z", "1500638400000", "Tag 1"}
+        };
+
+        assertSqlQueryRows("Wrong result when using upper-case column aliases in subquery", expectedRows, sqlQuery);
+    }
+
+    @Issue("5139")
+    @Test(description = "Test lower-case column aliases in subquery")
+    public void testLowerCaseAliasNestedSubquery() {
+        String sqlQuery = String.format(
+                "SELECT \"ent_alias\", \"val_alias\", \"dt_alias\", \"tm_alias\", \"t1_alias\" FROM (\n" +
+                        "  SELECT \"ent_alias\", \"val_alias\", \"dt_alias\", \"tm_alias\", \"t1_alias\" " +
+                        "  FROM ( " +
+                        "   SELECT " +
+                        "       entity AS \"ent_alias\", " +
+                        "       value AS \"val_alias\", " +
+                        "       datetime AS \"dt_alias\", " +
+                        "       time AS \"tm_alias\", " +
+                        "       tags.t1 AS \"t1_alias\" \n" +
+                        "   FROM \"%s\" \n )"  +
+                        ")",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {ENTITY_NAME, "1", "2017-07-21T12:00:00.000Z", "1500638400000", "Tag 1"}
+        };
+
+        assertSqlQueryRows("Wrong result when using lower-cased column aliases in subquery", expectedRows, sqlQuery);
+    }
+
+    @Issue("5139")
+    @Test(description = "Test lower-case column aliases in subquery")
+    public void testUpperCaseAliasNestedSubquery() {
+        String sqlQuery = String.format(
+                "SELECT \"ENT_ALIAS\", \"VAL_ALIAS\", \"DT_ALIAS\", \"TM_ALIAS\", \"T1_ALIAS\" FROM (\n" +
+                        "  SELECT \"ENT_ALIAS\", \"VAL_ALIAS\", \"DT_ALIAS\", \"TM_ALIAS\", \"T1_ALIAS\" " +
+                        "  FROM ( " +
+                        "   SELECT " +
+                        "       entity AS \"ENT_ALIAS\", " +
+                        "       value AS \"VAL_ALIAS\", " +
+                        "       datetime AS \"DT_ALIAS\", " +
+                        "       time AS \"TM_ALIAS\", " +
+                        "       tags.t1 AS \"T1_ALIAS\" \n" +
+                        "   FROM \"%s\" \n )"  +
+                        ")",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {ENTITY_NAME, "1", "2017-07-21T12:00:00.000Z", "1500638400000", "Tag 1"}
+        };
+
+        assertSqlQueryRows("Wrong result when using lower-cased column aliases in subquery", expectedRows, sqlQuery);
+    }
+
+    @Issue("5139")
+    @Test(description = "Test mixed-case column aliases in subquery")
+    public void testMixedCaseAlias() {
+        String sqlQuery = String.format(
+                "SELECT \"ENT_ALIAS\", \"val_alias\", \"DT_ALIAS\", \"tm_alias\", \"T1_ALIAS\" FROM (\n" +
+                        "  SELECT " +
+                        "       entity AS \"ent_alias\", " +
+                        "       value AS \"VAL_ALIAS\", " +
+                        "       datetime AS \"dt_alias\", " +
+                        "       time AS \"TM_ALIAS\", " +
+                        "       tags.t1 AS \"t1_alias\" \n" +
+                        "  FROM \"%s\" \n" +
+                        ")",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {ENTITY_NAME, "1", "2017-07-21T12:00:00.000Z", "1500638400000", "Tag 1"}
+        };
+
+        assertSqlQueryRows("Wrong result when using upper-case column aliases in subquery", expectedRows, sqlQuery);
     }
 }
