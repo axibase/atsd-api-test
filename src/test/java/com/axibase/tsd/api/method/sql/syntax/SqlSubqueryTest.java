@@ -6,8 +6,13 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.text.MessageFormat;
 
 public class SqlSubqueryTest extends SqlTest {
     public static final String ENTITY_NAME = Mocks.entity();
@@ -337,7 +342,7 @@ public class SqlSubqueryTest extends SqlTest {
                         "      WITH INTERPOLATE (5 MINUTE)\n" +
                         "      GROUP BY datetime, tags.t1, tags.t2\n" +
                         ") \n" +
-                        "GROUP BY tags.t1, tags.t2, PERIOD(1 hour, 'UTC')",/**/
+                        "GROUP BY tags.t1, tags.t2, PERIOD(1 hour, 'UTC')",
                 METRIC_NAME
         );
 
@@ -428,7 +433,7 @@ public class SqlSubqueryTest extends SqlTest {
                         "       datetime AS \"dt_alias\", " +
                         "       time AS \"tm_alias\", " +
                         "       tags.t1 AS \"t1_alias\" \n" +
-                        "   FROM \"%s\" \n )"  +
+                        "   FROM \"%s\" \n )" +
                         ")",
                 METRIC_NAME
         );
@@ -453,7 +458,7 @@ public class SqlSubqueryTest extends SqlTest {
                         "       datetime AS \"DT_ALIAS\", " +
                         "       time AS \"TM_ALIAS\", " +
                         "       tags.t1 AS \"T1_ALIAS\" \n" +
-                        "   FROM \"%s\" \n )"  +
+                        "   FROM \"%s\" \n )" +
                         ")",
                 METRIC_NAME
         );
@@ -466,18 +471,21 @@ public class SqlSubqueryTest extends SqlTest {
     }
 
     @Issue("5139")
-    @Test(description = "Test mixed-case column aliases in subquery")
-    public void testMixedCaseAlias() {
-        String sqlQuery = String.format(
-                "SELECT \"ENT_ALIAS\", \"val_alias\", \"DT_ALIAS\", \"tm_alias\", \"T1_ALIAS\" FROM (\n" +
+    @Test(description = "Test mixed-case column aliases in subquery",
+            dataProvider = "sqlSubqueryMixedCaseDataProvider")
+    public void testMixedCaseAlias(final AllTypeAliases innerAliases, final AllTypeAliases outerAliases) {
+        String sqlQuery = MessageFormat.format(
+                "SELECT \"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\" FROM (\n" +
                         "  SELECT " +
-                        "       entity AS \"ent_alias\", " +
-                        "       value AS \"VAL_ALIAS\", " +
-                        "       datetime AS \"dt_alias\", " +
-                        "       time AS \"TM_ALIAS\", " +
-                        "       tags.t1 AS \"t1_alias\" \n" +
-                        "  FROM \"%s\" \n" +
+                        "       entity AS \"{5}\", " +
+                        "       value AS \"{6}\", " +
+                        "       datetime AS \"{7}\", " +
+                        "       time AS \"{8}\", " +
+                        "       tags.t1 AS \"{9}\" \n" +
+                        "  FROM \"{10}\" \n" +
                         ")",
+                innerAliases.entity, innerAliases.value, innerAliases.datetime, innerAliases.time, innerAliases.tag,
+                outerAliases.entity, outerAliases.value, outerAliases.datetime, outerAliases.time, outerAliases.tag,
                 METRIC_NAME
         );
 
@@ -486,5 +494,38 @@ public class SqlSubqueryTest extends SqlTest {
         };
 
         assertSqlQueryRows("Wrong result when using upper-case column aliases in subquery", expectedRows, sqlQuery);
+    }
+
+    @DataProvider
+    private static Object[][] sqlSubqueryMixedCaseDataProvider() {
+        return new Object[][] {
+                {   //Change  case from lower to Upper
+                        AllTypeAliases.of("ENT_ALIAS", "val_alias", "DT_ALIAS", "tm_alias", "T1_ALIAS"),
+                        AllTypeAliases.of("ent_alias", "VAL_ALIAS", "dt_alias", "TM_ALIAS", "t1_alias")
+                },
+                {
+                        AllTypeAliases.of("ent_alias", "VAL_ALIAS", "dt_alias", "TM_ALIAS", "t1_alias"),
+                        AllTypeAliases.of("ENT_ALIAS", "val_alias", "DT_ALIAS", "tm_alias", "T1_ALIAS")
+                },
+
+                { // Mixed change
+                        AllTypeAliases.of("ENt_ALIAS", "vaL_alias", "Dt_ALIAS", "tM_alias", "T1_ALIAS"),
+                        AllTypeAliases.of("ent_alias", "VAL_ALiAS", "dt_alIas", "Tm_ALIAS", "t1_alias")
+                },
+                { //not letter characters
+                        AllTypeAliases.of("E%", "V%", "D%", "T%", "T1"),
+                        AllTypeAliases.of("e%", "v%", "d%", "t%", "t1")
+                }
+        };
+    }
+
+    @AllArgsConstructor(staticName = "of")
+    @ToString(includeFieldNames = false)
+    private static class AllTypeAliases {
+        private String entity;
+        private String value;
+        private String datetime;
+        private String time;
+        private String tag;
     }
 }
