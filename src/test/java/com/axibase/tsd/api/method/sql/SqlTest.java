@@ -120,9 +120,9 @@ public abstract class SqlTest extends SqlMethod {
         // If expected result is not empty, but actual is empty, wait 100ms and try again
         // See #5057
         if (expectedRows.size() > 0) {
-            for (int i = 0; i<10 &&  resultTable.getRows().size() == 0; i++) {
+            for (int timeout = 100; timeout <= 1600 && resultTable.getRows().size() == 0; timeout *= 2) {
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(timeout);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
