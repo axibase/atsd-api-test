@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 public abstract class BaseMethod {
-    public static final Long REQUEST_INTERVAL = 200L;
+    public static final Long REQUEST_INTERVAL = 1000L;
     public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
 
     private static final int DEFAULT_BORROW_MAX_TIME_MS = 3000;
