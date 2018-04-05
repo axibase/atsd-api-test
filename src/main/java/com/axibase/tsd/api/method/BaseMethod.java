@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.logging.LoggingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -136,6 +137,7 @@ public abstract class BaseMethod {
         return executeRequest(apiTargetPool, requestFunction);
     }
 
+    @SneakyThrows
     private static Response executeRequest(
             GenericObjectPool<HttpClient> pool,
             Function<WebTarget, Response> requestFunction) {
@@ -153,6 +155,7 @@ public abstract class BaseMethod {
         } catch (Exception e) {
             logger.error("Exception while making request", e);
             client.close();
+            pool.returnObject(pool.getFactory().makeObject().getObject());
             throw e;
         }
     }
