@@ -154,8 +154,7 @@ public abstract class BaseMethod {
             return result;
         } catch (Exception e) {
             logger.error("Exception while making request", e);
-            client.close();
-            pool.returnObject(pool.getFactory().makeObject().getObject());
+            pool.invalidateObject(client);
             throw e;
         }
     }
