@@ -4,7 +4,6 @@ import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.logging.LoggingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -137,7 +136,6 @@ public abstract class BaseMethod {
         return executeRequest(apiTargetPool, requestFunction);
     }
 
-    @SneakyThrows
     private static Response executeRequest(
             GenericObjectPool<HttpClient> pool,
             Function<WebTarget, Response> requestFunction) {
@@ -149,31 +147,30 @@ public abstract class BaseMethod {
         }
 
         try {
-            //final Response result = requestFunction.apply(client.target);
-            Response result = null;
+			Response result = null;
 			try {
 				result = requestFunction.apply(client.target);
 			} catch (Exception reqEx) {
-				if (reqEx instanceof org.apache.http.NoHttpResponseException 
-                   || reqEx.getCause() instanceof org.apache.http.NoHttpResponseException
-                   || reqEx instanceof org.apache.http.client.ClientProtocolException
-                   || reqEx.getCause() instanceof org.apache.http.client.ClientProtocolException) {
+				if (reqEx instanceof org.apache.http.NoHttpResponseException
+						|| reqEx.getCause() instanceof org.apache.http.NoHttpResponseException
+						|| reqEx instanceof org.apache.http.client.ClientProtocolException
+						|| reqEx.getCause() instanceof org.apache.http.client.ClientProtocolException) {
 					try {
-						logger.error("sleep on error", reqEx);
+						logger.error("SLEEP " + reqEx, reqEx);
 						Thread.currentThread().sleep(2000L);
-					} catch (Exception interruptEx) {}
+					} catch (Exception interruptEx) {
+					}
 					result = requestFunction.apply(client.target);
-                    logger.info("request OK after error");
+					logger.info("request OK after error and SLEEP on " + reqEx);
 				} else {
 					throw reqEx;
 				}
 			}
-            pool.returnObject(client);
-            return result;
-            
+			pool.returnObject(client);
+			return result;
         } catch (Exception e) {
             logger.error("Exception while making request", e);
-            pool.invalidateObject(client);
+            client.close();
             throw e;
         }
     }
