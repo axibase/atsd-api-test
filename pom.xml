@@ -195,6 +195,10 @@
                     <parallel>classes</parallel>
                     <threadCount>4</threadCount>
                     <forkCount>0</forkCount>
+
+                    <excludes>
+                        <exclude>**/MessageQueryStatsTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
