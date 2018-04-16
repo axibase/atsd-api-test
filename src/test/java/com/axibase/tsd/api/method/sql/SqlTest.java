@@ -116,17 +116,18 @@ public abstract class SqlTest extends SqlMethod {
 
     public void assertSqlQueryRows(String message, List<List<String>> expectedRows, String sqlQuery) {
         StringTable resultTable = queryTable(sqlQuery);
-
         // Some series may be not returned immediately after insert.
         // If expected result is not empty, but actual is empty, wait 100ms and try again
         // See #5057
-        if (expectedRows.size() > 0 && resultTable.getRows().size() == 0) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (expectedRows.size() > 0) {
+            for (int timeout = 100; timeout <= 1600 && resultTable.getRows().size() == 0; timeout *= 2) {
+                try {
+                    Thread.sleep(timeout);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resultTable = queryTable(sqlQuery);
             }
-            resultTable = queryTable(sqlQuery);
         }
         assertTableRowsExist(String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery), expectedRows,
                 resultTable

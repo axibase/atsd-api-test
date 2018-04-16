@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.sql.response;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import org.apache.http.entity.ContentType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +61,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .request()
                 .get());
         response.bufferEntity();
-        assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+        assertContentTypeEquals("text/csv", response.getHeaderString(CONTENT_TYPE));
     }
 
     @Test
@@ -70,7 +72,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .request()
                 .get());
         response.bufferEntity();
-        assertEquals("text/csv;charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
+        assertContentTypeEquals("text/csv", response.getHeaderString(CONTENT_TYPE));
     }
 
     @Test
@@ -83,8 +85,7 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                 .post(Entity.entity(form,
                         MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
-        assertEquals("application/json; charset=UTF-8", response.getHeaderString(CONTENT_TYPE));
-
+        assertContentTypeEquals(MediaType.APPLICATION_JSON, response.getHeaderString(CONTENT_TYPE));
     }
 
     private Set<String> parseResponseAllowedMethods(Response response) {
@@ -93,5 +94,11 @@ public class SqlApiResponseHeadersTest extends SqlMethod {
                         .replace(" ", "")
                         .split(",")
         ));
+    }
+
+    private void assertContentTypeEquals(String mimeType, final String inputContentType) {
+        ContentType contentType = ContentType.parse(inputContentType);
+        assertEquals(mimeType, contentType.getMimeType());
+        assertEquals(StandardCharsets.UTF_8, contentType.getCharset());
     }
 }
