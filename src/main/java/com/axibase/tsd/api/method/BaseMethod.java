@@ -147,31 +147,9 @@ public abstract class BaseMethod {
         }
 
         try {
-			Response result = null;
-			try {
-				result = requestFunction.apply(client.target);
-			} catch (Exception reqEx) {
-				if (reqEx instanceof org.apache.http.NoHttpResponseException
-						|| reqEx.getCause() instanceof org.apache.http.NoHttpResponseException
-						|| reqEx instanceof org.apache.http.client.ClientProtocolException
-						|| reqEx.getCause() instanceof org.apache.http.client.ClientProtocolException) {
-					try {
-						logger.error("SLEEP " + reqEx, reqEx);
-						Thread.currentThread().sleep(2000L);
-					} catch (Exception interruptEx) {
-					}
-					result = requestFunction.apply(client.target);
-					logger.info("request OK after error and SLEEP on " + reqEx);
-				} else {
-					throw reqEx;
-				}
-			}
-			pool.returnObject(client);
-			return result;
-        } catch (Exception e) {
-            logger.error("Exception while making request", e);
-            client.close();
-            throw e;
+            return requestFunction.apply(client.target);
+        } finally {
+            pool.returnObject(client);
         }
     }
 
