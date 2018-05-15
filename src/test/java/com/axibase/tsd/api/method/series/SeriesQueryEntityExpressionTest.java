@@ -26,8 +26,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 @Issue("3612")
-@Test(enabled = false)
-// TODO: Disabled while #1234 will not be solved.
+// Disabled while #1234 will not be solved.
 public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
     private static final String METRIC_NAME = "m-test-entity-expression-001";
@@ -365,7 +364,8 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     }
 
     @Issue("3612")
-    @Test(dataProvider = "entityExpressionProviderForEntityGroup")
+    @Test(enabled = false,
+            dataProvider = "entityExpressionProviderForEntityGroup")
     public static void testEntityExpressionWithEntityGroup(String expression, HashSet<String> expectedEntities) throws Exception {
         SeriesQuery query = createTestQuery(null);
         query.setEntityGroup(ENTITY_GROUP_NAME);
@@ -410,7 +410,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     }
 
     @Issue("3612")
-    @Test(dataProvider = "emptyResultEntityExpressionProviderForEntityGroup")
+    @Test(enabled = false, dataProvider = "emptyResultEntityExpressionProviderForEntityGroup")
     public static void testEntityExpressionWithEntityGroup(String expression) throws Exception {
         SeriesQuery query = createTestQuery(null);
         query.setEntityGroup(ENTITY_GROUP_NAME);
@@ -418,7 +418,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
         List<Series> result = SeriesMethod.querySeriesAsList(query);
         HashSet<String> receivedEntities = new HashSet<>();
-        for (Series series: result) {
+        for (Series series : result) {
             receivedEntities.add(series.getEntity());
         }
 
@@ -448,7 +448,7 @@ public class SeriesQueryEntityExpressionTest extends SeriesMethod {
     }
 
     @Issue("3612")
-    @Test(dataProvider = "errorEntityExpressionProvider")
+    @Test(enabled = false, dataProvider = "errorEntityExpressionProvider")
     public static void testErrorOnBadEntityExpression(String expression) throws Exception {
         SeriesQuery query = createTestQuery("*");
         query.setEntityExpression(expression);

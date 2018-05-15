@@ -20,7 +20,6 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-@Test(enabled = false)
 // TODO: Disabled while #1234 will not be solved.
 public class SeriesQueryDateFilterTest extends SeriesMethod {
     private final Sample DATE_FILTER_DEFAULT_SAMPLE = Sample.ofDateInteger("2014-06-06T00:00:00.000Z", 1);
@@ -101,7 +100,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     }
 
     @Issue("3030")
-    @Test
+    @Test(enabled = false)
     public void testStartGreaterEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setEndDate(MIN_QUERYABLE_DATE);
@@ -113,7 +112,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     }
 
     @Issue("3030")
-    @Test
+    @Test(enabled = false)
     public void testStartEqualEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setEndDate(MIN_QUERYABLE_DATE);
@@ -125,7 +124,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     }
 
     @Issue("3030")
-    @Test
+    @Test(enabled = false)
     public void testIntervalZeroAndStartRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setInterval(new Period(0, TimeUnit.HOUR));
@@ -137,7 +136,7 @@ public class SeriesQueryDateFilterTest extends SeriesMethod {
     }
 
     @Issue("3030")
-    @Test
+    @Test(enabled = false)
     public void testIntervalZeroAndEndRaiseError() throws Exception {
         SeriesQuery query = new SeriesQuery("mockEntity", "mockMetric");
         query.setInterval(new Period(0, TimeUnit.HOUR));
