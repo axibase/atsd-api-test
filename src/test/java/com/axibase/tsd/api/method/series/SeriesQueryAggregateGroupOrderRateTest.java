@@ -9,9 +9,11 @@ import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregati
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
+import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -237,7 +239,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
 
     @Issue("4729")
     @Test(description = "test query result with default Group/Aggregate order")
-    public void testDefaultOrderRateAggregate() {
+    public void testDefaultOrderRateAggregate() throws JSONException {
         SeriesQuery query = new SeriesQuery(
                 "*",
                 TEST_METRIC,
@@ -251,7 +253,6 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 new Period(10, TimeUnit.SECOND)
         ));
 
-        List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries1 = createSeries(TEST_ENTITY1,
                 Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 4),
@@ -261,14 +262,14 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 4),
                 Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5));
 
-        assertEquals(
-                result,
+        CommonAssertions.jsonAssert(
+                "Incorrect query result with default Rate/Aggregate order",
                 Arrays.asList(expectedSeries1, expectedSeries2),
-                "Incorrect query result with default Rate/Aggregate order");
+                querySeries(query));
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit equals Group/Rate/Aggregate order")
+    @Test(description = "test query result with explicit assertDecimals Group/Rate/Aggregate order")
     public void testExplicitEqualsOrderGroupRateAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -299,11 +300,11 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit equals Group/Aggregate order");
+                "Incorrect query result with explicit assertDecimals Group/Aggregate order");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit non-equals Group/Aggregate order")
+    @Test(description = "test query result with explicit non-assertDecimals Group/Aggregate order")
     public void testExplicitOrderGroupRateAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -335,7 +336,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit non-equals Group/Rate/Aggregate order");
+                "Incorrect query result with explicit non-assertDecimals Group/Rate/Aggregate order");
     }
 
     @Issue("4729")
@@ -371,7 +372,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit non-equals Group/Rate/Aggregate order");
+                "Incorrect query result with explicit non-assertDecimals Group/Rate/Aggregate order");
     }
 
     @Issue("4729")

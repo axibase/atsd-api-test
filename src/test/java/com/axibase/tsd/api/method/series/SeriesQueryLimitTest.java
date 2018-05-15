@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -195,7 +196,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
         String given = response.readEntity(String.class);
 
-        assertTrue("All inserted series should be returned", compareJsonString(expected, given));
+        CommonAssertions.jsonAssert("All inserted series should be returned", seriesList, response);
     }
 
     @Issue("3211")
