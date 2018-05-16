@@ -20,7 +20,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-// TODO: Disabled while #1234 will not be solved.
+// TODO: Disabled while #5314 will not be solved.
 public class SeriesQueryDateFilterTest extends SeriesMethod {
     private final Sample DATE_FILTER_DEFAULT_SAMPLE = Sample.ofDateInteger("2014-06-06T00:00:00.000Z", 1);
 

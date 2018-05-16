@@ -269,7 +269,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit assertDecimals Group/Rate/Aggregate order")
+    @Test(description = "test query result with explicit equals Group/Rate/Aggregate order")
     public void testExplicitEqualsOrderGroupRateAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -300,11 +300,11 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit assertDecimals Group/Aggregate order");
+                "Incorrect query result with explicit equals Group/Aggregate order");
     }
 
     @Issue("4729")
-    @Test(description = "test query result with explicit non-assertDecimals Group/Aggregate order")
+    @Test(description = "test query result with explicit non-equals Group/Aggregate order")
     public void testExplicitOrderGroupRateAggregate() {
         SeriesQuery query = new SeriesQuery(
                 "*",
@@ -336,7 +336,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit non-assertDecimals Group/Rate/Aggregate order");
+                "Incorrect query result with explicit non-equals Group/Rate/Aggregate order");
     }
 
     @Issue("4729")
@@ -372,7 +372,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         assertEquals(
                 result,
                 Collections.singletonList(expectedSeries),
-                "Incorrect query result with explicit non-assertDecimals Group/Rate/Aggregate order");
+                "Incorrect query result with explicit non-equals Group/Rate/Aggregate order");
     }
 
     @Issue("4729")

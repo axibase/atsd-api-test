@@ -26,7 +26,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 @Issue("3612")
-// Disabled while #1234 will not be solved.
+// TODO: Disabled while #5314 will not be solved.
 public class SeriesQueryEntityExpressionTest extends SeriesMethod {
 
     private static final String METRIC_NAME = "m-test-entity-expression-001";
