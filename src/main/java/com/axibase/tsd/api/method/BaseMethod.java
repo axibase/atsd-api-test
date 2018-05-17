@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.Config;
+import com.axibase.tsd.api.transport.http.TargetFactory;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.logging.LoggingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +48,7 @@ public abstract class BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
     protected final static ObjectMapper jacksonMapper;
+    private static final TargetFactory targetFactory = TargetFactory.fromConfig();
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -129,11 +131,11 @@ public abstract class BaseMethod {
     }
 
     public static Response executeRootRequest(Function<WebTarget, Response> requestFunction) {
-        return executeRequest(rootTargetPool, requestFunction);
+        return requestFunction.apply(targetFactory.base());
     }
 
     public static Response executeApiRequest(Function<WebTarget, Response> requestFunction) {
-        return executeRequest(apiTargetPool, requestFunction);
+        return requestFunction.apply(targetFactory.api());
     }
 
     private static Response executeRequest(

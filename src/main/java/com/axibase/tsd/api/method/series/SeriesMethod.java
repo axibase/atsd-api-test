@@ -21,6 +21,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
@@ -143,7 +144,8 @@ public class SeriesMethod extends BaseMethod {
                 .path(METHOD_REINDEX)
                 .request()
                 .post(Entity.text("reindex=Reindex")));
-        if (FOUND.getStatusCode() != response.getStatus()) {
+        final Family statusFamily = Family.familyOf(response.getStatus());
+        if (!Family.SUCCESSFUL.equals(statusFamily) && !Family.REDIRECTION.equals(statusFamily)) {
             throw new Exception("Failed to execute search index update");
         }
         Checker.check(new SearchIndexCheck());

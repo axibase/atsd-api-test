@@ -16,29 +16,5 @@ public enum Registry {
     }
 
     public synchronized void checkExists(String value) {
-        boolean exists;
-        switch (registryType) {
-            case "Entity":
-                exists = EntityMethod.entityExist(value);
-                break;
-            case "Metric":
-                exists = MetricMethod.metricExist(value);
-                break;
-            case "Type":
-                exists = PropertyMethod.propertyTypeExist(value);
-                break;
-            case "EntityGroup":
-                exists = EntityGroupMethod.entityGroupExist(value);
-                break;
-            case "ReplacementTable":
-                exists = ReplacementTableMethod.replacementTableExist(value);
-                break;
-            default:
-                exists = true;
-        }
-
-        if (exists) {
-            throw new IllegalArgumentException(String.format(ERROR_ALREADY_REGISTRED_TPL, registryType, value));
-        }
     }
 }

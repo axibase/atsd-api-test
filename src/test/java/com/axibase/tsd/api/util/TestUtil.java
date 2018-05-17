@@ -192,4 +192,9 @@ public class TestUtil {
         }
         return resultBuilder.toString();
     }
+
+
+    public static <T> Set<T> hashSet(T... objects) {
+        return new HashSet<>(Arrays.asList(objects));
+    }
 }

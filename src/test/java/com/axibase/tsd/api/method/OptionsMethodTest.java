@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method;
 
+import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
-import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

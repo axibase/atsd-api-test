@@ -4,6 +4,7 @@ package com.axibase.tsd.api.method.checks;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import static com.axibase.tsd.api.method.BaseMethod.compareJsonString;
 import static com.axibase.tsd.api.method.series.SeriesMethod.querySeries;
 
+@Slf4j
 public class SeriesCheck extends AbstractCheck {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesCheck.class);
     private static final String ERROR_MESSAGE = "Failed to check series list insert.";
@@ -33,7 +35,7 @@ public class SeriesCheck extends AbstractCheck {
         try {
             return seriesListIsInserted(seriesList);
         } catch (Exception e) {
-            LOGGER.error("Unexpected error on series check. Reason: {}", e.getMessage());
+            LOGGER.error("Unexpected error on series check. Reason: {}", e);
             throw new IllegalStateException(e);
         }
     }
