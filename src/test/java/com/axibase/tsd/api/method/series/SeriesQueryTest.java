@@ -15,12 +15,14 @@ import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.InterpolateFunction;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
 import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeClass;
@@ -62,7 +64,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @DataProvider(name = "datesWithTimezonesProvider")
     Object[][] provideDatesWithTimezones() {
-        return new Object[][]{
+        return new Object[][] {
                 {"2016-07-01T14:23:20Z"},
                 {"2016-07-01T15:46:20+01:23"},
                 {"2016-07-01T15:46:20+01:23"}
@@ -87,7 +89,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @DataProvider(name = "incorrectDatesProvider")
     Object[][] provideIncorrectDates() {
-        return new Object[][]{
+        return new Object[][] {
                 {"2016-07-01 14:23:20"},
                 {"2016-07-01T15:46:20+0123"},
                 {"1467383000000"}
@@ -161,7 +163,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that contains stored interval", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
-        assertEquals("Incorrect stored value", v, data.get(0).getValue());
+        CommonAssertions.assertDecimals("Incorrect stored value", v, data.get(0).getValue());
     }
 
     @Issue("3013")
@@ -181,7 +183,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that intersects stored interval from left", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
-        assertEquals("Incorrect stored value", v, data.get(0).getValue());
+        CommonAssertions.assertDecimals("Incorrect stored value", v, data.get(0).getValue());
     }
 
     @Issue("3013")
@@ -201,7 +203,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
-        assertEquals("Incorrect stored value", v, data.get(0).getValue());
+        assertTrue("Incorrect stored value", v.compareTo(data.get(0).getValue()) == 0);
     }
 
     @Issue("3043")
@@ -445,7 +447,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @DataProvider(name = "dataTextProvider")
     Object[][] provideDataText() {
-        return new Object[][]{
+        return new Object[][] {
                 {"hello"},
                 {"HelLo"},
                 {"Hello World"},
@@ -497,7 +499,7 @@ public class SeriesQueryTest extends SeriesMethod {
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
-        String[] data = new String[]{"1", "2"};
+        String[] data = new String[] {"1", "2"};
         for (String x : data) {
             Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
@@ -569,25 +571,25 @@ public class SeriesQueryTest extends SeriesMethod {
     @DataProvider
     public Object[][] provideTagFilters() {
         return new Object[][] {
-                { new Filter<Series>("", TEST_SERIES1) },
-                { new Filter<Series>("\"tags\": null", TEST_SERIES1) },
-                { new Filter<Series>("\"tags\": {}", TEST_SERIES1) },
-                { new Filter<Series>("\"tags\": {\"a\": null}", TEST_SERIES1)},
-                { new Filter<Series>("\"tags\": {\"tag\": null}", TEST_SERIES1)},
-                { new Filter<Series>("\"tags\": {\"a\": \"b\"}")},
-                { new Filter<Series>("\"tags\": {\"tag\": \"b\"}")},
-                { new Filter<Series>("\"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
-                { new Filter<Series>("\"tags\": {\"tag\": \"value\", \"a\": \"b\"}")},
-                { new Filter<Series>("\"exactMatch\": true") },
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": null") },
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {}") },
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": null}")},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": null}")},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": \"b\"}")},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"b\"}")},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": null}", TEST_SERIES1)},
-                { new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"b\"}")}
+                {new Filter<Series>("", TEST_SERIES1)},
+                {new Filter<Series>("\"tags\": null", TEST_SERIES1)},
+                {new Filter<Series>("\"tags\": {}", TEST_SERIES1)},
+                {new Filter<Series>("\"tags\": {\"a\": null}", TEST_SERIES1)},
+                {new Filter<Series>("\"tags\": {\"tag\": null}", TEST_SERIES1)},
+                {new Filter<Series>("\"tags\": {\"a\": \"b\"}")},
+                {new Filter<Series>("\"tags\": {\"tag\": \"b\"}")},
+                {new Filter<Series>("\"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
+                {new Filter<Series>("\"tags\": {\"tag\": \"value\", \"a\": \"b\"}")},
+                {new Filter<Series>("\"exactMatch\": true")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": null")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {}")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": null}")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": null}")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"a\": \"b\"}")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"b\"}")},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\"}", TEST_SERIES1)},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": null}", TEST_SERIES1)},
+                {new Filter<Series>("\"exactMatch\": true, \"tags\": {\"tag\": \"value\", \"a\": \"b\"}")}
         };
     }
 
@@ -601,12 +603,12 @@ public class SeriesQueryTest extends SeriesMethod {
                 : "," + filter.getExpression();
 
         String payload = String.format("{ " +
-                "\"startDate\": \"2015-10-31T07:00:00Z\"," +
-                "\"endDate\": \"2017-10-31T08:00:00Z\"," +
-                "\"entity\": \"%s\"," +
-                "\"metric\": \"%s\"" +
-                "%s" +
-                "}",
+                        "\"startDate\": \"2015-10-31T07:00:00Z\"," +
+                        "\"endDate\": \"2017-10-31T08:00:00Z\"," +
+                        "\"entity\": \"%s\"," +
+                        "\"metric\": \"%s\"" +
+                        "%s" +
+                        "}",
                 TEST_SERIES1.getEntity(),
                 TEST_SERIES1.getMetric(),
                 filterExpression);
@@ -655,16 +657,15 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("4714")
     @Test(description = "test same double series query")
-    public void testSameDoubleSeriesQuery() {
+    public void testSameDoubleSeriesQuery() throws JSONException {
         SeriesQuery query = new SeriesQuery(TEST_SERIES3.getEntity(), TEST_SERIES3.getMetric());
         query.setStartDate("2017-01-01T00:01:00Z");
         query.setEndDate("2017-01-01T00:04:00Z");
 
-        List<Series> result = SeriesMethod.querySeriesAsList(query, query);
-        assertEquals(
-                "Incorrect query result with two same series requests",
+        CommonAssertions.jsonAssert(
                 Arrays.asList(TEST_SERIES3, TEST_SERIES3),
-                result);
+                SeriesMethod.querySeries(query, query)
+        );
     }
 
     @Issue("4714")

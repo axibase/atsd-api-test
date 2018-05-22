@@ -11,6 +11,7 @@ import com.axibase.tsd.api.model.series.*;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.axibase.tsd.api.util.CommonAssertions.assertDecimals;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.*;
 import static com.axibase.tsd.api.util.Mocks.*;
@@ -56,7 +58,10 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored big float value rounded incorrect",
+                new BigDecimal("10.121212121212121"),
+                seriesList.get(0).getData().get(0).getValue()
+        );
     }
 
     @Issue("2871")
@@ -138,10 +143,11 @@ public class SeriesInsertTest extends SeriesTest {
 
     @DataProvider(name = "afterCompactionDataProvider")
     public Object[][] provideDataAfterCompaction() {
-        return new Object[][]{
-                {DataType.DOUBLE, new BigDecimal("90000000000000003.9") },
-                {DataType.FLOAT, new BigDecimal("900000003.9") },
-                {DataType.DECIMAL, new BigDecimal("90000000000000003.93") }
+        return new Object[][] {
+                // Will be removed in next release
+//                {DataType.DOUBLE, new BigDecimal("90000000000000003.9")},
+//                {DataType.FLOAT, new BigDecimal("900000003.9")},
+                {DataType.DECIMAL, new BigDecimal("90000000000000003.93")}
         };
     }
 
@@ -163,11 +169,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, time + 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         BigDecimal actualValue = seriesList.get(0).getData().get(0).getValue();
-        String assertMessage = String.format(
-                "Stored value precision incorrect.%n Expected: %s%nActual: %s%n",
-                valueBefore, actualValue
-        );
-        assertTrue(assertMessage, valueBefore.compareTo(actualValue) == 0);
+        assertDecimals("Stored value precision incorrect", valueBefore, actualValue);
     }
 
     @Issue("2009")
@@ -188,7 +190,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2009")
@@ -209,7 +211,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2009")
@@ -230,7 +232,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2009")
@@ -250,7 +252,7 @@ public class SeriesInsertTest extends SeriesTest {
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2850")
@@ -270,7 +272,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
 
@@ -297,7 +299,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2957")
@@ -310,7 +312,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Empty data in returned series", 1, seriesList.get(0).getData().size());
-        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2957")
@@ -324,7 +326,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2957")
@@ -610,7 +612,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @DataProvider(name = "dataTextProvider")
     public Object[][] provideDataText() {
-        return new Object[][]{
+        return new Object[][] {
                 {"hello"},
                 {"HelLo"},
                 {"Hello World"},
@@ -644,9 +646,9 @@ public class SeriesInsertTest extends SeriesTest {
 
         insertSeriesCheck(Collections.singletonList(series));
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = querySeriesAsList(seriesQuery);
 
-        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect",
+                Collections.singletonList(series), querySeries(seriesQuery));
     }
 
     @Issue("3480")
@@ -657,7 +659,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
 
-        String[] data = new String[]{"1", "2"};
+        String[] data = new String[] {"1", "2"};
         for (String x : data) {
             Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
@@ -665,10 +667,9 @@ public class SeriesInsertTest extends SeriesTest {
         }
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = querySeriesAsList(seriesQuery);
-
         Series lastInsertedSeries = series;
-        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect",
+                Collections.singletonList(lastInsertedSeries), SeriesMethod.querySeries(seriesQuery));
     }
 
     @Issue("3740")
@@ -682,7 +683,7 @@ public class SeriesInsertTest extends SeriesTest {
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
-        String[] data = new String[]{"1", "2", "3", "4"};
+        String[] data = new String[] {"1", "2", "3", "4"};
         for (String x : data) {
             Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
@@ -717,9 +718,10 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         insertSeriesCheck(Collections.singletonList(series));
 
+        Response response = querySeries(seriesQuery);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
 
-        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect", Collections.singletonList(series), response);
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
     }
 
@@ -741,7 +743,7 @@ public class SeriesInsertTest extends SeriesTest {
         Checker.check(new SeriesCheck(Collections.singletonList(series)));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect",
+                Collections.singletonList(series), querySeries(seriesQuery));
     }
 }
