@@ -31,8 +31,8 @@ public class MessageInsertTest extends MessageMethod {
         String entityName = "          nurswgvml022    \n    ";
         String messageText = "          NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.     \n     ";
         String type = "      application    \n      ";
-        String date = "2017-05-21T00:00:00Z";
-        String endDate = "2017-05-21T00:00:01Z";
+        String date = "2018-05-21T00:00:00Z";
+        String endDate = "2018-05-21T00:00:01Z";
 
         Message message = new Message(entityName, type);
         message.setMessage(messageText);
@@ -121,9 +121,9 @@ public class MessageInsertTest extends MessageMethod {
         String entityName = "message-insert-test-isoz";
         Message message = new Message(entityName);
         message.setMessage("hello");
-        message.setDate("2017-05-21T00:00:00Z");
+        message.setDate("2018-05-21T00:00:00Z");
 
-        String date = "2017-05-21T00:00:00.000Z";
+        String date = "2018-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
@@ -147,10 +147,10 @@ public class MessageInsertTest extends MessageMethod {
         String entityName = "message-insert-test-iso+hm";
         Message message = new Message(entityName);
         message.setMessage("hello");
-        message.setDate("2017-05-21T01:23:00+01:23");
+        message.setDate("2018-05-21T01:23:00+01:23");
 
 
-        String date = "2017-05-21T00:00:00.000Z";
+        String date = "2018-05-21T00:00:00.000Z";
         MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
@@ -173,10 +173,10 @@ public class MessageInsertTest extends MessageMethod {
         String entityName = "message-insert-test-iso-hm";
         Message message = new Message(entityName);
         message.setMessage("hello");
-        message.setDate("2017-05-20T22:37:00-01:23");
+        message.setDate("2018-05-20T22:37:00-01:23");
 
 
-        String date = "2017-05-21T00:00:00.000Z";
+        String date = "2018-05-21T00:00:00.000Z";
         final MessageQuery messageQuery = new MessageQuery();
         messageQuery.setEntity(entityName);
         messageQuery.setStartDate(date);
@@ -198,12 +198,12 @@ public class MessageInsertTest extends MessageMethod {
     public void testLocalTimeUnsupported() throws Exception {
         Message message = new Message("message-insert-test-localtime");
         message.setMessage("hello");
-        message.setDate("2017-07-21 00:00:00");
+        message.setDate("2018-07-21 00:00:00");
 
         Response response = insertMessageReturnResponse(message);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2017-07-21 00:00:00\"}",
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2018-07-21 00:00:00\"}",
                 response.readEntity(String.class), true);
 
     }
@@ -213,12 +213,12 @@ public class MessageInsertTest extends MessageMethod {
     public void testXXTimezoneUnsupported() throws Exception {
         Message message = new Message("message-insert-test-xxtimezone");
         message.setMessage("hello");
-        message.setDate("2017-07-20T22:50:00-0110");
+        message.setDate("2018-07-20T22:50:00-0110");
 
         Response response = insertMessageReturnResponse(message);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2017-07-20T22:50:00-0110\"}",
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2018-07-20T22:50:00-0110\"}",
                 response.readEntity(String.class), true);
     }
 
