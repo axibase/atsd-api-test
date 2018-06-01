@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.model.series.query;
 
-import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesType;
@@ -32,7 +31,7 @@ public class SeriesQuery {
     private String metric;
     private String startDate;
     private String endDate;
-    private Period interval;
+    private Interval interval;
     private Map<String, String> tags;
     private Aggregate aggregate;
     private Interpolate interpolate;
@@ -59,7 +58,7 @@ public class SeriesQuery {
             tags.put(keyValue.getKey(), escapeExpression(keyValue.getValue()));
         }
         exactMatch = true;
-        if (series.getData().size() == 0) {
+        if (series.getData().isEmpty()) {
             startDate = MIN_QUERYABLE_DATE;
             endDate = MAX_QUERYABLE_DATE;
         } else {
