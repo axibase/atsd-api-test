@@ -494,21 +494,23 @@ public class SeriesInsertTest extends SeriesTest {
     }
 
     @Issue("2850")
+    @Issue("5272")
     @Test
-    public void testXXTimezoneUnsupported() throws Exception {
+    public void testRfc822TimezoneOffsetSupported() throws Exception {
         String entityName = "e-iso-12";
         String metricName = "m-iso-12";
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(Sample.ofRawDateInteger("2016-06-09T09:50:00-1010", 0));
+        series.addSamples(Sample.ofRawDateInteger("2016-06-09T09:50:00-1010", 42));
+        String d = "2016-06-09T20:00:00.000Z";
+        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
 
-        Response response = insertSeries(Collections.singletonList(series));
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
+        assertSeriesQueryDataSize(seriesQuery, 1);
 
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertErrorMessageStart(
-                extractErrorMessage(response),
-                JSON_MAPPING_EXCEPTION_NA
-        );
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
+        assertDecimals("Stored value incorrect", BigDecimal.valueOf(42), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2850")

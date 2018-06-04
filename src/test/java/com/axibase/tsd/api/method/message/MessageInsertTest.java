@@ -209,17 +209,26 @@ public class MessageInsertTest extends MessageMethod {
     }
 
     @Issue("2850")
+    @Issue("5272")
     @Test
-    public void testXXTimezoneUnsupported() throws Exception {
-        Message message = new Message("message-insert-test-xxtimezone");
-        message.setMessage("hello");
-        message.setDate("2018-07-20T22:50:00-0110");
+    public void testRfc822TimezoneOffsetSupported() throws Exception {
+        String entityName = "message-insert-test-rfc+hm";
+        Message message = new Message(entityName)
+                .setMessage("hello")
+                .setDate("2018-07-20T22:50:00-0110");
 
-        Response response = insertMessageReturnResponse(message);
+        String date = "2018-07-21T00:00:00.000Z";
+        final MessageQuery messageQuery = new MessageQuery()
+                .setEntity(entityName)
+                .setStartDate(date)
+                .setInterval(new Period(1, TimeUnit.MILLISECOND));
 
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Failed to parse date 2018-07-20T22:50:00-0110\"}",
-                response.readEntity(String.class), true);
+        insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
+        Message storedMessage = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>(){}).get(0);
+
+        assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
+        assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
+        assertEquals("Incorrect message date", date, storedMessage.getDate());
     }
 
     @Issue("2850")

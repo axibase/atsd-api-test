@@ -95,16 +95,19 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
     }
 
     @Issue("2850")
+    @Issue("5272")
     @Test
-    public void testXXTimezoneUnsupported() throws Exception {
+    public void testRfc822TimezoneOffsetSupported() throws Exception {
         PropertyQuery propertyQuery = buildPropertyQuery();
 
-        propertyQuery.setStartDate("2016-07-20T22:50:00-0110");
+        propertyQuery.setStartDate("2016-05-20T22:50:00-0110");
 
-        Response response = queryProperty(propertyQuery);
-
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", String.format(DATE_FILTER_WRONG_SYNTAX_TPL, "startDate", "2016-07-20T22:50:00-0110"), extractErrorMessage(response));
+        Property storedProperty = queryProperty(propertyQuery)
+                .readEntity(new GenericType<List<Property>>() {})
+                .get(0);
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", property.getDate(), storedProperty.getDate());
     }
 
     @Issue("2850")

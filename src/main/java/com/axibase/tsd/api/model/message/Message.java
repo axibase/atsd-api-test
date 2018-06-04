@@ -3,12 +3,20 @@ package com.axibase.tsd.api.model.message;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
+@Accessors(chain = true)
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message {
     private String entity;
@@ -19,9 +27,6 @@ public class Message {
     private String message;
     private Boolean persist;
     private Map<String, String> tags = new HashMap<>();
-
-    public Message() {
-    }
 
     public Message(String entity) {
         if (entity != null) {
@@ -41,64 +46,14 @@ public class Message {
         this.type = type;
     }
 
-    public String getEntity() {
-        return entity;
-    }
-
-    public void setEntity(String entity) {
-        this.entity = entity;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
+    public Message setDate(String date) {
         this.date = date;
+        return this;
     }
 
-    public void setDate(Date date) {
+    public Message setDate(Date date) {
         this.date = Util.ISOFormat(date);
-    }
-
-    public String getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Boolean getPersist() {
-        return persist;
-    }
-
-    public void setPersist(Boolean persist) {
-        this.persist = persist;
+        return this;
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

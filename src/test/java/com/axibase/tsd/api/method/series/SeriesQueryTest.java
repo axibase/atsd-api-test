@@ -5,18 +5,18 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.Interval;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolate;
 import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolateType;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
-import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.InterpolateFunction;
-import com.axibase.tsd.api.model.sql.function.interpolate.Alignment;
 import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
@@ -93,7 +93,7 @@ public class SeriesQueryTest extends SeriesMethod {
     Object[][] provideIncorrectDates() {
         return new Object[][] {
                 {"2016-07-01 14:23:20"},
-                {"2016-07-01T15:46:20+0123"},
+                {"2016-07-01T15:46:20+3123"},
                 {"1467383000000"}
         };
     }

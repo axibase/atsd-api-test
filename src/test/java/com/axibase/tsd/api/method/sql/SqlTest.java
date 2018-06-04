@@ -244,7 +244,7 @@ public abstract class SqlTest extends SqlMethod {
         if (responseMessage == null) {
             fail(assertMessage + ": Response doesn't contain error message");
         }
-        assertEquals(assertMessage + ": Error message is different form expected", expectedMessage, responseMessage);
+        assertEquals(assertMessage + ": Error message is different from expected", expectedMessage, responseMessage);
     }
 
     /**

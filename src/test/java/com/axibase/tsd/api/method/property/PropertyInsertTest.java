@@ -302,19 +302,31 @@ public class PropertyInsertTest extends PropertyMethod {
     }
 
     @Issue("2850")
+    @Issue("5272")
     @Test
-    public void testXXTimezoneUnsupported() throws Exception {
-        String entityName = "property-insert-test-xx-timezone";
+    public void testRfc822TimezoneOffsetSupported() throws Exception {
+        String entityName = "property-insert-test-rfc822-timezone";
         String type = "test5";
 
         Property property = new Property(type, entityName);
         property.addTag("test", "test");
         property.setDate("2016-06-09T09:50:00-1010");
 
-        Response response = insertProperty(property);
+        insertProperty(property);
 
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", DATE_FILTER_INVALID_FORMAT, extractErrorMessage(response));
+        PropertyQuery propertyQuery = new PropertyQuery()
+                .setType(property.getType())
+                .setEntity(entityName)
+                .setStartDate("2016-06-09T20:00:00.000Z")
+                .setInterval(new Period(1, TimeUnit.MILLISECOND));
+
+        Property storedProperty = queryProperty(propertyQuery)
+                .readEntity(new GenericType<List<Property>>() {})
+                .get(0);
+
+        assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
+        assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());
+        assertEquals("Incorrect property date", propertyQuery.getStartDate(), storedProperty.getDate());
     }
 
     @Issue("2850")
