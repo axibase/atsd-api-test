@@ -81,13 +81,13 @@ public class MessageQueryTest extends MessageMethod {
     @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
-        MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-07-21 00:00:00");
+        final String startDate = "2018-07-21 00:00:00";
+        MessageQuery messageQuery = buildMessageQuery().setStartDate(startDate);
 
         Response response = queryMessageResponse(messageQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2017-07-21 00:00:00\"}", response.readEntity(String.class), true);
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: " + startDate + "\"}", response.readEntity(String.class), true);
 
     }
 
@@ -96,7 +96,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testRfc822TimezoneOffsetSupported() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-05-20T22:50:00-0110");
+        messageQuery.setStartDate("2018-05-20T22:50:00-0110");
 
         Message storedMessage = queryMessageResponse(messageQuery)
                 .readEntity(new GenericType<List<Message>>() {})
