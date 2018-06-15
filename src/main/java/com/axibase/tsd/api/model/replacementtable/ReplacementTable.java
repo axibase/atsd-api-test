@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class ReplacementTable {
     private String name = null;
-    private Map<String, String> map = new HashMap<>();
+    private Map<String, String> keys = new HashMap<>();
 
 
-    public ReplacementTable(String name, Map<String, String> map) {
+    public ReplacementTable(String name, Map<String, String> keys) {
         Registry.ReplacementTable.checkExists(name);
         this.name = name;
-        this.map = map;
+        this.keys = keys;
     }
 
     public ReplacementTable(String name) {
@@ -25,11 +25,11 @@ public class ReplacementTable {
         return name;
     }
 
-    public Map<String, String> getMap() {
-        return map;
+    public Map<String, String> getKeys() {
+        return keys;
     }
 
     public void addValue(String key, String value){
-        map.put(key, value);
+        keys.put(key, value);
     }
 }
