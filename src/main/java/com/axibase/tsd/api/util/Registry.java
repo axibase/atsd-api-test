@@ -6,39 +6,24 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.method.replacementtable.ReplacementTableMethod;
 
-public enum Registry {
-    Entity("Entity"), Metric("Metric"), Type("Type"), EntityGroup("EntityGroup"), ReplacementTable("ReplacementTable");
-    final static String ERROR_ALREADY_REGISTRED_TPL = "REGISTRY ERROR: %s=%s already registered.";
-    private String registryType;
+import java.util.function.Predicate;
 
-    Registry(String registryType) {
-        this.registryType = registryType;
+public enum Registry {
+    Entity(EntityMethod::entityExist),
+    Metric(MetricMethod::metricExist),
+    Type(PropertyMethod::propertyTypeExist),
+    EntityGroup(EntityGroupMethod::entityGroupExist),
+    ReplacementTable(ReplacementTableMethod::replacementTableExist);
+
+    private final Predicate<String> existenceChecker;
+
+    Registry(Predicate<String> existenceChecker) {
+        this.existenceChecker = existenceChecker;
     }
 
     public synchronized void checkExists(String value) {
-        boolean exists;
-        switch (registryType) {
-            case "Entity":
-                exists = EntityMethod.entityExist(value);
-                break;
-            case "Metric":
-                exists = MetricMethod.metricExist(value);
-                break;
-            case "Type":
-                exists = PropertyMethod.propertyTypeExist(value);
-                break;
-            case "EntityGroup":
-                exists = EntityGroupMethod.entityGroupExist(value);
-                break;
-            case "ReplacementTable":
-                exists = ReplacementTableMethod.replacementTableExist(value);
-                break;
-            default:
-                exists = true;
-        }
-
-        if (exists) {
-            throw new IllegalArgumentException(String.format(ERROR_ALREADY_REGISTRED_TPL, registryType, value));
+        if (existenceChecker.test(value)) {
+            throw new IllegalArgumentException("REGISTRY ERROR: " + name() + "=" + value + " already registered.");
         }
     }
 }
