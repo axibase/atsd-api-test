@@ -1,7 +1,8 @@
 [![Build Status](https://travis-ci.org/axibase/atsd-api-test.svg?branch=master)](https://travis-ci.org/axibase/atsd-api-test)
 
-The API tests require the target ATSD to be properly configured:
+Run tests in a freshly installed Docker container with image for tests:
 
-1. Set `last.insert.write.period.seconds` to 0 on the **Settings > Server Properties** page.
-
-2. Import and enable the [test rule](https://raw.githubusercontent.com/axibase/dockers/atsd_api_test/rules.xml) on the **Alerts > Rules** page.
+```bash
+docker run -d -p 8088:8088 -p 8443:8443 -p 8081:8081 --name="atsd-api-test" -e axiname="$ATSD_LOGIN" -e axipass="$ATSD_PASSWORD" \
+-e timezone="Asia/Kathmandu" axibase/atsd:api_test
+```
