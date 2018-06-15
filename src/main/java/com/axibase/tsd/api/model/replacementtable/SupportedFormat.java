@@ -1,5 +1,10 @@
 package com.axibase.tsd.api.model.replacementtable;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public enum SupportedFormat {
     TEXT("TEXT"),
     JSON("JSON"),
@@ -8,12 +13,4 @@ public enum SupportedFormat {
     LIST("LIST");
 
     private String name;
-
-    SupportedFormat(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
 }
