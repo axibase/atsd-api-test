@@ -61,14 +61,12 @@ public class ReplacementTableMethod extends BaseMethod {
         ReplacementTable replacementTable;
         try {
             replacementTable = response.readEntity(ReplacementTable.class);
+            if (!replacementTable.getName().equalsIgnoreCase(replacementTableName)) {
+                throw new NotCheckedException("ReplacementTable API returned an entry we weren't asking for.");
+            }
         } catch (ProcessingException err) {
             throw new NotCheckedException("Fail to parse replacement table from JSON: " + err.getMessage());
         }
-
-        if (replacementTable.getName().equals(replacementTableName)) {
-            return true;
-        } else {
-            throw new NotCheckedException("ReplacementTable API returned an entry we weren't asking for.");
-        }
+        return true;
     }
 }
