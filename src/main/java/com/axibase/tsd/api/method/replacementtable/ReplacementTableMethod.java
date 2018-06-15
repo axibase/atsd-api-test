@@ -16,11 +16,12 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 public class ReplacementTableMethod extends BaseMethod {
     private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
-    private static final String API_V1_REPLACEMENT_TABLES_JSON = "/api/v1/replacement-tables/json/";
+    private static final String METHOD_TABLE_JSON = "/replacement-tables/json/{table}";
 
     private static Response createResponse(ReplacementTable table) {
-        Response response = executeRootRequest(webTarget -> webTarget
-                .path(API_V1_REPLACEMENT_TABLES_JSON + table.getName())
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_TABLE_JSON)
+                .resolveTemplate("table", table.getName())
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request()
                 .put(Entity.json(table)));
@@ -41,8 +42,9 @@ public class ReplacementTableMethod extends BaseMethod {
     }
 
     private static Response getReplacementTablesResponse(String replacementTableName) {
-        Response response = executeRootRequest(webTarget -> webTarget
-                .path(API_V1_REPLACEMENT_TABLES_JSON + replacementTableName)
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_TABLE_JSON)
+                .resolveTemplate("table", replacementTableName)
                 .request().get());
         response.bufferEntity();
         return response;
