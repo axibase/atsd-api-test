@@ -55,32 +55,22 @@ jps
 
 If `Server` process is present in the output, kill it forcefully with ``kill -9 {Server-PID}``.
 
-* Open HBase shell:
+* Disable all atsd tables using regex:
 
 ```bash
-/opt/atsd/hbase/bin/hbase shell
+echo "disable_all 'atsd_.*' \n y" | /opt/atsd/hbase/bin/hbase shell
 ```
 
-* Execute the specified commands to disable and delete atsd tables using wildcard.
+* Drop all previously disabled tables:
 
 ```bash
-disable_all 'atsd_*'
-```
-
-```bash
-drop_all 'atsd_*'
+echo "drop_all 'atsd_.*' \n y" | /opt/atsd/hbase/bin/hbase shell
 ```
 
 * Verify that no atsd tables are present:
 
 ```bash
-list
-```
-
-* Close HBase shell:
-
-```bash
-exit
+echo "list" | /opt/atsd/hbase/bin/hbase shell
 ```
 
 * Start ATSD:
