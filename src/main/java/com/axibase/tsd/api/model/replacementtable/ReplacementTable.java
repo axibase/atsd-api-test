@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.model.replacementtable;
 
+import com.axibase.tsd.api.util.Registry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +16,14 @@ public class ReplacementTable {
     private SupportedFormat format;
     private Map<String, String> keys = new HashMap<>();
 
-    public ReplacementTable(String name) {
+    private ReplacementTable(String name, SupportedFormat format) {
         this.name = name;
+        this.format = format;
+    }
+
+    public static ReplacementTable of(String name, SupportedFormat format) {
+        Registry.ReplacementTable.checkExists(name);
+        return new ReplacementTable(name, format);
     }
 
     public void addValue(String key, String value){
