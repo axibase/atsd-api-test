@@ -52,7 +52,7 @@ public class ReplacementTableMethod extends BaseMethod {
         return response;
     }
 
-    public static boolean replacementTableExist(String replacementTableName) throws NotCheckedException {
+    public static boolean replacementTableExist(String replacementTableName) {
         replacementTableName = replacementTableName.replace(" ", "_").toLowerCase();
         final Response response = ReplacementTableMethod.getReplacementTablesResponse(replacementTableName);
         if (response.getStatus() != OK.getStatusCode()) {
