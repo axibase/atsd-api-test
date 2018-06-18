@@ -55,12 +55,12 @@ public class ReplacementTableMethod extends BaseMethod {
 
     public static boolean replacementTableExist(String replacementTableName) {
         replacementTableName = replacementTableName.replace(" ", "_").toLowerCase();
-        final Response response = ReplacementTableMethod.getReplacementTablesResponse(replacementTableName);
+        final Response response = getReplacementTablesResponse(replacementTableName);
         if (response.getStatus() != OK.getStatusCode()) {
             if (response.getStatus() == NOT_FOUND.getStatusCode()) {
                 return false;
             }
-            String message = "Fail to execute replacement table query";
+            String message = "Fail to execute replacement table query: " + response.getStatusInfo();
             log.error(message);
             throw new NotCheckedException(message);
         }
