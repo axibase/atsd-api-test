@@ -1,12 +1,12 @@
 package com.axibase.tsd.api.method;
 
 import io.qameta.allure.Issue;
-import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,9 +16,13 @@ import static org.testng.AssertJUnit.assertNotNull;
 @Issue("3616")
 public class OptionsMethodTest extends BaseMethod {
 
-    private static final Set<String> ALLOWED_ORIGINS_SET = Sets.newHashSet("*");
-    private static final Set<String> ALLOWED_METHODS_SET = Sets.newHashSet("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE");
-    private static final Set<String> ALLOWED_HEADERS_SET = Sets.newHashSet("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization");
+    private static final Set<String> ALLOWED_ORIGINS_SET = newHashSet("*");
+    private static final Set<String> ALLOWED_METHODS_SET = newHashSet("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE");
+    private static final Set<String> ALLOWED_HEADERS_SET = newHashSet("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization");
+
+    private static <T> Set<T> newHashSet(T... objects) {
+        return new HashSet<>(Arrays.asList(objects));
+    }
 
     @DataProvider(name = "availablePathProvider")
     Object[][] provideAvailablePaths() {

@@ -7,7 +7,6 @@ import com.axibase.tsd.api.util.Filters;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import jersey.repackaged.com.google.common.collect.Sets;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,7 +20,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
     private static String TEST_ENTITY = entity();
     private static String TEST_METRIC = metric();
-    private static final String[] TEST_TAGS = { null, "value1", "value2", "VALUE1", "VALUE2", "otherValue" };
+    private static final String[] TEST_TAGS = {null, "value1", "value2", "VALUE1", "VALUE2", "otherValue"};
 
     private final Filter[] filters = new Filter[] {
             new Filter<>("tags.tag LIKE '*'",
@@ -228,8 +227,12 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
                 "Incorrect result with complex filter");
     }
 
+    private static <T> Set<T> newHashSet(T... objects) {
+        return new HashSet<>(Arrays.asList(objects));
+    }
+
     private void checkQuery(String filter, Set<String> expectedResult, String errorMessage) throws Exception {
-        Set<Object> expectedTagsSet = Sets.newHashSet(expectedResult);
+        Set<Object> expectedTagsSet = newHashSet(expectedResult);
 
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         query.setTagExpression(filter);

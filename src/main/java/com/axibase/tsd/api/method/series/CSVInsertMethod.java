@@ -29,7 +29,7 @@ public class CSVInsertMethod extends SeriesMethod {
                 builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
                 builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
             }
-            return builder.post(Entity.entity(csv, new MediaType("text", "csv")));
+                return builder.post(Entity.entity(csv, new MediaType("text", "csv")));
         });
 
         response.bufferEntity();

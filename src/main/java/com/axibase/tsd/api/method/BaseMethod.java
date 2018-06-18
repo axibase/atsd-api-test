@@ -9,6 +9,9 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -38,11 +41,10 @@ public abstract class BaseMethod {
     public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
 
     private static final int DEFAULT_BORROW_MAX_TIME_MS = 3000;
-    private static final int DEFAULT_MAX_TOTAL = 8;
-    private static final int DEFAULT_MAX_IDLE = 8;
-
-    private static final GenericObjectPool<HttpClient> apiTargetPool;
-    private static final GenericObjectPool<HttpClient> rootTargetPool;
+    private static final int DEFAULT_MAX_TOTAL = 1;
+    private static final int DEFAULT_MAX_IDLE = 1;
+    private static final WebTarget rootTarget;
+    private static final WebTarget apiTarget;
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
@@ -55,6 +57,9 @@ public abstract class BaseMethod {
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
         julLogger.setLevel(Level.FINEST);
         try {
+            PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+
+            connectionManager.setValidateAfterInactivity(20000);
             Config config = Config.getInstance();
             ClientConfig clientConfig = new ClientConfig();
             clientConfig.connectorProvider(new ApacheConnectorProvider());
@@ -62,15 +67,16 @@ public abstract class BaseMethod {
             clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
             clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
             clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+            clientConfig.property(ApacheClientProperties.CONNECTION_MANAGER, connectionManager);
+            clientConfig.property(ApacheClientProperties.DISABLE_COOKIES, true);
 
-            GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
-            objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
-            objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
+            rootTarget = ClientBuilder.newClient().target(UriBuilder.fromPath("")
+                    .scheme(config.getProtocol())
+                    .host(config.getServerName())
+                    .port(config.getHttpPort())
+                    .build());
 
-            rootTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
-            apiTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+            apiTarget = rootTarget.path(config.getApiPath());
 
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
@@ -78,6 +84,13 @@ public abstract class BaseMethod {
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
             throw new RuntimeException(fne);
         }
+    }
+
+    private static GenericObjectPoolConfig pool() {
+        GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
+        objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
+        objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
+        return objectPoolConfig;
     }
 
     protected static WebTarget addParameters(WebTarget target, MethodParameters parameters) {
@@ -129,11 +142,11 @@ public abstract class BaseMethod {
     }
 
     public static Response executeRootRequest(Function<WebTarget, Response> requestFunction) {
-        return executeRequest(rootTargetPool, requestFunction);
+        return requestFunction.apply(rootTarget);
     }
 
     public static Response executeApiRequest(Function<WebTarget, Response> requestFunction) {
-        return executeRequest(apiTargetPool, requestFunction);
+        return requestFunction.apply(apiTarget);
     }
 
     private static Response executeRequest(
