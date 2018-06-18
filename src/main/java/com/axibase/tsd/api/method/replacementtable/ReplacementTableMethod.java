@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.util.NotCheckedException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.ProcessingException;
@@ -66,7 +67,7 @@ public class ReplacementTableMethod extends BaseMethod {
 
         try {
             ReplacementTable replacementTable = response.readEntity(ReplacementTable.class);
-            if (!replacementTable.getName().equalsIgnoreCase(replacementTableName)) {
+            if (!StringUtils.equalsIgnoreCase(replacementTableName, replacementTable.getName())) {
                 String message = "ReplacementTable API returned an entry we weren't asking for.";
                 log.error(message);
                 throw new NotCheckedException(message);
