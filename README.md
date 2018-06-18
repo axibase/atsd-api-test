@@ -1,10 +1,8 @@
 [![Build Status](https://travis-ci.org/axibase/atsd-api-test.svg?branch=master)](https://travis-ci.org/axibase/atsd-api-test)
 
-How to run tests
-================
+# How To Run Tests
 
-Regular Docker image
---------------------
+## Regular Docker Image
 
 Note: run tests in a freshly installed image.
 
@@ -19,8 +17,7 @@ docker run -d --name=<container-name> -p 8088:8088 -p 8443:8443 -p 8081:8081 \
 * Import and enable the [test rule](https://raw.githubusercontent.com/axibase/dockers/atsd_api_test/rules.xml) on the **Alerts > Rules** page.
 * Run tests
 
-Special Docker image
-----------------------
+## Special Docker Image
 
 Note: run tests in a freshly installed image.
 
@@ -31,15 +28,14 @@ docker run -d -p 8088:8088 -p 8443:8443 -p 8081:8081 --name="atsd-api-test" -e a
 -e timezone="Asia/Kathmandu" axibase/atsd:api_test
 ```
 
-Package
--------
+## Package
 
 Before running the tests, configure the ATSD server:
 
 * Set `last.insert.write.period.seconds` to 0 on the **Settings > Server Properties** page.
 * Import and enable the [test rule](https://raw.githubusercontent.com/axibase/dockers/atsd_api_test/rules.xml) on the **Alerts > Rules** page.
 
-After running the tests delete all atsd_* tables from the database:
+After running the tests delete all `atsd_*` tables from the database:
 
 * Stop ATSD:
 
@@ -55,7 +51,7 @@ jps
 
 If `Server` process is present in the output, kill it forcefully with ``kill -9 {Server-PID}``.
 
-* Disable all atsd tables using regex:
+* Disable all `atsd_*` tables using regex:
 
 ```bash
 echo "disable_all 'atsd_.*' \n y" | /opt/atsd/hbase/bin/hbase shell
@@ -67,7 +63,7 @@ echo "disable_all 'atsd_.*' \n y" | /opt/atsd/hbase/bin/hbase shell
 echo "drop_all 'atsd_.*' \n y" | /opt/atsd/hbase/bin/hbase shell
 ```
 
-* Verify that no atsd tables are present:
+* Verify that no `atsd_*` tables are present:
 
 ```bash
 echo "list" | /opt/atsd/hbase/bin/hbase shell
