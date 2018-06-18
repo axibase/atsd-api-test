@@ -8,6 +8,7 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -17,10 +18,13 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class ReplacementTableMethod extends BaseMethod {
     private static final String METHOD_TABLE_JSON = "/replacement-tables/json/{table}";
 
+    private static WebTarget resolveTable(WebTarget webTarget, String tableName) {
+        return webTarget.path(METHOD_TABLE_JSON).resolveTemplate("table", tableName);
+    }
+
     private static Response createResponse(ReplacementTable table) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_TABLE_JSON)
-                .resolveTemplate("table", table.getName())
+        Response response = executeApiRequest(webTarget ->
+                resolveTable(webTarget, table.getName())
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request()
                 .put(Entity.json(table)));
@@ -41,9 +45,8 @@ public class ReplacementTableMethod extends BaseMethod {
     }
 
     private static Response getReplacementTablesResponse(String replacementTableName) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_TABLE_JSON)
-                .resolveTemplate("table", replacementTableName)
+        Response response = executeApiRequest(webTarget ->
+                resolveTable(webTarget, replacementTableName)
                 .request().get());
         response.bufferEntity();
         return response;
