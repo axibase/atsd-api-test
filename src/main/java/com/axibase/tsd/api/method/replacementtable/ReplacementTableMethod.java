@@ -3,9 +3,8 @@ package com.axibase.tsd.api.method.replacementtable;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.util.NotCheckedException;
+import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.client.ClientProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
@@ -14,8 +13,8 @@ import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
+@Slf4j
 public class ReplacementTableMethod extends BaseMethod {
-    private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
     private static final String METHOD_TABLE_JSON = "/replacement-tables/json/{table}";
 
     private static Response createResponse(ReplacementTable table) {
@@ -36,7 +35,7 @@ public class ReplacementTableMethod extends BaseMethod {
 
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             String errorMessage = "Wasn't able to create a replacement table, Status Info is " + response.getStatusInfo();
-            logger.error(errorMessage);
+            log.error(errorMessage);
             throw new IllegalStateException(errorMessage);
         }
     }
@@ -57,17 +56,22 @@ public class ReplacementTableMethod extends BaseMethod {
             if (response.getStatus() == NOT_FOUND.getStatusCode()) {
                 return false;
             }
-            throw new NotCheckedException("Fail to execute replacement table query");
+            String message = "Fail to execute replacement table query";
+            log.error(message);
+            throw new NotCheckedException(message);
         }
 
         try {
             ReplacementTable replacementTable = response.readEntity(ReplacementTable.class);
             if (!replacementTable.getName().equalsIgnoreCase(replacementTableName)) {
-                throw new NotCheckedException("ReplacementTable API returned an entry we weren't asking for.");
+                String message = "ReplacementTable API returned an entry we weren't asking for.";
+                log.error(message);
+                throw new NotCheckedException(message);
             }
         } catch (ProcessingException err) {
             NotCheckedException exception = new NotCheckedException("Could not parse Replacement Table from JSON: " + err.getMessage());
             exception.addSuppressed(err);
+            log.error(exception.getMessage());
             throw exception;
         }
         return true;
