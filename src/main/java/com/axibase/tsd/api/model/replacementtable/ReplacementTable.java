@@ -29,7 +29,8 @@ public class ReplacementTable {
         return new ReplacementTable(name, format);
     }
 
-    public void addValue(String key, String value){
+    public ReplacementTable addValue(String key, String value) {
         keys.put(key, value);
+        return this;
     }
 }
