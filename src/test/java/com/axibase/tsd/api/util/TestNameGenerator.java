@@ -6,12 +6,14 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestNameGenerator {
     private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api";
     private static final Class<Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
 
-    private Map<String, Integer> prefixDictionary = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, AtomicInteger> prefixDictionary = new ConcurrentHashMap<>();
 
     public String newEntityName() {
         return newTestName(Key.ENTITY);
@@ -23,9 +25,9 @@ public class TestNameGenerator {
 
     String newTestName(Key key) {
         String namePrefix = getPrefix(key);
-        int testNumber = prefixDictionary.getOrDefault(namePrefix, 0) + 1;
-        prefixDictionary.put(namePrefix, testNumber);
-        return String.format("%s-%d", namePrefix, testNumber);
+        int testNumber = prefixDictionary.computeIfAbsent(namePrefix, prefix -> new AtomicInteger(0))
+                .incrementAndGet();
+        return namePrefix + "-" + testNumber;
     }
 
     public String getPrefix(Key key) {
@@ -48,7 +50,7 @@ public class TestNameGenerator {
                     }
                 }
             } catch (NoClassDefFoundError | ClassNotFoundException e) {
-                continue;
+                // pass
             }
         }
 
