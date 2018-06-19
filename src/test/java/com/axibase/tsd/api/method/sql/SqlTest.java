@@ -20,8 +20,8 @@ import static org.testng.AssertJUnit.fail;
 
 
 public abstract class SqlTest extends SqlMethod {
-    private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is  not ok";
-    private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
+    private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is not ok";
+    private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is not bad";
 
 
     private static void assertTableRowsExist(String errorMessage, List<List<String>> expectedRows, StringTable table) {
