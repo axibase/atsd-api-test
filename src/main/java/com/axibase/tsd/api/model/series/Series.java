@@ -132,11 +132,12 @@ public class Series {
         return this;
     }
 
-    public void addSamples(Sample... samples) {
+    public Series addSamples(Sample... samples) {
         if (data == null) {
             data = new ArrayList<>();
         }
         Collections.addAll(data, samples);
+        return this;
     }
 
     public List<SeriesCommand> toCommands() {

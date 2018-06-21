@@ -22,9 +22,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -169,6 +167,10 @@ public class SeriesMethod extends BaseMethod {
         } catch (Exception e) {
             throw new Exception("Failed to parse search index status page", e);
         }
+    }
+
+    public static void insertSeriesCheck(final Collection<Series> series) throws Exception {
+        insertSeriesCheck(new ArrayList<>(series));
     }
 
     public static void insertSeriesCheck(Series... series) throws Exception {
