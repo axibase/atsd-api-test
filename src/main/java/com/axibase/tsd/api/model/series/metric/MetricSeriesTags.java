@@ -14,7 +14,8 @@ import java.util.Map;
 public class MetricSeriesTags {
     private Map<String, List<String>> tags = new HashMap<>();
 
-    public MetricSeriesTags() {}
+    public MetricSeriesTags() {
+    }
 
     MetricSeriesTags(Map<String, List<String>> tags) {
         this.tags = tags;
@@ -26,6 +27,6 @@ public class MetricSeriesTags {
     }
 
     public String toString() {
-        return Util.prettyPrint(this);
+        return Util.prettyPrint(tags);
     }
 }

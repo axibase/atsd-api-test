@@ -1,11 +1,14 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.model.TimeUnit;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -13,14 +16,20 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 import java.util.zip.GZIPOutputStream;
 
 import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOCAL;
-import static com.axibase.tsd.api.util.Util.*;
+import static com.axibase.tsd.api.util.Util.ISOFormat;
+import static com.axibase.tsd.api.util.Util.getServerTimeZone;
+import static com.axibase.tsd.api.util.Util.parseDate;
 
 public class TestUtil {
-    public static final Long MILLIS_IN_DAY = 1000 * 60 * 60 * 24L;
+    public static final Long MILLIS_IN_DAY = 86400000L;
 
     public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
@@ -41,7 +50,9 @@ public class TestUtil {
         return new Date();
     }
 
-    public static Date getPreviousDay() { return new Date(System.currentTimeMillis() - MILLIS_IN_DAY); }
+    public static Date getPreviousDay() {
+        return new Date(System.currentTimeMillis() - MILLIS_IN_DAY);
+    }
 
     public static Date getNextDay() {
         return new Date(System.currentTimeMillis() + MILLIS_IN_DAY);
@@ -107,7 +118,7 @@ public class TestUtil {
                 break;
             }
             case QUARTER: {
-                localDate = localDate.plusMonths(3 * amount);
+                localDate = localDate.plusMonths(3L * amount);
                 break;
             }
             case YEAR: {
@@ -129,22 +140,22 @@ public class TestUtil {
     }
 
     public static long truncateTime(long time, TimeZone trucnationTimeZone, TemporalUnit truncationUnit) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time),  trucnationTimeZone.toZoneId())
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time), trucnationTimeZone.toZoneId())
                 .truncatedTo(truncationUnit)
                 .toInstant()
                 .toEpochMilli();
     }
 
     public static long plusTime(long time, long amount,
-                                    TimeZone plusTimeZone, TemporalUnit plusUnit) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time),  plusTimeZone.toZoneId())
+                                TimeZone plusTimeZone, TemporalUnit plusUnit) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time), plusTimeZone.toZoneId())
                 .plus(amount, plusUnit)
                 .toInstant()
                 .toEpochMilli();
     }
 
     public static <T> List<List<T>> twoDArrayToList(T[][] twoDArray) {
-        List<List<T>> list = new ArrayList<List<T>>();
+        List<List<T>> list = new ArrayList<>();
         for (T[] array : twoDArray) {
             list.add(Arrays.asList(array));
         }
@@ -166,7 +177,7 @@ public class TestUtil {
     }
 
     public static byte[] getGzipBytes(String inputString) {
-        byte[] rawInput = inputString.getBytes();
+        byte[] rawInput = inputString.getBytes(Charsets.UTF_8);
         byte[] gzipBytes;
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(rawInput.length);
@@ -191,5 +202,49 @@ public class TestUtil {
             resultBuilder.append(c);
         }
         return resultBuilder.toString();
+    }
+
+    /**
+     * Read Object from file.
+     *
+     * @param file  - {@link File} instance.
+     * @param clazz - object's class
+     * @param <T>   - type of returned object.
+     * @return return object casted to json.
+     * @throws IOException - may be thrown in file's reading process.
+     */
+    private static <T> T jsonFile(File file, Class<T> clazz) throws IOException {
+        return new ObjectMapper().readValue(file, clazz);
+    }
+
+
+    /**
+     * Read JSON Array from file.
+     *
+     * @param file  - {@link File} instance.
+     * @param clazz - object's class
+     * @param <T>   - type of returned object.
+     * @return return object casted to json.
+     * @throws IOException - may be thrown in file's reading process.
+     */
+    private static <T> T[] jsonArrayFile(File file, Class<T[]> clazz) throws IOException {
+        return jsonFile(file, clazz);
+    }
+
+    /**
+     * Read Provider from local json file.
+     *
+     * @param file  {@link File} instance.
+     * @param clazz Class to serialize.
+     * @param <T>   Class type.
+     * @return return provider in TestNG format.
+     * @throws IOException in case of IO problems with provider's file while opening.
+     */
+    public static <T> Object[][] jsonProvider(File file, Class<T[]> clazz) throws IOException {
+        return providerData(jsonArrayFile(file, clazz));
+    }
+
+    private static Object[][] providerData(Object[] data) {
+        return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
     }
 }

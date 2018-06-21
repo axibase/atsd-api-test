@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.MethodParameters;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.series.metric.MetricSeriesTags;
 import com.axibase.tsd.api.util.NotCheckedException;
 
 import javax.ws.rs.client.Entity;
@@ -19,39 +20,40 @@ public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC = "/metrics/{metric}";
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
     private static final String METHOD_METRIC_SERIES_TAGS = "/metrics/{metric}/series/tags";
+    public static final String METRIC_KEYWORD = "metric";
 
-    public static <T> Response createOrReplaceMetric(String metricName, T query) throws Exception {
+    public static <T> Response createOrReplaceMetric(String metricName, T query) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
-                .resolveTemplate("metric", metricName)
+                .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .put(Entity.json(query)));
         response.bufferEntity();
         return response;
     }
 
-    public static Response createOrReplaceMetric(Metric metric) throws Exception {
+    public static Response createOrReplaceMetric(Metric metric) {
         return createOrReplaceMetric(metric.getName(), metric);
     }
 
-    public static <T> Response updateMetric(String metricName, T query) throws Exception {
+    public static <T> Response updateMetric(String metricName, T query) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
-                .resolveTemplate("metric", metricName)
+                .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .method("PATCH", Entity.json(query)));
         response.bufferEntity();
         return response;
     }
 
-    public static Response updateMetric(Metric metric) throws Exception {
+    public static Response updateMetric(Metric metric) {
         return updateMetric(metric.getName(), metric);
     }
 
     public static Response queryMetric(String metricName) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
-                .resolveTemplate("metric", metricName)
+                .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .get());
         response.bufferEntity();
@@ -72,14 +74,14 @@ public class MetricMethod extends BaseMethod {
         return response.readEntity(Metric.class);
     }
 
-    public static Response queryMetricSeries(String metricName) throws Exception {
+    public static Response queryMetricSeries(String metricName) {
         return queryMetricSeries(metricName, null);
     }
 
     public static Response queryMetricSeries(String metricName,
-                                             MetricSeriesParameters parameters) throws Exception {
+                                             MetricSeriesParameters parameters) {
         Response response = executeApiRequest(webTarget -> {
-            WebTarget target = webTarget.path(METHOD_METRIC_SERIES).resolveTemplate("metric", metricName);
+            WebTarget target = webTarget.path(METHOD_METRIC_SERIES).resolveTemplate(METRIC_KEYWORD, metricName);
             target = addParameters(target, parameters);
             return target.request().get();
         });
@@ -87,10 +89,10 @@ public class MetricMethod extends BaseMethod {
         return response;
     }
 
-    public static Response deleteMetric(String metricName) throws Exception {
+    public static Response deleteMetric(String metricName) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
-                .resolveTemplate("metric", metricName)
+                .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .delete());
 
@@ -98,16 +100,22 @@ public class MetricMethod extends BaseMethod {
         return response;
     }
 
-    public static Response queryMetricSeriesTags(String metricName,
-                                                 MethodParameters parameters) throws Exception {
+    public static Response queryMetricSeriesTagsResponse(String metricName,
+                                                         MethodParameters parameters) {
         Response response = executeApiRequest(webTarget -> {
             WebTarget target = webTarget.path(METHOD_METRIC_SERIES_TAGS)
-                    .resolveTemplate("metric", metricName);
+                    .resolveTemplate(METRIC_KEYWORD, metricName);
             target = addParameters(target, parameters);
             return target.request().get();
         });
         response.bufferEntity();
         return response;
+    }
+
+    public static MetricSeriesTags queryMetricSeriesTags(final String metricName,
+                                                         final MethodParameters parameters) {
+        return queryMetricSeriesTagsResponse(metricName, parameters)
+                .readEntity(MetricSeriesTags.class);
     }
 
     public static void createOrReplaceMetricCheck(Metric metric, AbstractCheck check) throws Exception {
@@ -139,7 +147,7 @@ public class MetricMethod extends BaseMethod {
         } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
-        if (metric.contains(" ")){
+        if (metric.contains(" ")) {
             return metricExist(metric.replace(" ", "_"));
         }
 

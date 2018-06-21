@@ -1,0 +1,89 @@
+[
+  {
+    "tagsSet": [
+      {
+        "t1": "name1",
+        "t2": "name2"
+      }
+    ],
+    "filter": {
+      "tags.t1": "name*"
+    },
+    "filteredTags": {
+      "t1": [
+        "name1"
+      ],
+      "t2": [
+        "name2"
+      ]
+    }
+  },
+  {
+    "tagsSet": [
+      {
+        "t1": "name1",
+        "t2": "abc"
+      },
+      {
+        "t1": "name3",
+        "t3": "vca"
+      }
+    ],
+    "filter": {
+      "tags.t1": "name*"
+    },
+    "filteredTags": {
+      "t1": [
+        "name1",
+        "name3"
+      ],
+      "t2": [
+        "abc"
+      ],
+      "t3": [
+        "vca"
+      ]
+    }
+  },
+  {
+    "tagsSet": [
+      {
+        "t1": "name1",
+        "t2": "abc"
+      },
+      {
+        "t1": "name3",
+        "t2": "vca"
+      }
+    ],
+    "filter": {
+      "tags.t1": "name*",
+      "tags.t2": "*"
+    },
+    "filteredTags": {
+      "t1": [
+        "name1",
+        "name3"
+      ],
+      "t2": ["abc","vca"]
+    }
+  },
+  {
+    "tagsSet": [
+      {
+        "t1": "name1"
+      },
+      {
+        "t1": "nams"
+      }
+    ],
+    "filter": {
+      "tags.t1": "name*"
+    },
+    "filteredTags": {
+      "t1": [
+        "name1"
+      ]
+    }
+  }
+]
