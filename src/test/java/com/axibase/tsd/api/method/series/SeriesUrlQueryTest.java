@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Util.*;
+import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
@@ -82,10 +84,14 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         assertEquals(OK.getStatusCode(), response.getStatus());
         List<Series> responseSeries = response.readEntity(new GenericType<List<Series>>() {
         });
-        assertEquals("Incorrect series entity", series.getEntity(), responseSeries.get(0).getEntity());
-        assertEquals("Incorrect series metric", series.getMetric(), responseSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", 0L, responseSeries.get(0).getData().get(0).getUnixTime().longValue());
-        assertEquals("Incorrect series sample value", new BigDecimal(0), responseSeries.get(0).getData().get(0).getValue());
-
+        assertEquals(1, responseSeries.size());
+        final Series actualSeries = responseSeries.get(0);
+        assertEquals("Incorrect series entity", series.getEntity(), actualSeries.getEntity());
+        assertEquals("Incorrect series metric", series.getMetric(), actualSeries.getMetric());
+        final List<Sample> samples = actualSeries.getData();
+        assertEquals("Series should contains only one sample", 1, samples.size());
+        final Sample sample = samples.get(0);
+        assertEquals("Incorrect series sample date", 0L, sample.getUnixTime().longValue());
+        assertEquals("Incorrect series sample value", 0, new BigDecimal(0).compareTo(sample.getValue()));
     }
 }
