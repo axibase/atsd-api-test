@@ -40,7 +40,7 @@ public class SeriesSearchTest extends SeriesMethod {
 
     private final String[] entityFields = {"name", "label", "interpolate", "timezone", "enabled"};
     private final String[] metricFields = {"name", "label", "interpolate", "timezone", "enabled", "description",
-            "datatype", "timeprecision", "persistent", "filter", "retentiondays", "seriesretentiondays", "versioned",
+            "datatype", "persistent", "filter", "retentiondays", "seriesretentiondays", "versioned",
             "minvalue", "maxvalue", "invalidaction", "units"};
 
     @DataProvider
@@ -98,7 +98,6 @@ public class SeriesSearchTest extends SeriesMethod {
                 .setInterpolate(InterpolationMode.PREVIOUS)
                 .setDescription(prefix + Mocks.DESCRIPTION )
                 .setDataType(DataType.DECIMAL)
-                .setTimePrecision("SECONDS")
                 .setEnabled(true)
                 .setPersistent(true)
                 .setFilter("name = '*'")
@@ -209,7 +208,7 @@ public class SeriesSearchTest extends SeriesMethod {
         query.addEntityFields("interpolate", "timezone");
         query.addEntityTags("sst_11_entity_tag");
 
-        query.addMetricFields("datatype", "timeprecision");
+        query.addMetricFields("datatype");
         query.addMetricTags("sst_11_metric_tag");
 
         Entity entity1 = new Entity()
@@ -221,8 +220,7 @@ public class SeriesSearchTest extends SeriesMethod {
         Metric metirc1 = new Metric()
                 .setName(resultRecord1.getMetric().getName())
                 .setLabel(resultRecord1.getMetric().getLabel())
-                .setDataType(resultRecord1.getMetric().getDataType())
-                .setTimePrecision(resultRecord1.getMetric().getTimePrecision());
+                .setDataType(resultRecord1.getMetric().getDataType());
 
         SeriesSearchResultRecord expectedResult1 = new SeriesSearchResultRecord(
                 entity1,
@@ -241,7 +239,6 @@ public class SeriesSearchTest extends SeriesMethod {
                 .setName(resultRecord3.getMetric().getName())
                 .setLabel(resultRecord3.getMetric().getLabel())
                 .setDataType(resultRecord3.getMetric().getDataType())
-                .setTimePrecision(resultRecord3.getMetric().getTimePrecision())
                 .setTags(resultRecord3.getMetric().getTags());
 
         SeriesSearchResultRecord expectedResult3 = new SeriesSearchResultRecord(

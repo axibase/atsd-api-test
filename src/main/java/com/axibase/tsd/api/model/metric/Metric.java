@@ -4,10 +4,7 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.series.DataType;
 import com.axibase.tsd.api.model.serialization.DateDeserializer;
 import com.axibase.tsd.api.util.Registry;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +28,6 @@ public class Metric {
     private Boolean persistent;
     @JsonDeserialize(using = DateDeserializer.class)
     private ZonedDateTime createdDate;
-    private String timePrecision;
     private Integer retentionDays;
     private Integer seriesRetentionDays;
     private String invalidAction;
