@@ -434,19 +434,6 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals("Error message mismatch", INTERPOLATE_TYPE_REQUIRED, extractErrorMessage(response));
     }
 
-    @Issue("3324")
-    @Test
-    public void testAggregateNoPeriodRaiseError() throws Exception {
-        SeriesQuery query = new SeriesQuery("mock-entity", "mock-metric", MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
-
-        query.setAggregate(new Aggregate(AggregationType.SUM));
-
-        Response response = querySeries(query);
-
-        assertEquals("Aggregate query without period should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals("Error message mismatch", String.format(AGGREGATE_NON_DETAIL_REQUIRE_PERIOD, query.getAggregate().getType()), extractErrorMessage(response));
-    }
-
     @DataProvider(name = "dataTextProvider")
     Object[][] provideDataText() {
         return new Object[][] {
