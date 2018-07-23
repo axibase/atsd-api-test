@@ -32,7 +32,7 @@ public class IsWeekDayTest extends SqlTest {
     @Test(description = "Test support of add operator in the first argument")
     public void testIsWeekDayFunctionAddOperator() {
         final String query = String.format("SELECT IS_WEEKDAY(time + 1000*60*60*24, 'RUS') FROM \"%s\"", METRIC_NAME);
-        final String[][] expectedRows = {{"false", "true", "true"}};
+        final String[][] expectedRows = {{"false"}, {"true"}, {"true"}};
         assertSqlQueryRows("Fail to calculate next day in isWeekday()", expectedRows, query);
     }
 }
