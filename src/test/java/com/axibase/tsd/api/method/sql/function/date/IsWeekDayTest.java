@@ -18,6 +18,9 @@ public class IsWeekDayTest extends SqlTest {
     @BeforeClass
     public static void prepareData() throws Exception {
         final Series series = new Series(ENTITY_NAME, METRIC_NAME)
+                // Sunday
+                .addSamples(Sample.ofDateInteger("2018-07-22T12:54:00+0300", 20))
+                // Monday
                 .addSamples(Sample.ofDateInteger("2018-07-23T12:54:00+0300", 20));
 
         SeriesMethod.insertSeriesCheck(series);
@@ -27,7 +30,7 @@ public class IsWeekDayTest extends SqlTest {
     @Test(description = "Test support of add operator in the first argument")
     public void testIsWeekDayFunctionAddOperator() {
         final String query = String.format("SELECT IS_WEEKDAY(time + 1000*60*60*24, 'RUS') FROM \"%s\"", METRIC_NAME);
-        final String[][] expectedRows = { {"true"} };
+        final String[][] expectedRows = {{"true", "true"}};
         assertSqlQueryRows("Fail to calculate next day in isWeekday()", expectedRows, query);
     }
 }
