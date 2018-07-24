@@ -5,9 +5,12 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -32,10 +35,10 @@ public class SqlIsWeekDayTest extends SqlTest {
     @DataProvider
     public static Object[][] provideTimeExpressionAndResult() {
         return new Object[][]{
-                {"time + 1000*60*60*24*1", new boolean[]{false, true, true}},
-                {"time - 1000*60*60*24*1", new boolean[]{true, false, false}},
-                {"time - 1000*60*60*24*2", new boolean[]{true, true, false}},
-                {"time + 1000*60*60*24*2", new boolean[]{true, true, true}},
+                {"time + 1000*60*60*24*1", new Boolean[]{false, true, true}},
+                {"time - 1000*60*60*24*1", new Boolean[]{true, false, false}},
+                {"time - 1000*60*60*24*2", new Boolean[]{true, true, false}},
+                {"time + 1000*60*60*24*2", new Boolean[]{true, true, true}},
         };
     }
 
@@ -44,12 +47,12 @@ public class SqlIsWeekDayTest extends SqlTest {
             description = "Test support of mathematical operators in the first argument",
             dataProvider = "provideTimeExpressionAndResult"
     )
-    public void testIsWeekDayFunctionAddOperator(final String timeExpression, final boolean[] isWeekDay) {
+    public void testIsWeekDayFunctionAddOperator(final String timeExpression, final Boolean[] isWeekDay) {
         final String query = String.format("SELECT IS_WEEKDAY(%s, 'RUS') FROM \"%s\"", timeExpression, METRIC_NAME);
-        final String[][] expectedRows = new String[isWeekDay.length][1];
-        for (int i = 0; i < expectedRows.length; i++) {
-            expectedRows[i][0] = String.valueOf(isWeekDay[i]);
-        }
+        final String[][] expectedRows = Arrays.stream(isWeekDay)
+                .map(String::valueOf)
+                .map(ArrayUtils::toArray)
+                .toArray(String[][]::new);
         final String assertMessage = String.format("Fail to calculate \"%s\" as param of IS_WEEKDAY function", timeExpression);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
