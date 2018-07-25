@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 /**
@@ -46,7 +45,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
 
         entityGroup.setExpression("");
 
-        assertEquals("Fail to execute updateEntityGroup query", OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
+        assertSame("Fail to execute updateEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateEntityGroup(entityGroup)));
         assertTrue("Specified entityGroup does not exist", entityGroupExist(entityGroup));
     }
 
@@ -60,7 +59,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
         entityGroup.setTags(null);
         entityGroup.addTag("*", "");
 
-        assertEquals("Fail to execute updateEntityGroup query", OK.getStatusCode(), updateEntityGroup(entityGroup).getStatus());
+        assertSame("Fail to execute updateEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateEntityGroup(entityGroup)));
 
         entityGroup.setTags(null);
         assertTrue("Specified entityGroup should not have any tag", entityGroupExist(entityGroup));
@@ -81,7 +80,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
             throw new IllegalArgumentException("Updated entity group should not exist before execution of updateEntityGroup query");
         }
         Response response = updateEntityGroup(updatedEntityGroup);
-        assertEquals("Fail to execute updateEntityGroup query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute updateEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Updated entityGroup should exist", entityGroupExist(updatedEntityGroup));
         assertFalse("Old entityGroup should not exist", entityGroupExist(entityGroup));
     }

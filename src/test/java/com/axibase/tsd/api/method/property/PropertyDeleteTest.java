@@ -16,7 +16,6 @@ import static com.axibase.tsd.api.util.TestUtil.appendChar;
 import static com.axibase.tsd.api.util.TestUtil.getNextDay;
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 public class PropertyDeleteTest extends PropertyMethod {
@@ -35,7 +34,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should be remain", propertyExist(property));
     }
 
@@ -53,7 +52,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -69,7 +68,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setType(property.getType());
         deleteQuery.setEntity(property.getEntity());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
@@ -91,7 +90,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("First property should be deleted", propertyExist(property));
         assertTrue("Second property should remain", propertyExist(secondProperty));
     }
@@ -115,7 +114,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("First property should be deleted", propertyExist(property));
         assertTrue("Second property should remain", propertyExist(secondProperty));
     }
@@ -139,7 +138,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("First property should be deleted", propertyExist(property));
         assertFalse("Second property should be deleted", propertyExist(secondProperty));
     }
@@ -157,7 +156,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -173,7 +172,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -192,7 +191,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -216,7 +215,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("First property should be deleted", propertyExist(property));
         assertFalse("Second property should be deleted", propertyExist(secondProperty));
 
@@ -235,12 +234,12 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
     @Test
-    public void testTypeObjectRaiseError() throws Exception {
+    public void testTypeObjectRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", new HashMap<>());
         queryObj.put("entity", "mock-entity");
@@ -250,7 +249,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeAbsentRaiseError() throws Exception {
+    public void testTypeAbsentRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("entity", "mock-entity");
         queryObj.put("key", new HashMap<>());
@@ -270,12 +269,12 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
     @Test
-    public void testTypeNullRaiseError() throws Exception {
+    public void testTypeNullRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", null);
         queryObj.put("entity", "mock-entity");
@@ -284,7 +283,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeArrayRaiseError() throws Exception {
+    public void testTypeArrayRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("type", Collections.singletonList("mock-type"));
         queryObj.put("entity", "mock-entity");
@@ -311,7 +310,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("First property should remain", propertyExist(property));
         assertTrue("Second property should remain", propertyExist(secondProperty));
     }
@@ -329,7 +328,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should be remain", propertyExist(property));
     }
 
@@ -346,12 +345,12 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setEndDate(property.getDate());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should be remain", propertyExist(property));
     }
 
     @Test
-    public void testTypeStartEndRaiseError() throws Exception {
+    public void testTypeStartEndRaiseError() {
         PropertyQuery deleteQuery = new PropertyQuery();
         deleteQuery.setType("mock-type");
         deleteQuery.setStartDate(MIN_QUERYABLE_DATE);
@@ -362,7 +361,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testTypeOnlyRaiseError() throws Exception {
+    public void testTypeOnlyRaiseError() {
         PropertyQuery deleteQuery = new PropertyQuery();
         deleteQuery.setType("mock-type");
 
@@ -389,7 +388,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(entity.getName());
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue(propertyExist(property));
     }
 
@@ -413,7 +412,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(entity.getName());
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue(propertyExist(property));
     }
 
@@ -432,7 +431,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k2", "kv2");
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
@@ -450,7 +449,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k2", "kv2");
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
@@ -466,7 +465,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k2", "kv2");
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
@@ -482,7 +481,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k2", "kv2");
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
@@ -500,7 +499,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey(keyName, "kv2");
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
@@ -517,12 +516,12 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k2", "kv2");
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertTrue("Property should remain", propertyExist(property));
     }
 
     @Test
-    public void testEntityEmptyRaiseError() throws Exception {
+    public void testEntityEmptyRaiseError() {
         PropertyQuery deleteQuery = new PropertyQuery();
         deleteQuery.setType("mock-type");
         deleteQuery.setEntity("");
@@ -531,7 +530,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testEntityObjectRaiseError() throws Exception {
+    public void testEntityObjectRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("entity", new HashMap<>());
         queryObj.put("key", "mock-type");
@@ -540,7 +539,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testEntityArrayRaiseError() throws Exception {
+    public void testEntityArrayRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("entity", Collections.singletonList("mock-entity"));
         queryObj.put("key", "mock-type");
@@ -549,7 +548,7 @@ public class PropertyDeleteTest extends PropertyMethod {
     }
 
     @Test
-    public void testEntityNullRaiseError() throws Exception {
+    public void testEntityNullRaiseError() {
         Map<String, Object> queryObj = new HashMap<>();
         queryObj.put("entity", null);
         queryObj.put("key", "mock-type");
@@ -570,7 +569,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setKey(property.getKey());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -587,7 +586,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setStartDate(property.getDate());
         deleteQuery.setEndDate(Util.addOneMS(property.getDate()));
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be removed", propertyExist(property));
     }
 
@@ -602,7 +601,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setType(property.getType());
         deleteQuery.setEntity(property.getEntity());
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be removed", propertyExist(property));
     }
 
@@ -618,7 +617,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be removed", propertyExist(property));
     }
 
@@ -635,7 +634,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k1", null);
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -652,7 +651,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k1", null);
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -669,7 +668,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k1", "");
         deleteQuery.setExactMatch(true);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -686,7 +685,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.addKey("k1", "");
         deleteQuery.setExactMatch(false);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -702,7 +701,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.addKey("k1", "    ");
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -719,7 +718,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         deleteQuery.setEntity(property.getEntity());
         deleteQuery.addKey("k1", "  kv1   ");
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -741,7 +740,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         key.put("k1", 111);
         deleteQuery.put("key", key);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 
@@ -763,7 +762,7 @@ public class PropertyDeleteTest extends PropertyMethod {
         key.put("k1", true);
         deleteQuery.put("key", key);
 
-        assertEquals("Fail to execute delete query", OK.getStatusCode(), deleteProperty(deleteQuery).getStatus());
+        assertSame("Fail to execute delete query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteProperty(deleteQuery)));
         assertFalse("Property should be deleted", propertyExist(property));
     }
 }

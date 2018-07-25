@@ -8,9 +8,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.*;
-
-import static javax.ws.rs.core.Response.Status.OK;
+import java.util.Arrays;
+import java.util.List;
 
 public class AlertMethod extends BaseMethod {
     private static final String METHOD_ALERTS_QUERY = "/alerts/query";
@@ -57,7 +56,7 @@ public class AlertMethod extends BaseMethod {
 
     public static List<Alert> queryHistory(List<AlertHistoryQuery> queryList) {
         Response response = queryHistoryResponse(queryList);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             String errorMessage = String.format(
                     "Failed to execute alert history query. Query: %s",
                     queryList

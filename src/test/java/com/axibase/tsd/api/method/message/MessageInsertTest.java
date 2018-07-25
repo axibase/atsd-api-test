@@ -17,7 +17,6 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -257,7 +256,7 @@ public class MessageInsertTest extends MessageMethod {
         @Override
         public boolean isChecked() {
             Response response = queryMessageResponse(query);
-            if (response.getStatus() != OK.getStatusCode()) {
+            if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                 return false;
             }
             List<Message> storedMessageList = response.readEntity(new GenericType<List<Message>>() {

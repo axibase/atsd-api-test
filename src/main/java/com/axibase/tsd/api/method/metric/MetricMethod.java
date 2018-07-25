@@ -14,7 +14,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC = "/metrics/{metric}";
@@ -62,7 +61,7 @@ public class MetricMethod extends BaseMethod {
 
     public static Metric getMetric(String entityName) {
         Response response = queryMetric(entityName);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             String error;
             try {
                 error = extractErrorMessage(response);
@@ -119,7 +118,7 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static void createOrReplaceMetricCheck(Metric metric, AbstractCheck check) throws Exception {
-        if (createOrReplaceMetric(metric.getName(), jacksonMapper.writeValueAsString(metric)).getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(createOrReplaceMetric(metric.getName(), jacksonMapper.writeValueAsString(metric)))) {
             throw new Exception("Can not execute createOrReplaceEntityGroup query");
         }
         Checker.check(check);
@@ -134,7 +133,7 @@ public class MetricMethod extends BaseMethod {
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new Exception("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
@@ -142,7 +141,7 @@ public class MetricMethod extends BaseMethod {
 
     public static boolean metricExist(String metric) throws NotCheckedException {
         final Response response = MetricMethod.queryMetric(metric);
-        if (response.getStatus() == OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
             return true;
         } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;

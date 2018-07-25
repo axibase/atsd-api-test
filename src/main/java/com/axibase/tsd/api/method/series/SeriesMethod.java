@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_INSERT = "/series/insert";
@@ -153,7 +152,7 @@ public class SeriesMethod extends BaseMethod {
                 .request()
                 .get());
 
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new Exception("Failed to get search index status");
         }
 
@@ -183,7 +182,7 @@ public class SeriesMethod extends BaseMethod {
 
     public static void insertSeriesCheck(final List<Series> seriesList, AbstractCheck check) throws Exception {
         Response response = insertSeries(seriesList);
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new Exception("Fail to execute insertSeries query");
         }
         Checker.check(check);

@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +15,6 @@ import java.util.Objects;
 
 import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
@@ -199,7 +199,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertOkRequest(String assertMessage, Response response) {
-        assertEquals(assertMessage, OK.getStatusCode(), response.getStatus());
+        assertSame(assertMessage, Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         try {
             response.readEntity(StringTable.class);
         } catch (ProcessingException e) {
@@ -231,7 +231,7 @@ public abstract class SqlTest extends SqlMethod {
     public void assertBadRequest(String assertMessage, String expectedMessage, Response response) {
         String responseMessage;
         int code = response.getStatus();
-        if (OK.getStatusCode() == code || BAD_REQUEST.getStatusCode() == code) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response) || BAD_REQUEST.getStatusCode() == code) {
             try {
                 responseMessage = extractSqlErrorMessage(response);
             } catch (JSONException e) {

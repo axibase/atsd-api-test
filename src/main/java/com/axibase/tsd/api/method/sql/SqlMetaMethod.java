@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.sql.AtsdExceptionDescription;
 import com.axibase.tsd.api.model.sql.Error;
 import com.axibase.tsd.api.model.sql.TableMetaData;
+import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,11 +12,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
-
 import java.util.function.Function;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class SqlMetaMethod extends BaseMethod {
     private static final String METHOD_SQL_META_API = "/api/sql/meta";
@@ -34,7 +33,7 @@ public class SqlMetaMethod extends BaseMethod {
         response.bufferEntity();
 
         Integer statusCode = response.getStatus();
-        if (OK.getStatusCode() == statusCode) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
             return response.readEntity(TableMetaData.class);
         }
 

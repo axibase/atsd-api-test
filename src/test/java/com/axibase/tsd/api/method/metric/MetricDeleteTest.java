@@ -6,7 +6,8 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 
@@ -14,7 +15,7 @@ public class MetricDeleteTest extends MetricMethod {
 
     @Issue("1278")
     @Test
-    public void testMetricNameContainsWhiteSpace() throws Exception {
+    public void testMetricNameContainsWhiteSpace() {
         final String name = "delete metric-1";
         Response response = deleteMetric(name);
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), response.getStatus());
@@ -27,7 +28,7 @@ public class MetricDeleteTest extends MetricMethod {
         createOrReplaceMetricCheck(metric);
 
         Response response = deleteMetric(metric.getName());
-        assertEquals("Fail to execute deleteMetric query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute deleteMetric query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertFalse("Metric should be deleted", metricExist(metric));
     }
 
@@ -37,13 +38,13 @@ public class MetricDeleteTest extends MetricMethod {
         final Metric metric = new Metric("deleteйёmetric-3");
         createOrReplaceMetricCheck(metric);
 
-        assertEquals("Fail to execute deleteMetric query", OK.getStatusCode(), deleteMetric(metric.getName()).getStatus());
+        assertSame("Fail to execute deleteMetric query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(deleteMetric(metric.getName())));
         assertFalse("Metric should be deleted", metricExist(metric));
     }
 
     /* #NoTicket */
     @Test
-    public void testUnknownMetric() throws Exception {
+    public void testUnknownMetric() {
         final Metric metric = new Metric("deletemetric-4");
         assertEquals("Wrong response on unknown metric", NOT_FOUND.getStatusCode(), deleteMetric(metric.getName()).getStatus());
     }

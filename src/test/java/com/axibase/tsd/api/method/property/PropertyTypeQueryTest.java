@@ -12,7 +12,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -45,7 +44,7 @@ public class PropertyTypeQueryTest extends PropertyMethod {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
         Response response = typeQueryProperty(property.getEntity());
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property.getType()));
         assertTrue(compareJsonString(expected, response.readEntity(String.class)));
     }

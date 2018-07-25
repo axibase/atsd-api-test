@@ -6,8 +6,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 /**
@@ -41,7 +39,7 @@ public class EntityGroupCreateOrReplaceTest extends EntityGroupMethod {
 
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         Response response = createOrReplaceEntityGroup(entityGroup);
-        assertEquals("Fail to execute createOrReplaceEntityGroup query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute createOrReplaceEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Entity not found", entityGroupExist(entityGroup));
     }
 }

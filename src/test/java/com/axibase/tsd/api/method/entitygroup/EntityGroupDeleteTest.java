@@ -6,8 +6,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 
 /**
@@ -42,7 +40,7 @@ public class EntityGroupDeleteTest extends EntityGroupMethod {
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         createOrReplaceEntityGroupCheck(entityGroup);
         Response response = deleteEntityGroup(entityGroup.getName());
-        assertEquals("Fail to execute deleteEntityGroup query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute deleteEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertFalse("Entity should be deleted", entityGroupExist(entityGroup));
     }
 }

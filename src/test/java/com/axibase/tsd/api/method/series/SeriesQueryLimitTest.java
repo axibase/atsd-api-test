@@ -20,7 +20,6 @@ import java.util.Set;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryLimitTest extends SeriesMethod {
@@ -124,7 +123,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         String expected = jacksonMapper.writeValueAsString(seriesList);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         String given = response.readEntity(String.class);
 
@@ -140,7 +139,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         String expected = jacksonMapper.writeValueAsString(seriesList);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         String given = response.readEntity(String.class);
 
@@ -149,12 +148,12 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
-    public void testSeriesLimit1(SeriesQuery query) throws Exception {
+    public void testSeriesLimit1(SeriesQuery query) {
         final int seriesLimit = 1;
         query.setSeriesLimit(seriesLimit);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -165,12 +164,12 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
-    public void testSeriesLimit5(SeriesQuery query) throws Exception {
+    public void testSeriesLimit5(SeriesQuery query) {
         final int seriesLimit = 5;
         query.setSeriesLimit(seriesLimit);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -192,7 +191,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         String expected = jacksonMapper.writeValueAsString(seriesList);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         String given = response.readEntity(String.class);
 
@@ -201,14 +200,14 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
-    public void testLimit1SeriesLimit11(SeriesQuery query) throws Exception {
+    public void testLimit1SeriesLimit11(SeriesQuery query) {
         final int limit = 1;
         final int seriesLimit = 11;
         query.setLimit(limit);
         query.setSeriesLimit(seriesLimit);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -224,14 +223,14 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
-    public void testLimit10000SeriesLimit11(SeriesQuery query) throws Exception {
+    public void testLimit10000SeriesLimit11(SeriesQuery query) {
         final int limit = 10000;
         final int seriesLimit = 2;
         query.setLimit(limit);
         query.setSeriesLimit(seriesLimit);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -244,14 +243,14 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test
-    public void testLastInsertedEntitySeriesLimit2() throws Exception {
+    public void testLastInsertedEntitySeriesLimit2() {
         final int seriesLimit = 2;
         SeriesQuery query = prepareSeriesQueryWithEntityPattern();
         query.setEntity(DEFAULT_QUERY_LIMIT_ENTITY_PREFIX + String.valueOf(ENTITY_COUNT - 1));
         query.setSeriesLimit(seriesLimit);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -266,7 +265,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test
-    public void testLastInsertedEntitySeriesLimit2Limit5() throws Exception {
+    public void testLastInsertedEntitySeriesLimit2Limit5() {
         final int seriesLimit = 2;
         final int limit = 5;
         SeriesQuery query = prepareSeriesQueryWithEntityPattern();
@@ -275,7 +274,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         query.setLimit(limit);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -290,7 +289,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test(dataProvider = "seriesQueryProvider")
-    public void testLimit1SeriesLimit5ExactMatch(SeriesQuery query) throws Exception {
+    public void testLimit1SeriesLimit5ExactMatch(SeriesQuery query) {
         final int seriesLimit = 5;
         final int limit = 1;
         query.setSeriesLimit(seriesLimit);
@@ -298,7 +297,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         query.setExactMatch(true);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });
@@ -313,7 +312,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
     @Issue("3211")
     @Test
-    public void testLastEntityLimit1SeriesLimit5ExactMatch() throws Exception {
+    public void testLastEntityLimit1SeriesLimit5ExactMatch() {
         final int seriesLimit = 3;
         final int limit = 5;
         final int expectedSeries = 1;
@@ -324,7 +323,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         query.setExactMatch(true);
 
         Response response = querySeries(query);
-        assertEquals("Fail to execute series query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
         });

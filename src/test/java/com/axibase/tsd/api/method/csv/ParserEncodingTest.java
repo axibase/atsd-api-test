@@ -18,7 +18,6 @@ import java.util.List;
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageQuerySize;
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -55,10 +54,10 @@ public class ParserEncodingTest extends CSVUploadMethod {
         checkCsvCorrectTextEncoding(controlSequence, entityName, csvPath, WINDOWS_1251);
     }
 
-    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) throws Exception {
+    private void checkCsvCorrectTextEncoding(String controlSequence, String entityName, File csvPath, String textEncoding) {
         Registry.Entity.checkExists(entityName);
         Response response = binaryCsvUpload(csvPath, PARSER_NAME, textEncoding, null);
-        assertEquals(response.getStatus(), OK.getStatusCode());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         MessageQuery query = new MessageQuery();
         query.setEntity(entityName);
         query.setStartDate(MIN_QUERYABLE_DATE);

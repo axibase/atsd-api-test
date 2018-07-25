@@ -13,18 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
+import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SeriesUrlQueryTest extends SeriesMethod {
 
     @Issue("1278")
     @Test
-    public void testEntityContainsWhitespace() throws Exception {
+    public void testEntityContainsWhitespace() {
         final String entityName = "seriesurlquery entityname-1";
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
@@ -81,7 +78,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         parameters.put("endDate", MAX_QUERYABLE_DATE);
 
         Response response = urlQuerySeries(series.getEntity(), series.getMetric(), parameters);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         List<Series> responseSeries = response.readEntity(new GenericType<List<Series>>() {
         });
         assertEquals(1, responseSeries.size());

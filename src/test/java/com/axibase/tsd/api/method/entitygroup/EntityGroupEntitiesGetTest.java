@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 
 /**
@@ -41,7 +40,7 @@ public class EntityGroupEntitiesGetTest extends EntityGroupMethod {
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         createOrReplaceEntityGroupCheck(entityGroup);
         Response response = getEntities(entityGroup.getName());
-        assertEquals("Fail to execute getEntities query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute getEntities query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertEquals("EntityGroup should not contains any entity", "[]", response.readEntity(String.class));
     }
 }

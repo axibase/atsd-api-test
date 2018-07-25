@@ -18,7 +18,6 @@ import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_INVALID_FORMAT;
 import static com.axibase.tsd.api.util.Util.MAX_STORABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.*;
 
 public class PropertyInsertTest extends PropertyMethod {
@@ -38,7 +37,7 @@ public class PropertyInsertTest extends PropertyMethod {
         thirdProperty.addTag("t1", "v1");
         thirdProperty.addKey("k1", "v1");
 
-        assertEquals(OK.getStatusCode(), insertProperty(firstProperty, secondProperty, thirdProperty).getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertProperty(firstProperty, secondProperty, thirdProperty)));
         assertTrue(propertyExist(firstProperty));
         assertTrue(propertyExist(secondProperty));
         assertTrue(propertyExist(thirdProperty));
@@ -67,7 +66,7 @@ public class PropertyInsertTest extends PropertyMethod {
         }});
         updatedProperty.setDate(secondTime);
 
-        assertEquals(OK.getStatusCode(), insertProperty(property, updatedProperty).getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertProperty(property, updatedProperty)));
 
         assertTrue("Updated property should exist", propertyExist(updatedProperty, true));
         assertFalse("Old property should not exist", propertyExist(property, true));
@@ -152,7 +151,7 @@ public class PropertyInsertTest extends PropertyMethod {
         property.setDate(MIN_STORABLE_DATE);
 
         Response response = insertProperty(property);
-        assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
+        assertSame("Failed to insert property", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertTrue(propertyExist(property));
     }
@@ -165,7 +164,7 @@ public class PropertyInsertTest extends PropertyMethod {
         property.setDate(MAX_STORABLE_DATE);
 
         Response response = insertProperty(property);
-        assertEquals("Failed to insert property", response.getStatus(), OK.getStatusCode());
+        assertSame("Failed to insert property", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertTrue(propertyExist(property));
     }
@@ -178,7 +177,7 @@ public class PropertyInsertTest extends PropertyMethod {
         property.setDate(Util.addOneMS(MAX_STORABLE_DATE));
 
         Response response = insertProperty(property);
-        assertNotSame("Managed to insert property with date out of range", response.getStatus(), OK.getStatusCode());
+        assertNotSame("Managed to insert property with date out of range", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertFalse(propertyExist(property));
     }
@@ -211,7 +210,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     @Issue("2850")
     @Test
-    public void testISOTimezoneZ() throws Exception {
+    public void testISOTimezoneZ() {
         Property property = new Property("test1", "property-insert-test-isoz");
         property.addTag("test", "test");
         property.setDate("2016-07-21T00:00:00Z");
@@ -236,7 +235,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     @Issue("2850")
     @Test
-    public void testISOTimezonePlusHourMinute() throws Exception {
+    public void testISOTimezonePlusHourMinute() {
         String entityName = "property-insert-test-iso+hm";
         Property property = new Property("test2", entityName);
         property.addTag("test", "test");
@@ -261,7 +260,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
     @Issue("2850")
     @Test
-    public void testISOTimezoneMinusHourMinute() throws Exception {
+    public void testISOTimezoneMinusHourMinute() {
         String entityName = "property-insert-test-iso-hm";
         Property property = new Property("test3", entityName);
         property.addTag("test", "test");
@@ -304,7 +303,7 @@ public class PropertyInsertTest extends PropertyMethod {
     @Issue("2850")
     @Issue("5272")
     @Test
-    public void testRfc822TimezoneOffsetSupported() throws Exception {
+    public void testRfc822TimezoneOffsetSupported() {
         String entityName = "property-insert-test-rfc822-timezone";
         String type = "test5";
 
@@ -358,7 +357,7 @@ public class PropertyInsertTest extends PropertyMethod {
         Property storedProperty = new Property(property);
         storedProperty.setKey(new HashMap<String, String>());
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -376,7 +375,7 @@ public class PropertyInsertTest extends PropertyMethod {
         storedProperty.setTags(null);
         storedProperty.addTag("t1", "tv1");
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -407,7 +406,7 @@ public class PropertyInsertTest extends PropertyMethod {
         Property storedProperty = new Property(property);
         storedProperty.setKey(null);
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -425,7 +424,7 @@ public class PropertyInsertTest extends PropertyMethod {
         storedProperty.setTags(null);
         storedProperty.addTag("t1", "tv1");
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -443,7 +442,7 @@ public class PropertyInsertTest extends PropertyMethod {
         storedProperty.setKey(null);
         storedProperty.addKey("k1", "spaced");
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -460,7 +459,7 @@ public class PropertyInsertTest extends PropertyMethod {
         Property storedProperty = new Property(property);
         storedProperty.setKey(null);
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -477,7 +476,7 @@ public class PropertyInsertTest extends PropertyMethod {
         storedProperty.setTags(null);
         storedProperty.addTag("t1", "tv1");
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -495,7 +494,7 @@ public class PropertyInsertTest extends PropertyMethod {
         storedProperty.setTags(null);
         storedProperty.addTag("t2", "tv2");
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -517,7 +516,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -539,7 +538,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -559,7 +558,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 
@@ -579,7 +578,7 @@ public class PropertyInsertTest extends PropertyMethod {
 
         Response response = insertProperty(property);
 
-        assertEquals("Incorrect response status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Incorrect response status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to get inserted properties", propertyExist(storedProperty));
     }
 

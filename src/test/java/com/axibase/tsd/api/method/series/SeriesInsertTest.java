@@ -7,7 +7,9 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
@@ -29,10 +31,12 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.CommonAssertions.assertDecimals;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
-import static com.axibase.tsd.api.util.ErrorTemplate.*;
+import static com.axibase.tsd.api.util.ErrorTemplate.EMPTY_TAG;
+import static com.axibase.tsd.api.util.ErrorTemplate.JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER;
 import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.*;
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.*;
 
 
@@ -54,7 +58,7 @@ public class SeriesInsertTest extends SeriesTest {
         metric.setDataType(DataType.FLOAT);
 
         MetricMethod.createOrReplaceMetricCheck(metric);
-        assertEquals("Failed to insert float series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert float series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
@@ -99,7 +103,7 @@ public class SeriesInsertTest extends SeriesTest {
         for (int i = 0; i < 12; i++) {
             series.addSamples(Sample.ofDateDecimal(dateTime.plusSeconds(5 * i).toString(), number));
         }
-        assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert small decimal series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(
@@ -131,7 +135,7 @@ public class SeriesInsertTest extends SeriesTest {
             String isoDate = Util.ISOFormat(t + i * 5000);
             series.addSamples(Sample.ofDateDecimal(isoDate, number));
         }
-        assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert small decimal series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
@@ -184,7 +188,7 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T17:08:09Z";
         series.addSamples(Sample.ofDateDecimal(d, value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
@@ -205,7 +209,7 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T17:08:09.100Z";
         series.addSamples(Sample.ofDateDecimal(d, value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
@@ -225,7 +229,7 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T10:08:09.000Z";
         series.addSamples(Sample.ofDateDecimal("2016-06-09T17:08:09+07:00", value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
@@ -246,7 +250,7 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T10:08:09.999Z";
         series.addSamples(Sample.ofDateDecimal("2016-06-09T17:08:09.999+07:00", value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
@@ -265,7 +269,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
         series.addSamples(Sample.ofDateDecimal("2016-06-09T17:29:00-02:31", value));
-        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Fail to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
@@ -284,7 +288,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series("e___underscore", "m___underscore");
         series.addSamples(Sample.ofDateInteger(Util.ISOFormat(t), 0));
 
-        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Fail to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
     }
 
@@ -399,7 +403,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest0() throws Exception {
+    public void testUrlNotFoundGetRequest0() {
         Response response = executeRootRequest(webTarget -> webTarget.path("api").path("404").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -408,7 +412,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest1() throws Exception {
+    public void testUrlNotFoundGetRequest1() {
         Response response = executeApiRequest(webTarget -> webTarget.path("query").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -416,7 +420,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest2() throws Exception {
+    public void testUrlNotFoundGetRequest2() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -424,7 +428,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest3() throws Exception {
+    public void testUrlNotFoundGetRequest3() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").queryParam("not", "exist").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -432,42 +436,42 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequestWithoutApiV1() throws Exception {
+    public void testUrlNotFoundOptionsRequestWithoutApiV1() {
         Response response = executeRootRequest(webTarget -> webTarget.path("api").path("404").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url without /api/v1 options doesn't return 404", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url without /api/v1 options doesn't return 404", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest0() throws Exception {
+    public void testUrlNotFoundOptionsRequest0() {
         Response response = executeApiRequest(webTarget -> webTarget.path("*").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest1() throws Exception {
+    public void testUrlNotFoundOptionsRequest1() {
         Response response = executeApiRequest(webTarget -> webTarget.path("query").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest2() throws Exception {
+    public void testUrlNotFoundOptionsRequest2() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest3() throws Exception {
+    public void testUrlNotFoundOptionsRequest3() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").queryParam("not", "exist").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2850")
@@ -503,7 +507,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, metricName);
         series.addSamples(Sample.ofRawDateInteger("2016-06-09T09:50:00-1010", 42));
         String d = "2016-06-09T20:00:00.000Z";
-        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Fail to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
@@ -741,7 +745,7 @@ public class SeriesInsertTest extends SeriesTest {
         String json = String.format(commandJsonFormat, series.getEntity(), series.getMetric(),
                 sample.getRawDate(), sample.getValue());
         Response response = insertSeries(json);
-        assertEquals("Bad insertion request status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Bad insertion request status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         Checker.check(new SeriesCheck(Collections.singletonList(series)));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);

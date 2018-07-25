@@ -6,8 +6,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 /**
@@ -42,7 +40,7 @@ public class EntityGroupGetTest extends EntityGroupMethod {
     public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         createOrReplaceEntityGroupCheck(entityGroup);
         Response response = getEntityGroup(entityGroup.getName());
-        assertEquals("Fail to execute getEntityGroup query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute getEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Entity group in response does not match to inserted", compareJsonString(jacksonMapper.writeValueAsString(entityGroup), response.readEntity(String.class)));
     }
 }

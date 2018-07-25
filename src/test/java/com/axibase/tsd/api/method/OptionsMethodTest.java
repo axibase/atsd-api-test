@@ -75,7 +75,7 @@ public class OptionsMethodTest extends BaseMethod {
 
     @Issue("3616")
     @Test(dataProvider = "availablePathProvider")
-    public static void testResponseOptionsHeadersForURLs(String path, String method) throws Exception {
+    public static void testResponseOptionsHeadersForURLs(String path, String method) {
         Response response = executeApiRequest(webTarget -> webTarget.path(path)
                 .request()
                 .header("Access-Control-Request-Method", method)
@@ -83,7 +83,7 @@ public class OptionsMethodTest extends BaseMethod {
                 .header("Origin", "itdoesntmatter")
                 .options());
 
-        assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
+        assertSame("Bad response status", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
         assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");
@@ -101,7 +101,7 @@ public class OptionsMethodTest extends BaseMethod {
                 .header("Origin", "itdoesntmatter")
                 .options());
 
-        assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
+        assertSame("Bad response status", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
         assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");

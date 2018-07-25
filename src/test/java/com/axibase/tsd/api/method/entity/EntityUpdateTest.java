@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -48,7 +47,7 @@ public class EntityUpdateTest extends EntityMethod {
 
     private void assertUrlencodedPathHandledSuccessfullyOnUpdate(final Entity entity, Map newTags) throws Exception {
         entity.setTags(newTags);
-        assertEquals("Fail to execute updateEntity", OK.getStatusCode(), updateEntity(entity).getStatus());
+        assertSame("Fail to execute updateEntity", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateEntity(entity)));
         assertTrue("Entity in response does not match to updated entity", entityExist(entity));
     }
 }

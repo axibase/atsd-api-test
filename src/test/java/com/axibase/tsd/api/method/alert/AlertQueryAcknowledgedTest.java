@@ -12,7 +12,6 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -49,7 +48,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
             item.put("id", alert.getId());
             updateAlertsCommand.add(item);
         }
-        if (updateAlerts(updateAlertsCommand.toArray()).getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(updateAlerts(updateAlertsCommand.toArray()))) {
             throw new IllegalStateException("Fail to set alert acknowledged");
         }
     }
@@ -80,7 +79,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
 
     @Issue("2976")
     @Test
-    public void testAcknowledgedFilterTrue() throws Exception {
+    public void testAcknowledgedFilterTrue() {
         Map<String, Object> alertQuery = new HashMap<>();
         alertQuery.put("entities", Arrays.asList(ENTITY_NAME, ENTITY_NAME_ACK));
         alertQuery.put("startDate", MIN_QUERYABLE_DATE);
@@ -96,7 +95,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
 
     @Issue("2976")
     @Test
-    public void testAcknowledgedFilterFalse() throws Exception {
+    public void testAcknowledgedFilterFalse() {
         Map<String, Object> alertQuery = new HashMap<>();
         alertQuery.put("entities", Arrays.asList(ENTITY_NAME, ENTITY_NAME_ACK));
         alertQuery.put("startDate", MIN_QUERYABLE_DATE);

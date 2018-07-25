@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.glassfish.jersey.media.multipart.file.DefaultMediaTypePredictor.CommonMediaTypes.getMediaTypeFromFile;
 
 public class CSVUploadMethod extends BaseMethod {
@@ -37,7 +36,7 @@ public class CSVUploadMethod extends BaseMethod {
         });
 
         response.bufferEntity();
-        return response.getStatus() == OK.getStatusCode();
+        return Response.Status.Family.SUCCESSFUL == Util.responseFamily(response);
     }
 
     public static Response multipartCsvUpload(File file, String parserName) {

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.sql.AtsdExceptionDescription;
 import com.axibase.tsd.api.model.sql.Error;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
@@ -73,12 +73,12 @@ public class SqlMethod extends BaseMethod {
         }
 
         /* Even if status == OK, the response may contain errors */
-        if (atsdError != null && (OK.getStatusCode() == statusCode ||
+        if (atsdError != null && (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response) ||
                 BAD_REQUEST.getStatusCode() == statusCode)) {
             throw new IllegalStateException(String.format("%s.%n   Query: %s", atsdError, sqlQuery));
         }
 
-        if (OK.getStatusCode() == statusCode) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
             return response.readEntity(StringTable.class);
         }
 
