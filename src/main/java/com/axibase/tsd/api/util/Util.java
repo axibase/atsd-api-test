@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
+import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -53,6 +54,11 @@ public class Util {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneName));
         return dateFormat.format(date);
+    }
+
+    public static Response.Status.Family responseFamily(final Response response) {
+        if (response == null) return null;
+        return response.getStatusInfo().getFamily();
     }
 
     public static String addOneMS(String date) {
