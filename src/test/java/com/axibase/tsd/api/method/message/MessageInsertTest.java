@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.Test;
@@ -26,7 +27,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2903")
     @Test
-    public void testTrimmedMessages() throws Exception {
+    public void testTrimmedMessages() {
         String entityName = "          nurswgvml022    \n    ";
         String messageText = "          NURSWGVML007 ssh: error: connect_to localhost port 8881: failed.     \n     ";
         String type = "      application    \n      ";
@@ -55,7 +56,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2957")
     @Test
-    public void testTimeRangeMinSaved() throws Exception {
+    public void testTimeRangeMinSaved() {
         Message message = new Message("e-time-range-msg-1");
         message.setMessage("msg-time-range-msg-1");
         calendar.setTime(new Date());
@@ -80,7 +81,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2957")
     @Test
-    public void testTimeRangeMaxTimeSaved() throws Exception {
+    public void testTimeRangeMaxTimeSaved() {
         Message message = new Message("e-time-range-msg-3");
         message.setMessage("msg-time-range-msg-3");
         message.setDate(MAX_STORABLE_DATE);
@@ -102,7 +103,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2957")
     @Test
-    public void testTimeRangeMaxTimeOverflow() throws Exception {
+    public void testTimeRangeMaxTimeOverflow() {
         Message message = new Message("e-time-range-msg-4");
         message.setMessage("msg-time-range-msg-4");
         message.setDate(addOneMS(MAX_STORABLE_DATE));
@@ -116,7 +117,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2850")
     @Test
-    public void testISOTimezoneZ() throws Exception {
+    public void testISOTimezoneZ() {
         String entityName = "message-insert-test-isoz";
         Message message = new Message(entityName);
         message.setMessage("hello");
@@ -142,7 +143,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2850")
     @Test
-    public void testISOTimezonePlusHourMinute() throws Exception {
+    public void testISOTimezonePlusHourMinute() {
         String entityName = "message-insert-test-iso+hm";
         Message message = new Message(entityName);
         message.setMessage("hello");
@@ -168,7 +169,7 @@ public class MessageInsertTest extends MessageMethod {
 
     @Issue("2850")
     @Test
-    public void testISOTimezoneMinusHourMinute() throws Exception {
+    public void testISOTimezoneMinusHourMinute() {
         String entityName = "message-insert-test-iso-hm";
         Message message = new Message(entityName);
         message.setMessage("hello");
@@ -210,7 +211,7 @@ public class MessageInsertTest extends MessageMethod {
     @Issue("2850")
     @Issue("5272")
     @Test
-    public void testRfc822TimezoneOffsetSupported() throws Exception {
+    public void testRfc822TimezoneOffsetSupported() {
         String entityName = "message-insert-test-rfc+hm";
         Message message = new Message(entityName)
                 .setMessage("hello")

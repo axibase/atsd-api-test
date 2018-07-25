@@ -11,6 +11,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchResult;
+import com.axibase.tsd.api.util.Util;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

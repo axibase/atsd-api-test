@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.csv;
 
 import com.axibase.tsd.api.method.BaseMethod;
+import com.axibase.tsd.api.util.Util;
 import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;

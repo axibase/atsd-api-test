@@ -7,6 +7,7 @@ import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;

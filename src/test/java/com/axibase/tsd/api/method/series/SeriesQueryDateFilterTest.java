@@ -16,8 +16,7 @@ import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_COMBINATION_REQ
 import static com.axibase.tsd.api.util.ErrorTemplate.DATE_FILTER_END_GREATER_START_REQUIRED;
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 // TODO: Disabled while #5314 will not be solved.
 public class SeriesQueryDateFilterTest extends SeriesMethod {

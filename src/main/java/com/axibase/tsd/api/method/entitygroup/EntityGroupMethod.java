@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.entitygroup;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;

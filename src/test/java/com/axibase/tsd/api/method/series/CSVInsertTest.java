@@ -23,6 +23,7 @@ import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.*;
 import static java.util.Collections.singletonList;
+import static org.testng.AssertJUnit.assertSame;
 
 public class CSVInsertTest extends CSVInsertMethod {
 

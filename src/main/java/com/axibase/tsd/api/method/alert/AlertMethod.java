@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.alert;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;

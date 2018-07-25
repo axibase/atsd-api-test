@@ -8,6 +8,7 @@ import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.metric.MetricSeriesTags;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;

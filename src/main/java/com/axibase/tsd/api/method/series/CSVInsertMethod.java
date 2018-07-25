@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.util.Util;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 import javax.ws.rs.client.Entity;

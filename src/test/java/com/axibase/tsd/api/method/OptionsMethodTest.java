@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method;
 
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
@@ -10,8 +11,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.*;
 
 @Issue("3616")
 public class OptionsMethodTest extends BaseMethod {

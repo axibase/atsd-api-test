@@ -1,10 +1,12 @@
 package com.axibase.tsd.api.method.version;
 
 import com.axibase.tsd.api.model.version.Version;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
+import static org.testng.AssertJUnit.assertSame;
 import static org.testng.AssertJUnit.fail;
 
 

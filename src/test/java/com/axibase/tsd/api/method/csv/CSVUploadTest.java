@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -27,8 +28,7 @@ import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
 import static com.axibase.tsd.api.util.Util.*;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 public class CSVUploadTest extends CSVUploadMethod {
     public static final String LINE_BREAKS_TEST_VALUE = "533.9";

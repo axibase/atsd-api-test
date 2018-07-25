@@ -15,8 +15,7 @@ import java.util.Objects;
 
 import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 
 public abstract class SqlTest extends SqlMethod {

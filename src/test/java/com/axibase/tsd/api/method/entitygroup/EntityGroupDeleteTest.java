@@ -1,12 +1,14 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
 import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertSame;
 
 /**
  * @author Dmitry Korchagin.

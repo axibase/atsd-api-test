@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -27,7 +28,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1278")
     @Test
-    public void testEntityNameContainsWhitespace() throws Exception {
+    public void testEntityNameContainsWhitespace() {
         Entity entity = new Entity("createentity 1");
 
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), createOrReplaceEntity(entity).getStatus());
@@ -53,7 +54,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagNameConvertedToLowerCase() throws Exception {
+    public void testTagNameConvertedToLowerCase() {
         Entity entity = new Entity("createentity4");
         entity.addTag("TagKey", "tagvalue");
 
@@ -71,7 +72,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValueRetainCase() throws Exception {
+    public void testTagValueRetainCase() {
         Entity entity = new Entity("createentity5");
         entity.addTag("tag-key", "TaValue");
 
@@ -84,7 +85,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testEntityNameConvertedToLowerCase() throws Exception {
+    public void testEntityNameConvertedToLowerCase() {
         Entity entity = new Entity("CreateEntity6");
 
         createOrReplaceEntity(entity);
@@ -160,7 +161,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testNullTagValIgnored() throws Exception {
+    public void testNullTagValIgnored() {
         Entity entity = new Entity("create-entity-11");
         entity.addTag("a", null);
         entity.addTag("b", "c");
@@ -175,7 +176,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValBoolean() throws Exception {
+    public void testTagValBoolean() {
         final String entityName = "create-entity-12";
         Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
@@ -193,7 +194,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValInteger() throws Exception {
+    public void testTagValInteger() {
         final String entityName = "create-entity-13";
         Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
@@ -211,7 +212,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValBooleanInteger() throws Exception {
+    public void testTagValBooleanInteger() {
         final String entityName = "create-entity-14";
         Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();

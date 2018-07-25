@@ -1,22 +1,23 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class EntityUpdateTest extends EntityMethod {
 
 
     @Issue("1278")
     @Test
-    public void testEntityNameContainsWhitespace() throws Exception {
+    public void testEntityNameContainsWhitespace() {
         Entity entity = new Entity("updateentity 1");
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), updateEntity(entity).getStatus());
     }
