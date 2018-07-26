@@ -35,7 +35,7 @@ public class SqlTimeArithmeticTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideParams() {
-        return new Object[][]{
+        return toArray(
                 testCase("IS_WEEKDAY(time + 1000*60*60*24*1, 'RUS')", "false", "true", "true"),
                 testCase("IS_WEEKDAY(time - 1000*60*60*24*1, 'RUS')", "true", "false", "false"),
                 testCase("IS_WEEKDAY(time - 1000*60*60*24*2, 'RUS')", "true", "true", "false"),
@@ -56,12 +56,12 @@ public class SqlTimeArithmeticTest extends SqlTest {
                 testCase("MONTH(time - 1000*60*60*24*1)", "7", "7", "7"),
                 testCase("MONTH(time - 1000*60*60*24*2)", "7", "7", "7"),
                 testCase("MONTH(time + 1000*60*60*24*2)", "7", "7", "7"),
-                testCase("MONTH(time + 1000*60*60*24*20)", "8", "8", "8"),
-        };
+                testCase("MONTH(time + 1000*60*60*24*20)", "8", "8", "8")
+        );
     }
 
     private static Object[] testCase(final String params, final String... columns) {
-        return new Object[]{params, toArray(columns)};
+        return toArray(params, toArray(columns));
     }
 
     @Issue("5490")
