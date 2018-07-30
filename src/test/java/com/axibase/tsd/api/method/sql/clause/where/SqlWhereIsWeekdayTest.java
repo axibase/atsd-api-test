@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class SqlWhereIsWeekdayTest extends SqlTest {
     private static final String ENTITY_NAME = entity();
@@ -40,8 +41,7 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
     public void testEveryClause() {
         final String query = String.format(
                 "select is_workday(datetime, 'RUS'), is_weekday(dateadd(day, -1, datetime), 'RUS'), \n" +
-                        "       is_weekday(dateadd(month, 1, datetime), 'RUS'), is_workday(datetime, 'RUS'), \n" +
-                        "       datetime\n" +
+                        "       is_weekday(dateadd(month, 1, datetime), 'RUS'), is_workday(datetime, 'RUS')\n" +
                         "from (\n" +
                         "    select datetime from \"%s\" t1 \n" +
                         "    join using entity \"%s\" t2\n" +
@@ -57,10 +57,10 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
                         "with time >= last_time - 1*MONTH\n" +
                         "order by is_weekday(datetime, 'ISR')\n" +
                         "limit 10\n", METRIC_NAME_1, METRIC_NAME_2);
-        final String[][] expectedRows = {
-                {"false", "true", "true", "false", "2018-01-06T00:00:00.000Z"},
-                {"false", "true", "true", "false", "2018-03-03T00:00:00.000Z"},
-        };
+        final String[][] expectedRows = toArray(
+                toArray("false", "true", "true", "false"),
+                toArray("false", "true", "true", "false")
+        );
         assertSqlQueryRows("Fail to execute a big query (anything could go wrong)", expectedRows, query);
     }
 }
