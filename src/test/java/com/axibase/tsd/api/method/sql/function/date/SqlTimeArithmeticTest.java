@@ -10,8 +10,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -21,21 +19,28 @@ import static org.apache.commons.lang3.ArrayUtils.toArray;
 public class SqlTimeArithmeticTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
-    private static final ZonedDateTime TWENTY_FIRST = ZonedDateTime.parse("2018-07-21T00:00:00Z");
-    private static final ZonedDateTime TWENTY_SECOND = ZonedDateTime.parse("2018-07-22T00:00:00Z");
-    private static final ZonedDateTime TWENTY_THIRD = ZonedDateTime.parse("2018-07-23T00:00:00Z");
 
     @BeforeClass
     public static void prepareData() throws Exception {
         final Series series = new Series(ENTITY_NAME, METRIC_NAME)
                 // Saturday (is not weekday, next day is not weekday)
-                .addSamples(Sample.ofTimeInteger(TWENTY_FIRST.toEpochSecond() * 1000, 20))
+                .addSamples(Sample.ofDateInteger("2018-07-21T00:00:00Z", 20))
                 // Sunday (is not weekday, next day is weekday)
-                .addSamples(Sample.ofTimeInteger(TWENTY_SECOND.toEpochSecond() * 1000, 20))
+                .addSamples(Sample.ofDateInteger("2018-07-22T00:00:00Z", 20))
                 // Monday (is weekday, next day is weekday)
-                .addSamples(Sample.ofTimeInteger(TWENTY_THIRD.toEpochSecond() * 1000, 20));
+                .addSamples(Sample.ofDateInteger("2018-07-23T00:00:00Z", 20));
 
         SeriesMethod.insertSeriesCheck(series);
+    }
+
+    private static Object[] testCase(final String param, final String... results) {
+        return toArray(param, toArray(results));
+    }
+
+    private static String[][] expectedRows(final String[] results) {
+        return Arrays.stream(results)
+                .map(ArrayUtils::toArray)
+                .toArray(String[][]::new);
     }
 
     @DataProvider
@@ -50,79 +55,51 @@ public class SqlTimeArithmeticTest extends SqlTest {
                 testCase("IS_WORKDAY(time - 1000*60*60*24*2, 'RUS')", "true", "true", "false"),
                 testCase("IS_WORKDAY(time + 1000*60*60*24*2, 'RUS')", "true", "true", "true"),
                 testCase("DATE_FORMAT(time + 1000*60*60*24*1, 'yyyy-MM-dd')",
-                        zonedDateTimeToString(TWENTY_FIRST.plusSeconds(60 * 60 * 24)),
-                        zonedDateTimeToString(TWENTY_SECOND.plusSeconds(60 * 60 * 24)),
-                        zonedDateTimeToString(TWENTY_THIRD.plusSeconds(60 * 60 * 24))
-                ),
+                        "2018-07-22", "2018-07-23", "2018-07-24"),
                 testCase("DATE_FORMAT(time - 1000*60*60*24*1, 'yyyy-MM-dd')",
-                        zonedDateTimeToString(TWENTY_FIRST.minusSeconds(60 * 60 * 24)),
-                        zonedDateTimeToString(TWENTY_SECOND.minusSeconds(60 * 60 * 24)),
-                        zonedDateTimeToString(TWENTY_THIRD.minusSeconds(60 * 60 * 24))
-                ),
+                        "2018-07-20", "2018-07-21", "2018-07-22"),
                 testCase("DATE_FORMAT(time - 1000*60*60*24*2, 'yyyy-MM-dd')",
-                        zonedDateTimeToString(TWENTY_FIRST.minusSeconds(60 * 60 * 24 * 2)),
-                        zonedDateTimeToString(TWENTY_SECOND.minusSeconds(60 * 60 * 24 * 2)),
-                        zonedDateTimeToString(TWENTY_THIRD.minusSeconds(60 * 60 * 24 * 2))
-                ),
+                        "2018-07-19", "2018-07-20", "2018-07-21"),
                 testCase("DATE_FORMAT(time + 1000*60*60*24*2, 'yyyy-MM-dd')",
-                        zonedDateTimeToString(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 2)),
-                        zonedDateTimeToString(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 2)),
-                        zonedDateTimeToString(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 2))
-                ),
-                testCase("EXTRACT(DAY FROM time + 1000*60*60*24*1)",
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24).getDayOfMonth()),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24).getDayOfMonth()),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24).getDayOfMonth())
-                ),
-                testCase("EXTRACT(DAY FROM time - 1000*60*60*24*1)",
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24).getDayOfMonth()),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24).getDayOfMonth()),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24).getDayOfMonth())
-                ),
-                testCase("EXTRACT(DAY FROM time - 1000*60*60*24*2)",
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24 * 2).getDayOfMonth()),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24 * 2).getDayOfMonth()),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24 * 2).getDayOfMonth())
-                ),
-                testCase("EXTRACT(DAY FROM time + 1000*60*60*24*2)",
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 2).getDayOfMonth()),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 2).getDayOfMonth()),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 2).getDayOfMonth())
-                ),
-                testCase("MONTH(time + 1000*60*60*24*1)",
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 2).getMonthValue()),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 2).getMonthValue()),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 2).getMonthValue())
-                ),
-                testCase("MONTH(time - 1000*60*60*24*1)",
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24).getMonthValue()),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24).getMonthValue()),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24).getMonthValue())
-                ),
-                testCase("MONTH(time - 1000*60*60*24*2)",
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24 * 2).getMonthValue()),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24 * 2).getMonthValue()),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24 * 2).getMonthValue())
-                ),
-                testCase("MONTH(time + 1000*60*60*24*2)",
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 2).getMonthValue()),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 2).getMonthValue()),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 2).getMonthValue())
-                ),
-                testCase("MONTH(time + 1000*60*60*24*20)",
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 20).getMonthValue()),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 20).getMonthValue()),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 20).getMonthValue())
-                )
+                        "2018-07-23", "2018-07-24", "2018-07-25"),
+                testCase("EXTRACT(DAY FROM time + 1000*60*60*24*1)", "22", "23", "24"),
+                testCase("EXTRACT(DAY FROM time - 1000*60*60*24*1)", "20", "21", "22"),
+                testCase("EXTRACT(DAY FROM time - 1000*60*60*24*2)", "19", "20", "21"),
+                testCase("EXTRACT(DAY FROM time + 1000*60*60*24*2)", "23", "24", "25"),
+                testCase("MONTH(time + 1000*60*60*24*1)", "7", "7", "7"),
+                testCase("MONTH(time - 1000*60*60*24*1)", "7", "7", "7"),
+                testCase("MONTH(time - 1000*60*60*24*2)", "7", "7", "7"),
+                testCase("MONTH(time + 1000*60*60*24*2)", "7", "7", "7"),
+                testCase("MONTH(time + 1000*60*60*24*20)", "8", "8", "8")
         );
     }
 
-    private static String zonedDateTimeToString(final ZonedDateTime time) {
-        return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    @DataProvider
+    public static Object[][] provideSelectBetweenClauses() {
+        return toArray(
+                //                                                  2018-07-21       2018-07-22       2018-07-23
+                testCase("time + 1000*60*60*24*1", "1532131200000", "1532217600000", "1532304000000"),
+                //                                                  2018-07-21       2018-07-22       2018-07-23
+                testCase("time - 1000*60*60*24*1", "1532131200000", "1532217600000", "1532304000000"),
+                //                                                  2018-07-21       2018-07-22       2018-07-23
+                testCase("time - 1000*60*60*24*2", "1532131200000", "1532217600000", "1532304000000"),
+                //                                                  2018-07-21       2018-07-22       2018-07-23
+                testCase("time + 1000*60*60*24*2", "1532131200000", "1532217600000", "1532304000000")
+        );
     }
 
-    private static Object[] testCase(final String params, final String... columns) {
-        return toArray(params, toArray(columns));
+    @DataProvider
+    public Object[][] provideSelectClauses() {
+        return toArray(
+                //                                                  2018-07-22       2018-07-23       2018-07-24
+                testCase("time + 1000*60*60*24*1", "1532217600000", "1532304000000", "1532390400000"),
+                //                                                  2018-07-20       2018-07-21       2018-07-22
+                testCase("time - 1000*60*60*24*1", "1532044800000", "1532131200000", "1532217600000"),
+                //                                                  2018-07-19       2018-07-20       2018-07-21
+                testCase("time - 1000*60*60*24*2", "1531958400000", "1532044800000", "1532131200000"),
+                //                                                  2018-07-23       2018-07-24       2018-07-25
+                testCase("time + 1000*60*60*24*2", "1532304000000", "1532390400000", "1532476800000")
+        );
     }
 
     @Issue("5490")
@@ -132,149 +109,59 @@ public class SqlTimeArithmeticTest extends SqlTest {
     )
     public void testSqlFunctionTimeMathOperations(final String expression, final String[] results) {
         final String query = String.format("SELECT %s FROM \"%s\"", expression, METRIC_NAME);
-        final String[][] expectedRows = Arrays.stream(results)
-                .map(ArrayUtils::toArray)
-                .toArray(String[][]::new);
+        final String[][] expectedRows = expectedRows(results);
         final String assertMessage = String.format("Fail to calculate \"%s\"", expression);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
-    @DataProvider
-    public Object[][] provideClauses() {
-        return toArray(
-                testCase(String.format("SELECT time + 1000*60*60*24*1 FROM \"%s\"", METRIC_NAME),
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24).toEpochSecond() * 1000)
-                ),
-                testCase(String.format("SELECT time - 1000*60*60*24*1 FROM \"%s\"", METRIC_NAME),
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24).toEpochSecond() * 1000)
-                ),
-                testCase(String.format("SELECT time - 1000*60*60*24*2 FROM \"%s\"", METRIC_NAME),
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000)
-                ),
-                testCase(String.format("SELECT time + 1000*60*60*24*2 FROM \"%s\"", METRIC_NAME),
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time + 1000*60*60*24*1 FROM \"%s\" GROUP BY time + 1000*60*60*24*1",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24).toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time - 1000*60*60*24*1 FROM \"%s\" GROUP BY time - 1000*60*60*24*1",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24).toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time - 1000*60*60*24*2 FROM \"%s\" GROUP BY time - 1000*60*60*24*2",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.minusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.minusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.minusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time + 1000*60*60*24*2 FROM \"%s\" GROUP BY time + 1000*60*60*24*2",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.plusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.plusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.plusSeconds(60 * 60 * 24 * 2).toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" WHERE time + 1000*60*60*24*1 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" WHERE time - 1000*60*60*24*1 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" WHERE time - 1000*60*60*24*2 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" WHERE time + 1000*60*60*24*2 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') " +
-                                "HAVING time + 1000*60*60*24*1 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') " +
-                                "HAVING time - 1000*60*60*24*1 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') " +
-                                "HAVING time - 1000*60*60*24*2 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                ),
-                testCase(String.format(
-                        "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') " +
-                                "HAVING time + 1000*60*60*24*2 BETWEEN '2018-01-01' AND '2019-01-01'",
-                        METRIC_NAME
-                        ),
-                        String.valueOf(TWENTY_FIRST.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_SECOND.toEpochSecond() * 1000),
-                        String.valueOf(TWENTY_THIRD.toEpochSecond() * 1000)
-                )
-        );
+    @Issue("5492")
+    @Test(
+            description = "Test support of mathematical operators in select clause",
+            dataProvider = "provideSelectClauses"
+    )
+    public void testSqlSelectClauseTimeMathOperations(final String operation, final String[] results) {
+        final String query = String.format("SELECT %s FROM \"%s\"", operation, METRIC_NAME);
+        final String[][] expectedRows = expectedRows(results);
+        final String assertMessage = String.format("Fail to calculate \"%s\"", query);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5492")
     @Test(
-            description = "Test support of mathematical operators in clauses",
-            dataProvider = "provideClauses"
+            description = "Test support of mathematical operators in select group by clause",
+            dataProvider = "provideSelectClauses"
     )
-    public void testSqlClauseTimeMathOperations(final String clause, final String[] results) {
-        final String[][] expectedRows = Arrays.stream(results)
-                .map(ArrayUtils::toArray)
-                .toArray(String[][]::new);
-        final String assertMessage = String.format("Fail to calculate \"%s\"", clause);
-        assertSqlQueryRows(assertMessage, expectedRows, clause);
+    public void testSqlSelectGroupClauseTimeMathOperations(final String operation, final String[] results) {
+        final String query = String.format("SELECT %s FROM \"%s\" GROUP BY %s", operation, METRIC_NAME, operation);
+        final String[][] expectedRows = expectedRows(results);
+        final String assertMessage = String.format("Fail to calculate \"%s\"", query);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
+    }
+
+    @Issue("5492")
+    @Test(
+            description = "Test support of mathematical operators in select where between clause",
+            dataProvider = "provideSelectBetweenClauses"
+    )
+    public void testSqlSelectWhereBetweenClauseTimeMathOperations(final String operation, final String results[]) {
+        final String query = String.format("SELECT time FROM \"%s\" WHERE %s BETWEEN '2018-01-01' AND '2019-01-01'",
+                METRIC_NAME, operation);
+        final String[][] expectedRows = expectedRows(results);
+        final String assertMessage = String.format("Fail to calculate \"%s\"", query);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
+    }
+
+    @Issue("5492")
+    @Test(
+            description = "Test support of mathematical operators in select having between clause",
+            dataProvider = "provideSelectBetweenClauses"
+    )
+    public void testSqlSelectHavingBetweenClauseTimeMathOperations(final String operation, final String[] results) {
+        final String query = String.format(
+                "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') HAVING %s BETWEEN '2018-01-01' AND '2019-01-01'",
+                METRIC_NAME, operation);
+        final String[][] expectedRows = expectedRows(results);
+        final String assertMessage = String.format("Fail to calculate \"%s\"", query);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 }
