@@ -91,6 +91,7 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage =
                 String.format("Fail to use boolean expression \"%s\" after SELECT and WHERE keywords", params);
+        assertOkRequest(assertMessage, query);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
@@ -105,6 +106,7 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage =
                 String.format("Fail to use boolean expression \"%s\" after SELECT and HAVING keywords", params);
+        assertOkRequest(assertMessage, query);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
@@ -119,6 +121,7 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage =
                 String.format("Fail to use boolean expression \"%s\" after SELECT, WHERE, HAVING keywords", params);
+        assertOkRequest(assertMessage, query);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
@@ -132,6 +135,7 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage =
                 String.format("Fail to use boolean expression \"%s\" after SELECT keyword", params);
+        assertOkRequest(assertMessage, query);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
@@ -161,7 +165,9 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
                 toArray("false", "true", "true", "false")
         );
 
-        assertSqlQueryRows("Fail to execute a big query containing boolean expressions" +
-                " with combination of every possible clause", expectedRows, query);
+        final String assertMessage = "Fail to execute a big query containing boolean expressions" +
+                " with combination of every possible clause";
+        assertOkRequest(assertMessage, query);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 }
