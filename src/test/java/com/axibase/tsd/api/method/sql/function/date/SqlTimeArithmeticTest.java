@@ -19,7 +19,6 @@ import static org.apache.commons.lang3.ArrayUtils.toArray;
 public class SqlTimeArithmeticTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
-    private final String ASSERT_MESSAGE = "Fail to use arithmetic operations with time in SQL query";
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -109,7 +108,8 @@ public class SqlTimeArithmeticTest extends SqlTest {
     public void testSqlFunctionTimeMathOperations(final String expression, final String[] results) {
         final String query = String.format("SELECT %s FROM \"%s\"", expression, METRIC_NAME);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows(ASSERT_MESSAGE, expectedRows, query);
+        final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT", expression);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5492")
@@ -120,7 +120,8 @@ public class SqlTimeArithmeticTest extends SqlTest {
     public void testSqlSelectClauseTimeMathOperations(final String operation, final String[] results) {
         final String query = String.format("SELECT %s FROM \"%s\"", operation, METRIC_NAME);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows(ASSERT_MESSAGE, expectedRows, query);
+        final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT", operation);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5492")
@@ -131,7 +132,8 @@ public class SqlTimeArithmeticTest extends SqlTest {
     public void testSqlSelectGroupClauseTimeMathOperations(final String operation, final String[] results) {
         final String query = String.format("SELECT %s FROM \"%s\" GROUP BY %s", operation, METRIC_NAME, operation);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows(ASSERT_MESSAGE, expectedRows, query);
+        final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT and GROUP BY", operation);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5492")
@@ -143,7 +145,8 @@ public class SqlTimeArithmeticTest extends SqlTest {
         final String query = String.format("SELECT time FROM \"%s\" WHERE %s BETWEEN '2018-01-01' AND '2019-01-01'",
                 METRIC_NAME, operation);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows(ASSERT_MESSAGE, expectedRows, query);
+        final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT and WHERE", operation);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5492")
@@ -156,6 +159,7 @@ public class SqlTimeArithmeticTest extends SqlTest {
                 "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') HAVING %s BETWEEN '2018-01-01' AND '2019-01-01'",
                 METRIC_NAME, operation);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows(ASSERT_MESSAGE, expectedRows, query);
+        final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT and HAVING", operation);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 }
