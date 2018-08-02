@@ -89,7 +89,9 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
     public void testSelectWhere(final String params, final String[] results) {
         final String query = String.format("SELECT %s FROM \"%s\" WHERE %s", params, METRIC_NAME_1, params);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+        final String assertMessage =
+                String.format("Fail to use boolean expression \"%s\" after SELECT and WHERE keywords", params);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5494")
@@ -101,7 +103,9 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         final String query = String.format("SELECT %s FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') HAVING %s",
                 params, METRIC_NAME_1, params);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+        final String assertMessage =
+                String.format("Fail to use boolean expression \"%s\" after SELECT and HAVING keywords", params);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5494")
@@ -113,7 +117,9 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         final String query = String.format("SELECT %s FROM \"%s\" WHERE %s GROUP BY PERIOD(1 day, 'UTC') HAVING %s",
                 params, METRIC_NAME_1, params, params);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+        final String assertMessage =
+                String.format("Fail to use boolean expression \"%s\" after SELECT, WHERE, HAVING keywords", params);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5494")
@@ -124,12 +130,14 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
     public void testSelect(final String params, final String[] results) {
         final String query = String.format("SELECT %s FROM \"%s\"", params, METRIC_NAME_1);
         final String[][] expectedRows = expectedRows(results);
-        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+        final String assertMessage =
+                String.format("Fail to use boolean expression \"%s\" after SELECT keyword", params);
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5494")
     @Test(description = "Test WHERE and HAVING with every possible clause in one query")
-    public void testEveryClause() {
+    public void testWhereCombinedWithEveryClause() {
         final String query = String.format(
                 "select is_workday(datetime, 'RUS'), is_weekday(dateadd(day, -1, datetime), 'RUS'), \n" +
                         "       is_weekday(dateadd(month, 1, datetime), 'RUS'), is_workday(datetime, 'RUS')\n" +
@@ -152,6 +160,8 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
                 toArray("false", "true", "true", "false"),
                 toArray("false", "true", "true", "false")
         );
-        assertSqlQueryRows("Fail to execute a big query (anything could go wrong)", expectedRows, query);
+
+        assertSqlQueryRows("Fail to execute a big query containing boolean expressions" +
+                " with combination of every possible clause", expectedRows, query);
     }
 }
