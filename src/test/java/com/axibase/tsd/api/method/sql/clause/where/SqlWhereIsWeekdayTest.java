@@ -4,8 +4,13 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import io.qameta.allure.Issue;
+import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -37,6 +42,92 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(seriesFirst, seriesSecond);
     }
 
+    private static String[][] expectedRows(final String[] results) {
+        return Arrays.stream(results).map(ArrayUtils::toArray).toArray(String[][]::new);
+    }
+
+    private static Object[] testCase(final String params, final String... results) {
+        return toArray(params, toArray(results));
+    }
+
+    @DataProvider
+    public static Object[][] provideSelectQueries() {
+        return toArray(
+                testCase("is_weekday(time, 'RUS')",
+                        "true", "false", "false", "true", "false", "false"),
+                testCase("is_workday(time, 'RUS')",
+                        "false", "false", "false", "true", "false", "false"),
+                testCase("is_weekday(time, 'RUS') AND is_workday(time, 'RUS')",
+                        "false", "false", "false", "true", "false", "false"),
+                testCase("not is_weekday(time, 'RUS') AND is_workday(time, 'RUS')",
+                        "false", "false", "false", "false", "false", "false"),
+                testCase("is_weekday(time, 'RUS') AND not is_workday(time, 'RUS')",
+                        "true", "false", "false", "false", "false", "false"),
+                testCase("not is_weekday(time, 'RUS') AND not is_workday(time, 'RUS')",
+                        "false", "true", "true", "false", "true", "true")
+        );
+    }
+
+    @DataProvider
+    public static Object[][] provideSelectWhereQueries() {
+        return toArray(
+                testCase("is_weekday(time, 'RUS')", toArray("true", "true")),
+                testCase("is_workday(time, 'RUS')", toArray("true")),
+                testCase("is_weekday(time, 'RUS') AND is_workday(time, 'RUS')", "true"),
+                testCase("not is_weekday(time, 'RUS') AND is_workday(time, 'RUS')"),
+                testCase("is_weekday(time, 'RUS') AND not is_workday(time, 'RUS')", "true"),
+                testCase("not is_weekday(time, 'RUS') AND not is_workday(time, 'RUS')",
+                        "true", "true", "true", "true")
+        );
+    }
+
+    @Issue("5494")
+    @Test(
+            description = "Test the functions in SELECT WHERE clause",
+            dataProvider = "provideSelectWhereQueries"
+    )
+    public void testSelectWhere(final String params, final String[] results) {
+        final String query = String.format("SELECT %s FROM \"%s\" WHERE %s", params, METRIC_NAME_1, params);
+        final String[][] expectedRows = expectedRows(results);
+        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+    }
+
+    @Issue("5494")
+    @Test(
+            description = "Test the functions in SELECT HAVING clause",
+            dataProvider = "provideSelectWhereQueries"
+    )
+    public void testSelectHaving(final String params, final String[] results) {
+        final String query = String.format("SELECT %s FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') HAVING %s",
+                params, METRIC_NAME_1, params);
+        final String[][] expectedRows = expectedRows(results);
+        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+    }
+
+    @Issue("5494")
+    @Test(
+            description = "Test the functions in SELECT WHERE HAVING clause",
+            dataProvider = "provideSelectWhereQueries"
+    )
+    public void testSelectWhereHaving(final String params, final String[] results) {
+        final String query = String.format("SELECT %s FROM \"%s\" WHERE %s GROUP BY PERIOD(1 day, 'UTC') HAVING %s",
+                params, METRIC_NAME_1, params, params);
+        final String[][] expectedRows = expectedRows(results);
+        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+    }
+
+    @Issue("5494")
+    @Test(
+            description = "Test the functions in SELECT clause",
+            dataProvider = "provideSelectQueries"
+    )
+    public void testSelect(final String params, final String[] results) {
+        final String query = String.format("SELECT %s FROM \"%s\"", params, METRIC_NAME_1);
+        final String[][] expectedRows = expectedRows(results);
+        assertSqlQueryRows("Fail to use boolean function after SELECT keyword", expectedRows, query);
+    }
+
+    @Issue("5494")
     @Test(description = "Test WHERE and HAVING with every possible clause in one query")
     public void testEveryClause() {
         final String query = String.format(
