@@ -198,7 +198,7 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertOkRequest(String assertMessage, String sqlQuery) {
-        final String formattedMessage = String.format("%s\nQuery: %s", assertMessage, sqlQuery);
+        final String formattedMessage = String.format("%s%nQuery: %s", assertMessage, sqlQuery);
         assertOkRequest(formattedMessage, queryResponse(sqlQuery));
     }
 
