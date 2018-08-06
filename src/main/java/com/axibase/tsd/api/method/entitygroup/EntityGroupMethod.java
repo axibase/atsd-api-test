@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import com.axibase.tsd.api.model.entitygroup.UpdateQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
 
@@ -91,6 +92,16 @@ public class EntityGroupMethod extends BaseMethod {
                 .resolveTemplate("group", entityGroup.getName())
                 .request()
                 .method("PATCH", Entity.json(entityGroup)));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response updateEntityGroup(UpdateQuery query) {
+        Response response = executeApiRequest(webTarget -> webTarget
+                .path(METHOD_ENTITYGROUP)
+                .resolveTemplate("group", query.getName())
+                .request()
+                .method("PATCH", Entity.json(query)));
         response.bufferEntity();
         return response;
     }
