@@ -44,9 +44,10 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
         entityGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
         createOrReplaceEntityGroupCheck(entityGroup);
 
-        entityGroup.setExpression("");
+        entityGroup.setExpression(" ");
 
         assertSame("Fail to execute updateEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateEntityGroup(entityGroup)));
+        entityGroup.setExpression(entityGroup.getExpression().trim());
         assertTrue("Specified entityGroup does not exist", entityGroupExist(entityGroup));
     }
 
