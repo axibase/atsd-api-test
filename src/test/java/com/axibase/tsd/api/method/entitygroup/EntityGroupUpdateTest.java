@@ -1,7 +1,6 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
-import com.axibase.tsd.api.model.entitygroup.UpdateQuery;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
@@ -42,21 +41,20 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
     @Test
     public void testCanSetEmptyExpression() throws Exception {
         // Initialize
-        final EntityGroup initialGroup = new EntityGroup("update-entitygroup-4");
-        initialGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
-        createOrReplaceEntityGroupCheck(initialGroup);
+        final EntityGroup expectedGroup = new EntityGroup("update-entitygroup-4");
+        expectedGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
+        createOrReplaceEntityGroupCheck(expectedGroup);
 
         // Update
-        final UpdateQuery updateQuery = new UpdateQuery(initialGroup);
-        updateQuery.setExpression("");
-        Response response = updateEntityGroup(updateQuery);
+        expectedGroup.setExpression("");
+        Response response = updateEntityGroup(expectedGroup);
         assertSame("Fail to execute updateEntityGroup query",
                 Response.Status.Family.SUCCESSFUL,
                 Util.responseFamily(response)
         );
 
         // Check
-        response = getEntityGroup(initialGroup.getName());
+        response = getEntityGroup(expectedGroup.getName());
         assertSame("Fail to retrieve modified group",
                 Response.Status.Family.SUCCESSFUL,
                 Util.responseFamily(response)
