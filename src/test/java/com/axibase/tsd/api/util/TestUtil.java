@@ -69,7 +69,7 @@ public class TestUtil {
 
     public static Sample sampleToServerTimezone(final Sample sample) {
         final String translatedDate = timeTranslateDefault(sample.getRawDate(), TimeTranslation.LOCAL_TO_UNIVERSAL);
-        return Sample.ofDateInteger(translatedDate, sample.getValue().intValue());
+        return Sample.ofDateDecimal(translatedDate, sample.getValue());
     }
 
     public static String timeTranslateDefault(String date, TimeTranslation mode) {
