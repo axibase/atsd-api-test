@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.BeforeClass;
@@ -11,6 +12,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -22,15 +25,26 @@ public class SqlTimeArithmeticTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final Series series = new Series(ENTITY_NAME, METRIC_NAME)
+        final Sample[] samples = toArray(
                 // Saturday (is not weekday, next day is not weekday)
-                .addSamples(Sample.ofDateInteger("2018-07-21T00:00:00Z", 20))
+                Sample.ofDateInteger("2018-07-21T00:00:00Z", 21),
                 // Sunday (is not weekday, next day is weekday)
-                .addSamples(Sample.ofDateInteger("2018-07-22T00:00:00Z", 20))
+                Sample.ofDateInteger("2018-07-22T00:00:00Z", 22),
                 // Monday (is weekday, next day is weekday)
-                .addSamples(Sample.ofDateInteger("2018-07-23T00:00:00Z", 20));
+                Sample.ofDateInteger("2018-07-23T00:00:00Z", 23)
+        );
 
-        SeriesMethod.insertSeriesCheck(series);
+        final List<Sample> translatedSamples = Arrays.stream(samples)
+                .map(sample -> {
+                    final String translatedDate = TestUtil.timeTranslateDefault(sample.getRawDate(),
+                            TestUtil.TimeTranslation.LOCAL_TO_UNIVERSAL);
+                    return Sample.ofDateInteger(translatedDate, sample.getValue().intValue());
+                })
+                .collect(Collectors.toList());
+
+        final Series translatedSeries = new Series(ENTITY_NAME, METRIC_NAME).setData(translatedSamples);
+
+        SeriesMethod.insertSeriesCheck(translatedSeries);
     }
 
     private static Object[] testCase(final String param, final String... results) {
@@ -75,28 +89,20 @@ public class SqlTimeArithmeticTest extends SqlTest {
     @DataProvider
     public static Object[][] provideSelectBetweenClauses() {
         return toArray(
-                //                                                  2018-07-21       2018-07-22       2018-07-23
-                testCase("time + 1000*60*60*24*1", "1532131200000", "1532217600000", "1532304000000"),
-                //                                                  2018-07-21       2018-07-22       2018-07-23
-                testCase("time - 1000*60*60*24*1", "1532131200000", "1532217600000", "1532304000000"),
-                //                                                  2018-07-21       2018-07-22       2018-07-23
-                testCase("time - 1000*60*60*24*2", "1532131200000", "1532217600000", "1532304000000"),
-                //                                                  2018-07-21       2018-07-22       2018-07-23
-                testCase("time + 1000*60*60*24*2", "1532131200000", "1532217600000", "1532304000000")
+                testCase("time + 1000*60*60*24*1", "2018-07-21", "2018-07-22", "2018-07-23"),
+                testCase("time - 1000*60*60*24*1", "2018-07-21", "2018-07-22", "2018-07-23"),
+                testCase("time - 1000*60*60*24*2", "2018-07-21", "2018-07-22", "2018-07-23"),
+                testCase("time + 1000*60*60*24*2", "2018-07-21", "2018-07-22", "2018-07-23")
         );
     }
 
     @DataProvider
-    public Object[][] provideSelectClauses() {
+    public static Object[][] provideSelectClauses() {
         return toArray(
-                //                                                  2018-07-22       2018-07-23       2018-07-24
-                testCase("time + 1000*60*60*24*1", "1532217600000", "1532304000000", "1532390400000"),
-                //                                                  2018-07-20       2018-07-21       2018-07-22
-                testCase("time - 1000*60*60*24*1", "1532044800000", "1532131200000", "1532217600000"),
-                //                                                  2018-07-19       2018-07-20       2018-07-21
-                testCase("time - 1000*60*60*24*2", "1531958400000", "1532044800000", "1532131200000"),
-                //                                                  2018-07-23       2018-07-24       2018-07-25
-                testCase("time + 1000*60*60*24*2", "1532304000000", "1532390400000", "1532476800000")
+                testCase("time + 1000*60*60*24*1", "2018-07-22", "2018-07-23", "2018-07-24"),
+                testCase("time - 1000*60*60*24*1", "2018-07-20", "2018-07-21", "2018-07-22"),
+                testCase("time - 1000*60*60*24*2", "2018-07-19", "2018-07-20", "2018-07-21"),
+                testCase("time + 1000*60*60*24*2", "2018-07-23", "2018-07-24", "2018-07-25")
         );
     }
 
@@ -118,7 +124,7 @@ public class SqlTimeArithmeticTest extends SqlTest {
             dataProvider = "provideSelectClauses"
     )
     public void testSqlSelectClauseTimeMathOperations(final String operation, final String[] results) {
-        final String query = String.format("SELECT %s FROM \"%s\"", operation, METRIC_NAME);
+        final String query = String.format("SELECT date_format(%s, 'yyyy-MM-dd') FROM \"%s\"", operation, METRIC_NAME);
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT", operation);
         assertSqlQueryRows(assertMessage, expectedRows, query);
@@ -130,7 +136,7 @@ public class SqlTimeArithmeticTest extends SqlTest {
             dataProvider = "provideSelectClauses"
     )
     public void testSqlSelectGroupClauseTimeMathOperations(final String operation, final String[] results) {
-        final String query = String.format("SELECT %s FROM \"%s\" GROUP BY %s", operation, METRIC_NAME, operation);
+        final String query = String.format("SELECT date_format(%s, 'yyyy-MM-dd') FROM \"%s\" GROUP BY %s", operation, METRIC_NAME, operation);
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT and GROUP BY", operation);
         assertSqlQueryRows(assertMessage, expectedRows, query);
@@ -142,7 +148,8 @@ public class SqlTimeArithmeticTest extends SqlTest {
             dataProvider = "provideSelectBetweenClauses"
     )
     public void testSqlSelectWhereBetweenClauseTimeMathOperations(final String operation, final String results[]) {
-        final String query = String.format("SELECT time FROM \"%s\" WHERE %s BETWEEN '2018-01-01' AND '2019-01-01'",
+        final String query = String.format("SELECT date_format(time, 'yyyy-MM-dd') FROM \"%s\" WHERE %s " +
+                        "BETWEEN date_parse('2018', 'yyyy') AND date_parse('2019', 'yyyy')",
                 METRIC_NAME, operation);
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT and WHERE", operation);
@@ -156,7 +163,8 @@ public class SqlTimeArithmeticTest extends SqlTest {
     )
     public void testSqlSelectHavingBetweenClauseTimeMathOperations(final String operation, final String[] results) {
         final String query = String.format(
-                "SELECT time FROM \"%s\" GROUP BY PERIOD(1 day, 'UTC') HAVING %s BETWEEN '2018-01-01' AND '2019-01-01'",
+                "SELECT date_format(time, 'yyyy-MM-dd') FROM \"%s\" GROUP BY PERIOD(1 day) HAVING %s " +
+                        "BETWEEN date_parse('2018', 'yyyy') AND date_parse('2019', 'yyyy')",
                 METRIC_NAME, operation);
         final String[][] expectedRows = expectedRows(results);
         final String assertMessage = String.format("Fail to calculate \"%s\" after SELECT and HAVING", operation);
