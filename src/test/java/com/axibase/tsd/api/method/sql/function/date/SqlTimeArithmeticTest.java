@@ -12,8 +12,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -25,24 +24,17 @@ public class SqlTimeArithmeticTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final Sample[] samples = toArray(
-                // Saturday (is not weekday, next day is not weekday)
+        final Series translatedSeries = new Series(ENTITY_NAME, METRIC_NAME);
+
+        Stream.of(// Saturday (is not weekday, next day is not weekday)
                 Sample.ofDateInteger("2018-07-21T00:00:00Z", 21),
                 // Sunday (is not weekday, next day is weekday)
                 Sample.ofDateInteger("2018-07-22T00:00:00Z", 22),
                 // Monday (is weekday, next day is weekday)
                 Sample.ofDateInteger("2018-07-23T00:00:00Z", 23)
-        );
-
-        final List<Sample> translatedSamples = Arrays.stream(samples)
-                .map(sample -> {
-                    final String translatedDate = TestUtil.timeTranslateDefault(sample.getRawDate(),
-                            TestUtil.TimeTranslation.LOCAL_TO_UNIVERSAL);
-                    return Sample.ofDateInteger(translatedDate, sample.getValue().intValue());
-                })
-                .collect(Collectors.toList());
-
-        final Series translatedSeries = new Series(ENTITY_NAME, METRIC_NAME).setData(translatedSamples);
+        )
+                .map(TestUtil::sampleToServerTimezone)
+                .forEach(translatedSeries::addSamples);
 
         SeriesMethod.insertSeriesCheck(translatedSeries);
     }

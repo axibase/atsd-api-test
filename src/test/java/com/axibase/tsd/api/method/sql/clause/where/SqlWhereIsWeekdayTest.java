@@ -12,8 +12,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -25,22 +24,15 @@ public class SqlWhereIsWeekdayTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final Sample[] samples = toArray(
-                // Holiday in Russia, Tuesday (weekday)
+        final Series translatedSeries = new Series(ENTITY_NAME, METRIC_NAME);
+
+        Stream.of(// Holiday in Russia, Tuesday (weekday)
                 Sample.ofDateInteger("2018-01-02T00:00:00Z", 2),
                 // Not a holiday in Russia, Sunday (day off)
                 Sample.ofDateInteger("2018-07-01T00:00:00Z", 1)
-        );
-
-        final List<Sample> translatedSamples = Arrays.stream(samples)
-                .map(sample -> {
-                    final String translatedDate = TestUtil.timeTranslateDefault(sample.getRawDate(),
-                            TestUtil.TimeTranslation.LOCAL_TO_UNIVERSAL);
-                    return Sample.ofDateInteger(translatedDate, sample.getValue().intValue());
-                })
-                .collect(Collectors.toList());
-
-        final Series translatedSeries = new Series(ENTITY_NAME, METRIC_NAME).setData(translatedSamples);
+        )
+                .map(TestUtil::sampleToServerTimezone)
+                .forEach(translatedSeries::addSamples);
 
         SeriesMethod.insertSeriesCheck(translatedSeries);
     }
