@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.clause.join;
+package com.axibase.tsd.api.method.sql.syntax;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
