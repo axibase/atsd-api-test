@@ -17,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class EntityGroup {
     private String name;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String expression;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Map<String, String> tags = new HashMap<>();

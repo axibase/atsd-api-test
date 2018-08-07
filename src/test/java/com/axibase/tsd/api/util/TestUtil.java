@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.model.TimeUnit;
+import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import org.json.JSONArray;
@@ -16,17 +17,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOCAL;
-import static com.axibase.tsd.api.util.Util.ISOFormat;
-import static com.axibase.tsd.api.util.Util.getServerTimeZone;
-import static com.axibase.tsd.api.util.Util.parseDate;
+import static com.axibase.tsd.api.util.Util.*;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 86400000L;
@@ -70,6 +65,11 @@ public class TestUtil {
         }
 
         return ISOFormat(time);
+    }
+
+    public static Sample sampleToServerTimezone(final Sample sample) {
+        final String translatedDate = timeTranslateDefault(sample.getRawDate(), TimeTranslation.LOCAL_TO_UNIVERSAL);
+        return Sample.ofDateDecimal(translatedDate, sample.getValue());
     }
 
     public static String timeTranslateDefault(String date, TimeTranslation mode) {

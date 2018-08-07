@@ -197,6 +197,10 @@ public abstract class SqlTest extends SqlMethod {
         assertOkRequest(DEFAULT_ASSERT_OK_REQUEST_MESSAGE, response);
     }
 
+    public void assertOkRequest(String assertMessage, String sqlQuery) {
+        assertOkRequest(assertMessage, queryResponse(sqlQuery));
+    }
+
     public void assertOkRequest(String assertMessage, Response response) {
         assertSame(assertMessage, Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         try {
@@ -211,7 +215,7 @@ public abstract class SqlTest extends SqlMethod {
         } catch (JSONException e) {
             fail("Can't read json from response");
         }
-        assertEquals(assertMessage + ": Response contains error", null, message);
+        assertNull(assertMessage + ": Response contains error", message);
     }
 
     public void assertBadSqlRequest(String expectedMessage, String sqlQuery) {

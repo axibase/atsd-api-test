@@ -40,14 +40,27 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
     @Issue("3301")
     @Test
     public void testCanSetEmptyExpression() throws Exception {
-        EntityGroup entityGroup = new EntityGroup("update-entitygroup-4");
-        entityGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
-        createOrReplaceEntityGroupCheck(entityGroup);
+        // Initialize
+        final EntityGroup expectedGroup = new EntityGroup("update-entitygroup-4");
+        expectedGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
+        createOrReplaceEntityGroupCheck(expectedGroup);
 
-        entityGroup.setExpression("");
+        // Update
+        expectedGroup.setExpression("");
+        Response response = updateEntityGroup(expectedGroup);
+        assertSame("Fail to execute updateEntityGroup query",
+                Response.Status.Family.SUCCESSFUL,
+                Util.responseFamily(response)
+        );
 
-        assertSame("Fail to execute updateEntityGroup query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateEntityGroup(entityGroup)));
-        assertTrue("Specified entityGroup does not exist", entityGroupExist(entityGroup));
+        // Check
+        response = getEntityGroup(expectedGroup.getName());
+        assertSame("Fail to retrieve modified group",
+                Response.Status.Family.SUCCESSFUL,
+                Util.responseFamily(response)
+        );
+        final EntityGroup actualGroup = response.readEntity(EntityGroup.class);
+        assertNull("Expression is not modified", actualGroup.getExpression());
     }
 
     @Issue("3301")
@@ -67,8 +80,7 @@ public class EntityGroupUpdateTest extends EntityGroupMethod {
     }
 
 
-
-    public void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
+    private void assertUrlEncodePathHandledCorrectly(final EntityGroup entityGroup) throws Exception {
         entityGroup.addTag("oldtag1", "oldtagvalue1");
         createOrReplaceEntityGroupCheck(entityGroup);
 
