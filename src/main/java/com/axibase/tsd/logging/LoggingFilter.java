@@ -4,8 +4,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
@@ -16,10 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-import static java.lang.String.format;
-
+@Slf4j
 public class LoggingFilter implements ClientResponseFilter {
-    private static final Logger LOG = LoggerFactory.getLogger(LoggingFilter.class.getName());
     private static final int MAX_ENTITY_SIZE = 1024 * 8;
     private Boolean isCheckLoggingEnable;
 
@@ -33,64 +30,72 @@ public class LoggingFilter implements ClientResponseFilter {
             Config config = Config.getInstance();
             isCheckLoggingEnable = config.getCheckLoggingEnable();
         } catch (FileNotFoundException e) {
-            LOG.error("Failed to get application config. {}", e);
+            log.error("Failed to get application config. {}", e);
         }
     }
 
 
-    public static String buildRequestDescription(ClientRequestContext requestContext) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(format(
-                " > %s  %s%n",
-                requestContext.getMethod(), requestContext.getUri())
-        );
+    private static void appendRequestDescription(ClientRequestContext requestContext, StringBuilder builder) {
+        builder.append(" > ").append(requestContext.getMethod())
+                .append("  ").append(requestContext.getUri()).append('\n');
         if (requestContext.hasEntity()) {
-            builder.append(format(
-                    "%s%n%n",
-                    Util.prettyPrint(requestContext.getEntity()))
-            );
+            builder.append(Util.prettyPrint(requestContext.getEntity()))
+                    .append("\n\n");
         }
-        return builder.toString();
     }
 
-    public static String buildResponseDescription(ClientResponseContext responseContext) {
-        StringBuilder descBuilder = new StringBuilder();
-        descBuilder.append(format(" < %d%n", responseContext.getStatus()));
+    private static void appendResponseDescription(ClientResponseContext responseContext, StringBuilder builder) {
+        builder.append(" < ").append(responseContext.getStatus()).append('\n');
         try {
             InputStream entityStream = responseContext.getEntityStream();
             if (responseContext.hasEntity()) {
-                final StringBuilder b = new StringBuilder();
                 if (!entityStream.markSupported()) {
                     entityStream = new BufferedInputStream(entityStream);
                 }
                 entityStream.mark(MAX_ENTITY_SIZE + 1);
                 final byte[] entity = new byte[MAX_ENTITY_SIZE + 1];
-                final int entitySize = entityStream.read(entity);
-                b.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE)));
-                if (entitySize > MAX_ENTITY_SIZE) {
-                    b.append("...more...");
-                }
+                final int entitySize = readNBytes(entityStream, entity, entity.length);
                 entityStream.reset();
-                String entityBody = b.toString();
-                try {
-                    entityBody = prettyEntityStream(entityBody);
-                } catch (IOException e) {
-                    LOG.debug("Failed to get entity by MessageBodyReader. {}", e);
+                appendPrettyPrintedJson(entity, entitySize, builder);
+                if (entitySize > MAX_ENTITY_SIZE) {
+                    builder.append("...more...");
                 }
-                descBuilder.append(format("%s%n%n", entityBody));
+                builder.append("\n\n");
             }
         } catch (IOException e) {
-            LOG.debug("Failed to get Entity Descrption, use body instead");
+            log.debug("Failed to get Entity Description");
         }
-        return descBuilder.toString();
+    }
+
+    private static void appendPrettyPrintedJson(byte[] entity, int entitySize, StringBuilder builder) {
+        if (entitySize <= MAX_ENTITY_SIZE) {
+            try {
+                String entityBody = prettyEntityStream(entity, entitySize);
+                builder.append(entityBody);
+                return;
+            } catch (IOException e) {
+                log.debug("Failed to get entity by MessageBodyReader.", e);
+            }
+        }
+        builder.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE)));
+    }
+
+    private static int readNBytes(InputStream inputStream, byte[] buffer, int limit) throws IOException {
+        int offset = 0;
+        int readCount;
+        while (offset != limit && (readCount = inputStream.read(buffer, offset, limit - offset)) != -1) {
+            offset += readCount;
+        }
+        return offset;
     }
 
     @Override
     public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext) throws IOException {
-        if (isCheckLoggingEnable || !isCalledByClass(Checker.class)) {
-            String requestDescription = buildRequestDescription(clientRequestContext);
-            String responseDescription = buildResponseDescription(clientResponseContext);
-            LOG.debug("{}{}", requestDescription, responseDescription);
+        if (log.isDebugEnabled() && (isCheckLoggingEnable || !isCalledByClass(Checker.class))) {
+            StringBuilder buffer = new StringBuilder();
+            appendRequestDescription(clientRequestContext, buffer);
+            appendResponseDescription(clientResponseContext, buffer);
+            log.debug("{}", buffer);
         }
     }
 
@@ -104,12 +109,12 @@ public class LoggingFilter implements ClientResponseFilter {
         return false;
     }
 
-    private static String prettyEntityStream(String entity) throws IOException {
+    private static String prettyEntityStream(byte[] entity, int length) throws IOException {
         try {
-            Object jsonMap = BaseMethod.getJacksonMapper().readValue(entity, Object.class);
+            Object jsonMap = BaseMethod.getJacksonMapper().readValue(entity, 0, length, Object.class);
             return Util.prettyPrint(jsonMap);
         } catch (IOException e) {
-            LOG.debug("Failed to print stream for entity.");
+            log.debug("Failed to print stream for entity.");
             throw e;
         }
     }
