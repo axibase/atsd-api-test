@@ -1,6 +1,9 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -8,15 +11,22 @@ import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.POSSIBLE_STRING_FUNCTION_ARGS;
 import static com.axibase.tsd.api.method.sql.function.string.CommonData.insertSeriesWithMetric;
+import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 
 public class ReplaceTest extends SqlTest {
     private static String TEST_METRIC = metric();
+    private static String TEST_METRIC_2 = metric();
+    private static String TEST_ENTITY = entity();
 
     @BeforeClass
     public void prepareData() throws Exception {
+        final Series series = new Series(TEST_ENTITY, TEST_METRIC_2)
+                .addSamples(Sample.ofDateIntegerText("2018-08-20T00:00:00.000Z", 5, "hello\nworld"))
+                .addSamples(Sample.ofDateIntegerText("2018-08-20T01:00:00.000Z", 5, "hello\\nworld"));
+        SeriesMethod.insertSeriesCheck(series);
         insertSeriesWithMetric(TEST_METRIC);
     }
 
@@ -86,12 +96,14 @@ public class ReplaceTest extends SqlTest {
     @Issue("5600")
     @Test
     public void testReplaceLineBreak() {
-        String sqlQuery = "SELECT REPLACE('hello\nworld', '\n', ' ')";
+        String sqlQuery = String.format("SELECT REPLACE(text, '\n', ' ') FROM \"%s\"", TEST_METRIC_2);
 
         String[][] expectedRows = new String[][]{
-                {"hello world"}
+                {"hello world"},
+                {"hello\\nworld"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
+
 }
