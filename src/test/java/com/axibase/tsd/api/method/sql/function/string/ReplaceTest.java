@@ -37,7 +37,7 @@ public class ReplaceTest extends SqlTest {
 
     @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
-    public void testApply(String param) throws Exception {
+    public void testApply(String param) {
         String sqlQuery = String.format("SELECT REPLACE(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );
@@ -78,6 +78,18 @@ public class ReplaceTest extends SqlTest {
 
         String[][] expectedRows = new String[][] {
                 {"1970-01-01T00:00:00.000Z"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
+
+    @Issue("5600")
+    @Test
+    public void testReplaceLineBreak() {
+        String sqlQuery = "SELECT REPLACE('hello\nworld', '\n', ' ')";
+
+        String[][] expectedRows = new String[][]{
+                {"hello world"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
