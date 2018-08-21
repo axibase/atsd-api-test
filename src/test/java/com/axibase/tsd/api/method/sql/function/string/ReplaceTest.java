@@ -96,14 +96,26 @@ public class ReplaceTest extends SqlTest {
     @Issue("5600")
     @Test
     public void testReplaceLineBreak() {
-        String sqlQuery = String.format("SELECT REPLACE(text, '\n', ' ') FROM \"%s\"", TEST_METRIC_2);
+        String sqlQuery = String.format("SELECT REPLACE(text, '\n', 'Y') FROM \"%s\"", TEST_METRIC_2);
 
         String[][] expectedRows = new String[][]{
-                {"hello world"},
+                {"helloYworld"},
                 {"hello\\nworld"}
         };
 
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
+    @Issue("5600")
+    @Test
+    public void testReplaceLineBreakSymbol() {
+        String sqlQuery = String.format("SELECT REPLACE(text, '\\n', 'Y') FROM \"%s\"", TEST_METRIC_2);
+
+        String[][] expectedRows = new String[][]{
+                {"helloYworld"},
+                {"hello\\nworld"}
+        };
+
+        assertSqlQueryRows(expectedRows, sqlQuery);
+    }
 }
