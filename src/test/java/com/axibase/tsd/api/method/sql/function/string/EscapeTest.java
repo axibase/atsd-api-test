@@ -19,13 +19,12 @@ import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
-public class BackSlashTest extends SqlTest {
+public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
     private static final String FORMAT = "hello%sworld";
-    private static final String[] CHARACTERS = toArray("\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b",
-            // "\a",
-            "\"", "\'"
+    private static final String[] CHARACTERS = toArray(
+            "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\\a", "\"", "\'"
     );
 
     @BeforeClass
