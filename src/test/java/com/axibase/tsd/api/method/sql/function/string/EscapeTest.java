@@ -1,6 +1,8 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
+import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
@@ -18,6 +20,7 @@ import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
+import static org.testng.AssertJUnit.fail;
 
 public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
@@ -33,7 +36,7 @@ public class EscapeTest extends SqlTest {
         ZonedDateTime dateTime = ZonedDateTime.parse("2018-08-20T00:00:00.000Z");
         for (final String character : CHARACTERS) {
             series.addSamples(Sample.ofJavaDateInteger(dateTime, 1, String.format(FORMAT, character)));
-            series.addTag(String.valueOf(character.hashCode()), "hello\nworld");
+            series.addTag(String.valueOf(character.hashCode()), String.format(FORMAT, character));
             dateTime = dateTime.plusHours(1);
         }
 
@@ -136,5 +139,21 @@ public class EscapeTest extends SqlTest {
     public void testLocate(final String query, final String[][] results) {
         final String sqlQuery = String.format("SELECT %s FROM \"%s\"", query, METRIC_NAME);
         assertSqlQueryRows("Fail to locate an escaped character", results, sqlQuery);
+    }
+
+    @Issue("5600")
+    @Test(
+            description = "Test special characters in entity tags"
+    )
+    public void testEntityTags() {
+        final Entity beforeUpdate = EntityMethod.getEntity(ENTITY_NAME);
+        for (final String character : CHARACTERS) {
+            beforeUpdate.addTag(String.valueOf(character.hashCode()), String.format(FORMAT, character));
+        }
+        EntityMethod.updateEntity(beforeUpdate);
+        final Entity afterUpdate = EntityMethod.getEntity(ENTITY_NAME);
+        if (!afterUpdate.getTags().equals(beforeUpdate.getTags())) {
+            fail("Failed to insert entity tags values with special characters");
+        }
     }
 }
