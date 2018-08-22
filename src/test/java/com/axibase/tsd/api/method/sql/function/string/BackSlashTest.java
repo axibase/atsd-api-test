@@ -62,22 +62,50 @@ public class BackSlashTest extends SqlTest {
     }
 
     @DataProvider
-    public static Object[][] provideSingleArg() {
+    public static Object[][] provideSimpleFunctions() {
         return toArray(
-                toArray("UPPER", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).toUpperCase())
+                toArray("UPPER(text)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).toUpperCase())
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 ),
-                toArray("LOWER", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).toLowerCase())
+                toArray("LOWER(text)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).toLowerCase())
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 ),
-                toArray("LENGTH", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).length())
+                toArray("LENGTH(text)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).length())
                         .map(String::valueOf)
+                        .map(ArrayUtils::toArray)
+                        .toArray(String[][]::new)
+                ),
+                toArray("CONCAT(text, 'Y')", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).concat("Y"))
+                        .map(ArrayUtils::toArray)
+                        .toArray(String[][]::new)
+                ),
+                toArray("SUBSTR(text, 0, 8)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).substring(0, 8))
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 )
         );
+    }
+
+    @DataProvider
+    public static Object[][] provideLocate() {
+        final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
+        final String[] queries = Stream.of(CHARACTERS)
+                .map((character) -> String.format("LOCATE('%s', text)", character))
+                .toArray(String[]::new);
+        final Map<String, String[][]> results = new HashMap<>();
+        for (final String character : CHARACTERS) {
+            final String[][] strings = new String[CHARACTERS.length][1];
+            for (int i = 0; i < strings.length; i++) {
+                strings[i] = toArray(String.valueOf(String.format(FORMAT, CHARACTERS[i]).indexOf(character) + 1));
+            }
+            results.put(character, strings);
+        }
+        for (int i = 0; i < CHARACTERS.length; i++) {
+            result[i] = toArray(queries[i], results.get(CHARACTERS[i]));
+        }
+        return result;
     }
 
     @Issue("5600")
@@ -92,11 +120,22 @@ public class BackSlashTest extends SqlTest {
 
     @Issue("5600")
     @Test(
-            dataProvider = "provideSingleArg",
+            dataProvider = "provideSimpleFunctions",
             description = "Test single argument with escaped characters"
     )
-    public void testSingleArg(final String func, final String[][] results) {
-        final String query = String.format("SELECT %s(text) FROM \"%s\"", func, METRIC_NAME);
-        assertSqlQueryRows("Fail to use an espaced character in a single argument function", results, query);
+    public void testSimpleFunctions(final String query, final String[][] results) {
+        final String sqlQuery = String.format("SELECT %s FROM \"%s\"", query, METRIC_NAME);
+        final String assertMessage = String.format("Fail to use an escaped character in %s", query);
+        assertSqlQueryRows(assertMessage, results, sqlQuery);
+    }
+
+    @Issue("5600")
+    @Test(
+            dataProvider = "provideLocate",
+            description = "Test LOCATE() function with escaped characters"
+    )
+    public void testLocate(final String query, final String[][] results) {
+        final String sqlQuery = String.format("SELECT %s FROM \"%s\"", query, METRIC_NAME);
+        assertSqlQueryRows("Fail to locate an escaped character", results, sqlQuery);
     }
 }
