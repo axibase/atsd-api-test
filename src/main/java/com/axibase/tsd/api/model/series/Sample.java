@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
+
 @Data
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -98,6 +100,10 @@ public class Sample {
 
     public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v) {
         return new Sample(null, d.format(DateTimeFormatter.ISO_DATE_TIME), BigDecimal.valueOf(v), null);
+    }
+
+    public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v, final String text) {
+        return new Sample(null, d.format(ISO_ZONED_DATE_TIME), BigDecimal.valueOf(v), text);
     }
 
     public static Sample ofDateText(String date, String text) {
