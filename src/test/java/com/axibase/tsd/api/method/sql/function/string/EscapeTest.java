@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -26,9 +27,9 @@ public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
     private static final String FORMAT = "hello%sworld";
-    private static final String[] CHARACTERS = toArray(
-            "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\\a", "\"", "\'"
-    );
+    private static final String[] CHARACTERS = Stream.of(
+            "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\"", "\'"// , "\a"
+    ).map(StringEscapeUtils::unescapeJava).toArray(String[]::new);
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -53,7 +54,11 @@ public class EscapeTest extends SqlTest {
         for (final String character : CHARACTERS) {
             final String[][] strings = new String[CHARACTERS.length][1];
             for (int i = 0; i < strings.length; i++) {
-                strings[i] = toArray(String.format(FORMAT, CHARACTERS[i]).replace(character, "Y"));
+                strings[i] = toArray(String.format(FORMAT, CHARACTERS[i]));
+                if (character.isEmpty()) {
+                    continue;
+                }
+                strings[i] = toArray(strings[i][0].replace(character, "Y"));
             }
             results.put(character, strings);
         }
