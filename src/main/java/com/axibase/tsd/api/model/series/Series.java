@@ -140,6 +140,15 @@ public class Series {
         return this;
     }
 
+    public Series addSamples(final List<Sample> samples) {
+        if (data == null) {
+            data = samples;
+        } else {
+            data.addAll(samples);
+        }
+        return this;
+    }
+
     public List<SeriesCommand> toCommands() {
         if (type == SeriesType.FORECAST) {
             throw new IllegalArgumentException("Cannot convert FORECAST series to commands");

@@ -16,7 +16,10 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -93,6 +96,10 @@ public class Sample {
         return new Sample(null, Util.ISOFormat(d), BigDecimal.valueOf(v), null);
     }
 
+    public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v) {
+        return new Sample(null, d.format(DateTimeFormatter.ISO_DATE_TIME), BigDecimal.valueOf(v), null);
+    }
+
     public static Sample ofDateText(String date, String text) {
         return new Sample(null, date, null, text);
     }
@@ -110,6 +117,17 @@ public class Sample {
     @JsonIgnore
     public ZonedDateTime getZonedDateTime() {
         return ZonedDateTime.parse(this.rawDate, DateTimeFormatter.ISO_DATE_TIME);
+    }
+
+    public static List<Sample> withOffset(final TemporalUnit unit, final int offset,
+                                          final ZonedDateTime start, final ZonedDateTime end) {
+        final List<Sample> samples = new ArrayList<>();
+        int value = 1;
+        for (ZonedDateTime current = start; current.compareTo(end) < 0; current = current.plus(offset, unit), value++) {
+            samples.add(Sample.ofJavaDateInteger(current, value));
+        }
+
+        return samples;
     }
 
     @Override
