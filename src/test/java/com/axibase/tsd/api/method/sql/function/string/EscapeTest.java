@@ -7,7 +7,6 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,15 +20,16 @@ import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
+import static org.apache.commons.lang3.StringEscapeUtils.unescapeJava;
 import static org.testng.AssertJUnit.fail;
 
 public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
     private static final String FORMAT = "hello%sworld";
-    private static final String[] CHARACTERS = Stream.of(
+    private static final String[] CHARACTERS = toArray(
             "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\"", "\'"// , "\a"
-    ).map(StringEscapeUtils::unescapeJava).toArray(String[]::new);
+    );
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -48,7 +48,10 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideReplace() {
         final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
         final String[] queries = Stream.of(CHARACTERS)
-                .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
+                .map((character) -> {
+                    final String toInsert = (character.equals("\'")) ? "\\'" : unescapeJava(character);
+                    return String.format("REPLACE(text, '%s', 'Y')", toInsert);
+                })
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (final String character : CHARACTERS) {
@@ -99,13 +102,17 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideLocate() {
         final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
         final String[] queries = Stream.of(CHARACTERS)
-                .map((character) -> String.format("LOCATE('%s', text)", character))
+                .map((character) -> {
+                    final String toInsert = (character.equals("\'")) ? "\\'" : character;
+                    return String.format("LOCATE('%s', text)", toInsert);
+                })
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (final String character : CHARACTERS) {
             final String[][] strings = new String[CHARACTERS.length][1];
             for (int i = 0; i < strings.length; i++) {
-                strings[i] = toArray(String.valueOf(String.format(FORMAT, CHARACTERS[i]).indexOf(character) + 1));
+                final String toFind = (character.equals("\\")) ? character : unescapeJava(character);
+                strings[i] = toArray(String.valueOf(String.format(FORMAT, CHARACTERS[i]).indexOf(toFind) + 1));
             }
             results.put(character, strings);
         }
