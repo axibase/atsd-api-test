@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
@@ -42,6 +43,30 @@ public class EscapeTest extends SqlTest {
         }
 
         insertSeriesCheck(series);
+    }
+
+    @DataProvider
+    public static Object[][] provideRegex() {
+        final String regex = ".+%s.+";
+        final String[] queries = Stream.of(CHARACTERS)
+                .map((character) -> {
+                    final String toFind = (character.equals("\'")) ? "\\'" : character;
+                    return String.format("REGEX '%s'", String.format(regex, toFind));
+                })
+                .toArray(String[]::new);
+        final Map<String, String[][]> results = new HashMap<>();
+        for (int i = 0; i < queries.length; i++) {
+            final Pattern pattern = Pattern.compile(String.format(regex, CHARACTERS[i]));
+            final String[][] strings = Stream.of(CHARACTERS)
+                    .map((unused) -> String.format(FORMAT, unused))
+                    .filter((str) -> pattern.matcher(str).matches())
+                    .map(ArrayUtils::toArray)
+                    .toArray(String[][]::new);
+            results.put(queries[i], strings);
+        }
+        return results.entrySet().stream()
+                .map((entry) -> toArray(entry.getKey(), entry.getValue()))
+                .toArray(Object[][]::new);
     }
 
     @DataProvider
@@ -167,5 +192,17 @@ public class EscapeTest extends SqlTest {
         if (!afterUpdate.getTags().equals(beforeUpdate.getTags())) {
             fail("Failed to insert entity tags values with special characters");
         }
+    }
+
+    @Issue("5600")
+    @Test(
+            dataProvider = "provideRegex",
+            description = "Test escaped characters in REGEX"
+    )
+    public void testRegex(final String query, final String[][] results) {
+        final String sqlQuery = String.format("SELECT text FROM \"%s\" WHERE text %s",
+                METRIC_NAME, query
+        );
+        assertSqlQueryRows("Fail to filter records using REGEX \'%s\'", results, sqlQuery);
     }
 }
