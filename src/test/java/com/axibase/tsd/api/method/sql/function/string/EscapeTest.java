@@ -50,7 +50,20 @@ public class EscapeTest extends SqlTest {
         final String regex = ".+%s.+";
         final String[] queries = Stream.of(CHARACTERS)
                 .map((character) -> {
-                    final String toFind = (character.equals("\'")) ? "\\'" : character;
+                    final String toFind;
+                    switch (character) {
+                        case "\'": {
+                            toFind = "\\'";
+                            break;
+                        }
+                        case "\\": {
+                            toFind = "\\\\";
+                            break;
+                        }
+                        default: {
+                            toFind = character;
+                        }
+                    }
                     return String.format("REGEX '%s'", String.format(regex, toFind));
                 })
                 .toArray(String[]::new);
