@@ -65,8 +65,8 @@ public class SqlWithTimezoneTest extends SqlTest {
         Object[][] results = null;
         for (final ZoneId timeZone : timeZones) {
             results = ArrayUtils.addAll(results, toArray(
-                    testCase("date_format(time, 'yyyy-MM-ddTHH:mm:ss')",
-                            timeZone, getTimeStream(timeZone)
+                    testCase("date_format(time, 'yyyy-MM-ddTHH:mm:ss')", timeZone,
+                            getTimeStream(timeZone)
                                     .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ), testCase("date_format(dateadd(minute, -15, time), 'yyyy-MM-ddTHH:mm:ss')", timeZone,
                             getTimeStream(timeZone)
@@ -202,17 +202,6 @@ public class SqlWithTimezoneTest extends SqlTest {
         return results;
     }
 
-    private static String listToString(final List<String> list) {
-        final StringBuilder builder = new StringBuilder();
-        final ListIterator<String> iterator = list.listIterator();
-        while (iterator.hasNext()) {
-            builder.append(iterator.next());
-            if (iterator.hasNext()) {
-                builder.append(", ");
-            }
-        }
-        return builder.toString();
-    }
 
     @DataProvider
     public static Object[][] provideInterpolatedData() {
@@ -307,7 +296,7 @@ public class SqlWithTimezoneTest extends SqlTest {
                 "WHERE %s WITH TIMEZONE = \'%s\'", METRIC_NAME, expression, timeZone
         );
         final String assertMessage =
-                String.format("Failed to modify timezone via WITH TIMEZONE in WHERE \"%s\"", expression);
+                String.format("Failed to filter rows using WITH TIMEZONE in WHERE \"%s\"", expression);
         assertSqlQueryRows(assertMessage, expectedRows, condition);
     }
 
@@ -321,7 +310,7 @@ public class SqlWithTimezoneTest extends SqlTest {
                 expression, METRIC_NAME, timeZone
         );
         final String assertMessage =
-                String.format("Failed to modify timezone via WITH TIMEZONE in SELECT \"%s\"", expression);
+                String.format("Failed to query rows using WITH TIMEZONE in SELECT \"%s\"", expression);
         assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
@@ -334,6 +323,6 @@ public class SqlWithTimezoneTest extends SqlTest {
         final String query = String.format("SELECT SUM(value) FROM \"%s\" GROUP BY PERIOD(%s) WITH TIMEZONE = \"%s\"",
                 METRIC_NAME, period, timeZone
         );
-        assertSqlQueryRows("Fail to group by date with timezone", expectedRows, query);
+        assertSqlQueryRows("Fail to group by date using WITH TIMEZONE", expectedRows, query);
     }
 }
