@@ -19,8 +19,8 @@ import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -56,45 +56,38 @@ public class SqlWithTimezoneTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    private static Stream<ZonedDateTime> getTimeStream(final ZoneId timeZone) {
-        return SAMPLES.stream().map(Sample::getZonedDateTime).map((time) -> time.withZoneSameInstant(timeZone));
+    private static Stream<ZonedDateTime> between(final Stream<ZonedDateTime> stream,
+                                                 final ZonedDateTime from, final ZonedDateTime to) {
+        return stream.filter((time) -> time.compareTo(from) >= 0)
+                .filter((time) -> time.compareTo(to) <= 0);
+
+    }
+
+    private static <T> Stream<T> modifyDate(final Function<ZonedDateTime, T> function) {
+        return SAMPLES.stream().map(Sample::getZonedDateTime).map(function);
     }
 
     @DataProvider
     public static Object[][] provideSelectExpressions() {
         Object[][] results = null;
         for (final ZoneId timeZone : timeZones) {
-            results = ArrayUtils.addAll(results, toArray(
-                    testCase("date_format(time, 'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                            getTimeStream(timeZone)
-                                    .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
+            results = ArrayUtils.addAll(results, toArray(testCase("date_format(time, 'yyyy-MM-ddTHH:mm:ss')",
+                    timeZone, modifyDate((time) -> time.withZoneSameInstant(timeZone).format(ISO_LOCAL_DATE_TIME))
                     ), testCase("date_format(dateadd(minute, -15, time), 'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                            getTimeStream(timeZone)
-                                    .map((time) -> time.plusMinutes(-15))
-                                    .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
+                    modifyDate((time) -> time.withZoneSameInstant(timeZone).plusMinutes(-15).format(ISO_LOCAL_DATE_TIME))
                     ), testCase("minute(time)", timeZone,
-                            getTimeStream(timeZone)
-                                    .map(ZonedDateTime::getMinute)
-                                    .map(String::valueOf)
+                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getMinute()))
                     ), testCase("hour(time)", timeZone,
-                            getTimeStream(timeZone)
-                                    .map(ZonedDateTime::getHour)
-                                    .map(String::valueOf)
+                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getHour()))
                     ), testCase("day(time)", timeZone,
-                            getTimeStream(timeZone)
-                                    .map(ZonedDateTime::getDayOfMonth)
-                                    .map(String::valueOf)
+                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getDayOfMonth()))
                     ), testCase("extract (month from time)", timeZone,
-                            getTimeStream(timeZone)
-                                    .map(ZonedDateTime::getMonthValue)
-                                    .map(String::valueOf)
+                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getMonthValue()))
                     ), testCase("is_weekday(time, 'USA')", timeZone,
-                            getTimeStream(timeZone)
-                                    .map(SqlWithTimezoneTest::isWeekday)
-                                    .map(String::valueOf)
+                    modifyDate((time) -> String.valueOf(isWeekday(time.withZoneSameInstant(timeZone))))
                     ), testCase("date_format(date_parse('2018-02-02T15:30:00', 'yyyy-MM-ddTHH:mm:ss'), " +
-                                    "'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                            SAMPLES.stream().map((sample) -> "2018-02-02T15:30:00")
+                            "'yyyy-MM-ddTHH:mm:ss')", timeZone,
+                    SAMPLES.stream().map((sample) -> "2018-02-02T15:30:00")
                     )
             ));
         }
@@ -143,27 +136,23 @@ public class SqlWithTimezoneTest extends SqlTest {
             results = ArrayUtils.addAll(results, toArray(
                     testCase("datetime BETWEEN date_parse('2017-12-31T03:45:21', 'yyyy-MM-ddTHH:mm:ss') " +
                                     "AND date_parse('2018-01-03T14:35:42', 'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                            getTimeStream(timeZone)
-                                    .filter((time) -> time.compareTo(detailedStart.atZone(timeZone)) >= 0)
-                                    .filter((time) -> time.compareTo(detailedEnd.atZone(timeZone)) <= 0)
+                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
+                                    detailedStart.atZone(timeZone), detailedEnd.atZone(timeZone))
                                     .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ),
                     testCase("datetime BETWEEN '2018-02-25' AND '2018-03-05'", timeZone,
-                            getTimeStream(timeZone)
-                                    .filter((time) -> time.compareTo(dayStart.atZone(timeZone)) >= 0)
-                                    .filter((time) -> time.compareTo(dayEnd.atZone(timeZone)) <= 0)
+                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
+                                    dayStart.atZone(timeZone), dayEnd.atZone(timeZone))
                                     .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ),
                     testCase("datetime BETWEEN '2017-12' AND '2018-02'", timeZone,
-                            getTimeStream(timeZone)
-                                    .filter((time) -> time.compareTo(monthStart.atZone(timeZone)) >= 0)
-                                    .filter((time) -> time.compareTo(monthEnd.atZone(timeZone)) <= 0)
+                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
+                                    monthStart.atZone(timeZone), monthEnd.atZone(timeZone))
                                     .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ),
                     testCase("datetime BETWEEN '2017' AND '2018'", timeZone,
-                            getTimeStream(timeZone)
-                                    .filter((time) -> time.compareTo(yearStart.atZone(timeZone)) >= 0)
-                                    .filter((time) -> time.compareTo(yearEnd.atZone(timeZone)) <= 0)
+                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
+                                    yearStart.atZone(timeZone), yearEnd.atZone(timeZone))
                                     .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     )
                     )
@@ -215,21 +204,9 @@ public class SqlWithTimezoneTest extends SqlTest {
                     METRIC_NAME, timeZone.getId()
             );
             final Stream<String> expected = SqlMethod.queryTable(oldQuery).getRows()
-                    .stream().map(SqlWithTimezoneTest::listToString);
+                    .stream().map((list) -> String.join(", ", list));
             return testCase(newQuery, expected);
         }).toArray(Object[][]::new);
-    }
-
-    private static String listToString(final List<String> list) {
-        final StringBuilder builder = new StringBuilder();
-        final ListIterator<String> iterator = list.listIterator();
-        while (iterator.hasNext()) {
-            builder.append(iterator.next());
-            if (iterator.hasNext()) {
-                builder.append(", ");
-            }
-        }
-        return builder.toString();
     }
 
     @Issue("5542")
