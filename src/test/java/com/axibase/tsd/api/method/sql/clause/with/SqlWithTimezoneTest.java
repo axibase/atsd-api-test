@@ -54,17 +54,20 @@ public class SqlWithTimezoneTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    private static Stream<String> between(final ZonedDateTime from, final ZonedDateTime to,
-                                          final Stream<ZonedDateTime> stream) {
-
-        return stream.filter((time) -> time.compareTo(from) >= 0)
-                .filter((time) -> time.compareTo(to) <= 0)
+    private static Stream<String> between(final LocalDateTime from, final LocalDateTime to, final ZoneId timeZone) {
+        final ZonedDateTime start = from.atZone(timeZone);
+        final ZonedDateTime end = to.atZone(timeZone);
+        return getStream(timeZone).filter((time) -> time.compareTo(start) >= 0)
+                .filter((time) -> time.compareTo(end) <= 0)
                 .map((time) -> time.format(ISO_LOCAL_DATE_TIME));
     }
 
     private static <T> Stream<String> modifyDate(final Function<ZonedDateTime, T> function, final ZoneId timeZone) {
-        return SAMPLES.stream().map((sample) -> sample.getZonedDateTime().withZoneSameInstant(timeZone))
-                .map(function).map(String::valueOf);
+        return getStream(timeZone).map(function).map(String::valueOf);
+    }
+
+    private static Stream<ZonedDateTime> getStream(final ZoneId timeZone) {
+        return SAMPLES.stream().map((sample) -> sample.getZonedDateTime().withZoneSameInstant(timeZone));
     }
 
     private static long getMillisOnDayStart(final ZonedDateTime dateTime) {
@@ -85,8 +88,12 @@ public class SqlWithTimezoneTest extends SqlTest {
                     testCase("minute(time)", timeZone, modifyDate(ZonedDateTime::getMinute, timeZone)),
                     testCase("hour(time)", timeZone, modifyDate(ZonedDateTime::getHour, timeZone)),
                     testCase("day(time)", timeZone, modifyDate(ZonedDateTime::getDayOfMonth, timeZone)),
-                    testCase("extract (month from time)", timeZone, modifyDate(ZonedDateTime::getMonthValue, timeZone)),
-                    testCase("is_weekday(time, 'USA')", timeZone, modifyDate(SqlWithTimezoneTest::isWeekday, timeZone)),
+                    testCase("extract (month from time)", timeZone,
+                            modifyDate(ZonedDateTime::getMonthValue, timeZone)
+                    ),
+                    testCase("is_weekday(time, 'USA')", timeZone,
+                            modifyDate(SqlWithTimezoneTest::isWeekday, timeZone)
+                    ),
                     testCase("date_format(date_parse('2018-02-02T15:30:00', 'yyyy-MM-ddTHH:mm:ss'), " +
                             "'yyyy-MM-ddTHH:mm:ss')", timeZone, SAMPLES.stream().map((sample) -> "2018-02-02T15:30:00")
                     ),
@@ -120,22 +127,18 @@ public class SqlWithTimezoneTest extends SqlTest {
         for (final ZoneId timeZone : timeZones) {
             results = ArrayUtils.addAll(results, toArray(
                     testCase("datetime BETWEEN date_parse('2017-12-31T03:45:21', 'yyyy-MM-ddTHH:mm:ss') " +
-                            "AND date_parse('2018-01-03T14:35:42', 'yyyy-MM-ddTHH:mm:ss')", timeZone, between(
-                            detailedStart.atZone(timeZone), detailedEnd.atZone(timeZone), SAMPLES.stream()
-                                    .map((time) -> time.getZonedDateTime().withZoneSameInstant(timeZone))
-                    )),
-                    testCase("datetime BETWEEN '2018-02-25' AND '2018-03-05'", timeZone, between(
-                            dayStart.atZone(timeZone), dayEnd.atZone(timeZone), SAMPLES.stream()
-                                    .map((time) -> time.getZonedDateTime().withZoneSameInstant(timeZone))
-                    )),
-                    testCase("datetime BETWEEN '2017-12' AND '2018-02'", timeZone, between(
-                            monthStart.atZone(timeZone), monthEnd.atZone(timeZone), SAMPLES.stream()
-                                    .map((time) -> time.getZonedDateTime().withZoneSameInstant(timeZone))
-                    )),
-                    testCase("datetime BETWEEN '2017' AND '2018'", timeZone, between(
-                            yearStart.atZone(timeZone), yearEnd.atZone(timeZone), SAMPLES.stream()
-                                    .map((time) -> time.getZonedDateTime().withZoneSameInstant(timeZone))
-                    )))
+                                    "AND date_parse('2018-01-03T14:35:42', 'yyyy-MM-ddTHH:mm:ss')", timeZone,
+                            between(detailedStart, detailedEnd, timeZone)
+                    ),
+                    testCase("datetime BETWEEN '2018-02-25' AND '2018-03-05'", timeZone,
+                            between(dayStart, dayEnd, timeZone)
+                    ),
+                    testCase("datetime BETWEEN '2017-12' AND '2018-02'", timeZone,
+                            between(monthStart, monthEnd, timeZone)
+                    ),
+                    testCase("datetime BETWEEN '2017' AND '2018'", timeZone,
+                            between(yearStart, yearEnd, timeZone)
+                    ))
             );
         }
         return results;
