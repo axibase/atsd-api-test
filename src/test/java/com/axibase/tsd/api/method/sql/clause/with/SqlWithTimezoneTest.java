@@ -15,7 +15,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
@@ -68,6 +67,10 @@ public class SqlWithTimezoneTest extends SqlTest {
                 .map(function).map(String::valueOf);
     }
 
+    private static long getMillisOnDayStart(final ZonedDateTime dateTime) {
+        return dateTime.with(SECOND_OF_DAY, 0).toEpochSecond() * 1000;
+    }
+
     @DataProvider
     public static Object[][] provideSelectExpressions() {
         Object[][] results = null;
@@ -86,33 +89,16 @@ public class SqlWithTimezoneTest extends SqlTest {
                     testCase("is_weekday(time, 'USA')", timeZone, modifyDate(SqlWithTimezoneTest::isWeekday, timeZone)),
                     testCase("date_format(date_parse('2018-02-02T15:30:00', 'yyyy-MM-ddTHH:mm:ss'), " +
                             "'yyyy-MM-ddTHH:mm:ss')", timeZone, SAMPLES.stream().map((sample) -> "2018-02-02T15:30:00")
-                    )
-            ));
-        }
-
-        return results;
-    }
-
-    @DataProvider
-    public static Object[][] provideCalendarKeywords() {
-        Object[][] results = null;
-        for (final ZoneId timeZone : timeZones) {
-            results = ArrayUtils.addAll(results, toArray(
-                    testCase("current_day", timeZone,
-                            SAMPLES.stream().map((sample) -> ZonedDateTime.now(timeZone))
-                                    .map((zoned) -> zoned.with(SECOND_OF_DAY, 0))
-                                    .map(ChronoZonedDateTime::toEpochSecond)
-                                    .map((zoned) -> zoned * 1000)
-                                    .map(String::valueOf)
                     ),
-                    testCase("next_week", timeZone,
-                            SAMPLES.stream().map((sample) -> ZonedDateTime.now(timeZone))
-                                    .map((zoned) -> zoned.plusWeeks(1))
-                                    .map((zoned) -> zoned.with(SECOND_OF_DAY, 0))
-                                    .map((zoned) -> zoned.with(DAY_OF_WEEK, 1))
-                                    .map(ChronoZonedDateTime::toEpochSecond)
-                                    .map((zoned) -> zoned * 1000)
-                                    .map(String::valueOf)
+                    testCase("current_day", timeZone, SAMPLES.stream().map((sample) -> ZonedDateTime.now(timeZone))
+                            .map(SqlWithTimezoneTest::getMillisOnDayStart)
+                            .map(String::valueOf)
+                    ),
+                    testCase("next_week", timeZone, SAMPLES.stream().map((sample) -> ZonedDateTime.now(timeZone))
+                            .map((zoned) -> zoned.plusWeeks(1))
+                            .map((zoned) -> zoned.with(DAY_OF_WEEK, 1))
+                            .map(SqlWithTimezoneTest::getMillisOnDayStart)
+                            .map(String::valueOf)
                     )
             ));
         }
@@ -231,19 +217,6 @@ public class SqlWithTimezoneTest extends SqlTest {
 
     private static boolean isWeekday(final ZonedDateTime dateTime) {
         return !dateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !dateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY);
-    }
-
-    @Issue("5542")
-    @Test(
-            dataProvider = "provideCalendarKeywords"
-    )
-    public void testCalendarKeywords(final String expression, final String timeZone, final String[][] expectedRows) {
-        final String query = String.format("SELECT %s FROM \"%s\" WITH TIMEZONE = \'%s\'",
-                expression, METRIC_NAME, timeZone
-        );
-        final String assertMessage =
-                String.format("Failed to modify timezone via WITH TIMEZONE in SELECT \"%s\"", expression);
-        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5542")
