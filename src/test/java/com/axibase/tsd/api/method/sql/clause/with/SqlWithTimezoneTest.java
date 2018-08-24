@@ -35,7 +35,6 @@ import static java.util.stream.Collectors.summingInt;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class SqlWithTimezoneTest extends SqlTest {
-    private static int flakyRepeatCounter = 1;
     private static final String ENTITY_NAME = entity();
     private static final String METRIC_NAME = metric();
     private static final ZoneId[] timeZones = toArray(
@@ -244,21 +243,7 @@ public class SqlWithTimezoneTest extends SqlTest {
         );
         final String assertMessage =
                 String.format("Failed to modify timezone via WITH TIMEZONE in SELECT \"%s\"", expression);
-        try {
-            assertSqlQueryRows(assertMessage, expectedRows, query);
-        } catch (final AssertionError err) {
-            if (flakyRepeatCounter == 0) {
-                throw err;
-            }
-            flakyRepeatCounter--;
-            final Object[][] parameters = provideCalendarKeywords();
-            for (final Object[] arguments : parameters) {
-                final String expr = (String) arguments[0];
-                final String tz = (String) arguments[1];
-                final String[][] expected = (String[][]) arguments[2];
-                testCalendarKeywords(expr, tz, expected);
-            }
-        }
+        assertSqlQueryRows(assertMessage, expectedRows, query);
     }
 
     @Issue("5542")
