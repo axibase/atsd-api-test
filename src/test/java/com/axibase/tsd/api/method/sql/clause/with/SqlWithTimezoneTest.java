@@ -63,8 +63,8 @@ public class SqlWithTimezoneTest extends SqlTest {
 
     }
 
-    private static <T> Stream<T> modifyDate(final Function<ZonedDateTime, T> function) {
-        return SAMPLES.stream().map(Sample::getZonedDateTime).map(function);
+    private static <T> Stream<T> modifyDate(final Function<ZonedDateTime, T> function, final ZoneId timeZone) {
+        return SAMPLES.stream().map((sample) -> sample.getZonedDateTime().withZoneSameInstant(timeZone)).map(function);
     }
 
     @DataProvider
@@ -72,22 +72,21 @@ public class SqlWithTimezoneTest extends SqlTest {
         Object[][] results = null;
         for (final ZoneId timeZone : timeZones) {
             results = ArrayUtils.addAll(results, toArray(testCase("date_format(time, 'yyyy-MM-ddTHH:mm:ss')",
-                    timeZone, modifyDate((time) -> time.withZoneSameInstant(timeZone).format(ISO_LOCAL_DATE_TIME))
+                    timeZone, modifyDate((time) -> time.format(ISO_LOCAL_DATE_TIME), timeZone)
                     ), testCase("date_format(dateadd(minute, -15, time), 'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                    modifyDate((time) -> time.withZoneSameInstant(timeZone).plusMinutes(-15).format(ISO_LOCAL_DATE_TIME))
+                    modifyDate((time) -> time.plusMinutes(-15).format(ISO_LOCAL_DATE_TIME), timeZone)
                     ), testCase("minute(time)", timeZone,
-                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getMinute()))
+                    modifyDate((time) -> String.valueOf(time.getMinute()), timeZone)
                     ), testCase("hour(time)", timeZone,
-                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getHour()))
+                    modifyDate((time) -> String.valueOf(time.getHour()), timeZone)
                     ), testCase("day(time)", timeZone,
-                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getDayOfMonth()))
+                    modifyDate((time) -> String.valueOf(time.getDayOfMonth()), timeZone)
                     ), testCase("extract (month from time)", timeZone,
-                    modifyDate((time) -> String.valueOf(time.withZoneSameInstant(timeZone).getMonthValue()))
+                    modifyDate((time) -> String.valueOf(time.getMonthValue()), timeZone)
                     ), testCase("is_weekday(time, 'USA')", timeZone,
-                    modifyDate((time) -> String.valueOf(isWeekday(time.withZoneSameInstant(timeZone))))
+                    modifyDate((time) -> String.valueOf(isWeekday(time)), timeZone)
                     ), testCase("date_format(date_parse('2018-02-02T15:30:00', 'yyyy-MM-ddTHH:mm:ss'), " +
-                            "'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                    SAMPLES.stream().map((sample) -> "2018-02-02T15:30:00")
+                            "'yyyy-MM-ddTHH:mm:ss')", timeZone, SAMPLES.stream().map((sample) -> "2018-02-02T15:30:00")
                     )
             ));
         }
@@ -136,26 +135,25 @@ public class SqlWithTimezoneTest extends SqlTest {
             results = ArrayUtils.addAll(results, toArray(
                     testCase("datetime BETWEEN date_parse('2017-12-31T03:45:21', 'yyyy-MM-ddTHH:mm:ss') " +
                                     "AND date_parse('2018-01-03T14:35:42', 'yyyy-MM-ddTHH:mm:ss')", timeZone,
-                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
-                                    detailedStart.atZone(timeZone), detailedEnd.atZone(timeZone))
-                                    .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
+                            between(modifyDate((time) -> time, timeZone),
+                                    detailedStart.atZone(timeZone), detailedEnd.atZone(timeZone)
+                            ).map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ),
                     testCase("datetime BETWEEN '2018-02-25' AND '2018-03-05'", timeZone,
-                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
-                                    dayStart.atZone(timeZone), dayEnd.atZone(timeZone))
-                                    .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
+                            between(modifyDate((time) -> time, timeZone),
+                                    dayStart.atZone(timeZone), dayEnd.atZone(timeZone)
+                            ).map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ),
                     testCase("datetime BETWEEN '2017-12' AND '2018-02'", timeZone,
-                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
-                                    monthStart.atZone(timeZone), monthEnd.atZone(timeZone))
-                                    .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
+                            between(modifyDate((time) -> time, timeZone),
+                                    monthStart.atZone(timeZone), monthEnd.atZone(timeZone)
+                            ).map((time) -> time.format(ISO_LOCAL_DATE_TIME))
                     ),
                     testCase("datetime BETWEEN '2017' AND '2018'", timeZone,
-                            between(modifyDate((time) -> time.withZoneSameInstant(timeZone)),
-                                    yearStart.atZone(timeZone), yearEnd.atZone(timeZone))
-                                    .map((time) -> time.format(ISO_LOCAL_DATE_TIME))
-                    )
-                    )
+                            between(modifyDate((time) -> time, timeZone),
+                                    yearStart.atZone(timeZone), yearEnd.atZone(timeZone)
+                            ).map((time) -> time.format(ISO_LOCAL_DATE_TIME))
+                    ))
             );
         }
         return results;
@@ -175,14 +173,16 @@ public class SqlWithTimezoneTest extends SqlTest {
                     testCase("1 week", timeZone,
                             SAMPLES.stream().collect(groupingBy(sample -> sample.getZonedDateTime()
                                     .withZoneSameInstant(timeZone).with(DAY_OF_WEEK, 1)
-                                    .with(SECOND_OF_DAY, 0), summingInt((sample) -> sample.getValue().intValue())
+                                            .with(SECOND_OF_DAY, 0),
+                                    summingInt((sample) -> sample.getValue().intValue())
                             )).entrySet().stream().sorted(comparing(Map.Entry::getKey))
                                     .map(Map.Entry::getValue).map(String::valueOf)
                     ),
                     testCase("1 month", timeZone,
                             SAMPLES.stream().collect(groupingBy(sample -> sample.getZonedDateTime()
                                     .withZoneSameInstant(timeZone).with(DAY_OF_MONTH, 1)
-                                    .with(SECOND_OF_DAY, 0), summingInt((sample) -> sample.getValue().intValue())
+                                            .with(SECOND_OF_DAY, 0),
+                                    summingInt((sample) -> sample.getValue().intValue())
                             )).entrySet().stream().sorted(comparing(Map.Entry::getKey))
                                     .map(Map.Entry::getValue).map(String::valueOf)
                     )
