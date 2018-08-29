@@ -2,7 +2,7 @@ package com.axibase.tsd.api.model.version;
 
 
 public enum ProductVersion {
-    COMMUNITY("Community Edition"), ENTERPRISE("Enterprise Edition");
+    STANDARD("Standard Edition"), ENTERPRISE("Enterprise Edition");
 
     private String text;
 
@@ -13,5 +13,17 @@ public enum ProductVersion {
     @Override
     public String toString() {
         return text;
+    }
+
+    public static ProductVersion fromString(final String productVersion) {
+        if (ProductVersion.STANDARD.toString().equals(productVersion)) {
+            return ProductVersion.STANDARD;
+        } else {
+            if (ProductVersion.ENTERPRISE.toString().equals(productVersion)) {
+                return ProductVersion.ENTERPRISE;
+            } else {
+                throw new IllegalStateException("Incorrect Product version");
+            }
+        }
     }
 }
