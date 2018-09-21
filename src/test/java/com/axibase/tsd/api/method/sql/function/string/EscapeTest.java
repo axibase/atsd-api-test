@@ -49,14 +49,14 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideRegex() {
         final String regex = ".+%s.+";
-        final String[] queries = Stream.of(CHARACTERS)
+        final String[] queries = Arrays.stream(CHARACTERS)
                 .map((character) -> String.format(regex, character))
                 .map((regexp) -> String.format("REGEX '%s'", regexp))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (int i = 0; i < queries.length; i++) {
             final Pattern pattern = Pattern.compile(String.format(regex, CHARACTERS[i]));
-            final String[][] strings = Stream.of(CHARACTERS)
+            final String[][] strings = Arrays.stream(CHARACTERS)
                     .map((character) -> String.format(FORMAT, character))
                     .filter((str) -> pattern.matcher(str).matches())
                     .map(ArrayUtils::toArray)
@@ -70,7 +70,7 @@ public class EscapeTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideReplace() {
-        final String[] queries = Stream.of(CHARACTERS)
+        final String[] queries = Arrays.stream(CHARACTERS)
                 .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
@@ -117,7 +117,7 @@ public class EscapeTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideLocate() {
-        final String[] queries = Stream.of(CHARACTERS)
+        final String[] queries = Arrays.stream(CHARACTERS)
                 .map((character) -> String.format("LOCATE('%s', text)", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
