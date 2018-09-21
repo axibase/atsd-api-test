@@ -117,23 +117,23 @@ public class EscapeTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideLocate() {
-        final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
         final String[] queries = Stream.of(CHARACTERS)
                 .map((character) -> String.format("LOCATE('%s', text)", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
-        for (final String character : CHARACTERS) {
-            final String[][] strings = new String[CHARACTERS.length][1];
-            for (int i = 0; i < strings.length; i++) {
-                final String toFind = (character.equals("\\")) ? character : unescapeJava(character);
-                strings[i] = toArray(String.valueOf(String.format(FORMAT, CHARACTERS[i]).indexOf(toFind) + 1));
-            }
-            results.put(character, strings);
+        for (int i = 0; i < queries.length; i++) {
+            final String toFind = (CHARACTERS[i].equals("\\")) ? CHARACTERS[i] : unescapeJava(CHARACTERS[i]);
+            final String[][] strings = Arrays.stream(CHARACTERS)
+                    .map((symbol) -> String.format(FORMAT, symbol))
+                    .map((str) -> str.indexOf(toFind) + 1)
+                    .map(String::valueOf)
+                    .map(ArrayUtils::toArray)
+                    .toArray(String[][]::new);
+            results.put(queries[i], strings);
         }
-        for (int i = 0; i < CHARACTERS.length; i++) {
-            result[i] = toArray(queries[i], results.get(CHARACTERS[i]));
-        }
-        return result;
+        return results.entrySet().stream()
+                .map((entry) -> toArray(entry.getKey(), entry.getValue()))
+                .toArray(Object[][]::new);
     }
 
     @Issue("5600")
