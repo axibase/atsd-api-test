@@ -49,23 +49,7 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideRegex() {
         final String regex = ".+%s.+";
         final String[] queries = Stream.of(CHARACTERS)
-                .map((character) -> {
-                    final String toFind;
-                    switch (character) {
-                        case "\'": {
-                            toFind = "\\'";
-                            break;
-                        }
-                        case "\\": {
-                            toFind = "\\\\";
-                            break;
-                        }
-                        default: {
-                            toFind = character;
-                        }
-                    }
-                    return String.format("REGEX '%s'", String.format(regex, toFind));
-                })
+                .map((character) -> String.format("REGEX '%s'", String.format(regex, character)))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (int i = 0; i < queries.length; i++) {
@@ -86,10 +70,7 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideReplace() {
         final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
         final String[] queries = Stream.of(CHARACTERS)
-                .map((character) -> {
-                    final String toInsert = (character.equals("\'")) ? "\\'" : unescapeJava(character);
-                    return String.format("REPLACE(text, '%s', 'Y')", toInsert);
-                })
+                .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (final String character : CHARACTERS) {
@@ -140,10 +121,7 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideLocate() {
         final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
         final String[] queries = Stream.of(CHARACTERS)
-                .map((character) -> {
-                    final String toInsert = (character.equals("\'")) ? "\\'" : character;
-                    return String.format("LOCATE('%s', text)", toInsert);
-                })
+                .map((character) -> String.format("LOCATE('%s', text)", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (final String character : CHARACTERS) {
