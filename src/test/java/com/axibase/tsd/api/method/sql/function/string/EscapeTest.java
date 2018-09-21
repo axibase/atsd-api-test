@@ -70,23 +70,22 @@ public class EscapeTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideReplace() {
-        final Object[][] result = new Object[CHARACTERS.length][CHARACTERS.length];
         final String[] queries = Stream.of(CHARACTERS)
                 .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
-        for (final String character : CHARACTERS) {
+        for (int i = 0; i < queries.length; i++) {
+            final String toReplace = CHARACTERS[i];
             final String[][] strings = Arrays.stream(CHARACTERS)
                     .map((symbol) -> String.format(FORMAT, symbol))
-                    .map((str) -> str.replace(character, "Y"))
+                    .map((str) -> str.replace(toReplace, "Y"))
                     .map(ArrayUtils::toArray)
                     .toArray(String[][]::new);
-            results.put(character, strings);
+            results.put(queries[i], strings);
         }
-        for (int i = 0; i < CHARACTERS.length; i++) {
-            result[i] = toArray(queries[i], results.get(CHARACTERS[i]));
-        }
-        return result;
+        return results.entrySet().stream()
+                .map((entry) -> toArray(entry.getKey(), entry.getValue()))
+                .toArray(Object[][]::new);
     }
 
     @DataProvider
