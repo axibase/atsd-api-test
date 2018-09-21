@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -94,24 +93,24 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideSimpleFunctions() {
         return toArray(
-                toArray("UPPER(text)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).toUpperCase())
+                toArray("UPPER(text)", Arrays.stream(CHARACTERS).map((s) -> String.format(FORMAT, s).toUpperCase())
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 ),
-                toArray("LOWER(text)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).toLowerCase())
+                toArray("LOWER(text)", Arrays.stream(CHARACTERS).map((s) -> String.format(FORMAT, s).toLowerCase())
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 ),
-                toArray("LENGTH(text)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).length())
+                toArray("LENGTH(text)", Arrays.stream(CHARACTERS).map((s) -> String.format(FORMAT, s).length())
                         .map(String::valueOf)
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 ),
-                toArray("CONCAT(text, 'Y')", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).concat("Y"))
+                toArray("CONCAT(text, 'Y')", Arrays.stream(CHARACTERS).map((s) -> String.format(FORMAT, s).concat("Y"))
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 ),
-                toArray("SUBSTR(text, 0, 8)", Stream.of(CHARACTERS).map((s) -> String.format(FORMAT, s).substring(0, 8))
+                toArray("SUBSTR(text, 0, 8)", Arrays.stream(CHARACTERS).map((s) -> String.format(FORMAT, s).substring(0, 8))
                         .map(ArrayUtils::toArray)
                         .toArray(String[][]::new)
                 )
