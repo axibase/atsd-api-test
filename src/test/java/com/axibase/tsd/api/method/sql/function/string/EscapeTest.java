@@ -22,7 +22,6 @@ import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
-import static org.apache.commons.lang3.StringEscapeUtils.unescapeJava;
 import static org.testng.AssertJUnit.fail;
 
 public class EscapeTest extends SqlTest {
@@ -50,6 +49,8 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideRegex() {
         final String regex = ".+%s.+";
         final String[] queries = Arrays.stream(CHARACTERS)
+                .map((character) -> (character.equals("\'") || character.equals("\"")) ?
+                        character.concat(character) : character)
                 .map((character) -> String.format(regex, character))
                 .map((regexp) -> String.format("REGEX '%s'", regexp))
                 .toArray(String[]::new);
@@ -71,6 +72,8 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideReplace() {
         final String[] queries = Arrays.stream(CHARACTERS)
+                .map((character) -> (character.equals("\'") || character.equals("\"")) ?
+                        character.concat(character) : character)
                 .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
@@ -118,11 +121,13 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideLocate() {
         final String[] queries = Arrays.stream(CHARACTERS)
+                .map((character) -> (character.equals("\'") || character.equals("\"")) ?
+                        character.concat(character) : character)
                 .map((character) -> String.format("LOCATE('%s', text)", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (int i = 0; i < queries.length; i++) {
-            final String toFind = (CHARACTERS[i].equals("\\")) ? CHARACTERS[i] : unescapeJava(CHARACTERS[i]);
+            final String toFind = CHARACTERS[i];
             final String[][] strings = Arrays.stream(CHARACTERS)
                     .map((symbol) -> String.format(FORMAT, symbol))
                     .map((str) -> str.indexOf(toFind) + 1)
