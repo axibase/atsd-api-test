@@ -55,7 +55,7 @@ public class EscapeTest extends SqlTest {
         for (int i = 0; i < queries.length; i++) {
             final Pattern pattern = Pattern.compile(String.format(regex, CHARACTERS[i]));
             final String[][] strings = Stream.of(CHARACTERS)
-                    .map((unused) -> String.format(FORMAT, unused))
+                    .map((character) -> String.format(FORMAT, character))
                     .filter((str) -> pattern.matcher(str).matches())
                     .map(ArrayUtils::toArray)
                     .toArray(String[][]::new);
@@ -76,11 +76,7 @@ public class EscapeTest extends SqlTest {
         for (final String character : CHARACTERS) {
             final String[][] strings = new String[CHARACTERS.length][1];
             for (int i = 0; i < strings.length; i++) {
-                strings[i] = toArray(String.format(FORMAT, CHARACTERS[i]));
-                if (character.isEmpty()) {
-                    continue;
-                }
-                strings[i] = toArray(strings[i][0].replace(character, "Y"));
+                strings[i] = toArray(String.format(FORMAT, CHARACTERS[i]).replace(character, "Y"));
             }
             results.put(character, strings);
         }
