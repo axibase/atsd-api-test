@@ -29,7 +29,7 @@ public class EscapeTest extends SqlTest {
     private static final String ENTITY_NAME = entity();
     private static final String FORMAT = "hello%sworld";
     private static final String[] CHARACTERS = toArray(
-            "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\"", "\'"// , "\a"
+            "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\"", "\'", Character.toString((char) 7 /* \a */)
     );
 
     @BeforeClass
