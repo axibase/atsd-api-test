@@ -12,6 +12,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -49,7 +50,8 @@ public class EscapeTest extends SqlTest {
     public static Object[][] provideRegex() {
         final String regex = ".+%s.+";
         final String[] queries = Stream.of(CHARACTERS)
-                .map((character) -> String.format("REGEX '%s'", String.format(regex, character)))
+                .map((character) -> String.format(regex, character))
+                .map((regexp) -> String.format("REGEX '%s'", regexp))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (int i = 0; i < queries.length; i++) {
@@ -74,10 +76,11 @@ public class EscapeTest extends SqlTest {
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
         for (final String character : CHARACTERS) {
-            final String[][] strings = new String[CHARACTERS.length][1];
-            for (int i = 0; i < strings.length; i++) {
-                strings[i] = toArray(String.format(FORMAT, CHARACTERS[i]).replace(character, "Y"));
-            }
+            final String[][] strings = Arrays.stream(CHARACTERS)
+                    .map((symbol) -> String.format(FORMAT, symbol))
+                    .map((str) -> str.replace(character, "Y"))
+                    .map(ArrayUtils::toArray)
+                    .toArray(String[][]::new);
             results.put(character, strings);
         }
         for (int i = 0; i < CHARACTERS.length; i++) {
