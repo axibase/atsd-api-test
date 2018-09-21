@@ -21,6 +21,7 @@ import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeJava;
 import static org.testng.AssertJUnit.fail;
 
 public class EscapeTest extends SqlTest {
@@ -73,6 +74,8 @@ public class EscapeTest extends SqlTest {
         final String[] queries = Arrays.stream(CHARACTERS)
                 .map((character) -> (character.equals("\'") || character.equals("\"")) ?
                         character.concat(character) : character)
+                .map((character) -> (character.equals("\\n\n") || character.equals("\\n")) ?
+                        escapeJava(character) : character)
                 .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
@@ -127,6 +130,8 @@ public class EscapeTest extends SqlTest {
         final String[] queries = Arrays.stream(CHARACTERS)
                 .map((character) -> (character.equals("\'") || character.equals("\"")) ?
                         character.concat(character) : character)
+                .map((character) -> (character.equals("\\n\n") || character.equals("\\n")) ?
+                        escapeJava(character) : character)
                 .map((character) -> String.format("LOCATE('%s', text)", character))
                 .toArray(String[]::new);
         final Map<String, String[][]> results = new HashMap<>();
