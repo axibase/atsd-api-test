@@ -82,26 +82,128 @@ public class EscapeTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideReplace() {
-        final String[] queries = Arrays.stream(CHARACTERS)
-                .map((character) -> (character.equals("\'") || character.equals("\"")) ?
-                        character.concat(character) : character)
-                .map((character) -> (character.equals("\\n\n") || character.equals("\\n")) ?
-                        escapeJava(character) : character)
-                .map((character) -> String.format("REPLACE(text, '%s', 'Y')", character))
-                .toArray(String[]::new);
-        final Map<String, String[][]> results = new HashMap<>();
-        for (int i = 0; i < queries.length; i++) {
-            final String toReplace = CHARACTERS[i];
-            final String[][] strings = Arrays.stream(CHARACTERS)
-                    .map((symbol) -> String.format(FORMAT, symbol))
-                    .map((str) -> str.replace(toReplace, "Y"))
-                    .map(ArrayUtils::toArray)
-                    .toArray(String[][]::new);
-            results.put(queries[i], strings);
-        }
-        return results.entrySet().stream()
-                .map((entry) -> toArray(entry.getKey(), entry.getValue()))
-                .toArray(Object[][]::new);
+        return toArray(
+                testCase(escapeJava("'\n', 'Y'"),
+                        "helloYworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\nYworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase("'\r', 'Y'",
+                        "hello\nworld",
+                        "helloYworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase("'\t', 'Y'",
+                        "hello\nworld",
+                        "hello\rworld",
+                        "helloYworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase("'\\', 'Y'",
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "helloYworld",
+                        "helloYnworld",
+                        "helloYn\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase(escapeJava("'\\n', 'Y'"),
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "helloYworld",
+                        "helloY\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase(escapeJava("'\\n\n', 'Y'"),
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "helloYworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase("'\b', 'Y'",
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "helloYworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase("'\"\"', 'Y'",
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "hello\bworld",
+                        "helloYworld",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase("'\'\'', 'Y'",
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "helloYworld",
+                        String.format("hello%sworld", ALARM_CHARACTER)
+                ),
+                testCase(String.format("'%s', 'Y'", ALARM_CHARACTER),
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        "helloYworld"
+                )
+        );
     }
 
     @DataProvider
@@ -167,8 +269,8 @@ public class EscapeTest extends SqlTest {
             description = "Test REPLACE() function with escaped characters"
     )
     public void testReplace(final String query, final String[][] results) {
-        final String sqlQuery = String.format("SELECT %s FROM \"%s\"", query, METRIC_NAME);
-        assertSqlQueryRows("Fail to replace an escaped character", results, sqlQuery);
+        final String sqlQuery = String.format("SELECT REPLACE(text, %s) FROM \"%s\"", query, METRIC_NAME);
+        assertSqlQueryRows(String.format("Fail to use REPLACE(text, %s) function", query), results, sqlQuery);
     }
 
     @Issue("5600")
