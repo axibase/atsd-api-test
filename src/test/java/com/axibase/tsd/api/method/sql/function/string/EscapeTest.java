@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -26,6 +25,7 @@ import static org.testng.AssertJUnit.fail;
 public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
+    private static final String ALARM_CHARACTER = Character.toString((char) 7); // \a
     private static final String FORMAT = "hello%sworld";
     private static final String[] CHARACTERS = toArray(
             "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\"", "\'", Character.toString((char) 7 /* \a */)
@@ -33,7 +33,6 @@ public class EscapeTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final String alarm = Character.toString((char) 7); // \a
         final Series series = new Series(ENTITY_NAME, METRIC_NAME)
                 .addSamples(Sample.ofDateText("2018-08-20T00:00:00.000Z", "hello\nworld"))
                 .addSamples(Sample.ofDateText("2018-08-20T01:00:00.000Z", "hello\rworld"))
@@ -44,7 +43,9 @@ public class EscapeTest extends SqlTest {
                 .addSamples(Sample.ofDateText("2018-08-20T06:00:00.000Z", "hello\bworld"))
                 .addSamples(Sample.ofDateText("2018-08-20T07:00:00.000Z", "hello\"world"))
                 .addSamples(Sample.ofDateText("2018-08-20T08:00:00.000Z", "hello\'world"))
-                .addSamples(Sample.ofDateText("2018-08-20T09:00:00.000Z", String.format("hello%sworld", alarm)))
+                .addSamples(Sample.ofDateText(
+                        "2018-08-20T09:00:00.000Z", String.format("hello%sworld", ALARM_CHARACTER))
+                )
                 .addTag(String.valueOf("\n".hashCode()), "hello\nworld")
                 .addTag(String.valueOf("\r".hashCode()), "hello\rworld")
                 .addTag(String.valueOf("\t".hashCode()), "hello\tworld")
@@ -54,33 +55,29 @@ public class EscapeTest extends SqlTest {
                 .addTag(String.valueOf("\b".hashCode()), "hello\bworld")
                 .addTag(String.valueOf("\"".hashCode()), "hello\"world")
                 .addTag(String.valueOf("\'".hashCode()), "hello\'world")
-                .addTag(String.valueOf(alarm.hashCode()), String.format("hello%sworld", alarm));
+                .addTag(String.valueOf(ALARM_CHARACTER.hashCode()), String.format("hello%sworld", ALARM_CHARACTER));
 
         insertSeriesCheck(series);
     }
 
+    private static Object[] testCase(final String query, final String... results) {
+        return toArray(query, Arrays.stream(results).map(ArrayUtils::toArray).toArray(String[][]::new));
+    }
+
     @DataProvider
     public static Object[][] provideRegex() {
-        final String regex = ".+%s.+";
-        final String[] queries = Arrays.stream(CHARACTERS)
-                .map((character) -> (character.equals("\'") || character.equals("\"")) ?
-                        character.concat(character) : character)
-                .map((character) -> String.format(regex, character))
-                .map((regexp) -> String.format("REGEX '%s'", regexp))
-                .toArray(String[]::new);
-        final Map<String, String[][]> results = new HashMap<>();
-        for (int i = 0; i < queries.length; i++) {
-            final Pattern pattern = Pattern.compile(String.format(regex, CHARACTERS[i]));
-            final String[][] strings = Arrays.stream(CHARACTERS)
-                    .map((character) -> String.format(FORMAT, character))
-                    .filter((str) -> pattern.matcher(str).matches())
-                    .map(ArrayUtils::toArray)
-                    .toArray(String[][]::new);
-            results.put(queries[i], strings);
-        }
-        return results.entrySet().stream()
-                .map((entry) -> toArray(entry.getKey(), entry.getValue()))
-                .toArray(Object[][]::new);
+        return toArray(
+                testCase("'.+\n.+'", "hello\nworld", "hello\\n\nworld"),
+                testCase("'.+\r.+'", "hello\rworld"),
+                testCase("'.+\t.+'", "hello\tworld"),
+                testCase("'.+\\.+'", "hello\\world"),
+                testCase("'.+\\n.+'", "hello\\nworld", "hello\\n\nworld"),
+                testCase("'.+\\n\n.+'", "hello\\n\nworld"),
+                testCase("'.+\b.+'", "hello\bworld"),
+                testCase("'.+\"\".+'", "hello\"world"),
+                testCase("'.+\'\'.+'", "hello\'world"),
+                testCase(String.format("'.+%s.+'", ALARM_CHARACTER), String.format("hello%sworld", ALARM_CHARACTER))
+        );
     }
 
     @DataProvider
@@ -217,9 +214,7 @@ public class EscapeTest extends SqlTest {
             description = "Test escaped characters in REGEX"
     )
     public void testRegex(final String query, final String[][] results) {
-        final String sqlQuery = String.format("SELECT text FROM \"%s\" WHERE text %s",
-                METRIC_NAME, query
-        );
-        assertSqlQueryRows("Fail to filter records using REGEX \'%s\'", results, sqlQuery);
+        final String sqlQuery = String.format("SELECT text FROM \"%s\" WHERE text REGEX %s", METRIC_NAME, query);
+        assertSqlQueryRows(String.format("Fail to filter records using REGEX %s", query), results, sqlQuery);
     }
 }
