@@ -11,7 +11,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +33,28 @@ public class EscapeTest extends SqlTest {
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final Series series = new Series(ENTITY_NAME, METRIC_NAME);
-        ZonedDateTime dateTime = ZonedDateTime.parse("2018-08-20T00:00:00.000Z");
-        for (final String character : CHARACTERS) {
-            series.addSamples(Sample.ofJavaDateInteger(dateTime, 1, String.format(FORMAT, character)));
-            series.addTag(String.valueOf(character.hashCode()), String.format(FORMAT, character));
-            dateTime = dateTime.plusHours(1);
-        }
+        final String alarm = Character.toString((char) 7); // \a
+        final Series series = new Series(ENTITY_NAME, METRIC_NAME)
+                .addSamples(Sample.ofDateText("2018-08-20T00:00:00.000Z", "hello\nworld"))
+                .addSamples(Sample.ofDateText("2018-08-20T01:00:00.000Z", "hello\rworld"))
+                .addSamples(Sample.ofDateText("2018-08-20T02:00:00.000Z", "hello\tworld"))
+                .addSamples(Sample.ofDateText("2018-08-20T03:00:00.000Z", "hello\\world"))
+                .addSamples(Sample.ofDateText("2018-08-20T04:00:00.000Z", "hello\\nworld"))
+                .addSamples(Sample.ofDateText("2018-08-20T05:00:00.000Z", "hello\\n\nworld"))
+                .addSamples(Sample.ofDateText("2018-08-20T06:00:00.000Z", "hello\bworld"))
+                .addSamples(Sample.ofDateText("2018-08-20T07:00:00.000Z", "hello\"world"))
+                .addSamples(Sample.ofDateText("2018-08-20T08:00:00.000Z", "hello\'world"))
+                .addSamples(Sample.ofDateText("2018-08-20T09:00:00.000Z", String.format("hello%sworld", alarm)))
+                .addTag(String.valueOf("\n".hashCode()), "hello\nworld")
+                .addTag(String.valueOf("\r".hashCode()), "hello\rworld")
+                .addTag(String.valueOf("\t".hashCode()), "hello\tworld")
+                .addTag(String.valueOf("\\".hashCode()), "hello\\world")
+                .addTag(String.valueOf("\\n".hashCode()), "hello\\nworld")
+                .addTag(String.valueOf("\\n\n".hashCode()), "hello\\n\nworld")
+                .addTag(String.valueOf("\b".hashCode()), "hello\bworld")
+                .addTag(String.valueOf("\"".hashCode()), "hello\"world")
+                .addTag(String.valueOf("\'".hashCode()), "hello\'world")
+                .addTag(String.valueOf(alarm.hashCode()), String.format("hello%sworld", alarm));
 
         insertSeriesCheck(series);
     }
