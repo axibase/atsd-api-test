@@ -209,31 +209,54 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideSimpleFunctions() {
         return toArray(
-                toArray("UPPER(text)", Arrays.stream(CHARACTERS)
-                        .map((s) -> String.format(FORMAT, s).toUpperCase())
-                        .map(ArrayUtils::toArray)
-                        .toArray(String[][]::new)
+                testCase("UPPER(text)",
+                        "HELLO\nWORLD",
+                        "HELLO\rWORLD",
+                        "HELLO\tWORLD",
+                        "HELLO\\WORLD",
+                        "HELLO\\NWORLD",
+                        "HELLO\\N\nWORLD",
+                        "HELLO\bWORLD",
+                        "HELLO\"WORLD",
+                        "HELLO\'WORLD",
+                        String.format("HELLO%sWORLD", ALARM_CHARACTER)
                 ),
-                toArray("LOWER(text)", Arrays.stream(CHARACTERS)
-                        .map((s) -> String.format(FORMAT, s).toLowerCase())
-                        .map(ArrayUtils::toArray)
-                        .toArray(String[][]::new)
+                testCase("LOWER(text)",
+                        "hello\nworld",
+                        "hello\rworld",
+                        "hello\tworld",
+                        "hello\\world",
+                        "hello\\nworld",
+                        "hello\\n\nworld",
+                        "hello\bworld",
+                        "hello\"world",
+                        "hello\'world",
+                        String.format("hello%sworld", ALARM_CHARACTER)
                 ),
-                toArray("LENGTH(text)", Arrays.stream(CHARACTERS)
-                        .map((s) -> String.format(FORMAT, s).length())
-                        .map(String::valueOf)
-                        .map(ArrayUtils::toArray)
-                        .toArray(String[][]::new)
+                testCase("LENGTH(text)", "11", "11", "11", "11", "12", "13", "11", "11", "11", "11"),
+                testCase("CONCAT(text, 'Y')",
+                        "hello\nworldY",
+                        "hello\rworldY",
+                        "hello\tworldY",
+                        "hello\\worldY",
+                        "hello\\nworldY",
+                        "hello\\n\nworldY",
+                        "hello\bworldY",
+                        "hello\"worldY",
+                        "hello\'worldY",
+                        String.format("hello%sworldY", ALARM_CHARACTER)
                 ),
-                toArray("CONCAT(text, 'Y')", Arrays.stream(CHARACTERS)
-                        .map((s) -> String.format(FORMAT, s).concat("Y"))
-                        .map(ArrayUtils::toArray)
-                        .toArray(String[][]::new)
-                ),
-                toArray("SUBSTR(text, 0, 8)", Arrays.stream(CHARACTERS)
-                        .map((s) -> String.format(FORMAT, s).substring(0, 8))
-                        .map(ArrayUtils::toArray)
-                        .toArray(String[][]::new)
+                testCase("SUBSTR(text, 0, 8)",
+                        "hello\nwo",
+                        "hello\rwo",
+                        "hello\two",
+                        "hello\\wo",
+                        "hello\\nw",
+                        "hello\\n\n",
+                        "hello\bwo",
+                        "hello\"wo",
+                        "hello\'wo",
+                        String.format("hello%swo", ALARM_CHARACTER)
                 )
         );
     }
