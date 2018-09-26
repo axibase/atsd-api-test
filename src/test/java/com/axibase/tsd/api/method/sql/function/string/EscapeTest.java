@@ -24,10 +24,6 @@ public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
     private static final String ALARM_CHARACTER = Character.toString((char) 7); // \a
-    private static final String FORMAT = "hello%sworld";
-    private static final String[] CHARACTERS = toArray(
-            "\n", "\r", "\t", "\\", "\\n", "\\n\n", "\b", "\"", "\'", Character.toString((char) 7 /* \a */)
-    );
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -312,9 +308,16 @@ public class EscapeTest extends SqlTest {
     )
     public void testEntityTags() {
         final Entity beforeUpdate = EntityMethod.getEntity(ENTITY_NAME);
-        for (final String character : CHARACTERS) {
-            beforeUpdate.addTag(String.valueOf(character.hashCode()), String.format(FORMAT, character));
-        }
+        beforeUpdate.addTag(String.valueOf("\n".hashCode()), "hello\nworld")
+                .addTag(String.valueOf("\r".hashCode()), "hello\rworld")
+                .addTag(String.valueOf("\t".hashCode()), "hello\tworld")
+                .addTag(String.valueOf("\\".hashCode()), "hello\\world")
+                .addTag(String.valueOf("\\n".hashCode()), "hello\\nworld")
+                .addTag(String.valueOf("\\n\n".hashCode()), "hello\\n\nworld")
+                .addTag(String.valueOf("\b".hashCode()), "hello\bworld")
+                .addTag(String.valueOf("\"".hashCode()), "hello\"world")
+                .addTag(String.valueOf("\'".hashCode()), "hello\'world")
+                .addTag(String.valueOf(ALARM_CHARACTER.hashCode()), String.format("hello%sworld", ALARM_CHARACTER));
         EntityMethod.updateEntity(beforeUpdate);
         final Entity afterUpdate = EntityMethod.getEntity(ENTITY_NAME);
         if (!afterUpdate.getTags().equals(beforeUpdate.getTags())) {
