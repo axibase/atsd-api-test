@@ -12,8 +12,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -263,27 +261,18 @@ public class EscapeTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideLocate() {
-        final String[] queries = Arrays.stream(CHARACTERS)
-                .map((character) -> (character.equals("\'") || character.equals("\"")) ?
-                        character.concat(character) : character)
-                .map((character) -> (character.equals("\\n\n") || character.equals("\\n")) ?
-                        escapeJava(character) : character)
-                .map((character) -> String.format("LOCATE('%s', text)", character))
-                .toArray(String[]::new);
-        final Map<String, String[][]> results = new HashMap<>();
-        for (int i = 0; i < queries.length; i++) {
-            final String toFind = CHARACTERS[i];
-            final String[][] strings = Arrays.stream(CHARACTERS)
-                    .map((symbol) -> String.format(FORMAT, symbol))
-                    .map((str) -> str.indexOf(toFind) + 1)
-                    .map(String::valueOf)
-                    .map(ArrayUtils::toArray)
-                    .toArray(String[][]::new);
-            results.put(queries[i], strings);
-        }
-        return results.entrySet().stream()
-                .map((entry) -> toArray(entry.getKey(), entry.getValue()))
-                .toArray(Object[][]::new);
+        return toArray(
+                testCase(escapeJava("'\n'"), "6", "0", "0", "0", "0", "8", "0", "0", "0", "0"),
+                testCase("'\r'", "0", "6", "0", "0", "0", "0", "0", "0", "0", "0"),
+                testCase("'\t'", "0", "0", "6", "0", "0", "0", "0", "0", "0", "0"),
+                testCase("'\\'", "0", "0", "0", "6", "6", "6", "0", "0", "0", "0"),
+                testCase(escapeJava("'\\n'"), "0", "0", "0", "0", "6", "6", "0", "0", "0", "0"),
+                testCase(escapeJava("'\\n\n'"), "0", "0", "0", "0", "0", "6", "0", "0", "0", "0"),
+                testCase("'\b'", "0", "0", "0", "0", "0", "0", "6", "0", "0", "0"),
+                testCase("'\"\"'", "0", "0", "0", "0", "0", "0", "0", "6", "0", "0"),
+                testCase("'\'\''", "0", "0", "0", "0", "0", "0", "0", "0", "6", "0"),
+                testCase(String.format("'%s'", ALARM_CHARACTER), "0", "0", "0", "0", "0", "0", "0", "0", "0", "6")
+        );
     }
 
     @Issue("5600")
@@ -313,8 +302,8 @@ public class EscapeTest extends SqlTest {
             description = "Test LOCATE() function with escaped characters"
     )
     public void testLocate(final String query, final String[][] results) {
-        final String sqlQuery = String.format("SELECT %s FROM \"%s\"", query, METRIC_NAME);
-        assertSqlQueryRows("Fail to locate an escaped character", results, sqlQuery);
+        final String sqlQuery = String.format("SELECT LOCATE(%s, text) FROM \"%s\"", query, METRIC_NAME);
+        assertSqlQueryRows(String.format("Fail to use LOCATE(%s, text) function", query), results, sqlQuery);
     }
 
     @Issue("5600")
