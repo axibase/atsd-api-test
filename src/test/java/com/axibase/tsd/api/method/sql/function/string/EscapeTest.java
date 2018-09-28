@@ -6,6 +6,8 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -17,13 +19,11 @@ import static com.axibase.tsd.api.method.series.SeriesMethod.insertSeriesCheck;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
-import static org.apache.commons.lang3.StringEscapeUtils.escapeJava;
 import static org.testng.AssertJUnit.fail;
 
 public class EscapeTest extends SqlTest {
     private static final String METRIC_NAME = metric();
     private static final String ENTITY_NAME = entity();
-    private static final String ALARM_CHARACTER = Character.toString((char) 7); // \a
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -38,18 +38,19 @@ public class EscapeTest extends SqlTest {
                 .addSamples(Sample.ofDateText("2018-08-20T07:00:00.000Z", "hello\"world"))
                 .addSamples(Sample.ofDateText("2018-08-20T08:00:00.000Z", "hello\'world"))
                 .addSamples(Sample.ofDateText(
-                        "2018-08-20T09:00:00.000Z", String.format("hello%sworld", ALARM_CHARACTER))
+                        "2018-08-20T09:00:00.000Z",
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER()))
                 )
-                .addTag(String.valueOf("\n".hashCode()), "hello\nworld")
-                .addTag(String.valueOf("\r".hashCode()), "hello\rworld")
-                .addTag(String.valueOf("\t".hashCode()), "hello\tworld")
-                .addTag(String.valueOf("\\".hashCode()), "hello\\world")
-                .addTag(String.valueOf("\\n".hashCode()), "hello\\nworld")
-                .addTag(String.valueOf("\\n\n".hashCode()), "hello\\n\nworld")
-                .addTag(String.valueOf("\b".hashCode()), "hello\bworld")
-                .addTag(String.valueOf("\"".hashCode()), "hello\"world")
-                .addTag(String.valueOf("\'".hashCode()), "hello\'world")
-                .addTag(String.valueOf(ALARM_CHARACTER.hashCode()), String.format("hello%sworld", ALARM_CHARACTER));
+                .addTag(EscapeCharacter.NEW_LINE.name(), "hello\nworld")
+                .addTag(EscapeCharacter.CARRIAGE_RET.name(), "hello\rworld")
+                .addTag(EscapeCharacter.HORIZONTAL_TAB.name(), "hello\tworld")
+                .addTag(EscapeCharacter.BACKSLASH.name(), "hello\\world")
+                .addTag(EscapeCharacter.BACKSLASH_N.name(), "hello\\nworld")
+                .addTag(EscapeCharacter.BACKSLASH_N_NEW_LINE.name(), "hello\\n\nworld")
+                .addTag(EscapeCharacter.BACKSPACE.name(), "hello\bworld")
+                .addTag(EscapeCharacter.DOUBLE_QUOTE.name(), "hello\"world")
+                .addTag(EscapeCharacter.SINGLE_QUOTE.name(), "hello\'world")
+                .addTag(EscapeCharacter.BELL.name(), String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER()));
 
         insertSeriesCheck(series);
     }
@@ -70,14 +71,16 @@ public class EscapeTest extends SqlTest {
                 testCase("'(?s).+\b.+'", "hello\bworld"),
                 testCase("'(?s).+\"\".+'", "hello\"world"),
                 testCase("'(?s).+\'\'.+'", "hello\'world"),
-                testCase(String.format("'.+%s.+'", ALARM_CHARACTER), String.format("hello%sworld", ALARM_CHARACTER))
+                testCase(String.format("'.+%s.+'", EscapeCharacter.BELL.getCHARACTER()),
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
+                )
         );
     }
 
     @DataProvider
     public static Object[][] provideReplace() {
         return toArray(
-                testCase(escapeJava("'\n', 'Y'"),
+                testCase("'\n', 'Y'",
                         "helloYworld",
                         "hello\rworld",
                         "hello\tworld",
@@ -87,7 +90,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("'\r', 'Y'",
                         "hello\nworld",
@@ -99,7 +102,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("'\t', 'Y'",
                         "hello\nworld",
@@ -111,7 +114,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("'\\', 'Y'",
                         "hello\nworld",
@@ -123,9 +126,9 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
-                testCase(escapeJava("'\\n', 'Y'"),
+                testCase("'\\\\n', 'Y'",
                         "hello\nworld",
                         "hello\rworld",
                         "hello\tworld",
@@ -135,9 +138,9 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
-                testCase(escapeJava("'\\n\n', 'Y'"),
+                testCase("'\\\\n\n', 'Y'",
                         "hello\nworld",
                         "hello\rworld",
                         "hello\tworld",
@@ -147,7 +150,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("'\b', 'Y'",
                         "hello\nworld",
@@ -159,7 +162,7 @@ public class EscapeTest extends SqlTest {
                         "helloYworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("'\"\"', 'Y'",
                         "hello\nworld",
@@ -171,7 +174,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "helloYworld",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("'\'\'', 'Y'",
                         "hello\nworld",
@@ -183,9 +186,9 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "helloYworld",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
-                testCase(String.format("'%s', 'Y'", ALARM_CHARACTER),
+                testCase(String.format("'%s', 'Y'", EscapeCharacter.BELL.getCHARACTER()),
                         "hello\nworld",
                         "hello\rworld",
                         "hello\tworld",
@@ -213,7 +216,7 @@ public class EscapeTest extends SqlTest {
                         "HELLO\bWORLD",
                         "HELLO\"WORLD",
                         "HELLO\'WORLD",
-                        String.format("HELLO%sWORLD", ALARM_CHARACTER)
+                        String.format("HELLO%sWORLD", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("LOWER(text)",
                         "hello\nworld",
@@ -225,7 +228,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworld",
                         "hello\"world",
                         "hello\'world",
-                        String.format("hello%sworld", ALARM_CHARACTER)
+                        String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("LENGTH(text)", "11", "11", "11", "11", "12", "13", "11", "11", "11", "11"),
                 testCase("CONCAT(text, 'Y')",
@@ -238,7 +241,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bworldY",
                         "hello\"worldY",
                         "hello\'worldY",
-                        String.format("hello%sworldY", ALARM_CHARACTER)
+                        String.format("hello%sworldY", EscapeCharacter.BELL.getCHARACTER())
                 ),
                 testCase("SUBSTR(text, 0, 8)",
                         "hello\nwo",
@@ -250,7 +253,7 @@ public class EscapeTest extends SqlTest {
                         "hello\bwo",
                         "hello\"wo",
                         "hello\'wo",
-                        String.format("hello%swo", ALARM_CHARACTER)
+                        String.format("hello%swo", EscapeCharacter.BELL.getCHARACTER())
                 )
         );
     }
@@ -258,16 +261,17 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideLocate() {
         return toArray(
-                testCase(escapeJava("'\n'"), "6", "0", "0", "0", "0", "8", "0", "0", "0", "0"),
+                testCase("'\n'", "6", "0", "0", "0", "0", "8", "0", "0", "0", "0"),
                 testCase("'\r'", "0", "6", "0", "0", "0", "0", "0", "0", "0", "0"),
                 testCase("'\t'", "0", "0", "6", "0", "0", "0", "0", "0", "0", "0"),
                 testCase("'\\'", "0", "0", "0", "6", "6", "6", "0", "0", "0", "0"),
-                testCase(escapeJava("'\\n'"), "0", "0", "0", "0", "6", "6", "0", "0", "0", "0"),
-                testCase(escapeJava("'\\n\n'"), "0", "0", "0", "0", "0", "6", "0", "0", "0", "0"),
+                testCase("'\\\\n'", "0", "0", "0", "0", "6", "6", "0", "0", "0", "0"),
+                testCase("'\\\\n\n'", "0", "0", "0", "0", "0", "6", "0", "0", "0", "0"),
                 testCase("'\b'", "0", "0", "0", "0", "0", "0", "6", "0", "0", "0"),
                 testCase("'\"\"'", "0", "0", "0", "0", "0", "0", "0", "6", "0", "0"),
                 testCase("'\'\''", "0", "0", "0", "0", "0", "0", "0", "0", "6", "0"),
-                testCase(String.format("'%s'", ALARM_CHARACTER), "0", "0", "0", "0", "0", "0", "0", "0", "0", "6")
+                testCase(String.format("'%s'", EscapeCharacter.BELL.getCHARACTER()),
+                        "0", "0", "0", "0", "0", "0", "0", "0", "0", "6")
         );
     }
 
@@ -308,16 +312,16 @@ public class EscapeTest extends SqlTest {
     )
     public void testEntityTags() {
         final Entity beforeUpdate = EntityMethod.getEntity(ENTITY_NAME);
-        beforeUpdate.addTag(String.valueOf("\n".hashCode()), "hello\nworld")
-                .addTag(String.valueOf("\r".hashCode()), "hello\rworld")
-                .addTag(String.valueOf("\t".hashCode()), "hello\tworld")
-                .addTag(String.valueOf("\\".hashCode()), "hello\\world")
-                .addTag(String.valueOf("\\n".hashCode()), "hello\\nworld")
-                .addTag(String.valueOf("\\n\n".hashCode()), "hello\\n\nworld")
-                .addTag(String.valueOf("\b".hashCode()), "hello\bworld")
-                .addTag(String.valueOf("\"".hashCode()), "hello\"world")
-                .addTag(String.valueOf("\'".hashCode()), "hello\'world")
-                .addTag(String.valueOf(ALARM_CHARACTER.hashCode()), String.format("hello%sworld", ALARM_CHARACTER));
+        beforeUpdate.addTag(EscapeCharacter.NEW_LINE.name().toLowerCase(), "hello\nworld")
+                .addTag(EscapeCharacter.CARRIAGE_RET.name().toLowerCase(), "hello\rworld")
+                .addTag(EscapeCharacter.HORIZONTAL_TAB.name().toLowerCase(), "hello\tworld")
+                .addTag(EscapeCharacter.BACKSLASH.name().toLowerCase(), "hello\\world")
+                .addTag(EscapeCharacter.BACKSLASH_N.name().toLowerCase(), "hello\\nworld")
+                .addTag(EscapeCharacter.BACKSLASH_N_NEW_LINE.name().toLowerCase(), "hello\\n\nworld")
+                .addTag(EscapeCharacter.BACKSPACE.name().toLowerCase(), "hello\bworld")
+                .addTag(EscapeCharacter.DOUBLE_QUOTE.name().toLowerCase(), "hello\"world")
+                .addTag(EscapeCharacter.SINGLE_QUOTE.name().toLowerCase(), "hello\'world")
+                .addTag(EscapeCharacter.BELL.name().toLowerCase(), String.format("hello%sworld", EscapeCharacter.BELL.getCHARACTER()));
         EntityMethod.updateEntity(beforeUpdate);
         final Entity afterUpdate = EntityMethod.getEntity(ENTITY_NAME);
         if (!afterUpdate.getTags().equals(beforeUpdate.getTags())) {
@@ -333,5 +337,21 @@ public class EscapeTest extends SqlTest {
     public void testRegex(final String query, final String[][] results) {
         final String sqlQuery = String.format("SELECT text FROM \"%s\" WHERE text REGEX %s", METRIC_NAME, query);
         assertSqlQueryRows(String.format("Fail to filter records using REGEX %s", query), results, sqlQuery);
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    enum EscapeCharacter {
+        NEW_LINE("\n"),
+        BELL(Character.toString((char) 7)),
+        CARRIAGE_RET("\r"),
+        HORIZONTAL_TAB("\t"),
+        BACKSLASH("\\"),
+        BACKSLASH_N("\\n"),
+        BACKSLASH_N_NEW_LINE("\\n\n"),
+        BACKSPACE("\b"),
+        DOUBLE_QUOTE("\""),
+        SINGLE_QUOTE("\'");
+        private final String CHARACTER;
     }
 }
