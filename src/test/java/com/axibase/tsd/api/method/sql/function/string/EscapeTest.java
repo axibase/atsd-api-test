@@ -61,15 +61,15 @@ public class EscapeTest extends SqlTest {
     @DataProvider
     public static Object[][] provideRegex() {
         return toArray(
-                testCase("'.+\n.+'", "hello\nworld", "hello\\n\nworld"),
-                testCase("'.+\r.+'", "hello\rworld"),
-                testCase("'.+\t.+'", "hello\tworld"),
-                testCase("'.+\\.+'", "hello\\world"),
-                testCase("'.+\\n.+'", "hello\\nworld", "hello\\n\nworld"),
-                testCase("'.+\\n\n.+'", "hello\\n\nworld"),
-                testCase("'.+\b.+'", "hello\bworld"),
-                testCase("'.+\"\".+'", "hello\"world"),
-                testCase("'.+\'\'.+'", "hello\'world"),
+                testCase("'(?s).+\\n.+'", "hello\nworld", "hello\\n\nworld"),
+                testCase("'(?s).+\r.+'", "hello\rworld"),
+                testCase("'(?s).+\t.+'", "hello\tworld"),
+                testCase("'(?s).+\\\\\\\\.+'", "hello\\world", "hello\\nworld", "hello\\n\nworld"),
+                testCase("'(?s).+\\\\\\\\n.+'", "hello\\nworld", "hello\\n\nworld"),
+                testCase("'(?s).+\\\\\\\\n\\n.+'", "hello\\n\nworld"),
+                testCase("'(?s).+\b.+'", "hello\bworld"),
+                testCase("'(?s).+\"\".+'", "hello\"world"),
+                testCase("'(?s).+\'\'.+'", "hello\'world"),
                 testCase(String.format("'.+%s.+'", ALARM_CHARACTER), String.format("hello%sworld", ALARM_CHARACTER))
         );
     }
