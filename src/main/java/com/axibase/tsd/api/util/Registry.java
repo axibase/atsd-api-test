@@ -23,7 +23,7 @@ public enum Registry {
 
     public synchronized void checkExists(String value) {
         if (existenceChecker.test(value)) {
-//            throw new IllegalArgumentException("REGISTRY ERROR: " + name() + "=" + value + " already registered.");
+            throw new IllegalArgumentException("REGISTRY ERROR: " + name() + "=" + value + " already registered.");
         }
     }
 }
