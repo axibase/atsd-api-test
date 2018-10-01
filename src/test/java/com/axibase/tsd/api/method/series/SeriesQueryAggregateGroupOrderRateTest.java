@@ -2,7 +2,8 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
-import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
@@ -18,7 +19,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -422,7 +422,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 2));
+                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", BigDecimal.valueOf(10.0d)));
 
         assertEquals(
                 result,
@@ -500,10 +500,10 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         List<Series> result = querySeriesAsList(query);
 
         Series expectedSeries = createSeries("*",
-                Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 5),
-                Sample.ofDateInteger("2017-01-01T00:00:05.000Z", 5),
-                Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5),
-                Sample.ofDateInteger("2017-01-01T00:00:15.000Z", 5));
+                Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", BigDecimal.valueOf(5.0d)),
+                Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", BigDecimal.valueOf(5.0d)),
+                Sample.ofDateDecimal("2017-01-01T00:00:10.000Z", BigDecimal.valueOf(5.0d)),
+                Sample.ofDateDecimal("2017-01-01T00:00:15.000Z", BigDecimal.valueOf(5.0d)));
 
         assertEquals(
                 result,
