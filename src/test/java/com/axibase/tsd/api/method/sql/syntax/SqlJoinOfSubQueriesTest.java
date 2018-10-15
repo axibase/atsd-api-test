@@ -46,7 +46,7 @@ public class SqlJoinOfSubQueriesTest extends SqlTest {
                         "OUTER JOIN (%s) po %n" +
                         "ON po.entity = co.entity AND po.time = co.time",
                 testData.firstQuery, testData.secondQuery);
-        assertOkRequest("The query has valid syntax", sqlQuery);
+        assertOkRequest("Can't perform request with valid subqueries syntax", sqlQuery);
     }
 
     @DataProvider
