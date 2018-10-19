@@ -9,8 +9,7 @@ Note: run tests in a freshly installed image.
 * Install Docker image:
 
 ```bash
-docker run -d --name=<container-name> -p 8088:8088 -p 8443:8443 -p 8081:8081 \
---p 8082:8082/udp axibase/atsd:latest
+docker run -d --name=<container-name> -p 8088:8088 -p 8443:8443 -p 8081:8081 -p 8082:8082/udp axibase/atsd:latest
 ```
 
 * Set `last.insert.write.period.seconds` to 0 on the **Settings > Server Properties** page.
