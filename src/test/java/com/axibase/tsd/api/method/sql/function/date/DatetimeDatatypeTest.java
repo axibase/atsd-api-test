@@ -8,7 +8,6 @@ import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
@@ -31,39 +30,15 @@ public class DatetimeDatatypeTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    @DataProvider
-    public static Object[][] provideFunctions() {
-        return new Object[][]{{"avg"}, {"first"}, {"lag"}, {"last"}, {"lead"}, {"max"}, {"MAX_VALUE_TIME"},
-                {"median"}, {"min"}, {"MIN_VALUE_TIME"}, {"sum"}, {"wavg"}, {"wtavg"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideFunctionsTwo() {
-        return new Object[][]{{"isnull"}, {"coalesce"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideFunctionsThree() {
-        Object[][] one = provideFunctions();
-        Object[][] two = provideFunctionsTwo();
-        Object[][] result = new Object[one.length * two.length][2];
-        int i = 0;
-        for (Object[] objects : one)
-            for (Object[] objects1 : two) {
-                result[i][0] = objects[0];
-                result[i++][1] = objects1[0];
-            }
-        return result;
-    }
-
     @Issue("5757")
-    @Test(dataProvider = "provideFunctions")
-    public void testFunctionDatetimeArgument(String functionName) {
+    @Test(dataProvider = "provideCombinationAggregateResource", dataProviderClass = DatetimeDatatypeProvider.class)
+    public void testAggregationFunction(String functionName, String resourceName) {
         String sqlQuery = String.format(
-                "SELECT %s(datetime) %n" +
+                "SELECT %s(%s) %n" +
                         "FROM \"%s\" %n" +
                         "WHERE entity = '%s' %n",
                 functionName,
+                resourceName,
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
@@ -77,34 +52,16 @@ public class DatetimeDatatypeTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideFunctions")
-    public void testFunctionCurrentTimeStampArgument(String functionName) {
+    @Test(dataProvider = "provideCombinationOtherResource", dataProviderClass = DatetimeDatatypeProvider.class)
+    public void testOtherFunction(String functionName, String resourceName) {
         String sqlQuery = String.format(
-                "SELECT %s(CURRENT_TIMESTAMP) %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s' %n",
-                functionName,
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Table has different datatype",
-                new HashSet<>(Collections.singletonList("xsd:dateTimeStamp")),
-                new HashSet<>(extractColumnTypes(resultTable.getColumnsMetaData())));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideFunctionsTwo")
-    public void testObjectFunction(String functionName) {
-        String sqlQuery = String.format(
-                "SELECT %s(datetime, datetime) %n" +
+                "SELECT %s(%s, %s) %n" +
                         "FROM \"%s\" %n" +
                         "WHERE entity = '%s' %n" +
                         "LIMIT 1",
                 functionName,
+                resourceName,
+                resourceName,
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
@@ -118,35 +75,16 @@ public class DatetimeDatatypeTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideFunctionsThree")
-    public void testTwoFunctionsDatetimeArgument(String functionName, String functionName2) {
+    @Test(dataProvider = "provideCombinationFunctions", dataProviderClass = DatetimeDatatypeProvider.class)
+    public void testAggregationOtherFunction(String aggregateFunctionName, String otherFunctionName, String resourceName) {
         String sqlQuery = String.format(
-                "SELECT %s(%s(datetime, datetime)) %n" +
+                "SELECT %s(%s(%s, %s)) %n" +
                         "FROM \"%s\" %n" +
                         "WHERE entity = '%s' %n",
-                functionName,
-                functionName2,
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Table has different datatype",
-                new HashSet<>(Collections.singletonList("xsd:dateTimeStamp")),
-                new HashSet<>(extractColumnTypes(resultTable.getColumnsMetaData())));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideFunctionsThree")
-    public void testTwoFunctionsCurrentTimeStampArgument(String functionName, String functionName2) {
-        String sqlQuery = String.format(
-                "SELECT %s(%s(CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)) %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s' %n",
-                functionName,
-                functionName2,
+                aggregateFunctionName,
+                otherFunctionName,
+                resourceName,
+                resourceName,
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
