@@ -142,4 +142,21 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
 
         assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
+
+
+    @Issue("5757")
+    @Test()
+    public void testDateParseFunction() {
+        String sqlQuery = String.format(
+                "SELECT date_format(datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s' %n",
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
 }
