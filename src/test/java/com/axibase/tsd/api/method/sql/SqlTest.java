@@ -6,7 +6,6 @@ import com.axibase.tsd.api.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,7 +14,8 @@ import java.util.Objects;
 
 import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.fail;
 
 
 public abstract class SqlTest extends SqlMethod {
@@ -198,24 +198,20 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertOkRequest(String assertMessage, String sqlQuery) {
-        assertOkRequest(assertMessage, queryResponse(sqlQuery));
+        final String formattedMessage = String.format("%s%nQuery: %s", assertMessage, sqlQuery);
+        assertOkRequest(formattedMessage, queryResponse(sqlQuery));
     }
 
     public void assertOkRequest(String assertMessage, Response response) {
-        assertSame(assertMessage, Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
-        try {
-            response.readEntity(StringTable.class);
-        } catch (ProcessingException e) {
-            fail("Failed to read table from response!");
+        final Response.Status.Family family = Util.responseFamily(response);
+        if (Response.Status.Family.SUCCESSFUL != family) {
+            try {
+                final String errorMessage = extractSqlErrorMessage(response);
+                fail(String.format("%s%n Reason: %s", assertMessage, errorMessage));
+            } catch (JSONException ex) {
+                fail(assertMessage);
+            }
         }
-
-        String message = null;
-        try {
-            message = extractSqlErrorMessage(response);
-        } catch (JSONException e) {
-            fail("Can't read json from response");
-        }
-        assertNull(assertMessage + ": Response contains error", message);
     }
 
     public void assertBadSqlRequest(String expectedMessage, String sqlQuery) {
