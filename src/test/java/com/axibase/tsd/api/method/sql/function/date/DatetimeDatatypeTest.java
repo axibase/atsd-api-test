@@ -16,21 +16,33 @@ public class DatetimeDatatypeTest extends SqlTest {
     private static final String TEST_PREFIX = "datetime-datatype-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
+    private static final String TEST_METRIC_NAME_LEAD_LAG = TEST_PREFIX + "metric-lead-last";
     private static final String TEST_DATETIME_VALUE = "2018-11-07T09:30:06.000Z";
+    private static final String TEST_DATETIME_VALUE_2 = "2018-11-08T09:30:06.000Z";
 
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME);
+        Series series2 = new Series(TEST_ENTITY_NAME, TEST_METRIC_NAME_LEAD_LAG);
         series.addSamples(
                 Sample.ofDate(TEST_DATETIME_VALUE)
         );
-        SeriesMethod.insertSeriesCheck(series);
+        series2.addSamples(
+                Sample.ofDate(TEST_DATETIME_VALUE),
+                Sample.ofDate(TEST_DATETIME_VALUE_2)
+        );
+        SeriesMethod.insertSeriesCheck(series, series2);
     }
 
     @DataProvider
     public static Object[][] provideAggregateFunctions() {
-        return new Object[][]{{"avg"}, {"first"}, {"lag"}, {"last"}, {"lead"}, {"max"}, {"MAX_VALUE_TIME"},
+        return new Object[][]{{"avg"}, {"first"}, {"last"}, {"max"}, {"MAX_VALUE_TIME"},
                 {"median"}, {"min"}, {"MIN_VALUE_TIME"}, {"sum"}};
+    }
+
+    @DataProvider
+    public static Object[][] provideLeadLag() {
+        return new Object[][]{{"lag", 1, TEST_DATETIME_VALUE}, {"lead", 0, TEST_DATETIME_VALUE_2}};
     }
 
     @DataProvider
@@ -42,6 +54,14 @@ public class DatetimeDatatypeTest extends SqlTest {
     public static Object[][] provideOtherFunctionAlternativeParameter() {
         return new Object[][]{{"isnull", "null"}, {"isnull", "value"}, {"isnull", "tags.ok"},
                 {"coalesce", "null"}, {"coalesce", "value"}, {"coalesce", "tags.ok"}};
+    }
+
+    @DataProvider
+    public static Object[][] provideDateParts() {
+        return new Object[][]{{"second", "2018-11-07T09:30:07.000Z"}, {"minute", "2018-11-07T09:31:06.000Z"},
+                {"hour", "2018-11-07T10:30:06.000Z"}, {"day", "2018-11-08T09:30:06.000Z"},
+                {"week", "2018-11-14T09:30:06.000Z"}, {"month", "2018-12-07T09:30:06.000Z"},
+                {"quarter", "2019-02-07T09:30:06.000Z"}, {"year", "2019-11-07T09:30:06.000Z"}};
     }
 
     @Issue("5757")
@@ -62,6 +82,34 @@ public class DatetimeDatatypeTest extends SqlTest {
                 "Column has different datatype",
                 "xsd:dateTimeStamp",
                 resultTable.getColumnsMetaData()[0].getDataType());
+        assertEquals(
+                "Column has different data",
+                TEST_DATETIME_VALUE,
+                resultTable.getRows().get(0).get(0));
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideLeadLag")
+    public void testLeadLagFunction(String functionName, int offset, String expectedResult) {
+        String sqlQuery = String.format(
+                "SELECT %s(datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s'",
+                functionName,
+                TEST_METRIC_NAME_LEAD_LAG,
+                TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        assertEquals(
+                "Column has different datatype",
+                "xsd:dateTimeStamp",
+                resultTable.getColumnsMetaData()[0].getDataType());
+        assertEquals(
+                "Column has different data",
+                expectedResult,
+                resultTable.getRows().get(offset).get(0));
     }
 
     @Issue("5757")
@@ -70,8 +118,7 @@ public class DatetimeDatatypeTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT %s(datetime, datetime) %n" +
                         "FROM \"%s\" %n" +
-                        "WHERE entity = '%s' %n" +
-                        "LIMIT 1",
+                        "WHERE entity = '%s'",
                 functionName,
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
@@ -82,7 +129,11 @@ public class DatetimeDatatypeTest extends SqlTest {
         assertEquals(
                 "Column has different datatype",
                 "xsd:dateTimeStamp",
-                resultTable.getColumnsMetaData()[0].getDataType());
+                resultTable.getColumnMetaData(0).getDataType());
+        assertEquals(
+                "Column has different data",
+                TEST_DATETIME_VALUE,
+                resultTable.getRows().get(0).get(0));
     }
 
     @Issue("5757")
@@ -91,8 +142,7 @@ public class DatetimeDatatypeTest extends SqlTest {
         String sqlQuery = String.format(
                 "SELECT %s(datetime, %s) %n" +
                         "FROM \"%s\" %n" +
-                        "WHERE entity = '%s' %n" +
-                        "LIMIT 1",
+                        "WHERE entity = '%s'",
                 functionName,
                 parameterName,
                 TEST_METRIC_NAME,
@@ -104,6 +154,30 @@ public class DatetimeDatatypeTest extends SqlTest {
         assertEquals(
                 "Column has different data",
                 TEST_DATETIME_VALUE,
+                resultTable.getRows().get(0).get(0));
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideDateParts")
+    public void testDateadd(String datePart, String expectedResult) {
+        String sqlQuery = String.format(
+                "SELECT dateadd(%s, 1, datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s'",
+                datePart,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        assertEquals(
+                "Column has different datatype",
+                "xsd:dateTimeStamp",
+                resultTable.getColumnMetaData(0).getDataType());
+        assertEquals(
+                "Column has different data",
+                expectedResult,
                 resultTable.getRows().get(0).get(0));
     }
 }
