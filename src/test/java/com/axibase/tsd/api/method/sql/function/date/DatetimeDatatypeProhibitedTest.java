@@ -26,7 +26,7 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideProhibitedAggregateFunctions() {
-        return new Object[][]{{"avg"}, {"correl"}, {"median"}, {"stddev"}, {"sum"}, {"wavg"}, {"wtavg"}};
+        return new Object[][]{{"avg"}, {"median"}, {"stddev"}, {"sum"}, {"wavg"}, {"wtavg"}};
     }
 
     @DataProvider
@@ -47,6 +47,20 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
                         "FROM \"%s\" %n" +
                         "WHERE entity = '%s' %n",
                 functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        assertBadSqlRequest("Syntax error", sqlQuery);
+    }
+
+    @Issue("5757")
+    @Test(enabled = false)
+    public void testCorrelFunction() {
+        String sqlQuery = String.format(
+                "SELECT correl(datetime, datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s' %n",
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
@@ -80,7 +94,6 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
-
         assertBadSqlRequest("Syntax error", sqlQuery);
     }
 }
