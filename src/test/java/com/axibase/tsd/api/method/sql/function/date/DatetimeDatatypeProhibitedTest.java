@@ -145,7 +145,7 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
 
 
     @Issue("5757")
-    @Test()
+    @Test(enabled = false)
     public void testDateParseFunction() {
         String sqlQuery = String.format(
                 "SELECT date_format(datetime) %n" +
