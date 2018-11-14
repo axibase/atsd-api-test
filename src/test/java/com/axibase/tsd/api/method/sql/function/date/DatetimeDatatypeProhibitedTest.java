@@ -1,13 +1,20 @@
 package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.sql.StringTable;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import javax.ws.rs.core.Response;
+
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class DatetimeDatatypeProhibitedTest extends SqlTest {
     private static final String TEST_PREFIX = "datetime-datatype-prohibited-";
@@ -25,8 +32,14 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
     }
 
     @DataProvider
+    public static Object[][] provideMaxMinValueTime() {
+        return new Object[][]{{"max_value_time"}, {"min_value_time"}};
+    }
+
+    @DataProvider
     public static Object[][] provideProhibitedAggregateFunctions() {
-        return new Object[][]{{"avg"}, {"median"}, {"stddev"}, {"sum"}, {"wavg"}, {"wtavg"}};
+        return new Object[][]{{"avg"}, {"counter"}, {"delta"}, {"median"},
+                {"stddev"}, {"sum"}, {"wavg"}, {"wtavg"}};
     }
 
     @DataProvider
@@ -51,7 +64,33 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
                 TEST_ENTITY_NAME
         );
 
-        assertBadSqlRequest("Syntax error", sqlQuery);
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideMaxMinValueTime", enabled = false)
+    public void testProhibitedValueTimeFunction(String functionName) {
+        String sqlQuery = String.format(
+                "SELECT %s(datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s' %n",
+                functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        assertEquals(
+                "Column has different datatype",
+                "Long",
+                resultTable.getColumnMetaData(0).getDataType());
+        assertEquals(
+                "Column has different data",
+                "1541583006000",
+                resultTable.getRows().get(0).get(0));
     }
 
     @Issue("5757")
@@ -65,7 +104,9 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
                 TEST_ENTITY_NAME
         );
 
-        assertBadSqlRequest("Syntax error", sqlQuery);
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Issue("5757")
@@ -80,7 +121,9 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
                 TEST_ENTITY_NAME
         );
 
-        assertBadSqlRequest("Syntax error", sqlQuery);
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Issue("5757")
@@ -94,6 +137,9 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
-        assertBadSqlRequest("Syntax error", sqlQuery);
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 }
