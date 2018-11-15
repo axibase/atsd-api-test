@@ -85,7 +85,7 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
 
         assertEquals(
                 "Column has different datatype",
-                "Long",
+                "bigint",
                 resultTable.getColumnMetaData(0).getDataType());
         assertEquals(
                 "Column has different data",
