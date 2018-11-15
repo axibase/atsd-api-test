@@ -52,6 +52,16 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
         return new Object[][]{{"mod"}, {"power"}, {"log"}};
     }
 
+    @DataProvider
+    public static Object[][] provideStringFunctions() {
+        return new Object[][]{{"upper"}, {"lower"}, {"length"}};
+    }
+
+    @DataProvider
+    public static Object[][] provideStringTwoParametersFunctions() {
+        return new Object[][]{{"concat"}, {"locate"}, {"substr"}};
+    }
+
     @Issue("5757")
     @Test(dataProvider = "provideProhibitedAggregateFunctions", enabled = false)
     public void testProhibitedAggregationFunction(String functionName) {
@@ -149,6 +159,56 @@ public class DatetimeDatatypeProhibitedTest extends SqlTest {
     public void testDateParseFunction() {
         String sqlQuery = String.format(
                 "SELECT date_format(datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s' %n",
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideStringFunctions", enabled = false)
+    public void testStringFunction(String functionName) {
+        String sqlQuery = String.format(
+                "SELECT %s(datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s' %n",
+                functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideStringTwoParametersFunctions", enabled = false)
+    public void testStringTwoParametersFunction(String functionName) {
+        String sqlQuery = String.format(
+                "SELECT %s(datetime, datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s' %n",
+                functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        Response response = SqlMethod.queryResponse(sqlQuery);
+
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("5757")
+    @Test(enabled = false)
+    public void testReplaceFunction() {
+        String sqlQuery = String.format(
+                "SELECT replace(datetime, datetime, datetime) %n" +
                         "FROM \"%s\" %n" +
                         "WHERE entity = '%s' %n",
                 TEST_METRIC_NAME,
