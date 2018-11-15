@@ -63,6 +63,12 @@ public class DatetimeDatatypeTest extends SqlTest {
                 {"quarter", "2019-02-07T09:30:06.000Z"}, {"year", "2019-11-07T09:30:06.000Z"}};
     }
 
+    @DataProvider
+    public static Object[][] provideExtractDateParts(){
+        return new Object[][]{{"second", "6"}, {"minute", "30"}, {"hour", "9"},
+                {"day", "7"},{"dayofweek", "3"}, {"month", "11"}, {"quarter", "4"}, {"year", "2018"}};
+    }
+
     @Issue("5757")
     @Test(dataProvider = "provideAggregateFunctions")
     public void testAggregationFunction(String functionName) {
@@ -192,6 +198,54 @@ public class DatetimeDatatypeTest extends SqlTest {
         assertEquals(
                 "Column has different datatype",
                 "xsd:dateTimeStamp",
+                resultTable.getColumnMetaData(0).getDataType());
+        assertEquals(
+                "Column has different data",
+                expectedResult,
+                resultTable.getRows().get(0).get(0));
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideExtractDateParts")
+    public void testExtractFunction(String functionName, String expectedResult) {
+        String sqlQuery = String.format(
+                "SELECT extract(%s from datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s'",
+                functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        assertEquals(
+                "Column has different datatype",
+                "bigint",
+                resultTable.getColumnMetaData(0).getDataType());
+        assertEquals(
+                "Column has different data",
+                expectedResult,
+                resultTable.getRows().get(0).get(0));
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideExtractDateParts")
+    public void testExtractionFunction(String functionName, String expectedResult) {
+        String sqlQuery = String.format(
+                "SELECT %s (datetime) %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s'",
+                functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        assertEquals(
+                "Column has different datatype",
+                "bigint",
                 resultTable.getColumnMetaData(0).getDataType());
         assertEquals(
                 "Column has different data",
