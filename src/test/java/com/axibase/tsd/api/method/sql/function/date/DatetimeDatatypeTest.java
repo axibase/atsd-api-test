@@ -69,6 +69,11 @@ public class DatetimeDatatypeTest extends SqlTest {
                 {"day", "7"},{"dayofweek", "3"}, {"month", "11"}, {"quarter", "4"}, {"year", "2018"}};
     }
 
+    @DataProvider
+    public static Object[][] provideDateCheckFunctions() {
+        return new Object[][]{{"is_workday","true"}, {"is_weekday","true"}};
+    }
+
     @Issue("5757")
     @Test(dataProvider = "provideAggregateFunctions")
     public void testAggregationFunction(String functionName) {
@@ -246,6 +251,30 @@ public class DatetimeDatatypeTest extends SqlTest {
         assertEquals(
                 "Column has different datatype",
                 "bigint",
+                resultTable.getColumnMetaData(0).getDataType());
+        assertEquals(
+                "Column has different data",
+                expectedResult,
+                resultTable.getRows().get(0).get(0));
+    }
+
+    @Issue("5757")
+    @Test(dataProvider = "provideDateCheckFunctions")
+    public void testDateCheckFunction(String functionName, String expectedResult) {
+        String sqlQuery = String.format(
+                "SELECT %s (datetime, 'usa') %n" +
+                        "FROM \"%s\" %n" +
+                        "WHERE entity = '%s'",
+                functionName,
+                TEST_METRIC_NAME,
+                TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        assertEquals(
+                "Column has different datatype",
+                "boolean",
                 resultTable.getColumnMetaData(0).getDataType());
         assertEquals(
                 "Column has different data",
