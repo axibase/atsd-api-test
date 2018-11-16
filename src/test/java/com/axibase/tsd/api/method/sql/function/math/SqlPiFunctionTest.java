@@ -67,22 +67,44 @@ public class SqlPiFunctionTest extends SqlTest {
     @Issue("5770")
     @Test(dataProvider = "provideFunctionNames")
     public void testNullValues(String functionName) {
-        String sqlQuery = String.format("SELECT %s(null)"
-                , functionName);
+        String sqlQuery = String.format("SELECT %s(null)",
+                functionName);
 
         Response response = SqlMethod.queryResponse(sqlQuery);
 
-        Assert.assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        Assert.assertEquals(response.getStatus(), BAD_REQUEST.getStatusCode());
     }
 
     @Issue("5770")
     @Test(dataProvider = "provideFunctionNames")
     public void testNanValues(String functionName) {
-        String sqlQuery = String.format("SELECT %s(NaN)"
-                , functionName);
+        String sqlQuery = String.format("SELECT %s(NaN)",
+                functionName);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         Assert.assertEquals(resultTable.getRows().get(0).get(0), "NaN", functionName + " value differed");
+    }
+
+    @Issue("5770")
+    @Test(dataProvider = "provideFunctionNames")
+    public void testPosInfinityValues(String functionName) {
+        String sqlQuery = String.format("SELECT %s(1/0)",
+                functionName);
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        Assert.assertEquals(resultTable.getRows().get(0).get(0), "Infinity", functionName + " value differed");
+    }
+
+    @Issue("5770")
+    @Test(dataProvider = "provideFunctionNames")
+    public void testNegInfinityValues(String functionName) {
+        String sqlQuery = String.format("SELECT %s(-1/0)",
+                functionName);
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        Assert.assertEquals(resultTable.getRows().get(0).get(0), "-Infinity", functionName + " value differed");
     }
 }
