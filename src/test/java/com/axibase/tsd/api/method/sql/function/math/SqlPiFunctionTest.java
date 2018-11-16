@@ -1,16 +1,11 @@
 package com.axibase.tsd.api.method.sql.function.math;
 
-import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.sql.StringTable;
 import io.qameta.allure.Issue;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import javax.ws.rs.core.Response;
-
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 public class SqlPiFunctionTest extends SqlTest {
 
@@ -67,12 +62,12 @@ public class SqlPiFunctionTest extends SqlTest {
     @Issue("5770")
     @Test(dataProvider = "provideFunctionNames")
     public void testNullValues(String functionName) {
-        String sqlQuery = String.format("SELECT %s(null)",
+        String sqlQuery = String.format("SELECT %s(cast(null as number))",
                 functionName);
 
-        Response response = SqlMethod.queryResponse(sqlQuery);
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(response.getStatus(), BAD_REQUEST.getStatusCode());
+        Assert.assertEquals(resultTable.getRows().get(0).get(0), "NaN", functionName + " value differed");
     }
 
     @Issue("5770")
