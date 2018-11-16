@@ -13,9 +13,6 @@ import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 public class SqlPiFunctionTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-pi-function-";
-    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
-    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
 
     @DataProvider
     public static Object[][] provideFunctionNames() {
@@ -68,7 +65,7 @@ public class SqlPiFunctionTest extends SqlTest {
     }
 
     @Issue("5770")
-    @Test()
+    @Test(dataProvider = "provideFunctionNames")
     public void testNullValues(String functionName) {
         String sqlQuery = String.format("SELECT %s(null)"
                 , functionName);
