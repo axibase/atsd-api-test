@@ -12,29 +12,14 @@ import java.util.function.Function;
 public class SqlTrigonometricFunctionTest extends SqlTest {
     private static double DELTA = 1.0E-15;
 
-    private enum InverseTrigonometricAccessor {
-        ASIN("ASIN", Math::asin),
-        ACOS("ACOS", Math::acos),
-        ATAN("ATAN", Math::atan);
-
-        String functionName;
-        Function<Double, Double> trigonometricFunction;
-
-        InverseTrigonometricAccessor(String functionName, Function<Double, Double> trigonometricFunction) {
-            this.functionName = functionName;
-            this.trigonometricFunction = trigonometricFunction;
-        }
-
-        double apply(double parameter) {
-            return trigonometricFunction.apply(parameter);
-        }
-    }
-
     private enum TrigonometricAccessor {
         SIN("SIN", Math::sin),
         COS("COS", Math::cos),
         TAN("TAN", Math::tan),
-        COT("COT", param -> 1 / Math.tan(param));
+        COT("COT", param -> 1 / Math.tan(param)),
+        ASIN("ASIN", Math::asin),
+        ACOS("ACOS", Math::acos),
+        ATAN("ATAN", Math::atan);
 
         String functionName;
         Function<Double, Double> trigonometricFunction;
@@ -65,10 +50,7 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
         return new Object[][]{{"-1", -1.0}, {"-1/2", -1.0 / 2.0}, {"0", 0.0}, {"1/2", 1.0 / 2.0}, {"1", 1.0}};
     }
 
-    @DataProvider
-    public static Object[][] provideTrigonometricValues() {
-        TrigonometricAccessor[] accessors = TrigonometricAccessor.values();
-        Object[][] arguments = getArguments();
+    private static Object[][] getTrigonometricData(TrigonometricAccessor[] accessors, Object[][] arguments) {
         Object[][] result = new Object[arguments.length * accessors.length][];
 
         for (int i = 0; i < accessors.length; i++)
@@ -80,17 +62,16 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
     }
 
     @DataProvider
+    public static Object[][] provideTrigonometricValues() {
+        return getTrigonometricData(new TrigonometricAccessor[]{
+                TrigonometricAccessor.SIN, TrigonometricAccessor.COS,
+                TrigonometricAccessor.TAN, TrigonometricAccessor.COT}, getArguments());
+    }
+
+    @DataProvider
     public static Object[][] provideInverseTrigonometricValues() {
-        InverseTrigonometricAccessor[] accessors = InverseTrigonometricAccessor.values();
-        Object[][] arguments = getInverseArguments();
-        Object[][] result = new Object[arguments.length * accessors.length][];
-
-        for (int i = 0; i < accessors.length; i++)
-            for (int j = 0; j < arguments.length; j++) {
-                result[i * arguments.length + j] = new Object[]{arguments[j][0], arguments[j][1], accessors[i]};
-            }
-
-        return result;
+        return getTrigonometricData(new TrigonometricAccessor[]{
+                TrigonometricAccessor.ASIN, TrigonometricAccessor.ACOS, TrigonometricAccessor.ATAN}, getInverseArguments());
     }
 
     @DataProvider
@@ -109,24 +90,26 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
         String sqlQuery = String.format("SELECT %s(%s)", accessor.functionName, functionParameter);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+        String message = String.format("%s(%s) wrong ", accessor.functionName, functionParameter);
 
         Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
-                accessor.functionName + "(" + functionParameter + ") wrong data type");
+                message + "datatype");
         Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), accessor.apply(expectedResult), DELTA,
-                accessor.functionName + "(" + functionParameter + ") wrong result");
+                message + "result");
     }
 
     @Issue("5764")
     @Test(dataProvider = "provideInverseTrigonometricValues")
-    public void testInverseTrigonometricFunctions(String functionParameter, Double expectedResult, InverseTrigonometricAccessor accessor) {
+    public void testInverseTrigonometricFunctions(String functionParameter, Double expectedResult, TrigonometricAccessor accessor) {
         String sqlQuery = String.format("SELECT %s(%s)", accessor.functionName, functionParameter);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+        String message = String.format("%s(%s) wrong ", accessor.functionName, functionParameter);
 
         Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
-                accessor.functionName + "(" + functionParameter + ") wrong data type");
+                message + "datatype");
         Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), accessor.apply(expectedResult), DELTA,
-                accessor.functionName + "(" + functionParameter + ") wrong result");
+                message + "result");
     }
 
     @Issue("5764")
