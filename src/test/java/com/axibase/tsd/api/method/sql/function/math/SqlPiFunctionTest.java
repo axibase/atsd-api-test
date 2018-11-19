@@ -16,15 +16,26 @@ public class SqlPiFunctionTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideDegreesValues() {
-        return new Object[][]{{"pi()/4", "45.0"}, {"pi()/2", "90.0"}, {"pi()*3/4", "135.0"}, {"pi()", "180.0"},
-                {"pi()*5/4", "225.0"}, {"pi()*3/2", "270.0"}, {"pi()*7/4", "315.0"}, {"pi()*2", "360.0"}};
+        return new Object[][]{{"pi()/4", Math.toDegrees(Math.PI / 4)},
+                {"pi()/2", Math.toDegrees(Math.PI / 2)},
+                {"pi()*3/4", Math.toDegrees(Math.PI * 3 / 4)},
+                {"pi()", Math.toDegrees(Math.PI)},
+                {"pi()*5/4", Math.toDegrees(Math.PI * 5 / 4)},
+                {"pi()*3/2", Math.toDegrees(Math.PI * 3 / 2)},
+                {"pi()*7/4", Math.toDegrees(Math.PI * 7 / 4)},
+                {"pi()*2", Math.toDegrees(Math.PI * 2)}};
     }
 
     @DataProvider
     public static Object[][] provideRadianValues() {
-        return new Object[][]{{"45.0", "0.7853981633974483"}, {"90.0", "1.5707963267948966"},
-                {"135.0", "2.356194490192345"}, {"180.0", "3.141592653589793"}, {"225.0", "3.9269908169872414"},
-                {"270.0", "4.71238898038469"}, {"315.0", "5.497787143782138"}, {"360.0", "6.283185307179586"}};
+        return new Object[][]{{"45.0", Math.toRadians(45.0)},
+                {"90.0", Math.toRadians(90.0)},
+                {"135.0", Math.toRadians(135.0)},
+                {"180.0", Math.toRadians(180.0)},
+                {"225.0", Math.toRadians(225.0)},
+                {"270.0", Math.toRadians(270.0)},
+                {"315.0", Math.toRadians(315.0)},
+                {"360.0", Math.toRadians(360.0)}};
     }
 
     @Issue("5770")
@@ -34,29 +45,32 @@ public class SqlPiFunctionTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), "3.141592653589793", "Pi value differed");
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), Math.PI, 1.0E-15,
+                "Pi value differed");
     }
 
     @Issue("5770")
     @Test(dataProvider = "provideDegreesValues")
-    public void testDegreesFunction(String parameterValue, String expectedValue) {
+    public void testDegreesFunction(String parameterValue, Double expectedValue) {
         String sqlQuery = String.format("SELECT DEGREES(%s)",
                 parameterValue);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), expectedValue, "Degrees value differed");
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), expectedValue, 1.0E-15,
+                "Degrees value differed");
     }
 
     @Issue("5770")
     @Test(dataProvider = "provideRadianValues")
-    public void testRadiansFunction(String parameterValue, String expectedValue) {
+    public void testRadiansFunction(String parameterValue, Double expectedValue) {
         String sqlQuery = String.format("SELECT RADIANS(%s)",
                 parameterValue);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), expectedValue, "Radians value differed");
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), expectedValue, 1.0E-15,
+                "Radians value differed");
     }
 
     @Issue("5770")
