@@ -8,6 +8,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class SqlPiFunctionTest extends SqlTest {
+    private static double DELTA = 1.0E-15;
 
     @DataProvider
     public static Object[][] provideFunctionNames() {
@@ -45,7 +46,7 @@ public class SqlPiFunctionTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), Math.PI, 1.0E-15,
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), Math.PI, DELTA,
                 "Pi value differed");
     }
 
@@ -57,7 +58,7 @@ public class SqlPiFunctionTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), expectedValue, 1.0E-15,
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), expectedValue, DELTA,
                 "Degrees value differed");
     }
 
@@ -69,7 +70,7 @@ public class SqlPiFunctionTest extends SqlTest {
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
-        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), expectedValue, 1.0E-15,
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), expectedValue, DELTA,
                 "Radians value differed");
     }
 
