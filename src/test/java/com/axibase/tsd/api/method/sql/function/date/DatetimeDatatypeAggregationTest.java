@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
 
-public class DatetimeDatatypeTest extends SqlTest {
-    private static final String TEST_PREFIX = "datetime-datatype-";
+public class DatetimeDatatypeAggregationTest extends SqlTest {
+    private static final String TEST_PREFIX = "datetime-datatype-aggregation-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
     private static final String TEST_METRIC_NAME_LEAD_LAG = TEST_PREFIX + "metric-lead-lag";
@@ -53,25 +53,6 @@ public class DatetimeDatatypeTest extends SqlTest {
     public static Object[][] provideOtherFunctionAlternativeParameter() {
         return new Object[][]{{"isnull", "null"}, {"isnull", "value"}, {"isnull", "tags.ok"},
                 {"coalesce", "null"}, {"coalesce", "value"}, {"coalesce", "tags.ok"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideDateParts() {
-        return new Object[][]{{"second", "2018-11-07T09:30:07.000Z"}, {"minute", "2018-11-07T09:31:06.000Z"},
-                {"hour", "2018-11-07T10:30:06.000Z"}, {"day", "2018-11-08T09:30:06.000Z"},
-                {"week", "2018-11-14T09:30:06.000Z"}, {"month", "2018-12-07T09:30:06.000Z"},
-                {"quarter", "2019-02-07T09:30:06.000Z"}, {"year", "2019-11-07T09:30:06.000Z"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideExtractDateParts(){
-        return new Object[][]{{"second", "6"}, {"minute", "30"}, {"hour", "9"},
-                {"day", "7"},{"dayofweek", "3"}, {"month", "11"}, {"quarter", "4"}, {"year", "2018"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideDateCheckFunctions() {
-        return new Object[][]{{"is_workday","true"}, {"is_weekday","true"}};
     }
 
     @Issue("5757")
@@ -183,102 +164,6 @@ public class DatetimeDatatypeTest extends SqlTest {
         assertEquals(
                 "Column has different data",
                 TEST_DATETIME_VALUE,
-                resultTable.getRows().get(0).get(0));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideDateParts")
-    public void testDateadd(String datePart, String expectedResult) {
-        String sqlQuery = String.format(
-                "SELECT dateadd(%s, 1, datetime) %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s'",
-                datePart,
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Column has different datatype",
-                "xsd:dateTimeStamp",
-                resultTable.getColumnMetaData(0).getDataType());
-        assertEquals(
-                "Column has different data",
-                expectedResult,
-                resultTable.getRows().get(0).get(0));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideExtractDateParts")
-    public void testExtractFunction(String functionName, String expectedResult) {
-        String sqlQuery = String.format(
-                "SELECT extract(%s from datetime) %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s'",
-                functionName,
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Column has different datatype",
-                "bigint",
-                resultTable.getColumnMetaData(0).getDataType());
-        assertEquals(
-                "Column has different data",
-                expectedResult,
-                resultTable.getRows().get(0).get(0));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideExtractDateParts")
-    public void testExtractionFunction(String functionName, String expectedResult) {
-        String sqlQuery = String.format(
-                "SELECT %s (datetime) %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s'",
-                functionName,
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Column has different datatype",
-                "bigint",
-                resultTable.getColumnMetaData(0).getDataType());
-        assertEquals(
-                "Column has different data",
-                expectedResult,
-                resultTable.getRows().get(0).get(0));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideDateCheckFunctions")
-    public void testDateCheckFunction(String functionName, String expectedResult) {
-        String sqlQuery = String.format(
-                "SELECT %s (datetime, 'usa') %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s'",
-                functionName,
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Column has different datatype",
-                "boolean",
-                resultTable.getColumnMetaData(0).getDataType());
-        assertEquals(
-                "Column has different data",
-                expectedResult,
                 resultTable.getRows().get(0).get(0));
     }
 }
