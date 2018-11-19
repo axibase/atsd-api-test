@@ -12,6 +12,24 @@ import java.util.function.Function;
 public class SqlTrigonometricFunctionTest extends SqlTest {
     private static double DELTA = 1.0E-15;
 
+    private enum InverseTrigonometricAccessor {
+        ASIN("ASIN", Math::asin),
+        ACOS("ACOS", Math::acos),
+        ATAN("ATAN", Math::atan);
+
+        String functionName;
+        Function<Double, Double> trigonometricFunction;
+
+        InverseTrigonometricAccessor(String functionName, Function<Double, Double> trigonometricFunction) {
+            this.functionName = functionName;
+            this.trigonometricFunction = trigonometricFunction;
+        }
+
+        double apply(double parameter) {
+            return trigonometricFunction.apply(parameter);
+        }
+    }
+
     private enum TrigonometricAccessor {
         SIN("SIN", Math::sin),
         COS("COS", Math::cos),
@@ -43,6 +61,10 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
                 {"pi()", Math.PI}};
     }
 
+    private static Object[][] getInverseArguments() {
+        return new Object[][]{{"-1", -1.0}, {"-1/2", -1.0 / 2.0}, {"0", 0.0}, {"1/2", 1.0 / 2.0}, {"1", 1.0}};
+    }
+
     @DataProvider
     public static Object[][] provideTrigonometricValues() {
         TrigonometricAccessor[] accessors = TrigonometricAccessor.values();
@@ -58,27 +80,22 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
     }
 
     @DataProvider
-    public static Object[][] provideAsinParameters() {
-        return new Object[][]{{"-1", "-1.5707963267948966"}, {"-1/2", "-0.5235987755982989"}, {"0", "0.0"},
-                {"1/2", "0.5235987755982989"}, {"1", "1.5707963267948966"}};
+    public static Object[][] provideInverseTrigonometricValues() {
+        InverseTrigonometricAccessor[] accessors = InverseTrigonometricAccessor.values();
+        Object[][] arguments = getInverseArguments();
+        Object[][] result = new Object[arguments.length * accessors.length][];
+
+        for (int i = 0; i < accessors.length; i++)
+            for (int j = 0; j < arguments.length; j++) {
+                result[i * arguments.length + j] = new Object[]{arguments[j][0], arguments[j][1], accessors[i]};
+            }
+
+        return result;
     }
 
     @DataProvider
     public static Object[][] provideProhibitedAsinAcosParameters() {
-        return new Object[][]{{"-2"}, {"2"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideAcosParameters() {
-        return new Object[][]{{"-1", "3.141592653589793"}, {"-1/2", "2.0943951023931957"}, {"0", "1.5707963267948966"},
-                {"1/2", "1.0471975511965979"}, {"1", "0.0"}};
-    }
-
-    @DataProvider
-    public static Object[][] provideAtanParameters() {
-        return new Object[][]{{"-1/0", "-1.5707963267948966"}, {"-1", "-0.7853981633974483"},
-                {"-1/2", "-0.4636476090008061"}, {"0", "0.0"}, {"1/2", "0.4636476090008061"},
-                {"1", "0.7853981633974483"}, {"1/0", "1.5707963267948966"}};
+        return new Object[][]{{"ASIN", "-2"}, {"ASIN", "2"}, {"ACOS", "-2"}, {"ACOS", "2"}};
     }
 
     @DataProvider
@@ -100,42 +117,16 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
     }
 
     @Issue("5764")
-    @Test(dataProvider = "provideAsinParameters")
-    public void testAsin(String functionParameter, String expectedResult) {
-        String sqlQuery = String.format("SELECT ASIN(%s)", functionParameter);
+    @Test(dataProvider = "provideInverseTrigonometricValues")
+    public void testInverseTrigonometricFunctions(String functionParameter, Double expectedResult, InverseTrigonometricAccessor accessor) {
+        String sqlQuery = String.format("SELECT %s(%s)", accessor.functionName, functionParameter);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
-                "Asin(" + functionParameter + ") wrong data type");
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), expectedResult,
-                "Asin(" + functionParameter + ") wrong result");
-    }
-
-    @Issue("5764")
-    @Test(dataProvider = "provideAcosParameters")
-    public void testAcos(String functionParameter, String expectedResult) {
-        String sqlQuery = String.format("SELECT ACOS(%s)", functionParameter);
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
-                "Acos(" + functionParameter + ") wrong data type");
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), expectedResult,
-                "Acos(" + functionParameter + ") wrong result");
-    }
-
-    @Issue("5764")
-    @Test(dataProvider = "provideAtanParameters")
-    public void testAtan(String functionParameter, String expectedResult) {
-        String sqlQuery = String.format("SELECT ATAN(%s)", functionParameter);
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
-                "Atan(" + functionParameter + ") wrong data type");
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), expectedResult,
-                "Atan(" + functionParameter + ") wrong result");
+                accessor.functionName + "(" + functionParameter + ") wrong data type");
+        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), accessor.apply(expectedResult), DELTA,
+                accessor.functionName + "(" + functionParameter + ") wrong result");
     }
 
     @Issue("5764")
@@ -160,18 +151,8 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
 
     @Issue("5764")
     @Test(dataProvider = "provideProhibitedAsinAcosParameters")
-    public void testAsinProhibitedValue(String functionParameter) {
-        String sqlQuery = String.format("SELECT ASIN(%s)", functionParameter);
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        Assert.assertEquals(resultTable.getRows().get(0).get(0), "NaN", "Wrong response");
-    }
-
-    @Issue("5764")
-    @Test(dataProvider = "provideProhibitedAsinAcosParameters")
-    public void testAcosProhibitedValue(String functionParameter) {
-        String sqlQuery = String.format("SELECT ACOS(%s)", functionParameter);
+    public void testAsinProhibitedValue(String functionName, String functionParameter) {
+        String sqlQuery = String.format("SELECT %s(%s)", functionName, functionParameter);
 
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
