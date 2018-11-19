@@ -17,25 +17,27 @@ public class SqlPiFunctionTest extends SqlTest {
 
     @DataProvider
     public static Object[][] provideDegreesValues() {
-        return new Object[][]{{"pi()/4", Math.toDegrees(Math.PI / 4)},
+        return new Object[][]{{"-pi()", Math.toDegrees(-Math.PI)},
+                {"-pi()*3/4", Math.toDegrees(-Math.PI * 3 / 4)},
+                {"-pi()/2", Math.toDegrees(-Math.PI / 2)},
+                {"-pi()/4", Math.toDegrees(-Math.PI / 4)},
+                {"0.0", Math.toDegrees(0.0)},
+                {"pi()/4", Math.toDegrees(Math.PI / 4)},
                 {"pi()/2", Math.toDegrees(Math.PI / 2)},
                 {"pi()*3/4", Math.toDegrees(Math.PI * 3 / 4)},
-                {"pi()", Math.toDegrees(Math.PI)},
-                {"pi()*5/4", Math.toDegrees(Math.PI * 5 / 4)},
-                {"pi()*3/2", Math.toDegrees(Math.PI * 3 / 2)},
-                {"pi()*7/4", Math.toDegrees(Math.PI * 7 / 4)},
-                {"pi()*2", Math.toDegrees(Math.PI * 2)}};
+                {"pi()", Math.toDegrees(Math.PI)}};
     }
 
     @DataProvider
     public static Object[][] provideRadianValues() {
-        return new Object[][]{{"45.0", Math.toRadians(45.0)},
+        return new Object[][]{{"-360.0", Math.toRadians(-360.0)},
+                {"-180.0", Math.toRadians(-180.0)},
+                {"-90.0", Math.toRadians(-90.0)},
+                {"-45.0", Math.toRadians(-45.0)},
+                {"0.0", Math.toRadians(0.0)},
+                {"45.0", Math.toRadians(45.0)},
                 {"90.0", Math.toRadians(90.0)},
-                {"135.0", Math.toRadians(135.0)},
                 {"180.0", Math.toRadians(180.0)},
-                {"225.0", Math.toRadians(225.0)},
-                {"270.0", Math.toRadians(270.0)},
-                {"315.0", Math.toRadians(315.0)},
                 {"360.0", Math.toRadians(360.0)}};
     }
 
