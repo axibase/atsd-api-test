@@ -40,17 +40,17 @@ public class DatetimeDatatypeAggregationTest extends SqlTest {
     }
 
     @DataProvider
-    public static Object[][] provideLeadLag() {
+    public static Object[][] provideLeadLagWithResultRowValue() {
         return new Object[][]{{"lag", 1, TEST_DATETIME_VALUE}, {"lead", 0, TEST_DATETIME_VALUE_2}};
     }
 
     @DataProvider
-    public static Object[][] provideOtherFunctions() {
+    public static Object[][] provideOtherFunctionsForSameDatetimeParameters() {
         return new Object[][]{{"isnull"}, {"coalesce"}};
     }
 
     @DataProvider
-    public static Object[][] provideOtherFunctionAlternativeParameter() {
+    public static Object[][] provideOtherFunctionAndArgumentDifferentType() {
         return new Object[][]{{"isnull", "null"}, {"isnull", "value"}, {"isnull", "tags.ok"},
                 {"coalesce", "null"}, {"coalesce", "value"}, {"coalesce", "tags.ok"}};
     }
@@ -80,26 +80,7 @@ public class DatetimeDatatypeAggregationTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test()
-    public void testCountFunction() {
-        String sqlQuery = String.format(
-                "SELECT count(datetime) %n" +
-                        "FROM \"%s\" %n" +
-                        "WHERE entity = '%s' %n",
-                TEST_METRIC_NAME,
-                TEST_ENTITY_NAME
-        );
-
-        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
-
-        assertEquals(
-                "Column has different data",
-                "1",
-                resultTable.getRows().get(0).get(0));
-    }
-
-    @Issue("5757")
-    @Test(dataProvider = "provideLeadLag")
+    @Test(dataProvider = "provideLeadLagWithResultRowValue")
     public void testLeadLagFunction(String functionName, int offset, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT %s(datetime) %n" +
@@ -123,7 +104,7 @@ public class DatetimeDatatypeAggregationTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideOtherFunctions")
+    @Test(dataProvider = "provideOtherFunctionsForSameDatetimeParameters")
     public void testOtherFunctionSameParameters(String functionName) {
         String sqlQuery = String.format(
                 "SELECT %s(datetime, datetime) %n" +
@@ -147,7 +128,7 @@ public class DatetimeDatatypeAggregationTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideOtherFunctionAlternativeParameter")
+    @Test(dataProvider = "provideOtherFunctionAndArgumentDifferentType")
     public void testOtherFunctionDifferentParameters(String functionName, String parameterName) {
         String sqlQuery = String.format(
                 "SELECT %s(datetime, %s) %n" +

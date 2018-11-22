@@ -34,15 +34,15 @@ public class DatetimeDatatypeDateTest extends SqlTest {
     }
 
     @DataProvider
-    public static Object[][] provideDateParts() {
-        return new Object[][]{{"second", "2018-11-07T09:30:07.000Z"}, {"minute", "2018-11-07T09:31:06.000Z"},
-                {"hour", "2018-11-07T10:30:06.000Z"}, {"day", "2018-11-08T09:30:06.000Z"},
-                {"week", "2018-11-14T09:30:06.000Z"}, {"month", "2018-12-07T09:30:06.000Z"},
-                {"quarter", "2019-02-07T09:30:06.000Z"}, {"year", "2019-11-07T09:30:06.000Z"}};
+    public static Object[][] provideDatePartsQuantityResult() {
+        return new Object[][]{{"second", "1", "2018-11-07T09:30:07.000Z"}, {"minute", "1", "2018-11-07T09:31:06.000Z"},
+                {"hour", "1", "2018-11-07T10:30:06.000Z"}, {"day", "1", "2018-11-08T09:30:06.000Z"},
+                {"week", "1", "2018-11-14T09:30:06.000Z"}, {"month", "1", "2018-12-07T09:30:06.000Z"},
+                {"quarter", "1", "2019-02-07T09:30:06.000Z"}, {"year", "1", "2019-11-07T09:30:06.000Z"}};
     }
 
     @DataProvider
-    public static Object[][] provideExtractDateParts() {
+    public static Object[][] provideExtractDatePartsAndResult() {
         return new Object[][]{{"second", String.valueOf(zonedDateTime.getSecond())},
                 {"minute", String.valueOf(zonedDateTime.getMinute())},
                 {"hour", String.valueOf(zonedDateTime.getHour())},
@@ -54,18 +54,19 @@ public class DatetimeDatatypeDateTest extends SqlTest {
     }
 
     @DataProvider
-    public static Object[][] provideDateCheckFunctions() {
+    public static Object[][] provideDateCheckFunctionsWithResult() {
         return new Object[][]{{"is_workday", "true"}, {"is_weekday", "true"}};
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideDateParts")
-    public void testDateadd(String datePart, String expectedResult) {
+    @Test(dataProvider = "provideDatePartsQuantityResult")
+    public void testDateadd(String datePart, String additionQuantity, String expectedResult) {
         String sqlQuery = String.format(
-                "SELECT dateadd(%s, 1, datetime) %n" +
+                "SELECT dateadd(%s, %s, datetime) %n" +
                         "FROM \"%s\" %n" +
                         "WHERE entity = '%s'",
                 datePart,
+                additionQuantity,
                 TEST_METRIC_NAME,
                 TEST_ENTITY_NAME
         );
@@ -83,7 +84,7 @@ public class DatetimeDatatypeDateTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideExtractDateParts")
+    @Test(dataProvider = "provideExtractDatePartsAndResult")
     public void testExtractFunction(String functionName, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT extract(%s from datetime) %n" +
@@ -107,7 +108,7 @@ public class DatetimeDatatypeDateTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideExtractDateParts")
+    @Test(dataProvider = "provideExtractDatePartsAndResult")
     public void testExtractionFunction(String functionName, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT %s (datetime) %n" +
@@ -131,7 +132,7 @@ public class DatetimeDatatypeDateTest extends SqlTest {
     }
 
     @Issue("5757")
-    @Test(dataProvider = "provideDateCheckFunctions")
+    @Test(dataProvider = "provideDateCheckFunctionsWithResult")
     public void testDateCheckFunction(String functionName, String expectedResult) {
         String sqlQuery = String.format(
                 "SELECT %s (datetime, 'usa') %n" +
