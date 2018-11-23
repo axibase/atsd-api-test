@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.time.temporal.IsoFields;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -49,7 +50,7 @@ public class DatetimeDatatypeDateTest extends SqlTest {
                 {"day", String.valueOf(zonedDateTime.getDayOfMonth())},
                 {"dayofweek", String.valueOf(zonedDateTime.getDayOfWeek().getValue())},
                 {"month", String.valueOf(zonedDateTime.getMonthValue())},
-                {"quarter", String.valueOf(zonedDateTime.getMonth().ordinal() / 3 + 1)},
+                {"quarter", String.valueOf(zonedDateTime.get(IsoFields.QUARTER_OF_YEAR))},
                 {"year", String.valueOf(zonedDateTime.getYear())}};
     }
 
