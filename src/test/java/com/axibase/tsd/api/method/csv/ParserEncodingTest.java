@@ -36,7 +36,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
     }
 
     @Issue("2916")
-    @Test
+    @Test(enabled = false)
     public void testCsvCorrectTextEncodingISO8859_1(Method method) throws Exception {
         String controlSequence = "¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
         String entityName = ENTITY_PREFIX + "-1";
@@ -46,7 +46,7 @@ public class ParserEncodingTest extends CSVUploadMethod {
     }
 
     @Issue("2916")
-    @Test
+    @Test(enabled = false)
     public void testCsvCorrectTextEncodingWindows1251(Method method) throws Exception {
         String controlSequence = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
         String entityName = ENTITY_PREFIX + "-2";

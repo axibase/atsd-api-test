@@ -3,10 +3,14 @@ package com.axibase.tsd.api.model.series.query;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesType;
+import com.axibase.tsd.api.model.series.query.transformation.Transformation;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.downsample.Downsample;
+import com.axibase.tsd.api.model.series.query.transformation.forecast.Forecast;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
 import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
+import com.axibase.tsd.api.model.series.query.transformation.smooth.Smooth;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -37,6 +41,9 @@ public class SeriesQuery {
     private Interpolate interpolate;
     private Group group;
     private Rate rate;
+    private Smooth smooth;
+    private Downsample downsample;
+    private Forecast forecast;
     private String timeFormat;
     private Boolean exactMatch;
     private Integer limit;
@@ -46,6 +53,7 @@ public class SeriesQuery {
     private Boolean versioned;
     private Boolean addMeta;
     private SeriesType type;
+    private List<Transformation> transformationOrder;
 
     public SeriesQuery() {
     }
