@@ -23,7 +23,9 @@ import com.axibase.tsd.api.model.series.query.transformation.smooth.SmoothingTyp
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import org.apache.commons.collections4.iterators.PermutationIterator;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -154,25 +156,41 @@ public class SeriesQueryTransformationsWithoutForecastPermutationsTest extends S
         query.setDownsample(downsampleSettings);
     }
 
-    @Test(description = "Take series transformations {@link Transformation#values()} except for {@link Transformation#FORECAST}. " +
-                        "Create query which has these transformations. " +
-                        "Check that response contains correct number of generated series for each permutation of the transformations.")
-    public void test() {
+    /**
+     * @return Array of all permutations of the {@link #transformations}.
+     */
+    @DataProvider(name = "permutations", parallel = true)
+    Object[][] permuteTransformations() {
+
+        int permutationsCount = (int) CombinatoricsUtils.factorial(transformations.size());
+        Object[][] permutations = new Object[permutationsCount][1];
+
         PermutationIterator<Transformation> iterator = new PermutationIterator<>(transformations);
-        int permutationCount = 0;
+        int permutationIndex = 0;
         while (iterator.hasNext()) {
-            List<Transformation> ordered = iterator.next();
-            permutationCount++;
-            query.setTransformationOrder(ordered);
-            List<Series> seriesList = querySeriesAsList(query);
-            int expectedSeriesCount = countExpectedSeries(ordered);
-            assertEquals(seriesList.size(), expectedSeriesCount, String.format("Permutation count: %d", permutationCount));
+            List<Transformation> permutation = iterator.next();
+            permutations[permutationIndex][0] = permutation;
+            permutationIndex++;
         }
+        return permutations;
     }
 
-    private int countExpectedSeries(List<Transformation> ordered) {
+
+    @Test(dataProvider = "permutations",
+
+            description = "Take series transformations {@link Transformation#values()} except for {@link Transformation#FORECAST}. " +
+                        "Create query which has these transformations. " +
+                        "Check that response contains correct number of generated series for each permutation of the transformations.")
+    public void test(List<Transformation> permutation) {
+        query.setTransformationOrder(permutation);
+        List<Series> seriesList = querySeriesAsList(query);
+        int expectedSeriesCount = countExpectedSeries(permutation);
+        assertEquals(seriesList.size(), expectedSeriesCount);
+    }
+
+    private int countExpectedSeries(List<Transformation> permutation) {
         int seriesCount = inputSeriesCount;
-        for (Transformation transformation : ordered) {
+        for (Transformation transformation : permutation) {
             switch (transformation) {
                 case INTERPOLATE:
                 case RATE:
