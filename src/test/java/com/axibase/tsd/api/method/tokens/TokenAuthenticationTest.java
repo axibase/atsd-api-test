@@ -160,6 +160,3 @@ public class TokenAuthenticationTest extends BaseMethod {
                                         .method("POST"));
     }
 }
-//_enabled=on&enabled=on&userBean.username=username&userBean.firstName=&userBean.lastName=&userBean.email=
-//&userBean.password=&repeatPassword=&userBean.ipAddress=&_userBean.ldap=on&delete=Delete&userBean.userRoles=ROLE_API_DATA_WRITE
-//&userBean.userRoles=ROLE_API_META_WRITE&userBean.userRoles=ROLE_USER&_userBean.userRoles=on&_userBean.userGroups=on&create=false&current=false
