@@ -73,10 +73,10 @@ public class TokenAuthenticationTest extends BaseMethod {
         Config config = Config.getInstance();
         String apiPath = config.getApiPath();
         String username = "username";
+        createUser(username, "password");
         for (String[] pathAndMethod : availablePaths) {
             String availablePath = pathAndMethod[0];
             String availableMethod = pathAndMethod[1];
-
             String token = TokenRepository.getToken(username, availableMethod, apiPath+availablePath);
             for (String[] testingPathAndMethod : availablePaths) {
                 String testingPath = testingPathAndMethod[0];
@@ -98,6 +98,7 @@ public class TokenAuthenticationTest extends BaseMethod {
                 }
             }
         }
+        deleteUser(username);
     }
 
     private Response executeMethodWithoutEntity(String token, String path, String method)
@@ -114,4 +115,51 @@ public class TokenAuthenticationTest extends BaseMethod {
         .header("Authorization: Bearer", token)
         .method(method, Entity.json("entity")));
     }
+
+    private void createUser(String username, String password)
+    {
+        String path ="/admin/users/edit.xhtml";
+        executeRootRequest(webTarget -> webTarget.path(path)
+                                        .queryParam("_enabled", "on")
+                                        .queryParam("enabled", "on")
+                                        .queryParam("userBean.username", username)
+                                        .queryParam("userBean.firstName")
+                                        .queryParam("userBean.lastName")
+                                        .queryParam("userBean.email")
+                                        .queryParam("userBean.password", password)
+                                        .queryParam("repeatPassword", password)
+                                        .queryParam("userBean.ipAddress")
+                                        .queryParam("_userBean.ldap", "on")
+                                        .queryParam("save", "Save")
+                                        .queryParam("userBean.userRoles","ROLE_API_DATA_WRITE")
+                                        .queryParam("userBean.userRoles","ROLE_API_META_WRITE")
+                                        .queryParam("userBean.userRoles","ROLE_USER")
+                                        .queryParam("_userBean.userRoles", "on")
+                                        .queryParam("create", "true")
+                                        .queryParam("current", "false")
+                                        .request()
+                                        .method("POST"));
+    }
+
+    private void deleteUser(String username)
+    {
+        String path ="/admin/users/edit.xhtml";
+        executeRootRequest(webTarget -> webTarget.path(path)
+                                        .queryParam("_enabled", "on")
+                                        .queryParam("enabled", "on")
+                                        .queryParam("userBean.username", username)
+                                        .queryParam("_userBean.ldap", "on")
+                                        .queryParam("delete", "Delete")
+                                        .queryParam("userBean.userRoles","ROLE_API_DATA_WRITE")
+                                        .queryParam("userBean.userRoles","ROLE_API_META_WRITE")
+                                        .queryParam("userBean.userRoles","ROLE_USER")
+                                        .queryParam("_userBean.userRoles", "on")
+                                        .queryParam("create", "false")
+                                        .queryParam("current", "false")
+                                        .request()
+                                        .method("POST"));
+    }
 }
+//_enabled=on&enabled=on&userBean.username=username&userBean.firstName=&userBean.lastName=&userBean.email=
+//&userBean.password=&repeatPassword=&userBean.ipAddress=&_userBean.ldap=on&delete=Delete&userBean.userRoles=ROLE_API_DATA_WRITE
+//&userBean.userRoles=ROLE_API_META_WRITE&userBean.userRoles=ROLE_USER&_userBean.userRoles=on&_userBean.userGroups=on&create=false&current=false
