@@ -2,3 +2,9 @@
 target
 atsd-api-test.iml
 src/test/resources/dev.client.properties
+.settings
+.factorypath
+.project
+.vscode/settings.json
+.classpath
+.vscode
