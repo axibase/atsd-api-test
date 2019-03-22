@@ -43,6 +43,7 @@ public abstract class BaseMethod {
 
     private static final GenericObjectPool<HttpClient> apiTargetPool;
     private static final GenericObjectPool<HttpClient> rootTargetPool;
+    private static final GenericObjectPool<HttpClient> tokenTargetPool;
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
@@ -63,6 +64,11 @@ public abstract class BaseMethod {
             clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
             clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
 
+            ClientConfig tokenConfig = new ClientConfig();
+            tokenConfig.connectorProvider(new ApacheConnectorProvider());
+            tokenConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+            tokenConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+
             GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
             objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
             objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
@@ -71,6 +77,8 @@ public abstract class BaseMethod {
                     new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
             apiTargetPool = new GenericObjectPool<>(
                     new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+            tokenTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(tokenConfig, config, config.getApiPath()), objectPoolConfig);
 
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
@@ -134,6 +142,10 @@ public abstract class BaseMethod {
 
     public static Response executeApiRequest(Function<WebTarget, Response> requestFunction) {
         return executeRequest(apiTargetPool, requestFunction);
+    }
+
+    public static Response executeTokenRequest(Function<WebTarget, Response> requestFunction) {
+        return executeRequest(tokenTargetPool, requestFunction);
     }
 
     private static Response executeRequest(
