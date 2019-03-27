@@ -25,5 +25,6 @@ public enum GroupType {
     FIRST,
     LAST,
     MIN_VALUE_TIME,
-    MAX_VALUE_TIME
+    MAX_VALUE_TIME,
+    DETAIL
 }
