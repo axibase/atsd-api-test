@@ -1,12 +1,16 @@
 package com.axibase.tsd.api.method.tokens;
 
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+
+import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -14,14 +18,15 @@ import org.testng.annotations.Test;
 import io.qameta.allure.Issue;
 
 
-public class TokenAuthenticationTest extends BaseMethod {
+public class TokenAccessTest extends BaseMethod {
 
     private static final String[][] availablePaths = new String[][]{
         // Data API
         {"/series/query", "POST"},
         {"/series/insert", "POST"},
         {"/series/csv/entity", "POST"},
-        {"/series/format/entity/metric", "GET"},
+        {"/series/json/entity/metric", "GET"},
+        {"/series/csv/entity/metric", "GET"},
         {"/properties/query", "POST"},
         {"/properties/insert", "POST"},
         {"/properties/delete", "POST"},
@@ -34,9 +39,10 @@ public class TokenAuthenticationTest extends BaseMethod {
         {"/alerts/update", "POST"},
         {"/alerts/delete", "POST"},
         {"/alerts/history/query", "POST"},
-        {"/csv", "POST"},
+//        {"/csv", "POST"},
         {"/nmon", "POST"},
         {"/command", "POST"},
+        {"/export", "GET"},
         // Meta API
         {"/metrics", "GET"},
         {"/metrics/metric", "GET"},
@@ -66,21 +72,22 @@ public class TokenAuthenticationTest extends BaseMethod {
         {"/version", "GET"},
     };
 
+    private static final String userName = "APITokenUser";
+
     @BeforeClass
-    private void createUser()
-    {
-        String username="username";
-        String password="password";
+    private void createUser() {
+        String password= RandomStringUtils.random(10, true, true);
         String path ="/admin/users/edit.xhtml";
         executeRootRequest(webTarget -> webTarget.path(path)
                                         .queryParam("enabled", "on")
-                                        .queryParam("userBean.username", username)
+                                        .queryParam("userBean.username", userName)
                                         .queryParam("userBean.password", password)
                                         .queryParam("repeatPassword", password)
                                         .queryParam("save", "Save")
                                         .queryParam("userBean.userRoles","ROLE_API_DATA_WRITE")
                                         .queryParam("userBean.userRoles","ROLE_API_META_WRITE")
                                         .queryParam("userBean.userRoles","ROLE_USER")
+                                        .queryParam("userBean.userGroups", "Users")
                                         .queryParam("create", "true")
                                         .request()
                                         .method("POST"));
@@ -88,53 +95,61 @@ public class TokenAuthenticationTest extends BaseMethod {
 
     @Issue("6052")
     @Test
-    public void tokenAccessTest() throws Exception {
-        String username = "username";
-        for (String[] pathAndMethod : availablePaths) {
-            String availablePath = pathAndMethod[0];
-            String availableMethod = pathAndMethod[1];
-            String token = TokenRepository.getToken(username, availableMethod, availablePath);
-            for (String[] testingPathAndMethod : availablePaths) {
-                String testingPath = testingPathAndMethod[0];
-                String testingMethod = testingPathAndMethod[1];
-                Response response = null;
-                if(testingMethod.equals("GET") || testingMethod.equals("DELETE"))
-                {
-                    response = executeMethodWithoutEntity(token, testingPath, testingMethod);
-                }
-                else{
-                    response = executeMethodWithEntity(token, testingPath, testingMethod);
-                }
-                
-                if(!(testingPath.equals(availablePath) && testingMethod.equals(availableMethod)))
-                {
-                    assertEquals(testingMethod + " " + testingPath + " failed on token " + token, 401, response.getStatus());
-                    final String responseBody = response.readEntity(String.class);
-                    assertEquals("Wrong response code: " + responseBody, responseBody.contains("code 15"), true);
-                }
-            }
-        }
+    public void testTokenAccess() throws Exception{
+        testTokenAccessForUser(userName);
+        Config config = Config.getInstance();
+        testTokenAccessForUser(config.getLogin());
     }
 
-    private Response executeMethodWithoutEntity(String token, String path, String method)
-    {
-        return executeTokenRequest(webTarget -> webTarget.path(path)
+
+    private void testTokenAccessForUser(String username) throws Exception {
+        String availablePath="/csv";
+        String availableMethod="POST";
+        String token = TokenRepository.getToken(username, availableMethod, availablePath);
+        Response response = null;
+        for(String[] testingPathAndMethod : availablePaths) {
+            String testingPath = testingPathAndMethod[0];
+            String testingMethod = testingPathAndMethod[1];
+            if(testingMethod.equals("GET") || testingMethod.equals("DELETE")) {
+                response = executeMethodWithoutEntity(token, testingPath, testingMethod);
+            }
+            else {
+                response = executeMethodWithEntity(token, testingPath, testingMethod);
+            }
+            assertEquals("Authorisation not failed on token: " + token +" Path: " + testingPath + " Method: "+ testingMethod + " User: "+ username, 401, response.getStatus());
+            String entity = response.readEntity(String.class);
+            assertTrue("Error code expected to be 15. Token: " + token + " Path: " + testingPath + " Method: "+ testingMethod + " User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+        }
+        //testing that token can not get access to url with another parameters
+        response = executeTokenRequest(webTarget -> webTarget.path(availablePath)
+                .queryParam("config", "not_valid_config")
+                .request()
+                .method(availableMethod));
+        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + availablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
+        String entity = response.readEntity(String.class);
+        assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + availablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+
+    }
+
+    private Response executeMethodWithoutEntity(String token, String path, String method) {
+        final Response response = executeTokenRequest(webTarget -> webTarget.path(path)
         .request()
         .header(HttpHeaders.AUTHORIZATION, "Bearer "+token)
         .method(method));
+        response.bufferEntity();
+        return response;
     }
-    private Response executeMethodWithEntity(String token, String path, String method)
-    {
-        return executeTokenRequest(webTarget -> webTarget.path(path)
-        .request()
-        .header(HttpHeaders.AUTHORIZATION, "Bearer "+token)
-        .method(method, Entity.json("entity")));
+    private Response executeMethodWithEntity(String token, String path, String method) {
+        final Response response = executeTokenRequest(webTarget -> webTarget.path(path)
+                        .request()
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer "+token)
+                        .method(method, Entity.json("entity")));
+        response.bufferEntity();
+        return response;
     }
-
     @AfterClass
-    private void deleteUser()
-    {
-        String username="username";
+    private void deleteUser() {
+        String username="APITokenUser";
         String path ="/admin/users/edit.xhtml";
         executeRootRequest(webTarget -> webTarget.path(path)
                                         .queryParam("userBean.username", username)

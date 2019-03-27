@@ -8,3 +8,4 @@ src/test/resources/dev.client.properties
 .vscode/settings.json
 .classpath
 .vscode
+tests.iml

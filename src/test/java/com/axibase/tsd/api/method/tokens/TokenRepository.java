@@ -41,8 +41,7 @@ public class TokenRepository extends BaseMethod {
                     .queryParam("urls", url)
                     .request()
                     .method("POST"));
-        String[] responseUrl = StringUtils.substringBefore(response.getHeaderString("Location"),";").split("/");
-        String token=responseUrl[responseUrl.length-1];
+        String token=StringUtils.substringAfterLast(StringUtils.substringBefore(response.getHeaderString("Location"),";"), "/");
         return token;
     }
 
