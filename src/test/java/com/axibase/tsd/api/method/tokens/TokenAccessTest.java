@@ -27,6 +27,8 @@ public class TokenAccessTest extends BaseMethod {
         {"/series/csv/entity", "POST"},
         {"/series/json/entity/metric", "GET"},
         {"/series/csv/entity/metric", "GET"},
+        {"/series/query", "POST"},
+        {"/series/delete", "POST"},
         {"/properties/query", "POST"},
         {"/properties/insert", "POST"},
         {"/properties/delete", "POST"},
@@ -72,7 +74,7 @@ public class TokenAccessTest extends BaseMethod {
         {"/version", "GET"},
     };
 
-    private static final String userName = "APITokenUser";
+    private static final String USER_NAME = "APITokenUser";
 
     @BeforeClass
     private void createUser() {
@@ -80,7 +82,7 @@ public class TokenAccessTest extends BaseMethod {
         String path ="/admin/users/edit.xhtml";
         executeRootRequest(webTarget -> webTarget.path(path)
                                         .queryParam("enabled", "on")
-                                        .queryParam("userBean.username", userName)
+                                        .queryParam("userBean.username", USER_NAME)
                                         .queryParam("userBean.password", password)
                                         .queryParam("repeatPassword", password)
                                         .queryParam("save", "Save")
@@ -96,7 +98,7 @@ public class TokenAccessTest extends BaseMethod {
     @Issue("6052")
     @Test
     public void testTokenAccess() throws Exception{
-        testTokenAccessForUser(userName);
+        testTokenAccessForUser(USER_NAME);
         Config config = Config.getInstance();
         testTokenAccessForUser(config.getLogin());
     }
