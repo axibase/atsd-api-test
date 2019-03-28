@@ -13,8 +13,10 @@ import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
 import com.axibase.tsd.api.model.series.query.transformation.smooth.Smooth;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.experimental.Wither;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 @Data
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 public class SeriesQuery {
     private String entity;
     private String entityGroup;
@@ -53,7 +56,7 @@ public class SeriesQuery {
     private Boolean versioned;
     private Boolean addMeta;
     private SeriesType type;
-    private List<Transformation> transformationOrder;
+    @Wither private List<Transformation> transformationOrder;
 
     public SeriesQuery() {
     }

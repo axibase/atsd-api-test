@@ -177,13 +177,13 @@ public class SeriesQueryTransformationsWithoutForecastPermutationsTest extends S
 
 
     @Test(dataProvider = "permutations",
-
-            description = "Take series transformations {@link Transformation#values()} except for {@link Transformation#FORECAST}. " +
-                        "Create query which has these transformations. " +
-                        "Check that response contains correct number of generated series for each permutation of the transformations.")
+            description = "Take series transformations {@link Transformation#values()} except for " +
+                    "{@link Transformation#FORECAST}. Create query which has these transformations. " +
+                    "Check that response contains correct number of generated series " +
+                    "for each permutation of the transformations.")
     public void test(List<Transformation> permutation) {
-        query.setTransformationOrder(permutation);
-        List<Series> seriesList = querySeriesAsList(query);
+        SeriesQuery testQuery = query.withTransformationOrder(permutation);
+        List<Series> seriesList = querySeriesAsList(testQuery);
         int expectedSeriesCount = countExpectedSeries(permutation);
         assertEquals(seriesList.size(), expectedSeriesCount);
     }
