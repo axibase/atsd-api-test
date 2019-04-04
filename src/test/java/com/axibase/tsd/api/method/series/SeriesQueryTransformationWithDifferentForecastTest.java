@@ -38,15 +38,11 @@ import static org.testng.Assert.assertEquals;
  *
  * Methods insertSeries() and addSamplesToSeries() create input series
  *
- * Methods generationAggregationSet(), generationGroupingSet(), and generationForecastingSet() create test set of queries
+ * Methods generateAggregationSet(), generateGroupingSet(), and generateForecastingSet() create test set of queries
  */
 
 
-public class SeriesQueryTransformationWithDifferentForecast extends SeriesMethod {
-    /**
-     * Number of transform series
-     */
-    private static final int INPUT_SERIES_COUNT = 5;
+public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMethod {
 
     /**
      * Series parameters
@@ -57,20 +53,22 @@ public class SeriesQueryTransformationWithDifferentForecast extends SeriesMethod
     private static final int SERIES_VALUE = 101;
     private static final int SECONDS_IN_HALF_MINUTE = 30;
     private static final int HALF_MINUTES = 2;
-    private static final String ZONE_ID = "Etc/UTC";
+    private static final String ZONE_ID = "Asia/Kathmandu";
     private static final String TAG_NAME = "tag-name-1";
-    private static final String TAG_VALUE = "tag-value-1";
+    private static final String TAG_VALUE_FIRST = "tag-value-1";
+    private static final String TAG_VALUE_SECOND = "tag-value-2";
     private static final String QUERY_ENTITY = "*";
+    private static final String METRIC_NAME = Mocks.metric();
 
     /**
      * Parameters of forecasting algorithms
      */
     private static final int HORIZON_LENGTH = 100;
-    private static final double ALPHA = 0.5;
-    private static final double BETTA = 0.5;
-    private static final double GAMMA = 0.5;
-    private static final int EIGENTRIPLE_LIMIT = 100;
-    private static final int SINGULAR_VALUE_THRESHOLD = 5;
+    private static final double HW_ALPHA = 0.5;
+    private static final double HW_BETA = 0.5;
+    private static final double HW_GAMMA = 0.5;
+    private static final int SSA_EIGENTRIPLE_LIMIT = 100;
+    private static final int SSA_SINGULAR_VALUE_THRESHOLD = 5;
 
     /**
      * Period count for aggregate and group, respectively
@@ -78,68 +76,101 @@ public class SeriesQueryTransformationWithDifferentForecast extends SeriesMethod
     private static final int AGGREGATION_PERIOD_COUNT = 3;
     private static final int GROUP_PERIOD_COUNT = 5;
 
-    /**
-     * Set of transformations and created queries
-     */
-    private List<SeriesQuery> queryList = new ArrayList<>();
-    private List<Transformation> transformations = Arrays.asList(
-            Transformation.AGGREGATE,
-            Transformation.FORECAST,
-            Transformation.GROUP);
-    private List<Object[]> badResponseTestSet = new ArrayList<>();
-    private List<Object[]> goodResponseTestSet = new ArrayList<>();
+    private Series[] seriesArray;
 
     @BeforeClass
-    private void prepareData() throws Exception {
-        String metric = Mocks.metric();
-        insertSeries(metric);
-
-        List<Aggregate> aggregates = generationAggregationSet();
-        List<Group> groups = generationGroupingSet();
-        List<Forecast> forecasts = generationForecastingSet();
-
-        for (Aggregate aggregate: aggregates) {
-            for (Group group: groups) {
-                for (Forecast forecast: forecasts) {
-                    queryList.add(new SeriesQuery(QUERY_ENTITY, metric, START_DATE, END_DATE)
-                            .setAggregate(aggregate)
-                            .setGroup(group)
-                            .setForecast(forecast));
-                }
-            }
-        }
-
-        separationTestSets();
-    }
-
-    private void insertSeries(String metric) throws Exception {
+    private void insertSeries() throws Exception {
         String entity1 = Mocks.entity();
         String entity2 = Mocks.entity();
         String entity3 = Mocks.entity();
 
-        Series series1 = new Series(entity1, metric);
-        Series series2 = new Series(entity1, metric, TAG_NAME, TAG_VALUE);
-        Series series3 = new Series(entity2, metric, TAG_NAME, TAG_VALUE);
-        Series series4 = new Series(entity2, metric, TAG_NAME, TAG_VALUE);
-        Series series5 = new Series(entity3, metric);
-        addSamplesToSeries(series1, series2, series3, series4, series5);
-        insertSeriesCheck(series1, series2, series3, series4, series5);
+        seriesArray = new Series[] {
+            new Series(entity1, METRIC_NAME),
+            new Series(entity1, METRIC_NAME, TAG_NAME, TAG_VALUE_FIRST),
+            new Series(entity2, METRIC_NAME, TAG_NAME, TAG_VALUE_FIRST),
+            new Series(entity2, METRIC_NAME, TAG_NAME, TAG_VALUE_SECOND),
+            new Series(entity3, METRIC_NAME)
+        };
+        addSamplesToSeries(seriesArray);
+        insertSeriesCheck(seriesArray);
     }
 
-    private void addSamplesToSeries(Series series1, Series series2, Series series3, Series series4, Series series5) {
+    @DataProvider(name = "bad_response_data", parallel = true)
+    public Object[][] badResponseData() {
+        return generateTestData(true);
+    }
+
+    @DataProvider(name = "good_response_data", parallel = true)
+    public Object[][] goodResponseData() {
+        return generateTestData(false);
+    }
+
+    @Test(dataProvider = "bad_response_data",
+            description = "Take order of series transformations with irregular series before forecast. " +
+                    "Check that response contains error")
+    public void testBadResponse(SeriesQuery query) {
+        assertEquals(Response.Status.fromStatusCode(querySeries(query).getStatus()), Response.Status.BAD_REQUEST);
+    }
+
+    @Test(dataProvider = "good_response_data",
+            description = "Check that response contains correct number of generated series for each permutation of the transformations.")
+    public void testGoodResponse(SeriesQuery query) {
+        List<Series> seriesList = querySeriesAsList(query);
+        int expectedSeriesCount = countExpectedSeries(query);
+        assertEquals(seriesList.size(), expectedSeriesCount);
+    }
+
+    private Object[][] generateTestData(boolean forBadResponse) {
+        List<Transformation> transformations = Arrays.asList(
+                Transformation.AGGREGATE,
+                Transformation.FORECAST,
+                Transformation.GROUP);
+        List<Aggregate> aggregates = generateAggregationSet();
+        List<Group> groups = generateGroupingSet();
+        List<Forecast> forecasts = generateForecastingSet();
+        List<SeriesQuery> queryList = new ArrayList<>();
+
+        PermutationIterator<Transformation> iterator = new PermutationIterator<>(transformations);
+        while (iterator.hasNext()) {
+            List<Transformation> permutation = iterator.next();
+            for (Aggregate aggregate : aggregates) {
+                for (Group group : groups) {
+                    for (Forecast forecast : forecasts) {
+                        SeriesQuery query = new SeriesQuery(QUERY_ENTITY, METRIC_NAME, START_DATE, END_DATE)
+                                .setAggregate(aggregate)
+                                .setGroup(group)
+                                .setForecast(forecast)
+                                .setTransformationOrder(permutation);
+                        if (isIrregularSeriesForForecastExceptionExpected(query) == forBadResponse) {
+                            queryList.add(query);
+                        }
+                    }
+                }
+            }
+        }
+
+        Object[][] result = new Object[queryList.size()][1];
+        int queryIndex = 0;
+        for (SeriesQuery query: queryList) {
+            result[queryIndex][0] = query;
+            queryIndex++;
+        }
+
+        return result;
+    }
+
+    private void addSamplesToSeries(Series ... seriesList) {
         long totalSamplesCount = TIME_INTERVAL * java.util.concurrent.TimeUnit.DAYS.toMinutes(1) * HALF_MINUTES;
         for (int i = 0; i < totalSamplesCount; i++) {
             String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
             Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
-            series1.addSamples(sample);
-            series2.addSamples(sample);
-            series3.addSamples(sample);
-            series4.addSamples(sample);
-            series5.addSamples(sample);
+            for(Series series: seriesList) {
+                series.addSamples(sample);
+            }
         }
     }
 
-    private List<Aggregate> generationAggregationSet() {
+    private List<Aggregate> generateAggregationSet() {
         List<Aggregate> aggregates = new ArrayList<>();
         List<List<AggregationType>> setsAggregationType = Arrays.asList(
                 Arrays.asList(AggregationType.AVG, AggregationType.SUM, AggregationType.FIRST),
@@ -157,7 +188,7 @@ public class SeriesQueryTransformationWithDifferentForecast extends SeriesMethod
         return aggregates;
     }
 
-    private List<Group> generationGroupingSet() {
+    private List<Group> generateGroupingSet() {
         List<Group> groups = new ArrayList<>();
         List<List<GroupType>> setsGroupType = Arrays.asList(
                 Arrays.asList(GroupType.AVG, GroupType.SUM),
@@ -175,22 +206,22 @@ public class SeriesQueryTransformationWithDifferentForecast extends SeriesMethod
         return groups;
     }
 
-    private List<Forecast> generationForecastingSet() {
+    private List<Forecast> generateForecastingSet() {
         List<Forecast> forecasts = new ArrayList<>();
         List<List<SeriesType>> setsSeriesType = Arrays.asList(
                 Arrays.asList(SeriesType.FORECAST, SeriesType.RECONSTRUCTED),
                 Arrays.asList(SeriesType.FORECAST, SeriesType.RECONSTRUCTED, SeriesType.HISTORY));
         Horizon horizon = new Horizon().setLength(HORIZON_LENGTH);
         HoltWintersSettings holtWintersSettings = new HoltWintersSettings()
-                .setAlpha(ALPHA)
-                .setBeta(BETTA)
-                .setGamma(GAMMA)
+                .setAlpha(HW_ALPHA)
+                .setBeta(HW_BETA)
+                .setGamma(HW_GAMMA)
                 .setAuto(false);
         SSASettings ssaSettings = new SSASettings()
                 .setDecompose(new SSADecompositionSettings()
                         .setMethod(SvdMethod.AUTO)
-                        .setEigentripleLimit(EIGENTRIPLE_LIMIT)
-                        .setSingularValueThreshold(SINGULAR_VALUE_THRESHOLD));
+                        .setEigentripleLimit(SSA_EIGENTRIPLE_LIMIT)
+                        .setSingularValueThreshold(SSA_SINGULAR_VALUE_THRESHOLD));
 
         for (List<SeriesType> setSeriesType: setsSeriesType) {
             forecasts.add(new Forecast()
@@ -213,101 +244,55 @@ public class SeriesQueryTransformationWithDifferentForecast extends SeriesMethod
         return forecasts;
     }
 
-    private void separationTestSets () {
-        PermutationIterator<Transformation> iterator = new PermutationIterator<>(transformations);
-        while (iterator.hasNext()) {
-            List<Transformation> permutation = iterator.next();
-            for (SeriesQuery query: queryList) {
-                Object[] testSet = {permutation, query};
-                if (irregularSeriesForForecastException(permutation, query)) {
-                    badResponseTestSet.add(testSet);
-                } else {
-                    goodResponseTestSet.add(testSet);
-                }
-            }
-        }
-    }
-
-    @DataProvider(name = "bad_response_data", parallel = true)
-    Object[][] badResponseData() {
-        Object[][] data = new Object[badResponseTestSet.size()][];
-        int index=0;
-        for (Object[] testSet: badResponseTestSet) {
-            data[index] = testSet;
-            index++;
-        }
-        return data;
-    }
-
-    @DataProvider(name = "good_response_data", parallel = true)
-    Object[][] goodResponseData() {
-        Object[][] data = new Object[goodResponseTestSet.size()][];
-        int index=0;
-        for (Object[] testSet: goodResponseTestSet) {
-            data[index] = testSet;
-            index++;
-        }
-        return data;
-    }
-
-    @Test(dataProvider = "bad_response_data",
-            description = "Take order of series transformations with irregular series before forecast. " +
-                    "Check that response contains error")
-    public void testBadResponse(List<Transformation> permutation, SeriesQuery query) {
-        query.setTransformationOrder(permutation);
-        assertEquals(Response.Status.fromStatusCode(querySeries(query).getStatus()), Response.Status.BAD_REQUEST);
-    }
-
-    @Test(dataProvider = "good_response_data",
-            description = "Check that response contains correct number of generated series for each permutation of the transformations.")
-    public void testGoodResponse(List<Transformation> permutation, SeriesQuery query) {
-        query.setTransformationOrder(permutation);
-        List<Series> seriesList = querySeriesAsList(query);
-        int expectedSeriesCount = countExpectedSeries(permutation, query);
-        assertEquals(seriesList.size(), expectedSeriesCount);
-    }
-
-    private int countExpectedSeries(List<Transformation> permutation, SeriesQuery query) {
-        int seriesCount = INPUT_SERIES_COUNT;
+    private int countExpectedSeries(SeriesQuery query) {
+        final int inputSeriesCount = seriesArray.length;
+        int expectedSeriesCount = seriesArray.length;
+        List<Transformation> permutation = query.getTransformationOrder();
         for (Transformation transformation: permutation) {
             switch (transformation) {
                 case GROUP:
                     int groupingFunctionsCount = query.getGroup().getTypes().size();
                     if (query.getGroup().getTypes().contains(GroupType.DETAIL)) {
-                        seriesCount += (seriesCount / INPUT_SERIES_COUNT) * (groupingFunctionsCount-1);
+                        expectedSeriesCount += (expectedSeriesCount / inputSeriesCount) * (groupingFunctionsCount-1);
                     } else {
-                        seriesCount = (seriesCount / INPUT_SERIES_COUNT) * groupingFunctionsCount;
+                        expectedSeriesCount = (expectedSeriesCount / inputSeriesCount) * groupingFunctionsCount;
                     }
                     break;
                 case AGGREGATE:
                     int aggregationFunctionsCount = query.getAggregate().getTypes().size();
-                    seriesCount *= aggregationFunctionsCount;
+                    expectedSeriesCount *= aggregationFunctionsCount;
                     break;
                 case FORECAST:
-                    int factor=0;
+                    int factor = 0;
                     if (query.getForecast().includeHistory()) factor++;
                     int algorithmsCount = query.getForecast().algorithmsCount();
                     if (query.getForecast().includeReconstructed()) factor += algorithmsCount;
                     if (query.getForecast().includeForecast()) factor += algorithmsCount;
-                    seriesCount *= factor;
+                    expectedSeriesCount *= factor;
                     break;
             }
         }
-        return seriesCount;
+        return expectedSeriesCount;
     }
 
-    private boolean irregularSeriesForForecastException(List<Transformation> permutation, SeriesQuery query) {
-        if (permutation.get(0)==Transformation.FORECAST) {
+    private boolean isIrregularSeriesForForecastExceptionExpected(SeriesQuery query) {
+        List<Transformation> permutation = query.getTransformationOrder();
+        Transformation transformation = permutation.get(0);
+        if (transformation == Transformation.FORECAST) {
             return true;
-        } else if (permutation.indexOf(Transformation.FORECAST)==1) {
-            if (permutation.get(0)==Transformation.AGGREGATE && query.getAggregate().getTypes().contains(AggregationType.DETAIL)) {
+        }
+
+        boolean hasGroupDetail = query.getGroup().getTypes().contains(GroupType.DETAIL);
+        boolean hasAggregationDetail = query.getAggregate().getTypes().contains(AggregationType.DETAIL);
+
+        if (permutation.indexOf(Transformation.FORECAST) == 1) {
+            if (transformation == Transformation.AGGREGATE && hasAggregationDetail) {
                 return true;
             }
 
-            return (permutation.get(0)==Transformation.GROUP && query.getGroup().getTypes().contains(GroupType.DETAIL));
-
-        } else {
-            return (query.getAggregate().getTypes().contains(AggregationType.DETAIL) && query.getGroup().getTypes().contains(GroupType.DETAIL));
+            return (transformation == Transformation.GROUP && hasGroupDetail);
         }
+
+        return (hasAggregationDetail && hasGroupDetail);
     }
 }
