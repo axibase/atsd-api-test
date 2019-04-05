@@ -366,6 +366,7 @@ public class TokenWorkTest extends BaseMethod {
         responseAPI.bufferEntity();
         responseAPIEntity = responseAPI.readEntity(String.class);
         assertTrue("User: " + username + " Property was not deleted with token response. Response body: " + responseAPIEntity, responseAPIEntity.equals("[]"));
+        MetricMethod.deleteMetric(metric);
     }
 
     private void tokenMetricTestForUser(String username) throws Exception {
