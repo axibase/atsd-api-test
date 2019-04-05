@@ -1,8 +1,6 @@
 package com.axibase.tsd.api.method.tokens;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
-
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -10,12 +8,15 @@ import javax.ws.rs.core.Response;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import io.qameta.allure.Issue;
+
+import static org.testng.AssertJUnit.*;
 
 
 public class TokenAccessTest extends BaseMethod {
@@ -41,7 +42,7 @@ public class TokenAccessTest extends BaseMethod {
         {"/alerts/update", "POST"},
         {"/alerts/delete", "POST"},
         {"/alerts/history/query", "POST"},
-//        {"/csv", "POST"},
+        {"/csv", "POST"},
         {"/nmon", "POST"},
         {"/command", "POST"},
         {"/export", "GET"},
@@ -97,26 +98,37 @@ public class TokenAccessTest extends BaseMethod {
 
     @Issue("6052")
     @Test
-    public void testTokenAccess() throws Exception{
-        testTokenAccessForUser(USER_NAME);
+    public void testTokenAccess() throws Exception {
         Config config = Config.getInstance();
         testTokenAccessForUser(config.getLogin());
+        testTokenAccessForUser(USER_NAME);
     }
 
+    @Issue("6052")
+    @Test
+    public  void testDualTokenAccess() throws Exception {
+        Config config = Config.getInstance();
+        testDualTokenAccessForUser(config.getLogin());
+        testDualTokenAccessForUser(USER_NAME);
+    }
 
     private void testTokenAccessForUser(String username) throws Exception {
         String availablePath="/csv";
-        String availableMethod="POST";
+        String availableMethod= HttpMethod.POST;
         String token = TokenRepository.getToken(username, availableMethod, availablePath);
-        Response response = null;
+        Response response;
         for(String[] testingPathAndMethod : availablePaths) {
             String testingPath = testingPathAndMethod[0];
             String testingMethod = testingPathAndMethod[1];
-            if(testingMethod.equals("GET") || testingMethod.equals("DELETE")) {
+            if(testingMethod.equals(HttpMethod.GET) || testingMethod.equals(HttpMethod.DELETE)) {
                 response = executeMethodWithoutEntity(token, testingPath, testingMethod);
             }
             else {
                 response = executeMethodWithEntity(token, testingPath, testingMethod);
+            }
+            if(testingPath.equals(availablePath) && testingMethod.equals(availableMethod)) {
+                assertTrue("Authorisation failed on token " + token + " User: " +username, response.getStatus() != 401);
+                continue;
             }
             assertEquals("Authorisation not failed on token: " + token +" Path: " + testingPath + " Method: "+ testingMethod + " User: "+ username, 401, response.getStatus());
             String entity = response.readEntity(String.class);
@@ -131,6 +143,46 @@ public class TokenAccessTest extends BaseMethod {
         String entity = response.readEntity(String.class);
         assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + availablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
 
+    }
+
+    private void testDualTokenAccessForUser(String username) throws Exception {
+        String firstAvailablePath = "/csv";
+        String secondAvailablePath = "/command";
+        String availableMethod = HttpMethod.POST;
+        String token = TokenRepository.getToken(username, availableMethod, firstAvailablePath + "\n" + secondAvailablePath);
+        Response response;
+        for(String[] testingPathAndMethod : availablePaths){
+            String testingPath = testingPathAndMethod[0];
+            String testingMethod = testingPathAndMethod[1];
+            if(testingMethod.equals(HttpMethod.GET) || testingMethod.equals(HttpMethod.DELETE)) {
+                response = executeMethodWithoutEntity(token, testingPath, testingMethod);
+            }
+            else {
+                response = executeMethodWithEntity(token, testingPath, testingMethod);
+            }
+            if(availableMethod.equals(testingMethod) && (firstAvailablePath.equals(testingPath) || secondAvailablePath.equals(testingPath))) {
+                assertTrue("Authorisation failed on token " + token + " User: " +username + " Path: " + testingPath + " Method " + testingMethod, response.getStatus() != 401);
+                continue;
+            }
+            assertEquals("Authorisation not failed on token: " + token +" Path: " + testingPath + " Method: "+ testingMethod + " User: "+ username, 401, response.getStatus());
+            String entity = response.readEntity(String.class);
+            assertTrue("Error code expected to be 15. Token: " + token + " Path: " + testingPath + " Method: "+ testingMethod + " User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+        }
+        response = executeTokenRequest(webTarget -> webTarget.path(firstAvailablePath)
+                                                        .queryParam("config", "not_valid_config")
+                                                        .request()
+                                                        .method(availableMethod));
+        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + firstAvailablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
+        String entity = response.readEntity(String.class);
+        assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + firstAvailablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+
+        response = executeTokenRequest(webTarget -> webTarget.path(secondAvailablePath)
+                .queryParam("commit", true)
+                .request()
+                .method(availableMethod));
+        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + secondAvailablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
+        entity = response.readEntity(String.class);
+        assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + secondAvailablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
     }
 
     private Response executeMethodWithoutEntity(String token, String path, String method) {

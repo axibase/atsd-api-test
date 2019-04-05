@@ -185,6 +185,7 @@ public abstract class BaseMethod {
             client.close();
             throw e;
         }
+
     }
 
     private static class HttpClient {

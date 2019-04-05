@@ -20,10 +20,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TokenRepository extends BaseMethod {
     private static final ConcurrentMap<TokenRequest, String> tokens = new ConcurrentHashMap<>();
 
-    public static String getToken(String user, String method, String url) throws Exception{
+    public static String getToken(String user, String method, String urls) throws Exception{
         Config config = Config.getInstance();
         String apiPath=config.getApiPath();
-        return tokens.computeIfAbsent(new TokenRequest(user, method, apiPath+url), TokenRepository::generateTokenInAtsd);
+        return tokens.computeIfAbsent(new TokenRequest(user, method, apiPath+urls.replaceAll(",", ","+apiPath).replaceAll("\n", ","+apiPath)), TokenRepository::generateTokenInAtsd);
         
     }
 

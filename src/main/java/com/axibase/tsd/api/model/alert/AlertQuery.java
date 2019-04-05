@@ -28,6 +28,7 @@ public class AlertQuery {
     private String startDate;
     private String endDate;
     private Interval interval;
+    private Integer id;
 
     public AlertQuery(String entity) {
         this.entity = entity;
