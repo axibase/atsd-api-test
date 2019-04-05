@@ -79,7 +79,8 @@ public class TokenWorkTest extends BaseMethod {
                 .queryParam("userBean.userGroups", "Users")
                 .queryParam("create", "true")
                 .request()
-                .method(HttpMethod.POST));
+                .method(HttpMethod.POST))
+                .bufferEntity();
     }
 
 
@@ -201,7 +202,8 @@ public class TokenWorkTest extends BaseMethod {
                                                 .request()
                                                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                                                .method(HttpMethod.POST, Entity.json(deleteQuery)));
+                                                .method(HttpMethod.POST, Entity.json(deleteQuery)))
+                                                .bufferEntity();
         //checking that series was successfully deleted
         responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
@@ -264,7 +266,8 @@ public class TokenWorkTest extends BaseMethod {
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.POST, Entity.json(deleteQuery)));
+                .method(HttpMethod.POST, Entity.json(deleteQuery)))
+                .bufferEntity();
         //checking that series was successfully deleted
         responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
@@ -357,7 +360,8 @@ public class TokenWorkTest extends BaseMethod {
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.POST, Entity.json(deleteQuery)));
+                .method(HttpMethod.POST, Entity.json(deleteQuery)))
+                .bufferEntity();
         //checking that series was successfully deleted
         responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
@@ -425,7 +429,8 @@ public class TokenWorkTest extends BaseMethod {
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                                                             .request()
                                                             .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
-                                                            .method(HttpMethod.DELETE));
+                                                            .method(HttpMethod.DELETE))
+                                                            .bufferEntity();
         //checking that metric was deleted
         get(getURL,getToken);
         assertTrue("Metric was not deleted with token for user "+username, responseAPIEntity.contains("error"));
@@ -480,7 +485,8 @@ public class TokenWorkTest extends BaseMethod {
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
-                .method(HttpMethod.DELETE));
+                .method(HttpMethod.DELETE))
+                .bufferEntity();
         get(getURL,getToken);
         assertTrue("Entity was not deleted with token for user "+username, responseAPIEntity.contains("error"));
     }
@@ -548,7 +554,8 @@ public class TokenWorkTest extends BaseMethod {
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
-                .method(HttpMethod.DELETE));
+                .method(HttpMethod.DELETE))
+                .bufferEntity();
         get(getURL,getToken);
         assertTrue("Entity Group was not deleted with token for user "+username, responseAPIEntity.contains("error"));
     }
@@ -585,7 +592,8 @@ public class TokenWorkTest extends BaseMethod {
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
-                .method(HttpMethod.DELETE));
+                .method(HttpMethod.DELETE))
+                .bufferEntity();
         get(getURL,getToken);
         assertEquals("Replacement table was not deleted with token request for user: " + username, 404, responseToken.getStatus());
     }
@@ -609,6 +617,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + insertToken)
                 .method(HttpMethod.POST, Entity.json(insertData)));
+        responseToken.bufferEntity();
         assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseToken));
     }
 
@@ -648,7 +657,7 @@ public class TokenWorkTest extends BaseMethod {
                                                             .header(HttpHeaders.CONTENT_TYPE, "application/json")
                                                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                                             .method(HttpMethod.PUT, Entity.json(data)));
-
+        responseToken.bufferEntity();
         assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseToken));
     }
 
@@ -658,7 +667,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .method("PATCH", Entity.json(data)));
-
+        responseToken.bufferEntity();
         assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseToken));
     }
 
@@ -670,6 +679,7 @@ public class TokenWorkTest extends BaseMethod {
                 .queryParam("userBean.username", USER_NAME)
                 .queryParam("delete", "Delete")
                 .request()
-                .method(HttpMethod.POST));
+                .method(HttpMethod.POST))
+                .bufferEntity();
     }
 }

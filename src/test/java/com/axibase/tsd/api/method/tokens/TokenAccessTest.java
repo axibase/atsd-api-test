@@ -93,7 +93,8 @@ public class TokenAccessTest extends BaseMethod {
                                         .queryParam("userBean.userGroups", "Users")
                                         .queryParam("create", "true")
                                         .request()
-                                        .method("POST"));
+                                        .method(HttpMethod.POST))
+                                        .bufferEntity();
     }
 
     @Issue("6052")
@@ -172,6 +173,7 @@ public class TokenAccessTest extends BaseMethod {
                                                         .queryParam("config", "not_valid_config")
                                                         .request()
                                                         .method(availableMethod));
+        response.bufferEntity();
         assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + firstAvailablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
         String entity = response.readEntity(String.class);
         assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + firstAvailablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
@@ -180,6 +182,7 @@ public class TokenAccessTest extends BaseMethod {
                 .queryParam("commit", true)
                 .request()
                 .method(availableMethod));
+        response.bufferEntity();
         assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + secondAvailablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
         entity = response.readEntity(String.class);
         assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + secondAvailablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
@@ -209,6 +212,7 @@ public class TokenAccessTest extends BaseMethod {
                                         .queryParam("userBean.username", username)
                                         .queryParam("delete", "Delete")
                                         .request()
-                                        .method("POST"));
+                                        .method(HttpMethod.POST))
+                                        .bufferEntity();
     }
 }
