@@ -20,6 +20,7 @@ public class Group {
     AggregationInterpolate interpolate;
     Boolean truncate;
     Integer order;
+    List<String> groupByEntityAndTags;
 
     public Group(GroupType type) {
         this(type, null, null);
