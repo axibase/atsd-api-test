@@ -43,8 +43,8 @@ public class TokenWorkTest extends BaseMethod {
     private static final String USER_PASSWORD;
     private static final String ADMIN_NAME;
 
-    private Response responseToken;
-    private Response responseAPI;
+    private Response responseWithToken;
+    private Response responseWithAPI;
     private String responseAPIEntity;
     private String responseTokenEntity;
 
@@ -165,21 +165,21 @@ public class TokenWorkTest extends BaseMethod {
         Thread.sleep(500); //getting timeout for ATSD to insert series
         String getURL = "/series/json/" + entity +"/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL + "?startDate=previous_hour&endDate=next_day");
-        responseAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
+        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
                 .queryParam("startDate", "previous_hour")
                 .queryParam("endDate", "next_day")
                 .request()
                 .method(HttpMethod.GET));
-        responseAPI.bufferEntity();
-        responseToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
+        responseWithAPI.bufferEntity();
+        responseWithToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
                 .queryParam("startDate", "previous_hour")
                 .queryParam("endDate", "next_day")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
                 .method(HttpMethod.GET));
-        responseToken.bufferEntity();
-        responseAPIEntity = responseAPI.readEntity(String.class);
-        responseTokenEntity = responseToken.readEntity(String.class);
+        responseWithToken.bufferEntity();
+        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseAPIEntity,!(responseAPIEntity.contains("warning")));
         assertEquals("User: " + username + " token series get response does not equal api series get response", responseAPIEntity , responseTokenEntity);
         //checking queries
@@ -205,12 +205,12 @@ public class TokenWorkTest extends BaseMethod {
                                                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                                                 .bufferEntity();
         //checking that series was successfully deleted
-        responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
+        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .method(HttpMethod.POST, Entity.json(query)));
-        responseAPI.bufferEntity();
-        responseAPIEntity = responseAPI.readEntity(String.class);
+        responseWithAPI.bufferEntity();
+        responseAPIEntity = responseWithAPI.readEntity(String.class);
         assertTrue("User: " + username + " Response does not contain warning after delete: " + responseAPIEntity,responseAPIEntity.contains("warning"));
 
     }
@@ -269,12 +269,12 @@ public class TokenWorkTest extends BaseMethod {
                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                 .bufferEntity();
         //checking that series was successfully deleted
-        responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
+        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .method(HttpMethod.POST, Entity.json(query)));
-        responseAPI.bufferEntity();
-        responseAPIEntity = responseAPI.readEntity(String.class);
+        responseWithAPI.bufferEntity();
+        responseAPIEntity = responseWithAPI.readEntity(String.class);
         assertTrue("User: " + username + " Property was not deleted with token response. Response body: " + responseAPIEntity, responseAPIEntity.equals("[]"));
     }
 
@@ -334,7 +334,7 @@ public class TokenWorkTest extends BaseMethod {
         assertTrue("Alert was not inserted for user " + username, !(responseAPIEntity.equals("[]")));
         assertEquals("User: " + username + " Token Alert query response does not equal API Alert query response", responseAPIEntity, responseAPIEntity);
         //reading alert data from entity
-        List<LinkedHashMap> alertList = responseToken.readEntity(List.class);
+        List<LinkedHashMap> alertList = responseWithToken.readEntity(List.class);
         LinkedHashMap alert = alertList.get(0);
         Integer id = (Integer)alert.get("id");
         Boolean acknowledged = (Boolean)alert.get("acknowledged");
@@ -363,17 +363,18 @@ public class TokenWorkTest extends BaseMethod {
                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                 .bufferEntity();
         //checking that series was successfully deleted
-        responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
+        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .method(HttpMethod.POST, Entity.json(query)));
-        responseAPI.bufferEntity();
-        responseAPIEntity = responseAPI.readEntity(String.class);
+        responseWithAPI.bufferEntity();
+        responseAPIEntity = responseWithAPI.readEntity(String.class);
         assertTrue("User: " + username + " Property was not deleted with token response. Response body: " + responseAPIEntity, responseAPIEntity.equals("[]"));
         MetricMethod.deleteMetric(metric);
     }
 
     private void tokenMetricTestForUser(String username) throws Exception {
+        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
         String metricName = "token_test_metrictest_" + username + "_metric";
         String tagName = "name";
         String tagValue = "value";
@@ -390,11 +391,20 @@ public class TokenWorkTest extends BaseMethod {
         get(getURL, getToken);
         assertTrue("Metric was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
         assertEquals("Metric get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        Thread.sleep(500); //timeout for create method to add all information into ATSD
         //checking list method
         String listURL = "/metrics/";
         String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL,listToken);
-        assertEquals("Metric list request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        get(listURL, listToken);
+        List<LinkedHashMap> metricsListWithToken = responseWithToken.readEntity(List.class);
+        List<LinkedHashMap> metricsListWithAPI = responseWithAPI.readEntity(List.class);
+
+        assertEquals("Metric list request executed with token and with API does not equal for user: " + username, metricsListWithAPI.size(), metricsListWithToken.size());
+        for(int i=0; i< metricsListWithAPI.size(); i++) {
+            String nameWithToken = metricsListWithToken.get(i).get("name").toString();
+            String nameWithAPI = metricsListWithAPI.get(i).get("name").toString();
+            assertEquals("Metric list request executed with token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
+        }
         //checking update method
         String updateURL = "/metrics/" + metricName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -437,6 +447,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private void tokenEntityTestForUer(String username) throws Exception {
+        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
         String entityName = "token_test_entitytest_" + username + "_entity";
         String tagName = "name";
         String tagValue = "value";
@@ -446,6 +457,7 @@ public class TokenWorkTest extends BaseMethod {
         String createURL = "/entities/" + entityName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username, createURL, entity, createToken);
+        Thread.sleep(500); //timeout for create method to add all information into ATSD
         //checking get method
         String getURL = "/entities/" + entityName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
@@ -455,8 +467,16 @@ public class TokenWorkTest extends BaseMethod {
         //checking list method
         String listURL = "/entities/";
         String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL,listToken);
-        assertEquals("Entity list request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        get(listURL, listToken);
+        List<LinkedHashMap> entitiesListWithToken = responseWithToken.readEntity(List.class);
+        List<LinkedHashMap> entitiesListWithAPI = responseWithAPI.readEntity(List.class);
+
+        assertEquals("Entity list request executed with token and with API does not equal for user: " + username, entitiesListWithAPI.size(), entitiesListWithToken.size());
+        for(int i=0; i< entitiesListWithAPI.size(); i++) {
+            String nameWithToken = entitiesListWithToken.get(i).get("name").toString();
+            String nameWithAPI = entitiesListWithAPI.get(i).get("name").toString();
+            assertEquals("Entity list request executed with token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
+        }
         //checking update method
         String updateURL = "/entities/" + entityName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -492,6 +512,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private void tokenEntityGroupsTestForUser(String username) throws Exception {
+        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
         String entityGroupName = "token_test_entitygroupstest_" + username + "_entitygroup";
         String entity = "token_test_entitygrouptest_" + username + "_entity";
         EntityMethod.createOrReplaceEntity(new com.axibase.tsd.api.model.entity.Entity(entity).setEnabled(true));
@@ -503,6 +524,7 @@ public class TokenWorkTest extends BaseMethod {
         String createURL = "/entity-groups/" + entityGroupName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username, createURL, entityGroup, createToken);
+        Thread.sleep(500); //timeout for create method to add all information into ATSD
         //checking get method
         String getURL = "/entity-groups/" + entityGroupName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
@@ -512,8 +534,16 @@ public class TokenWorkTest extends BaseMethod {
         //checking list method
         String listURL = "/entity-groups";
         String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL,listToken);
-        assertEquals("Entity group list request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        get(listURL, listToken);
+        List<LinkedHashMap> entityGroupsListWithToken = responseWithToken.readEntity(List.class);
+        List<LinkedHashMap> entityGroupsListWithAPI = responseWithAPI.readEntity(List.class);
+
+        assertEquals("Entity groups list request executed with token and with API does not equal for user: " + username, entityGroupsListWithAPI.size(), entityGroupsListWithToken.size());
+        for(int i=0; i< entityGroupsListWithAPI.size(); i++) {
+            String nameWithToken = entityGroupsListWithToken.get(i).get("name").toString();
+            String nameWithAPI = entityGroupsListWithAPI.get(i).get("name").toString();
+            assertEquals("entity groups list request executed with token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
+        }
         //checking update method
         String updateURL = "/entity-groups/" + entityGroupName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -561,24 +591,26 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private void tokenReplacementTablesTestForUser(String username) throws Exception {
+        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
         String replacementTable = "token_test_replacementtablestest_" + username + "_replacementtable";
         String csvPayload = "-1,Error";
         //checking create method
         String createURL = "/replacement-tables/csv/" + replacementTable;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username,createURL, csvPayload, createToken);
+        Thread.sleep(500); //timeout for create method to add all information into ATSD
         //checking get method
         String getURL = "/replacement-tables/csv/" +replacementTable;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET,getURL);
         get(getURL, getToken);
-        assertTrue("Replacement table was not created for user " + username, responseAPI.getStatus()!=404);
+        assertTrue("Replacement table was not created for user " + username, responseWithAPI.getStatus()!=404);
         assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
         String oldGetRespnse = responseAPIEntity; //buffering get response to check update method
         //checking list method
-        String listURL = "/replacement-tables/csv/";
+        String listURL = "/replacement-tables/json/";
         String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
         get(listURL, listToken);
-        assertEquals("Replacement tables list request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
         //checking update method
         String updateURL = "/replacement-tables/csv/" + replacementTable;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -595,80 +627,99 @@ public class TokenWorkTest extends BaseMethod {
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
         get(getURL,getToken);
-        assertEquals("Replacement table was not deleted with token request for user: " + username, 404, responseToken.getStatus());
+        assertEquals("Replacement table was not deleted with token request for user: " + username, 404, responseWithToken.getStatus());
     }
 
     private void dualTokenWorkTestForUser(String username) throws Exception {
+        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
         String firstURL = "/entities";
         String secondURL = "/metrics";
         String method = HttpMethod.GET;
         String token = TokenRepository.getToken(username, method, firstURL + "\n" + secondURL);
         //checking first url work
         get(firstURL, token);
-        assertEquals("Token work test with multiple urls (first url) failed for user " + username, responseAPIEntity, responseTokenEntity);
+        List<LinkedHashMap> entitiesListWithToken = responseWithToken.readEntity(List.class);
+        List<LinkedHashMap> entitiesListWithAPI = responseWithAPI.readEntity(List.class);
+
+        assertEquals("Entity list request executed with dual token and with API does not equal for user: " + username, entitiesListWithAPI.size(), entitiesListWithToken.size());
+        for(int i=0; i< entitiesListWithAPI.size(); i++) {
+            String nameWithToken = entitiesListWithToken.get(i).get("name").toString();
+            String nameWithAPI = entitiesListWithAPI.get(i).get("name").toString();
+            assertEquals("Entity list request executed with dual token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
+        }
         //checking second url work
         get(secondURL, token);
-        assertEquals("Token work test with multiple urls (second url) failed for user " + username, responseAPIEntity, responseTokenEntity);
+        List<LinkedHashMap> metricsListWithToken = responseWithToken.readEntity(List.class);
+        List<LinkedHashMap> metricsListWithAPI = responseWithAPI.readEntity(List.class);
+
+        assertEquals("Metric list request executed with dual token and with API does not equal for user: " + username, metricsListWithAPI.size(), metricsListWithToken.size());
+        for(int i=0; i< metricsListWithAPI.size(); i++) {
+            String nameWithToken = metricsListWithToken.get(i).get("name").toString();
+            String nameWithAPI = metricsListWithAPI.get(i).get("name").toString();
+            assertEquals("Metric list request executed with dual token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
+        }
     }
 
+
+
     private void insert(String username, String insertURL, Object insertData, String insertToken) {
-        responseToken = executeTokenRequest(webTarget -> webTarget.path(insertURL)
+        responseWithToken = executeTokenRequest(webTarget -> webTarget.path(insertURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + insertToken)
                 .method(HttpMethod.POST, Entity.json(insertData)));
-        responseToken.bufferEntity();
-        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseToken));
+        responseWithToken.bufferEntity();
+        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
     }
 
     private void get(String getURL, String getToken) {
-        responseAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
+        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
                 .request()
                 .method(HttpMethod.GET));
-        responseAPI.bufferEntity();
-        responseToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
+        responseWithAPI.bufferEntity();
+        responseWithToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
                 .method(HttpMethod.GET));
-        responseToken.bufferEntity();
-        responseAPIEntity = responseAPI.readEntity(String.class);
-        responseTokenEntity = responseToken.readEntity(String.class);
+        responseWithToken.bufferEntity();
+        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseTokenEntity = responseWithToken.readEntity(String.class);
     }
 
     private void query(String queryURL, Object query, String queryToken) {
-        responseAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
+        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .method(HttpMethod.POST, Entity.json(query)));
-        responseAPI.bufferEntity();
-        responseToken = executeTokenRequest(webTarget -> webTarget.path(queryURL)
+        responseWithAPI.bufferEntity();
+        responseWithToken = executeTokenRequest(webTarget -> webTarget.path(queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + queryToken)
                 .method(HttpMethod.POST, Entity.json(query)));
-        responseToken.bufferEntity();
-        responseAPIEntity = responseAPI.readEntity(String.class);
-        responseTokenEntity = responseToken.readEntity(String.class);
+        responseWithToken.bufferEntity();
+        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseTokenEntity = responseWithToken.readEntity(String.class);
     }
 
     private void createOrReplace(String username, String url, Object data, String token) {
-        responseToken =  executeTokenRequest(webTarget -> webTarget.path(url)
+        responseWithToken =  executeTokenRequest(webTarget -> webTarget.path(url)
                                                             .request()
                                                             .header(HttpHeaders.CONTENT_TYPE, "application/json")
                                                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                                             .method(HttpMethod.PUT, Entity.json(data)));
-        responseToken.bufferEntity();
-        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseToken));
+        responseWithToken.bufferEntity();
+        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
     }
 
     private void update(String username, String url, Object data, String token) {
-        responseToken =  executeTokenRequest(webTarget -> webTarget.path(url)
+        responseWithToken =  executeTokenRequest(webTarget -> webTarget.path(url)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .method("PATCH", Entity.json(data)));
-        responseToken.bufferEntity();
-        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseToken));
+        responseWithToken.bufferEntity();
+        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
     }
 
 
