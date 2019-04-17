@@ -241,10 +241,10 @@ public class TestUtil {
      * @throws IOException in case of IO problems with provider's file while opening.
      */
     public static <T> Object[][] jsonProvider(File file, Class<T[]> clazz) throws IOException {
-        return providerData(jsonArrayFile(file, clazz));
+        return convertTo2DimArray(jsonArrayFile(file, clazz));
     }
 
-    private static Object[][] providerData(Object[] data) {
+    public static Object[][] convertTo2DimArray(Object[] data) {
         return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
     }
 }

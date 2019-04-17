@@ -31,8 +31,8 @@ import static org.testng.Assert.assertEquals;
 
 
 /**
- * Take series transformations with multiple sets of output series (@link Transformation#AGGREGATE,
- * @link Transformation#GROUP, @link Transformation#Forcast) with different state of parameters DETAIL in Aggregation and Grouping
+ * Take series transformations with multiple sets of output series ({@link Transformation#AGGREGATE},
+ * {@link Transformation#GROUP}, {@link Transformation#FORECAST}) with different state of parameters DETAIL in Aggregation and Grouping
  * and History in Forecasting. Forecasting carried out by the algorithms Holt-Winters, SSA, and Holt-Winters and SSA simultaneously.
  * Check that response contains correct number of generated series for each permutation of the transformations.
  *
@@ -95,6 +95,17 @@ public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMe
         insertSeriesCheck(seriesArray);
     }
 
+    private void addSamplesToSeries(Series... seriesList) {
+        long totalSamplesCount = TIME_INTERVAL * java.util.concurrent.TimeUnit.DAYS.toMinutes(1) * HALF_MINUTES;
+        for (int i = 0; i < totalSamplesCount; i++) {
+            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
+            Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
+            for(Series series: seriesList) {
+                series.addSamples(sample);
+            }
+        }
+    }
+
     @DataProvider(name = "bad_response_data", parallel = true)
     public Object[][] badResponseData() {
         return generateTestData(true);
@@ -149,25 +160,7 @@ public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMe
             }
         }
 
-        Object[][] result = new Object[queryList.size()][1];
-        int queryIndex = 0;
-        for (SeriesQuery query: queryList) {
-            result[queryIndex][0] = query;
-            queryIndex++;
-        }
-
-        return result;
-    }
-
-    private void addSamplesToSeries(Series ... seriesList) {
-        long totalSamplesCount = TIME_INTERVAL * java.util.concurrent.TimeUnit.DAYS.toMinutes(1) * HALF_MINUTES;
-        for (int i = 0; i < totalSamplesCount; i++) {
-            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
-            Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
-            for(Series series: seriesList) {
-                series.addSamples(sample);
-            }
-        }
+        return TestUtil.convertTo2DimArray(queryList.toArray());
     }
 
     private List<Aggregate> generateAggregationSet() {
