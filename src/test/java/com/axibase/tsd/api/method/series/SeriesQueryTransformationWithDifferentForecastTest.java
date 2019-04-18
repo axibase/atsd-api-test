@@ -120,7 +120,8 @@ public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMe
             description = "Take order of series transformations with irregular series before forecast. " +
                     "Check that response contains error")
     public void testBadResponse(SeriesQuery query) {
-        assertEquals(Response.Status.fromStatusCode(querySeries(query).getStatus()), Response.Status.BAD_REQUEST);
+        assertEquals(Response.Status.fromStatusCode(querySeries(query).getStatus()), Response.Status.BAD_REQUEST,
+                "Incorrect status of response (Expected: 400, Bad request)");
     }
 
     @Test(dataProvider = "good_response_data",
@@ -128,7 +129,7 @@ public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMe
     public void testGoodResponse(SeriesQuery query) {
         List<Series> seriesList = querySeriesAsList(query);
         int expectedSeriesCount = countExpectedSeries(query);
-        assertEquals(seriesList.size(), expectedSeriesCount);
+        assertEquals(seriesList.size(), expectedSeriesCount, "Quantity of series in response not match expected");
     }
 
     private Object[][] generateTestData(boolean forBadResponse) {
