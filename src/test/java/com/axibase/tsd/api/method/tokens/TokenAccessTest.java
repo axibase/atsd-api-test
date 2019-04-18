@@ -5,77 +5,134 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import io.qameta.allure.Issue;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.testng.AssertJUnit.*;
 
 
 public class TokenAccessTest extends BaseMethod {
+    private static final String USER_NAME = "apitokenuser";
+    private static final String ADMIN_NAME;
 
-    private static final String[][] availablePaths = new String[][]{
-        // Data API
-        {"/series/query", "POST"},
-        {"/series/insert", "POST"},
-        {"/series/csv/entity", "POST"},
-        {"/series/json/entity/metric", "GET"},
-        {"/series/csv/entity/metric", "GET"},
-        {"/series/query", "POST"},
-        {"/series/delete", "POST"},
-        {"/properties/query", "POST"},
-        {"/properties/insert", "POST"},
-        {"/properties/delete", "POST"},
-        {"/properties/entity/types/type", "GET"},
-        {"/properties/entity/types", "GET"},
-        {"/messages/query", "POST"},
-        {"/messages/insert", "POST"},
-        {"/messages/stats/query", "POST"},
-        {"/alerts/query", "POST"},
-        {"/alerts/update", "POST"},
-        {"/alerts/delete", "POST"},
-        {"/alerts/history/query", "POST"},
-        {"/csv", "POST"},
-        {"/nmon", "POST"},
-        {"/command", "POST"},
-        {"/export", "GET"},
-        // Meta API
-        {"/metrics", "GET"},
-        {"/metrics/metric", "GET"},
-        {"/metrics/metric", "PUT"},
-        {"/metrics/metric", "PATCH"},
-        {"/metrics/metric", "DELETE"},
-        {"/metrics/metric/series", "GET"},
-        {"/entities", "GET"},
-        {"/entities", "POST"},
-        {"/entities/entity", "GET"},
-        {"/entities/entity", "PUT"},
-        {"/entities/entity", "PATCH"},
-        {"/entities/entity", "DELETE"},
-        {"/entities/entity/groups", "GET"},
-        {"/entities/entity/metrics", "GET"},
-        {"/entities/entity/property-types", "GET"},
-        {"/entity-groups", "GET"},
-        {"/entity-groups/group", "GET"},
-        {"/entity-groups/group", "PUT"},
-        {"/entity-groups/group", "PATCH"},
-        {"/entity-groups/group", "DELETE"},
-        {"/entity-groups/group/entities", "GET"},
-        {"/entity-groups/group/entities/add", "POST"},
-        {"/entity-groups/group/entities/set", "POST"},
-        {"/entity-groups/group/entities/delete", "POST"},
-        {"/search", "GET"},
-        {"/version", "GET"},
-    };
+    static {
+        try {
+            ADMIN_NAME = Config.getInstance().getLogin();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
-    private static final String USER_NAME = "APITokenUser";
+    @DataProvider
+    private Object[][] availablePaths() {
+        return new String[][]{
+                // Data API
+                {"/series/query", HttpMethod.POST},
+                {"/series/insert", HttpMethod.POST},
+                {"/series/csv/entity", HttpMethod.POST},
+                {"/series/json/entity/metric", HttpMethod.GET},
+                {"/series/csv/entity/metric", HttpMethod.GET},
+                {"/series/query", HttpMethod.POST},
+                {"/series/delete", HttpMethod.POST},
+                {"/properties/query", HttpMethod.POST},
+                {"/properties/insert", HttpMethod.POST},
+                {"/properties/delete", HttpMethod.POST},
+                {"/properties/entity/types/type", HttpMethod.GET},
+                {"/properties/entity/types", HttpMethod.GET},
+                {"/messages/query", HttpMethod.POST},
+                {"/messages/insert", HttpMethod.POST},
+                {"/messages/stats", HttpMethod.POST},
+                {"/messages/stats/query", HttpMethod.POST},
+                {"/messages/webhook", HttpMethod.POST},
+                {"/messages/webhook", HttpMethod.GET},
+                {"/alerts", HttpMethod.POST},
+                {"/alerts/query", HttpMethod.POST},
+                {"/alerts/update", HttpMethod.POST},
+                {"/alerts/delete", HttpMethod.POST},
+                {"/alerts/history", HttpMethod.POST},
+                {"/alerts/history/query", HttpMethod.POST},
+                {"/csv", HttpMethod.POST},
+                {"/nmon", HttpMethod.POST},
+                {"/command", HttpMethod.POST},
+                {"/commands/batch", HttpMethod.POST},
+                {"/export", HttpMethod.GET},
+                // Meta API
+                {"/metrics", HttpMethod.GET},
+                {"/metrics/metric", HttpMethod.GET},
+                {"/metrics/metric", HttpMethod.PUT},
+                {"/metrics/metric", "PATCH"},
+                {"/metrics/metric", HttpMethod.DELETE},
+                {"/metrics/metric/rename", HttpMethod.POST},
+                {"/metrics/metric/series", HttpMethod.GET},
+                {"/entities", HttpMethod.GET},
+                {"/entities", HttpMethod.POST},
+                {"/entities/entity", HttpMethod.GET},
+                {"/entities/entity", HttpMethod.PUT},
+                {"/entities/entity", "PATCH"},
+                {"/entities/entity", HttpMethod.DELETE},
+                {"/entities/entity/groups", HttpMethod.GET},
+                {"/entities/entity/metrics", HttpMethod.GET},
+                {"/entities/entity/property-types", HttpMethod.GET},
+                {"/entity-groups", HttpMethod.GET},
+                {"/entity-groups/group", HttpMethod.GET},
+                {"/entity-groups/group", HttpMethod.PUT},
+                {"/entity-groups/group", "PATCH"},
+                {"/entity-groups/group", HttpMethod.DELETE},
+                {"/entity-groups/group/entities", HttpMethod.GET},
+                {"/entity-groups/group/entities/add", HttpMethod.POST},
+                {"/entity-groups/group/entities/set", HttpMethod.POST},
+                {"/entity-groups/group/entities/delete", HttpMethod.POST},
+                {"/replacement-tables/csv", HttpMethod.GET},
+                {"/replacement-tables/json", HttpMethod.GET},
+                {"/replacement-tables/csv/replacement-table", HttpMethod.GET},
+                {"/replacement-tables/json/replacement-table", HttpMethod.GET},
+                {"/replacement-tables/replacement-table", HttpMethod.DELETE},
+                {"/replacement-tables/csv/replacement-table", HttpMethod.PUT},
+                {"/replacement-tables/json/replacement-table", HttpMethod.PUT},
+                {"/replacement-tables/csv/replacement-table", "PATCH"},
+                {"/replacement-tables/json/replacement-table", "PATCH"},
+                {"/search", HttpMethod.GET},
+                {"/version", HttpMethod.GET},
+                {"/ping", HttpMethod.GET}
+        };
+    }
+
+    @DataProvider
+    private Object[][] users() {
+        return new String[][] {
+                {ADMIN_NAME},
+                {USER_NAME}
+        };
+    }
+
+    @DataProvider
+    private Object[][] userAndPathAndMethod() {
+        List<Object[]> pathsAndMethods = Arrays.asList(availablePaths());
+        List<Object[]> result = new ArrayList<>();
+
+        for(Object[] arr : pathsAndMethods) {
+            result.add(ArrayUtils.addAll(arr, new String[] {ADMIN_NAME}));
+            result.add(ArrayUtils.addAll(arr, new String[] {USER_NAME}));
+        }
+
+        return result.toArray(new Object[pathsAndMethods.size()][3]);
+    }
 
     @BeforeClass
     private void createUser() {
@@ -90,6 +147,7 @@ public class TokenAccessTest extends BaseMethod {
                                         .queryParam("userBean.userRoles","ROLE_API_DATA_WRITE")
                                         .queryParam("userBean.userRoles","ROLE_API_META_WRITE")
                                         .queryParam("userBean.userRoles","ROLE_USER")
+                                        .queryParam("userBean.userRoles", "ROLE_ENTITY_GROUP_ADMIN")
                                         .queryParam("userBean.userGroups", "Users")
                                         .queryParam("create", "true")
                                         .request()
@@ -98,94 +156,248 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Issue("6052")
-    @Test
-    public void testTokenAccess() throws Exception {
-        Config config = Config.getInstance();
-        testTokenAccessForUser(config.getLogin());
-        testTokenAccessForUser(USER_NAME);
+    @Test (
+            dataProvider = "userAndPathAndMethod"
+    )
+    public void tokenAccessToItsUrlTest(String path, String method, String username) throws Exception {
+       String token = TokenRepository.getToken(username, method, path);
+       Response response;
+       if(method.equals(HttpMethod.DELETE) || method.equals(HttpMethod.GET)) {
+           response = executeMethodWithoutEntity(token, path, method);
+       } else {
+           response = executeMethodWithEntity(token, path, method);
+       }
+       assertTrue("Token for path " + path + " and method " + method + " failed to authorise user " + username + " token: " + token +  " response: " + response.readEntity(String.class), response.getStatus() != 401);
     }
 
     @Issue("6052")
-    @Test
-    public  void testDualTokenAccess() throws Exception {
-        Config config = Config.getInstance();
-        testDualTokenAccessForUser(config.getLogin());
-        testDualTokenAccessForUser(USER_NAME);
-    }
-
-    private void testTokenAccessForUser(String username) throws Exception {
-        String availablePath="/csv";
-        String availableMethod= HttpMethod.POST;
+    @Test (
+            dataProvider = "userAndPathAndMethod"
+    )
+    public void tokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
+        String availablePath = "/csv";
+        String availableMethod = HttpMethod.POST;
         String token = TokenRepository.getToken(username, availableMethod, availablePath);
         Response response;
-        for(String[] testingPathAndMethod : availablePaths) {
-            String testingPath = testingPathAndMethod[0];
-            String testingMethod = testingPathAndMethod[1];
-            if(testingMethod.equals(HttpMethod.GET) || testingMethod.equals(HttpMethod.DELETE)) {
-                response = executeMethodWithoutEntity(token, testingPath, testingMethod);
-            }
-            else {
-                response = executeMethodWithEntity(token, testingPath, testingMethod);
-            }
-            if(testingPath.equals(availablePath) && testingMethod.equals(availableMethod)) {
-                assertTrue("Authorisation failed on token " + token + " User: " +username, response.getStatus() != 401);
-                continue;
-            }
-            assertEquals("Authorisation not failed on token: " + token +" Path: " + testingPath + " Method: "+ testingMethod + " User: "+ username, 401, response.getStatus());
-            String entity = response.readEntity(String.class);
-            assertTrue("Error code expected to be 15. Token: " + token + " Path: " + testingPath + " Method: "+ testingMethod + " User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+        if(method.equals(HttpMethod.DELETE) || method.equals(HttpMethod.GET)) {
+            response = executeMethodWithoutEntity(token, path, method);
+        } else {
+            response = executeMethodWithEntity(token, path, method);
         }
-        //testing that token can not get access to url with another parameters
-        response = executeTokenRequest(webTarget -> webTarget.path(availablePath)
-                .queryParam("config", "not_valid_config")
-                .request()
-                .method(availableMethod));
-        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + availablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
-        String entity = response.readEntity(String.class);
-        assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + availablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+        if(!(path.equals(availablePath) && method.equals(availableMethod))) {
+            assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username, 401, response.getStatus());
+            String entity = response.readEntity(String.class);
+            assertTrue("Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+        }
 
     }
 
-    private void testDualTokenAccessForUser(String username) throws Exception {
-        String firstAvailablePath = "/csv";
-        String secondAvailablePath = "/command";
-        String availableMethod = HttpMethod.POST;
-        String token = TokenRepository.getToken(username, availableMethod, firstAvailablePath + "\n" + secondAvailablePath);
-        Response response;
-        for(String[] testingPathAndMethod : availablePaths){
-            String testingPath = testingPathAndMethod[0];
-            String testingMethod = testingPathAndMethod[1];
-            if(testingMethod.equals(HttpMethod.GET) || testingMethod.equals(HttpMethod.DELETE)) {
-                response = executeMethodWithoutEntity(token, testingPath, testingMethod);
-            }
-            else {
-                response = executeMethodWithEntity(token, testingPath, testingMethod);
-            }
-            if(availableMethod.equals(testingMethod) && (firstAvailablePath.equals(testingPath) || secondAvailablePath.equals(testingPath))) {
-                assertTrue("Authorisation failed on token " + token + " User: " +username + " Path: " + testingPath + " Method " + testingMethod, response.getStatus() != 401);
-                continue;
-            }
-            assertEquals("Authorisation not failed on token: " + token +" Path: " + testingPath + " Method: "+ testingMethod + " User: "+ username, 401, response.getStatus());
-            String entity = response.readEntity(String.class);
-            assertTrue("Error code expected to be 15. Token: " + token + " Path: " + testingPath + " Method: "+ testingMethod + " User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+    @Issue("6052")
+    @Test (
+            dataProvider = "userAndPathAndMethod"
+    )
+    public void tokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
+        String token = TokenRepository.getToken(username, method, path);
+        Response responseRoot; //response from root request
+        Response responseAPI; //response from /api/path
+        if (method.equals(HttpMethod.GET) || method.equals(HttpMethod.DELETE)) {
+            responseRoot = executeRootTokenMethodWithoutEntity(token, path, method);
+            responseAPI = executeMethodWithoutEntity(token, "/api" + path, method);
+        } else {
+            responseRoot = executeRootTokenMethodWithEntity(token, path, method);
+            responseAPI = executeMethodWithEntity(token,"/api"+path, method);
         }
-        response = executeTokenRequest(webTarget -> webTarget.path(firstAvailablePath)
-                                                        .queryParam("config", "not_valid_config")
-                                                        .request()
-                                                        .method(availableMethod));
-        response.bufferEntity();
-        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + firstAvailablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
-        String entity = response.readEntity(String.class);
-        assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + firstAvailablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+        assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for root request.", 401, responseRoot.getStatus());
+        assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for /api request.", 401, responseAPI.getStatus());
+    }
 
-        response = executeTokenRequest(webTarget -> webTarget.path(secondAvailablePath)
-                .queryParam("commit", true)
+    @Issue("6052")
+    @Test (
+            dataProvider = "users"
+    )
+    public void tokenAccessToUrlParamsDenialTest(String username) throws Exception {
+        String path = "/csv";
+        String paramName = "config";
+        String paramValue = "not_valid_config";
+        String method = HttpMethod.POST;
+        String token = TokenRepository.getToken(username, method, path);
+        Response response = executeParamsWithEntity(token, path, method, paramName, paramValue);
+
+        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + path + " Method: "+ method + "User: " +username, 401, response.getStatus());
+        String entity = response.readEntity(String.class);
+        assertTrue("Token for path " + path + " and method " + method + "with params " + paramName + "=" + paramValue + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+    }
+
+    @Issue("6052")
+    @Test (
+            dataProvider = "userAndPathAndMethod"
+    )
+    public void dualTokenAccessToItsUrlsTest(String path, String method, String username) throws Exception {
+        String anotherPath;
+        switch (method) {
+            case (HttpMethod.GET):
+                anotherPath = "/entities";
+                break;
+            case (HttpMethod.POST):
+                anotherPath = "/csv";
+                break;
+            case (HttpMethod.DELETE):
+                anotherPath = "/entities/entity";
+                break;
+            case (HttpMethod.PUT):
+                anotherPath = "/entities/entity";
+                break;
+            case ("PATCH"):
+                anotherPath = "/entities/entity";
+                break;
+            default:
+                throw new RuntimeException(method+" is not a valid Http method");
+        }
+        if(path.equals(anotherPath)) {
+            return;
+        }
+        String token = TokenRepository.getToken(username, method,path+","+anotherPath);
+        Response firstResponse;
+        Response secondResponse;
+        if(method.equals(HttpMethod.DELETE) || method.equals(HttpMethod.GET)) {
+            firstResponse = executeMethodWithoutEntity(token, path, method);
+            secondResponse = executeMethodWithoutEntity(token, anotherPath, method);
+        } else {
+            firstResponse = executeMethodWithEntity(token, path, method);
+            secondResponse = executeMethodWithEntity(token, anotherPath, method);
+        }
+
+        assertTrue("Dual token for urls " + path + "," + anotherPath + " failed to grand access to " + path + " for user " + username, 401!=firstResponse.getStatus());
+        assertTrue("Dual token for urls " + path + "," + anotherPath + " failed to grand access to " + anotherPath + " for user " + username, 401!=secondResponse.getStatus());
+
+    }
+
+    @Issue("6052")
+    @Test (
+            dataProvider = "userAndPathAndMethod"
+    )
+    public void dualTokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
+        String firstPath = "/csv";
+        String secondPath = "/command";
+        String availableMethod = HttpMethod.POST;
+        String token = TokenRepository.getToken(username, availableMethod,firstPath+"," + secondPath);
+        Response response;
+        if(method.equals(HttpMethod.DELETE) || method.equals(HttpMethod.GET)) {
+            response = executeMethodWithoutEntity(token, path, method);
+        } else {
+            response = executeMethodWithEntity(token, path, method);
+        }
+        if(!((path.equals(firstPath) || path.equals(secondPath)) && method.equals(availableMethod))) {
+            assertEquals("Dual token for urls " + firstPath + "," + secondPath + " and method " + method + " did not fail to authorise user " + username + " to path " + path, 401, response.getStatus());
+            String entity = response.readEntity(String.class);
+            assertTrue("Dual Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+        }
+    }
+
+    @Issue("6052")
+    @Test (
+            dataProvider = "userAndPathAndMethod"
+    )
+    public void dualTokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
+        String anotherPath;
+        switch (method) {
+            case (HttpMethod.GET):
+                anotherPath = "/entities";
+                break;
+            case (HttpMethod.POST):
+                anotherPath = "/csv";
+                break;
+            case (HttpMethod.DELETE):
+                anotherPath = "/entities/entity";
+                break;
+            case (HttpMethod.PUT):
+                anotherPath = "/entities/entity";
+                break;
+            case ("PATCH"):
+                anotherPath = "/entities/entity";
+                break;
+            default:
+                throw new RuntimeException(method+" is not a valid Http method");
+        }
+        if(path.equals(anotherPath)) {
+            return;
+        }
+        String token = TokenRepository.getToken(username, method,path+","+anotherPath);
+        Response firstResponseRoot;
+        Response secondResponseRoot;
+        Response firstResponseAPI;
+        Response secondResponseAPI;
+
+        if(method.equals(HttpMethod.DELETE) || method.equals(HttpMethod.GET)) {
+            firstResponseRoot = executeRootTokenMethodWithoutEntity(token, path, method);
+            firstResponseAPI = executeRootTokenMethodWithoutEntity(token, "/api" + path, method);
+            secondResponseRoot = executeRootTokenMethodWithoutEntity(token, path, method);
+            secondResponseAPI = executeRootTokenMethodWithoutEntity(token, "/api" + path, method);
+        } else {
+            firstResponseRoot = executeRootTokenMethodWithEntity(token, path, method);
+            firstResponseAPI = executeRootTokenMethodWithEntity(token, "/api" + path, method);
+            secondResponseRoot = executeRootTokenMethodWithEntity(token, path, method);
+            secondResponseAPI = executeRootTokenMethodWithEntity(token, "/api" + path, method);
+        }
+
+        assertEquals("Dual Token for path " + path + "and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for root request for path " + path, 401, firstResponseRoot.getStatus());
+        assertEquals("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + path, 401, firstResponseAPI.getStatus());
+
+        assertEquals("Dual Token for path " + path + "and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for root request for path " + anotherPath, 401, secondResponseRoot.getStatus());
+        assertEquals("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + anotherPath, 401, secondResponseAPI.getStatus());
+    }
+
+    @Issue("6052")
+    @Test (
+            dataProvider = "users"
+    )
+    public void dualTokenAccessToUrlParamsDenialTest(String username) throws  Exception {
+        String firstPath = "/csv";
+        String fistParamName = "config";
+        String firstParamValue = "not_valid_config";
+        String secondPath = "/command";
+        String secondParamName = "commit";
+        String secondParamValue = "not_valid_commit";
+        String method = HttpMethod.POST;
+        String token = TokenRepository.getToken(username, method, firstPath);
+        Response firstResponse = executeParamsWithEntity(token, firstPath, method, fistParamName, firstParamValue);
+        Response secondResponse = executeParamsWithEntity(token, secondPath, method, secondParamName, secondParamValue);
+
+        assertEquals("Authorisation not failed with not valid parameter on dual token: " + token +" Path: " + firstPath + " Method: "+ method + "User: " +username, 401, firstResponse.getStatus());
+        String entity = firstResponse.readEntity(String.class);
+        assertTrue("Dual Token for path " + firstPath + " and method " + method + "with params " + fistParamName + "=" + firstParamValue + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+
+        assertEquals("Authorisation not failed with not valid parameter on dual token: " + token +" Path: " + secondPath + " Method: "+ method + "User: " +username, 401, secondResponse.getStatus());
+        entity = secondResponse.readEntity(String.class);
+        assertTrue("Dual Token for path " + secondPath + " and method " + method + "with params " + secondParamName + "=" + secondParamValue + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+    }
+
+    private Response executeParamsWithEntity(String token, String path, String method, String paramName, String paramValue) {
+        final Response response = executeTokenRequest(webTarget -> webTarget.path(path)
+                .queryParam(paramName, paramValue)
                 .request()
-                .method(availableMethod));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .method(method, Entity.json("entity")));
         response.bufferEntity();
-        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + secondAvailablePath + " Method: "+ availableMethod + "User: " +username, 401, response.getStatus());
-        entity = response.readEntity(String.class);
-        assertTrue("Error code expected to be 15 with not valid parameter. Token: " + token + " Path: " + secondAvailablePath + " Method: "+ availableMethod + "User: " + username + " Actual respose: " + entity, entity.contains("code 15"));
+        return response;
+    }
+
+    private Response executeRootTokenMethodWithoutEntity(String token, String path, String method) {
+        final Response response = executeTokenRootRequest(webTarget -> webTarget.path(path)
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .method(method));
+        response.bufferEntity();
+        return response;
+    }
+
+    private Response executeRootTokenMethodWithEntity(String token, String path, String method) {
+        final Response response = executeTokenRootRequest(webTarget -> webTarget.path(path)
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .method(method, Entity.json("entity")));
+        response.bufferEntity();
+        return response;
     }
 
     private Response executeMethodWithoutEntity(String token, String path, String method) {
@@ -204,9 +416,10 @@ public class TokenAccessTest extends BaseMethod {
         response.bufferEntity();
         return response;
     }
-    @AfterClass
+
+
     private void deleteUser() {
-        String username="APITokenUser";
+        String username=USER_NAME;
         String path ="/admin/users/edit.xhtml";
         executeRootRequest(webTarget -> webTarget.path(path)
                                         .queryParam("userBean.username", username)

@@ -44,6 +44,7 @@ public abstract class BaseMethod {
     private static final GenericObjectPool<HttpClient> apiTargetPool;
     private static final GenericObjectPool<HttpClient> rootTargetPool;
     private static final GenericObjectPool<HttpClient> tokenTargetPool;
+    private static final GenericObjectPool<HttpClient> tokenRootTargetPool;
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
@@ -79,6 +80,8 @@ public abstract class BaseMethod {
                     new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
             tokenTargetPool = new GenericObjectPool<>(
                 new HttpClientFactory(tokenConfig, config, config.getApiPath()), objectPoolConfig);
+            tokenRootTargetPool = new GenericObjectPool<>(
+             new HttpClientFactory(tokenConfig, config, ""), objectPoolConfig);
 
             jacksonMapper = new ObjectMapper();
             jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
@@ -146,6 +149,10 @@ public abstract class BaseMethod {
 
     public static Response executeTokenRequest(Function<WebTarget, Response> requestFunction) {
         return executeRequest(tokenTargetPool, requestFunction);
+    }
+
+    public static Response executeTokenRootRequest(Function<WebTarget, Response> requestFunction) {
+        return executeRequest(tokenRootTargetPool, requestFunction);
     }
 
     private static Response executeRequest(

@@ -53,6 +53,10 @@ public class ReplacementTableMethod extends BaseMethod {
         return response;
     }
 
+    public static boolean replacementTableExist(ReplacementTable replacementTable) throws  NotCheckedException {
+        return replacementTableExist(replacementTable.getName());
+    }
+
     public static boolean replacementTableExist(String replacementTableName) throws NotCheckedException {
         replacementTableName = replacementTableName.replace(" ", "_").toLowerCase();
         final Response response = getReplacementTablesResponse(replacementTableName);

@@ -1,10 +1,14 @@
 package com.axibase.tsd.api.method.tokens;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.TokenCheck;
 import lombok.Data;
 
 
 import java.util.concurrent.ConcurrentMap;
 
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import com.axibase.tsd.api.Config;
@@ -32,7 +36,6 @@ public class TokenRepository extends BaseMethod {
         String method = tokenRequest.getMethod();
         String url = tokenRequest.getUrl();
 
-
         String requestString ="/admin/users/tokens/new";
         Response response = executeRootRequest(webTarget -> webTarget.path(requestString)
                     .queryParam("user", user)
@@ -40,8 +43,10 @@ public class TokenRepository extends BaseMethod {
                     .queryParam("method", method)
                     .queryParam("urls", url)
                     .request()
-                    .method("POST"));
+                    .method(HttpMethod.POST, Entity.json("user="+user)));
+        response.bufferEntity();
         String token=StringUtils.substringAfterLast(StringUtils.substringBefore(response.getHeaderString("Location"),";"), "/");
+        Checker.check(new TokenCheck(token));
         return token;
     }
 

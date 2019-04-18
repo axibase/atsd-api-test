@@ -1,8 +1,10 @@
 package com.axibase.tsd.api.method.tokens;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.alert.AlertTest;
+import com.axibase.tsd.api.method.checks.*;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
@@ -14,6 +16,7 @@ import com.axibase.tsd.api.model.message.MessageStatsQuery;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
+import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
@@ -23,6 +26,7 @@ import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 
@@ -49,7 +53,7 @@ public class TokenWorkTest extends BaseMethod {
     private String responseTokenEntity;
 
     static {
-        USER_NAME = "APITokenUser";
+        USER_NAME = "apitokenuser";
         USER_PASSWORD = RandomStringUtils.random(10, true, true);
         try {
             Config config = Config.getInstance();
@@ -61,6 +65,13 @@ public class TokenWorkTest extends BaseMethod {
         }
     }
 
+    @DataProvider
+    private Object[][] users() {
+        return new String[][] {
+                {ADMIN_NAME},
+                {USER_NAME}
+        };
+    }
 
     @BeforeClass
     private void createUser() {
@@ -83,71 +94,12 @@ public class TokenWorkTest extends BaseMethod {
                 .bufferEntity();
     }
 
-
+    //TODO change asserts to json comparisons
     @Issue("6052")
-    @Test
-    public void tokenSeriesTest() throws  Exception {
-        tokenSeriesTestForUser(ADMIN_NAME);
-        tokenSeriesTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenPropertiesTest() throws Exception {
-        tokenPropertiesTestForUser(ADMIN_NAME);
-        tokenPropertiesTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenMessagesTest() throws Exception {
-        tokenMessagesTestForUser(ADMIN_NAME);
-        tokenMessagesTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenAlertsTest() throws Exception {
-        tokenAlertsTestForUser(ADMIN_NAME);
-        tokenAlertsTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenMetricTest() throws Exception {
-        tokenMetricTestForUser(ADMIN_NAME);
-        tokenMetricTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenEntityTest() throws Exception {
-        tokenEntityTestForUer(ADMIN_NAME);
-        tokenEntityTestForUer(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenEntityGroupsTest() throws Exception {
-        tokenEntityGroupsTestForUser(ADMIN_NAME);
-        tokenEntityGroupsTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void tokenReplacementTablesTest() throws Exception {
-        tokenReplacementTablesTestForUser(ADMIN_NAME);
-        tokenReplacementTablesTestForUser(USER_NAME);
-    }
-
-    @Issue("6052")
-    @Test
-    public void dualTokenTest() throws Exception {
-        dualTokenWorkTestForUser(ADMIN_NAME);
-        dualTokenWorkTestForUser(USER_NAME);
-    }
-
-    private void tokenSeriesTestForUser(String username) throws Exception {
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenSeriesTest(String username) throws  Exception {
         String entity = "token_test_series_" + username + "_entity";
         String metric = "token_test_series_" + username + "_metric";
         long startUnixTime = System.currentTimeMillis();
@@ -161,8 +113,8 @@ public class TokenWorkTest extends BaseMethod {
         series.addSamples(sample);
         seriesList.add(series);
         insert(username,insertURL,seriesList,insertToken);
+        Checker.check(new SeriesCheck(seriesList));
         //checking get method
-        Thread.sleep(500); //getting timeout for ATSD to insert series
         String getURL = "/series/json/" + entity +"/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL + "?startDate=previous_hour&endDate=next_day");
         responseWithAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
@@ -199,11 +151,11 @@ public class TokenWorkTest extends BaseMethod {
         deleteQuery.add(delete);
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
-                                                .request()
-                                                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                                                .method(HttpMethod.POST, Entity.json(deleteQuery)))
-                                                .bufferEntity();
+                .request()
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
+                .method(HttpMethod.POST, Entity.json(deleteQuery)))
+                .bufferEntity();
         //checking that series was successfully deleted
         responseWithAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
                 .request()
@@ -212,10 +164,13 @@ public class TokenWorkTest extends BaseMethod {
         responseWithAPI.bufferEntity();
         responseAPIEntity = responseWithAPI.readEntity(String.class);
         assertTrue("User: " + username + " Response does not contain warning after delete: " + responseAPIEntity,responseAPIEntity.contains("warning"));
-
     }
 
-    private void tokenPropertiesTestForUser(String username) throws Exception {
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenPropertiesTest(String username) throws Exception {
         String entity = "token_test_properties_" + username + "_entity";
         String type = "token_test_properties_" + username + "_type";
         String tagName = "name";
@@ -230,8 +185,8 @@ public class TokenWorkTest extends BaseMethod {
         String insertURL = "/properties/insert";
         String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
         insert(username, insertURL, propertyList, insertToken);
+        Checker.check(new PropertyCheck(property));
         //checking get method
-        Thread.sleep(500); //getting timeout for ATSD to insert property
         String getURL = "/properties/" + entity + "/types/" + type;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
         get(getURL, getToken);
@@ -278,20 +233,27 @@ public class TokenWorkTest extends BaseMethod {
         assertTrue("User: " + username + " Property was not deleted with token response. Response body: " + responseAPIEntity, responseAPIEntity.equals("[]"));
     }
 
-    private void tokenMessagesTestForUser(String username) throws Exception {
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenMessagesTest(String username) throws Exception {
         String entity = "token_test_messages_" +username + "_entity";
         String type = "logger";
+        String messageText = "message";
         long startUnixTime = System.currentTimeMillis();
         Message message = new Message(entity, type);
         message.setDate(Util.ISOFormat(startUnixTime));
         List<Message> messageList = new ArrayList<>();
+        message.setMessage(messageText);
         messageList.add(message);
 
         String insertURL = "/messages/insert";
         String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
         insert(username,insertURL, messageList, insertToken);
+        Checker.check(new EntityCheck(new com.axibase.tsd.api.model.entity.Entity(entity)));
+        Checker.check(new MessageCheck(message));
         //check message query
-        Thread.sleep(500); //getting timeout for ATSD to insert message
         String queryURL = "/messages/query";
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
         MessageQuery q = new MessageQuery();
@@ -299,7 +261,7 @@ public class TokenWorkTest extends BaseMethod {
         List<MessageQuery> query = new ArrayList<>();
         query.add(q);
         query(queryURL, query, queryToken);
-        assertTrue("User: " + username + " Response contains warning: " + responseAPIEntity,!(responseAPIEntity.contains("error")));
+        assertTrue("User: " + username + " Message insertion with token failed. Response : " + responseAPIEntity,!(responseAPIEntity.contains("error") || responseAPIEntity.equals(new ArrayList<>().toString())));
         assertEquals("User: " + username + " token message query response does not equal api message query response", responseAPIEntity , responseTokenEntity);
         //check message count query
         String countURL = "/messages/stats/query";
@@ -315,7 +277,11 @@ public class TokenWorkTest extends BaseMethod {
         assertEquals("User: " + username + " Token message count response entity does not equal API message count response entity", responseAPIEntity, responseTokenEntity);
     }
 
-    private void tokenAlertsTestForUser(String username) throws Exception {
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenAlertsTest(String username) throws Exception {
         String entity = "token_test_alerts_" + username + "_entity";
         String metric = AlertTest.RULE_METRIC_NAME;
         MetricMethod.deleteMetric(metric);
@@ -373,8 +339,11 @@ public class TokenWorkTest extends BaseMethod {
         MetricMethod.deleteMetric(metric);
     }
 
-    private void tokenMetricTestForUser(String username) throws Exception {
-        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenMetricTest(String username) throws Exception {
         String metricName = "token_test_metrictest_" + username + "_metric";
         String tagName = "name";
         String tagValue = "value";
@@ -385,26 +354,13 @@ public class TokenWorkTest extends BaseMethod {
         String createURL = "/metrics/" + metricName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username, createURL, metric, createToken);
+        Checker.check(new MetricCheck(metric));
         //checking get method
         String getURL = "/metrics/" + metricName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
         get(getURL, getToken);
         assertTrue("Metric was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
         assertEquals("Metric get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
-        Thread.sleep(500); //timeout for create method to add all information into ATSD
-        //checking list method
-        String listURL = "/metrics/";
-        String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL, listToken);
-        List<LinkedHashMap> metricsListWithToken = responseWithToken.readEntity(List.class);
-        List<LinkedHashMap> metricsListWithAPI = responseWithAPI.readEntity(List.class);
-
-        assertEquals("Metric list request executed with token and with API does not equal for user: " + username, metricsListWithAPI.size(), metricsListWithToken.size());
-        for(int i=0; i< metricsListWithAPI.size(); i++) {
-            String nameWithToken = metricsListWithToken.get(i).get("name").toString();
-            String nameWithAPI = metricsListWithAPI.get(i).get("name").toString();
-            assertEquals("Metric list request executed with token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
-        }
         //checking update method
         String updateURL = "/metrics/" + metricName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -437,17 +393,20 @@ public class TokenWorkTest extends BaseMethod {
         String deleteURL = "/metrics/" + metricName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
-                                                            .request()
-                                                            .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
-                                                            .method(HttpMethod.DELETE))
-                                                            .bufferEntity();
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
+                .method(HttpMethod.DELETE))
+                .bufferEntity();
         //checking that metric was deleted
         get(getURL,getToken);
         assertTrue("Metric was not deleted with token for user "+username, responseAPIEntity.contains("error"));
     }
 
-    private void tokenEntityTestForUer(String username) throws Exception {
-        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenEntityTest(String username) throws Exception {
         String entityName = "token_test_entitytest_" + username + "_entity";
         String tagName = "name";
         String tagValue = "value";
@@ -457,26 +416,13 @@ public class TokenWorkTest extends BaseMethod {
         String createURL = "/entities/" + entityName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username, createURL, entity, createToken);
-        Thread.sleep(500); //timeout for create method to add all information into ATSD
+        Checker.check(new EntityCheck(entity));
         //checking get method
         String getURL = "/entities/" + entityName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
         get(getURL, getToken);
         assertTrue("Entity was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
         assertEquals("Entity get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
-        //checking list method
-        String listURL = "/entities/";
-        String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL, listToken);
-        List<LinkedHashMap> entitiesListWithToken = responseWithToken.readEntity(List.class);
-        List<LinkedHashMap> entitiesListWithAPI = responseWithAPI.readEntity(List.class);
-
-        assertEquals("Entity list request executed with token and with API does not equal for user: " + username, entitiesListWithAPI.size(), entitiesListWithToken.size());
-        for(int i=0; i< entitiesListWithAPI.size(); i++) {
-            String nameWithToken = entitiesListWithToken.get(i).get("name").toString();
-            String nameWithAPI = entitiesListWithAPI.get(i).get("name").toString();
-            assertEquals("Entity list request executed with token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
-        }
         //checking update method
         String updateURL = "/entities/" + entityName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -511,8 +457,11 @@ public class TokenWorkTest extends BaseMethod {
         assertTrue("Entity was not deleted with token for user "+username, responseAPIEntity.contains("error"));
     }
 
-    private void tokenEntityGroupsTestForUser(String username) throws Exception {
-        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenEntityGroupsTest(String username) throws Exception {
         String entityGroupName = "token_test_entitygroupstest_" + username + "_entitygroup";
         String entity = "token_test_entitygrouptest_" + username + "_entity";
         EntityMethod.createOrReplaceEntity(new com.axibase.tsd.api.model.entity.Entity(entity).setEnabled(true));
@@ -524,26 +473,13 @@ public class TokenWorkTest extends BaseMethod {
         String createURL = "/entity-groups/" + entityGroupName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username, createURL, entityGroup, createToken);
-        Thread.sleep(500); //timeout for create method to add all information into ATSD
+        Checker.check(new EntityGroupCheck(entityGroup));
         //checking get method
         String getURL = "/entity-groups/" + entityGroupName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
         get(getURL, getToken);
         assertTrue("Entity group was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
         assertEquals("Entity group get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
-        //checking list method
-        String listURL = "/entity-groups";
-        String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL, listToken);
-        List<LinkedHashMap> entityGroupsListWithToken = responseWithToken.readEntity(List.class);
-        List<LinkedHashMap> entityGroupsListWithAPI = responseWithAPI.readEntity(List.class);
-
-        assertEquals("Entity groups list request executed with token and with API does not equal for user: " + username, entityGroupsListWithAPI.size(), entityGroupsListWithToken.size());
-        for(int i=0; i< entityGroupsListWithAPI.size(); i++) {
-            String nameWithToken = entityGroupsListWithToken.get(i).get("name").toString();
-            String nameWithAPI = entityGroupsListWithAPI.get(i).get("name").toString();
-            assertEquals("entity groups list request executed with token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
-        }
         //checking update method
         String updateURL = "/entity-groups/" + entityGroupName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -590,15 +526,18 @@ public class TokenWorkTest extends BaseMethod {
         assertTrue("Entity Group was not deleted with token for user "+username, responseAPIEntity.contains("error"));
     }
 
-    private void tokenReplacementTablesTestForUser(String username) throws Exception {
-        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void tokenReplacementTablesTest(String username) throws Exception {
         String replacementTable = "token_test_replacementtablestest_" + username + "_replacementtable";
         String csvPayload = "-1,Error";
         //checking create method
         String createURL = "/replacement-tables/csv/" + replacementTable;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username,createURL, csvPayload, createToken);
-        Thread.sleep(500); //timeout for create method to add all information into ATSD
+        Checker.check(new ReplacementTableCheck(new ReplacementTable().setName(replacementTable)));
         //checking get method
         String getURL = "/replacement-tables/csv/" +replacementTable;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET,getURL);
@@ -606,11 +545,6 @@ public class TokenWorkTest extends BaseMethod {
         assertTrue("Replacement table was not created for user " + username, responseWithAPI.getStatus()!=404);
         assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
         String oldGetRespnse = responseAPIEntity; //buffering get response to check update method
-        //checking list method
-        String listURL = "/replacement-tables/json/";
-        String listToken = TokenRepository.getToken(username, HttpMethod.GET, listURL);
-        get(listURL, listToken);
-        assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
         //checking update method
         String updateURL = "/replacement-tables/csv/" + replacementTable;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -630,37 +564,35 @@ public class TokenWorkTest extends BaseMethod {
         assertEquals("Replacement table was not deleted with token request for user: " + username, 404, responseWithToken.getStatus());
     }
 
-    private void dualTokenWorkTestForUser(String username) throws Exception {
-        Thread.sleep(1000); //timeout for other tests to add all information into ATSD
-        String firstURL = "/entities";
-        String secondURL = "/metrics";
-        String method = HttpMethod.GET;
+    @Issue("6052")
+    @Test(
+            dataProvider = "users"
+    )
+    public void dualTokenTest(String username) throws Exception {
+        String entityName = "token_test_dualtoken_" + username + "_entity";
+        com.axibase.tsd.api.model.entity.Entity entity = new com.axibase.tsd.api.model.entity.Entity(entityName);
+        entity.setEnabled(true);
+        String metricName = "token_test_dualtoken_" + username + "_metric";
+        Metric metric = new Metric(metricName);
+        metric.setEnabled(true);
+        String firstURL = "/entities/" + entityName;
+        String secondURL = "/metrics/" + metricName;
+        String method = HttpMethod.PUT;
         String token = TokenRepository.getToken(username, method, firstURL + "\n" + secondURL);
         //checking first url work
-        get(firstURL, token);
-        List<LinkedHashMap> entitiesListWithToken = responseWithToken.readEntity(List.class);
-        List<LinkedHashMap> entitiesListWithAPI = responseWithAPI.readEntity(List.class);
-
-        assertEquals("Entity list request executed with dual token and with API does not equal for user: " + username, entitiesListWithAPI.size(), entitiesListWithToken.size());
-        for(int i=0; i< entitiesListWithAPI.size(); i++) {
-            String nameWithToken = entitiesListWithToken.get(i).get("name").toString();
-            String nameWithAPI = entitiesListWithAPI.get(i).get("name").toString();
-            assertEquals("Entity list request executed with dual token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
-        }
+        createOrReplace(username, firstURL, entity, token);
+        Checker.check(new EntityCheck(entity));
+        Response firstResponse = EntityMethod.getEntityResponse(entityName);
+        assertTrue("Entity was not inserted with dual token for user "+username, !firstResponse.readEntity(String.class).contains("error"));
         //checking second url work
-        get(secondURL, token);
-        List<LinkedHashMap> metricsListWithToken = responseWithToken.readEntity(List.class);
-        List<LinkedHashMap> metricsListWithAPI = responseWithAPI.readEntity(List.class);
-
-        assertEquals("Metric list request executed with dual token and with API does not equal for user: " + username, metricsListWithAPI.size(), metricsListWithToken.size());
-        for(int i=0; i< metricsListWithAPI.size(); i++) {
-            String nameWithToken = metricsListWithToken.get(i).get("name").toString();
-            String nameWithAPI = metricsListWithAPI.get(i).get("name").toString();
-            assertEquals("Metric list request executed with dual token and with API does not equal for user: " + username, nameWithAPI, nameWithToken);
-        }
+        createOrReplace(username, secondURL, metric, token);
+        Checker.check(new MetricCheck(metric));
+        Response secondResponse = executeApiRequest(webTarget -> webTarget.path(secondURL)
+                .request()
+                .method(HttpMethod.GET));
+        secondResponse.bufferEntity();
+        assertTrue("Metric was not inserted with dual token for user "+username, !secondResponse.readEntity(String.class).contains("error"));
     }
-
-
 
     private void insert(String username, String insertURL, Object insertData, String insertToken) {
         responseWithToken = executeTokenRequest(webTarget -> webTarget.path(insertURL)
