@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.SeriesGroupInfo;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
@@ -31,6 +32,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
     private String TEST_ENTITY1;
     private String TEST_ENTITY2;
     private String TEST_METRIC;
+    private static final SeriesGroupInfo SERIES_GROUP_INFO = new SeriesGroupInfo();
 
     @BeforeClass
     public void prepareData() throws Exception {
@@ -85,7 +87,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         }
         query.setAggregate(aggregate);
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries1 = createSeries(TEST_ENTITY1,
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("101.0")),
@@ -119,7 +121,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         }
         query.setGroup(group);
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("204.0")),
@@ -149,7 +151,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         }
         query.setRate(rate);
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries1 = createSeries(TEST_ENTITY1,
                 Sample.ofDateDecimal("2017-01-01T00:00:03.000Z", new BigDecimal("5.0")),
@@ -196,7 +198,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 new Period(5, TimeUnit.SECOND)
         ));
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("2.0")),
@@ -224,7 +226,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 new Period(10, TimeUnit.SECOND)
         ));
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("8.0")),
@@ -257,10 +259,12 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         Series expectedSeries1 = createSeries(TEST_ENTITY1,
                 Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 4),
                 Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5));
+        expectedSeries1.setGroup(null);
 
         Series expectedSeries2 = createSeries(TEST_ENTITY2,
                 Sample.ofDateInteger("2017-01-01T00:00:00.000Z", 4),
                 Sample.ofDateInteger("2017-01-01T00:00:10.000Z", 5));
+        expectedSeries2.setGroup(null);
 
         CommonAssertions.jsonAssert(
                 "Incorrect query result with default Rate/Aggregate order",
@@ -291,7 +295,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 0
         ));
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("1.6")),
@@ -326,7 +330,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 5
         ));
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("32.0")),
@@ -362,7 +366,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
                 -3
         ));
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:05.000Z", new BigDecimal("32.0")),
@@ -390,7 +394,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         query.setLimit(1);
         query.setDirection("ASC");
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries1 = createSeries(TEST_ENTITY1,
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("103.0")));
@@ -419,7 +423,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         query.setLimit(1);
         query.setDirection("ASC");
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", BigDecimal.valueOf(10.0d)));
@@ -444,7 +448,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         query.setLimit(1);
         query.setDirection("ASC");
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries1 = createSeries(TEST_ENTITY1,
                 Sample.ofDateDecimal("2017-01-01T00:00:03.000Z", new BigDecimal("10.0")));
@@ -471,7 +475,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         ));
         query.setSeriesLimit(1);
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries(TEST_ENTITY1,
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", new BigDecimal("101.0")),
@@ -497,7 +501,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         ));
         query.setSeriesLimit(1);
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries("*",
                 Sample.ofDateDecimal("2017-01-01T00:00:00.000Z", BigDecimal.valueOf(5.0d)),
@@ -524,7 +528,7 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         ));
         query.setSeriesLimit(1);
 
-        List<Series> result = querySeriesAsList(query);
+        List<Series> result = ignoreGroupField(querySeriesAsList(query));
 
         Series expectedSeries = createSeries(TEST_ENTITY1,
                 Sample.ofDateDecimal("2017-01-01T00:00:03.000Z", new BigDecimal("5.0")),
@@ -548,6 +552,14 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
         series.setEntity(entity);
         series.setMetric(TEST_METRIC);
         series.addSamples(samples);
+        series.setGroup(SERIES_GROUP_INFO);
         return series;
+    }
+
+    private List<Series> ignoreGroupField(List<Series> result) {
+        for (Series series: result) {
+            series.setGroup(SERIES_GROUP_INFO);
+        }
+        return result;
     }
 }
