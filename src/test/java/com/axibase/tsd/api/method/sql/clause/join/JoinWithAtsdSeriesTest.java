@@ -336,7 +336,7 @@ public class JoinWithAtsdSeriesTest extends SqlTest {
     }
 
     @Issue("4089")
-    @Test
+    @Test(enabled = false)
     public void testSelfJoinFromAtsdSeries() {
         /*
         SELECT t1.datetime, t1.value, t2.value
