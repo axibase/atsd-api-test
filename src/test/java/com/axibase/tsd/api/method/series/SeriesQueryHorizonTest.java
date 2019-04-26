@@ -17,7 +17,6 @@ import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.testng.annotations.BeforeClass;
@@ -41,7 +40,6 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
 
     @Data
     @RequiredArgsConstructor
-    @Accessors(chain = true)
     private static class CheckedParameters {
         private final String startDate;
         private final long period;
