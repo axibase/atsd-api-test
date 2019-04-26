@@ -11,6 +11,9 @@ import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.util.TestUtil;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -34,39 +37,19 @@ import static org.testng.Assert.assertEquals;
 public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
 
     @Data
+    @RequiredArgsConstructor
     private static class CheckedParameters {
-        private String entity;
-        private Map<String, String> tags;
-
-        public CheckedParameters(String entity, Map<String, String> tags) {
-            this.entity = entity;
-            this.tags = tags;
-        }
+        private final String entity;
+        private final Map<String, String> tags;
 
         public CheckedParameters(String entity, String... tags ) {
             this.entity = entity;
-            if (tags.length % 2 != 0) {
-                throw new IllegalArgumentException("Tag name without value in arguments");
-            }
-
-            this.tags = new HashMap<>();
-            for (int i = 0; i < tags.length; i += 2) {
-                String name = tags[i];
-                String value = tags[i + 1];
-
-                if (name == null || value == null || name.isEmpty() || value.isEmpty()) {
-                    throw new IllegalArgumentException("Series tag name or value is null or empty");
-                }
-
-                this.tags.put(name, value);
-            }
+            this.tags = TestUtil.createTags(tags);
         }
 
         @Override
         public String toString() {
-            return "{entity='" + entity + '\'' +
-                    ", tags=" + tags +
-                    '}';
+            return ReflectionToStringBuilder.toString(this, ToStringStyle.NO_CLASS_NAME_STYLE);
         }
     }
 
@@ -153,18 +136,6 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 new Series(ENTITY_2, METRIC, TAG_NAME_1, TAG_VALUE_1)};
         addSamplesToSeries(seriesArray);
         insertSeriesCheck(seriesArray);
-    }
-
-    private void addSamplesToSeries(Series... seriesArray) {
-        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
-            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
-            int seriesValue = 1;
-            for(Series series: seriesArray) {
-                Sample sample = Sample.ofDateInteger(time, seriesValue);
-                series.addSamples(sample);
-                seriesValue*=10;
-            }
-        }
     }
 
     @Test(description = "Check number of grouped series when parameter 'groupByEntityAndTags' is null")
@@ -421,6 +392,18 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
 
         assertEquals(actualSetOfEntityAndTagsInGroupSeries, expectedSetOfEntityAndTagsInGroupSeries,
                 "Sets of pairs 'entity-tags' for each group not match expected");
+    }
+
+    private void addSamplesToSeries(Series... seriesArray) {
+        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
+            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
+            int seriesValue = 1;
+            for(Series series: seriesArray) {
+                Sample sample = Sample.ofDateInteger(time, seriesValue);
+                series.addSamples(sample);
+                seriesValue*=10;
+            }
+        }
     }
 
     private Set<Double> getSeriesValuesFromResponse(List<Series> seriesList) {

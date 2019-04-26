@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -11,6 +12,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SeriesGroupInfo {
     private List<SeriesMetaInfo> series;
-    private double groupScore;
-    private double totalScore;
+    private BigDecimal groupScore;
+    private BigDecimal totalScore;
 }

@@ -1,29 +1,27 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.SeriesGroupInfo;
-import com.axibase.tsd.api.model.series.SeriesType;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
-import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.*;
@@ -36,22 +34,15 @@ public class SeriesQueryAggregateGroupOrderRateTest extends SeriesMethod {
     private String TEST_METRIC;
 
     @Data
+    @RequiredArgsConstructor
     private class CheckedFields {
-        private String entity;
-        private String metric = TEST_METRIC;
-        private List<Sample> data;
-
-        public CheckedFields(String entity, List<Sample> data) {
-            this.entity = entity;
-            this.data = data;
-        }
+        private final String entity;
+        private final List<Sample> data;
+        private final String metric = TEST_METRIC;
 
         @Override
         public String toString() {
-            return "entity='" + entity + '\'' +
-                    ", metric='" + metric + '\'' +
-                    ", data=" + data +
-                    '}';
+            return ReflectionToStringBuilder.toString(this, ToStringStyle.NO_CLASS_NAME_STYLE);
         }
     }
 

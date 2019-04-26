@@ -247,4 +247,24 @@ public class TestUtil {
     public static Object[][] convertTo2DimArray(Object[] data) {
         return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
     }
+
+    public static Map<String, String> createTags(String... tags) {
+        if (tags.length % 2 != 0) {
+            throw new IllegalArgumentException("Tag name without value in arguments");
+        }
+
+        Map<String, String> mapTags = new HashMap<>();
+        for (int i = 0; i < tags.length; i += 2) {
+            String name = tags[i];
+            String value = tags[i + 1];
+
+            if (name == null || value == null || name.isEmpty() || value.isEmpty()) {
+                throw new IllegalArgumentException("Series tag name or value is null or empty");
+            }
+
+            mapTags.put(name, value);
+        }
+
+        return mapTags;
+    }
 }
