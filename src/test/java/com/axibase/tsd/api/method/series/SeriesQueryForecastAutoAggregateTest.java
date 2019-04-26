@@ -23,7 +23,6 @@ import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Test of auto aggregation. Applied if flag {@link Forecast#autoAggregate} is true.
@@ -70,16 +69,6 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         insertSeriesCheck(series);
     }
 
-    private void addSamplesToSeries(Series series, Map<Integer, Integer> samplesData) {
-        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
-            for (Map.Entry<Integer, Integer> pair: samplesData.entrySet()) {
-                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, i * TIMESTAMP_PERIOD + pair.getKey());
-                Sample sample = Sample.ofDateInteger(time, pair.getValue());
-                series.addSamples(sample);
-            }
-        }
-    }
-
     @Test(description = "Checks that response have single series'")
     public void testResponseHaveSingleSeries() {
         List<Series> seriesList = querySeriesAsList(query);
@@ -113,6 +102,16 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         long countPeriodMs = toMilliseconds(period.getUnit(), period.getCount());
 
         assertEquals(timeStampPeriodMs, countPeriodMs,"Count in period of aggregation not match time span between samples");
+    }
+
+    private void addSamplesToSeries(Series series, Map<Integer, Integer> samplesData) {
+        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
+            for (Map.Entry<Integer, Integer> pair: samplesData.entrySet()) {
+                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, i * TIMESTAMP_PERIOD + pair.getKey());
+                Sample sample = Sample.ofDateInteger(time, pair.getValue());
+                series.addSamples(sample);
+            }
+        }
     }
 
     private long timeStampDifference(Sample firstTimeStamp, Sample secondTimeStamp) {
