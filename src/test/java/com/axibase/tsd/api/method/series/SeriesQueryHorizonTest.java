@@ -16,8 +16,10 @@ import com.axibase.tsd.api.model.series.query.transformation.forecast.*;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import java.time.ZoneId;
@@ -38,25 +40,16 @@ import static org.testng.Assert.assertEquals;
 public class SeriesQueryHorizonTest extends SeriesMethod{
 
     @Data
-    @NoArgsConstructor
+    @RequiredArgsConstructor
     @Accessors(chain = true)
     private static class CheckedParameters {
-        private String startDate;
-        private long period;
-        private int count;
-
-        public CheckedParameters(String startDate, long period, int count) {
-            this.startDate = startDate;
-            this.period = period;
-            this.count = count;
-        }
+        private final String startDate;
+        private final long period;
+        private final int count;
 
         @Override
         public String toString() {
-            return "{startDate='" + startDate + '\'' +
-                    ", period=" + period +
-                    ", count=" + count +
-                    '}';
+            return ReflectionToStringBuilder.toString(this, ToStringStyle.NO_CLASS_NAME_STYLE);
         }
     }
 
@@ -121,14 +114,6 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         Series series = new Series(ENTITY, METRIC);
         addSamplesToSeries(series);
         insertSeriesCheck(series);
-    }
-
-    private void addSamplesToSeries(Series series) {
-        for (int i = 0; i < SAMPLES_COUNT; i++) {
-            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
-            Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
-            series.addSamples(sample);
-        }
     }
 
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
@@ -375,6 +360,15 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         CheckedParameters actualData = generateCheckedParameters(query);
 
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
+    }
+
+
+    private void addSamplesToSeries(Series series) {
+        for (int i = 0; i < SAMPLES_COUNT; i++) {
+            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
+            Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
+            series.addSamples(sample);
+        }
     }
 
     private Aggregate generateAggregationSettings() {
