@@ -417,7 +417,7 @@ public class TokenAccessTest extends BaseMethod {
         return response;
     }
 
-
+    @AfterClass
     private void deleteUser() {
         String username=USER_NAME;
         String path ="/admin/users/edit.xhtml";
