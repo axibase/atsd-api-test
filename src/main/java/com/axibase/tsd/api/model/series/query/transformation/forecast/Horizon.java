@@ -11,14 +11,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class Horizon {
-    /**
-     * How horizon is specified - by count, by duration or by end time.
-     * One of these parameters required.
-     */
-    public enum ForecastHorizonType {
-        COUNT, INTERVAL, DATE;
-    }
-    private ForecastHorizonType horizonType;
 
     /** Number points in horizon. */
     private int length;
