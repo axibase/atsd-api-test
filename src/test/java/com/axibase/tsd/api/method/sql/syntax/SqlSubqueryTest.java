@@ -94,6 +94,7 @@ public class SqlSubqueryTest extends SqlTest {
 
     @Issue("4133")
     @Test(
+            enabled = false,
             description = "Test that self-join is not supported in subqueries"
     )
     public void testSelfJoin() {
