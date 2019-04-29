@@ -244,6 +244,9 @@ public class TestUtil {
         return convertTo2DimArray(jsonArrayFile(file, clazz));
     }
 
+    /**
+     * [A, B, C] -> [[A], [B], [C]]
+     */
     public static Object[][] convertTo2DimArray(Object[] data) {
         return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
     }
