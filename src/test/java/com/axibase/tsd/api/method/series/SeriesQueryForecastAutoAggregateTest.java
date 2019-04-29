@@ -12,6 +12,7 @@ import com.axibase.tsd.api.model.series.query.transformation.forecast.Horizon;
 import com.axibase.tsd.api.model.series.query.transformation.forecast.SSASettings;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -57,18 +58,19 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
      */
     @BeforeClass
     private void insertSeries() throws Exception {
-        Map<Integer, Integer> samplesData = new HashMap<>();
-        samplesData.put(0, 102);
-        samplesData.put(1, -100);
-        samplesData.put(3, 1);
-        samplesData.put(6, 1);
-        samplesData.put(10, 1);
+        Map<Integer, Integer> timeShiftToValue = new HashMap<>();
+        timeShiftToValue.put(0, 102);
+        timeShiftToValue.put(1, -100);
+        timeShiftToValue.put(3, 1);
+        timeShiftToValue.put(6, 1);
+        timeShiftToValue.put(10, 1);
 
         Series series = new Series(ENTITY, METRIC);
-        addSamplesToSeries(series, samplesData);
+        addSamplesToSeries(series, timeShiftToValue);
         insertSeriesCheck(series);
     }
 
+    @Issue("6171")
     @Test(description = "Checks that response have single series'")
     public void testResponseHaveSingleSeries() {
         List<Series> seriesList = querySeriesAsList(query);
@@ -76,6 +78,7 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         assertEquals(seriesList.size(), 1, "Wrong count of series");
     }
 
+    @Issue("6171")
     @Test(dependsOnMethods = "testResponseHaveSingleSeries", description = "Checks that output series in response have type 'Forecast'")
     public void testResponseHaveForecastSeries() {
         List<Series> seriesList = querySeriesAsList(query);
@@ -83,6 +86,7 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         assertSame(seriesList.get(0).getType(), SeriesType.FORECAST, "Output series have type not 'forecast'");
     }
 
+    @Issue("6171")
     @Test(dependsOnMethods = "testResponseHaveForecastSeries", description = "Checks that forecast series is regular" +
             " and time span between samples is correct")
     public void testOfMatchTimeSpanBetweenSamplesAndPeriodCount() {
@@ -99,7 +103,7 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         }
 
         Period period = series.getAggregate().getPeriod();
-        long countPeriodMs = toMilliseconds(period.getUnit(), period.getCount());
+        long countPeriodMs = period.getUnit().toMilliseconds(period.getCount());
 
         assertEquals(timeStampPeriodMs, countPeriodMs,"Count in period of aggregation not match time span between samples");
     }
@@ -116,18 +120,5 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
 
     private long timeStampDifference(Sample firstTimeStamp, Sample secondTimeStamp) {
         return Util.parseDate(secondTimeStamp.getRawDate()).getTime() - Util.parseDate(firstTimeStamp.getRawDate()).getTime();
-    }
-
-    private long toMilliseconds(TimeUnit timeUnit, long count) {
-        switch (timeUnit) {
-            case NANOSECOND: return java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(count);
-            case MILLISECOND: return count;
-            case SECOND: return java.util.concurrent.TimeUnit.SECONDS.toMillis(count);
-            case MINUTE: return java.util.concurrent.TimeUnit.MINUTES.toMillis(count);
-            case HOUR: return java.util.concurrent.TimeUnit.HOURS.toMillis(count);
-            case DAY: return java.util.concurrent.TimeUnit.DAYS.toMillis(count);
-        }
-
-        throw new AssertionError("Incorrect time unit in response");
     }
 }

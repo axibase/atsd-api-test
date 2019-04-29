@@ -15,7 +15,7 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class Forecast {
-    /* If true, than before the forecast the input series is aggregated by specified aggregationFunction */
+    /* Enable input series aggregation by specified aggregationFunction before the forecast */
     private boolean autoAggregate;
 
     /* Aggregation function used if autoAggregate is true. Default: "avg" */
