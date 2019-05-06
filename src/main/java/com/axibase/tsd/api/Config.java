@@ -80,7 +80,7 @@ public class Config {
         private static Config initializeInstance() {
             Config config = tryInitConfig(DEV_CONFIG_FILE);
             if (config == null) {
-                tryInitConfig(DEFAULT_CONFIG_FILE);
+                config = tryInitConfig(DEFAULT_CONFIG_FILE);
             }
             if (config == null) {
                 throw new IllegalStateException(new FileNotFoundException("*client.properties not found"));
