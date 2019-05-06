@@ -45,7 +45,7 @@ public abstract class BaseMethod {
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
-    protected final static ObjectMapper jacksonMapper;
+    protected static final ObjectMapper jacksonMapper;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();

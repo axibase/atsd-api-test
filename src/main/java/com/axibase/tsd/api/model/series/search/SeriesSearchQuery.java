@@ -2,10 +2,14 @@ package com.axibase.tsd.api.model.series.search;
 
 import com.axibase.tsd.api.method.MethodParameters;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SeriesSearchQuery extends MethodParameters {
     private String query;
     private Integer limit;

@@ -3,10 +3,8 @@ package com.axibase.tsd.api.method;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.client.WebTarget;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Stack;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class MethodParameters {
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -17,7 +15,7 @@ public abstract class MethodParameters {
     }
 
     @SuppressWarnings("unchecked")
-    private static WebTarget appendMap(WebTarget target, Stack<String> path, Map<String, Object> map) {
+    private static WebTarget appendMap(WebTarget target, Deque<String> path, Map<String, Object> map) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             Object value = entry.getValue();
             if (value != null) {
@@ -43,19 +41,15 @@ public abstract class MethodParameters {
         return String.join(".", parameterName);
     }
 
+    @SuppressWarnings("unchecked")
     private static String formatCollection(Collection collection) {
-        StringJoiner joiner = new StringJoiner(",");
-        for (Object obj: collection) {
-            if (obj == null) {
-                continue;
-            }
+        return collection.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining(",")).toString();
 
-            joiner.add(obj.toString());
-        }
-        return joiner.toString();
     }
 
     WebTarget appendTo(WebTarget target) {
-        return appendMap(target, new Stack<>(), toMap());
+        return appendMap(target, new ArrayDeque<>(), toMap());
     }
 }

@@ -12,6 +12,7 @@ import com.axibase.tsd.api.model.series.search.SeriesSearchResultRecord;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Filters;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Issue;
@@ -45,19 +46,19 @@ public class SeriesSearchTest extends SeriesMethod {
 
     @DataProvider
     public Object[][] provideSingleQueries() {
-        return Filters.formatForDataProvider(filters);
+        return TestUtil.convertTo2DimArray(filters);
     }
 
     @DataProvider
     public Object[][] provideDoubleQueriesAnd() {
         Collection<Filter<SeriesSearchResultRecord>> result = Filters.crossProductAnd(filters, filters);
-        return Filters.formatForDataProvider(result);
+        return TestUtil.convertTo2DimArray(result);
     }
 
     @DataProvider
     public Object[][] provideDoubleQueriesOr() {
         Collection<Filter<SeriesSearchResultRecord>> result = Filters.crossProductOr(filters, filters);
-        return Filters.formatForDataProvider(result);
+        return TestUtil.convertTo2DimArray(result);
     }
 
     @BeforeTest

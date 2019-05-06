@@ -3,6 +3,7 @@ package com.axibase.tsd.api;
 import com.axibase.tsd.api.util.Util;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,6 +13,7 @@ import java.util.Properties;
 
 /**
  * @author Dmitry Korchagin.
+ * @author raipc
  */
 @Slf4j
 @Getter
@@ -51,6 +53,15 @@ public class Config {
         loggerLevel = load("loggerLevel", clientProperties, "debug");
         checkLoggingEnable = Boolean.valueOf(load("isCheckLoggingEnable", clientProperties, "false"));
         System.setProperty("loggerLevel", loggerLevel);
+        if (StringUtils.isEmpty(login)) {
+            throw new IllegalStateException("Empty login");
+        }
+        if (StringUtils.isEmpty(password)) {
+            throw new IllegalStateException("Empty password");
+        }
+        if (StringUtils.isEmpty(serverName)) {
+            throw new IllegalStateException("Empty server name");
+        }
     }
 
     private static String load(String name, Properties clientProperties, String defaultValue) {

@@ -248,6 +248,10 @@ public class TestUtil {
         return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
     }
 
+    public static Object[][] convertTo2DimArray(Collection<?> data) {
+        return data.stream().map(o -> new Object[] {o}).toArray(Object[][]::new);
+    }
+
     public static Map<String, String> createTags(String... tags) {
         if (tags.length % 2 != 0) {
             throw new IllegalArgumentException("Tag name without value in arguments");
