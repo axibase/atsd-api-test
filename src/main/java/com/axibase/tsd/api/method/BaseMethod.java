@@ -28,7 +28,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -54,30 +53,26 @@ public abstract class BaseMethod {
         SLF4JBridgeHandler.install();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
         julLogger.setLevel(Level.FINEST);
-        try {
-            Config config = Config.getInstance();
-            ClientConfig clientConfig = new ClientConfig();
-            clientConfig.connectorProvider(new ApacheConnectorProvider());
-            clientConfig.register(MultiPartFeature.class);
-            clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
-            clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
 
-            GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
-            objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
-            objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
+        Config config = Config.getInstance();
+        ClientConfig clientConfig = new ClientConfig()
+                .connectorProvider(new ApacheConnectorProvider())
+                .register(MultiPartFeature.class)
+                .register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()))
+                .property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
 
-            rootTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
-            apiTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+        GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
+        objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
+        objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
 
-            jacksonMapper = new ObjectMapper();
-            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
-        } catch (FileNotFoundException fne) {
-            logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
-            throw new RuntimeException(fne);
-        }
+        rootTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
+        apiTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+
+        jacksonMapper = new ObjectMapper();
+        jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
     }
 
     protected static WebTarget addParameters(WebTarget target, MethodParameters parameters) {

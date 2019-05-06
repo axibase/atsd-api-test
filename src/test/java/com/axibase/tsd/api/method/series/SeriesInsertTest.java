@@ -41,7 +41,7 @@ import static org.testng.AssertJUnit.*;
 
 
 public class SeriesInsertTest extends SeriesTest {
-    final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
+    private static final String NEXT_AFTER_MAX_STORABLE_DATE = addOneMS(MAX_STORABLE_DATE);
 
     @Issue("2871")
     @Test
