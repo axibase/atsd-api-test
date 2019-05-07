@@ -19,7 +19,8 @@
             <evaluator>
                 <expression>
                     return logger.contains("org.apache.http") ||
-                    logger.equals("org.jvnet.hk2.logger");
+                    logger.equals("org.jvnet.hk2.logger") ||
+                    message.startsWith("Selected ExecutorServiceProvider implementation");
                 </expression>
             </evaluator>
             <onMatch>DENY</onMatch>
