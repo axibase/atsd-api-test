@@ -93,17 +93,17 @@ public abstract class BaseMethod {
         return jacksonMapper;
     }
 
-    public static boolean compareJsonString(String expected, String given) throws Exception {
-
+    public static boolean compareJsonString(String expected, String given) {
         return compareJsonString(expected, given, false);
     }
 
-    public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
+    public static boolean compareJsonString(String expected, String given, boolean strict) {
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
             return true;
         } catch (JSONException e) {
-            throw new Exception("Can not deserialize response");
+            logger.error("Can not deserialize response:\n{}", given);
+            throw new IllegalStateException("Can not deserialize response");
         } catch (AssertionError e) {
             return false;
         }
