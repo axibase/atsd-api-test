@@ -75,7 +75,7 @@ public abstract class BaseMethod {
                     new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
 
             jacksonMapper = new ObjectMapper();
-            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
+            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
         } catch (FileNotFoundException fne) {
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
             throw new RuntimeException(fne);
