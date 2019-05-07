@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.property;
 
 
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class PropertyUrlQueryTest extends PropertyMethod {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -68,7 +67,7 @@ public class PropertyUrlQueryTest extends PropertyMethod {
         property.addTag("t1", "tv1");
         insertPropertyCheck(property);
         Response response = urlQueryProperty(property.getType(), property.getEntity());
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         assertTrue(compareJsonString(expected, response.readEntity(String.class)));
     }

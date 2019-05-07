@@ -2,10 +2,10 @@ package com.axibase.tsd.api.method.sql;
 
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
+import com.axibase.tsd.api.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,14 +14,13 @@ import java.util.Objects;
 
 import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
 
 public abstract class SqlTest extends SqlMethod {
-    private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is  not ok";
-    private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is  not bad";
+    private static final String DEFAULT_ASSERT_OK_REQUEST_MESSAGE = "Response status is not ok";
+    private static final String DEFAULT_ASSERT_BAD_REQUEST_MESSAGE = "Response status is not bad";
 
 
     private static void assertTableRowsExist(String errorMessage, List<List<String>> expectedRows, StringTable table) {
@@ -198,21 +197,21 @@ public abstract class SqlTest extends SqlMethod {
         assertOkRequest(DEFAULT_ASSERT_OK_REQUEST_MESSAGE, response);
     }
 
-    public void assertOkRequest(String assertMessage, Response response) {
-        assertEquals(assertMessage, OK.getStatusCode(), response.getStatus());
-        try {
-            response.readEntity(StringTable.class);
-        } catch (ProcessingException e) {
-            fail("Failed to read table from response!");
-        }
+    public void assertOkRequest(String assertMessage, String sqlQuery) {
+        final String formattedMessage = String.format("%s%nQuery: %s", assertMessage, sqlQuery);
+        assertOkRequest(formattedMessage, queryResponse(sqlQuery));
+    }
 
-        String message = null;
-        try {
-            message = extractSqlErrorMessage(response);
-        } catch (JSONException e) {
-            fail("Can't read json from response");
+    public void assertOkRequest(String assertMessage, Response response) {
+        final Response.Status.Family family = Util.responseFamily(response);
+        if (Response.Status.Family.SUCCESSFUL != family) {
+            try {
+                final String errorMessage = extractSqlErrorMessage(response);
+                fail(String.format("%s%n Reason: %s", assertMessage, errorMessage));
+            } catch (JSONException ex) {
+                fail(assertMessage);
+            }
         }
-        assertEquals(assertMessage + ": Response contains error", null, message);
     }
 
     public void assertBadSqlRequest(String expectedMessage, String sqlQuery) {
@@ -231,7 +230,7 @@ public abstract class SqlTest extends SqlMethod {
     public void assertBadRequest(String assertMessage, String expectedMessage, Response response) {
         String responseMessage;
         int code = response.getStatus();
-        if (OK.getStatusCode() == code || BAD_REQUEST.getStatusCode() == code) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response) || BAD_REQUEST.getStatusCode() == code) {
             try {
                 responseMessage = extractSqlErrorMessage(response);
             } catch (JSONException e) {
@@ -244,7 +243,7 @@ public abstract class SqlTest extends SqlMethod {
         if (responseMessage == null) {
             fail(assertMessage + ": Response doesn't contain error message");
         }
-        assertEquals(assertMessage + ": Error message is different form expected", expectedMessage, responseMessage);
+        assertEquals(assertMessage + ": Error message is different from expected", expectedMessage, responseMessage);
     }
 
     /**

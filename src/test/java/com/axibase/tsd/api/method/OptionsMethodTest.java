@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method;
 
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
@@ -10,8 +11,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.*;
 
 @Issue("3616")
 public class OptionsMethodTest extends BaseMethod {
@@ -75,7 +75,7 @@ public class OptionsMethodTest extends BaseMethod {
 
     @Issue("3616")
     @Test(dataProvider = "availablePathProvider")
-    public static void testResponseOptionsHeadersForURLs(String path, String method) throws Exception {
+    public static void testResponseOptionsHeadersForURLs(String path, String method) {
         Response response = executeApiRequest(webTarget -> webTarget.path(path)
                 .request()
                 .header("Access-Control-Request-Method", method)
@@ -83,7 +83,7 @@ public class OptionsMethodTest extends BaseMethod {
                 .header("Origin", "itdoesntmatter")
                 .options());
 
-        assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
+        assertSame("Bad response status", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
         assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");
@@ -101,7 +101,7 @@ public class OptionsMethodTest extends BaseMethod {
                 .header("Origin", "itdoesntmatter")
                 .options());
 
-        assertEquals("Bad response status", Response.Status.OK.getStatusCode(), response.getStatus());
+        assertSame("Bad response status", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         assertResponseContainsHeaderWithValues(ALLOWED_METHODS_SET, response, "Access-Control-Allow-Methods");
         assertResponseContainsHeaderWithValues(ALLOWED_HEADERS_SET, response, "Access-Control-Allow-Headers");

@@ -43,7 +43,6 @@ public class SelectAliasSameAsColumnTest extends SqlTest {
                 "    metric.interpolate AS \"metric.interpolate\",\n" +
                 "    metric.units AS \"metric.units\",\n" +
                 "    metric.timezone AS \"metric.timezone\",\n" +
-                "    metric.timePrecision AS \"metric.timePrecision\",\n" +
                 "    metric.enabled AS \"metric.enabled\",\n" +
                 "    metric.persistent AS \"metric.persistent\",\n" +
                 "    metric.filter AS \"metric.filter\",\n" +
@@ -87,7 +86,6 @@ public class SelectAliasSameAsColumnTest extends SqlTest {
                         "    metric.interpolate AS \"interpolate\",\n" +
                         "    metric.units AS \"units\",\n" +
                         "    metric.timezone AS \"timezone\",\n" +
-                        "    metric.timePrecision AS \"timePrecision\",\n" +
                         "    metric.enabled AS \"enabled\",\n" +
                         "    metric.persistent AS \"persistent\",\n" +
                         "    metric.filter AS \"filter\",\n" +

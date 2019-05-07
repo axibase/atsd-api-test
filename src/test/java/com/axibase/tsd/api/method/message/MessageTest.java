@@ -7,12 +7,12 @@ import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.fail;
 
 public class MessageTest extends MessageMethod {
@@ -39,7 +39,7 @@ public class MessageTest extends MessageMethod {
                 @Override
                 public boolean isChecked() {
                     Response response = MessageMethod.queryMessageResponse(query);
-                    if (response.getStatus() != OK.getStatusCode()) {
+                    if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                         return false;
                     }
                     List<Message> messageList = response.readEntity(new GenericType<List<Message>>() {

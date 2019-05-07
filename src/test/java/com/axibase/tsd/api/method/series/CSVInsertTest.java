@@ -23,8 +23,7 @@ import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.*;
 import static java.util.Collections.singletonList;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertSame;
 
 public class CSVInsertTest extends CSVInsertMethod {
 
@@ -53,7 +52,7 @@ public class CSVInsertTest extends CSVInsertMethod {
 
     @Issue("2009")
     @Test
-    public void testMultipleISOFormat() throws Exception {
+    public void testMultipleISOFormat() {
         Series series = Mocks.series();
         series.setSamples(new ArrayList<Sample>());
         String header = String.format("date, %s%n", series.getMetric());
@@ -85,7 +84,7 @@ public class CSVInsertTest extends CSVInsertMethod {
 
     @Issue("2957")
     @Test
-    public void testTimeRangeInISO() throws Exception {
+    public void testTimeRangeInISO() {
         Series series = Mocks.series();
         series.setSamples(Arrays.asList(
                 Sample.ofDateDecimal(MIN_STORABLE_DATE, Mocks.DECIMAL_VALUE),
@@ -146,7 +145,7 @@ public class CSVInsertTest extends CSVInsertMethod {
 
     @Issue("1278")
     @Test(dataProvider = "entityNameProvider")
-    public void testEntityNames(String queryName, String expectedName) throws Exception {
+    public void testEntityNames(String queryName, String expectedName) {
         Entity entity = new Entity(queryName);
         Metric metric = new Metric(metric());
         String csvPayload = String.format(
@@ -155,7 +154,7 @@ public class CSVInsertTest extends CSVInsertMethod {
         );
         Response response = csvInsert(entity.getName(), csvPayload);
         String assertMessage = String.format("Failed to insert entity with name: %s", entity);
-        assertEquals(assertMessage, OK.getStatusCode(), response.getStatus());
+        assertSame(assertMessage, Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         entity.setName(expectedName);
         assertEntityExisting(entity);
     }

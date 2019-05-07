@@ -8,6 +8,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
+import com.axibase.tsd.api.model.replacementtable.SupportedFormat;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import io.qameta.allure.Issue;
@@ -30,17 +31,16 @@ public class SqlLookupFunctionTest extends SqlTest {
     private static final ReplacementTable TABLE_TAGS_CASE = prepareReplacementTable("tableForLookupTest2");
 
     private static ReplacementTable prepareReplacementTable(String name) {
-        ReplacementTable table = new ReplacementTable(name);
-
-        table.addValue("-1", "negative");
-        table.addValue("1", "positive");
-        table.addValue("2", "2");
-        table.addValue("word", "3");
-        table.addValue("words", "letters");
-        table.addValue("3", "-3");
-        table.addValue("4", "3.14");
-        table.addValue("PI", "3.14");
-        table.addValue("3.14", "PI");
+        ReplacementTable table = ReplacementTable.of(name, SupportedFormat.LIST)
+                .addValue("-1", "negative")
+                .addValue("1", "positive")
+                .addValue("2", "2")
+                .addValue("word", "3")
+                .addValue("words", "letters")
+                .addValue("3", "-3")
+                .addValue("4", "3.14")
+                .addValue("PI", "3.14")
+                .addValue("3.14", "PI");
 
         ReplacementTableMethod.createCheck(table);
 

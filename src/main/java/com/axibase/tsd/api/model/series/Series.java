@@ -23,7 +23,8 @@ public class Series {
     private SeriesType type;
     private String forecastName;
     private SeriesMeta meta;
-
+    private SeriesGroupInfo group;
+    
     public Series() {
         data = new ArrayList<>();
         tags = new HashMap<>();
@@ -132,11 +133,21 @@ public class Series {
         return this;
     }
 
-    public void addSamples(Sample... samples) {
+    public Series addSamples(Sample... samples) {
         if (data == null) {
             data = new ArrayList<>();
         }
         Collections.addAll(data, samples);
+        return this;
+    }
+
+    public Series addSamples(final List<Sample> samples) {
+        if (data == null) {
+            data = samples;
+        } else {
+            data.addAll(samples);
+        }
+        return this;
     }
 
     public List<SeriesCommand> toCommands() {

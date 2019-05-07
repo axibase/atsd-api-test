@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpol
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @NoArgsConstructor
+@Accessors(chain = true)
 public class Aggregate {
     AggregationType type;
     List<AggregationType> types;

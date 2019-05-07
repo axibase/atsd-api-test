@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -14,7 +15,6 @@ import java.util.Map;
 
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY = "/entities/{entity}";
@@ -22,7 +22,7 @@ public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
 
-    public static <T> Response createOrReplaceEntity(String entityName, T query) throws Exception {
+    public static <T> Response createOrReplaceEntity(String entityName, T query) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ENTITY)
                 .resolveTemplate("entity", entityName)
@@ -32,7 +32,7 @@ public class EntityMethod extends BaseMethod {
         return response;
     }
 
-    public static Response createOrReplaceEntity(Entity entity) throws Exception {
+    public static Response createOrReplaceEntity(Entity entity) {
         return createOrReplaceEntity(entity.getName(), entity);
     }
 
@@ -41,7 +41,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static void createOrReplaceEntityCheck(Entity entity, AbstractCheck check) throws Exception {
-        if (createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)).getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(createOrReplaceEntity(entity.getName(), jacksonMapper.writeValueAsString(entity)))) {
             throw new IllegalStateException("Can not execute createOrReplaceEntity query");
         }
         Checker.check(check);
@@ -52,7 +52,7 @@ public class EntityMethod extends BaseMethod {
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new Exception("Fail to execute queryMetric query");
         }
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class));
@@ -60,7 +60,7 @@ public class EntityMethod extends BaseMethod {
 
     public static boolean entityExist(String entity) throws NotCheckedException {
         final Response response = EntityMethod.getEntityResponse(entity);
-        if (response.getStatus() == OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
             return true;
         } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
@@ -84,7 +84,7 @@ public class EntityMethod extends BaseMethod {
 
     public static Entity getEntity(String entityName) {
         Response response = getEntityResponse(entityName);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             String error;
             try {
                 error = extractErrorMessage(response);
@@ -97,7 +97,7 @@ public class EntityMethod extends BaseMethod {
     }
 
 
-    public static <T> Response updateEntity(String entityName, T query) throws Exception {
+    public static <T> Response updateEntity(String entityName, T query) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ENTITY)
                 .resolveTemplate("entity", entityName)
@@ -107,11 +107,11 @@ public class EntityMethod extends BaseMethod {
         return response;
     }
 
-    public static Response updateEntity(Entity entity) throws Exception {
+    public static Response updateEntity(Entity entity) {
         return updateEntity(entity.getName(), entity);
     }
 
-    public static Response deleteEntity(String entityName) throws Exception {
+    public static Response deleteEntity(String entityName) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_ENTITY)
                 .resolveTemplate("entity", entityName)

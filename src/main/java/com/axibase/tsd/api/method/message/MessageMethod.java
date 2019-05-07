@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class MessageMethod extends BaseMethod {
     private static final String METHOD_MESSAGE_INSERT = "/messages/insert";
@@ -40,34 +39,34 @@ public class MessageMethod extends BaseMethod {
         return response;
     }
 
-    public static Boolean insertMessage(final Message message) throws Exception {
+    public static Boolean insertMessage(final Message message) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_MESSAGE_INSERT)
                 .request()
                 .post(Entity.json(Collections.singletonList(message))));
         response.bufferEntity();
-        if (OK.getStatusCode() == response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
             logger.debug("Message looks inserted");
         } else {
             logger.error("Fail to insert message");
         }
-        return OK.getStatusCode() == response.getStatus();
+        return Response.Status.Family.SUCCESSFUL == Util.responseFamily(response);
     }
 
-    public static void insertMessageCheck(final Message message, AbstractCheck check) throws Exception {
+    public static void insertMessageCheck(final Message message, AbstractCheck check) {
         Response response = insertMessageReturnResponse(message);
         response.bufferEntity();
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException(response.readEntity(String.class));
         }
         Checker.check(check);
     }
 
-    public static void insertMessageCheck(final Message message) throws Exception {
+    public static void insertMessageCheck(final Message message) {
         insertMessageCheck(message, new MessageCheck(message));
     }
 
-    public static <T> Response queryMessageStats(T... query) throws Exception {
+    public static <T> Response queryMessageStats(T... query) {
         Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_MESSAGE_STATS_QUERY)
                 .request()
@@ -76,9 +75,9 @@ public class MessageMethod extends BaseMethod {
         return response;
     }
 
-    public static <T> List<Series> queryMessageStatsReturnSeries(T... query) throws Exception {
+    public static <T> List<Series> queryMessageStatsReturnSeries(T... query) {
         Response response = queryMessageStats(query);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute queryMessageStats");
         }
         return response.readEntity(new GenericType<List<Series>>() {
@@ -109,7 +108,7 @@ public class MessageMethod extends BaseMethod {
         query.setSource(message.getSource());
 
         Response response = queryMessageResponse(query);
-        if (response.getStatus() != OK.getStatusCode() && response.getStatus() != NOT_FOUND.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response) && response.getStatus() != NOT_FOUND.getStatusCode()) {
             throw new IllegalStateException("Fail to execute queryMessageResponse request: " + response.readEntity(String.class));
         }
 

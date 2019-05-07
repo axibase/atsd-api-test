@@ -1,17 +1,22 @@
 package com.axibase.tsd.api.model.series.query;
 
-import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesType;
+import com.axibase.tsd.api.model.series.query.transformation.Transformation;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.downsample.Downsample;
+import com.axibase.tsd.api.model.series.query.transformation.forecast.Forecast;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
 import com.axibase.tsd.api.model.series.query.transformation.rate.Rate;
+import com.axibase.tsd.api.model.series.query.transformation.smooth.Smooth;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.experimental.Wither;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +28,7 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 @Data
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 public class SeriesQuery {
     private String entity;
     private String entityGroup;
@@ -32,12 +38,15 @@ public class SeriesQuery {
     private String metric;
     private String startDate;
     private String endDate;
-    private Period interval;
+    private Interval interval;
     private Map<String, String> tags;
     private Aggregate aggregate;
     private Interpolate interpolate;
     private Group group;
     private Rate rate;
+    private Smooth smooth;
+    private Downsample downsample;
+    private Forecast forecast;
     private String timeFormat;
     private Boolean exactMatch;
     private Integer limit;
@@ -47,6 +56,7 @@ public class SeriesQuery {
     private Boolean versioned;
     private Boolean addMeta;
     private SeriesType type;
+    @Wither private List<Transformation> transformationOrder;
 
     public SeriesQuery() {
     }
@@ -59,7 +69,7 @@ public class SeriesQuery {
             tags.put(keyValue.getKey(), escapeExpression(keyValue.getValue()));
         }
         exactMatch = true;
-        if (series.getData().size() == 0) {
+        if (series.getData().isEmpty()) {
             startDate = MIN_QUERYABLE_DATE;
             endDate = MAX_QUERYABLE_DATE;
         } else {

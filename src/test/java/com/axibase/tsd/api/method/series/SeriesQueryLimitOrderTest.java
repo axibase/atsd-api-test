@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
@@ -105,7 +106,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
         assertSeriesQueryResult(
                 "Incorrect series query result with LIMIT = 3, ASC",
                 query,
-                TEST_SAMPLES[0], TEST_SAMPLES[1],TEST_SAMPLES[2]);
+                TEST_SAMPLES[0], TEST_SAMPLES[1], TEST_SAMPLES[2]);
     }
 
     @Issue("4635")
@@ -128,7 +129,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
         assertSeriesQueryResult(
                 "Incorrect series query result with no LIMIT, ASC",
                 query,
-                TEST_SAMPLES[0], TEST_SAMPLES[1],TEST_SAMPLES[2], TEST_SAMPLES[3], TEST_SAMPLES[4]);
+                TEST_SAMPLES[0], TEST_SAMPLES[1], TEST_SAMPLES[2], TEST_SAMPLES[3], TEST_SAMPLES[4]);
     }
 
     @Issue("4635")
@@ -139,7 +140,7 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
         assertSeriesQueryResult(
                 "Incorrect series query result with no LIMIT, DESC",
                 query,
-                TEST_SAMPLES[0], TEST_SAMPLES[1],TEST_SAMPLES[2], TEST_SAMPLES[3], TEST_SAMPLES[4]);
+                TEST_SAMPLES[0], TEST_SAMPLES[1], TEST_SAMPLES[2], TEST_SAMPLES[3], TEST_SAMPLES[4]);
     }
 
     @Issue("4635")
@@ -191,6 +192,6 @@ public class SeriesQueryLimitOrderTest extends SeriesMethod {
         expectedSeries.setMetric(TEST_METRIC);
         expectedSeries.addSamples(expectedResult);
 
-        assertEquals(errorMessage, expectedSeries, actualSeries);
+        CommonAssertions.jsonAssert(errorMessage, expectedSeries, actualSeries);
     }
 }

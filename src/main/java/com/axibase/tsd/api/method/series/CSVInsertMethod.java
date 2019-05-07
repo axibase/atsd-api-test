@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.util.Util;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 import javax.ws.rs.client.Entity;
@@ -11,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.Map;
-
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class CSVInsertMethod extends SeriesMethod {
     private static final String METHOD_CSV_INSERT = "/series/csv/{entity}";
@@ -46,7 +45,7 @@ public class CSVInsertMethod extends SeriesMethod {
 
     public void csvInsertCheck(AbstractCheck check, String entity, String csv, Map<String, String> tags) {
         Response response = csvInsert(entity, csv, tags);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             String errorMessage = String.format(
                     "Failed to insert Series as CSV for entity %s with payload : %n %s",
                     entity, csv

@@ -29,7 +29,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
         metric.setInterpolate(InterpolationMode.PREVIOUS);
         metric.setDescription(Mocks.DESCRIPTION);
         metric.setDataType(DataType.INTEGER);
-        metric.setTimePrecision("SECONDS");
         metric.setEnabled(true);
         metric.setPersistent(true);
         metric.setFilter("name = '*'");
@@ -56,7 +55,6 @@ public class SqlSelectMetricFieldsTest extends SqlTest {
                 {"interpolate", "PREVIOUS"},
                 {"description", Mocks.DESCRIPTION},
                 {"dataType", "INTEGER"},
-                {"timePrecision", "SECONDS"},
                 {"enabled", "true"},
                 {"persistent", "true"},
                 {"filter", "name = '*'"},

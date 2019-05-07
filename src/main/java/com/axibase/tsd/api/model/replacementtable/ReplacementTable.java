@@ -1,35 +1,32 @@
 package com.axibase.tsd.api.model.replacementtable;
 
 import com.axibase.tsd.api.util.Registry;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@Accessors(chain = true)
 public class ReplacementTable {
-    private String name = null;
-    private Map<String, String> map = new HashMap<>();
+    private String name;
+    private String description;
+    private String author;
+    private SupportedFormat valueFormat;
+    private Map<String, String> keys = new HashMap<>();
 
-
-    public ReplacementTable(String name, Map<String, String> map) {
+    public static ReplacementTable of(String name, SupportedFormat format) {
         Registry.ReplacementTable.checkExists(name);
-        this.name = name;
-        this.map = map;
+        return new ReplacementTable().setName(name).setValueFormat(format);
     }
 
-    public ReplacementTable(String name) {
-        Registry.ReplacementTable.checkExists(name);
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Map<String, String> getMap() {
-        return map;
-    }
-
-    public void addValue(String key, String value){
-        map.put(key, value);
+    public ReplacementTable addValue(String key, String value) {
+        keys.put(key, value);
+        return this;
     }
 }

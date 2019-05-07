@@ -37,7 +37,7 @@ public class ReplaceTest extends SqlTest {
 
     @Issue("2920")
     @Test(dataProvider = "applyTestProvider")
-    public void testApply(String param) throws Exception {
+    public void testApply(String param) {
         String sqlQuery = String.format("SELECT REPLACE(%s) FROM \"%s\"",
                 param, TEST_METRIC
         );

@@ -5,6 +5,7 @@ import com.axibase.tsd.api.method.sql.OutputFormat;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,8 +17,10 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertSame;
 
 
 public class SqlApiResponseCodesTest extends SqlMethod {
@@ -63,7 +66,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                 .request()
                 .get());
         response.bufferEntity();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
     }
 
@@ -77,7 +80,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                         form,
                         MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
     }
 
@@ -93,7 +96,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                         form,
                         MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
     }
 
@@ -108,7 +111,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                         form,
                         MediaType.APPLICATION_FORM_URLENCODED)));
         response.bufferEntity();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
     }
 
@@ -120,7 +123,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                 .request()
                 .get());
         response.bufferEntity();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
     }
 
@@ -132,7 +135,7 @@ public class SqlApiResponseCodesTest extends SqlMethod {
                 .request()
                 .get());
         response.bufferEntity();
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
     }
 

@@ -2,10 +2,12 @@ package com.axibase.tsd.api.model.entity;
 
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.serialization.DateDeserializer;
+import com.axibase.tsd.api.model.serialization.ZonedDateTimeSerializer;
 import com.axibase.tsd.api.util.Registry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -25,8 +27,10 @@ public class Entity {
     private InterpolationMode interpolationMode;
     private String label;
     @JsonDeserialize(using = DateDeserializer.class)
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime lastInsertDate;
     @JsonDeserialize(using = DateDeserializer.class)
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime createdDate;
     private Map<String, String> tags;
     private Boolean enabled;

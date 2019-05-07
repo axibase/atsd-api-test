@@ -7,9 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
+import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -53,6 +56,11 @@ public class Util {
         return dateFormat.format(date);
     }
 
+    public static Response.Status.Family responseFamily(final Response response) {
+        if (response == null) return null;
+        return response.getStatusInfo().getFamily();
+    }
+
     public static String addOneMS(String date) {
         return ISOFormat(parseDate(date).getTime() + 1);
     }
@@ -62,13 +70,16 @@ public class Util {
     }
 
     public static Date parseDate(String date) {
-        Date d;
         try {
-            d = ISO8601Utils.parse(date, new ParsePosition(0));
+            return ISO8601Utils.parse(date, new ParsePosition(0));
         } catch (ParseException e) {
             throw new IllegalArgumentException(String.format("Fail to parse date: %s", date));
         }
-        return d;
+    }
+
+    public static ZonedDateTime parseAsServerZoned(final String dateString) {
+        final LocalDateTime localDateTime = LocalDateTime.parse(dateString);
+        return ZonedDateTime.of(localDateTime, getServerTimeZone().toZoneId());
     }
 
     public static String prettyPrint(Object o) {

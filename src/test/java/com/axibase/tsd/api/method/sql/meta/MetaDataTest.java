@@ -56,7 +56,7 @@ public class MetaDataTest extends SqlMetaTest {
                 "1",
                 "'a'",
                 "1 / 0",
-                "case 0\nwhen 1 then 'a'\nelse 5\nend"
+                "case 0 when 1 then 'a' else 5 end"
         };
 
         String[] expectedTypes = {

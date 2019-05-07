@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -9,8 +10,8 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.CANNOT_MODIFY_ENTITY_TPL;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertSame;
 
 /**
  * @author Dmitry Korchagin.
@@ -72,13 +73,13 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
         }
 
         Response response = addEntities(entityGroup.getName(), entitiesDefault);
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute addEntities query");
         }
 
         String expected = jacksonMapper.writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
         if (!compareJsonString(expected, response.readEntity(String.class))) {
@@ -94,11 +95,11 @@ public class EntityGroupEntitiesSetTest extends EntityGroupMethod {
         }
 
         response = setEntities(entityGroup.getName(), entitiesToSet);
-        assertEquals("Fail to execute deleteEntities query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute deleteEntities query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         expected = jacksonMapper.writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
         if (!compareJsonString(expected, response.readEntity(String.class))) {

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -13,15 +14,15 @@ import java.util.Collections;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertSame;
 
 public class EntityGetMetricsTest extends EntityMethod {
 
 
     @Issue("1278")
     @Test
-    public void testEntityNameContainsWhitespace() throws Exception {
+    public void testEntityNameContainsWhitespace() {
         final String name = "getmetricsentity 1";
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), queryEntityMetrics(name).getStatus());
     }
@@ -47,9 +48,9 @@ public class EntityGetMetricsTest extends EntityMethod {
         assertUrlencodedPathHandledSuccessfullyOnGetMetrics(series);
     }
 
-    private void assertUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) throws Exception {
+    private void assertUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) {
         Response response = queryEntityMetrics(series.getEntity());
-        assertEquals("Fail to execute queryEntityMetric", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute queryEntityMetric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         List<Metric> metricList = response.readEntity(new GenericType<List<Metric>>() {
         });
         assertEquals("Entity should have only 1 metric", 1, metricList.size());

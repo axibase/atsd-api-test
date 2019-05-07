@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entitygroup;
 
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -9,9 +10,7 @@ import java.util.*;
 
 import static com.axibase.tsd.api.util.ErrorTemplate.CANNOT_MODIFY_ENTITY_TPL;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 /**
  * @author Dmitry Korchagin.
@@ -70,10 +69,10 @@ public class EntityGroupEntitiesAddTest extends EntityGroupMethod {
         }
 
         Response response = addEntities(entityGroup.getName(), entitiesList);
-        assertEquals("Fail to execute addEntities query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute addEntities query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         String expected = jacksonMapper.writeValueAsString(expectedResponse);
         response = getEntities(entityGroup.getName());
-        if (OK.getStatusCode() != response.getStatus()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalArgumentException("Fail to execute getEntities query");
         }
         assertTrue("Entities in response do not match to added entities", compareJsonString(expected, response.readEntity(String.class)));

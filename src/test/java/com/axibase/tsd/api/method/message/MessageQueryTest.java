@@ -24,7 +24,7 @@ public class MessageQueryTest extends MessageMethod {
     static {
         message = new Message("message-query-test-timezone");
         message.setMessage("hello");
-        message.setDate("2018-05-21T00:00:00.000Z");
+        message.setDate("2105-05-21T00:00:00.000Z");
     }
 
     @BeforeMethod
@@ -37,7 +37,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testISOTimezoneZ() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2018-05-21T00:00:00Z");
+        messageQuery.setStartDate("2105-05-21T00:00:00Z");
 
         List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -52,7 +52,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testISOTimezonePlusHourMinute() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2018-05-21T01:23:00+01:23");
+        messageQuery.setStartDate("2105-05-21T01:23:00+01:23");
 
         List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -67,7 +67,7 @@ public class MessageQueryTest extends MessageMethod {
     @Test
     public void testISOTimezoneMinusHourMinute() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2018-05-20T22:37:00-01:23");
+        messageQuery.setStartDate("2105-05-20T22:37:00-01:23");
 
         List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
         });
@@ -81,26 +81,30 @@ public class MessageQueryTest extends MessageMethod {
     @Issue("2850")
     @Test
     public void testLocalTimeUnsupported() throws Exception {
-        MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-07-21 00:00:00");
+        final String startDate = "2105-07-21 00:00:00";
+        MessageQuery messageQuery = buildMessageQuery().setStartDate(startDate);
 
         Response response = queryMessageResponse(messageQuery);
 
         assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2017-07-21 00:00:00\"}", response.readEntity(String.class), true);
+        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: " + startDate + "\"}", response.readEntity(String.class), true);
 
     }
 
     @Issue("2850")
+    @Issue("5272")
     @Test
-    public void testXXTimezoneUnsupported() throws Exception {
+    public void testRfc822TimezoneOffsetSupported() throws Exception {
         MessageQuery messageQuery = buildMessageQuery();
-        messageQuery.setStartDate("2017-07-20T22:50:00-0110");
+        messageQuery.setStartDate("2105-05-20T22:50:00-0110");
 
-        Response response = queryMessageResponse(messageQuery);
+        Message storedMessage = queryMessageResponse(messageQuery)
+                .readEntity(new GenericType<List<Message>>() {})
+                .get(0);
 
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        JSONAssert.assertEquals("{\"error\":\"IllegalArgumentException: Wrong startDate syntax: 2017-07-20T22:50:00-0110\"}", response.readEntity(String.class), true);
+        assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
+        assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
+        assertEquals("Incorrect message date", message.getDate(), storedMessage.getDate());
     }
 
     @Issue("2850")
@@ -120,7 +124,7 @@ public class MessageQueryTest extends MessageMethod {
     public void testEntitiesWildcardStarChar() throws Exception {
         Message message = new Message("message-query-wildcard-2-1");
         message.setMessage("msgtext");
-        message.setDate("2018-01-01T00:00:00.000Z");
+        message.setDate("2105-01-01T00:00:00.000Z");
         insertMessageCheck(message);
 
         Map<String, Object> query = new HashMap<>();
@@ -138,7 +142,7 @@ public class MessageQueryTest extends MessageMethod {
     public void testEntitiesWildcardQuestionChar() throws Exception {
         Message message = new Message("message-query-wildcard-3-1");
         message.setMessage("msgtext");
-        message.setDate("2018-01-01T00:00:00.000Z");
+        message.setDate("2105-01-01T00:00:00.000Z");
         insertMessageCheck(message);
 
         Map<String, Object> query = new HashMap<>();
@@ -156,7 +160,7 @@ public class MessageQueryTest extends MessageMethod {
     public void testEntityEntitiesWildcardSame() throws Exception {
         Message message = new Message("message-query-wildcard-4-1");
         message.setMessage("msgtext");
-        message.setDate("2018-01-01T00:00:00.000Z");
+        message.setDate("2105-01-01T00:00:00.000Z");
         insertMessageCheck(message);
         message.setEntity("message-query-wildcard-4-2");
         insertMessageCheck(message);

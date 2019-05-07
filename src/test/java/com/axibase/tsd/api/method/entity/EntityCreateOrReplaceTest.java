@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -19,14 +20,15 @@ import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
 import static com.axibase.tsd.api.util.ErrorTemplate.TAG_VALUE_ARRAY_PREFIX;
 import static com.axibase.tsd.api.util.ErrorTemplate.UNKNOWN_ENTITY_FIELD_PREFIX;
 import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.*;
 
 public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1278")
     @Test
-    public void testEntityNameContainsWhitespace() throws Exception {
+    public void testEntityNameContainsWhitespace() {
         Entity entity = new Entity("createentity 1");
 
         assertEquals("Method should fail if entityName contains whitespace", BAD_REQUEST.getStatusCode(), createOrReplaceEntity(entity).getStatus());
@@ -37,7 +39,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testEntityNameContainsSlash() throws Exception {
         Entity entity = new Entity("createentity/2");
 
-        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
+        assertSame("Fail to execute createOrReplaceEntity query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createOrReplaceEntity(entity)));
         assertTrue("Fail to get required entity", entityExist(entity));
     }
 
@@ -46,13 +48,13 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
     public void testEntityNameContainsCyrillic() throws Exception {
         Entity entity = new Entity("createйёentity3");
 
-        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
+        assertSame("Fail to execute createOrReplaceEntity query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createOrReplaceEntity(entity)));
         assertTrue("Fail to get required entity", entityExist(entity));
     }
 
     @Issue("1968")
     @Test
-    public void testTagNameConvertedToLowerCase() throws Exception {
+    public void testTagNameConvertedToLowerCase() {
         Entity entity = new Entity("createentity4");
         entity.addTag("TagKey", "tagvalue");
 
@@ -70,7 +72,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValueRetainCase() throws Exception {
+    public void testTagValueRetainCase() {
         Entity entity = new Entity("createentity5");
         entity.addTag("tag-key", "TaValue");
 
@@ -83,7 +85,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testEntityNameConvertedToLowerCase() throws Exception {
+    public void testEntityNameConvertedToLowerCase() {
         Entity entity = new Entity("CreateEntity6");
 
         createOrReplaceEntity(entity);
@@ -159,11 +161,11 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testNullTagValIgnored() throws Exception {
+    public void testNullTagValIgnored() {
         Entity entity = new Entity("create-entity-11");
         entity.addTag("a", null);
         entity.addTag("b", "c");
-        assertEquals("Fail to execute createOrReplaceEntity", OK.getStatusCode(), createOrReplaceEntity(entity).getStatus());
+        assertSame("Fail to execute createOrReplaceEntity", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createOrReplaceEntity(entity)));
 
         Entity storedEntity = getEntityResponse(entity.getName()).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
@@ -174,14 +176,14 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValBoolean() throws Exception {
+    public void testTagValBoolean() {
         final String entityName = "create-entity-12";
         Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         tags.put("a", true);
         createOrReplaceEntityQuery.put("tags", tags);
-        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entityName, createOrReplaceEntityQuery).getStatus());
+        assertSame("Fail to execute createOrReplaceEntity query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createOrReplaceEntity(entityName, createOrReplaceEntityQuery)));
 
         Entity storedEntity = getEntityResponse(entityName).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
@@ -192,14 +194,14 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValInteger() throws Exception {
+    public void testTagValInteger() {
         final String entityName = "create-entity-13";
         Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
         Map<String, Object> tags = new HashMap<>();
         tags.put("a", 123);
         createOrReplaceEntityQuery.put("tags", tags);
-        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entityName, createOrReplaceEntityQuery).getStatus());
+        assertSame("Fail to execute createOrReplaceEntity query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createOrReplaceEntity(entityName, createOrReplaceEntityQuery)));
 
         Entity storedEntity = getEntityResponse(entityName).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();
@@ -210,7 +212,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
 
     @Issue("1968")
     @Test
-    public void testTagValBooleanInteger() throws Exception {
+    public void testTagValBooleanInteger() {
         final String entityName = "create-entity-14";
         Registry.Entity.checkExists(entityName);
         Map<String, Object> createOrReplaceEntityQuery = new HashMap<>();
@@ -218,7 +220,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         tags.put("a", 123);
         tags.put("b", true);
         createOrReplaceEntityQuery.put("tags", tags);
-        assertEquals("Fail to execute createOrReplaceEntity query", OK.getStatusCode(), createOrReplaceEntity(entityName, createOrReplaceEntityQuery).getStatus());
+        assertSame("Fail to execute createOrReplaceEntity query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createOrReplaceEntity(entityName, createOrReplaceEntityQuery)));
 
         Entity storedEntity = getEntityResponse(entityName).readEntity(Entity.class);
         Map<String, String> expectedTags = new HashMap<>();

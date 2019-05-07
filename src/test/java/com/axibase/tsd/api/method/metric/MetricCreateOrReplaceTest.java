@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -11,9 +12,7 @@ import java.util.Map;
 
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class MetricCreateOrReplaceTest extends MetricMethod {
 
@@ -23,13 +22,13 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric.getName(), metric);
-        assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute createOrReplaceEntityGroup method", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
     @Issue("1278")
     @Test
-    public void testMetricNameContainsWhiteSpace() throws Exception {
+    public void testMetricNameContainsWhiteSpace() {
         final Metric metric = new Metric("createreplace metric-1");
 
         Response response = createOrReplaceMetric(metric);
@@ -43,7 +42,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute createOrReplaceEntityGroup method", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
@@ -54,13 +53,13 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         metric.setDataType(DataType.DECIMAL);
 
         Response response = createOrReplaceMetric(metric);
-        assertEquals("Fail to execute createOrReplaceEntityGroup method", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute createOrReplaceEntityGroup method", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         assertTrue("Fail to check metric inserted", metricExist(metric));
     }
 
     @Issue("3141")
     @Test
-    public void testMetricTagNameIsLowerCased() throws Exception {
+    public void testMetricTagNameIsLowerCased() {
         final String TAG_NAME = "SoMeTaG";
         final String TAG_VALUE = "value";
 
@@ -69,7 +68,7 @@ public class MetricCreateOrReplaceTest extends MetricMethod {
         Metric metric = new Metric("create-metric-with-tag", tags);
 
         Response response1 = createOrReplaceMetric(metric);
-        assertEquals("Failed to create metric", OK.getStatusCode(), response1.getStatus());
+        assertSame("Failed to create metric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response1));
 
         Response response2 = queryMetric(metric.getName());
         Metric createdMetric = response2.readEntity(Metric.class);

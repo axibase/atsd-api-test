@@ -7,10 +7,13 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -26,11 +29,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.axibase.tsd.api.util.CommonAssertions.assertDecimals;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
-import static com.axibase.tsd.api.util.ErrorTemplate.*;
+import static com.axibase.tsd.api.util.ErrorTemplate.EMPTY_TAG;
+import static com.axibase.tsd.api.util.ErrorTemplate.JSON_MAPPING_EXCEPTION_UNEXPECTED_CHARACTER;
 import static com.axibase.tsd.api.util.Mocks.*;
 import static com.axibase.tsd.api.util.Util.*;
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.*;
 
 
@@ -52,11 +58,14 @@ public class SeriesInsertTest extends SeriesTest {
         metric.setDataType(DataType.FLOAT);
 
         MetricMethod.createOrReplaceMetricCheck(metric);
-        assertEquals("Failed to insert float series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert float series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1);
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals("Stored big float value rounded incorrect", new BigDecimal("10.12121212121212121"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored big float value rounded incorrect",
+                new BigDecimal("10.121212121212121"),
+                seriesList.get(0).getData().get(0).getValue()
+        );
     }
 
     @Issue("2871")
@@ -94,7 +103,7 @@ public class SeriesInsertTest extends SeriesTest {
         for (int i = 0; i < 12; i++) {
             series.addSamples(Sample.ofDateDecimal(dateTime.plusSeconds(5 * i).toString(), number));
         }
-        assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert small decimal series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(
@@ -126,7 +135,7 @@ public class SeriesInsertTest extends SeriesTest {
             String isoDate = Util.ISOFormat(t + i * 5000);
             series.addSamples(Sample.ofDateDecimal(isoDate, number));
         }
-        assertEquals("Failed to insert small decimal series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert small decimal series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), t, t + 1 + 11 * 5000);
@@ -138,10 +147,11 @@ public class SeriesInsertTest extends SeriesTest {
 
     @DataProvider(name = "afterCompactionDataProvider")
     public Object[][] provideDataAfterCompaction() {
-        return new Object[][]{
-                {DataType.DOUBLE, new BigDecimal("90000000000000003.9") },
-                {DataType.FLOAT, new BigDecimal("900000003.9") },
-                {DataType.DECIMAL, new BigDecimal("90000000000000003.93") }
+        return new Object[][] {
+                // Will be removed in next release
+//                {DataType.DOUBLE, new BigDecimal("90000000000000003.9")},
+//                {DataType.FLOAT, new BigDecimal("900000003.9")},
+                {DataType.DECIMAL, new BigDecimal("90000000000000003.93")}
         };
     }
 
@@ -163,11 +173,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, time + 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         BigDecimal actualValue = seriesList.get(0).getData().get(0).getValue();
-        String assertMessage = String.format(
-                "Stored value precision incorrect.%n Expected: %s%nActual: %s%n",
-                valueBefore, actualValue
-        );
-        assertTrue(assertMessage, valueBefore.compareTo(actualValue) == 0);
+        assertDecimals("Stored value precision incorrect", valueBefore, actualValue);
     }
 
     @Issue("2009")
@@ -182,13 +188,13 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T17:08:09Z";
         series.addSamples(Sample.ofDateDecimal(d, value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.001Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2009")
@@ -203,13 +209,13 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T17:08:09.100Z";
         series.addSamples(Sample.ofDateDecimal(d, value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T17:08:09.101Z");
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", storedDate, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2009")
@@ -223,14 +229,14 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T10:08:09.000Z";
         series.addSamples(Sample.ofDateDecimal("2016-06-09T17:08:09+07:00", value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:09.100Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2009")
@@ -244,13 +250,13 @@ public class SeriesInsertTest extends SeriesTest {
         String d = "2016-06-09T10:08:09.999Z";
         series.addSamples(Sample.ofDateDecimal("2016-06-09T17:08:09.999+07:00", value));
 
-        assertEquals("Failed to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Failed to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T10:08:10Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2850")
@@ -263,14 +269,14 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series(entityName, metricName);
         String d = "2016-06-09T20:00:00.000Z";
         series.addSamples(Sample.ofDateDecimal("2016-06-09T17:29:00-02:31", value));
-        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Fail to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
         assertSeriesQueryDataSize(seriesQuery, 1);
 
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
-        assertEquals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
+        assertDecimals("Stored value incorrect", value, seriesList.get(0).getData().get(0).getValue());
     }
 
 
@@ -282,7 +288,7 @@ public class SeriesInsertTest extends SeriesTest {
         Series series = new Series("e___underscore", "m___underscore");
         series.addSamples(Sample.ofDateInteger(Util.ISOFormat(t), 0));
 
-        assertEquals("Fail to insert series", OK.getStatusCode(), insertSeries(Collections.singletonList(series)).getStatus());
+        assertSame("Fail to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
         assertSeriesExisting(series);
     }
 
@@ -297,7 +303,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2957")
@@ -310,7 +316,7 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
         assertEquals("Empty data in returned series", 1, seriesList.get(0).getData().size());
-        assertEquals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals(new BigDecimal("0"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2957")
@@ -324,7 +330,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), time, endTime);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getValue());
+        assertDecimals(new BigDecimal("1"), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2957")
@@ -397,7 +403,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest0() throws Exception {
+    public void testUrlNotFoundGetRequest0() {
         Response response = executeRootRequest(webTarget -> webTarget.path("api").path("404").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -406,7 +412,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest1() throws Exception {
+    public void testUrlNotFoundGetRequest1() {
         Response response = executeApiRequest(webTarget -> webTarget.path("query").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -414,7 +420,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest2() throws Exception {
+    public void testUrlNotFoundGetRequest2() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -422,7 +428,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundGetRequest3() throws Exception {
+    public void testUrlNotFoundGetRequest3() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").queryParam("not", "exist").request().get());
         response.bufferEntity();
         assertEquals("Nonexistent url with /api/v1 get doesn't return 404", NOT_FOUND.getStatusCode(), response.getStatus());
@@ -430,42 +436,42 @@ public class SeriesInsertTest extends SeriesTest {
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequestWithoutApiV1() throws Exception {
+    public void testUrlNotFoundOptionsRequestWithoutApiV1() {
         Response response = executeRootRequest(webTarget -> webTarget.path("api").path("404").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url without /api/v1 options doesn't return 404", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url without /api/v1 options doesn't return 404", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest0() throws Exception {
+    public void testUrlNotFoundOptionsRequest0() {
         Response response = executeApiRequest(webTarget -> webTarget.path("*").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest1() throws Exception {
+    public void testUrlNotFoundOptionsRequest1() {
         Response response = executeApiRequest(webTarget -> webTarget.path("query").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest2() throws Exception {
+    public void testUrlNotFoundOptionsRequest2() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2927")
     @Test
-    public void testUrlNotFoundOptionsRequest3() throws Exception {
+    public void testUrlNotFoundOptionsRequest3() {
         Response response = executeApiRequest(webTarget -> webTarget.path("404").queryParam("not", "exist").request().options());
         response.bufferEntity();
-        assertEquals("Nonexistent url with /api/v1 options doesn't return 200", OK.getStatusCode(), response.getStatus());
+        assertSame("Nonexistent url with /api/v1 options doesn't return 200", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("2850")
@@ -492,21 +498,23 @@ public class SeriesInsertTest extends SeriesTest {
     }
 
     @Issue("2850")
+    @Issue("5272")
     @Test
-    public void testXXTimezoneUnsupported() throws Exception {
+    public void testRfc822TimezoneOffsetSupported() throws Exception {
         String entityName = "e-iso-12";
         String metricName = "m-iso-12";
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(Sample.ofRawDateInteger("2016-06-09T09:50:00-1010", 0));
+        series.addSamples(Sample.ofRawDateInteger("2016-06-09T09:50:00-1010", 42));
+        String d = "2016-06-09T20:00:00.000Z";
+        assertSame("Fail to insert series", Response.Status.Family.SUCCESSFUL, Util.responseFamily(insertSeries(Collections.singletonList(series))));
 
-        Response response = insertSeries(Collections.singletonList(series));
+        SeriesQuery seriesQuery = new SeriesQuery(series.getEntity(), series.getMetric(), d, "2016-06-09T20:00:01Z");
+        assertSeriesQueryDataSize(seriesQuery, 1);
 
-        assertEquals("Incorrect response status code", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertErrorMessageStart(
-                extractErrorMessage(response),
-                JSON_MAPPING_EXCEPTION_NA
-        );
+        List<Series> seriesList = querySeriesAsList(seriesQuery);
+        assertEquals("Stored date incorrect", d, seriesList.get(0).getData().get(0).getRawDate());
+        assertDecimals("Stored value incorrect", BigDecimal.valueOf(42), seriesList.get(0).getData().get(0).getValue());
     }
 
     @Issue("2850")
@@ -610,7 +618,7 @@ public class SeriesInsertTest extends SeriesTest {
 
     @DataProvider(name = "dataTextProvider")
     public Object[][] provideDataText() {
-        return new Object[][]{
+        return new Object[][] {
                 {"hello"},
                 {"HelLo"},
                 {"Hello World"},
@@ -644,9 +652,9 @@ public class SeriesInsertTest extends SeriesTest {
 
         insertSeriesCheck(Collections.singletonList(series));
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = querySeriesAsList(seriesQuery);
 
-        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect",
+                Collections.singletonList(series), querySeries(seriesQuery));
     }
 
     @Issue("3480")
@@ -657,7 +665,7 @@ public class SeriesInsertTest extends SeriesTest {
 
         Series series = new Series(entityName, metricName);
 
-        String[] data = new String[]{"1", "2"};
+        String[] data = new String[] {"1", "2"};
         for (String x : data) {
             Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
@@ -665,10 +673,9 @@ public class SeriesInsertTest extends SeriesTest {
         }
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = querySeriesAsList(seriesQuery);
-
         Series lastInsertedSeries = series;
-        assertEquals("Stored series are incorrect", Collections.singletonList(lastInsertedSeries), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect",
+                Collections.singletonList(lastInsertedSeries), SeriesMethod.querySeries(seriesQuery));
     }
 
     @Issue("3740")
@@ -682,7 +689,7 @@ public class SeriesInsertTest extends SeriesTest {
         metric.setVersioned(true);
         MetricMethod.createOrReplaceMetricCheck(metric);
 
-        String[] data = new String[]{"1", "2", "3", "4"};
+        String[] data = new String[] {"1", "2", "3", "4"};
         for (String x : data) {
             Sample sample = Sample.ofDateIntegerText("2016-10-11T13:00:00.000Z", 1, x);
             series.setSamples(Collections.singleton(sample));
@@ -717,9 +724,10 @@ public class SeriesInsertTest extends SeriesTest {
         SeriesQuery seriesQuery = new SeriesQuery(series);
         insertSeriesCheck(Collections.singletonList(series));
 
+        Response response = querySeries(seriesQuery);
         List<Series> seriesList = querySeriesAsList(seriesQuery);
 
-        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect", Collections.singletonList(series), response);
         assertEquals("Tag was not modified", "foo", seriesList.get(0).getTags().get("foo"));
     }
 
@@ -737,11 +745,11 @@ public class SeriesInsertTest extends SeriesTest {
         String json = String.format(commandJsonFormat, series.getEntity(), series.getMetric(),
                 sample.getRawDate(), sample.getValue());
         Response response = insertSeries(json);
-        assertEquals("Bad insertion request status code", OK.getStatusCode(), response.getStatus());
+        assertSame("Bad insertion request status code", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         Checker.check(new SeriesCheck(Collections.singletonList(series)));
 
         SeriesQuery seriesQuery = new SeriesQuery(series);
-        List<Series> seriesList = querySeriesAsList(seriesQuery);
-        assertEquals("Stored series are incorrect", Collections.singletonList(series), seriesList);
+        CommonAssertions.jsonAssert("Stored series are incorrect",
+                Collections.singletonList(series), querySeries(seriesQuery));
     }
 }

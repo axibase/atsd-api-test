@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -9,15 +10,15 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-import static javax.ws.rs.core.Response.Status.*;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static org.testng.AssertJUnit.*;
 
 public class MetricUpdateTest extends MetricMethod {
 
     @Issue("1278")
     @Test
-    public void testMetricNameContainsWhiteSpace() throws Exception {
+    public void testMetricNameContainsWhiteSpace() {
         final Metric metric = new Metric("update metric-1");
         assertEquals("Method should fail if metricName contains whitespace", BAD_REQUEST.getStatusCode(), updateMetric(metric).getStatus());
     }
@@ -30,7 +31,7 @@ public class MetricUpdateTest extends MetricMethod {
         createOrReplaceMetricCheck(metric);
 
         metric.setDataType(DataType.DOUBLE);
-        assertEquals("Fail to execute updateMetric query", OK.getStatusCode(), updateMetric(metric).getStatus());
+        assertSame("Fail to execute updateMetric query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateMetric(metric)));
         assertTrue("Can not find required metric", metricExist(metric));
     }
 
@@ -42,12 +43,12 @@ public class MetricUpdateTest extends MetricMethod {
         createOrReplaceMetricCheck(metric);
 
         metric.setDataType(DataType.DOUBLE);
-        assertEquals("Fail to execute updateMetric query", OK.getStatusCode(), updateMetric(metric).getStatus());
+        assertSame("Fail to execute updateMetric query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateMetric(metric)));
         assertTrue("Can not find required metric", metricExist(metric));
     }
 
     @Test
-    public void testUnknownMetric() throws Exception {
+    public void testUnknownMetric() {
         final Metric metric = new Metric("updatemetric-4");
         assertEquals("Unknown metric should return NotFound", NOT_FOUND.getStatusCode(), updateMetric(metric).getStatus());
     }
@@ -60,7 +61,7 @@ public class MetricUpdateTest extends MetricMethod {
 
         Metric metric = new Metric("update-metric-with-tag");
         Response createResponse = createOrReplaceMetric(metric);
-        assertEquals("Failed to create metric", OK.getStatusCode(), createResponse.getStatus());
+        assertSame("Failed to create metric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(createResponse));
 
         createOrReplaceMetricCheck(metric);
 
@@ -69,10 +70,10 @@ public class MetricUpdateTest extends MetricMethod {
         metric.setTags(tags);
 
         Response updateResponse = updateMetric(metric);
-        assertEquals("Failed to update metric", OK.getStatusCode(), updateResponse.getStatus());
+        assertSame("Failed to update metric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(updateResponse));
 
         Response queryResponse = queryMetric(metric.getName());
-        assertEquals("Failed to query metric", OK.getStatusCode(), queryResponse.getStatus());
+        assertSame("Failed to query metric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(queryResponse));
         Metric updatedMetric = queryResponse.readEntity(Metric.class);
 
         assertEquals("Wrong metric name", metric.getName(), updatedMetric.getName());

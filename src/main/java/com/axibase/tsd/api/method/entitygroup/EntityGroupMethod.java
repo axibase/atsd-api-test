@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.entitygroup;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.OK;
 
 /**
  * @author Dmitry Korchagin.
@@ -37,12 +37,12 @@ public class EntityGroupMethod extends BaseMethod {
 
     public static void createOrReplaceEntityGroupCheck(EntityGroup entityGroup) throws Exception {
         Response response = createOrReplaceEntityGroup(entityGroup);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute createOrReplaceEntityGroup query");
         }
 
         response = getEntityGroup(entityGroup.getName());
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
@@ -56,7 +56,7 @@ public class EntityGroupMethod extends BaseMethod {
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute getEntityGroup query");
         }
 
@@ -67,7 +67,7 @@ public class EntityGroupMethod extends BaseMethod {
 
     public static boolean entityGroupExist(String entityGroup) throws NotCheckedException {
         final Response response = EntityGroupMethod.getEntityGroup(entityGroup);
-        if (response.getStatus() == OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
             return true;
         } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;

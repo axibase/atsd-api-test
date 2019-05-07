@@ -42,7 +42,7 @@ public class SqlTimezoneFormatTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<String> expectedColumnValues = Collections.singletonList(
-                formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssZ")
+                formatDate(Util.parseDate("2016-06-03T09:23:00.000Z"), "yyyy-MM-dd'T'HH:mm:ssXX")
         );
 
         assertTableContainsColumnValues(expectedColumnValues, resultTable, "f-date");

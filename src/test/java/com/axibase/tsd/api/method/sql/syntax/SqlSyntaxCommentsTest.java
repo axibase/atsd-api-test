@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -12,8 +13,8 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertSame;
 
 /**
  *
@@ -38,7 +39,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("1956")
@@ -49,7 +50,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
 
@@ -61,7 +62,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("1956")
@@ -72,7 +73,7 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 
     @Issue("1956")
@@ -106,6 +107,6 @@ public class SqlSyntaxCommentsTest extends SqlTest {
                 TEST_METRIC_NAME
         );
         Response response = queryResponse(sqlQuery);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
     }
 }

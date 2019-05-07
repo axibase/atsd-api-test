@@ -65,7 +65,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
 
         String[] expectedNames = {
                 "value",
-                "case ?\nwhen ? then ?\nelse ?\nend"
+                "case ? when ? then ? else ? end"
         };
 
         String[] expectedTypes = {

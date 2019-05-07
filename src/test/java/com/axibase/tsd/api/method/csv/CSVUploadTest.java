@@ -10,8 +10,8 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import org.json.JSONException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -28,9 +28,7 @@ import java.util.*;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
 import static com.axibase.tsd.api.util.Util.*;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 public class CSVUploadTest extends CSVUploadMethod {
     public static final String LINE_BREAKS_TEST_VALUE = "533.9";
@@ -45,7 +43,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static String timezone = DEFAULT_TIMEZONE_NAME;
 
     @BeforeClass
-    public static void installParser() throws URISyntaxException, FileNotFoundException, JSONException {
+    public static void installParser() throws URISyntaxException, FileNotFoundException {
         String[] parsers = {SIMPLE_PARSER, SIMPLE_PARSER_ISO, SIMPLE_PARSER_MS, LF_PARSER, CRLF_PARSER};
         for (String parserName : parsers) {
             File configPath = resolvePath(RESOURCE_DIR + File.separator + parserName + ".xml");
@@ -208,7 +206,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-time-range-iso.csv").toString());
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_ISO);
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        assertSame("Failed to upload file", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
 
         assertSeriesQueryDataSize(seriesQuery, 2);
@@ -231,7 +229,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-time-range-ms.csv").toString());
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER_MS);
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        assertSame("Failed to upload file", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, 2);
@@ -257,7 +255,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         File csvPath = resolvePath(Paths.get(RESOURCE_DIR, confFileName).toString());
 
         Response response = binaryCsvUpload(csvPath, parser, entity.getName());
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        assertSame("Failed to upload file", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, dataSize);
@@ -280,7 +278,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         File csvPath = resolvePath(Paths.get(RESOURCE_DIR, "test-cr-dst-parser.csv").toString());
 
         Response response = binaryCsvUpload(csvPath, CRLF_PARSER, entity.getName());
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        assertSame("Failed to upload file", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         SeriesQuery seriesQuery = new SeriesQuery(entity.getName(), metric.getName(), MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, 3);
@@ -294,7 +292,7 @@ public class CSVUploadTest extends CSVUploadMethod {
     }
 
 
-    private void assertSeriesValue(String entity, String metric, String date, String value, List<Series> actualSeriesList) throws JSONException {
+    private void assertSeriesValue(String entity, String metric, String date, String value, List<Series> actualSeriesList) {
         Series expectedSeries = new Series();
         expectedSeries.setEntity(entity);
         expectedSeries.setMetric(metric);
@@ -303,13 +301,13 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertEquals(expectedSeriesList, actualSeriesList);
     }
 
-    private void checkBinaryFileUpload(String entityName, String metricName, File csvPath) throws Exception {
+    private void checkBinaryFileUpload(String entityName, String metricName, File csvPath) {
         Registry.Entity.checkExists(entityName);
         Registry.Metric.checkExists(metricName);
 
         Response response = binaryCsvUpload(csvPath, SIMPLE_PARSER);
 
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        assertSame("Failed to upload file", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, 1);
@@ -322,11 +320,11 @@ public class CSVUploadTest extends CSVUploadMethod {
         );
     }
 
-    private void checkMultipartFileUpload(String entityName, String metricName, File csvPath) throws Exception {
+    private void checkMultipartFileUpload(String entityName, String metricName, File csvPath) {
         Registry.Entity.checkExists(entityName);
         Registry.Metric.checkExists(metricName);
         Response response = multipartCsvUpload(csvPath, SIMPLE_PARSER);
-        assertEquals("Failed to upload file", OK.getStatusCode(), response.getStatus());
+        assertSame("Failed to upload file", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         SeriesQuery seriesQuery = new SeriesQuery(entityName, metricName, MIN_QUERYABLE_DATE, MAX_QUERYABLE_DATE);
         assertSeriesQueryDataSize(seriesQuery, 1);
         assertSeriesValue(
@@ -350,7 +348,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         @Override
         public boolean isChecked() {
             Response response = SeriesMethod.querySeries(query);
-            if (response.getStatus() != OK.getStatusCode()) {
+            if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                 return false;
             }
             List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {

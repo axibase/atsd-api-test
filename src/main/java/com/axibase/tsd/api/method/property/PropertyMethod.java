@@ -7,6 +7,7 @@ import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.axibase.tsd.api.util.Util.*;
-import static javax.ws.rs.core.Response.Status.OK;
 
 public class PropertyMethod extends BaseMethod {
     private static final String METHOD_PROPERTY_INSERT = "/properties/insert";
@@ -79,7 +79,7 @@ public class PropertyMethod extends BaseMethod {
 
     public static void insertPropertyCheck(final Property property, AbstractCheck check) throws Exception {
         Response response = insertProperty(property);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new Exception("Can not execute insert property query");
         }
         Checker.check(check);
@@ -95,7 +95,7 @@ public class PropertyMethod extends BaseMethod {
 
     public static boolean propertyExist(final Property property, boolean strict) throws Exception {
         Response response = queryProperty(prepareStrictPropertyQuery(property));
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             response.close();
             throw new Exception("Fail to execute queryProperty");
         }
@@ -115,15 +115,12 @@ public class PropertyMethod extends BaseMethod {
         q.setLimit(1);
 
         final Response response = queryProperty(q);
-        if (response.getStatus() != OK.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new NotCheckedException("Fail to execute property query");
         }
 
         String given = response.readEntity(String.class);
-        if ("[]".equals(given)){
-            return false;
-        } else
-            return true;
+        return !"[]".equals(given);
     }
 
     private static Map prepareStrictPropertyQuery(final Property property) {

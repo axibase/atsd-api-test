@@ -42,15 +42,7 @@ public class License {
     }
 
     public void setProductVersion(String productVersion) {
-        if (ProductVersion.COMMUNITY.toString().equals(productVersion)) {
-            this.productVersion = ProductVersion.COMMUNITY;
-        } else {
-            if (ProductVersion.ENTERPRISE.toString().equals(productVersion)) {
-                this.productVersion = ProductVersion.ENTERPRISE;
-            } else {
-                throw new IllegalStateException("Incorrect Product version");
-            }
-        }
+        this.productVersion = ProductVersion.fromString(productVersion);
     }
 
     public Boolean getDataVersioningEnabled() {

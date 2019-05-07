@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
@@ -15,14 +16,14 @@ import java.util.Map;
 
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertSame;
 
 public class SeriesUrlQueryTest extends SeriesMethod {
 
     @Issue("1278")
     @Test
-    public void testEntityContainsWhitespace() throws Exception {
+    public void testEntityContainsWhitespace() {
         final String entityName = "seriesurlquery entityname-1";
         Map<String, String> parameters = new HashMap<>();
         parameters.put("startDate", MIN_QUERYABLE_DATE);
@@ -79,13 +80,17 @@ public class SeriesUrlQueryTest extends SeriesMethod {
         parameters.put("endDate", MAX_QUERYABLE_DATE);
 
         Response response = urlQuerySeries(series.getEntity(), series.getMetric(), parameters);
-        assertEquals(OK.getStatusCode(), response.getStatus());
+        assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         List<Series> responseSeries = response.readEntity(new GenericType<List<Series>>() {
         });
-        assertEquals("Incorrect series entity", series.getEntity(), responseSeries.get(0).getEntity());
-        assertEquals("Incorrect series metric", series.getMetric(), responseSeries.get(0).getMetric());
-        assertEquals("Incorrect series sample date", 0L, responseSeries.get(0).getData().get(0).getUnixTime().longValue());
-        assertEquals("Incorrect series sample value", new BigDecimal(0), responseSeries.get(0).getData().get(0).getValue());
-
+        assertEquals(1, responseSeries.size());
+        final Series actualSeries = responseSeries.get(0);
+        assertEquals("Incorrect series entity", series.getEntity(), actualSeries.getEntity());
+        assertEquals("Incorrect series metric", series.getMetric(), actualSeries.getMetric());
+        final List<Sample> samples = actualSeries.getData();
+        assertEquals("Series should contains only one sample", 1, samples.size());
+        final Sample sample = samples.get(0);
+        assertEquals("Incorrect series sample date", 0L, sample.getUnixTime().longValue());
+        assertEquals("Incorrect series sample value", 0, new BigDecimal(0).compareTo(sample.getValue()));
     }
 }

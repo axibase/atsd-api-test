@@ -3,44 +3,32 @@ package com.axibase.tsd.api.method.replacementtable;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.util.NotCheckedException;
-import org.apache.commons.io.IOUtils;
+import com.axibase.tsd.api.util.Util;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientProperties;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
 
-import static javax.ws.rs.core.Response.Status.OK;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
+@Slf4j
 public class ReplacementTableMethod extends BaseMethod {
-    private static final Logger logger = LoggerFactory.getLogger(ReplacementTableMethod.class);
-    private static final String METHOD_REPLACEMENT_TABLE_NEW = "/replacement-tables/new";
-    private static final String METHOD_REPLACEMENT_TABLE_LIST = "/replacement-tables/";
+    private static final String METHOD_TABLE_JSON = "/replacement-tables/json/{table}";
+
+    private static WebTarget resolveTable(WebTarget webTarget, String tableName) {
+        return webTarget.path(METHOD_TABLE_JSON).resolveTemplate("table", tableName);
+    }
 
     private static Response createResponse(ReplacementTable table) {
-        MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
-        parameters.add("lookupName", table.getName());
-        parameters.add("items", squashMapIntoString(table.getMap()));
-        parameters.add("oldName", "");
-        parameters.add("save", "Save");
-        Form form = new Form(parameters);
-
-        Response response = executeRootRequest(webTarget -> webTarget
-                .path(METHOD_REPLACEMENT_TABLE_NEW)
+        Response response = executeApiRequest(webTarget ->
+                resolveTable(webTarget, table.getName())
                 .property(ClientProperties.FOLLOW_REDIRECTS, false)
                 .request()
-                .post(Entity.form(form)));
+                .put(Entity.json(table)));
 
         response.bufferEntity();
 
@@ -50,58 +38,46 @@ public class ReplacementTableMethod extends BaseMethod {
     public static void createCheck(ReplacementTable table) {
         Response response = createResponse(table);
 
-        // It's confusing, but we get code 302 -- FOUND - Redirect, only if table was created
-        if (response.getStatus() != Response.Status.FOUND.getStatusCode()) {
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             String errorMessage = "Wasn't able to create a replacement table, Status Info is " + response.getStatusInfo();
-            logger.error(errorMessage);
+            log.error(errorMessage);
             throw new IllegalStateException(errorMessage);
         }
     }
 
-    private static String squashMapIntoString(Map<String, String> map) {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
-        }
-        return sb.toString();
-    }
-
-    private static Response getReplacementTablesResponse() {
-        Response response = executeRootRequest(webTarget -> webTarget
-                .path(METHOD_REPLACEMENT_TABLE_LIST)
+    private static Response getReplacementTablesResponse(String replacementTableName) {
+        Response response = executeApiRequest(webTarget ->
+                resolveTable(webTarget, replacementTableName)
                 .request().get());
         response.bufferEntity();
         return response;
     }
 
-    public static boolean replacementTableExist(String replacementTable) throws NotCheckedException {
-        replacementTable = replacementTable.replace(" ", "_").toLowerCase();
-        final Response response = ReplacementTableMethod.getReplacementTablesResponse();
-        if (response.getStatus() != OK.getStatusCode()) {
-            throw new NotCheckedException("Fail to execute replacement table query");
-        }
-
-        InputStream bodyStream = (InputStream) response.getEntity();
-        String body;
-        try {
-            body = IOUtils.toString(bodyStream, "UTF-8");
-        }
-        catch (IOException ignored) {
-            throw new IllegalStateException("Error in decoding stream to string");
-        }
-
-        Document doc = Jsoup.parse(body);
-        Element table = doc.select("table").get(0);
-        Elements trs = table.select("tr");
-        for (Element tr : trs) {
-            Elements tds = tr.select("td");
-            for (Element td : tds) {
-                if (td.text().contains(replacementTable)) {
-                    return true;
-                }
+    public static boolean replacementTableExist(String replacementTableName) throws NotCheckedException {
+        replacementTableName = replacementTableName.replace(" ", "_").toLowerCase();
+        final Response response = getReplacementTablesResponse(replacementTableName);
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
+            if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+                return false;
             }
+            String message = "Fail to execute replacement table query: " + response.getStatusInfo();
+            log.error(message);
+            throw new NotCheckedException(message);
         }
 
-        return false;
+        try {
+            ReplacementTable replacementTable = response.readEntity(ReplacementTable.class);
+            if (!StringUtils.equalsIgnoreCase(replacementTableName, replacementTable.getName())) {
+                String message = "ReplacementTable API returned an entry we weren't asking for.";
+                log.error(message);
+                throw new NotCheckedException(message);
+            }
+        } catch (ProcessingException err) {
+            NotCheckedException exception = new NotCheckedException("Could not parse Replacement Table from JSON: " + err.getMessage());
+            exception.addSuppressed(err);
+            log.error(exception.getMessage());
+            throw exception;
+        }
+        return true;
     }
 }

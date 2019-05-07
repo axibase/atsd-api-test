@@ -23,9 +23,7 @@ import static com.axibase.tsd.api.util.TestUtil.*;
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class PropertyQueryTest extends PropertyMethod {
     /**
@@ -1452,7 +1450,7 @@ public class PropertyQueryTest extends PropertyMethod {
 
     private void assertStoredPropertyDoesNotMatchToInserted(Property property, Object query) throws Exception {
         Response response = queryProperty(query);
-        assertEquals("Fail to execute property query", OK.getStatusCode(), response.getStatus());
+        assertSame("Fail to execute property query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
         final String given = response.readEntity(String.class);
         final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(property));
         assertTrue("Property does not match to expected", compareJsonString(expected, given));
