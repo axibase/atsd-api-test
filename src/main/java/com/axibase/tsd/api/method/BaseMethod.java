@@ -12,6 +12,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.json.JSONArray;
@@ -60,7 +61,8 @@ public abstract class BaseMethod {
                 .register(MultiPartFeature.class)
                 .register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()))
                 .property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
-                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 
         GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
         objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
@@ -72,7 +74,7 @@ public abstract class BaseMethod {
                 new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
 
         jacksonMapper = new ObjectMapper();
-        jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
+        jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
     }
 
     protected static WebTarget addParameters(WebTarget target, MethodParameters parameters) {
@@ -86,17 +88,17 @@ public abstract class BaseMethod {
         return jacksonMapper;
     }
 
-    public static boolean compareJsonString(String expected, String given) throws Exception {
-
+    public static boolean compareJsonString(String expected, String given) {
         return compareJsonString(expected, given, false);
     }
 
-    public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
+    public static boolean compareJsonString(String expected, String given, boolean strict) {
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
             return true;
         } catch (JSONException e) {
-            throw new Exception("Can not deserialize response");
+            logger.error("Can not deserialize response:\n{}", given);
+            throw new IllegalStateException("Can not deserialize response");
         } catch (AssertionError e) {
             return false;
         }
@@ -142,31 +144,9 @@ public abstract class BaseMethod {
         }
 
         try {
-			Response result = null;
-			try {
-				result = requestFunction.apply(client.target);
-			} catch (Exception reqEx) {
-				if (reqEx instanceof org.apache.http.NoHttpResponseException
-						|| reqEx.getCause() instanceof org.apache.http.NoHttpResponseException
-						|| reqEx instanceof org.apache.http.client.ClientProtocolException
-						|| reqEx.getCause() instanceof org.apache.http.client.ClientProtocolException) {
-					try {
-						logger.error("SLEEP " + reqEx, reqEx);
-						Thread.currentThread().sleep(2000L);
-					} catch (Exception interruptEx) {
-					}
-					result = requestFunction.apply(client.target);
-					logger.info("request OK after error and SLEEP on " + reqEx);
-				} else {
-					throw reqEx;
-				}
-			}
-			pool.returnObject(client);
-			return result;
-        } catch (Exception e) {
-            logger.error("Exception while making request", e);
-            client.close();
-            throw e;
+            return requestFunction.apply(client.target);
+        } finally {
+            pool.returnObject(client);
         }
     }
 
