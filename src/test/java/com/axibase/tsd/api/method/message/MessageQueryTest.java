@@ -39,7 +39,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2105-05-21T00:00:00Z");
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -54,7 +54,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2105-05-21T01:23:00+01:23");
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -69,7 +69,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2105-05-20T22:37:00-01:23");
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         Message storedMessage = storedMessageList.get(0);
 
@@ -99,7 +99,7 @@ public class MessageQueryTest extends MessageMethod {
         messageQuery.setStartDate("2105-05-20T22:50:00-0110");
 
         Message storedMessage = queryMessageResponse(messageQuery)
-                .readEntity(new GenericType<List<Message>>() {})
+                .readEntity(new ResponseAsList<>()})
                 .get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());

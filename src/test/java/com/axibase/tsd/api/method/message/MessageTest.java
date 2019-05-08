@@ -42,7 +42,7 @@ public class MessageTest extends MessageMethod {
                     if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                         return false;
                     }
-                    List<Message> messageList = response.readEntity(new GenericType<List<Message>>() {
+                    List<Message> messageList = response.readEntity(new ResponseAsList<>()
                     });
                     return messageList.size() == size;
                 }

@@ -72,7 +72,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     )
     public void testAliasProcessedCorrectly(SeverityAlias alias) throws Exception {
         messageQuery.setSeverity(alias.name());
-        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         String severity = messages.get(0).getSeverity();
         assertEquals("Alias processed wrong", alias.getSeverity().name(), severity);
@@ -85,7 +85,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     )
     public void testMinSeverityCaseInsensitive(Severity severity) throws Exception {
         messageQuery.setMinSeverity(properCase(severity.name()));
-        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         Integer minimumSeverity = severity.getNumVal();
         for (Message m : messages) {
@@ -103,7 +103,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     )
     public void testSeverityCaseInsensitive(Severity s) throws Exception {
         messageQuery.setSeverity(properCase(s.name()));
-        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         String severity = messages.get(0).getSeverity();
         assertEquals("Severity is case sensitive", s.name(), severity);
@@ -116,7 +116,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     )
     public void testResponseSeverityNotNumeric(Severity s) throws Exception {
         messageQuery.setSeverity(s.name());
-        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         String severity = messages.get(0).getSeverity();
 //            str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
@@ -133,7 +133,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
         String key = severity.name();
         Integer minimumSeverity = severity.getNumVal();
         messageQuery.setMinSeverity(key);
-        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         for (Message m : messages) {
             int actualSeverity = valueOf(m.getSeverity()).getNumVal();
@@ -148,7 +148,7 @@ public class MessageSeverityQueryTest extends MessageMethod {
     public void testActualSeveritiesCorrespondRequired() throws Exception {
         String[] allSeverities = names();
         messageQuery.setSeverities(Arrays.asList(allSeverities));
-        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
+        List<Message> messages = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>()
         });
         assertEquals(allSeverities.length, messages.size());
     }
