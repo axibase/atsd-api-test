@@ -39,7 +39,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("startDate", MIN_QUERYABLE_DATE);
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new ResponseAsList<>());
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
         List<Map<String, Object>> updateAlertsCommand = new ArrayList<>();
 
         Map<String, Object> item;
@@ -60,7 +60,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("startDate", MIN_QUERYABLE_DATE);
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new ResponseAsList<>());
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
 
         Boolean acknowledgedFalseExist = false;
         Boolean acknowledgedTrueExist = false;
@@ -86,7 +86,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
         alertQuery.put("acknowledged", true);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new ResponseAsList<>());
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
         for (Alert alert : alertList) {
             assertTrue("Response should not contain acknowledged=false alerts", alert.getAcknowledged());
         }
@@ -101,7 +101,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
         alertQuery.put("acknowledged", false);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new ResponseAsList<>());
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
 
         for (Alert alert : alertList) {
             assertFalse("Response should not contain acknowledged=true alerts", alert.getAcknowledged());

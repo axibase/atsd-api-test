@@ -351,7 +351,7 @@ public class CSVUploadTest extends CSVUploadMethod {
             if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                 return false;
             }
-            List<Series> seriesList = response.readEntity(new ResponseAsList<>());
+            List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
             return (seriesList.size() == 1) && (seriesList.get(0).getData().size() == size);
         }
     }

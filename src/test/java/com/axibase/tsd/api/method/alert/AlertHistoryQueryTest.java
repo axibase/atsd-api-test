@@ -108,7 +108,7 @@ public class AlertHistoryQueryTest extends AlertTest {
         assertEquals("Bad request status code\n" + json,
                 Response.Status.Family.SUCCESSFUL, resp.getStatusInfo().getFamily());
         assertTrue("Responded alert collection should be empty",
-                resp.readEntity(new ResponseAsList<>()).isEmpty());
+                resp.readEntity(ResponseAsList.ofAlerts()).isEmpty());
     }
 
 }

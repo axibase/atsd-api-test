@@ -45,7 +45,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>());
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("nurswgvml022", storedMessage.getEntity());
@@ -70,7 +70,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>());
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
 
         Message msgResponse = storedMessageList.get(0);
         assertEquals("Incorrect stored date", message.getDate(), msgResponse.getDate());
@@ -91,7 +91,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>());
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
 
         Message msgResponse = storedMessageList.get(0);
         assertEquals("Max storable date failed to save", message.getDate(), msgResponse.getDate());
@@ -128,7 +128,7 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>());
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -153,7 +153,7 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>());
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -178,7 +178,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<>());
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -217,7 +217,7 @@ public class MessageInsertTest extends MessageMethod {
                 .setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
-        Message storedMessage = queryMessageResponse(messageQuery).readEntity(new ResponseAsList<Message>()).get(0);
+        Message storedMessage = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages()).get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
         assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
@@ -253,7 +253,7 @@ public class MessageInsertTest extends MessageMethod {
             if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                 return false;
             }
-            List<Message> storedMessageList = response.readEntity(new ResponseAsList<>());
+            List<Message> storedMessageList = response.readEntity(ResponseAsList.ofMessages());
             return storedMessageList.size() == size;
         }
     }

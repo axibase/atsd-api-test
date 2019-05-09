@@ -51,7 +51,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     private void assertUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) {
         Response response = queryEntityMetrics(series.getEntity());
         assertSame("Fail to execute queryEntityMetric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
-        List<Metric> metricList = response.readEntity(new ResponseAsList<>());
+        List<Metric> metricList = response.readEntity(ResponseAsList.ofMetrics());
         assertEquals("Entity should have only 1 metric", 1, metricList.size());
         assertEquals("Metric in response does not match to inserted metric", series.getMetric(), metricList.get(0).getName());
     }

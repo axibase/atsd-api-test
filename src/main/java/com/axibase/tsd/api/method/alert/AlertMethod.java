@@ -64,7 +64,7 @@ public class AlertMethod extends BaseMethod {
             );
             throw new IllegalStateException(errorMessage);
         } else {
-            return response.readEntity(new ResponseAsList<>());
+            return response.readEntity(ResponseAsList.ofAlerts());
         }
     }
 

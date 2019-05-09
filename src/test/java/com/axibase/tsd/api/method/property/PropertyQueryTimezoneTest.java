@@ -38,7 +38,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         propertyQuery.setStartDate("2016-05-21T00:00:00Z");
 
-        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new ResponseAsList<>());
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(ResponseAsList.ofProperties());
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -54,7 +54,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         propertyQuery.setStartDate("2016-05-21T01:23:00+01:23");
 
-        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new ResponseAsList<>());
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(ResponseAsList.ofProperties());
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -69,7 +69,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
 
         propertyQuery.setStartDate("2016-05-20T22:37:00-01:23");
 
-        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new ResponseAsList<Property>());
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(ResponseAsList.ofProperties());
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -100,7 +100,7 @@ public class PropertyQueryTimezoneTest extends PropertyMethod {
         propertyQuery.setStartDate("2016-05-20T22:50:00-0110");
 
         Property storedProperty = queryProperty(propertyQuery)
-                .readEntity(new ResponseAsList<Property>())
+                .readEntity(ResponseAsList.ofProperties())
                 .get(0);
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
         assertEquals("Incorrect property tags", property.getTags(), storedProperty.getTags());

@@ -81,7 +81,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
 
         Response response = urlQuerySeries(series.getEntity(), series.getMetric(), parameters);
         assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
-        List<Series> responseSeries = response.readEntity(new ResponseAsList<>());
+        List<Series> responseSeries = response.readEntity(ResponseAsList.ofSeries());
         assertEquals(1, responseSeries.size());
         final Series actualSeries = responseSeries.get(0);
         assertEquals("Incorrect series entity", series.getEntity(), actualSeries.getEntity());

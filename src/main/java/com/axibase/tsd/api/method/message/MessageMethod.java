@@ -80,11 +80,11 @@ public class MessageMethod extends BaseMethod {
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute queryMessageStats");
         }
-        return response.readEntity(new ResponseAsList<>());
+        return response.readEntity(ResponseAsList.ofSeries());
     }
 
     public static List<Message> queryMessage(MessageQuery... queries) {
-        return queryMessageResponse(queries).readEntity(new ResponseAsList<>());
+        return queryMessageResponse(queries).readEntity(ResponseAsList.ofMessages());
     }
 
     public static <T> Response queryMessageResponse(T... messageQuery) {
