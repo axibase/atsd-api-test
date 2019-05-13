@@ -49,7 +49,7 @@ public class CSVUploadMethod extends BaseMethod {
     public static Response multipartCsvUpload(File file, String parserName) {
         try (MultiPart multiPart = new MultiPart()) {
             MediaType mediaType = getMediaTypeFromFile(file);
-            if (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM_TYPE)) {
+            if (mediaType == null || mediaType.equals(MediaType.APPLICATION_OCTET_STREAM_TYPE)) {
                 mediaType = new MediaType("text", "csv");
             }
             FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("filedata", file, mediaType);

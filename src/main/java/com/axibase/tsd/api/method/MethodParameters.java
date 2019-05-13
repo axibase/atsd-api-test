@@ -25,7 +25,7 @@ public abstract class MethodParameters {
                 } else if (value instanceof Map) {
                     appendMap(target, path, (Map<String, Object>) value);
                 } else if (value instanceof Collection) {
-                    target = target.queryParam(formatParameterName(path), formatCollection((Collection)value));
+                    target = target.queryParam(formatParameterName(path), formatCollection((Collection<?>)value));
                 } else if (value instanceof MethodParameters) {
                     appendMap(target, path, ((MethodParameters) value).toMap());
                 } else {
@@ -41,11 +41,11 @@ public abstract class MethodParameters {
         return String.join(".", parameterName);
     }
 
-    @SuppressWarnings("unchecked")
-    private static String formatCollection(Collection collection) {
+    private static String formatCollection(Collection<?> collection) {
         return collection.stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.joining(",")).toString();
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
 
     }
 
