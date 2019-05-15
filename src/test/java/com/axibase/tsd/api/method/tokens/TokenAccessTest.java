@@ -12,6 +12,8 @@ import com.axibase.tsd.api.method.BaseMethod;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -408,7 +410,7 @@ public class TokenAccessTest extends BaseMethod {
         response.bufferEntity();
         return response;
     }
-    private Response executeMethodWithEntity(String token, String path, String method) {
+    private Response executeMethodWithEntity(String token, String path, String method) throws Exception{
         final Response response = executeTokenRequest(webTarget -> webTarget.path(path)
                         .request()
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "+token)
