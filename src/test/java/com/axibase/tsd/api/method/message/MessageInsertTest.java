@@ -5,12 +5,12 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,8 +45,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("nurswgvml022", storedMessage.getEntity());
@@ -71,8 +70,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
 
         Message msgResponse = storedMessageList.get(0);
         assertEquals("Incorrect stored date", message.getDate(), msgResponse.getDate());
@@ -93,8 +91,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
 
         Message msgResponse = storedMessageList.get(0);
         assertEquals("Max storable date failed to save", message.getDate(), msgResponse.getDate());
@@ -131,9 +128,7 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        GenericType<List<Message>> generic = new GenericType<List<Message>>() {
-        };
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(generic);
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -158,8 +153,7 @@ public class MessageInsertTest extends MessageMethod {
 
         MessageMethod.insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -184,8 +178,7 @@ public class MessageInsertTest extends MessageMethod {
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -224,7 +217,7 @@ public class MessageInsertTest extends MessageMethod {
                 .setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         insertMessageCheck(message, new MessageQuerySizeCheck(messageQuery, 1));
-        Message storedMessage = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>(){}).get(0);
+        Message storedMessage = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages()).get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
         assertEquals("Incorrect message text", message.getMessage(), storedMessage.getMessage());
@@ -260,8 +253,7 @@ public class MessageInsertTest extends MessageMethod {
             if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                 return false;
             }
-            List<Message> storedMessageList = response.readEntity(new GenericType<List<Message>>() {
-            });
+            List<Message> storedMessageList = response.readEntity(ResponseAsList.ofMessages());
             return storedMessageList.size() == size;
         }
     }

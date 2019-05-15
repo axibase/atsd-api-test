@@ -49,7 +49,7 @@ public abstract class BaseMethod {
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
-    protected final static ObjectMapper jacksonMapper;
+    protected static final ObjectMapper jacksonMapper;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -92,6 +92,27 @@ public abstract class BaseMethod {
             logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
             throw new RuntimeException(fne);
         }
+
+        Config config = Config.getInstance();
+        ClientConfig clientConfig = new ClientConfig()
+                .connectorProvider(new ApacheConnectorProvider())
+                .register(MultiPartFeature.class)
+                .register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()))
+                .property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
+
+        GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
+        objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
+        objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
+
+        rootTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
+        apiTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+
+        jacksonMapper = new ObjectMapper();
+        jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
     }
 
     protected static WebTarget addParameters(WebTarget target, MethodParameters parameters) {

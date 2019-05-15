@@ -20,41 +20,27 @@ public class TCPSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(TCPSender.class);
     private static final String DEBUG_PREFIX = "debug ";
     private static final String LINE_SEPARATOR = "\n";
-    private static Config config;
-
-    static {
-        if (!initialize()) {
-            throw new IllegalStateException("Can't initialize TCPSender");
-        }
-    }
+    private static final Config config = Config.getInstance();
 
     private TCPSender() {
     }
 
-    private static Boolean initialize() {
-        Boolean result = Boolean.FALSE;
-        try {
-            config = Config.getInstance();
-            result = Boolean.TRUE;
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Config file not found! Reason: {}", e);
-        }
-        return result;
-    }
-
     private static String send(String command, Boolean isDebugMode) throws IOException {
-        try (Socket socket = new Socket(config.getServerName(), config.getTcpPort());
+        final String request = isDebugMode ? DEBUG_PREFIX.concat(command) : command;
+        final String host = config.getServerName();
+        final int port = config.getTcpPort();
+        try (Socket socket = new Socket(host, port);
              DataOutputStream requestStream = new DataOutputStream(socket.getOutputStream());
              BufferedReader responseStream = new BufferedReader(
                      new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8)
              )) {
-            String request = isDebugMode ? DEBUG_PREFIX.concat(command) : command;
+
             IOUtils.write(request, requestStream);
             String response = isDebugMode ? responseStream.readLine() : null;
-            LOGGER.debug(" > tcp://{}:{} \n\t{}\n< {}", config.getServerName(), config.getTcpPort(), request, response);
+            LOGGER.debug(" > tcp://{}:{} \n\t{}\n< {}", host, port, request, response);
             return response;
         } catch (IOException e) {
-            LOGGER.error("Unable to send command: {} \n Host: {}\n Port");
+            LOGGER.error("Unable to send command: {} \n Host: {}\n Port: {}", command, host, port);
             throw e;
         }
     }

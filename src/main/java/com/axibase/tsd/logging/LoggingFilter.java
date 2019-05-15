@@ -10,7 +10,6 @@ import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -18,22 +17,7 @@ import java.util.Objects;
 @Slf4j
 public class LoggingFilter implements ClientResponseFilter {
     private static final int MAX_ENTITY_SIZE = 1024 * 8;
-    private Boolean isCheckLoggingEnable;
-
-    public LoggingFilter() {
-        super();
-        initialize();
-    }
-
-    private void initialize() {
-        try {
-            Config config = Config.getInstance();
-            isCheckLoggingEnable = config.getCheckLoggingEnable();
-        } catch (FileNotFoundException e) {
-            log.error("Failed to get application config. {}", e);
-        }
-    }
-
+    private boolean isCheckLoggingEnable = Config.getInstance().isCheckLoggingEnable();
 
     private static void appendRequestDescription(ClientRequestContext requestContext, StringBuilder builder) {
         builder.append(" > ").append(requestContext.getMethod())
