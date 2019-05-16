@@ -184,9 +184,9 @@ public class TokenAccessTest extends BaseMethod {
             response = executeMethodWithEntity(token, path, method);
         }
         if(!(path.equals(availablePath) && method.equals(availableMethod))) {
-            assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username, 401, response.getStatus());
             String entity = response.readEntity(String.class);
-            assertTrue("Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+            assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " Response: " + entity, 401, response.getStatus());
+            assertTrue("Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username + "actual Response: " + entity, entity.contains("code 15"));
         }
 
     }
@@ -222,9 +222,9 @@ public class TokenAccessTest extends BaseMethod {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeParamsWithEntity(token, path, method, paramName, paramValue);
 
-        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + path + " Method: "+ method + "User: " +username, 401, response.getStatus());
         String entity = response.readEntity(String.class);
-        assertTrue("Token for path " + path + " and method " + method + "with params " + paramName + "=" + paramValue + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+        assertEquals("Authorisation not failed with not valid parameter on token: " + token +" Path: " + path + " Method: "+ method + "User: " +username + "Response: " + entity, 401, response.getStatus());
+        assertTrue("Token for path " + path + " and method " + method + "with params " + paramName + "=" + paramValue + " did not give code 15 in response for user " + username + " Response: " + entity, entity.contains("code 15"));
     }
 
     @Issue("6052")
@@ -287,9 +287,9 @@ public class TokenAccessTest extends BaseMethod {
             response = executeMethodWithEntity(token, path, method);
         }
         if(!((path.equals(firstPath) || path.equals(secondPath)) && method.equals(availableMethod))) {
-            assertEquals("Dual token for urls " + firstPath + "," + secondPath + " and method " + method + " did not fail to authorise user " + username + " to path " + path, 401, response.getStatus());
             String entity = response.readEntity(String.class);
-            assertTrue("Dual Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username, entity.contains("code 15"));
+            assertEquals("Dual token for urls " + firstPath + "," + secondPath + " and method " + method + " did not fail to authorise user " + username + " to path " + path + " Response: " + entity, 401, response.getStatus());
+            assertTrue("Dual Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username + " Response: " + entity, entity.contains("code 15"));
         }
     }
 
