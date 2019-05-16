@@ -2,7 +2,9 @@ package com.axibase.tsd.api.method.checks;
 
 import com.axibase.tsd.api.method.alert.AlertMethod;
 import com.axibase.tsd.api.model.alert.AlertQuery;
+import com.axibase.tsd.api.util.Util;
 
+import javax.ws.rs.core.Response;
 import java.util.Collection;
 
 public class AlertsCheck extends AbstractCheck {
@@ -16,7 +18,7 @@ public class AlertsCheck extends AbstractCheck {
     @Override
     public boolean isChecked() {
         try {
-            if(AlertMethod.queryAlerts(alerts).getStatus() == 404) {
+            if(Response.Status.Family.CLIENT_ERROR.equals(Util.responseFamily(AlertMethod.queryAlerts(alerts)))) {
                 return false;
             }
             return true;

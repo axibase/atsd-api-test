@@ -29,7 +29,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -57,41 +56,6 @@ public abstract class BaseMethod {
         SLF4JBridgeHandler.install();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
         julLogger.setLevel(Level.FINEST);
-        try {
-            Config config = Config.getInstance();
-            ClientConfig clientConfig = new ClientConfig();
-            clientConfig.connectorProvider(new ApacheConnectorProvider());
-            clientConfig.register(MultiPartFeature.class);
-            clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
-            clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-
-            ClientConfig tokenConfig = new ClientConfig();
-            tokenConfig.connectorProvider(new ApacheConnectorProvider());
-            tokenConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            tokenConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            tokenConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-
-            GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
-            objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
-            objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
-
-            rootTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
-            apiTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
-            tokenTargetPool = new GenericObjectPool<>(
-                new HttpClientFactory(tokenConfig, config, config.getApiPath()), objectPoolConfig);
-            tokenRootTargetPool = new GenericObjectPool<>(
-             new HttpClientFactory(tokenConfig, config, ""), objectPoolConfig);
-
-            jacksonMapper = new ObjectMapper();
-            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
-        } catch (FileNotFoundException fne) {
-            logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
-            throw new RuntimeException(fne);
-        }
 
         Config config = Config.getInstance();
         ClientConfig clientConfig = new ClientConfig()
@@ -101,6 +65,11 @@ public abstract class BaseMethod {
                 .property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
                 .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
                 .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
+        ClientConfig tokenConfig = new ClientConfig();
+        tokenConfig.connectorProvider(new ApacheConnectorProvider());
+        tokenConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+        tokenConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
+        tokenConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 
         GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
         objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
@@ -110,6 +79,10 @@ public abstract class BaseMethod {
                 new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
         apiTargetPool = new GenericObjectPool<>(
                 new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+        tokenTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(tokenConfig, config, config.getApiPath()), objectPoolConfig);
+        tokenRootTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(tokenConfig, config, ""), objectPoolConfig);
 
         jacksonMapper = new ObjectMapper();
         jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));

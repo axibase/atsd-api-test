@@ -30,15 +30,12 @@ import static org.testng.AssertJUnit.*;
 
 
 public class TokenAccessTest extends BaseMethod {
-    private static final String USER_NAME = "apitokenuser";
+    private static final String USER_NAME = "apitokenuser_accesstest";
     private static final String ADMIN_NAME;
 
     static {
-        try {
             ADMIN_NAME = Config.getInstance().getLogin();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+
     }
 
     @DataProvider
@@ -419,7 +416,7 @@ public class TokenAccessTest extends BaseMethod {
         return response;
     }
 
-    @AfterClass
+
     private void deleteUser() {
         String username=USER_NAME;
         String path ="/admin/users/edit.xhtml";

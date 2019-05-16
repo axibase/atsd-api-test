@@ -50,7 +50,7 @@ public class TokenWorkTest extends BaseMethod {
     private static final String ADMIN_NAME;
 
     static {
-        USER_NAME = "apitokenuser";
+        USER_NAME = "apitokenuser_worktest";
         USER_PASSWORD = RandomStringUtils.random(10, true, true);
         try {
             Config config = Config.getInstance();
@@ -743,7 +743,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
 
-   @AfterClass
+
     private void deleteUser() {
         String path ="/admin/users/edit.xhtml";
         executeRootRequest(webTarget -> webTarget.path(path)
