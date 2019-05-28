@@ -974,11 +974,7 @@ public class SeriesQueryTest extends SeriesMethod {
     private List<Series> pullCheckedFields(List<Series> seriesList) {
         List<Series> result = new ArrayList<>();
         for(Series series: seriesList) {
-            result.add(new Series()
-                    .setEntity(series.getEntity())
-                    .setMetric(series.getMetric())
-                    .setTags(series.getTags())
-                    .setData(series.getData()));
+            result.add(pullCheckedFields(series));
         }
         return result;
     }

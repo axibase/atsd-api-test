@@ -22,6 +22,6 @@ public enum TimeUnit {
             case DAY: return java.util.concurrent.TimeUnit.DAYS.toMillis(count);
         }
 
-        throw new UnsupportedOperationException("Incorrect time unit in response");
+        throw new UnsupportedOperationException(String.format("Time unit %s does not support conversion to milliseconds", this));
     }
 }
