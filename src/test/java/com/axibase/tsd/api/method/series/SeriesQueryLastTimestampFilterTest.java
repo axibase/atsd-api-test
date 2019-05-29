@@ -214,14 +214,12 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     private Object[][] filterDatesIsMatchRange() {
         return DATE_PAIRS.stream()
                 .filter(date -> (Compare.LESS_OR_EQUAL.compare(date[0]) && Compare.GREATER.compare(date[1])))
-                .map(date -> new Object[]{date[0], date[1]})
                 .toArray(Object[][]::new);
     }
 
     private Object[][] filterDatesIsNotMatchRange() {
         return DATE_PAIRS.stream()
                 .filter(date -> (Compare.GREATER.compare(date[0]) || Compare.LESS_OR_EQUAL.compare(date[1])))
-                .map(date -> new Object[]{date[0], date[1]})
                 .toArray(Object[][]::new);
     }
 }
