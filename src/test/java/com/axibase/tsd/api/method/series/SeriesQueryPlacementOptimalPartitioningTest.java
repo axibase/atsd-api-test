@@ -37,10 +37,8 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
     /**
      * Series parameters
      */
-    private static final int COUNT_OF_SERIES = 5;
     private static final String START_DATE = "2019-01-01T00:00:00Z";
     private static final String END_DATE = "2019-01-02T00:00:00Z";
-    private static final long TOTAL_SAMPLES_COUNT = 10;
     private static final String ZONE_ID = "Etc/UTC";
     private static final String QUERY_ENTITY = "*";
     private static final String METRIC_NAME = "lp_usage";
@@ -50,7 +48,7 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
      */
     private static final int GROUP_PERIOD_COUNT = 1;
     private static final Period PERIOD = new Period(GROUP_PERIOD_COUNT, TimeUnit.HOUR, PeriodAlignment.START_TIME);
-    private static final Place PLACE = new Place(2, "max() < 9", PlaceFunction.MAX);
+    private static final Place PLACE = new Place(2, "max() < 9", PlaceFunction.MAX.toString());
 
     /**
      * Expected data
@@ -71,8 +69,9 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
 
     @BeforeClass
     private void insertSeries() throws Exception {
-        Series[] seriesArray = new Series[COUNT_OF_SERIES];
-        for (int i = 0; i < COUNT_OF_SERIES; i++) {
+        int seriesCount = 5;
+        Series[] seriesArray = new Series[seriesCount];
+        for (int i = 0; i < seriesCount; i++) {
             seriesArray[i] = new Series(String.format("lp_%s", i + 1), METRIC_NAME);
         }
 
@@ -81,14 +80,7 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
     }
 
     @Issue("5965")
-    @Test(description = "Checks that response contains correct number of grouped series")
-    public void testOfGroupCount() {
-        List<Series> seriesList = querySeriesAsList(QUERY);
-        assertEquals(seriesList.size(), EXPECTED_GROUP_COUNT, "Incorrect number of grouped series in response");
-    }
-
-    @Issue("5965")
-    @Test(dependsOnMethods = "testOfGroupCount", description = "Checks that grouping is correct ")
+    @Test(description = "Checks that grouping is correct ")
     public void testOfGroupSet() {
         List<Series> seriesList = querySeriesAsList(QUERY);
         Set<Set<String>> expectedGroupSetOfSeries = new HashSet<>(Arrays.asList(FIRST_SET, SECOND_SET));
@@ -101,15 +93,16 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
     }
 
     @Issue("5965")
-    @Test(dependsOnMethods = "testOfGroupCount", description = "Checks that parameter totalScore is correct")
+    @Test(description = "Checks that count of group is correct and that parameter totalScore is correct")
     public void testOfTotalScore() {
         List<Series> seriesList = querySeriesAsList(QUERY);
+        assertEquals(seriesList.size(), EXPECTED_GROUP_COUNT, "Incorrect number of grouped series in response");
         double actualTotalScore = seriesList.get(0).getGroup().getTotalScore().doubleValue();
         assertEquals(actualTotalScore, EXPECTED_TOTAL_SCORE, "Mismatch of parameters totalScore by expected is detected");
     }
 
     @Issue("5965")
-    @Test(dependsOnMethods = "testOfGroupSet", description = "Checks that each grouped series has correct parameter groupScore")
+    @Test(description = "Checks that each grouped series has correct parameter groupScore")
     public void testOfGroupScore() {
         List<Series> seriesList = querySeriesAsList(QUERY);
         Map<Set<String>, Double> expectedGroupScore = new HashMap<>();
@@ -124,14 +117,15 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
     }
 
     private void addSamplesToSeries(Series... seriesArray) {
-        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
+        long totalSamplesCount = 10;
+        for (int i = 0; i < totalSamplesCount; i++) {
             String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
 
             seriesArray[0].addSamples(Sample.ofDateDecimal(time, new BigDecimal(1 + ((i % 8 < 4) ? 0 : 2))));
             seriesArray[1].addSamples(Sample.ofDateDecimal(time, new BigDecimal(2 + ((i % 8 < 5) ? 0 : 1))));
             seriesArray[2].addSamples(Sample.ofDateDecimal(time, new BigDecimal(3 + ((i % 8 < 5) ? 1 : 0))));
-            seriesArray[3].addSamples(Sample.ofDateDecimal(time, new BigDecimal(3 + i/Double.valueOf(TOTAL_SAMPLES_COUNT - 1))));
-            seriesArray[4].addSamples(Sample.ofDateDecimal(time, new BigDecimal(2 - i/Double.valueOf(TOTAL_SAMPLES_COUNT - 1))));
+            seriesArray[3].addSamples(Sample.ofDateDecimal(time, new BigDecimal(3 + i/Double.valueOf(totalSamplesCount - 1))));
+            seriesArray[4].addSamples(Sample.ofDateDecimal(time, new BigDecimal(2 - i/Double.valueOf(totalSamplesCount - 1))));
         }
     }
 
