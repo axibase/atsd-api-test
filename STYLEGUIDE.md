@@ -118,6 +118,8 @@ A source file consists of, **in order**:
 
 **Exactly one blank line** separates each section that is present.
 
+IDE-generated header with information about the author **must be removed**.
+
 ### 3.1 License or copyright information, if present
 
 If license or copyright information belongs in a file, it belongs here.
@@ -150,6 +152,10 @@ Within each block the imported names appear in ASCII sort order. (**Note:** this
 #### 3.3.4 No static import for classes
 
 Static import is not used for static nested classes. They are imported with normal imports.
+
+### 3.3.5 Unused imports must be deleted
+
+All imported classes must be used
 
 ### 3.4 Class declaration
 
@@ -237,7 +243,7 @@ Examples:
   } catch (Exception e) {}
 </pre>
 
-### 4.2 Block indentation: +2 spaces
+### 4.2 Block indentation: +4 spaces
 
 Each time a new block or block-like construct is opened, the indent increases by two spaces. When the block ends, the indent returns to the previous indent level. The indent level applies to both code and comments throughout the block. (See the example in Section 4.1.2, [Nonempty blocks: K & R Style](#s4.1.2-blocks-k-r-style).)
 
@@ -294,11 +300,11 @@ The prime directive of line-wrapping is: prefer to break at a **higher syntactic
 
 **Note:** The primary goal for line wrapping is to have clear code, _not necessarily_ code that fits in the smallest number of lines.
 
-#### 4.5.2 Indent continuation lines at least +4 spaces
+#### 4.5.2 Indent continuation lines at least +8 spaces
 
-When line-wrapping, each line after the first (each _continuation line_) is indented at least +4 from the original line.
+When line-wrapping, each line after the first (each _continuation line_) is indented at least +8 from the original line.
 
-When there are multiple continuation lines, indentation may be varied beyond +4 as desired. In general, two continuation lines use the same indentation level if and only if they begin with syntactically parallel elements.
+When there are multiple continuation lines, indentation may be varied beyond +8 as desired. In general, two continuation lines use the same indentation level if and only if they begin with syntactically parallel elements.
 
 Section 4.6.3 on [Horizontal alignment](#s4.6.3-horizontal-alignment) addresses the discouraged practice of using a variable number of spaces to align certain tokens with previous lines.
 
@@ -429,9 +435,9 @@ The square brackets form a part of the _type_, not the variable: `String[] args`
 
 ##### 4.8.4.1 Indentation
 
-As with any other block, the contents of a switch block are indented +2.
+As with any other block, the contents of a switch block are indented +4.
 
-After a switch label, there is a line break, and the indentation level is increased +2, exactly as if a block were being opened. The following switch label returns to the previous indentation level, as if a block had been closed.
+After a switch label, there is a line break, and the indentation level is increased +4, exactly as if a block were being opened. The following switch label returns to the previous indentation level, as if a block had been closed.
 
 ##### 4.8.4.2 Fall-through: commented
 
