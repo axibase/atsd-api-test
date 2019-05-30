@@ -13,6 +13,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import java.util.Map;
+
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Slf4j
@@ -54,7 +56,37 @@ public class ReplacementTableMethod extends BaseMethod {
     }
 
     public static boolean replacementTableExist(ReplacementTable replacementTable) throws NotCheckedException {
-        return replacementTableExist(replacementTable.getName());
+        String replacementTableName = replacementTable.getName().replace(" ", "_").toLowerCase();
+        final Response response = getReplacementTablesResponse(replacementTableName);
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
+            if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+                return false;
+            }
+            String message = "Fail to execute replacement table query: " + response.getStatusInfo();
+            log.error(message);
+            throw new NotCheckedException(message);
+        }
+
+        try {
+            ReplacementTable newReplacementTable = response.readEntity(ReplacementTable.class);
+            if (!StringUtils.equalsIgnoreCase(replacementTableName, newReplacementTable.getName())) {
+                String message = "ReplacementTable API returned an entry we weren't asking for.";
+                log.error(message);
+                throw new NotCheckedException(message);
+            }
+            for(Map.Entry<String, String> entry: newReplacementTable.getKeys().entrySet()) {
+                if(!replacementTable.getKeys().get(entry.getKey()).equals(entry.getValue())) {
+                    return false;
+                }
+            }
+
+        } catch (ProcessingException err) {
+            NotCheckedException exception = new NotCheckedException("Could not parse Replacement Table from JSON: " + err.getMessage());
+            exception.addSuppressed(err);
+            log.error(exception.getMessage());
+            throw exception;
+        }
+        return true;
     }
 
     public static boolean replacementTableExist(String replacementTableName) throws NotCheckedException {

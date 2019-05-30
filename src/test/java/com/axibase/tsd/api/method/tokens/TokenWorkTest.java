@@ -6,7 +6,10 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.alert.AlertTest;
 import com.axibase.tsd.api.method.checks.*;
 import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
+import com.axibase.tsd.api.method.property.PropertyMethod;
+import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.model.alert.AlertQuery;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
@@ -23,10 +26,8 @@ import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.annotations.AfterClass;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -48,6 +49,7 @@ public class TokenWorkTest extends BaseMethod {
     private static final String USER_NAME = "apitokenuser_worktest";
     private static final String USER_PASSWORD = RandomStringUtils.random(10, true, true);
     private static final String ADMIN_NAME = Config.getInstance().getLogin();
+    private static final String API_PATH = Config.getInstance().getApiPath();
 
     @DataProvider
     private Object[][] users() {
@@ -103,7 +105,7 @@ public class TokenWorkTest extends BaseMethod {
         //checking get method
         String getURL = "/series/json/" + entity + "/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL + "?startDate=previous_hour&endDate=next_day");
-        responseWithToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
+        responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + getURL)
                 .queryParam("startDate", "previous_hour")
                 .queryParam("endDate", "next_day")
                 .request()
@@ -130,7 +132,7 @@ public class TokenWorkTest extends BaseMethod {
         List<SeriesQuery> deleteQuery = new ArrayList<>();
         deleteQuery.add(delete);
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
@@ -196,7 +198,7 @@ public class TokenWorkTest extends BaseMethod {
         delete.setEndDate(Util.ISOFormat(System.currentTimeMillis()));
         List<PropertyQuery> deleteQuery = new ArrayList<>();
         deleteQuery.add(delete);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
@@ -304,7 +306,7 @@ public class TokenWorkTest extends BaseMethod {
         delete.setId(id);
         List<AlertQuery> deleteQuery = new ArrayList<>();
         deleteQuery.add(delete);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
@@ -368,7 +370,7 @@ public class TokenWorkTest extends BaseMethod {
         //checking delete method
         String deleteURL = "/metrics/" + metricName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
@@ -407,30 +409,52 @@ public class TokenWorkTest extends BaseMethod {
         update(username, updateURL, entity, updateToken);
         Checker.check(new EntityCheck(entity));
         //checking entity groups, metrics and property types methods
+        Metric metric = new Metric()
+                .setName("token_test_entitytest_" + username + "_metric")
+                .setEnabled(true);
+        Series series = new Series();
+        series.setMetric(metric.getName());
+        series.setEntity(entityName);
+        series.addSamples(Sample.ofTimeInteger(System.currentTimeMillis(), 60));
+        SeriesMethod.insertSeriesCheck(series);
         String metricsURL = "/entities/" + entityName + "/metrics";
         String metricsToken = TokenRepository.getToken(username, HttpMethod.GET, metricsURL);
         responseWithToken = get(metricsURL, metricsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        //TODO comparators
+        compareJsonString(metric.toString(), responseTokenEntity, false);
+
+        EntityGroup entityGroup = new EntityGroup();
+        entityGroup.setName("token_test_entitytest_" + username + "_entitygroup");
+        entityGroup.setEnabled(true);
+        EntityGroupMethod.createOrReplaceEntityGroupCheck(entityGroup);
+        EntityGroupMethod.addEntities(entityGroup.getName(), Collections.singletonList(entityName));
         String entityGroupsURL = "/entities/" + entityName + "/groups";
         String entityGroupsToken = TokenRepository.getToken(username, HttpMethod.GET, entityGroupsURL);
         responseWithToken = get(entityGroupsURL, entityGroupsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
+        compareJsonString(entityGroup.toString(), responseTokenEntity, false);
 
+        Property property = new Property();
+        property.setType("token_test_entitytest_" + username + "_property");
+        property.setEntity(entityName);
+        property.addTag("name", "value");
+        PropertyMethod.insertPropertyCheck(property);
         String propertyTypesURL = "/entities/" + entityName + "/property-types";
         String propertyTypesToken = TokenRepository.getToken(username, HttpMethod.GET, propertyTypesURL);
         responseWithToken = get(propertyTypesURL, propertyTypesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
+        assertEquals("Entity Property Types method does not work with tokens for user " + username, "[\"" + property.getType() + "\"]", responseTokenEntity);
 
         //checking delete method
         String deleteURL = "/entities/" + entityName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
         Checker.check(new NotPassedCheck(new EntityCheck(entity)));
+
     }
 
     @Issue("6052")
@@ -498,7 +522,7 @@ public class TokenWorkTest extends BaseMethod {
         //checking delete method
         String deleteURL = "/entity-groups/" + entityGroupName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
@@ -513,15 +537,17 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenReplacementTablesTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String replacementTable = "token_test_replacementtablestest_" + username + "_replacementtable";
+        String replacementTableName = "token_test_replacementtablestest_" + username + "_replacementtable";
         String csvPayload = "1,Ok";
         //checking create method
-        String createURL = "/replacement-tables/csv/" + replacementTable;
+        ReplacementTable replacementTable = new ReplacementTable().setName(replacementTableName);
+        replacementTable.addValue(StringUtils.substringBefore(csvPayload, ","), StringUtils.substringAfterLast(csvPayload, ","));
+        String createURL = "/replacement-tables/csv/" + replacementTableName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
         createOrReplace(username, createURL, csvPayload, createToken);
-        Checker.check(new ReplacementTableCheck(new ReplacementTable().setName(replacementTable)));
+        Checker.check(new ReplacementTableCheck(replacementTable));
         //checking get method
-        String getURL = "/replacement-tables/csv/" + replacementTable;
+        String getURL = "/replacement-tables/csv/" + replacementTableName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
         responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
@@ -529,26 +555,23 @@ public class TokenWorkTest extends BaseMethod {
         assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, "Key,Value\r\n" + csvPayload + "\r\n", responseTokenEntity);
         String oldGetResponse = responseTokenEntity; //buffering get response to check update method
         //checking update method
-        /* //TODO finish replacement table updates
-        String updateURL = "/replacement-tables/csv/" + replacementTable;
+        String updateURL = "/replacement-tables/csv/" + replacementTableName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         String newCsvPayload = "0,Unknown";
+        replacementTable.addValue(StringUtils.substringBefore(newCsvPayload, ","), StringUtils.substringAfterLast(newCsvPayload, ","));
         update(username, updateURL, newCsvPayload, updateToken);
-        ResponsePair getAfterUpdatePair = get(getURL,getToken);
-        responseWithAPI = getAfterUpdatePair.getResponseWithApi();
-        responseWithToken = getAfterUpdatePair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Replacement table was not changed after update request with token for user: " + username, !responseAPIEntity.equals(oldGetResponse)); */
+        Checker.check(new ReplacementTableCheck(replacementTable));
         //checking delete method
-        String deleteURL = "/replacement-tables/" + replacementTable;
+        String deleteURL = "/replacement-tables/" + replacementTableName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRequest(webTarget -> webTarget.path(deleteURL)
+        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
-        Checker.check(new NotPassedCheck(new ReplacementTableCheck(new ReplacementTable().setName(replacementTable))));
+        Checker.check(new NotPassedCheck(new ReplacementTableCheck(new ReplacementTable().setName(replacementTableName))));
     }
 
     @Issue("6052")
@@ -582,7 +605,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private Response insert(String username, String insertURL, Object insertData, String insertToken) {
-        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(insertURL)
+        Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + insertURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + insertToken)
@@ -593,7 +616,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private Response get(String getURL, String getToken) {
-        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
+        Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + getURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
                 .method(HttpMethod.GET));
@@ -602,7 +625,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private Response query(String queryURL, Object query, String queryToken) {
-        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(queryURL)
+        Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + queryToken)
@@ -612,7 +635,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private Response createOrReplace(String username, String url, Object data, String token) {
-        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(url)
+        Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + url)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -623,7 +646,7 @@ public class TokenWorkTest extends BaseMethod {
     }
 
     private Response update(String username, String url, Object data, String token) {
-        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(url)
+        Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + url)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
