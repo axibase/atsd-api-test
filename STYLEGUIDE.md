@@ -128,9 +128,9 @@ The package statement is **not line-wrapped**. The column limit (Section 4.4, [C
 
 ### 3.3 Import statements
 
-#### 3.3.1 No wildcard imports
+#### 3.3.1 Wildcard imports
 
-**Wildcard imports**, static or otherwise, **are not used**.
+**Wildcard imports**, opposite to [Google style guide](https://google.github.io/styleguide/javaguide.html), **are allowed**.
 
 #### 3.3.2 No line-wrapping
 
@@ -166,6 +166,10 @@ What is important is that each class uses **_some_ logical order**, which its ma
 ##### 3.4.2.1 Overloads: never split
 
 When a class has multiple constructors, or multiple methods with the same name, these appear sequentially, with no other code in between (not even private members).
+
+##### 3.4.2.2. Private methods placement
+
+The private method must be placed under the first method it is called from. Multiple private methods used in one place must be placed in order of usage.
 
 ## 4 Formatting
 
