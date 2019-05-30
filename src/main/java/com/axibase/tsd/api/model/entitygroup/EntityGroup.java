@@ -9,12 +9,15 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.util.Util.prettyPrint;
+
 /**
  * @author Dmitry Korchagin.
  */
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EntityGroup {
     private String name;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -34,4 +37,10 @@ public class EntityGroup {
     public void addTag(String tagName, String tagValue) {
         tags.put(tagName, tagValue);
     }
+
+    @Override
+    public String toString() {
+        return prettyPrint(this);
+    }
+
 }

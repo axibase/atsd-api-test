@@ -16,7 +16,7 @@ public class EntityGroupCheck extends AbstractCheck {
         try {
             return EntityGroupMethod.entityGroupExist(entityGroup);
         } catch (Exception e) {
-            throw  new IllegalStateException(ERROR_MESSAGE);
+            throw new IllegalStateException(ERROR_MESSAGE);
         }
     }
 

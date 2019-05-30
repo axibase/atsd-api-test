@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AlertQuery {
     private List<String> rules;
@@ -41,29 +41,31 @@ public class AlertQuery {
     }
 
     public void addMetric(String metric) {
-        if(metrics == null)
+        if (metrics == null)
             metrics = new ArrayList<>();
         metrics.add(metric);
     }
 
     public void addRule(String rule) {
-        if(rules == null)
+        if (rules == null)
             rules = new ArrayList<>();
         rules.add(rule);
     }
 
     public void addSeverity(String severity) {
-        if(severities == null)
+        if (severities == null)
             severities = new ArrayList<>();
         severities.add(severity);
     }
 
     public void addEntity(String entity) {
-        if(entities == null)
+        if (entities == null)
             entities = new ArrayList<>();
         entities.add(entity);
     }
 
     @Override
-    public String toString() { return Util.prettyPrint(this); }
+    public String toString() {
+        return Util.prettyPrint(this);
+    }
 }

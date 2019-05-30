@@ -45,26 +45,13 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static org.testng.AssertJUnit.*;
 
 public class TokenWorkTest extends BaseMethod {
-    private static final String USER_NAME;
-    private static final String USER_PASSWORD;
-    private static final String ADMIN_NAME;
-
-    static {
-        USER_NAME = "apitokenuser_worktest";
-        USER_PASSWORD = RandomStringUtils.random(10, true, true);
-        try {
-            Config config = Config.getInstance();
-            ADMIN_NAME = config.getLogin();
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final String USER_NAME = "apitokenuser_worktest";
+    private static final String USER_PASSWORD = RandomStringUtils.random(10, true, true);
+    private static final String ADMIN_NAME = Config.getInstance().getLogin();
 
     @DataProvider
     private Object[][] users() {
-        return new String[][] {
+        return new String[][]{
                 {ADMIN_NAME},
                 {USER_NAME}
         };
@@ -72,7 +59,7 @@ public class TokenWorkTest extends BaseMethod {
 
     @BeforeClass
     private void createUser() {
-        String path ="/admin/users/edit.xhtml";
+        String path = "/admin/users/edit.xhtml";
 
         executeRootRequest(webTarget -> webTarget.path(path)
                 .queryParam("enabled", "on")
@@ -80,9 +67,9 @@ public class TokenWorkTest extends BaseMethod {
                 .queryParam("userBean.password", USER_PASSWORD)
                 .queryParam("repeatPassword", USER_PASSWORD)
                 .queryParam("save", "Save")
-                .queryParam("userBean.userRoles","ROLE_API_DATA_WRITE")
-                .queryParam("userBean.userRoles","ROLE_API_META_WRITE")
-                .queryParam("userBean.userRoles","ROLE_USER")
+                .queryParam("userBean.userRoles", "ROLE_API_DATA_WRITE")
+                .queryParam("userBean.userRoles", "ROLE_API_META_WRITE")
+                .queryParam("userBean.userRoles", "ROLE_USER")
                 .queryParam("userBean.userRoles", "ROLE_ENTITY_GROUP_ADMIN")
                 .queryParam("userBean.userGroups", "Users")
                 .queryParam("create", "true")
@@ -91,15 +78,13 @@ public class TokenWorkTest extends BaseMethod {
                 .bufferEntity();
     }
 
-    //TODO change asserts to json comparisons
     @Issue("6052")
     @Test(
             dataProvider = "users"
     )
-    public void tokenSeriesTest(String username) throws  Exception {
+    public void tokenSeriesTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
+
         String responseTokenEntity;
         String entity = "token_test_series_" + username + "_entity";
         String metric = "token_test_series_" + username + "_metric";
@@ -113,17 +98,11 @@ public class TokenWorkTest extends BaseMethod {
         Sample sample = Sample.ofTimeInteger(startUnixTime, value);
         series.addSamples(sample);
         seriesList.add(series);
-        insert(username,insertURL,seriesList,insertToken);
+        insert(username, insertURL, seriesList, insertToken);
         Checker.check(new SeriesCheck(seriesList));
         //checking get method
-        String getURL = "/series/json/" + entity +"/" + metric;
+        String getURL = "/series/json/" + entity + "/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL + "?startDate=previous_hour&endDate=next_day");
-        responseWithAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
-                .queryParam("startDate", "previous_hour")
-                .queryParam("endDate", "next_day")
-                .request()
-                .method(HttpMethod.GET));
-        responseWithAPI.bufferEntity();
         responseWithToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
                 .queryParam("startDate", "previous_hour")
                 .queryParam("endDate", "next_day")
@@ -131,23 +110,19 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
                 .method(HttpMethod.GET));
         responseWithToken.bufferEntity();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseAPIEntity,!(responseAPIEntity.contains("warning")));
-        assertEquals("User: " + username + " token series get response does not equal api series get response", responseAPIEntity , responseTokenEntity);
+        assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.contains("warning")));
+        compareJsonString(seriesList.toString(), responseTokenEntity, false);
         //checking queries
         String queryURL = "/series/query";
         SeriesQuery q = new SeriesQuery(entity, metric, startUnixTime, System.currentTimeMillis());
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
         List<SeriesQuery> query = new ArrayList<>();
         query.add(q);
-        ResponsePair queryPair = query(queryURL,query,queryToken);
-        responseWithToken = queryPair.getResponseWithToken();
-        responseWithAPI = queryPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseAPIEntity,!(responseAPIEntity.contains("warning")));
-        assertEquals("User: " + username + " token series query response does not equal api series query response", responseAPIEntity , responseTokenEntity);
+        assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.contains("warning")));
+        compareJsonString(query.toString(), responseTokenEntity, false);
         //checking delete method
         String deleteURL = "/series/delete";
         SeriesQuery delete = new SeriesQuery(entity, metric);
@@ -171,8 +146,6 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenPropertiesTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
         String entity = "token_test_properties_" + username + "_entity";
         String type = "token_test_properties_" + username + "_type";
@@ -192,38 +165,29 @@ public class TokenWorkTest extends BaseMethod {
         //checking get method
         String getURL = "/properties/" + entity + "/types/" + type;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        ResponsePair getPair = get(getURL, getToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Properties get response gives empty output after token insertion", !(responseAPIEntity.equals("[]")));
-        assertEquals("User: " + username + " Properties get response with token and API methods give different outputs", responseAPIEntity, responseTokenEntity);
+        assertTrue("User: " + username + " Properties get response gives empty output after token insertion", !(responseTokenEntity.equals("[]")));
+        compareJsonString(propertyList.toString(), responseTokenEntity, false);
         //checking properties get types request
         String getTypesURL = "/properties/" + entity + "/types";
         String getTypesToken = TokenRepository.getToken(username, HttpMethod.GET, getTypesURL);
-        getPair = get(getTypesURL, getTypesToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getTypesURL, getTypesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Properties get types response gives empty output after token insertion", !(responseAPIEntity.equals("[]")));
-        assertEquals("User: " + username + " Properties get types response with token and API methods give different outputs", responseAPIEntity, responseTokenEntity);
+        assertTrue("User: " + username + " Properties get types response gives empty output after token insertion", !(responseTokenEntity.equals("[]")));
+        compareJsonString("[\"" + type + "\"]", responseTokenEntity, false);
         //checking properties queries
         String queryURL = "/properties/query";
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
         PropertyQuery q = new PropertyQuery(type, entity);
-        q.setStartDate(Util.ISOFormat(startUnixTime-10));
-        q.setEndDate(Util.ISOFormat( System.currentTimeMillis()));
+        q.setStartDate(Util.ISOFormat(startUnixTime - 10));
+        q.setEndDate(Util.ISOFormat(System.currentTimeMillis()));
         List<PropertyQuery> query = new ArrayList<>();
         query.add(q);
-        getPair = query(queryURL,query,queryToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseAPIEntity,!(responseAPIEntity.equals("[]")));
-        assertEquals("User: " + username + " token property query response does not equal api property query response", responseAPIEntity , responseTokenEntity);
+        assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.equals("[]")));
+        compareJsonString(query.toString(), responseTokenEntity, false);
         //checking delete method
         String deleteURL = "/properties/delete";
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
@@ -248,10 +212,8 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenMessagesTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
-        String entity = "token_test_messages_" +username + "_entity";
+        String entity = "token_test_messages_" + username + "_entity";
         String type = "logger";
         String messageText = "message";
         long startUnixTime = System.currentTimeMillis();
@@ -263,39 +225,33 @@ public class TokenWorkTest extends BaseMethod {
 
         String insertURL = "/messages/insert";
         String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
-        insert(username,insertURL, messageList, insertToken);
+        insert(username, insertURL, messageList, insertToken);
         Checker.check(new EntityCheck(new com.axibase.tsd.api.model.entity.Entity(entity)));
         Checker.check(new MessageCheck(message));
         //check message query
         String queryURL = "/messages/query";
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
         MessageQuery q = new MessageQuery();
-        q.setEntity(entity).setStartDate(Util.ISOFormat(startUnixTime-10)).setEndDate(Util.ISOFormat(System.currentTimeMillis())).setType(type);
+        q.setEntity(entity).setStartDate(Util.ISOFormat(startUnixTime - 10)).setEndDate(Util.ISOFormat(System.currentTimeMillis())).setType(type);
         List<MessageQuery> query = new ArrayList<>();
         query.add(q);
-        ResponsePair queryPair = query(queryURL, query, queryToken);
-        responseWithToken = queryPair.getResponseWithToken();
-        responseWithAPI = queryPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Message insertion with token failed. Response : " + responseAPIEntity,!(responseAPIEntity.contains("error") || responseAPIEntity.equals(new ArrayList<>().toString())));
-        assertEquals("User: " + username + " token message query response does not equal api message query response", responseAPIEntity , responseTokenEntity);
+        assertTrue("User: " + username + " Message insertion with token failed. Response : " + responseTokenEntity, !(responseTokenEntity.contains("error") || responseTokenEntity.equals(new ArrayList<>().toString())));
+        compareJsonString(query.toString(), responseTokenEntity, false);
         //check message count query
         String countURL = "/messages/stats/query";
         String countToken = TokenRepository.getToken(username, HttpMethod.POST, countURL);
         MessageStatsQuery msq = new MessageStatsQuery();
         msq.setEntity(entity);
         msq.setType(type);
-        msq.setStartDate(Util.ISOFormat(startUnixTime-10));
+        msq.setStartDate(Util.ISOFormat(startUnixTime - 10));
         msq.setEndDate(Util.ISOFormat((System.currentTimeMillis())));
         List<MessageStatsQuery> messageStatsQueryList = new ArrayList<>();
         messageStatsQueryList.add(msq);
-        queryPair = query(countURL, messageStatsQueryList, countToken);
-        responseWithToken = queryPair.getResponseWithToken();
-        responseWithAPI = queryPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = query(countURL, messageStatsQueryList, countToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("User: " + username + " Token message count response entity does not equal API message count response entity", responseAPIEntity, responseTokenEntity);
+        compareJsonString(messageStatsQueryList.toString(), responseTokenEntity, false);
     }
 
     @Issue("6052")
@@ -304,8 +260,6 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenAlertsTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
         String entity = "token_test_alerts_" + username + "_entity";
         String metric = AlertTest.RULE_METRIC_NAME;
@@ -322,18 +276,15 @@ public class TokenWorkTest extends BaseMethod {
         q.addMetric(metric);
         List<AlertQuery> query = new ArrayList<>();
         query.add(q);
-        ResponsePair queryPair = query(queryURL, query, queryToken);
-        responseWithToken = queryPair.getResponseWithToken();
-        responseWithAPI = queryPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Alert fsiled to get read by token for user " + username, !(responseTokenEntity.equals("[]")));
-        assertEquals("User: " + username + " Token Alert query response does not equal API Alert query response", responseTokenEntity, responseAPIEntity);
+        compareJsonString(query.toString(), responseTokenEntity, false);
         //reading alert data from entity
         List<LinkedHashMap> alertList = responseWithToken.readEntity(List.class);
         LinkedHashMap alert = alertList.get(0);
-        Integer id = (Integer)alert.get("id");
-        Boolean acknowledged = (Boolean)alert.get("acknowledged");
+        Integer id = (Integer) alert.get("id");
+        Boolean acknowledged = (Boolean) alert.get("acknowledged");
         //check history query
         String historyQueryURL = "/alerts/history/query";
         String historyQueryToken = TokenRepository.getToken(username, HttpMethod.POST, historyQueryURL);
@@ -343,12 +294,9 @@ public class TokenWorkTest extends BaseMethod {
         ahq.setEndDate(MAX_QUERYABLE_DATE);
         List<AlertHistoryQuery> alertHistoryQueryList = new ArrayList<>();
         alertHistoryQueryList.add(ahq);
-        queryPair = query(historyQueryURL, alertHistoryQueryList, historyQueryToken);
-        responseWithToken = queryPair.getResponseWithToken();
-        responseWithAPI = queryPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = query(historyQueryURL, alertHistoryQueryList, historyQueryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("User: " + username + " Token alert history query response does not equal API alert history query response", responseAPIEntity, responseTokenEntity);
+        compareJsonString(alertHistoryQueryList.toString(), responseTokenEntity, false);
         //check delete query
         String deleteURL = "/alerts/delete";
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
@@ -372,8 +320,6 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenMetricTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
         String metricName = "token_test_metrictest_" + username + "_metric";
         String tagName = "name";
@@ -389,43 +335,34 @@ public class TokenWorkTest extends BaseMethod {
         //checking get method
         String getURL = "/metrics/" + metricName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        ResponsePair getPair = get(getURL, getToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Metric was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
-        assertEquals("Metric get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        assertTrue("Metric was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
+        compareJsonString(metric.toString(), responseTokenEntity, false);
         //checking update method
         String updateURL = "/metrics/" + metricName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         metric.addTag(tagName, tagValue);
-        update(username, updateURL, metric,updateToken);
+        update(username, updateURL, metric, updateToken);
         Checker.check(new MetricCheck(metric));
         //checking series and series tags methods
         String defaultMetricName = "entity.count"; //methods will be executed fot built-in metric
-        String seriesURL ="/metrics/" + defaultMetricName + "/series";
+        String seriesURL = "/metrics/" + defaultMetricName + "/series";
         String seriesToken = TokenRepository.getToken(username, HttpMethod.GET, seriesURL);
-        getPair = get(seriesURL, seriesToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(seriesURL, seriesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("Metric series request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        compareJsonString(metric.toString(), responseTokenEntity, false);
         String seriesTagsURL = "/metrics/" + defaultMetricName + "/series/tags";
         String seriesTagsToken = TokenRepository.getToken(username, HttpMethod.GET, seriesTagsURL);
-        getPair = get(seriesTagsURL,seriesTagsToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(seriesTagsURL, seriesTagsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("Metric series tags request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        compareJsonString("{\"" + tagName + "\": [\"" + tagValue + "\"]}", responseTokenEntity, false);
         //checking rename method
         String renameURL = "/metrics/" + metricName + "/rename";
         String renameToken = TokenRepository.getToken(username, HttpMethod.POST, renameURL);
         metricName = metricName + "_1";
         Metric newMetric = new Metric(metricName);
-        insert(username, renameURL, newMetric,renameToken);
+        insert(username, renameURL, newMetric, renameToken);
         Checker.check(new NotPassedCheck(new MetricCheck(metric)));
         Checker.check(new MetricCheck(newMetric));
         //checking delete method
@@ -433,7 +370,7 @@ public class TokenWorkTest extends BaseMethod {
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
         Checker.check(new NotPassedCheck(new MetricCheck(newMetric)));
@@ -445,8 +382,6 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenEntityTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
         String entityName = "token_test_entitytest_" + username + "_entity";
         String tagName = "name";
@@ -461,51 +396,38 @@ public class TokenWorkTest extends BaseMethod {
         //checking get method
         String getURL = "/entities/" + entityName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        ResponsePair getPair = get(getURL, getToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Entity was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
-        assertEquals("Entity get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        assertTrue("Entity was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
+        compareJsonString(entity.toString(), responseTokenEntity, false);
         //checking update method
         String updateURL = "/entities/" + entityName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         entity.addTag(tagName, tagValue);
-        update(username, updateURL, entity,updateToken);
+        update(username, updateURL, entity, updateToken);
         Checker.check(new EntityCheck(entity));
         //checking entity groups, metrics and property types methods
-        String defaultEntityName = "atsd"; //methods will be executed fot built-in entity
-        String metricsURL = "/entities/" + defaultEntityName + "/metrics";
+        String metricsURL = "/entities/" + entityName + "/metrics";
         String metricsToken = TokenRepository.getToken(username, HttpMethod.GET, metricsURL);
-        getPair = get(metricsURL, metricsToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(metricsURL, metricsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("Entity metrics request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
-        String entityGroupsURL = "/entities/" + defaultEntityName + "/groups";
+        //TODO comparators
+        String entityGroupsURL = "/entities/" + entityName + "/groups";
         String entityGroupsToken = TokenRepository.getToken(username, HttpMethod.GET, entityGroupsURL);
-        getPair = get(entityGroupsURL, entityGroupsToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(entityGroupsURL, entityGroupsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("Entity \"entity groups \" request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
-        String propertyTypesURL = "/entities/" + defaultEntityName + "/property-types";
+
+        String propertyTypesURL = "/entities/" + entityName + "/property-types";
         String propertyTypesToken = TokenRepository.getToken(username, HttpMethod.GET, propertyTypesURL);
-        getPair = get(propertyTypesURL, propertyTypesToken);
-        responseWithToken = getPair.getResponseWithToken();
-        responseWithAPI = getPair.getResponseWithApi();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(propertyTypesURL, propertyTypesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("Entity property-types request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+
         //checking delete method
         String deleteURL = "/entities/" + entityName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
         Checker.check(new NotPassedCheck(new EntityCheck(entity)));
@@ -517,8 +439,6 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenEntityGroupsTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
         String entityGroupName = "token_test_entitygroupstest_" + username + "_entitygroup";
         String entity = "token_test_entitygrouptest_" + username + "_entity";
@@ -535,13 +455,10 @@ public class TokenWorkTest extends BaseMethod {
         //checking get method
         String getURL = "/entity-groups/" + entityGroupName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        ResponsePair getPair = get(getURL, getToken);
-        responseWithAPI = getPair.getResponseWithApi();
-        responseWithToken = getPair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Entity group was not inserted with token for user "+username, !responseAPIEntity.contains("error"));
-        assertEquals("Entity group get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
+        assertTrue("Entity group was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
+        compareJsonString(entityGroup.toString(), responseTokenEntity, false);
         //checking update method
         String updateURL = "/entity-groups/" + entityGroupName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
@@ -551,51 +468,39 @@ public class TokenWorkTest extends BaseMethod {
         //checking get- add- set- and delete- entities methods
         String getEntitiesURL = "/entity-groups/" + entityGroupName + "/entities";
         String getEntitiesToken = TokenRepository.getToken(username, HttpMethod.GET, getEntitiesURL);
-        getPair = get(getEntitiesURL, getEntitiesToken);
-        responseWithAPI = getPair.getResponseWithApi();
-        responseWithToken = getPair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getEntitiesURL, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertEquals("Entities get from entity group failed for user " + username, responseAPIEntity, responseTokenEntity);
+        compareJsonString("[]", responseTokenEntity, false);
 
-        String responseWithoutEntities = responseAPIEntity; //response body for empty entity group
+        String responseWithoutEntities = responseTokenEntity; //response body for empty entity group
         String addEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/add";
         List<String> entities = Collections.singletonList(entity);
         String addEntitiesToken = TokenRepository.getToken(username, HttpMethod.POST, addEntitiesURL);
         insert(username, addEntitiesURL, entities, addEntitiesToken); //add
-        getPair = get(getEntitiesURL, getEntitiesToken);
-        responseWithAPI = getPair.getResponseWithApi();
-        responseWithToken = getPair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getEntitiesURL, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Entities add to entity group failed for user " + username, !responseAPIEntity.equals(responseWithoutEntities));
-        String responseWithEntities = responseAPIEntity;
+        assertTrue("Entities add to entity group failed for user " + username, !responseTokenEntity.equals(responseWithoutEntities));
+        String responseWithEntities = responseTokenEntity;
 
         String deleteEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/delete";
         String deleteEntitiesToken = TokenRepository.getToken(username, HttpMethod.POST, deleteEntitiesURL);
         insert(username, deleteEntitiesURL, entities, deleteEntitiesToken); //delete
-        getPair = get(getEntitiesURL, getEntitiesToken);
-        responseWithAPI = getPair.getResponseWithApi();
-        responseWithToken = getPair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getEntitiesURL, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Entities delete from entity group failed for user " + username, !responseAPIEntity.equals(responseWithEntities));
+        assertTrue("Entities delete from entity group failed for user " + username, !responseTokenEntity.equals(responseWithEntities));
 
-        String setEntitiesURL = "/entity-groups/" + entityGroupName +"/entities/set";
-        String setEntitiesToken = TokenRepository.getToken(username,HttpMethod.POST,setEntitiesURL);
+        String setEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/set";
+        String setEntitiesToken = TokenRepository.getToken(username, HttpMethod.POST, setEntitiesURL);
         insert(username, setEntitiesURL, entities, setEntitiesToken);
-        getPair = get(getEntitiesURL, getEntitiesToken);
-        responseWithAPI = getPair.getResponseWithApi();
-        responseWithToken = getPair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        responseWithToken = get(getEntitiesURL, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Entities set to entity group failed for user "+username, !responseAPIEntity.equals(responseWithoutEntities));
+        assertTrue("Entities set to entity group failed for user " + username, !responseTokenEntity.equals(responseWithoutEntities));
         //checking delete method
         String deleteURL = "/entity-groups/" + entityGroupName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
         Checker.check(new NotPassedCheck(new EntityGroupCheck(entityGroup)));
@@ -607,27 +512,22 @@ public class TokenWorkTest extends BaseMethod {
     )
     public void tokenReplacementTablesTest(String username) throws Exception {
         Response responseWithToken;
-        Response responseWithAPI;
-        String responseAPIEntity;
         String responseTokenEntity;
         String replacementTable = "token_test_replacementtablestest_" + username + "_replacementtable";
-        String csvPayload = "-1,Error";
+        String csvPayload = "1,Ok";
         //checking create method
         String createURL = "/replacement-tables/csv/" + replacementTable;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
-        createOrReplace(username,createURL, csvPayload, createToken);
+        createOrReplace(username, createURL, csvPayload, createToken);
         Checker.check(new ReplacementTableCheck(new ReplacementTable().setName(replacementTable)));
         //checking get method
-        String getURL = "/replacement-tables/csv/" +replacementTable;
-        String getToken = TokenRepository.getToken(username, HttpMethod.GET,getURL);
-        ResponsePair getPair = get(getURL, getToken);
-        responseWithAPI = getPair.getResponseWithApi();
-        responseWithToken = getPair.getResponseWithToken();
-        responseAPIEntity = responseWithAPI.readEntity(String.class);
+        String getURL = "/replacement-tables/csv/" + replacementTable;
+        String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
+        responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Replacement table was not created for user " + username, responseWithAPI.getStatus()!=404);
-        assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, responseAPIEntity, responseTokenEntity);
-        String oldGetResponse = responseAPIEntity; //buffering get response to check update method
+        assertTrue("Replacement table was not created for user " + username, responseWithToken.getStatus() != 404);
+        assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, "Key,Value\r\n" + csvPayload + "\r\n", responseTokenEntity);
+        String oldGetResponse = responseTokenEntity; //buffering get response to check update method
         //checking update method
         /* //TODO finish replacement table updates
         String updateURL = "/replacement-tables/csv/" + replacementTable;
@@ -645,7 +545,7 @@ public class TokenWorkTest extends BaseMethod {
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
         executeTokenRequest(webTarget -> webTarget.path(deleteURL)
                 .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+deleteToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
         Checker.check(new NotPassedCheck(new ReplacementTableCheck(new ReplacementTable().setName(replacementTable))));
@@ -670,7 +570,7 @@ public class TokenWorkTest extends BaseMethod {
         createOrReplace(username, firstURL, entity, token);
         Checker.check(new EntityCheck(entity));
         Response firstResponse = EntityMethod.getEntityResponse(entityName);
-        assertTrue("Entity was not inserted with dual token for user "+username, !firstResponse.readEntity(String.class).contains("error"));
+        assertTrue("Entity was not inserted with dual token for user " + username, !firstResponse.readEntity(String.class).contains("error"));
         //checking second url work
         createOrReplace(username, secondURL, metric, token);
         Checker.check(new MetricCheck(metric));
@@ -678,7 +578,7 @@ public class TokenWorkTest extends BaseMethod {
                 .request()
                 .method(HttpMethod.GET));
         secondResponse.bufferEntity();
-        assertTrue("Metric was not inserted with dual token for user "+username, !secondResponse.readEntity(String.class).contains("error"));
+        assertTrue("Metric was not inserted with dual token for user " + username, !secondResponse.readEntity(String.class).contains("error"));
     }
 
     private Response insert(String username, String insertURL, Object insertData, String insertToken) {
@@ -688,77 +588,49 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + insertToken)
                 .method(HttpMethod.POST, Entity.json(insertData)));
         responseWithToken.bufferEntity();
-        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
+        assertEquals("User: " + username, Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
         return responseWithToken;
     }
 
-    private ResponsePair get(String getURL, String getToken) {
-        Response responseWithAPI = executeApiRequest(webTarget -> webTarget.path(getURL)
-                .request()
-                .method(HttpMethod.GET));
-        responseWithAPI.bufferEntity();
+    private Response get(String getURL, String getToken) {
         Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(getURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
                 .method(HttpMethod.GET));
         responseWithToken.bufferEntity();
-        return new ResponsePair(responseWithAPI, responseWithToken);
+        return responseWithToken;
     }
 
-    private ResponsePair query(String queryURL, Object query, String queryToken) {
-        Response responseWithAPI = executeApiRequest(webTarget -> webTarget.path(queryURL)
-                .request()
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .method(HttpMethod.POST, Entity.json(query)));
-        responseWithAPI.bufferEntity();
+    private Response query(String queryURL, Object query, String queryToken) {
         Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + queryToken)
                 .method(HttpMethod.POST, Entity.json(query)));
         responseWithToken.bufferEntity();
-        return new ResponsePair(responseWithAPI, responseWithToken);
+        return responseWithToken;
     }
 
     private Response createOrReplace(String username, String url, Object data, String token) {
-        Response responseWithToken =  executeTokenRequest(webTarget -> webTarget.path(url)
-                                                            .request()
-                                                            .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                                                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                                                            .method(HttpMethod.PUT, Entity.json(data)));
+        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(url)
+                .request()
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .method(HttpMethod.PUT, Entity.json(data)));
         responseWithToken.bufferEntity();
-        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
+        assertEquals("User: " + username, Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
         return responseWithToken;
     }
 
     private Response update(String username, String url, Object data, String token) {
-        Response responseWithToken =  executeTokenRequest(webTarget -> webTarget.path(url)
+        Response responseWithToken = executeTokenRequest(webTarget -> webTarget.path(url)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .method("PATCH", Entity.json(data)));
         responseWithToken.bufferEntity();
-        assertEquals("User: " + username,Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
+        assertEquals("User: " + username, Response.Status.Family.SUCCESSFUL, Util.responseFamily(responseWithToken));
         return responseWithToken;
     }
 
-
-
-    private void deleteUser() {
-        String path ="/admin/users/edit.xhtml";
-        executeRootRequest(webTarget -> webTarget.path(path)
-                .queryParam("userBean.username", USER_NAME)
-                .queryParam("delete", "Delete")
-                .request()
-                .method(HttpMethod.POST))
-                .bufferEntity();
-    }
-
-
-    @Data
-    @AllArgsConstructor
-    private static final class ResponsePair {
-        private final Response responseWithApi;
-        private final Response responseWithToken;
-    }
 }

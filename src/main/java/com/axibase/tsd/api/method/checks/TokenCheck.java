@@ -11,16 +11,16 @@ public class TokenCheck extends AbstractCheck {
     private String token;
 
     public TokenCheck(String token) {
-        this.token=token;
+        this.token = token;
     }
 
     @Override
     public boolean isChecked() {
         try {
-            String url = "/admin/users/tokens/"+token;
+            String url = "/admin/users/tokens/" + token;
             Response response = BaseMethod.executeRootRequest(webTarget -> webTarget.path(url)
-                                                                            .request()
-                                                                            .get());
+                    .request()
+                    .get());
             response.bufferEntity();
             return Response.Status.Family.SUCCESSFUL.equals(Util.responseFamily(response));
         } catch (Exception e) {

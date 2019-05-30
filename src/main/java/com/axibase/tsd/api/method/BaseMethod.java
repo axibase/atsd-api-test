@@ -66,17 +66,17 @@ public abstract class BaseMethod {
                 .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
                 .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
         ClientConfig tokenConfig = new ClientConfig();
-        tokenConfig.connectorProvider(new ApacheConnectorProvider());
-        tokenConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-        tokenConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-        tokenConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
+        tokenConfig.connectorProvider(new ApacheConnectorProvider())
+                .property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 
         GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
         objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
         objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
 
         rootTargetPool = new GenericObjectPool<>(
-                new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
+                new HttpClientFactory(clientConfig, config, ""), objectPoolConfig);
         apiTargetPool = new GenericObjectPool<>(
                 new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
         tokenTargetPool = new GenericObjectPool<>(
@@ -185,9 +185,13 @@ public abstract class BaseMethod {
                     .build());
         }
 
-        public WebTarget getTarget() { return target; }
+        public WebTarget getTarget() {
+            return target;
+        }
 
-        public void close() { client.close(); }
+        public void close() {
+            client.close();
+        }
     }
 
     private static class HttpClientFactory extends BasePooledObjectFactory<HttpClient> {

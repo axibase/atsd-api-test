@@ -26,9 +26,9 @@ public class ReplacementTableMethod extends BaseMethod {
     private static Response createResponse(ReplacementTable table) {
         Response response = executeApiRequest(webTarget ->
                 resolveTable(webTarget, table.getName())
-                .property(ClientProperties.FOLLOW_REDIRECTS, false)
-                .request()
-                .put(Entity.json(table)));
+                        .property(ClientProperties.FOLLOW_REDIRECTS, false)
+                        .request()
+                        .put(Entity.json(table)));
 
         response.bufferEntity();
 
@@ -48,12 +48,12 @@ public class ReplacementTableMethod extends BaseMethod {
     private static Response getReplacementTablesResponse(String replacementTableName) {
         Response response = executeApiRequest(webTarget ->
                 resolveTable(webTarget, replacementTableName)
-                .request().get());
+                        .request().get());
         response.bufferEntity();
         return response;
     }
 
-    public static boolean replacementTableExist(ReplacementTable replacementTable) throws  NotCheckedException {
+    public static boolean replacementTableExist(ReplacementTable replacementTable) throws NotCheckedException {
         return replacementTableExist(replacementTable.getName());
     }
 

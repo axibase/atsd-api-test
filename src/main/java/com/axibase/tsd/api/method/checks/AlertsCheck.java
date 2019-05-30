@@ -18,7 +18,7 @@ public class AlertsCheck extends AbstractCheck {
     @Override
     public boolean isChecked() {
         try {
-            if(Response.Status.Family.CLIENT_ERROR.equals(Util.responseFamily(AlertMethod.queryAlerts(alerts)))) {
+            if (Response.Status.Family.CLIENT_ERROR.equals(Util.responseFamily(AlertMethod.queryAlerts(alerts)))) {
                 return false;
             }
             return true;

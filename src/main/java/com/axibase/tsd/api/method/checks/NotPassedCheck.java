@@ -5,7 +5,7 @@ public class NotPassedCheck extends AbstractCheck {
     private static final String ERROR_MESSAGE = "Failed to delete!";
     private AbstractCheck check;
 
-    public  NotPassedCheck(AbstractCheck check) {
+    public NotPassedCheck(AbstractCheck check) {
         this.check = check;
     }
 

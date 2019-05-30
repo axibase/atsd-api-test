@@ -24,11 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TokenRepository extends BaseMethod {
     private static final ConcurrentMap<TokenRequest, String> tokens = new ConcurrentHashMap<>();
 
-    public static String getToken(String user, String method, String urls) throws Exception{
+    public static String getToken(String user, String method, String urls) throws Exception {
         Config config = Config.getInstance();
-        String apiPath=config.getApiPath();
-        return tokens.computeIfAbsent(new TokenRequest(user, method, apiPath+urls.replaceAll(",", ","+apiPath).replaceAll("\n", ","+apiPath)), TokenRepository::generateTokenInAtsd);
-        
+        String apiPath = config.getApiPath();
+        return tokens.computeIfAbsent(new TokenRequest(user, method, apiPath + urls.replaceAll(",", "," + apiPath).replaceAll("\n", "," + apiPath)), TokenRepository::generateTokenInAtsd);
+
     }
 
     private static String generateTokenInAtsd(TokenRequest tokenRequest) {
@@ -36,16 +36,16 @@ public class TokenRepository extends BaseMethod {
         String method = tokenRequest.getMethod();
         String url = tokenRequest.getUrl();
 
-        String requestString ="/admin/users/tokens/new";
+        String requestString = "/admin/users/tokens/new";
         Response response = executeRootRequest(webTarget -> webTarget.path(requestString)
-                    .queryParam("user", user)
-                    .queryParam("username",user)
-                    .queryParam("method", method)
-                    .queryParam("urls", url)
-                    .request()
-                    .method(HttpMethod.POST, Entity.json("user="+user)));
+                .queryParam("user", user)
+                .queryParam("username", user)
+                .queryParam("method", method)
+                .queryParam("urls", url)
+                .request()
+                .method(HttpMethod.POST, Entity.json("user=" + user)));
         response.bufferEntity();
-        String token=StringUtils.substringAfterLast(StringUtils.substringBefore(response.getHeaderString("Location"),";"), "/");
+        String token = StringUtils.substringAfterLast(StringUtils.substringBefore(response.getHeaderString("Location"), ";"), "/");
         Checker.check(new TokenCheck(token));
         return token;
     }

@@ -12,9 +12,6 @@ import com.axibase.tsd.api.method.BaseMethod;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -31,12 +28,8 @@ import static org.testng.AssertJUnit.*;
 
 public class TokenAccessTest extends BaseMethod {
     private static final String USER_NAME = "apitokenuser_accesstest";
-    private static final String ADMIN_NAME;
+    private static final String ADMIN_NAME = Config.getInstance().getLogin();
 
-    static {
-            ADMIN_NAME = Config.getInstance().getLogin();
-
-    }
 
     @DataProvider
     private Object[][] availablePaths() {
@@ -415,16 +408,5 @@ public class TokenAccessTest extends BaseMethod {
         response.bufferEntity();
         return response;
     }
-
-
-    private void deleteUser() {
-        String username=USER_NAME;
-        String path ="/admin/users/edit.xhtml";
-        executeRootRequest(webTarget -> webTarget.path(path)
-                                        .queryParam("userBean.username", username)
-                                        .queryParam("delete", "Delete")
-                                        .request()
-                                        .method(HttpMethod.POST))
-                                        .bufferEntity();
-    }
+    
 }
