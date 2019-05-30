@@ -153,7 +153,21 @@ Within each block the imported names appear in ASCII sort order. (**Note:** this
 
 Static import is not used for static nested classes. They are imported with normal imports.
 
-### 3.3.5 Unused imports must be deleted
+### 3.3.5 Prefer static imports for Assert.* methods, non-static imports otherwise.
+
+Bad:
+
+<pre class="prettyprint lang-java">Assert.assertEquals(code, 0);
+List<String> list = asList("a", "b", "c");
+</pre>
+
+Good:
+
+<pre class="prettyprint lang-java">assertEquals(code, 0);
+List<String> list = Arrays.asList("a", "b", "c");
+</pre>
+
+### 3.3.6 Unused imports must be deleted
 
 All imported classes must be used
 
