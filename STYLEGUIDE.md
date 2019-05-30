@@ -326,7 +326,9 @@ Beyond where required by the language or other style rules, and apart from liter
     *   the ampersand in a conjunctive type bound: `<T extends Foo & Bar>`
     *   the pipe for a catch block that handles multiple exceptions: `catch (FooException | BarException e)`
     *   the colon (`:`) in an enhanced `for` ("foreach") statement
-    *   the arrow in a lambda expression: `(String str) -> str.length()`but not
+    *   the arrow in a lambda expression: `(String str) -> str.length()`
+    
+    but not
     *   the two colons (`::`) of a method reference, which is written like `Object::toString`
     *   the dot separator (`.`), which is written like `object.toString()`
 5.  After `,:;` or the closing parenthesis (`)`) of a cast
@@ -724,3 +726,20 @@ Foo.aStaticMethod(); // good
 It is **extremely rare** to override `Object.finalize`.
 
 **Tip:** Don't do it. If you absolutely must, first read and understand [_Effective Java_ Item 7,](http://books.google.com/books?isbn=8131726592) "Avoid Finalizers," very carefully, and _then_ don't do it.
+
+### 6.5 Static members: never modify after initialization
+
+Bad:
+
+<pre class="prettyprint lang-java">private static final List<String[]> DATA = new ArrayList<>();
+
+@BeforeClass
+private void generateData() throws Exception {
+    setData();
+}
+</pre>
+
+Good:
+
+<pre class="prettyprint lang-java">private static final List<String[]> DATA = Collections.unmodifiableList(prepareData());
+</pre>
