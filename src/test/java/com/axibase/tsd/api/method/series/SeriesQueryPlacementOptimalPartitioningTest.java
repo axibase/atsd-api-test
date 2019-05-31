@@ -44,10 +44,8 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
     private static final String METRIC_NAME = "lp_usage";
 
     /**
-     * Parameter for group
+     * Parameter place for grouping
      */
-    private static final int GROUP_PERIOD_COUNT = 1;
-    private static final Period PERIOD = new Period(GROUP_PERIOD_COUNT, TimeUnit.HOUR, PeriodAlignment.START_TIME);
     private static final Place PLACE = new Place(2, "max() < 9", PlaceFunction.MAX.toString());
 
     /**
@@ -63,8 +61,6 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
     private static final SeriesQuery QUERY = new SeriesQuery(QUERY_ENTITY, METRIC_NAME, START_DATE, END_DATE)
             .setGroup(new Group()
                     .setType(GroupType.SUM)
-                    .setPeriod(PERIOD)
-                    .setInterpolate(new AggregationInterpolate(AggregationInterpolateType.NONE, false))
                     .setPlace(PLACE));
 
     @BeforeClass
@@ -118,14 +114,20 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
 
     private void addSamplesToSeries(Series... seriesArray) {
         long totalSamplesCount = 10;
-        for (int i = 0; i < totalSamplesCount; i++) {
-            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
 
-            seriesArray[0].addSamples(Sample.ofDateDecimal(time, new BigDecimal(1 + ((i % 8 < 4) ? 0 : 2))));
-            seriesArray[1].addSamples(Sample.ofDateDecimal(time, new BigDecimal(2 + ((i % 8 < 5) ? 0 : 1))));
-            seriesArray[2].addSamples(Sample.ofDateDecimal(time, new BigDecimal(3 + ((i % 8 < 5) ? 1 : 0))));
-            seriesArray[3].addSamples(Sample.ofDateDecimal(time, new BigDecimal(3 + i/Double.valueOf(totalSamplesCount - 1))));
-            seriesArray[4].addSamples(Sample.ofDateDecimal(time, new BigDecimal(2 - i/Double.valueOf(totalSamplesCount - 1))));
+        for (int i = 0; i < totalSamplesCount; i++) {
+            final List<Double[]> value = new ArrayList<>(Arrays.asList(
+                    new Double[] {1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
+                    new Double[] {2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
+                    new Double[] {4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
+                    new Double[] {3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
+                    new Double[] {2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
+            ));
+
+            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
+            for (int j = 0; j < seriesArray.length; j++) {
+                seriesArray[j].addSamples(Sample.ofDateDecimal(time, new BigDecimal(value.get(j)[i])));
+            }
         }
     }
 
