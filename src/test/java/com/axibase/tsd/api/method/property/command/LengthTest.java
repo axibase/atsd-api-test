@@ -27,10 +27,10 @@ public class LengthTest extends PropertyMethod {
     public void testMaxLength() throws Exception {
         final Property property = new Property(propertyType(), entity());
         property.setDate(Mocks.ISO_TIME);
-        property.setKey(Collections.EMPTY_MAP);
+        property.setKey(Collections.emptyMap());
         property.addTag("type", property.getType());
         PlainCommand command = new PropertyCommand(property);
-        Integer currentLength = command.compose().length();
+        int currentLength = command.compose().length();
         for (int i = 0; currentLength < MAX_LENGTH; i++) {
             String tagName = "name" + property.getEntity() + i;
             String textValue = "sda" + property.getEntity() + i;
@@ -58,10 +58,10 @@ public class LengthTest extends PropertyMethod {
     public void testMaxLengthOverflow() throws Exception {
         final Property property = new Property(propertyType(), entity());
         property.setDate(Mocks.ISO_TIME);
-        property.setKey(Collections.EMPTY_MAP);
+        property.setKey(Collections.emptyMap());
         property.addTag("type", property.getType());
         PlainCommand command = new PropertyCommand(property);
-        Integer currentLength = command.compose().length();
+        int currentLength = command.compose().length();
         for (int i = 0; currentLength < MAX_LENGTH + 1; i++) {
             String tagName = "name" + i;
             String textValue = "sda" + i;
@@ -71,7 +71,7 @@ public class LengthTest extends PropertyMethod {
         command = new PropertyCommand(property);
         CommandSendingResult actualResult = CommandMethod.send(command);
         CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
-        assertTrue("Command length is not greater than max", MAX_LENGTH < currentLength);
+        assertTrue("Command length is not greater than max", currentLength < MAX_LENGTH);
         assertEquals("Managed to insert command that length is overflow max", expectedResult, actualResult);
     }
 

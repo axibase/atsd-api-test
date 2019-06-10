@@ -6,8 +6,8 @@ import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.Severity;
-import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
@@ -24,15 +24,14 @@ public class LengthTest extends MessageMethod {
         final Message message = new Message("e-message-max-cmd-length", "t-message-max-cmd-length");
         message.setDate(getCurrentDate());
         message.setSeverity(Severity.MAJOR.name());
-        message.setMessage("");
+        String msg = "Length-Test-";
+        message.setMessage(msg);
         MessageCommand command = new MessageCommand(message);
 
-        Integer currentLength = command.compose().length();
-
-        String newMessage = new String(new char[MAX_LENGTH - currentLength]).replace("\0", "m");
-        message.setMessage(newMessage);
+        int currentLength = command.compose().length();
+        message.setMessage(msg + StringUtils.repeat('m', MAX_LENGTH - currentLength));
         command = new MessageCommand(message);
-        assertEquals("Command length is not maximal", command.compose().length(), MAX_LENGTH);
+        assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
         CommandMethod.send(command);
         assertMessageExisting("Inserted message can not be received", message);
     }
@@ -43,13 +42,12 @@ public class LengthTest extends MessageMethod {
         final Message message = new Message("e-message-max-len-overflow", "t-message-max-len-overflow");
         message.setDate(getCurrentDate());
         message.setSeverity(Severity.MAJOR.name());
-        message.setMessage("");
+        String msg = "testMaxLengthOverflow";
+        message.setMessage(msg);
         MessageCommand command = new MessageCommand(message);
 
-        Integer currentLength = command.compose().length();
-
-        String newMessage = new String(new char[MAX_LENGTH - currentLength + 1]).replace("\0", "m");
-        message.setMessage(newMessage);
+        int currentLength = command.compose().length();
+        message.setMessage(msg + StringUtils.repeat('m', MAX_LENGTH - currentLength + 1));
         command = new MessageCommand(message);
         assertTrue("Command must have overflow length", command.compose().length() > MAX_LENGTH);
         CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
