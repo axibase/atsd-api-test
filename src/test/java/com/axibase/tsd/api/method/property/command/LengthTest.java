@@ -16,7 +16,6 @@ import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExi
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.propertyType;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
 
 public class LengthTest extends PropertyMethod {
     private static final int MAX_LENGTH = 128 * 1024;
@@ -71,7 +70,6 @@ public class LengthTest extends PropertyMethod {
         command = new PropertyCommand(property);
         CommandSendingResult actualResult = CommandMethod.send(command);
         CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
-        assertTrue("Command length is not greater than max", currentLength < MAX_LENGTH);
         assertEquals("Managed to insert command that length is overflow max", expectedResult, actualResult);
     }
 
