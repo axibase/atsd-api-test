@@ -1,19 +1,17 @@
 package com.axibase.tsd.api.model.command;
 
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public abstract class AbstractCommand implements PlainCommand {
-    private String commandText;
-
-    public AbstractCommand(String commandText) {
-        this.commandText = commandText;
-    }
+    private final String commandText;
 
     @Override
-    public String compose() {
-        return toString();
+    public String toString() {
+        return compose();
     }
 
     protected StringBuilder commandBuilder() {
-        return new StringBuilder(String.format("%s ", commandText));
+        return new StringBuilder(commandText).append(' ');
     }
 }
