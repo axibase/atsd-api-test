@@ -8,6 +8,7 @@ import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -42,9 +43,8 @@ public class LengthTest extends PropertyMethod {
                 break;
             }
         }
-        while (currentLength != MAX_LENGTH) {
-            property.setType(property.getType().concat("+"));
-            currentLength++;
+        if (currentLength < MAX_LENGTH) {
+            property.setType(property.getType() + StringUtils.repeat("+", MAX_LENGTH - currentLength));
         }
         command = new PropertyCommand(property);
         assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
