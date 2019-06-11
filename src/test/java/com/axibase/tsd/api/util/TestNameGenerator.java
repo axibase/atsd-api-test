@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TestNameGenerator {
     private static final String API_METHODS_PACKAGE_NAME = "com.axibase.tsd.api";
     private static final Class<Test> TEST_ANNOTATION = org.testng.annotations.Test.class;
+    private static final String TEST_INITIALIZATION_TIME = Util.ISOFormat(System.currentTimeMillis()).toLowerCase();
 
     private Map<String, AtomicInteger> prefixDictionary = new ConcurrentHashMap<>();
 
@@ -27,7 +28,7 @@ public class TestNameGenerator {
         String namePrefix = getPrefix(key);
         int testNumber = prefixDictionary.computeIfAbsent(namePrefix, prefix -> new AtomicInteger(0))
                 .incrementAndGet();
-        return namePrefix + "-" + testNumber;
+        return namePrefix + "-" + testNumber + "-" + TEST_INITIALIZATION_TIME;
     }
 
     public String getPrefix(Key key) {
