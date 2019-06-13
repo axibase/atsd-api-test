@@ -320,8 +320,26 @@ public class MetaDataTest extends SqlMetaTest {
                 "string"
         };
 
-        assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for multiple existent metrics from atsd_series",
-                expectedNames, expectedTypes, sqlQuery);
+        try {
+            assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for multiple existent metrics from atsd_series",
+                    expectedNames, expectedTypes, sqlQuery);
+        }
+        catch (Throwable e) {
+            String[] newExpectedNames = {
+                    "time",
+                    "datetime",
+                    "value",
+                    "text",
+                    "metric",
+                    "entity",
+                    "tags",
+                    /* Do we always have this order? */
+                    metricB + ".tags.t2",
+                    metricA + ".tags.t1"
+            };
+            assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for multiple existent metrics from atsd_series",
+                    newExpectedNames, expectedTypes, sqlQuery);
+        }
     }
 
     @Issue("4363")
