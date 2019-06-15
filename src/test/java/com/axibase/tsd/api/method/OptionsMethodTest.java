@@ -2,23 +2,24 @@ package com.axibase.tsd.api.method;
 
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.testng.AssertJUnit.*;
 
 @Issue("3616")
 public class OptionsMethodTest extends BaseMethod {
 
-    private static final Set<String> ALLOWED_ORIGINS_SET = Sets.newHashSet("*");
-    private static final Set<String> ALLOWED_METHODS_SET = Sets.newHashSet("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE");
-    private static final Set<String> ALLOWED_HEADERS_SET = Sets.newHashSet("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization");
+    private static final Set<String> ALLOWED_ORIGINS_SET = Collections.singleton("*");
+    private static final Set<String> ALLOWED_METHODS_SET = new HashSet<>(asList("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"));
+    private static final Set<String> ALLOWED_HEADERS_SET = new HashSet<>(asList("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"));
 
     @DataProvider(name = "availablePathProvider")
     Object[][] provideAvailablePaths() {

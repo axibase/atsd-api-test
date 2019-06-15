@@ -108,14 +108,13 @@ public class LineBreakInsideSeriesCommandTest {
     }
 
     private void sendAndCheck(String message, Series insert, Series response, TestType type) {
-        List<PlainCommand> commands = new ArrayList<>();
-        commands.addAll(insert.toCommands());
-
+        List<PlainCommand> commands = new ArrayList<>(insert.toCommands());
         boolean checked;
         try {
             switch (type) {
                 case NETWORK_API:
-                    TCPSender.sendChecked(new SeriesCheck(Collections.singletonList(response)), commands);
+                    TCPSender.send(commands);
+                    Checker.check(new SeriesCheck(Collections.singletonList(response)));
                     break;
                 case DATA_API:
                     CommandMethod.send(commands);

@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -241,10 +242,34 @@ public class TestUtil {
      * @throws IOException in case of IO problems with provider's file while opening.
      */
     public static <T> Object[][] jsonProvider(File file, Class<T[]> clazz) throws IOException {
-        return providerData(jsonArrayFile(file, clazz));
+        return convertTo2DimArray(jsonArrayFile(file, clazz));
     }
 
-    private static Object[][] providerData(Object[] data) {
-        return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
+    public static Object[][] convertTo2DimArray(Object[] data) {
+        return Arrays.stream(data).map(ArrayUtils::toArray).toArray(Object[][]::new);
+    }
+
+    public static Object[][] convertTo2DimArray(Collection<?> data) {
+        return data.stream().map(ArrayUtils::toArray).toArray(Object[][]::new);
+    }
+
+    public static Map<String, String> createTags(String... tags) {
+        if (tags.length % 2 != 0) {
+            throw new IllegalArgumentException("Tag name without value in arguments");
+        }
+
+        Map<String, String> mapTags = new HashMap<>();
+        for (int i = 0; i < tags.length; i += 2) {
+            String name = tags[i];
+            String value = tags[i + 1];
+
+            if (name == null || value == null || name.isEmpty() || value.isEmpty()) {
+                throw new IllegalArgumentException("Series tag name or value is null or empty");
+            }
+
+            mapTags.put(name, value);
+        }
+
+        return mapTags;
     }
 }
