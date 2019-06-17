@@ -15,7 +15,7 @@ cache:
   directories:
     - $HOME/.m2
 script:
-  - curl --user $ATSD_LOGIN:$ATSD_PASSWORD http://$ATSD_HOST:8088/version
+  - echo $(curl --user $ATSD_LOGIN:$ATSD_PASSWORD http://$ATSD_HOST:8088/version)
   - mvn clean test -Dmaven.test.failure.ignore=false -DserverName=$ATSD_HOST -Dlogin=$ATSD_LOGIN -Dpassword=$ATSD_PASSWORD -DloggerLevel=info
 branches:
   only:
