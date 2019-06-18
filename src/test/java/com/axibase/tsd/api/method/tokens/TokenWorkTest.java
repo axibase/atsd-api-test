@@ -23,6 +23,7 @@ import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -88,8 +89,8 @@ public class TokenWorkTest extends BaseMethod {
         Response responseWithToken;
 
         String responseTokenEntity;
-        String entity = "token_test_series_" + username + "_entity";
-        String metric = "token_test_series_" + username + "_metric";
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
         long startUnixTime = System.currentTimeMillis();
         int value = 22;
 
@@ -149,8 +150,8 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenPropertiesTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String entity = "token_test_properties_" + username + "_entity";
-        String type = "token_test_properties_" + username + "_type";
+        String entity = Mocks.entity();
+        String type = Mocks.propertyType();
         String tagName = "name";
         String tagValue = "value";
         long startUnixTime = System.currentTimeMillis();
@@ -215,7 +216,7 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenMessagesTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String entity = "token_test_messages_" + username + "_entity";
+        String entity = Mocks.entity();
         String type = "logger";
         String messageText = "message";
         long startUnixTime = System.currentTimeMillis();
@@ -263,11 +264,8 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenAlertsTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String entity = "token_test_alerts_" + username + "_entity";
+        String entity = Mocks.entity();
         String metric = AlertTest.RULE_METRIC_NAME;
-        MetricMethod.deleteMetric(metric);
-        Checker.check(new NotPassedCheck(new MetricCheck(new Metric(metric))));
-        Registry.Metric.checkExists(metric);
         AlertTest.generateAlertForEntity(entity);
         //checking alerts query method
         String queryURL = "/alerts/query";
@@ -280,7 +278,7 @@ public class TokenWorkTest extends BaseMethod {
         query.add(q);
         responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Alert fsiled to get read by token for user " + username, !(responseTokenEntity.equals("[]")));
+        assertTrue("Alert failed to get read by token for user " + username, !(responseTokenEntity.equals("[]")));
         compareJsonString(query.toString(), responseTokenEntity, false);
         //reading alert data from entity
         List<LinkedHashMap> alertList = responseWithToken.readEntity(List.class);
@@ -313,7 +311,6 @@ public class TokenWorkTest extends BaseMethod {
                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                 .bufferEntity();
         Checker.check(new NotPassedCheck(new AlertsCheck(query)));
-        MetricMethod.deleteMetric(metric);
     }
 
     @Issue("6052")
@@ -323,7 +320,7 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenMetricTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String metricName = "token_test_metrictest_" + username + "_metric";
+        String metricName = Mocks.metric();
         String tagName = "name";
         String tagValue = "value";
         Metric metric = new Metric();
@@ -385,7 +382,7 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenEntityTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String entityName = "token_test_entitytest_" + username + "_entity";
+        String entityName = Mocks.entity();
         String tagName = "name";
         String tagValue = "value";
         com.axibase.tsd.api.model.entity.Entity entity = new com.axibase.tsd.api.model.entity.Entity(entityName);
@@ -410,7 +407,7 @@ public class TokenWorkTest extends BaseMethod {
         Checker.check(new EntityCheck(entity));
         //checking entity groups, metrics and property types methods
         Metric metric = new Metric()
-                .setName("token_test_entitytest_" + username + "_metric")
+                .setName(Mocks.metric())
                 .setEnabled(true);
         Series series = new Series();
         series.setMetric(metric.getName());
@@ -424,7 +421,7 @@ public class TokenWorkTest extends BaseMethod {
         compareJsonString(metric.toString(), responseTokenEntity, false);
 
         EntityGroup entityGroup = new EntityGroup();
-        entityGroup.setName("token_test_entitytest_" + username + "_entitygroup");
+        entityGroup.setName(Mocks.entityGroup());
         entityGroup.setEnabled(true);
         EntityGroupMethod.createOrReplaceEntityGroupCheck(entityGroup);
         EntityGroupMethod.addEntities(entityGroup.getName(), Collections.singletonList(entityName));
@@ -435,7 +432,7 @@ public class TokenWorkTest extends BaseMethod {
         compareJsonString(entityGroup.toString(), responseTokenEntity, false);
 
         Property property = new Property();
-        property.setType("token_test_entitytest_" + username + "_property");
+        property.setType(Mocks.propertyType());
         property.setEntity(entityName);
         property.addTag("name", "value");
         PropertyMethod.insertPropertyCheck(property);
@@ -464,8 +461,8 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenEntityGroupsTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String entityGroupName = "token_test_entitygroupstest_" + username + "_entitygroup";
-        String entity = "token_test_entitygrouptest_" + username + "_entity";
+        String entityGroupName = Mocks.entityGroup();
+        String entity = Mocks.entity();
         EntityMethod.createOrReplaceEntity(new com.axibase.tsd.api.model.entity.Entity(entity).setEnabled(true));
         String tagName = "name";
         String tagValue = "value";
@@ -537,7 +534,7 @@ public class TokenWorkTest extends BaseMethod {
     public void tokenReplacementTablesTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;
-        String replacementTableName = "token_test_replacementtablestest_" + username + "_replacementtable";
+        String replacementTableName = Mocks.replacementTable();
         String csvPayload = "1,Ok";
         //checking create method
         ReplacementTable replacementTable = new ReplacementTable().setName(replacementTableName);
@@ -579,10 +576,10 @@ public class TokenWorkTest extends BaseMethod {
             dataProvider = "users"
     )
     public void dualTokenTest(String username) throws Exception {
-        String entityName = "token_test_dualtoken_" + username + "_entity";
+        String entityName = Mocks.entity();
         com.axibase.tsd.api.model.entity.Entity entity = new com.axibase.tsd.api.model.entity.Entity(entityName);
         entity.setEnabled(true);
-        String metricName = "token_test_dualtoken_" + username + "_metric";
+        String metricName = Mocks.metric();
         Metric metric = new Metric(metricName);
         metric.setEnabled(true);
         String firstURL = "/entities/" + entityName;
