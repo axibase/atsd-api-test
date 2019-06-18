@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.response;
 
+import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.command.SeriesCommand;
@@ -39,9 +40,8 @@ public class SqlLargeDataTest extends SqlTest {
             seriesRequests.addAll(series.toCommands());
         }
 
-        TCPSender.sendChecked(
-                new LargeDataCheck(ENTITY_NAME, METRIC_NAME, ENTITIES_COUNT),
-                seriesRequests);
+        TCPSender.send(seriesRequests);
+        Checker.check(new LargeDataCheck(ENTITY_NAME, METRIC_NAME, ENTITIES_COUNT));
 
         String sqlQuery = String.format(
                 "SELECT COUNT(*) " +
@@ -55,7 +55,7 @@ public class SqlLargeDataTest extends SqlTest {
     }
 
     private static Sample createTestSample(int value) throws ParseException {
-        Long millisTime = Mocks.MILLS_TIME + value * 1000;
+        long millisTime = Mocks.MILLS_TIME + value * 1000;
         return Sample.ofJavaDateInteger(new Date(millisTime), value);
     }
 
