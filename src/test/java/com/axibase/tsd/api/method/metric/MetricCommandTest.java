@@ -10,7 +10,6 @@ import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
-import com.axibase.tsd.api.util.Registry;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
