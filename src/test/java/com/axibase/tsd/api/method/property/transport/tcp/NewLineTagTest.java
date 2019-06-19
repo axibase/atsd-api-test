@@ -7,13 +7,11 @@ import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
 import com.google.common.collect.ImmutableMap;
-import io.qameta.allure.Description;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-
-import static org.testng.AssertJUnit.*;
+import static org.testng.Assert.assertEquals;
 
 public class NewLineTagTest extends PropertyTest {
 
@@ -29,9 +27,9 @@ public class NewLineTagTest extends PropertyTest {
     }
 
     @Issue("6327")
-    @Description("Test that tags that comes after tag with new line")
     @Test(
-            dataProvider = "newLines"
+            dataProvider = "newLines",
+            description = "Check that tag that comes after tag value with line separator is not thrown away"
     )
     public void testTagsAfterNewLine(String newLine) throws Exception {
         String propertyType = Mocks.propertyType();
