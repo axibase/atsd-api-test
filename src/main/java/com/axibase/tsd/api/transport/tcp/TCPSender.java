@@ -70,4 +70,16 @@ public class TCPSender {
     public static void send(Collection<? extends PlainCommand> commands) throws IOException {
         send(commands, false);
     }
+
+    public static void assertBadTcpResponse(String response) {
+        if(response.equals("ok")) {
+            throw new AssertionError();
+        }
+    }
+
+    public static void assertBadTcpResponse(String message,String response) {
+        if(response.equals("ok")) {
+            throw new AssertionError(message);
+        }
+    }
 }

@@ -15,6 +15,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
+import static com.axibase.tsd.api.transport.tcp.TCPSender.assertBadTcpResponse;
 
 public class MetricTCPTest extends MetricTest {
 
@@ -22,9 +23,8 @@ public class MetricTCPTest extends MetricTest {
     @Test
     public void testRequired() throws Exception {
         MetricCommand command = new MetricCommand((String) null);
-        String expectedResult = "Missing metric in command \'metric\'";
 
-        assertEquals("Command without metric Name sholdn't be inserted", expectedResult, TCPSender.send(command, true));
+        assertBadTcpResponse("Command without metric Name sholdn't be inserted", TCPSender.send(command, true));
     }
 
     @Issue("6319")
@@ -150,13 +150,12 @@ public class MetricTCPTest extends MetricTest {
                 .setTimeZoneID(incorrectTimeZone);
         PlainCommand incorrectCommand = new MetricCommand(metric);
         //String incorrectCommand = String.format("metric m:%s z:%s", metricName, incorrectTimeZone);
-        String expectedResult = "Cannot match timezone: \'" + incorrectTimeZone + "\'";
         String assertMessage = String.format(
                 "Metric with incorrect versioning field (%s) shouldn't be inserted",
                 incorrectCommand
         );
 
-        assertEquals(assertMessage, expectedResult, TCPSender.send(incorrectCommand, true));
+        assertBadTcpResponse(assertMessage, TCPSender.send(incorrectCommand, true));
     }
 
     @Issue("6319")
