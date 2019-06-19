@@ -12,11 +12,7 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
-import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class EmptyTagTest extends PropertyMethod {
@@ -42,10 +38,8 @@ public class EmptyTagTest extends PropertyMethod {
             dataProvider = "emptyValues"
     )
     public void emptyTagFailTest(String emptyValue) throws Exception {
-        String propertyType = Mocks.propertyType();
-        String entityName = Mocks.entity();
-        Property property = new Property(propertyType, entityName);
-        property.setTags(ImmutableMap.of("t1", emptyValue));
+        Property property = new Property(Mocks.propertyType(), Mocks.entity())
+                .setTags(ImmutableMap.of("t1", emptyValue));
         PlainCommand command = new PropertyCommand(property);
         String result = TCPSender.send(command, true);
         assertTrue(command.compose() + " had to fail, but did not.", result.startsWith("Empty tag values in command"));
@@ -57,12 +51,10 @@ public class EmptyTagTest extends PropertyMethod {
             dataProvider = "emptyValues"
     )
     public void emptyAndNonEmptyTagTest(String emptyValue) throws Exception {
-        String propertyType = Mocks.propertyType();
-        String entityName = Mocks.entity();
-        Property property = new Property(propertyType, entityName);
-        property.setTags(ImmutableMap.of("t1", "v1", "t2", "v2"));
-        PlainCommand nonEmptyCommand = new PropertyCommand(property);
-        TCPSender.send( nonEmptyCommand, true);
+        Property property = new Property(Mocks.propertyType(), Mocks.entity())
+                .setTags(ImmutableMap.of("t1", "v1", "t2", "v2"));
+        PlainCommand commandWithNonEmptyTags = new PropertyCommand(property);
+        TCPSender.send(commandWithNonEmptyTags, true);
 
         property.setTags(ImmutableMap.of("t1", "v1-new", "t2", emptyValue));
         PlainCommand emptyTagCommand = new PropertyCommand(property);
@@ -78,11 +70,9 @@ public class EmptyTagTest extends PropertyMethod {
             dataProvider = "emptyValues"
     )
     public void keyAndEmptyTagTest(String emptyValue) throws Exception {
-        String propertyType = Mocks.propertyType();
-        String entityName = Mocks.entity();
-        Property property = new Property(propertyType, entityName);
-        property.setKey(ImmutableMap.of("k1", "vk1"));
-        property.setTags(ImmutableMap.of("t1", emptyValue));
+        Property property = new Property(Mocks.propertyType(), Mocks.entity())
+                .setKey(ImmutableMap.of("k1", "vk1"))
+                .setTags(ImmutableMap.of("t1", emptyValue));
         PlainCommand command = new PropertyCommand(property);
         String result = TCPSender.send(command, true);
         assertTrue(command.compose() + " had to fail, but did not.", result.startsWith("Empty tag values in command"));
