@@ -17,8 +17,8 @@ import java.util.Collections;
 
 
 import static org.testng.AssertJUnit.*;
-import static com.axibase.tsd.api.transport.tcp.TCPSender.assertBadTcpResponse;
-import static com.axibase.tsd.api.transport.tcp.TCPSender.assertGoodTcpResponse;
+import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
+import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
 
 public class EntityTcpTest extends EntityTest {
 
@@ -53,7 +53,9 @@ public class EntityTcpTest extends EntityTest {
     }
 
     @Issue("6319")
-    @Test
+    @Test(
+            description = "Malformed parameter - tag name with whitespaces"
+    )
     public void testAddNewEntityTagsMalformedForNewEntity() throws Exception {
         Entity entity = new Entity(Mocks.entity());
         entity.addTag("hello 1", "world");

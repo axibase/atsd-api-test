@@ -50,8 +50,10 @@ public class SeriesCommand extends AbstractCommand {
         for(Sample sample : series.getData()) {
             values.put(series.getMetric(), sample.getValue().toString());
             texts.put(series.getMetric(), sample.getText());
-            if(timeMills == null) {
+            if(timeMills == null && sample.getUnixTime() != null) {
                 this.timeMills = sample.getUnixTime();
+            } else if (timeISO == null && sample.getRawDate() != null) {
+                this.timeISO = sample.getRawDate();
             }
         }
         this.entityName = series.getEntity();

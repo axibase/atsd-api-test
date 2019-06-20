@@ -79,11 +79,11 @@ public class MetricCommandTest extends MetricTest {
     @Test
     public void testTimezone() throws Exception {
         Metric metric = new Metric(metric());
-        metric.setFilter("GMT0");
+        metric.setTimeZoneID(Mocks.TIMEZONE_ID);
         MetricCommand command = new MetricCommand(metric);
         CommandMethod.send(command);
         String assertMessage = String.format(
-                "Failed to insert metric with filter expression: %s",
+                "Failed to insert metric with timezone: %s",
                 metric.getTimeZoneID()
         );
 
@@ -216,8 +216,8 @@ public class MetricCommandTest extends MetricTest {
     @DataProvider(name = "incorrectTimeZoneProvider")
     public Object[][] provideIncorrectTimeZoneData() {
         return new Object[][]{
-                {"a"},
-                {"abc"},
+                {"Incorrect"},
+                {"HST"},
                 {"GMT13"}
         };
     }

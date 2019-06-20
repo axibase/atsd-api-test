@@ -33,4 +33,28 @@ public class TCPSenderTest {
         assertEquals("ok", result);
         assertCheck(new EntityCheck(entity));
     }
+
+    public static void assertBadTcpResponse(String response) {
+        if(response.equals("ok")) {
+            throw new AssertionError();
+        }
+    }
+
+    public static void assertBadTcpResponse(String message,String response) {
+        if(response.equals("ok")) {
+            throw new AssertionError(message);
+        }
+    }
+
+    public static void assertGoodTcpResponse(String response) {
+        if(!response.equals("ok")) {
+            throw new AssertionError();
+        }
+    }
+
+    public static void assertGoodTcpResponse(String message,String response) {
+        if(!response.equals("ok")) {
+            throw new AssertionError(message);
+        }
+    }
 }

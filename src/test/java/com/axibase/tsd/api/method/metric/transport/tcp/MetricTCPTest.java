@@ -15,7 +15,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
-import static com.axibase.tsd.api.transport.tcp.TCPSender.assertBadTcpResponse;
+import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
 
 public class MetricTCPTest extends MetricTest {
 
@@ -77,11 +77,11 @@ public class MetricTCPTest extends MetricTest {
     @Test
     public void testTimezone() throws Exception {
         Metric metric = new Metric(Mocks.metric());
-        metric.setFilter("GMT0");
+        metric.setTimeZoneID(Mocks.TIMEZONE_ID);
         MetricCommand command = new MetricCommand(metric);
         TCPSender.send(command, true);
         String assertMessage = String.format(
-                "Failed to insert metric with filter expression: %s",
+                "Failed to insert metric with timezone: %s",
                 metric.getTimeZoneID()
         );
 
@@ -135,8 +135,8 @@ public class MetricTCPTest extends MetricTest {
     @DataProvider(name = "incorrectTimeZoneProvider")
     public Object[][] provideIncorrectTimeZoneData() {
         return new Object[][]{
-                {"a"},
-                {"abc"},
+                {"Incorrect"},
+                {"HST"},
                 {"GMT13"}
         };
     }
