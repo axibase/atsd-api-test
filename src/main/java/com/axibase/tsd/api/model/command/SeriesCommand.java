@@ -1,8 +1,18 @@
 package com.axibase.tsd.api.model.command;
 
 
+
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+
+import java.util.HashMap;
 import java.util.Map;
 
+@Data
+@Accessors(chain = true)
 public class SeriesCommand extends AbstractCommand {
     private static final String SERIES_COMMAND = "series";
     private Map<String, String> texts;
@@ -33,68 +43,19 @@ public class SeriesCommand extends AbstractCommand {
         this.append = append;
     }
 
-    public String getEntityName() {
-        return entityName;
-    }
-
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
-    }
-
-    public Map<String, String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Map<String, String> tags) {
-        this.tags = tags;
-    }
-
-    public Long getTimeMills() {
-        return timeMills;
-    }
-
-    public void setTimeMills(Long timeMills) {
-        this.timeMills = timeMills;
-    }
-
-    public Long getTimeSeconds() {
-        return timeSeconds;
-    }
-
-    public void setTimeSeconds(Long timeSeconds) {
-        this.timeSeconds = timeSeconds;
-    }
-
-    public String getTimeISO() {
-        return timeISO;
-    }
-
-    public void setTimeISO(String timeISO) {
-        this.timeISO = timeISO;
-    }
-
-    public Map<String, String> getTexts() {
-        return texts;
-    }
-
-    public void setTexts(Map<String, String> texts) {
-        this.texts = texts;
-    }
-
-    public Map<String, String> getValues() {
-        return values;
-    }
-
-    public void setValues(Map<String, String> values) {
-        this.values = values;
-    }
-
-    public Boolean getAppend() {
-        return append;
-    }
-
-    public void setAppend(Boolean append) {
-        this.append = append;
+    public SeriesCommand(Series series) {
+        super(SERIES_COMMAND);
+        this.texts = new HashMap<>();
+        this.values = new HashMap<>();
+        for(Sample sample : series.getData()) {
+            values.put(series.getMetric(), sample.getValue().toString());
+            texts.put(series.getMetric(), sample.getText());
+            if(timeMills == null) {
+                this.timeMills = sample.getUnixTime();
+            }
+        }
+        this.entityName = series.getEntity();
+        this.tags = series.getTags();
     }
 
     @Override
@@ -131,5 +92,10 @@ public class SeriesCommand extends AbstractCommand {
             stringBuilder.append(FieldFormat.quoted("a", append.toString()));
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return compose();
     }
 }
