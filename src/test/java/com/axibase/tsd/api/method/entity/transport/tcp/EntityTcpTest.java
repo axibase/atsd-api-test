@@ -31,7 +31,7 @@ public class EntityTcpTest extends EntityTest {
     @Issue("6319")
     @Test
     public void testAddNewEntityTagForExistEntity() throws Exception {
-        Entity storedEntityWithTags = new Entity("e-with-tags");
+        Entity storedEntityWithTags = new Entity(Mocks.entity());
         storedEntityWithTags.addTag(E_TAG_1, E_VAL_1);
         createOrReplaceEntityCheck(storedEntityWithTags);
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
@@ -43,7 +43,7 @@ public class EntityTcpTest extends EntityTest {
     @Issue("6319")
     @Test
     public void testUpdateEntityTagsForExistEntity() throws Exception {
-        Entity storedEntityUpdateTags = new Entity("e-for-test-update-tags");
+        Entity storedEntityUpdateTags = new Entity(Mocks.entity());
         storedEntityUpdateTags.addTag(E_TAG_1, E_VAL_1);
         createOrReplaceEntityCheck(storedEntityUpdateTags);
         storedEntityUpdateTags.setTags(Collections.singletonMap(E_TAG_1, E_VAL_1_UPD));
@@ -55,7 +55,7 @@ public class EntityTcpTest extends EntityTest {
     @Issue("6319")
     @Test
     public void testAddNewEntityTagsMalformedForNewEntity() throws Exception {
-        Entity entity = new Entity("ent-for-test-add-tags-mailformed");
+        Entity entity = new Entity(Mocks.entity());
         entity.addTag("hello 1", "world");
         PlainCommand command = new EntityCommand(entity);
         assertBadTcpResponse("Malformed tag passed",TCPSender.send(command,true));
