@@ -18,6 +18,7 @@ import java.util.Collections;
 
 import static org.testng.AssertJUnit.*;
 import static com.axibase.tsd.api.transport.tcp.TCPSender.assertBadTcpResponse;
+import static com.axibase.tsd.api.transport.tcp.TCPSender.assertGoodTcpResponse;
 
 public class EntityTcpTest extends EntityTest {
 
@@ -27,7 +28,7 @@ public class EntityTcpTest extends EntityTest {
     private final static String E_VAL_1_UPD = "e-val-1-upd";
     private final static String E_VAL_2 = "e-val-2";
 
-    @Issue("3111")
+    @Issue("6319")
     @Test
     public void testAddNewEntityTagForExistEntity() throws Exception {
         Entity storedEntityWithTags = new Entity("e-with-tags");
@@ -35,11 +36,11 @@ public class EntityTcpTest extends EntityTest {
         createOrReplaceEntityCheck(storedEntityWithTags);
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
         PlainCommand command = new EntityCommand(storedEntityWithTags);
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         assertEntityExisting("Entity tag isn't add for existing entity", storedEntityWithTags);
     }
 
-    @Issue("3111")
+    @Issue("6319")
     @Test
     public void testUpdateEntityTagsForExistEntity() throws Exception {
         Entity storedEntityUpdateTags = new Entity("e-for-test-update-tags");
@@ -47,11 +48,11 @@ public class EntityTcpTest extends EntityTest {
         createOrReplaceEntityCheck(storedEntityUpdateTags);
         storedEntityUpdateTags.setTags(Collections.singletonMap(E_TAG_1, E_VAL_1_UPD));
         PlainCommand command = new EntityCommand(storedEntityUpdateTags);
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         assertEntityExisting("Entity tag isn't update for existing entity.", storedEntityUpdateTags);
     }
 
-    @Issue("3111")
+    @Issue("6319")
     @Test
     public void testAddNewEntityTagsMalformedForNewEntity() throws Exception {
         Entity entity = new Entity("ent-for-test-add-tags-mailformed");
@@ -61,13 +62,13 @@ public class EntityTcpTest extends EntityTest {
     }
 
 
-    @Issue("3111")
+    @Issue("6319")
     @Test
     public void testNewEntityTagsForNewEntity() throws Exception {
         Entity storedEntityForTags = new Entity(Mocks.entity());
         storedEntityForTags.addTag(E_TAG_1, E_VAL_1);
         PlainCommand command = new EntityCommand(storedEntityForTags);
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         String assertMessage = String.format(
                 "Failed to check entity with updated tags %s",
                 storedEntityForTags.getTags()
@@ -87,7 +88,7 @@ public class EntityTcpTest extends EntityTest {
         sourceEntity.setEnabled(true);
         EntityCommand command = new EntityCommand(sourceEntity);
 
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         String assertMessage = String.format(
                 "Inserted entity doesn't exist.%nCommand: %s",
                 command
@@ -95,37 +96,37 @@ public class EntityTcpTest extends EntityTest {
         assertEntityExisting(assertMessage, sourceEntity);
     }
 
-    @Issue("3550")
+    @Issue("6319")
     @Test
     public void testEnabled() throws Exception {
         Entity entity = new Entity(Mocks.entity());
         entity.setEnabled(true);
         EntityCommand command = new EntityCommand(entity);
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to set enabled", actualEntity.getEnabled());
     }
 
-    @Issue("3550")
+    @Issue("6319")
     @Test
     public void testDisabled() throws Exception {
         Entity entity = new Entity(Mocks.entity());
         entity.setEnabled(false);
         EntityCommand command = new EntityCommand(entity);
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertFalse("Failed to set disabled", actualEntity.getEnabled());
     }
 
-    @Issue("3550")
+    @Issue("6319")
     @Test
     public void testNullEnabled() throws Exception {
         Entity entity = new Entity(Mocks.entity());
         entity.setEnabled(null);
         EntityCommand command = new EntityCommand(entity);
-        TCPSender.send(command, true);
+        assertGoodTcpResponse(TCPSender.send(command, true));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue("Failed to omit enabled", actualEntity.getEnabled());

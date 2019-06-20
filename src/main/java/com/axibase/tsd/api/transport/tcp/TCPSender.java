@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 
+
 @Slf4j
 public class TCPSender {
     private static final String DEBUG_PREFIX = "debug ";
@@ -79,6 +80,18 @@ public class TCPSender {
 
     public static void assertBadTcpResponse(String message,String response) {
         if(response.equals("ok")) {
+            throw new AssertionError(message);
+        }
+    }
+
+    public static void assertGoodTcpResponse(String response) {
+        if(!response.equals("ok")) {
+            throw new AssertionError();
+        }
+    }
+
+    public static void assertGoodTcpResponse(String message,String response) {
+        if(!response.equals("ok")) {
             throw new AssertionError(message);
         }
     }
