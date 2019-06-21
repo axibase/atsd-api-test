@@ -1,8 +1,8 @@
 package com.axibase.tsd.api.model.command;
 
-import com.sun.org.glassfish.gmbal.Description;
-
-@Description("Class that transforms string command to PlainCommand")
+/**
+ * Class that transforms string command to PlainCommand
+ */
 public class StringCommand extends AbstractCommand {
     private final String command;
 
