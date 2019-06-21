@@ -13,6 +13,7 @@ import static com.axibase.tsd.api.util.CommonAssertions.assertCheck;
 import static com.axibase.tsd.api.util.Mocks.*;
 import static java.util.Collections.singletonList;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.fail;
 
 public class TCPSenderTest {
     @Test
@@ -36,25 +37,25 @@ public class TCPSenderTest {
 
     public static void assertBadTcpResponse(String response) {
         if(response.equals("ok")) {
-            throw new AssertionError();
+            fail();
         }
     }
 
     public static void assertBadTcpResponse(String message,String response) {
         if(response.equals("ok")) {
-            throw new AssertionError(message);
+            fail(message);
         }
     }
 
     public static void assertGoodTcpResponse(String response) {
         if(!response.equals("ok")) {
-            throw new AssertionError();
+            fail();
         }
     }
 
     public static void assertGoodTcpResponse(String message,String response) {
         if(!response.equals("ok")) {
-            throw new AssertionError(message);
+            fail(message);
         }
     }
 }
