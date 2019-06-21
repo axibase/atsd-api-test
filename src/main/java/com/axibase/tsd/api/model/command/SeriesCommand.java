@@ -45,19 +45,40 @@ public class SeriesCommand extends AbstractCommand {
 
     public SeriesCommand(Series series) {
         super(SERIES_COMMAND);
-        this.texts = new HashMap<>();
-        this.values = new HashMap<>();
-        for(Sample sample : series.getData()) {
-            values.put(series.getMetric(), sample.getValue().toString());
-            texts.put(series.getMetric(), sample.getText());
-            if(timeMills == null && sample.getUnixTime() != null) {
-                this.timeMills = sample.getUnixTime();
-            } else if (timeISO == null && sample.getRawDate() != null) {
-                this.timeISO = sample.getRawDate();
+        if(!series.getData().isEmpty()) {
+            Sample sample = series.getData().get(0);
+            if(sample.getText() != null) {
+                addText(series.getMetric(), sample.getText());
             }
+
+            if(sample.getValue() != null) {
+                addValue(series.getMetric(), sample.getValue().toString());
+            }
+            this.timeISO = sample.getRawDate();
         }
         this.entityName = series.getEntity();
         this.tags = series.getTags();
+    }
+
+    public void addTag(String key, String value) {
+        if(this.tags == null) {
+            this.tags = new HashMap<>();
+        }
+        this.tags.put(key, value);
+    }
+
+    public void addValue(String metric, String value) {
+        if(this.values == null) {
+            this.values = new HashMap<>();
+        }
+        this.values.put(metric, value);
+    }
+
+    public void addText(String metric, String text) {
+        if(this.texts == null) {
+            this.texts = new HashMap<>();
+        }
+        this.texts.put(metric, text);
     }
 
     @Override
