@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.util.Util.prettyPrint;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Property {
     private String type;
@@ -104,5 +106,10 @@ public class Property {
 
     public void setDate(Date date) {
         this.date = Util.ISOFormat(date);
+    }
+
+    @Override
+    public String toString() {
+        return prettyPrint(this);
     }
 }
