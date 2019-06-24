@@ -4,13 +4,20 @@ import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import static com.axibase.tsd.api.util.Util.prettyPrint;
 
+@Data
+@Accessors(chain = true)
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Property {
     private String type;
@@ -19,14 +26,13 @@ public class Property {
     private Map<String, String> tags;
     private String date;
 
-    public Property() {
-    }
-
     public Property(String type, String entity) {
-        if (type != null)
+        if (type != null) {
             Registry.Type.checkExists(type);
-        if (entity != null)
+        }
+        if (entity != null) {
             Registry.Entity.checkExists(entity);
+        }
         this.type = type;
         this.entity = entity;
     }
@@ -34,9 +40,9 @@ public class Property {
     public Property(Property oldProperty) {
         setType(oldProperty.getType());
         setEntity(oldProperty.getEntity());
-        setDate(oldProperty.getDate());
+        setKey(oldProperty.getKey());
         setTags(oldProperty.getTags());
-        setDate(date);
+        setDate(oldProperty.getDate());
     }
 
     public void addTag(String tagName, String tagValue) {
@@ -53,31 +59,11 @@ public class Property {
         key.put(keyName, keyValue);
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getEntity() {
-        return entity;
-    }
-
-    public void setEntity(String entity) {
-        this.entity = entity;
-    }
-
     public Map<String, String> getKey() {
         if (null == key) {
             return null;
         }
         return new HashMap<>(key);
-    }
-
-    public void setKey(Map<String, String> key) {
-        this.key = key;
     }
 
     public Map<String, String> getTags() {
@@ -87,25 +73,20 @@ public class Property {
         return new HashMap<>(tags);
     }
 
-    public void setTags(Map<String, String> tags) {
-        this.tags = tags;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
     @JsonProperty
-    public void setDate(String date) {
+    public Property setDate(String date) {
         this.date = date;
+        return this;
     }
 
-    public void setDate(Long millis) {
-        this.date = Util.ISOFormat(new Date(millis));
+    public Property setDate(long millis) {
+        this.setDate(new Date(millis));
+        return this;
     }
 
-    public void setDate(Date date) {
-        this.date = Util.ISOFormat(date);
+    public Property setDate(Date date) {
+        this.setDate(Util.ISOFormat(date));
+        return this;
     }
 
     @Override
