@@ -12,8 +12,8 @@ import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
-import lombok.RequiredArgsConstructor;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -27,7 +27,6 @@ import static org.testng.AssertJUnit.*;
 import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
 import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
 
-@RequiredArgsConstructor
 public class EntityCommandTest extends EntityTest {
     private final static String E_TAG_1 = "e-tag-1";
     private final static String E_TAG_2 = "e-tag-2";
@@ -36,6 +35,16 @@ public class EntityCommandTest extends EntityTest {
     private final static String E_VAL_2 = "e-val-2";
 
     private final Transport transport;
+
+    @Factory(dataProvider = "transport")
+    public EntityCommandTest(final Transport transport) {
+        this.transport = transport;
+    }
+
+    @DataProvider
+    private static Object[][] transport() {
+        return TestUtil.convertTo2DimArray(Transport.values());
+    }
 
     @Issue("3111")
     @Issue("6319")
@@ -247,13 +256,5 @@ public class EntityCommandTest extends EntityTest {
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entityName);
         assertEquals("Failed to set enabled (raw)", enabled.replaceAll("[\\'\\\"]", ""), actualEntity.getEnabled().toString());
-    }
-
-    public static class TestFactory {
-
-        @Factory
-        public Object[] factory() {
-            return new Object[] {new EntityCommandTest(Transport.HTTP), new EntityCommandTest(Transport.TCP)};
-        }
     }
 }

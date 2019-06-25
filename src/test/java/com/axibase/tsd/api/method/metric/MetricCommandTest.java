@@ -12,9 +12,9 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import lombok.RequiredArgsConstructor;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -26,10 +26,20 @@ import static org.testng.AssertJUnit.*;
 import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
 import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
 
-@RequiredArgsConstructor
+
 public class MetricCommandTest extends MetricTest {
 
     private final Transport transport;
+
+    @Factory(dataProvider = "transport")
+    public MetricCommandTest(final Transport transport) {
+        this.transport = transport;
+    }
+
+    @DataProvider
+    private static Object[][] transport() {
+        return TestUtil.convertTo2DimArray(Transport.values());
+    }
 
     @Issue("3137")
     @Issue("6319")
@@ -420,13 +430,5 @@ public class MetricCommandTest extends MetricTest {
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
         assertEquals("Failed to set enabled (raw)", enabled.replaceAll("[\\'\\\"]", ""), actualMetric.getEnabled().toString());
-    }
-
-    public static class TestFactory {
-
-        @Factory
-        public Object[] factoryMethod() {
-            return new Object[]{new MetricCommandTest(Transport.TCP), new MetricCommandTest(Transport.HTTP)};
-        }
     }
 }
