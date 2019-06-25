@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.util.Util.prettyPrint;
+
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
@@ -84,5 +86,10 @@ public class Property {
     public Property setDate(Date date) {
         this.setDate(Util.ISOFormat(date));
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return prettyPrint(this);
     }
 }
