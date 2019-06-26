@@ -42,8 +42,7 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 
 
-import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
-import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
+import static com.axibase.tsd.api.util.Util.*;
 import static org.testng.AssertJUnit.*;
 
 public class TokenWorkTest extends BaseMethod {
@@ -115,7 +114,7 @@ public class TokenWorkTest extends BaseMethod {
         responseWithToken.bufferEntity();
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.contains("warning")));
-        compareJsonString(seriesList.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(seriesList), responseTokenEntity, false);
         //checking queries
         String queryURL = "/series/query";
         SeriesQuery q = new SeriesQuery(entity, metric, startUnixTime, System.currentTimeMillis());
@@ -125,7 +124,7 @@ public class TokenWorkTest extends BaseMethod {
         responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.contains("warning")));
-        compareJsonString(query.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(query), responseTokenEntity, false);
         //checking delete method
         String deleteURL = "/series/delete";
         SeriesQuery delete = new SeriesQuery(entity, metric);
@@ -171,7 +170,7 @@ public class TokenWorkTest extends BaseMethod {
         responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Properties get response gives empty output after token insertion", !(responseTokenEntity.equals("[]")));
-        compareJsonString(propertyList.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(propertyList), responseTokenEntity, false);
         //checking properties get types request
         String getTypesURL = "/properties/" + entity + "/types";
         String getTypesToken = TokenRepository.getToken(username, HttpMethod.GET, getTypesURL);
@@ -190,7 +189,7 @@ public class TokenWorkTest extends BaseMethod {
         responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.equals("[]")));
-        compareJsonString(query.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(query), responseTokenEntity, false);
         //checking delete method
         String deleteURL = "/properties/delete";
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
@@ -240,8 +239,8 @@ public class TokenWorkTest extends BaseMethod {
         query.add(q);
         responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Message insertion with token failed. Response : " + responseTokenEntity, !(responseTokenEntity.contains("error") || responseTokenEntity.equals(new ArrayList<>().toString())));
-        compareJsonString(query.toString(), responseTokenEntity, false);
+        assertTrue("User: " + username + " Message insertion with token failed. Response : " + responseTokenEntity, !(responseTokenEntity.contains("error") || responseTokenEntity.equals(prettyPrint(new ArrayList<>()))));
+        compareJsonString(prettyPrint(query), responseTokenEntity, false);
         //check message count query
         String countURL = "/messages/stats/query";
         String countToken = TokenRepository.getToken(username, HttpMethod.POST, countURL);
@@ -254,7 +253,7 @@ public class TokenWorkTest extends BaseMethod {
         messageStatsQueryList.add(msq);
         responseWithToken = query(countURL, messageStatsQueryList, countToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        compareJsonString(messageStatsQueryList.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(messageStatsQueryList), responseTokenEntity, false);
     }
 
     @Issue("6052")
@@ -279,7 +278,7 @@ public class TokenWorkTest extends BaseMethod {
         responseWithToken = query(queryURL, query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Alert failed to get read by token for user " + username, !(responseTokenEntity.equals("[]")));
-        compareJsonString(query.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(query), responseTokenEntity, false);
         //reading alert data from entity
         List<LinkedHashMap> alertList = responseWithToken.readEntity(List.class);
         LinkedHashMap alert = alertList.get(0);
@@ -296,7 +295,7 @@ public class TokenWorkTest extends BaseMethod {
         alertHistoryQueryList.add(ahq);
         responseWithToken = query(historyQueryURL, alertHistoryQueryList, historyQueryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
-        compareJsonString(alertHistoryQueryList.toString(), responseTokenEntity, false);
+        compareJsonString(prettyPrint(alertHistoryQueryList), responseTokenEntity, false);
         //check delete query
         String deleteURL = "/alerts/delete";
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
