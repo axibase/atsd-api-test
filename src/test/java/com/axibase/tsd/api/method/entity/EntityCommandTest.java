@@ -24,8 +24,6 @@ import java.util.Collections;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.testng.AssertJUnit.*;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
 
 public class EntityCommandTest extends EntityTest {
     private final static String E_TAG_1 = "e-tag-1";
@@ -33,6 +31,8 @@ public class EntityCommandTest extends EntityTest {
     private final static String E_VAL_1 = "e-val-1";
     private final static String E_VAL_1_UPD = "e-val-1-upd";
     private final static String E_VAL_2 = "e-val-2";
+    private static final CommandSendingResult BAD_RESULT = new CommandSendingResult(1,0);
+    private static final CommandSendingResult GOOD_RESULT = new CommandSendingResult(0,1);
 
     private final Transport transport;
 
@@ -55,12 +55,9 @@ public class EntityCommandTest extends EntityTest {
         createOrReplaceEntityCheck(storedEntityWithTags);
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
         PlainCommand command = new EntityCommand(storedEntityWithTags);
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
-        assertEntityExisting("Entity tag isn't added for existing entity with " + transport.toString(),
+        String assertMessage = "Entity tag isn't added for existing entity with " + transport.toString();
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertEntityExisting(assertMessage,
                 storedEntityWithTags);
     }
 
@@ -73,12 +70,9 @@ public class EntityCommandTest extends EntityTest {
         createOrReplaceEntityCheck(storedEntityUpdateTags);
         storedEntityUpdateTags.setTags(Collections.singletonMap(E_TAG_1, E_VAL_1_UPD));
         PlainCommand command = new EntityCommand(storedEntityUpdateTags);
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
-        assertEntityExisting("Entity tag isn't updated for existing entity with " +transport.toString(),
+        String assertMessage = "Entity tag isn't updated for existing entity with " +transport.toString();
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertEntityExisting(assertMessage,
                 storedEntityUpdateTags
         );
     }
@@ -92,12 +86,8 @@ public class EntityCommandTest extends EntityTest {
         Entity entity = new Entity(Mocks.entity());
         entity.addTag("hello 1", "world");
         PlainCommand command = new EntityCommand(entity);
-        if(transport == Transport.HTTP) {
-            CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
-            assertEquals(expectedResult, CommandMethod.send(command));
-        } else if(transport == Transport.TCP) {
-            assertBadTcpResponse(TCPSender.send(command, true));
-        }
+        String assertMessage = "Malformed response was accepted";
+        transport.sendAndCompareToExpected(command, BAD_RESULT, assertMessage);
     }
 
 
@@ -108,21 +98,18 @@ public class EntityCommandTest extends EntityTest {
         Entity storedEntityForTags = new Entity(Mocks.entity());
         storedEntityForTags.addTag(E_TAG_1, E_VAL_1);
         PlainCommand command = new EntityCommand(storedEntityForTags);
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
         String assertMessage = String.format(
                 "Failed to check entity with updated tags %s",
                 storedEntityForTags.getTags()
         );
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         assertEntityExisting(assertMessage, storedEntityForTags);
     }
 
     /**
      * Model test
      */
+    @Issue("6319")
     @Test
     public void testModels() throws Exception {
         final Entity sourceEntity = new Entity(Mocks.entity(), Mocks.TAGS);
@@ -131,16 +118,11 @@ public class EntityCommandTest extends EntityTest {
         sourceEntity.setTimeZoneID(Mocks.TIMEZONE_ID);
         sourceEntity.setEnabled(true);
         EntityCommand command = new EntityCommand(sourceEntity);
-
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
         String assertMessage = String.format(
                 "Inserted entity doesn't exist.%nCommand: %s",
                 command
         );
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         assertEntityExisting(assertMessage, sourceEntity);
     }
 
@@ -151,14 +133,11 @@ public class EntityCommandTest extends EntityTest {
         Entity entity = new Entity(Mocks.entity());
         entity.setEnabled(true);
         EntityCommand command = new EntityCommand(entity);
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
+        String assertMessage = "Failed to set enabled";
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
-        assertTrue("Failed to set enabled", actualEntity.getEnabled());
+        assertTrue(assertMessage, actualEntity.getEnabled());
     }
 
     @Issue("3550")
@@ -168,14 +147,11 @@ public class EntityCommandTest extends EntityTest {
         Entity entity = new Entity(Mocks.entity());
         entity.setEnabled(false);
         EntityCommand command = new EntityCommand(entity);
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
+        String assertMessage = "Failed to set disabled";
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
-        assertFalse("Failed to set disabled", actualEntity.getEnabled());
+        assertFalse(assertMessage, actualEntity.getEnabled());
     }
 
     @Issue("3550")
@@ -185,14 +161,11 @@ public class EntityCommandTest extends EntityTest {
         Entity entity = new Entity(Mocks.entity());
         entity.setEnabled(null);
         EntityCommand command = new EntityCommand(entity);
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if (transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
+        String assertMessage = "Failed to omit enabled";
+        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
-        assertTrue("Failed to omit enabled", actualEntity.getEnabled());
+        assertTrue(assertMessage, actualEntity.getEnabled());
     }
 
     @DataProvider(name = "incorrectEnabledProvider")
@@ -222,13 +195,10 @@ public class EntityCommandTest extends EntityTest {
     public void testIncorrectEnabled(String enabled) throws Exception {
         String entityName = Mocks.entity();
         StringCommand command = new StringCommand( String.format("entity  e:%s b:%s", entityName, enabled));
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if(transport == Transport.TCP) {
-            assertBadTcpResponse(TCPSender.send(command, true));
-        }
+        String assertMessage = "Bad entity was accepted :: " + command.toString();
+        transport.sendAndCompareToExpected(command, BAD_RESULT, assertMessage);
         Response serverResponse = EntityMethod.getEntityResponse(entityName);
-        assertEquals("Bad entity was accepted :: " + command.toString(), NOT_FOUND.getStatusCode(), serverResponse.getStatus());
+        assertEquals(assertMessage, NOT_FOUND.getStatusCode(), serverResponse.getStatus());
     }
 
     @DataProvider(name = "correctEnabledProvider")
@@ -248,13 +218,10 @@ public class EntityCommandTest extends EntityTest {
         String entityName = Mocks.entity();
         Entity entity = new Entity(entityName);
         StringCommand command = new StringCommand( String.format("entity  e:%s b:%s", entityName, enabled));
-        if(transport == Transport.HTTP) {
-            CommandMethod.send(command);
-        } else if(transport == Transport.TCP) {
-            assertGoodTcpResponse(TCPSender.send(command, true));
-        }
+        String assertMessage = "Failed to set enabled (raw)";
+        transport.sendAndCompareToExpected(command,GOOD_RESULT, assertMessage);
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entityName);
-        assertEquals("Failed to set enabled (raw)", enabled.replaceAll("[\\'\\\"]", ""), actualEntity.getEnabled().toString());
+        assertEquals(assertMessage, enabled.replaceAll("[\\'\\\"]", ""), actualEntity.getEnabled().toString());
     }
 }

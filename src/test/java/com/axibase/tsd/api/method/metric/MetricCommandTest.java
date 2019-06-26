@@ -3,14 +3,12 @@ package com.axibase.tsd.api.method.metric;
 
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.MetricCheck;
-import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.MetricCommand;
 import com.axibase.tsd.api.model.command.StringCommand;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.transport.Transport;
-import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
@@ -23,8 +21,6 @@ import javax.ws.rs.core.Response;
 
 import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.*;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
 
 
 public class MetricCommandTest extends MetricTest {

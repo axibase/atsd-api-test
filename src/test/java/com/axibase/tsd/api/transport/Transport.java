@@ -23,9 +23,9 @@ public enum Transport {
         public void sendAndCompareToExpected(PlainCommand command, CommandSendingResult expected, String message) throws IOException {
             final String response = TCPSender.send(command, true);
             if (expected.getFail() > 0) {
-                assertBadTcpResponse(response, message);
+                assertBadTcpResponse(message, response);
             } else {
-                assertGoodTcpResponse(response, message);
+                assertGoodTcpResponse(message, response);
             }
         }
     };
