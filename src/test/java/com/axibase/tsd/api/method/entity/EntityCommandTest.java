@@ -2,7 +2,6 @@ package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.EntityCheck;
-import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.EntityCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.StringCommand;
@@ -10,7 +9,6 @@ import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.transport.Transport;
-import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
@@ -55,7 +53,7 @@ public class EntityCommandTest extends EntityTest {
         createOrReplaceEntityCheck(storedEntityWithTags);
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
         PlainCommand command = new EntityCommand(storedEntityWithTags);
-        String assertMessage = "Entity tag isn't added for existing entity with " + transport.toString();
+        String assertMessage = "Entity tag isn't added for existing entity with " + transport;
         transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         assertEntityExisting(assertMessage,
                 storedEntityWithTags);
@@ -70,7 +68,7 @@ public class EntityCommandTest extends EntityTest {
         createOrReplaceEntityCheck(storedEntityUpdateTags);
         storedEntityUpdateTags.setTags(Collections.singletonMap(E_TAG_1, E_VAL_1_UPD));
         PlainCommand command = new EntityCommand(storedEntityUpdateTags);
-        String assertMessage = "Entity tag isn't updated for existing entity with " +transport.toString();
+        String assertMessage = "Entity tag isn't updated for existing entity with " +transport;
         transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
         assertEntityExisting(assertMessage,
                 storedEntityUpdateTags
