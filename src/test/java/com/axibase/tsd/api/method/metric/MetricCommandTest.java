@@ -23,8 +23,6 @@ import static org.testng.AssertJUnit.*;
 
 
 public class MetricCommandTest extends MetricTest {
-    private static final CommandSendingResult BAD_RESULT = new CommandSendingResult(1,0);
-    private static final CommandSendingResult GOOD_RESULT = new CommandSendingResult(0,1);
     private final Transport transport;
 
     @Factory(dataProvider = "transport", dataProviderClass = Transport.class)

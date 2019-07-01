@@ -28,8 +28,6 @@ public class EntityCommandTest extends EntityTest {
     private final static String E_VAL_1 = "e-val-1";
     private final static String E_VAL_1_UPD = "e-val-1-upd";
     private final static String E_VAL_2 = "e-val-2";
-    private static final CommandSendingResult BAD_RESULT = new CommandSendingResult(1,0);
-    private static final CommandSendingResult GOOD_RESULT = new CommandSendingResult(0,1);
 
     private final Transport transport;
 
