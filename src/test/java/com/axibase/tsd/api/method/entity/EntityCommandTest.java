@@ -7,7 +7,6 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.StringCommand;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
-import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
@@ -46,7 +45,7 @@ public class EntityCommandTest extends EntityTest {
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
         PlainCommand command = new EntityCommand(storedEntityWithTags);
         String assertMessage = "Entity tag isn't added for existing entity with " + transport;
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         assertEntityExisting(assertMessage,
                 storedEntityWithTags);
     }
@@ -61,7 +60,7 @@ public class EntityCommandTest extends EntityTest {
         storedEntityUpdateTags.setTags(Collections.singletonMap(E_TAG_1, E_VAL_1_UPD));
         PlainCommand command = new EntityCommand(storedEntityUpdateTags);
         String assertMessage = "Entity tag isn't updated for existing entity with " +transport;
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         assertEntityExisting(assertMessage,
                 storedEntityUpdateTags
         );
@@ -77,7 +76,7 @@ public class EntityCommandTest extends EntityTest {
         entity.addTag("hello 1", "world");
         PlainCommand command = new EntityCommand(entity);
         String assertMessage = "Malformed response was accepted";
-        assertFalse(assertMessage, transport.isSent(command));
+        assertFalse(assertMessage, transport.send(command));
     }
 
 
@@ -92,7 +91,7 @@ public class EntityCommandTest extends EntityTest {
                 "Failed to check entity with updated tags %s",
                 storedEntityForTags.getTags()
         );
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         assertEntityExisting(assertMessage, storedEntityForTags);
     }
 
@@ -112,7 +111,7 @@ public class EntityCommandTest extends EntityTest {
                 "Inserted entity doesn't exist.%nCommand: %s",
                 command
         );
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         assertEntityExisting(assertMessage, sourceEntity);
     }
 
@@ -124,7 +123,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(true);
         EntityCommand command = new EntityCommand(entity);
         String assertMessage = "Failed to set enabled";
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue(assertMessage, actualEntity.getEnabled());
@@ -138,7 +137,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(false);
         EntityCommand command = new EntityCommand(entity);
         String assertMessage = "Failed to set disabled";
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertFalse(assertMessage, actualEntity.getEnabled());
@@ -152,7 +151,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(null);
         EntityCommand command = new EntityCommand(entity);
         String assertMessage = "Failed to omit enabled";
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue(assertMessage, actualEntity.getEnabled());
@@ -186,7 +185,7 @@ public class EntityCommandTest extends EntityTest {
         String entityName = Mocks.entity();
         StringCommand command = new StringCommand( String.format("entity  e:%s b:%s", entityName, enabled));
         String assertMessage = "Bad entity was accepted :: " + command.toString();
-        assertFalse(assertMessage, transport.isSent(command));
+        assertFalse(assertMessage, transport.send(command));
         Response serverResponse = EntityMethod.getEntityResponse(entityName);
         assertEquals(assertMessage, NOT_FOUND.getStatusCode(), serverResponse.getStatus());
     }
@@ -209,7 +208,7 @@ public class EntityCommandTest extends EntityTest {
         Entity entity = new Entity(entityName);
         StringCommand command = new StringCommand( String.format("entity  e:%s b:%s", entityName, enabled));
         String assertMessage = "Failed to set enabled (raw)";
-        assertTrue(assertMessage, transport.isSent(command));
+        assertTrue(assertMessage, transport.send(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entityName);
         assertEquals(assertMessage, enabled.replaceAll("[\\'\\\"]", ""), actualEntity.getEnabled().toString());
