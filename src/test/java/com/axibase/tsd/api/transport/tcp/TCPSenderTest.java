@@ -13,7 +13,6 @@ import static com.axibase.tsd.api.util.CommonAssertions.assertCheck;
 import static com.axibase.tsd.api.util.Mocks.*;
 import static java.util.Collections.singletonList;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
 
 public class TCPSenderTest {
     @Test
