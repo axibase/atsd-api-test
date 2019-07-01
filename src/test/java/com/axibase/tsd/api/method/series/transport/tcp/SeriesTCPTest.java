@@ -5,7 +5,7 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.transport.tcp.TCPSender;
+import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -13,8 +13,7 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
+import static org.testng.AssertJUnit.*;
 
 public class SeriesTCPTest extends SeriesTest {
 
@@ -26,7 +25,7 @@ public class SeriesTCPTest extends SeriesTest {
         Series series = new Series(Mocks.entity(), Mocks.metric());
         series.addSamples(Sample.ofJavaDateInteger(TEST_DATE, 22));
         PlainCommand command = new SeriesCommand(series);
-        assertGoodTcpResponse(TCPSender.send(command, true));
+        assertTrue(Transport.TCP.send(command));
         assertSeriesExisting(series);
     }
 
@@ -38,7 +37,7 @@ public class SeriesTCPTest extends SeriesTest {
         Series series = new Series(Mocks.entity().replaceAll("-", " "), Mocks.metric());
         series.addSamples(Sample.ofJavaDateInteger(TEST_DATE, 22));
         PlainCommand command = new SeriesCommand(series);
-        assertBadTcpResponse(TCPSender.send(command, true));
+        assertFalse(Transport.TCP.send(command));
     }
 
     @Issue("6319")
@@ -47,7 +46,7 @@ public class SeriesTCPTest extends SeriesTest {
         Series series = new Series(Mocks.entity().replaceAll("-", "\\=\\\\\"-"), Mocks.metric().replaceAll("-", "\\=\\\\\"-"));
         series.addSamples(Sample.ofJavaDateInteger(TEST_DATE, 22));
         PlainCommand command = new SeriesCommand(series);
-        assertGoodTcpResponse(TCPSender.send(command, true));
+        assertTrue(Transport.TCP.send(command));
         assertSeriesExisting(series);
     }
 

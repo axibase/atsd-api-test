@@ -4,7 +4,7 @@ import com.axibase.tsd.api.method.message.MessageTest;
 import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.transport.tcp.TCPSender;
+import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
+
+import static org.testng.AssertJUnit.*;
 
 public class MessageTCPTest extends MessageTest {
 
@@ -27,7 +27,7 @@ public class MessageTCPTest extends MessageTest {
         message.setDate(TEST_DATE);
 
         PlainCommand command = new MessageCommand(message);
-        assertGoodTcpResponse("Message was not sent via TCP", TCPSender.send(command, true));
+        assertTrue("Message was not sent via TCP", Transport.TCP.send(command));
         assertMessageExisting("Message was not sent via TCP", message);
     }
 
@@ -41,7 +41,7 @@ public class MessageTCPTest extends MessageTest {
         message.setDate(TEST_DATE);
 
         PlainCommand command = new MessageCommand(message);
-        assertBadTcpResponse("Request was malformed, but passed", TCPSender.send(command, true));
+        assertFalse("Request was malformed, but passed", Transport.TCP.send(command));
     }
 
     @Issue("6319")
@@ -52,7 +52,7 @@ public class MessageTCPTest extends MessageTest {
         message.setDate(TEST_DATE);
 
         PlainCommand command= new MessageCommand(message);
-        assertGoodTcpResponse(TCPSender.send(command, true));
+        assertTrue(Transport.TCP.send(command));
         assertMessageExisting(message);
     }
 }
