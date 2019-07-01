@@ -10,7 +10,6 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
@@ -34,14 +33,9 @@ public class EntityCommandTest extends EntityTest {
 
     private final Transport transport;
 
-    @Factory(dataProvider = "transport")
+    @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
     public EntityCommandTest(final Transport transport) {
         this.transport = transport;
-    }
-
-    @DataProvider
-    private static Object[][] transport() {
-        return TestUtil.convertTo2DimArray(Transport.values());
     }
 
     @Issue("3111")
@@ -54,7 +48,7 @@ public class EntityCommandTest extends EntityTest {
         storedEntityWithTags.addTag(E_TAG_2, E_VAL_2);
         PlainCommand command = new EntityCommand(storedEntityWithTags);
         String assertMessage = "Entity tag isn't added for existing entity with " + transport;
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertEntityExisting(assertMessage,
                 storedEntityWithTags);
     }
@@ -69,7 +63,7 @@ public class EntityCommandTest extends EntityTest {
         storedEntityUpdateTags.setTags(Collections.singletonMap(E_TAG_1, E_VAL_1_UPD));
         PlainCommand command = new EntityCommand(storedEntityUpdateTags);
         String assertMessage = "Entity tag isn't updated for existing entity with " +transport;
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertEntityExisting(assertMessage,
                 storedEntityUpdateTags
         );
@@ -85,7 +79,7 @@ public class EntityCommandTest extends EntityTest {
         entity.addTag("hello 1", "world");
         PlainCommand command = new EntityCommand(entity);
         String assertMessage = "Malformed response was accepted";
-        transport.sendAndCompareToExpected(command, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(command));
     }
 
 
@@ -100,7 +94,7 @@ public class EntityCommandTest extends EntityTest {
                 "Failed to check entity with updated tags %s",
                 storedEntityForTags.getTags()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertEntityExisting(assertMessage, storedEntityForTags);
     }
 
@@ -120,7 +114,7 @@ public class EntityCommandTest extends EntityTest {
                 "Inserted entity doesn't exist.%nCommand: %s",
                 command
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertEntityExisting(assertMessage, sourceEntity);
     }
 
@@ -132,7 +126,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(true);
         EntityCommand command = new EntityCommand(entity);
         String assertMessage = "Failed to set enabled";
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue(assertMessage, actualEntity.getEnabled());
@@ -146,7 +140,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(false);
         EntityCommand command = new EntityCommand(entity);
         String assertMessage = "Failed to set disabled";
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertFalse(assertMessage, actualEntity.getEnabled());
@@ -160,7 +154,7 @@ public class EntityCommandTest extends EntityTest {
         entity.setEnabled(null);
         EntityCommand command = new EntityCommand(entity);
         String assertMessage = "Failed to omit enabled";
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entity.getName());
         assertTrue(assertMessage, actualEntity.getEnabled());
@@ -194,7 +188,7 @@ public class EntityCommandTest extends EntityTest {
         String entityName = Mocks.entity();
         StringCommand command = new StringCommand( String.format("entity  e:%s b:%s", entityName, enabled));
         String assertMessage = "Bad entity was accepted :: " + command.toString();
-        transport.sendAndCompareToExpected(command, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(command));
         Response serverResponse = EntityMethod.getEntityResponse(entityName);
         assertEquals(assertMessage, NOT_FOUND.getStatusCode(), serverResponse.getStatus());
     }
@@ -217,7 +211,7 @@ public class EntityCommandTest extends EntityTest {
         Entity entity = new Entity(entityName);
         StringCommand command = new StringCommand( String.format("entity  e:%s b:%s", entityName, enabled));
         String assertMessage = "Failed to set enabled (raw)";
-        transport.sendAndCompareToExpected(command,GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         Checker.check(new EntityCheck(entity));
         Entity actualEntity = EntityMethod.getEntity(entityName);
         assertEquals(assertMessage, enabled.replaceAll("[\\'\\\"]", ""), actualEntity.getEnabled().toString());

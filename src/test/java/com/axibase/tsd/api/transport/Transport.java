@@ -4,31 +4,31 @@ import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
+import com.axibase.tsd.api.util.TestUtil;
+import org.testng.annotations.DataProvider;
 
 import java.io.IOException;
-
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertBadTcpResponse;
-import static com.axibase.tsd.api.transport.tcp.TCPSenderTest.assertGoodTcpResponse;
-import static org.testng.AssertJUnit.assertEquals;
 
 public enum Transport {
     HTTP {
         @Override
-        public void sendAndCompareToExpected(PlainCommand command, CommandSendingResult expected, String message) {
-            assertEquals(message, expected, CommandMethod.send(command));
+        public boolean isSent(final PlainCommand command) throws IOException {
+            final CommandSendingResult result = CommandMethod.send(command);
+            return result.getFail() == 0;
         }
     },
     TCP {
         @Override
-        public void sendAndCompareToExpected(PlainCommand command, CommandSendingResult expected, String message) throws IOException {
+        public boolean isSent(final PlainCommand command) throws IOException {
             final String response = TCPSender.send(command, true);
-            if (expected.getFail() > 0) {
-                assertBadTcpResponse(message, response);
-            } else {
-                assertGoodTcpResponse(message, response);
-            }
+            return response.equals("ok");
         }
     };
 
-    public abstract void sendAndCompareToExpected(PlainCommand command, CommandSendingResult expected, String message) throws IOException;
+    @DataProvider
+    private static Object[][] transport() {
+        return TestUtil.convertTo2DimArray(Transport.values());
+    }
+
+    public abstract boolean isSent(PlainCommand command) throws IOException;
 }

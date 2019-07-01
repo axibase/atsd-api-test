@@ -10,7 +10,6 @@ import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
@@ -28,14 +27,9 @@ public class MetricCommandTest extends MetricTest {
     private static final CommandSendingResult GOOD_RESULT = new CommandSendingResult(0,1);
     private final Transport transport;
 
-    @Factory(dataProvider = "transport")
+    @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
     public MetricCommandTest(final Transport transport) {
         this.transport = transport;
-    }
-
-    @DataProvider
-    private static Object[][] transport() {
-        return TestUtil.convertTo2DimArray(Transport.values());
     }
 
     @Issue("3137")
@@ -43,7 +37,8 @@ public class MetricCommandTest extends MetricTest {
     @Test
     public void testRequired() throws Exception {
         MetricCommand command = new MetricCommand((String) null);
-        transport.sendAndCompareToExpected(command, BAD_RESULT, "Metric without name was inserted");
+        String assertMessage = "Bad metric was accepted";
+        assertFalse(assertMessage, transport.isSent(command));
     }
 
     @Issue("3137")
@@ -57,7 +52,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with label: %s",
                 metric.getLabel()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -72,7 +67,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with description: %s",
                 metric.getDescription()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -87,7 +82,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with versioned: %s",
                 metric.getVersioned()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -103,7 +98,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with timezone: %s",
                 metric.getTimeZoneID()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -118,7 +113,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with filter expression: %s",
                 metric.getFilter()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -132,7 +127,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with tags: %s",
                 metric.getTags()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -147,7 +142,7 @@ public class MetricCommandTest extends MetricTest {
                 "Failed to insert metric with interpolate mode: %s",
                 metric.getInterpolate()
         );
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         assertMetricExisting(assertMessage, metric);
     }
 
@@ -175,7 +170,7 @@ public class MetricCommandTest extends MetricTest {
                 "Metric with incorrect versioning field (%s) shouldn't be inserted",
                 value
         );
-        transport.sendAndCompareToExpected(incorrectCommand, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(incorrectCommand));
     }
 
     @DataProvider(name = "incorrectInterpolationFieldProvider")
@@ -199,7 +194,7 @@ public class MetricCommandTest extends MetricTest {
                 "Metric with incorrect interpolate field (%s) shouldn't be inserted",
                 value
         );
-        transport.sendAndCompareToExpected(incorrectCommand, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(incorrectCommand));
     }
 
     @DataProvider(name = "incorrectDataTypeFieldProvider")
@@ -225,7 +220,7 @@ public class MetricCommandTest extends MetricTest {
                 value
         );
 
-        transport.sendAndCompareToExpected(incorrectCommand, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(incorrectCommand));
     }
 
     @DataProvider(name = "incorrectTimeZoneProvider")
@@ -248,7 +243,7 @@ public class MetricCommandTest extends MetricTest {
                 incorrectCommand
         );
 
-        transport.sendAndCompareToExpected(incorrectCommand, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(incorrectCommand));
     }
 
     @Issue("3550")
@@ -259,7 +254,7 @@ public class MetricCommandTest extends MetricTest {
         Metric metric = new Metric(metricName);
         MetricCommand command = new MetricCommand(metric);
         command.setEnabled(true);
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, "Can not set metric enabled");
+        assertTrue("Can not set metric enabled", transport.isSent(command));
         Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
@@ -274,7 +269,7 @@ public class MetricCommandTest extends MetricTest {
         Metric metric = new Metric(metricName);
         MetricCommand command = new MetricCommand(metric);
         command.setEnabled(false);
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, "Can not set metric disabled");
+        assertTrue("Can not set metric disabled", transport.isSent(command));
         Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
@@ -289,7 +284,7 @@ public class MetricCommandTest extends MetricTest {
         Metric metric = new Metric(metricName);
         MetricCommand command = new MetricCommand(metricName);
         command.setEnabled(null);
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, "Can not set metric disabled with null");
+        assertTrue("Can not set metric disabled with null", transport.isSent(command));
         Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
@@ -319,7 +314,7 @@ public class MetricCommandTest extends MetricTest {
         String metricName = metric();
         StringCommand command = new StringCommand(String.format("metric m:%s b:%s", metricName, enabled));
         String assertMessage ="Bad metric was accepted :: " + command;
-        transport.sendAndCompareToExpected(command, BAD_RESULT, assertMessage);
+        assertFalse(assertMessage, transport.isSent(command));
         Response serverResponse = MetricMethod.queryMetric(metricName);
 
         assertEquals(assertMessage, Util.responseFamily(serverResponse), Response.Status.Family.CLIENT_ERROR);
@@ -344,7 +339,7 @@ public class MetricCommandTest extends MetricTest {
         Metric metric = new Metric(metricName);
         StringCommand command = new StringCommand(String.format("metric m:%s b:%s", metricName, enabled));
         String assertMessage = "Failed to set enabled (raw)";
-        transport.sendAndCompareToExpected(command, GOOD_RESULT, assertMessage);
+        assertTrue(assertMessage, transport.isSent(command));
         Checker.check(new MetricCheck(metric));
         Metric actualMetric = MetricMethod.queryMetric(metricName).readEntity(Metric.class);
 
