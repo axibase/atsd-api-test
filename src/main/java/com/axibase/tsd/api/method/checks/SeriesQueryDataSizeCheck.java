@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.checks;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import lombok.RequiredArgsConstructor;
 
@@ -21,9 +22,7 @@ public class SeriesQueryDataSizeCheck extends AbstractCheck {
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             return false;
         }
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
-        int n = seriesList.stream().mapToInt(s -> s.getData().size()).sum();
+        int n = response.readEntity(ResponseAsList.ofSeries()).stream().mapToInt(s -> s.getData().size()).sum();
         return (n == size);
     }
 }
