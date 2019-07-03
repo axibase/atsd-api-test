@@ -1,15 +1,12 @@
 package com.axibase.tsd.api.method.checks;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import lombok.RequiredArgsConstructor;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class SeriesQueryDataSizeCheck extends AbstractCheck {
