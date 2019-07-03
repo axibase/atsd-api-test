@@ -18,14 +18,7 @@ public class PropertyTest extends PropertyMethod {
     }
 
     public static void assertPropertyExisting(Property property) {
-        String assertMessage = String.format(
-                com.axibase.tsd.api.method.property.PropertyTest.DefaultPropertysTemplates.PROPERTY_NOT_EXIST,
-                property
-        );
+        String assertMessage = String.format("Property: %s doesn't exist!", property);
         assertPropertyExisting(assertMessage, property);
-    }
-
-    private static final class DefaultPropertysTemplates {
-        private static final String PROPERTY_NOT_EXIST = "Property: %s%n doesn't exist!";
     }
 }

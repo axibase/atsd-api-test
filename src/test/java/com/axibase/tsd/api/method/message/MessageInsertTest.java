@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageInsertTest extends MessageMethod {
@@ -105,11 +105,8 @@ public class MessageInsertTest extends MessageMethod {
         message.setMessage("msg-time-range-msg-4");
         message.setDate(addOneMS(MAX_STORABLE_DATE));
 
-        Boolean success = insertMessage(message);
-
-        if (success) {
-            fail("Managed to insert message with date out of range");
-        }
+        final Response response = insertMessageReturnResponse(message);
+        assertNotEquals(Util.responseFamily(response), Response.Status.Family.SUCCESSFUL, "Managed to insert message with date out of range");
     }
 
     @Issue("2850")
