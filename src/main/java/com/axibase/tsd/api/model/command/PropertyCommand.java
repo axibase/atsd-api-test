@@ -85,7 +85,7 @@ public class PropertyCommand extends AbstractCommand {
     }
 
     @Override
-    public String toString() {
+    public String compose() {
         StringBuilder stringBuilder = commandBuilder();
         if (this.entityName != null) {
             stringBuilder.append(FieldFormat.quoted("e", entityName));

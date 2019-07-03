@@ -2,11 +2,11 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -81,8 +81,7 @@ public class SeriesUrlQueryTest extends SeriesMethod {
 
         Response response = urlQuerySeries(series.getEntity(), series.getMetric(), parameters);
         assertSame(Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
-        List<Series> responseSeries = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> responseSeries = response.readEntity(ResponseAsList.ofSeries());
         assertEquals(1, responseSeries.size());
         final Series actualSeries = responseSeries.get(0);
         assertEquals("Incorrect series entity", series.getEntity(), actualSeries.getEntity());

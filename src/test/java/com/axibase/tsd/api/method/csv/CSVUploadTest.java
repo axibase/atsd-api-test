@@ -10,13 +10,13 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -351,8 +351,7 @@ public class CSVUploadTest extends CSVUploadMethod {
             if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                 return false;
             }
-            List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-            });
+            List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
             return (seriesList.size() == 1) && (seriesList.get(0).getData().size() == size);
         }
     }

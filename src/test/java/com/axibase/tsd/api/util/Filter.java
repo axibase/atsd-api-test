@@ -27,4 +27,9 @@ public class Filter<T> {
     public Set<T> getExpectedResultSet() {
         return expectedResult;
     }
+
+    @Override
+    public String toString() {
+        return "Filter {" + expression + "}";
+    }
 }

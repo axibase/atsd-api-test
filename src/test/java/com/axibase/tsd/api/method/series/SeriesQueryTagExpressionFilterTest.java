@@ -2,12 +2,9 @@ package com.axibase.tsd.api.method.series;
 
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
-import com.axibase.tsd.api.util.Filter;
-import com.axibase.tsd.api.util.Filters;
-import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.*;
 import io.qameta.allure.Issue;
-import jersey.repackaged.com.google.common.collect.Sets;
+import org.apache.commons.collections4.CollectionUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -19,11 +16,11 @@ import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
-    private static String TEST_ENTITY = entity();
-    private static String TEST_METRIC = metric();
+    private static final String TEST_ENTITY = entity();
+    private static final String TEST_METRIC = metric();
     private static final String[] TEST_TAGS = { null, "value1", "value2", "VALUE1", "VALUE2", "otherValue" };
 
-    private final Filter[] filters = new Filter[] {
+    private final Collection<Filter<String>> filters = Arrays.asList(
             new Filter<>("tags.tag LIKE '*'",
                     "null", "value1", "value2", "VALUE1", "VALUE2", "otherValue"),
             new Filter<>("lower(tags.tag) LIKE '*'",
@@ -101,24 +98,23 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
             new Filter<>("NOT tags.tag < 'VALUE2'",
                     "value1", "value2", "VALUE2", "otherValue"),
             new Filter<>("NOT lower(tags.tag) < 'value1'",
-                    "value1", "value2", "VALUE1", "VALUE2")
-    };
+                    "value1", "value2", "VALUE1", "VALUE2"));
 
     @DataProvider
     Object[][] provideSingleTagFilters() {
-        return Filters.formatForDataProvider(filters);
+        return TestUtil.convertTo2DimArray(filters);
     }
 
     @DataProvider
     Object[][] provideDoubleTagFiltersAnd() {
-        Collection<Filter<String>> joinedFilters = Filters.crossProductAnd(filters, filters);
-        return Filters.formatForDataProvider(joinedFilters);
+        Collection<Filter<String>> joinedFilters = Filters.selfCrossProductAnd(filters);
+        return TestUtil.convertTo2DimArray(joinedFilters);
     }
 
     @DataProvider
     Object[][] provideDoubleTagFiltersOr() {
-        Collection<Filter<String>> joinedFilters = Filters.crossProductOr(filters, filters);
-        return Filters.formatForDataProvider(joinedFilters);
+        Collection<Filter<String>> joinedFilters = Filters.selfCrossProductOr(filters);
+        return TestUtil.convertTo2DimArray(joinedFilters);
     }
 
     @BeforeClass
@@ -228,8 +224,8 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
                 "Incorrect result with complex filter");
     }
 
-    private void checkQuery(String filter, Set<String> expectedResult, String errorMessage) throws Exception {
-        Set<Object> expectedTagsSet = Sets.newHashSet(expectedResult);
+    private void checkQuery(String filter, Set<String> expectedResult, String errorMessage) {
+        Set<Object> expectedTagsSet = new HashSet<>(expectedResult);
 
         SeriesQuery query = new SeriesQuery(TEST_ENTITY, TEST_METRIC, Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         query.setTagExpression(filter);
@@ -241,11 +237,11 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
                 actualTagsSet);
     }
 
-    private Set<String> executeTagsQuery(SeriesQuery query) throws Exception {
+    private Set<String> executeTagsQuery(SeriesQuery query) {
         List<Series> seriesList = SeriesMethod.querySeriesAsList(query);
         Set<String> actualTagsSet = new HashSet<>();
         for (Series series : seriesList) {
-            if (series.getData() == null || series.getData().size() == 0) {
+            if (CollectionUtils.isEmpty(series.getData())) {
                 continue;
             }
 
