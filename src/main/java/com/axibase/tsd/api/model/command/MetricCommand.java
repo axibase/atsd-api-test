@@ -113,7 +113,7 @@ public class MetricCommand extends AbstractCommand {
     }
 
     @Override
-    public String toString() {
+    public String compose() {
         StringBuilder stringBuilder = commandBuilder();
         if (this.metricName != null) {
             stringBuilder.append(FieldFormat.quoted("m", metricName));
@@ -137,7 +137,7 @@ public class MetricCommand extends AbstractCommand {
             stringBuilder.append(FieldFormat.quoted("v", versioning.toString()));
         }
         if (this.timeZoneId != null) {
-            stringBuilder.append(FieldFormat.quoted("z", timeZoneId.toString()));
+            stringBuilder.append(FieldFormat.quoted("z", timeZoneId));
         }
         if (this.enabled != null) {
             stringBuilder.append(FieldFormat.quoted("b", enabled.toString()));
