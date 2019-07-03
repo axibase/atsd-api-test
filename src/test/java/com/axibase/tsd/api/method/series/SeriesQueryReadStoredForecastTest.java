@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesType;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -116,22 +117,9 @@ public class SeriesQueryReadStoredForecastTest extends SeriesMethod {
     @Test(dataProvider = "settings_and_expected_series_data", description = "Check that series in response is match requested")
     public void testSeriesIsMatchRequested(String[] queryTags, boolean exactMatch, Series[] expectedSeries) {
         SeriesQuery query = QUERY
-                .withTags(toMap(queryTags))
+                .withTags(TestUtil.createTags(queryTags))
                 .withExactMatch(exactMatch);
         checkTags(query, expectedSeries);
-    }
-
-    private Map<String, String> toMap(String[] queryTags) {
-        if (queryTags == null) {
-            return null;
-        }
-
-        Map<String, String> map = new HashMap<>();
-            for (int i = 0; i < queryTags.length; i += 2) {
-                map.put(queryTags[i], queryTags[i + 1]);
-            }
-
-        return map;
     }
 
     private void checkTags(SeriesQuery query, Series... expected) {
