@@ -3,12 +3,12 @@ package com.axibase.tsd.api.method.alert;
 
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
@@ -39,8 +39,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("startDate", MIN_QUERYABLE_DATE);
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
-        });
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
         List<Map<String, Object>> updateAlertsCommand = new ArrayList<>();
 
         Map<String, Object> item;
@@ -61,8 +60,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("startDate", MIN_QUERYABLE_DATE);
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
-        });
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
 
         Boolean acknowledgedFalseExist = false;
         Boolean acknowledgedTrueExist = false;
@@ -88,8 +86,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
         alertQuery.put("acknowledged", true);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
-        });
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
         for (Alert alert : alertList) {
             assertTrue("Response should not contain acknowledged=false alerts", alert.getAcknowledged());
         }
@@ -104,8 +101,7 @@ public class AlertQueryAcknowledgedTest extends AlertTest {
         alertQuery.put("endDate", MAX_QUERYABLE_DATE);
         alertQuery.put("acknowledged", false);
 
-        List<Alert> alertList = queryAlerts(alertQuery).readEntity(new GenericType<List<Alert>>() {
-        });
+        List<Alert> alertList = queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts());
 
         for (Alert alert : alertList) {
             assertFalse("Response should not contain acknowledged=true alerts", alert.getAcknowledged());

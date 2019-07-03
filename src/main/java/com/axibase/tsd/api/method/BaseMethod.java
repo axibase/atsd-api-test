@@ -12,6 +12,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.json.JSONArray;
@@ -28,7 +29,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -46,7 +46,7 @@ public abstract class BaseMethod {
     private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
-    protected final static ObjectMapper jacksonMapper;
+    protected static final ObjectMapper jacksonMapper;
 
     static {
         java.util.logging.LogManager.getLogManager().reset();
@@ -54,30 +54,27 @@ public abstract class BaseMethod {
         SLF4JBridgeHandler.install();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("");
         julLogger.setLevel(Level.FINEST);
-        try {
-            Config config = Config.getInstance();
-            ClientConfig clientConfig = new ClientConfig();
-            clientConfig.connectorProvider(new ApacheConnectorProvider());
-            clientConfig.register(MultiPartFeature.class);
-            clientConfig.register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()));
-            clientConfig.property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
-            clientConfig.property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
 
-            GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
-            objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
-            objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
+        Config config = Config.getInstance();
+        ClientConfig clientConfig = new ClientConfig()
+                .connectorProvider(new ApacheConnectorProvider())
+                .register(MultiPartFeature.class)
+                .register(HttpAuthenticationFeature.basic(config.getLogin(), config.getPassword()))
+                .property(ClientProperties.READ_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
+                .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 
-            rootTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
-            apiTargetPool = new GenericObjectPool<>(
-                    new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+        GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
+        objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
+        objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
 
-            jacksonMapper = new ObjectMapper();
-            jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX"));
-        } catch (FileNotFoundException fne) {
-            logger.error("Failed prepare BaseMethod class. Reason: {}", fne.getMessage());
-            throw new RuntimeException(fne);
-        }
+        rootTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(clientConfig, config, "") ,objectPoolConfig);
+        apiTargetPool = new GenericObjectPool<>(
+                new HttpClientFactory(clientConfig, config, config.getApiPath()), objectPoolConfig);
+
+        jacksonMapper = new ObjectMapper();
+        jacksonMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
     }
 
     protected static WebTarget addParameters(WebTarget target, MethodParameters parameters) {
@@ -91,17 +88,17 @@ public abstract class BaseMethod {
         return jacksonMapper;
     }
 
-    public static boolean compareJsonString(String expected, String given) throws Exception {
-
+    public static boolean compareJsonString(String expected, String given) {
         return compareJsonString(expected, given, false);
     }
 
-    public static boolean compareJsonString(String expected, String given, boolean strict) throws Exception {
+    public static boolean compareJsonString(String expected, String given, boolean strict) {
         try {
             JSONAssert.assertEquals(expected, given, strict ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.LENIENT);
             return true;
         } catch (JSONException e) {
-            throw new Exception("Can not deserialize response");
+            logger.error("Can not deserialize response:\n{}", given);
+            throw new IllegalStateException("Can not deserialize response");
         } catch (AssertionError e) {
             return false;
         }
@@ -147,31 +144,9 @@ public abstract class BaseMethod {
         }
 
         try {
-			Response result = null;
-			try {
-				result = requestFunction.apply(client.target);
-			} catch (Exception reqEx) {
-				if (reqEx instanceof org.apache.http.NoHttpResponseException
-						|| reqEx.getCause() instanceof org.apache.http.NoHttpResponseException
-						|| reqEx instanceof org.apache.http.client.ClientProtocolException
-						|| reqEx.getCause() instanceof org.apache.http.client.ClientProtocolException) {
-					try {
-						logger.error("SLEEP " + reqEx, reqEx);
-						Thread.currentThread().sleep(2000L);
-					} catch (Exception interruptEx) {
-					}
-					result = requestFunction.apply(client.target);
-					logger.info("request OK after error and SLEEP on " + reqEx);
-				} else {
-					throw reqEx;
-				}
-			}
-			pool.returnObject(client);
-			return result;
-        } catch (Exception e) {
-            logger.error("Exception while making request", e);
-            client.close();
-            throw e;
+            return requestFunction.apply(client.target);
+        } finally {
+            pool.returnObject(client);
         }
     }
 

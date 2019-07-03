@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Filters;
+import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -179,7 +180,7 @@ public class SqlMerticTagsTest extends SqlTest {
         allFilters.addAll(dateFunctionsFilterResults);
         allFilters.addAll(comparisonFilterResults);
 
-        return Filters.formatForDataProvider(allFilters);
+        return TestUtil.convertTo2DimArray(allFilters);
     }
 
     @Issue("4180")
@@ -215,7 +216,7 @@ public class SqlMerticTagsTest extends SqlTest {
         allFilters.addAll(Filters.crossProductAnd(dateFunctionsFilterResults, dateFunctionsFilterResults));
         allFilters.addAll(Filters.crossProductAnd(comparisonFilterResults, comparisonFilterResults));
 
-        return Filters.formatForDataProvider(allFilters);
+        return TestUtil.convertTo2DimArray(allFilters);
     }
 
     @SuppressWarnings("unchecked")
@@ -232,7 +233,7 @@ public class SqlMerticTagsTest extends SqlTest {
         allFilters.addAll(Filters.crossProductOr(dateFunctionsFilterResults, dateFunctionsFilterResults));
         allFilters.addAll(Filters.crossProductOr(comparisonFilterResults, comparisonFilterResults));
 
-        return Filters.formatForDataProvider(allFilters);
+        return TestUtil.convertTo2DimArray(allFilters);
     }
 
     @Issue("4180")

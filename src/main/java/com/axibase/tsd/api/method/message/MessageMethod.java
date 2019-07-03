@@ -7,14 +7,11 @@ import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +21,6 @@ public class MessageMethod extends BaseMethod {
     private static final String METHOD_MESSAGE_INSERT = "/messages/insert";
     private static final String METHOD_MESSAGE_QUERY = "/messages/query";
     private static final String METHOD_MESSAGE_STATS_QUERY = "/messages/stats/query";
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static Response insertMessageReturnResponse(final Message message) {
         return insertMessageReturnResponse(Collections.singletonList(message));
@@ -37,20 +33,6 @@ public class MessageMethod extends BaseMethod {
                 .post(Entity.json(messageList)));
         response.bufferEntity();
         return response;
-    }
-
-    public static Boolean insertMessage(final Message message) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_MESSAGE_INSERT)
-                .request()
-                .post(Entity.json(Collections.singletonList(message))));
-        response.bufferEntity();
-        if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response)) {
-            logger.debug("Message looks inserted");
-        } else {
-            logger.error("Fail to insert message");
-        }
-        return Response.Status.Family.SUCCESSFUL == Util.responseFamily(response);
     }
 
     public static void insertMessageCheck(final Message message, AbstractCheck check) {
@@ -80,13 +62,11 @@ public class MessageMethod extends BaseMethod {
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             throw new IllegalStateException("Fail to execute queryMessageStats");
         }
-        return response.readEntity(new GenericType<List<Series>>() {
-        });
+        return response.readEntity(ResponseAsList.ofSeries());
     }
 
     public static List<Message> queryMessage(MessageQuery... queries) {
-        return queryMessageResponse(queries).readEntity(new GenericType<List<Message>>() {
-        });
+        return queryMessageResponse(queries).readEntity(ResponseAsList.ofMessages());
     }
 
     public static <T> Response queryMessageResponse(T... messageQuery) {

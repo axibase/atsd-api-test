@@ -1,6 +1,8 @@
 package com.axibase.tsd.api.model.command;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 public class FieldFormat {
     private FieldFormat() {
 
@@ -19,19 +21,13 @@ public class FieldFormat {
     }
 
     private static String escape(String s) {
-        String result = s;
-        if (result == null) {
+        if (s == null) {
             return null;
+        } else if ("".equals(s)) {
+            return "\"\"";
         }
-        if (result.contains("\"")) {
-            result = result.replaceAll("\"", "\"\"");
-        }
-        char[] escapeChars = {'=', '"', ' ', '\r', '\n', '\t'};
-        for (char c : escapeChars) {
-            if (result.indexOf(c) >= 0) {
-                return String.format("\"%s\"", result);
-            }
-        }
-        return result;
+        final String withReplacedQuotes = StringUtils.replace(s, "\"", "\"\"");
+        final char[] escapeChars = {'=', '"', ' ', '\r', '\n', '\t'};
+        return StringUtils.containsAny(withReplacedQuotes, escapeChars) ? '"' + withReplacedQuotes + '"' : withReplacedQuotes;
     }
 }
