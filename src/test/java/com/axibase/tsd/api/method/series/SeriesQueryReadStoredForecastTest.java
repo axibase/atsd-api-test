@@ -80,10 +80,6 @@ public class SeriesQueryReadStoredForecastTest extends SeriesMethod {
                 {ImmutableMap.of(TAG_NAME_1, "*"), true, new Series[] {SERIES_2, SERIES_3}},
                 {ImmutableMap.of(TAG_NAME_1, "*"), false, new Series[] {SERIES_2, SERIES_3, SERIES_6, SERIES_7, SERIES_8, SERIES_9}},
 
-                /* Nonexistent value of tag. */
-                {ImmutableMap.of(TAG_NAME_1, TAG_VALUE_1 + TAG_VALUE_2), true, new Series[] {}},
-                {ImmutableMap.of(TAG_NAME_1, TAG_VALUE_1 + TAG_VALUE_2), false, new Series[] {}},
-
                 {ImmutableMap.of(TAG_NAME_2, TAG_VALUE_1), true, new Series[] {SERIES_4}},
                 {ImmutableMap.of(TAG_NAME_2, TAG_VALUE_1), false, new Series[] {SERIES_4, SERIES_7, SERIES_8}},
 
@@ -113,12 +109,28 @@ public class SeriesQueryReadStoredForecastTest extends SeriesMethod {
         };
     }
 
+    @DataProvider(name = "series_and_empty_expected_data",parallel = true)
+    Object[][] seriesAndEmptyExpectedData() {
+        return new Object[][] {
+                {ImmutableMap.of(TAG_NAME_1, TAG_VALUE_1 + TAG_VALUE_2), true},
+                {ImmutableMap.of(TAG_NAME_1, TAG_VALUE_1 + TAG_VALUE_2), false}
+        };
+    }
+
     @Test(dataProvider = "settings_and_expected_series_data", description = "Check that series in response is matched to requested")
     public void testSeriesIsMatchRequested(Map<String, String> queryTags, boolean exactMatch, Series[] expectedSeries) {
         SeriesQuery query = QUERY
                 .withTags(queryTags)
                 .withExactMatch(exactMatch);
         checkTags(query, expectedSeries);
+    }
+
+    @Test(dataProvider = "series_and_empty_expected_data", description = "Check that series in response is matched to requested empty")
+    public void testSeriesMatchedToEmpty(Map<String, String> queryTags, boolean exactMatch) {
+        SeriesQuery query = QUERY
+                .withTags(queryTags)
+                .withExactMatch(exactMatch);
+        checkTags(query, new Series[]{});
     }
 
     private void checkTags(SeriesQuery query, Series... expected) {
