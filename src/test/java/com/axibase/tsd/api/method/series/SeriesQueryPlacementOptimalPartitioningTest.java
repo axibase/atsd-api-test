@@ -1,14 +1,10 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.model.Period;
-import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.SeriesMetaInfo;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
-import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolate;
-import com.axibase.tsd.api.model.series.query.transformation.AggregationInterpolateType;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.group.Place;
@@ -71,7 +67,23 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
             seriesArray[i] = new Series(String.format("lp_%s", i + 1), METRIC_NAME);
         }
 
-        addSamplesToSeries(seriesArray);
+        long totalSamplesCount = 10;
+
+        for (int i = 0; i < totalSamplesCount; i++) {
+            final List<Double[]> value = new ArrayList<>(Arrays.asList(
+                    new Double[] {1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
+                    new Double[] {2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
+                    new Double[] {4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
+                    new Double[] {3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
+                    new Double[] {2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
+            ));
+
+            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
+            for (int j = 0; j < seriesArray.length; j++) {
+                seriesArray[j].addSamples(Sample.ofDateDecimal(time, new BigDecimal(value.get(j)[i])));
+            }
+        }
+
         insertSeriesCheck(seriesArray);
     }
 
@@ -110,25 +122,6 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
             actualGroupScore.put(getGroupSetOfSeries(series), series.getGroup().getGroupScore().doubleValue());
         }
         assertEquals(actualGroupScore, expectedGroupScore, "Mismatch of parameters groupScore by expected is detected");
-    }
-
-    private void addSamplesToSeries(Series... seriesArray) {
-        long totalSamplesCount = 10;
-
-        for (int i = 0; i < totalSamplesCount; i++) {
-            final List<Double[]> value = new ArrayList<>(Arrays.asList(
-                    new Double[] {1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
-                    new Double[] {2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
-                    new Double[] {4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
-                    new Double[] {3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
-                    new Double[] {2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
-            ));
-
-            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
-            for (int j = 0; j < seriesArray.length; j++) {
-                seriesArray[j].addSamples(Sample.ofDateDecimal(time, new BigDecimal(value.get(j)[i])));
-            }
-        }
     }
 
     private Set<String> getGroupSetOfSeries(Series series) {
