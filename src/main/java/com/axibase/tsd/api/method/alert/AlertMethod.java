@@ -3,10 +3,10 @@ package com.axibase.tsd.api.method.alert;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
@@ -64,8 +64,7 @@ public class AlertMethod extends BaseMethod {
             );
             throw new IllegalStateException(errorMessage);
         } else {
-            return response.readEntity(new GenericType<List<Alert>>() {
-            });
+            return response.readEntity(ResponseAsList.ofAlerts());
         }
     }
 

@@ -1,8 +1,9 @@
 package com.axibase.tsd.api;
 
 import com.axibase.tsd.api.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,29 +13,34 @@ import java.util.Properties;
 
 /**
  * @author Dmitry Korchagin.
+ * @author raipc
  */
+@Slf4j
+@Getter
 public class Config {
-    private static final Logger logger = LoggerFactory.getLogger(Config.class);
     private static final String DEFAULT_CONFIG_FILE = "client.properties";
     private static final String DEV_CONFIG_FILE = "dev.client.properties";
-    private static Config instance = null;
-    private String login;
-    private String password;
-    private String protocol;
-    private String serverName;
-    private int httpPort;
-    private int tcpPort;
-    private String apiPath;
-    private String loggerLevel;
-    private Boolean isCheckLoggingEnable;
+    private final String login;
+    private final String password;
+    private final String protocol;
+    private final String serverName;
+    private final int httpPort;
+    private final int tcpPort;
+    private final String apiPath;
+    private final String loggerLevel;
+    private final boolean checkLoggingEnable;
+
+    public static Config getInstance() {
+        return ConfigInstanceHolder.INSTANCE;
+    }
 
     private Config(String configPath) {
-        logger.debug("Load client properties from file: {}", configPath);
+        log.debug("Load client properties from file: {}", configPath);
         Properties clientProperties = new Properties();
         try (InputStream stream = new FileInputStream(configPath)) {
             clientProperties.load(stream);
         } catch (Exception e) {
-            logger.error("Fail to load client properties. {}", e);
+            log.error("Failed to load client properties. {}", e.getMessage());
         }
 
         login = load("login", clientProperties, null);
@@ -45,31 +51,17 @@ public class Config {
         tcpPort = Integer.parseInt(load("tcpPort", clientProperties, null));
         apiPath = load("apiPath", clientProperties, null);
         loggerLevel = load("loggerLevel", clientProperties, "debug");
-        isCheckLoggingEnable = Boolean.valueOf(load("isCheckLoggingEnable", clientProperties, "false"));
+        checkLoggingEnable = Boolean.valueOf(load("isCheckLoggingEnable", clientProperties, "false"));
         System.setProperty("loggerLevel", loggerLevel);
-    }
-
-    public static Config getInstance() throws FileNotFoundException {
-        if (null == instance) {
-            if (tryInitConfig(DEV_CONFIG_FILE)) {
-                return instance;
-            }
-            if (tryInitConfig(DEFAULT_CONFIG_FILE)) {
-                return instance;
-            }
-            throw new FileNotFoundException("*client.properties not found");
+        if (StringUtils.isEmpty(login)) {
+            throw new IllegalStateException("Empty login");
         }
-        return instance;
-    }
-
-    private static boolean tryInitConfig(String config) {
-        URL configUrl = Config.class.getClassLoader().getResource(config);
-        if (configUrl != null) {
-            logger.debug("Trying to use {} for config", config);
-            instance = new Config(configUrl.getFile());
-            return true;
+        if (StringUtils.isEmpty(password)) {
+            throw new IllegalStateException("Empty password");
         }
-        return false;
+        if (StringUtils.isEmpty(serverName)) {
+            throw new IllegalStateException("Empty server name");
+        }
     }
 
     private static String load(String name, Properties clientProperties, String defaultValue) {
@@ -78,7 +70,7 @@ public class Config {
             value = clientProperties.getProperty(name);
             if (value == null) {
                 if (defaultValue == null) {
-                    logger.error("Could not find required property: {}", name);
+                    log.error("Could not find required property: {}", name);
                     throw new IllegalStateException(name + " property is null");
                 } else {
                     value = defaultValue;
@@ -88,44 +80,32 @@ public class Config {
         return value;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public String getServerName() {
-        return serverName;
-    }
-
-    public int getHttpPort() {
-        return httpPort;
-    }
-
-    public int getTcpPort() {
-        return tcpPort;
-    }
-
-    public String getApiPath() {
-        return apiPath;
-    }
-
-    public String getLoggerLevel() {
-        return loggerLevel;
-    }
-
     @Override
     public String toString() {
         return Util.prettyPrint(this);
     }
 
-    public Boolean getCheckLoggingEnable() {
-        return isCheckLoggingEnable;
+    private static final class ConfigInstanceHolder {
+        private static final Config INSTANCE = initializeInstance();
+
+        private static Config initializeInstance() {
+            Config config = tryInitConfig(DEV_CONFIG_FILE);
+            if (config == null) {
+                config = tryInitConfig(DEFAULT_CONFIG_FILE);
+            }
+            if (config == null) {
+                throw new IllegalStateException(new FileNotFoundException("*client.properties not found"));
+            }
+            return config;
+        }
+
+        private static Config tryInitConfig(String config) {
+            URL configUrl = Config.class.getClassLoader().getResource(config);
+            if (configUrl != null) {
+                log.debug("Trying to use {} for config", config);
+                return new Config(configUrl.getFile());
+            }
+            return null;
+        }
     }
 }

@@ -5,13 +5,13 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -155,8 +155,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         assertEquals("Only one series should be returned", seriesLimit, seriesList.size());
         assertEquals("Sample count mismatch", SAMPLES_COUNT, seriesList.get(0).getData().size());
@@ -171,8 +170,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", seriesLimit);
         assertEquals(message, seriesLimit, seriesList.size());
@@ -209,8 +207,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", seriesLimit);
         assertEquals(message, seriesLimit, seriesList.size());
@@ -232,8 +229,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", seriesLimit);
         assertEquals(message, seriesLimit, seriesList.size());
@@ -252,8 +248,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", seriesLimit);
         assertEquals(message, seriesLimit, seriesList.size());
@@ -276,8 +271,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", seriesLimit);
         assertEquals(message, seriesLimit, seriesList.size());
@@ -299,8 +293,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", seriesLimit);
         assertEquals(message, seriesLimit, seriesList.size());
@@ -325,8 +318,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
         Response response = querySeries(query);
         assertSame("Fail to execute series query", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
 
-        List<Series> seriesList = response.readEntity(new GenericType<List<Series>>() {
-        });
+        List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
 
         String message = String.format("%s series should be returned", expectedSeries);
         assertEquals(message, expectedSeries, seriesList.size());
@@ -338,7 +330,7 @@ public class SeriesQueryLimitTest extends SeriesMethod {
 
 
     private boolean diffEntityCountGraterThan(List<Series> seriesList, int count) {
-        Set<String> entitySet = new HashSet();
+        Set<String> entitySet = new HashSet<>();
         for (Series s : seriesList) {
             entitySet.add(s.getEntity());
         }

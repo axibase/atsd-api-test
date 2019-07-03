@@ -78,7 +78,7 @@ public class EntityCommand extends AbstractCommand {
     }
 
     @Override
-    public String toString() {
+    public String compose() {
         StringBuilder stringBuilder = commandBuilder();
         if (this.name != null) {
             stringBuilder.append(FieldFormat.quoted("e", name));

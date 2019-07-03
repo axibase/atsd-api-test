@@ -4,13 +4,13 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
@@ -39,8 +39,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2105-05-21T00:00:00Z");
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -54,8 +53,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2105-05-21T01:23:00+01:23");
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -69,8 +67,7 @@ public class MessageQueryTest extends MessageMethod {
         MessageQuery messageQuery = buildMessageQuery();
         messageQuery.setStartDate("2105-05-20T22:37:00-01:23");
 
-        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(new GenericType<List<Message>>() {
-        });
+        List<Message> storedMessageList = queryMessageResponse(messageQuery).readEntity(ResponseAsList.ofMessages());
         Message storedMessage = storedMessageList.get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());
@@ -99,7 +96,7 @@ public class MessageQueryTest extends MessageMethod {
         messageQuery.setStartDate("2105-05-20T22:50:00-0110");
 
         Message storedMessage = queryMessageResponse(messageQuery)
-                .readEntity(new GenericType<List<Message>>() {})
+                .readEntity(ResponseAsList.ofMessages())
                 .get(0);
 
         assertEquals("Incorrect message entity", message.getEntity(), storedMessage.getEntity());

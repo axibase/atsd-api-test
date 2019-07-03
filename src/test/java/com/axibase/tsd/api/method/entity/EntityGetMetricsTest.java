@@ -4,11 +4,11 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +51,7 @@ public class EntityGetMetricsTest extends EntityMethod {
     private void assertUrlencodedPathHandledSuccessfullyOnGetMetrics(final Series series) {
         Response response = queryEntityMetrics(series.getEntity());
         assertSame("Fail to execute queryEntityMetric", Response.Status.Family.SUCCESSFUL, Util.responseFamily(response));
-        List<Metric> metricList = response.readEntity(new GenericType<List<Metric>>() {
-        });
+        List<Metric> metricList = response.readEntity(ResponseAsList.ofMetrics());
         assertEquals("Entity should have only 1 metric", 1, metricList.size());
         assertEquals("Metric in response does not match to inserted metric", series.getMetric(), metricList.get(0).getName());
     }

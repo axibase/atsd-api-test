@@ -4,11 +4,11 @@ import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
@@ -224,8 +224,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
         propertyQuery.setType(property.getType());
 
-        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
-        });
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(ResponseAsList.ofProperties());
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -249,8 +248,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
         propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
-        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
-        });
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(ResponseAsList.ofProperties());
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -274,8 +272,7 @@ public class PropertyInsertTest extends PropertyMethod {
         propertyQuery.setStartDate("2016-07-21T00:00:00.000Z");
         propertyQuery.setInterval(new Period(1, TimeUnit.MILLISECOND));
 
-        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(new GenericType<List<Property>>() {
-        });
+        List<Property> storedPropertyList = queryProperty(propertyQuery).readEntity(ResponseAsList.ofProperties());
         Property storedProperty = storedPropertyList.get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());
@@ -320,7 +317,7 @@ public class PropertyInsertTest extends PropertyMethod {
                 .setInterval(new Period(1, TimeUnit.MILLISECOND));
 
         Property storedProperty = queryProperty(propertyQuery)
-                .readEntity(new GenericType<List<Property>>() {})
+                .readEntity(ResponseAsList.ofProperties())
                 .get(0);
 
         assertEquals("Incorrect property entity", property.getEntity(), storedProperty.getEntity());

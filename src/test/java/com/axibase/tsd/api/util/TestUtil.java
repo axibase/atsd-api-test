@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -245,7 +246,11 @@ public class TestUtil {
     }
 
     public static Object[][] convertTo2DimArray(Object[] data) {
-        return Arrays.stream(data).map(o -> new Object[] {o}).toArray(Object[][]::new);
+        return Arrays.stream(data).map(ArrayUtils::toArray).toArray(Object[][]::new);
+    }
+
+    public static Object[][] convertTo2DimArray(Collection<?> data) {
+        return data.stream().map(ArrayUtils::toArray).toArray(Object[][]::new);
     }
 
     public static Map<String, String> createTags(String... tags) {

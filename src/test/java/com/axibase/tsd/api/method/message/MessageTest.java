@@ -7,9 +7,9 @@ import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -42,8 +42,7 @@ public class MessageTest extends MessageMethod {
                     if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
                         return false;
                     }
-                    List<Message> messageList = response.readEntity(new GenericType<List<Message>>() {
-                    });
+                    List<Message> messageList = response.readEntity(ResponseAsList.ofMessages());
                     return messageList.size() == size;
                 }
             });

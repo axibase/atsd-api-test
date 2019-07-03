@@ -7,12 +7,12 @@ import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.util.Registry;
+import com.axibase.tsd.api.util.ResponseAsList;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
@@ -108,8 +108,7 @@ public class AlertHistoryQueryTest extends AlertTest {
         assertEquals("Bad request status code\n" + json,
                 Response.Status.Family.SUCCESSFUL, resp.getStatusInfo().getFamily());
         assertTrue("Responded alert collection should be empty",
-                resp.readEntity(new GenericType<List<Alert>>() {
-                }).isEmpty());
+                resp.readEntity(ResponseAsList.ofAlerts()).isEmpty());
     }
 
 }
