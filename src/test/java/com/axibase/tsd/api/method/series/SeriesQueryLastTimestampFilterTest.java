@@ -23,7 +23,7 @@ import static org.testng.Assert.*;
 /**
  * Checks implements of last timestamp filter by content of output series.
  * For each identical assertion individual dataProvider is create.
- * Methods generateData() and addSamplesToSeries() create input series.
+ * Method generateData() create input series.
  */
 
 public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
@@ -70,7 +70,11 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
         String entity = Mocks.entity();
 
         Series series = new Series(entity, METRIC);
-        addSamplesToSeries(series);
+        for (int i = 0; i < TOTAL_SAMPLES; i++) {
+            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
+            Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
+            series.addSamples(sample);
+        }
         insertSeriesCheck(series);
     }
 
@@ -186,14 +190,6 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
         SeriesQuery query = QUERY.withMaxInsertDate(maxDate);
         List<Series> seriesList = querySeriesAsList(query);
         assertTrue(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series not empty");
-    }
-
-    private void addSamplesToSeries(Series series) {
-        for (int i = 0; i < TOTAL_SAMPLES; i++) {
-            String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, SECONDS_IN_HALF_MINUTE * i);
-            Sample sample = Sample.ofDateInteger(time, SERIES_VALUE);
-            series.addSamples(sample);
-        }
     }
 
     private void setDatePairs() {
