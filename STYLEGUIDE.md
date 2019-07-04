@@ -180,8 +180,8 @@ Import statements are **not line-wrapped**. The [column limit](#44-column-limit)
 
 Imports are ordered as follows:
 
-1. All static imports in a single block.
-2. All non-static imports in a single block.
+1. All non-static imports in a single block.
+2. All static imports in a single block.
 
 If there are both static and non-static imports, a single blank line separates the two blocks. There are no other blank lines between import statements.
 
