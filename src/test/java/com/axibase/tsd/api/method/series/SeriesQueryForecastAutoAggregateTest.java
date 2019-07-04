@@ -29,7 +29,7 @@ import static org.testng.Assert.assertSame;
  * Test of auto aggregation. Applied if flag {@link Forecast#autoAggregate} is true.
  * Check that response contains correct forecast series.
  *
- * Methods insertSeries() and addSamplesToSeries() create input series.
+ * Method insertSeries() create input series.
  */
 
 public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
@@ -66,7 +66,13 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         timeShiftToValue.put(10, 1);
 
         Series series = new Series(ENTITY, METRIC);
-        addSamplesToSeries(series, timeShiftToValue);
+        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
+            for (Map.Entry<Integer, Integer> pair: timeShiftToValue.entrySet()) {
+                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, i * TIMESTAMP_PERIOD + pair.getKey());
+                Sample sample = Sample.ofDateInteger(time, pair.getValue());
+                series.addSamples(sample);
+            }
+        }
         insertSeriesCheck(series);
     }
 
@@ -106,16 +112,6 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         long countPeriodMs = period.getUnit().toMilliseconds(period.getCount());
 
         assertEquals(timeStampPeriodMs, countPeriodMs,"Count in period of aggregation not match time span between samples");
-    }
-
-    private void addSamplesToSeries(Series series, Map<Integer, Integer> samplesData) {
-        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
-            for (Map.Entry<Integer, Integer> pair: samplesData.entrySet()) {
-                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, i * TIMESTAMP_PERIOD + pair.getKey());
-                Sample sample = Sample.ofDateInteger(time, pair.getValue());
-                series.addSamples(sample);
-            }
-        }
     }
 
     private long timeStampDifference(Sample firstTimeStamp, Sample secondTimeStamp) {
