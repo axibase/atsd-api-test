@@ -9,6 +9,7 @@ import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.model.series.query.transformation.group.Place;
 import com.axibase.tsd.api.model.series.query.transformation.group.PlaceFunction;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
@@ -22,9 +23,9 @@ import static org.testng.Assert.assertEquals;
 
 /**
  * Take some setting of parameter {@link Group#place}.
- *
+ * <p>
  * Check that response contains correct data after grouping with placement.
- *
+ * <p>
  * Methods insertSeries() and addSamplesToSeries() create input series
  */
 
@@ -35,9 +36,9 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
      */
     private static final String START_DATE = "2019-01-01T00:00:00Z";
     private static final String END_DATE = "2019-01-02T00:00:00Z";
-    private static final String ZONE_ID = "Etc/UTC";
+    private static final String ZONE_ID = Mocks.TIMEZONE_ID;
     private static final String QUERY_ENTITY = "*";
-    private static final String METRIC_NAME = "lp_usage";
+    private static final String METRIC_NAME = Mocks.metric();
 
     /**
      * Parameter place for grouping
@@ -71,11 +72,11 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
 
         for (int i = 0; i < totalSamplesCount; i++) {
             final List<Double[]> value = new ArrayList<>(Arrays.asList(
-                    new Double[] {1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
-                    new Double[] {2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
-                    new Double[] {4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
-                    new Double[] {3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
-                    new Double[] {2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
+                    new Double[]{1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
+                    new Double[]{2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
+                    new Double[]{4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
+                    new Double[]{3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
+                    new Double[]{2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
             ));
 
             String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
@@ -93,7 +94,7 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
         List<Series> seriesList = querySeriesAsList(QUERY);
         Set<Set<String>> expectedGroupSetOfSeries = new HashSet<>(Arrays.asList(FIRST_SET, SECOND_SET));
         Set<Set<String>> actualGroupSetOfSeries = new HashSet<>();
-        for (Series series: seriesList) {
+        for (Series series : seriesList) {
             actualGroupSetOfSeries.add(getGroupSetOfSeries(series));
         }
 
@@ -118,18 +119,18 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
         expectedGroupScore.put(SECOND_SET, EXPECTED_GROUP_SCORE_SECOND);
 
         Map<Set<String>, Double> actualGroupScore = new HashMap<>();
-        for (Series series: seriesList) {
+        for (Series series : seriesList) {
             actualGroupScore.put(getGroupSetOfSeries(series), series.getGroup().getGroupScore().doubleValue());
         }
         assertEquals(actualGroupScore, expectedGroupScore, "Mismatch of parameters groupScore by expected is detected");
     }
 
     private Set<String> getGroupSetOfSeries(Series series) {
-            Set<String> setSeries = new HashSet<>();
-            for (SeriesMetaInfo seriesMetaInfo: series.getGroup().getSeries()) {
-                setSeries.add(seriesMetaInfo.getEntity());
-            }
+        Set<String> setSeries = new HashSet<>();
+        for (SeriesMetaInfo seriesMetaInfo : series.getGroup().getSeries()) {
+            setSeries.add(seriesMetaInfo.getEntity());
+        }
 
-            return setSeries;
+        return setSeries;
     }
 }
