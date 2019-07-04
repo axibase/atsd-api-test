@@ -52,9 +52,9 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     private static final int SERIES_VALUE = 101;
     private static final int SECONDS_IN_HALF_MINUTE = 30;
     private static final int TOTAL_SAMPLES = 3000;
-    private static final String ZONE_ID = "Asia/Kathmandu";
+    private static final String ZONE_ID = Mocks.TIMEZONE_ID;
     private static final String QUERY_ENTITY = "*";
-    private static final String METRIC = "metric6112";
+    private static final String METRIC = Mocks.metric();
 
     private static final SeriesQuery QUERY = new SeriesQuery(QUERY_ENTITY, METRIC, QUERY_START_DATE, QUERY_END_DATE);
 
