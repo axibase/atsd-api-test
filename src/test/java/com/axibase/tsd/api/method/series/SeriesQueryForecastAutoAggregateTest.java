@@ -114,7 +114,7 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         assertEquals(timeStampPeriodMs, countPeriodMs,"Count in period of aggregation not match time span between samples");
     }
 
-    private long timeStampDifference(Sample firstTimeStamp, Sample secondTimeStamp) {
-        return Util.parseDate(secondTimeStamp.getRawDate()).getTime() - Util.parseDate(firstTimeStamp.getRawDate()).getTime();
+    private long timeStampDifference(Sample firstSample, Sample secondSample) {
+        return Util.parseDate(secondSample.getRawDate()).getTime() - Util.parseDate(firstSample.getRawDate()).getTime();
     }
 }
