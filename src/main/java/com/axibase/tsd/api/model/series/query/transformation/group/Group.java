@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,6 +26,17 @@ public class Group {
 
     public Group(GroupType type) {
         this(type, null, null);
+    }
+
+    public Group addType(GroupType type) {
+        if (types == null) {
+            types = new ArrayList<>();
+            if (this.type != null) {
+                types.add(this.type);
+            }
+        }
+        types.add(type);
+        return this;
     }
 
     public Group(GroupType type, Period period) {

@@ -36,10 +36,14 @@ public class Aggregate {
         this.order = order;
     }
 
-    public void addType(AggregationType type) {
+    public Aggregate addType(AggregationType type) {
         if (types == null) {
             types = new ArrayList<>();
+            if (this.type != null) {
+                types.add(this.type);
+            }
         }
         types.add(type);
+        return this;
     }
 }

@@ -36,10 +36,10 @@ import java.util.List;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Take series transformations {@link Transformation#values()} except for {@link Transformation#FORECAST}.
+ * Take series transformations {@link Transformation#values()} except for {@link Transformation#FORECAST} and {@link Transformation#EVALUATE}.
  * Check that response contains correct number of generated series for each permutation of the transformations.
  */
-public class SeriesQueryTransformationsWithoutForecastPermutationsTest extends SeriesMethod {
+public class TransformationPermutationsTest extends SeriesMethod {
 
     private int inputSeriesCount;
     private SeriesQuery query;
@@ -48,6 +48,7 @@ public class SeriesQueryTransformationsWithoutForecastPermutationsTest extends S
     String startDate = "2019-01-01T00:00:00Z";
     String endDate = "2019-01-02T00:00:00Z";
 
+    /** Transformations under test. */
     List<Transformation> transformations = Arrays.asList(
             Transformation.AGGREGATE,
             Transformation.DOWNSAMPLE,

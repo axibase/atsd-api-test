@@ -40,11 +40,7 @@ public class SeriesQueryMinDateTest {
 
     @DataProvider
     Object[][] seriesTypeProvider() {
-        Object[][] result = new Object[SeriesType.values().length][];
-        for (int i = 0; i < SeriesType.values().length; i++) {
-            result[i] = new Object[]{SeriesType.values()[i]};
-        }
-        return result;
+        return new Object[][]{{SeriesType.HISTORY}, {SeriesType.FORECAST}, {SeriesType.FORECAST_DEVIATION}};
     }
 
     @Issue("4756")
