@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.forecast.Forecast;
 import com.axibase.tsd.api.model.series.query.transformation.forecast.Horizon;
 import com.axibase.tsd.api.model.series.query.transformation.forecast.SSASettings;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -38,11 +39,8 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
      */
     private static final String START_DATE = "2019-04-01T00:00:00Z";
     private static final String END_DATE = "2019-04-01T02:00:00Z";
-    private static final int TOTAL_SAMPLES_COUNT = 480;
-    private static final int TIMESTAMP_PERIOD = 15;
-    private static final String ZONE_ID = "Asia/Kathmandu";
-    private static final String ENTITY = "e-6171";
-    private static final String METRIC = "m-6171";
+    private static final String ENTITY = Mocks.entity();
+    private static final String METRIC = Mocks.metric();
 
     private static final SeriesQuery query = new SeriesQuery(ENTITY, METRIC, START_DATE, END_DATE)
             .setForecast(new Forecast()
@@ -65,10 +63,14 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         timeShiftToValue.put(6, 1);
         timeShiftToValue.put(10, 1);
 
+        String zoneId = Mocks.TIMEZONE_ID;
+        int period = 15;
+        int seriesCount = 480;
+
         Series series = new Series(ENTITY, METRIC);
-        for (int i = 0; i < TOTAL_SAMPLES_COUNT; i++) {
+        for (int i = 0; i < seriesCount; i++) {
             for (Map.Entry<Integer, Integer> pair: timeShiftToValue.entrySet()) {
-                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.SECOND, i * TIMESTAMP_PERIOD + pair.getKey());
+                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(zoneId), TimeUnit.SECOND, i * period + pair.getKey());
                 Sample sample = Sample.ofDateInteger(time, pair.getValue());
                 series.addSamples(sample);
             }
