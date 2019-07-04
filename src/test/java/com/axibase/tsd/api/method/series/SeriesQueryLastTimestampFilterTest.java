@@ -137,7 +137,7 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
                 .withMinInsertDate(minDate)
                 .withMaxInsertDate(maxDate);
         List<Series> seriesList = querySeriesAsList(query);
-        assertFalse(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series is empty");
+        assertTrue(seriesList.size() == 1 && !seriesList.get(0).getData().isEmpty(), "One series expected");
     }
 
     @Issue("6112")
@@ -162,7 +162,7 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     public void testLastTimestampEqualOrGreaterMinInsertDate(String minDate) {
         SeriesQuery query = QUERY.withMinInsertDate(minDate);
         List<Series> seriesList = querySeriesAsList(query);
-        assertFalse(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series is empty");
+        assertTrue(seriesList.size() == 1 && !seriesList.get(0).getData().isEmpty(), "One series expected");
     }
 
     @Issue("6112")
@@ -180,7 +180,7 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     public void testLastTimestampLessMaxInsertDate(String maxDate) {
         SeriesQuery query = QUERY.withMaxInsertDate(maxDate);
         List<Series> seriesList = querySeriesAsList(query);
-        assertFalse(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series is empty");
+        assertTrue(seriesList.size() == 1 && !seriesList.get(0).getData().isEmpty(), "One series expected");
     }
 
     @Issue("6112")
