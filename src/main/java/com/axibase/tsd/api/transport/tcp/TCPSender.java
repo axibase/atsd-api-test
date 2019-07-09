@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 
+
 @Slf4j
 public class TCPSender {
     private static final String DEBUG_PREFIX = "debug ";
@@ -70,4 +71,5 @@ public class TCPSender {
     public static void send(Collection<? extends PlainCommand> commands) throws IOException {
         send(commands, false);
     }
+
 }
