@@ -63,14 +63,14 @@ public class SeriesQueryForecastAutoAggregateTest extends SeriesMethod {
         timeShiftToValue.put(6, 1);
         timeShiftToValue.put(10, 1);
 
-        String zoneId = Mocks.TIMEZONE_ID;
-        int period = 15;
-        int seriesCount = 480;
+        ZoneId zoneId = ZoneId.of(Mocks.TIMEZONE_ID);
+        int periodLengthInSeconds = 15;
+        int periodCount = 480;
 
         Series series = new Series(ENTITY, METRIC);
-        for (int i = 0; i < seriesCount; i++) {
+        for (int i = 0; i < periodCount; i++) {
             for (Map.Entry<Integer, Integer> pair: timeShiftToValue.entrySet()) {
-                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(zoneId), TimeUnit.SECOND, i * period + pair.getKey());
+                String time = TestUtil.addTimeUnitsInTimezone(START_DATE, zoneId, TimeUnit.SECOND, i * periodLengthInSeconds + pair.getKey());
                 Sample sample = Sample.ofDateInteger(time, pair.getValue());
                 series.addSamples(sample);
             }
