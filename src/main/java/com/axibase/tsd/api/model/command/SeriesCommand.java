@@ -1,8 +1,18 @@
 package com.axibase.tsd.api.model.command;
 
 
+
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+
+import java.util.HashMap;
 import java.util.Map;
 
+@Data
+@Accessors(chain = true)
 public class SeriesCommand extends AbstractCommand {
     private static final String SERIES_COMMAND = "series";
     private Map<String, String> texts;
@@ -33,68 +43,42 @@ public class SeriesCommand extends AbstractCommand {
         this.append = append;
     }
 
-    public String getEntityName() {
-        return entityName;
+    public SeriesCommand(Series series) {
+        super(SERIES_COMMAND);
+        if(!series.getData().isEmpty()) {
+            Sample sample = series.getData().get(0);
+            if(sample.getText() != null) {
+                addText(series.getMetric(), sample.getText());
+            }
+
+            if(sample.getValue() != null) {
+                addValue(series.getMetric(), sample.getValue().toString());
+            }
+            this.timeISO = sample.getRawDate();
+        }
+        this.entityName = series.getEntity();
+        this.tags = series.getTags();
     }
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
+    public void addTag(String key, String value) {
+        if(this.tags == null) {
+            this.tags = new HashMap<>();
+        }
+        this.tags.put(key, value);
     }
 
-    public Map<String, String> getTags() {
-        return tags;
+    public void addValue(String metric, String value) {
+        if(this.values == null) {
+            this.values = new HashMap<>();
+        }
+        this.values.put(metric, value);
     }
 
-    public void setTags(Map<String, String> tags) {
-        this.tags = tags;
-    }
-
-    public Long getTimeMills() {
-        return timeMills;
-    }
-
-    public void setTimeMills(Long timeMills) {
-        this.timeMills = timeMills;
-    }
-
-    public Long getTimeSeconds() {
-        return timeSeconds;
-    }
-
-    public void setTimeSeconds(Long timeSeconds) {
-        this.timeSeconds = timeSeconds;
-    }
-
-    public String getTimeISO() {
-        return timeISO;
-    }
-
-    public void setTimeISO(String timeISO) {
-        this.timeISO = timeISO;
-    }
-
-    public Map<String, String> getTexts() {
-        return texts;
-    }
-
-    public void setTexts(Map<String, String> texts) {
-        this.texts = texts;
-    }
-
-    public Map<String, String> getValues() {
-        return values;
-    }
-
-    public void setValues(Map<String, String> values) {
-        this.values = values;
-    }
-
-    public Boolean getAppend() {
-        return append;
-    }
-
-    public void setAppend(Boolean append) {
-        this.append = append;
+    public void addText(String metric, String text) {
+        if(this.texts == null) {
+            this.texts = new HashMap<>();
+        }
+        this.texts.put(metric, text);
     }
 
     @Override
@@ -131,5 +115,10 @@ public class SeriesCommand extends AbstractCommand {
             stringBuilder.append(FieldFormat.quoted("a", append.toString()));
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return compose();
     }
 }
