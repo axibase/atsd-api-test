@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.axibase.tsd.api.util.ErrorTemplate.AGGREGATE_NON_DETAIL_REQUIRE_PERIOD;
 import static com.axibase.tsd.api.util.ErrorTemplate.INTERPOLATE_TYPE_REQUIRED;
 import static com.axibase.tsd.api.util.Mocks.entity;
 import static com.axibase.tsd.api.util.Mocks.metric;
@@ -667,7 +666,11 @@ public class SeriesQueryTest extends SeriesMethod {
                 AggregationType.SUM,
                 new Period(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
-        List<Series> result = SeriesMethod.querySeriesAsList(query, query);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query, query);
+        List<Series> result = new ArrayList<>();
+        for(Series series: seriesList) {
+            result.add(pullCheckedFields(series));
+        }
 
         Series expectedSeries = new Series();
         expectedSeries.setEntity(TEST_SERIES3.getEntity());
@@ -700,7 +703,8 @@ public class SeriesQueryTest extends SeriesMethod {
                 AggregationType.AVG,
                 new Period(3, TimeUnit.MINUTE, PeriodAlignment.START_TIME)));
 
-        List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query1, query2);
+        List<Series> result = pullCheckedFields(seriesList);
 
         Series expectedSeries1 = new Series();
         expectedSeries1.setEntity(TEST_SERIES3.getEntity());
@@ -742,7 +746,8 @@ public class SeriesQueryTest extends SeriesMethod {
                 AggregationType.MAX,
                 new Period(60, TimeUnit.SECOND, PeriodAlignment.START_TIME)));
 
-        List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query1, query2);
+        List<Series> result = pullCheckedFields(seriesList);
 
         Series expectedSeries1 = new Series();
         expectedSeries1.setEntity(TEST_SERIES3.getEntity());
@@ -782,7 +787,8 @@ public class SeriesQueryTest extends SeriesMethod {
         aggregate.setPeriod(new Period(2, TimeUnit.MINUTE, PeriodAlignment.START_TIME));
         query1.setAggregate(aggregate);
 
-        List<Series> result = SeriesMethod.querySeriesAsList(query1);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query1);
+        List<Series> result = pullCheckedFields(seriesList);
 
         Series expectedSeries1 = new Series();
         expectedSeries1.setEntity(TEST_SERIES3.getEntity());
@@ -825,7 +831,8 @@ public class SeriesQueryTest extends SeriesMethod {
                 AggregationType.AVG,
                 new Period(2, TimeUnit.MINUTE, PeriodAlignment.FIRST_VALUE_TIME)));
 
-        List<Series> result = SeriesMethod.querySeriesAsList(query1, query2);
+        List<Series> seriesList = SeriesMethod.querySeriesAsList(query1, query2);
+        List<Series> result = pullCheckedFields(seriesList);
 
         Series expectedSeries1 = new Series();
         expectedSeries1.setEntity(TEST_SERIES3.getEntity());
@@ -883,7 +890,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals(
                 "Incorrect query result with END_TIME period align aggregation",
                 expectedSeries,
-                result.get(0));
+                pullCheckedFields(result.get(0)));
     }
 
     @Issue("4867")
@@ -915,7 +922,7 @@ public class SeriesQueryTest extends SeriesMethod {
         assertEquals(
                 "Incorrect query result with END_TIME period align aggregation with interpolation",
                 expectedSeries,
-                result.get(0));
+                pullCheckedFields(result.get(0)));
     }
 
     @Issue("4867")
@@ -962,5 +969,21 @@ public class SeriesQueryTest extends SeriesMethod {
 
         seriesQuery.setInterval(new Interval(1, TimeUnit.MILLISECOND));
         return seriesQuery;
+    }
+
+    private List<Series> pullCheckedFields(List<Series> seriesList) {
+        List<Series> result = new ArrayList<>();
+        for(Series series: seriesList) {
+            result.add(pullCheckedFields(series));
+        }
+        return result;
+    }
+
+    private Series pullCheckedFields(Series series) {
+        return new Series()
+                .setEntity(series.getEntity())
+                .setMetric(series.getMetric())
+                .setTags(series.getTags())
+                .setData(series.getData());
     }
 }

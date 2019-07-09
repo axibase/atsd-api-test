@@ -38,11 +38,12 @@ public class SeriesQuery {
     private String entityExpression;
     private String tagExpression;
     private List<String> entities;
+    private String forecastName;
     private String metric;
     private String startDate;
     private String endDate;
     private Interval interval;
-    private Map<String, String> tags;
+    @Wither private Map<String, String> tags;
     private Aggregate aggregate;
     private Interpolate interpolate;
     private Group group;
@@ -51,7 +52,7 @@ public class SeriesQuery {
     private Downsample downsample;
     private Forecast forecast;
     private String timeFormat;
-    private Boolean exactMatch;
+    @Wither private Boolean exactMatch;
     private Integer limit;
     private Boolean cache;
     private String direction;
