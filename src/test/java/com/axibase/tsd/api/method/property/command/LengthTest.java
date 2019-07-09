@@ -18,12 +18,13 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 
 public class LengthTest extends PropertyMethod {
-    private static final int MAX_LENGTH = 128 * 1024;
+    private final int maxLength;
     private final Transport transport;
 
     @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
     public LengthTest(Transport transport) {
         this.transport = transport;
+        this.maxLength = transport.equals(Transport.HTTP) ? 128 * 1024 : 128 * 1024 - 6;
     }
 
 
@@ -37,23 +38,23 @@ public class LengthTest extends PropertyMethod {
         property.addTag("type", property.getType());
         PlainCommand command = new PropertyCommand(property);
         int currentLength = command.compose().length();
-        for (int i = 0; currentLength < MAX_LENGTH; i++) {
+        for (int i = 0; currentLength < maxLength; i++) {
             String tagName = "name" + property.getEntity() + i;
             String textValue = "sda" + property.getEntity() + i;
             String addedTag = String.format(" v:%s=%s", tagName, textValue);
             currentLength += addedTag.length();
-            if (currentLength <= MAX_LENGTH) {
+            if (currentLength <= maxLength) {
                 property.addTag(tagName, textValue);
             } else {
                 currentLength -= addedTag.length();
                 break;
             }
         }
-        if (currentLength < MAX_LENGTH) {
-            property.setType(property.getType() + StringUtils.repeat("+", MAX_LENGTH - currentLength));
+        if (currentLength < maxLength) {
+            property.setType(property.getType() + StringUtils.repeat("+", maxLength - currentLength));
         }
         command = new PropertyCommand(property);
-        assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
+        assertEquals("Command length is not maximal", maxLength, command.compose().length());
         transport.send(command);
         assertPropertyExisting("Inserted property can not be received", property);
     }
@@ -68,7 +69,7 @@ public class LengthTest extends PropertyMethod {
         property.addTag("type", property.getType());
         PlainCommand command = new PropertyCommand(property);
         int currentLength = command.compose().length();
-        for (int i = 0; currentLength < MAX_LENGTH + 1; i++) {
+        for (int i = 0; currentLength < maxLength + 1; i++) {
             String tagName = "name" + i;
             String textValue = "sda" + i;
             currentLength += String.format(" v:%s=%s", tagName, textValue).length();

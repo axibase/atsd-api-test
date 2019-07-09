@@ -16,12 +16,13 @@ import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
 import static org.testng.AssertJUnit.*;
 
 public class LengthTest extends MessageMethod {
-    private static final int MAX_LENGTH = 128 * 1024;
+    private final int maxLength;
     private final Transport transport;
 
     @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
     public LengthTest(Transport transport) {
         this.transport = transport;
+        this.maxLength = transport.equals(Transport.HTTP) ? 128 * 1024 : 128 * 1024 - 6;
     }
 
 
@@ -37,9 +38,9 @@ public class LengthTest extends MessageMethod {
         MessageCommand command = new MessageCommand(message);
 
         int currentLength = command.compose().length();
-        message.setMessage(msg + StringUtils.repeat('m', MAX_LENGTH - currentLength));
+        message.setMessage(msg + StringUtils.repeat('m', maxLength - currentLength));
         command = new MessageCommand(message);
-        assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
+        assertEquals("Command length is not maximal", maxLength, command.compose().length());
         transport.send(command);
         assertMessageExisting("Inserted message can not be received", message);
     }
@@ -56,9 +57,9 @@ public class LengthTest extends MessageMethod {
         MessageCommand command = new MessageCommand(message);
 
         int currentLength = command.compose().length();
-        message.setMessage(msg + StringUtils.repeat('m', MAX_LENGTH - currentLength + 1));
+        message.setMessage(msg + StringUtils.repeat('m', maxLength - currentLength + 1));
         command = new MessageCommand(message);
-        assertTrue("Command must have overflow length", command.compose().length() > MAX_LENGTH);
+        assertTrue("Command must have overflow length", command.compose().length() > maxLength);
         String assertMessage = String.format(
                 "Result must contain one failed command with length %s",
                 command.compose().length()
