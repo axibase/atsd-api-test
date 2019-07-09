@@ -48,12 +48,11 @@ If you use IntelliJ IDEA for development you should install Lombok plugin for pr
     c. If tests fail because of some unfixed ATSD bugs mark pull request with label `pending`, add message with issue numbers related to bugs and wait until all unfixed bugs will be fixed.
 
 ### Code style
-Use [standard](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf) java code style.
+Use [Axibase](./STYLEGUIDE.md) Java code style.
 
-  Each test must contain javadoc before test method declaration with a
-  related issue number or a comment that this test was added directly
+  Each test must contain an Issue annotation with related issue number or a comment that this test was added directly
   bypassing corporate issue tracker.
-  For new tests always write test description - as complete as possible.
+  Always write test description for new tests - as complete as possible.
   It is very helpful in case when someone tries to understand why
   the test fails and how to fix it properly.
 
@@ -70,5 +69,5 @@ Use [standard](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf
 ```
 
 ### Implementation specific
-1. Use registers for unique name generation to guaranty that your tests are not overlapping with others.
+1. Use registers for unique name generation to guarantee that your tests are not overlapping with others.
 2. Use special safe check methods for arrange step.
