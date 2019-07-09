@@ -1,11 +1,12 @@
 package com.axibase.tsd.api.method.message.command;
 
-import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
+import com.axibase.tsd.api.transport.Transport;
 import io.qameta.allure.Issue;
+import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
@@ -13,7 +14,15 @@ import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
 
 public class EqualCharEscapeTest extends MessageMethod {
 
+    private final Transport transport;
+
+    @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
+    public EqualCharEscapeTest(Transport transport) {
+        this.transport = transport;
+    }
+
     @Issue("2854")
+    @Issue("6319")
     @Test
     public void testEntity() throws Exception {
         Message message = new Message("message-command-test=-e4", "message-command-test-t4");
@@ -21,11 +30,12 @@ public class EqualCharEscapeTest extends MessageMethod {
         message.setDate(getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
-        CommandMethod.send(command);
+        transport.send(command);
         assertMessageExisting("Inserted message can not be received", message);
     }
 
     @Issue("2854")
+    @Issue("6319")
     @Test
     public void testType() throws Exception {
         Message message = new Message("message-command-test-e5", "message-command-=test-t5");
@@ -33,11 +43,12 @@ public class EqualCharEscapeTest extends MessageMethod {
         message.setDate(getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
-        CommandMethod.send(command);
+        transport.send(command);
         assertMessageExisting("Inserted message can not be received", message);
     }
 
     @Issue("2854")
+    @Issue("6319")
     @Test
     public void testEscapeText() throws Exception {
         Message message = new Message("message-command-test-e6", "message-command-test-t6");
@@ -45,7 +56,7 @@ public class EqualCharEscapeTest extends MessageMethod {
         message.setDate(getCurrentDate());
 
         PlainCommand command = new MessageCommand(message);
-        CommandMethod.send(command);
+        transport.send(command);
         assertMessageExisting("Inserted message can not be received", message);
     }
 

@@ -24,7 +24,7 @@ public class LengthTest extends SeriesMethod {
 
     @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
     public LengthTest(Transport transport) {
-        this.transport=transport;
+        this.transport = transport;
     }
 
 

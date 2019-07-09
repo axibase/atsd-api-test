@@ -19,7 +19,7 @@ import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesExisting;
 public class DQuoteCharEscapeTest extends SeriesMethod {
     private final static Map DEFAULT_PROPERTY_TAGS;
     private final Transport transport;
-    
+
     static {
         DEFAULT_PROPERTY_TAGS = new HashMap();
         DEFAULT_PROPERTY_TAGS.put("t1", "tv1");

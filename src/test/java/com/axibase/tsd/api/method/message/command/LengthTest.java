@@ -1,22 +1,28 @@
 package com.axibase.tsd.api.method.message.command;
 
-import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.model.command.MessageCommand;
-import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.Severity;
+import com.axibase.tsd.api.transport.Transport;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 import static com.axibase.tsd.api.method.message.MessageTest.assertMessageExisting;
 import static com.axibase.tsd.api.util.TestUtil.getCurrentDate;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class LengthTest extends MessageMethod {
     private static final int MAX_LENGTH = 128 * 1024;
+    private final Transport transport;
+
+    @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
+    public LengthTest(Transport transport) {
+        this.transport = transport;
+    }
+
 
     @Issue("2412")
     @Test
@@ -32,7 +38,7 @@ public class LengthTest extends MessageMethod {
         message.setMessage(msg + StringUtils.repeat('m', MAX_LENGTH - currentLength));
         command = new MessageCommand(message);
         assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
-        CommandMethod.send(command);
+        transport.send(command);
         assertMessageExisting("Inserted message can not be received", message);
     }
 
@@ -50,15 +56,11 @@ public class LengthTest extends MessageMethod {
         message.setMessage(msg + StringUtils.repeat('m', MAX_LENGTH - currentLength + 1));
         command = new MessageCommand(message);
         assertTrue("Command must have overflow length", command.compose().length() > MAX_LENGTH);
-        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
         String assertMessage = String.format(
                 "Result must contain one failed command with length %s",
                 command.compose().length()
         );
-        assertEquals(assertMessage,
-                expectedResult,
-                CommandMethod.send(command)
-        );
+        assertFalse(assertMessage, transport.send(command));
     }
 
 
