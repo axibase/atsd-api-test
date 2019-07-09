@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.IntPredicate;
 
+import static java.util.stream.Collectors.toList;
 import static org.testng.Assert.*;
 
 /**
@@ -62,11 +63,10 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
      * Set of possible variants of date and list of pairs of dates
      */
     private static final String[] DATES = {"2018-12-31T22:00:00Z", "2019-01-01T12:00:00Z", "2019-01-02T02:00:00Z", QUERY_START_DATE, "2019-01-01T23:59:30Z"};
-    private static final List<String[]> DATE_PAIRS = new ArrayList<>();
+    private static final List<String[]> DATE_PAIRS = createDatePermutations(DATES);
 
     @BeforeClass
-    private void generateData() throws Exception {
-        setDatePairs();
+    private void prepareData() throws Exception {
         String entity = Mocks.entity();
 
         Series series = new Series(entity, METRIC);
@@ -109,28 +109,18 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     }
 
     @Issue("6112")
-    @Test(groups = "count", dataProvider = "min_and_max_count_data", description = "Checks that response contain correct number of series")
-    public void testCountSeriesMinMaxInsertDates(String minDate, String maxDate) {
-        SeriesQuery query = QUERY
-                .withMinInsertDate(minDate)
-                .withMaxInsertDate(maxDate);
-        List<Series> seriesList = querySeriesAsList(query);
-        assertTrue(seriesList.size() == 0 || seriesList.size() == 1, "Wrong count of series");
-    }
-
-    @Issue("6112")
-    @Test(dependsOnGroups = "count", dataProvider = "dates_not_match_range_data", description = "Check that output series is empty if " +
+    @Test(dataProvider = "dates_not_match_range_data", description = "Check that output series is empty if " +
             "last series timestamp doesn't belong to ['minInsertData', 'maxInsertData')")
     public void testMinMaxInsertDatesNotMatch(String minDate, String maxDate) {
         SeriesQuery query = QUERY
                 .withMinInsertDate(minDate)
                 .withMaxInsertDate(maxDate);
         List<Series> seriesList = querySeriesAsList(query);
-        assertTrue(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series not empty");
+        assertTrue(seriesList.isEmpty() || (seriesList.size()==1 && seriesList.get(0).getData().isEmpty()), "Output series not empty");
     }
 
     @Issue("6112")
-    @Test(dependsOnGroups = "count", dataProvider = "dates_match_range_data", description = "Check that output series is not empty if " +
+    @Test(dataProvider = "dates_match_range_data", description = "Check that output series is not empty if " +
             "last series timestamp belong to ['minInsertData', 'maxInsertData')")
     public void testMinMaxInsertDatesIsMatch(String minDate, String maxDate) {
         SeriesQuery query = QUERY
@@ -140,24 +130,9 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
         assertTrue(seriesList.size() == 1 && !seriesList.get(0).getData().isEmpty(), "One series expected");
     }
 
-    @Issue("6112")
-    @Test (groups = "count", dataProvider = "all_dates_data", description = "Checks that response contain correct number of series")
-    public void testCountSeriesMinInsertDate(String minDate) {
-        SeriesQuery query = QUERY.withMinInsertDate(minDate);
-        List<Series> seriesList = querySeriesAsList(query);
-        assertTrue(seriesList.size() == 0 || seriesList.size() == 1, "Wrong count of series");
-    }
 
     @Issue("6112")
-    @Test (groups = "count", dataProvider = "all_dates_data", description = "Checks that response contain correct number of series")
-    public void testCountSeriesMaxInsertDate(String maxDate) {
-        SeriesQuery query = QUERY.withMaxInsertDate(maxDate);
-        List<Series> seriesList = querySeriesAsList(query);
-        assertTrue(seriesList.size() == 0 || seriesList.size() == 1, "Wrong count of series");
-    }
-
-    @Issue("6112")
-    @Test (dependsOnGroups = "count", dataProvider = "date_less_or_equals_last_data",
+    @Test (dataProvider = "date_less_or_equals_last_data",
             description = "Checks that output series is not empty if last series timestamp equal or greater than minInsertDate')")
     public void testLastTimestampEqualOrGreaterMinInsertDate(String minDate) {
         SeriesQuery query = QUERY.withMinInsertDate(minDate);
@@ -166,16 +141,16 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     }
 
     @Issue("6112")
-    @Test (dependsOnGroups = "count", dataProvider = "date_greater_last_data",
+    @Test (dataProvider = "date_greater_last_data",
             description = "Checks that output series is empty if last series timestamp less than minInsertDate")
     public void testLastTimestampLessMinInsertDate(String minDate) {
         SeriesQuery query = QUERY.withMinInsertDate(minDate);
         List<Series> seriesList = querySeriesAsList(query);
-        assertTrue(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series not empty");
+        assertTrue(seriesList.isEmpty() || (seriesList.size()==1 && seriesList.get(0).getData().isEmpty()), "Output series not empty");
     }
 
     @Issue("6112")
-    @Test (dependsOnGroups = "count", dataProvider = "date_greater_last_data",
+    @Test (dataProvider = "date_greater_last_data",
             description = "Checks that output series is not empty if last series timestamp less than maxInsertDate")
     public void testLastTimestampLessMaxInsertDate(String maxDate) {
         SeriesQuery query = QUERY.withMaxInsertDate(maxDate);
@@ -184,7 +159,7 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
     }
 
     @Issue("6112")
-    @Test (dependsOnGroups = "count", dataProvider = "date_less_or_equals_last_data",
+    @Test (dataProvider = "date_less_or_equals_last_data",
             description = "Checks that output series is empty if last series timestamp equal or greater than maxInsertDate")
     public void testLastTimestampEqualOrGreaterMaxInsertDate(String maxDate) {
         SeriesQuery query = QUERY.withMaxInsertDate(maxDate);
@@ -192,12 +167,10 @@ public class SeriesQueryLastTimestampFilterTest extends SeriesMethod {
         assertTrue(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series not empty");
     }
 
-    private void setDatePairs() {
-        for (String minDate: DATES) {
-            for (String maxDate: DATES) {
-                DATE_PAIRS.add(new String[] {minDate, maxDate});
-            }
-        }
+    private static List<String[]> createDatePermutations(String[] dates) {
+        return Arrays.stream(dates)
+                .flatMap(d1 -> Arrays.stream(dates).map(d2 -> new String[] {d1, d2}))
+                .collect(toList());
     }
 
     private Object[][] filterDate(Compare operator) {
