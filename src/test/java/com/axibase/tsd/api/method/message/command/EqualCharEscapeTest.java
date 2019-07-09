@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.transport.Transport;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -25,7 +26,7 @@ public class EqualCharEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Message message = new Message("message-command-test=-e4", "message-command-test-t4");
+        Message message = new Message(Mocks.entity().replaceAll("-", "=-"), "message-command-test-t4");
         message.setMessage("message4");
         message.setDate(getCurrentDate());
 
@@ -38,7 +39,7 @@ public class EqualCharEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testType() throws Exception {
-        Message message = new Message("message-command-test-e5", "message-command-=test-t5");
+        Message message = new Message(Mocks.entity(), "message-command-=test-t5");
         message.setMessage("message5");
         message.setDate(getCurrentDate());
 
@@ -51,7 +52,7 @@ public class EqualCharEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testEscapeText() throws Exception {
-        Message message = new Message("message-command-test-e6", "message-command-test-t6");
+        Message message = new Message(Mocks.entity(), "message-command-test-t6");
         message.setMessage("mess=age6");
         message.setDate(getCurrentDate());
 

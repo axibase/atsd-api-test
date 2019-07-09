@@ -25,7 +25,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Series series = new Series("series-command-test\\-e5", "series-command-test-m5");
+        Series series = new Series(Mocks.entity().replaceAll("-", "\\"), Mocks.metric());
         Sample sample = Sample.ofDateInteger(Mocks.ISO_TIME, 1);
         series.addSamples(sample);
 
@@ -42,7 +42,7 @@ public class BackslashCharEscapeTest extends SeriesTest {
     @Issue("6319")
     @Test
     public void testMetric() throws Exception {
-        Series series = new Series("series-command-test-e6", "series-command-test\\-m6");
+        Series series = new Series(Mocks.entity(), Mocks.metric().replaceAll("-", "\\"));
         Sample sample = Sample.ofDateInteger(Mocks.ISO_TIME, 1);
         series.addSamples(sample);
 

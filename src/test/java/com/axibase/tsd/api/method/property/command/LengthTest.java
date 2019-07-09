@@ -14,8 +14,6 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 
 import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.propertyType;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 
@@ -33,7 +31,7 @@ public class LengthTest extends PropertyMethod {
     @Issue("6319")
     @Test
     public void testMaxLength() throws Exception {
-        final Property property = new Property(propertyType(), entity());
+        final Property property = new Property(Mocks.propertyType(), Mocks.entity());
         property.setDate(Mocks.ISO_TIME);
         property.setKey(Collections.emptyMap());
         property.addTag("type", property.getType());
@@ -64,7 +62,7 @@ public class LengthTest extends PropertyMethod {
     @Issue("6319")
     @Test
     public void testMaxLengthOverflow() throws Exception {
-        final Property property = new Property(propertyType(), entity());
+        final Property property = new Property(Mocks.propertyType(), Mocks.entity());
         property.setDate(Mocks.ISO_TIME);
         property.setKey(Collections.emptyMap());
         property.addTag("type", property.getType());

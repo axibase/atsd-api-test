@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.PropertyCommand;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.transport.Transport;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -33,7 +34,7 @@ public class EqualCharEscapeTest extends PropertyMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Property property = new Property("property-command-test-t4", "property-command-test=-e4");
+        Property property = new Property(Mocks.propertyType(), Mocks.entity().replaceAll("-", "=-"));
         property.setTags(DEFAULT_PROPERTY_TAGS);
         property.setDate(getCurrentDate());
         PlainCommand command = new PropertyCommand(property);
@@ -46,7 +47,7 @@ public class EqualCharEscapeTest extends PropertyMethod {
     @Issue("6319")
     @Test
     public void testType() throws Exception {
-        Property property = new Property("property-command-test=-t3", "property-command-test-e3");
+        Property property = new Property(Mocks.propertyType().replaceAll("-", "=-"), Mocks.entity());
         property.setTags(DEFAULT_PROPERTY_TAGS);
         property.setDate(getCurrentDate());
         PlainCommand command = new PropertyCommand(property);

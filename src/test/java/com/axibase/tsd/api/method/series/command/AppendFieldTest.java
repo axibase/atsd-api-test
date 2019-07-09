@@ -47,6 +47,7 @@ public class AppendFieldTest extends CommandMethodTest {
             commandList.add(seriesCommand);
         }
 
+        transport.send(new ListCommand(commandList));
 
         assertTextDataEquals(series, "Append with erase doesn't work");
 

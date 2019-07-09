@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.transport.Transport;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -25,7 +26,7 @@ public class BackslashNoEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Message message = new Message("message-command-test\\-e7", "message-command-test-t7");
+        Message message = new Message(Mocks.entity().replaceAll("-", "\\"), "message-command-test-t7");
         message.setMessage("message7");
         message.setDate(getCurrentDate());
 
@@ -37,7 +38,7 @@ public class BackslashNoEscapeTest extends MessageMethod {
     @Issue("2854")
     @Test
     public void testType() throws Exception {
-        Message message = new Message("message-command-test-e8", "message-command-\\test-t8");
+        Message message = new Message(Mocks.entity(), "message-command-\\test-t8");
         message.setMessage("message8");
         message.setDate(getCurrentDate());
 
@@ -49,7 +50,7 @@ public class BackslashNoEscapeTest extends MessageMethod {
     @Issue("2854")
     @Test
     public void testText() throws Exception {
-        Message message = new Message("message-command-test-e9", "message-command-test-t9");
+        Message message = new Message(Mocks.entity(), "message-command-test-t9");
         message.setMessage("mess\\age9");
         message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);

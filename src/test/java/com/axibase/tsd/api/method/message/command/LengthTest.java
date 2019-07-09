@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.Severity;
 import com.axibase.tsd.api.transport.Transport;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Factory;
@@ -25,9 +26,10 @@ public class LengthTest extends MessageMethod {
 
 
     @Issue("2412")
+    @Issue("6319")
     @Test
     public void testMaxLength() throws Exception {
-        final Message message = new Message("e-message-max-cmd-length", "t-message-max-cmd-length");
+        final Message message = new Message(Mocks.entity(), "t-message-max-cmd-length");
         message.setDate(getCurrentDate());
         message.setSeverity(Severity.MAJOR.name());
         String msg = "Length-Test-";
@@ -43,9 +45,10 @@ public class LengthTest extends MessageMethod {
     }
 
     @Issue("2412")
+    @Issue("6319")
     @Test
     public void testMaxLengthOverflow() throws Exception {
-        final Message message = new Message("e-message-max-len-overflow", "t-message-max-len-overflow");
+        final Message message = new Message(Mocks.entity(), "t-message-max-len-overflow");
         message.setDate(getCurrentDate());
         message.setSeverity(Severity.MAJOR.name());
         String msg = "testMaxLengthOverflow";

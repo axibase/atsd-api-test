@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.SeriesCommand;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.transport.Transport;
+import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Factory;
@@ -24,7 +25,7 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Series series = new Series("series-command-test\\\\-e7", "series-command-test-m7");
+        Series series = new Series(Mocks.entity().replaceAll("-", "\\\\"), Mocks.metric());
         Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 
@@ -41,7 +42,7 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Issue("6319")
     @Test
     public void testMetric() throws Exception {
-        Series series = new Series("series-command-test-e8", "series-command-test\\\\-m8");
+        Series series = new Series(Mocks.entity(), Mocks.metric().replaceAll("-", "\\\\"));
         Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 

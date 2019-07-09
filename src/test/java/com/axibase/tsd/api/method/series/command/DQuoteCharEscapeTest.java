@@ -34,7 +34,7 @@ public class DQuoteCharEscapeTest extends SeriesMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Series series = new Series("series-command-test\"\"-e1", "series-command-test-m1");
+        Series series = new Series(Mocks.entity().replaceAll("-", "\""), Mocks.metric());
         Sample sample = Sample.ofDateInteger(Mocks.ISO_TIME, 1);
         series.addSamples(sample);
 
@@ -51,7 +51,7 @@ public class DQuoteCharEscapeTest extends SeriesMethod {
     @Issue("6319")
     @Test
     public void testMetric() throws Exception {
-        Series series = new Series("series-command-test-e2", "series-command-test\"-m2");
+        Series series = new Series(Mocks.entity(), Mocks.metric().replaceAll("-", "\""));
         Sample sample = Sample.ofDateInteger(Mocks.ISO_TIME, 1);
         series.addSamples(sample);
 

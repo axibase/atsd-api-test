@@ -65,7 +65,7 @@ public class LengthTest extends SeriesMethod {
         seriesCommand.setValues(values);
         assertEquals("Command length is not maximal", seriesCommand.compose().length(), MAX_LENGTH);
         transport.send(seriesCommand);
-        assertSeriesExisting(seriesList);
+        assertSeriesExisting("Cannot send series with " + transport,seriesList);
     }
 
     @Issue("2412")

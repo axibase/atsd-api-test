@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.command.MessageCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.transport.Transport;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
@@ -25,7 +26,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Message message = new Message("message-command-test\"-e1", "message-command-test-t1");
+        Message message = new Message( Mocks.entity().replaceAll("-", "\""), "message-command-test-t1");
         message.setMessage("message1");
         message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);
@@ -37,7 +38,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testType() throws Exception {
-        Message message = new Message("message-command-test-e2", "message-command-\"test-t2");
+        Message message = new Message(Mocks.entity(), "message-command-\"test-t2");
         message.setMessage("message2");
         message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);
@@ -49,7 +50,7 @@ public class DQuoteCharEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testText() throws Exception {
-        Message message = new Message("message-command-test-e3", "message-command-test-t3");
+        Message message = new Message(Mocks.entity(), "message-command-test-t3");
         message.setMessage("mess\"age3");
         message.setDate(getCurrentDate());
         PlainCommand command = new MessageCommand(message);
