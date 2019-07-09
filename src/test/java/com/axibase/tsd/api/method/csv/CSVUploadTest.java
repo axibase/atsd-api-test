@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.csv;
 
-import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.entity.Entity;
@@ -10,7 +9,6 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
@@ -334,25 +332,5 @@ public class CSVUploadTest extends CSVUploadMethod {
                 "123.45",
                 SeriesMethod.querySeriesAsList(seriesQuery)
         );
-    }
-
-    private static class SeriesQueryDataSizeCheck extends AbstractCheck {
-        private SeriesQuery query;
-        private Integer size;
-
-        private SeriesQueryDataSizeCheck(SeriesQuery query, Integer size) {
-            this.query = query;
-            this.size = size;
-        }
-
-        @Override
-        public boolean isChecked() {
-            Response response = SeriesMethod.querySeries(query);
-            if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
-                return false;
-            }
-            List<Series> seriesList = response.readEntity(ResponseAsList.ofSeries());
-            return (seriesList.size() == 1) && (seriesList.get(0).getData().size() == size);
-        }
     }
 }

@@ -14,6 +14,7 @@ import com.axibase.tsd.api.model.series.query.transformation.smooth.Smooth;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
@@ -29,17 +30,20 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
+@Builder(toBuilder = true)
+@Wither
 public class SeriesQuery {
     private String entity;
     private String entityGroup;
     private String entityExpression;
     private String tagExpression;
     private List<String> entities;
+    private String forecastName;
     private String metric;
     private String startDate;
     private String endDate;
     private Interval interval;
-    private Map<String, String> tags;
+    @Wither private Map<String, String> tags;
     private Aggregate aggregate;
     private Interpolate interpolate;
     private Group group;
@@ -48,7 +52,7 @@ public class SeriesQuery {
     private Downsample downsample;
     private Forecast forecast;
     private String timeFormat;
-    private Boolean exactMatch;
+    @Wither private Boolean exactMatch;
     private Integer limit;
     private Boolean cache;
     private String direction;
@@ -56,7 +60,9 @@ public class SeriesQuery {
     private Boolean versioned;
     private Boolean addMeta;
     private SeriesType type;
-    @Wither private List<Transformation> transformationOrder;
+    private List<Transformation> transformationOrder;
+    private String minInsertDate;
+    private String maxInsertDate;
 
     public SeriesQuery() {
     }
