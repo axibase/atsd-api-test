@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 @RequiredArgsConstructor
 public class SeriesQueryDataSizeCheck extends AbstractCheck {
     private final SeriesQuery query;
-    private final Integer size;
+    private final int expectedSize;
 
     @Override
     public boolean isChecked() {
@@ -19,7 +19,7 @@ public class SeriesQueryDataSizeCheck extends AbstractCheck {
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             return false;
         }
-        int n = response.readEntity(ResponseAsList.ofSeries()).stream().mapToInt(s -> s.getData().size()).sum();
-        return (n == size);
+        int actualSize = response.readEntity(ResponseAsList.ofSeries()).stream().mapToInt(s -> s.getData().size()).sum();
+        return (actualSize == expectedSize);
     }
 }
