@@ -997,7 +997,7 @@ It is **extremely rare** to override `Object.finalize`.
   
 ### 6.6 Multiple assertions in tests: allowed
 
-Prefer several checks on the same object over splitting the methods and writing more configuration.
+Prefer several checks on the same object to splitting the methods and writing more configuration.
 
 * :heavy_check_mark: **GOOD**
 
@@ -1027,3 +1027,29 @@ Prefer several checks on the same object over splitting the methods and writing 
       assertFalse(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series is empty");
   }
   ```
+  
+### 6.7 Number objects: avoid
+
+Prefer primitive values to numeric objects. If number is nullable, this fact must be documented explicitly.
+
+* :heavy_check_mark: **GOOD**
+
+  ```java
+  final int count = 1;
+  ```
+  
+* :heavy_check_mark: **GOOD**
+
+  ```java
+  public class Response {
+      Integer value; // JSON contains either value or error 
+      String error
+  }
+  ```
+
+* :no_entry: **BAD**
+
+  ```java
+  final Integer count = 1;
+  ```
+
