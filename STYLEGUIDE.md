@@ -994,3 +994,36 @@ It is **extremely rare** to override `Object.finalize`.
       setData(); // Modifies DATA
   }
   ```
+  
+### 6.6 Multiple assertions in tests: allowed
+
+Prefer several checks on the same object over splitting the methods and writing more configuration.
+
+* :heavy_check_mark: **GOOD**
+
+  ```java
+  @Test
+  public void testLastTimestamp(String minDate) {
+      SeriesQuery query = QUERY.toBuilder().maxInsertDate(minDate).build();
+      List<Series> seriesList = querySeriesAsList(query);
+      assertTrue(seriesList.size() == 1 && !seriesList.get(0).getData().isEmpty(), "Output series is empty");
+  }
+  ```
+
+* :no_entry: **BAD**
+
+  ```java
+  @Test (groups = "count")
+  public void testCountSeries(String maxDate) {
+      SeriesQuery query = QUERY.toBuilder().maxInsertDate(maxDate).build();
+      List<Series> seriesList = querySeriesAsList(query);
+      assertTrue(seriesList.size() == 1, "Wrong count of series");
+  }
+
+  @Test (dependsOnGroups = "count")
+  public void testLastTimestamp(String minDate) {
+      SeriesQuery query = QUERY.toBuilder().maxInsertDate(minDate).build();
+      List<Series> seriesList = querySeriesAsList(query);
+      assertFalse(seriesList.isEmpty() || seriesList.get(0).getData().isEmpty(), "Output series is empty");
+  }
+  ```
