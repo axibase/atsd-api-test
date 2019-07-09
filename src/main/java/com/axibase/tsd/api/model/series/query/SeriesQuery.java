@@ -31,6 +31,7 @@ import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@Wither
 public class SeriesQuery {
     private String entity;
     private String entityGroup;
@@ -59,7 +60,9 @@ public class SeriesQuery {
     private Boolean versioned;
     private Boolean addMeta;
     private SeriesType type;
-    @Wither private List<Transformation> transformationOrder;
+    private List<Transformation> transformationOrder;
+    private String minInsertDate;
+    private String maxInsertDate;
 
     public SeriesQuery() {
     }
