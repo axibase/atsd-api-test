@@ -18,15 +18,15 @@ public class SqlInOperatorExclusionTest extends SqlTest {
 
     private static final String METRIC = Mocks.metric();
 
-    private static final Integer VALUE_1 = 1;
-    private static final Integer VALUE_2 = 2;
-    private static final Integer VALUE_3 = 3;
+    private static final int VALUE_1 = 1;
+    private static final int VALUE_2 = 2;
+    private static final int VALUE_3 = 3;
 
     private static final String NONEXISTENT_ENTITY_1 = Mocks.entity();
     private static final String NONEXISTENT_ENTITY_2 = Mocks.entity();
 
-    private static final Integer NONEXISTENT_VALUE_1 = 11;
-    private static final Integer NONEXISTENT_VALUE_2 = 22;
+    private static final int NONEXISTENT_VALUE_1 = 11;
+    private static final int NONEXISTENT_VALUE_2 = 22;
 
     private static String DATE = Mocks.ISO_TIME;
 
@@ -71,7 +71,7 @@ public class SqlInOperatorExclusionTest extends SqlTest {
     public void inOperatorNotRequestedEntitiesExclusionTest() {
         String sqlQuery = String.format("SELECT entity, datetime, value FROM \"%s\" WHERE entity IN ('%s')", METRIC, ENTITY_1);
         String[][] expectedResult = {
-                {ENTITY_1, DATE, VALUE_1.toString()}
+                {ENTITY_1, DATE, String.format("%d",VALUE_1)}
         };
         assertSqlQueryRows(String.format("%s expected to return one row.", sqlQuery), expectedResult, sqlQuery);
     }
@@ -81,8 +81,8 @@ public class SqlInOperatorExclusionTest extends SqlTest {
     public void inOperatorNotRequestedEntityExclusionTest() {
         String sqlQuery = String.format("SELECT entity, datetime, value FROM \"%s\" WHERE entity IN ('%s', '%s')", METRIC, ENTITY_1, ENTITY_2);
         String[][] expectedResult = {
-                {ENTITY_1, DATE, VALUE_1.toString()},
-                {ENTITY_2, DATE, VALUE_2.toString()}
+                {ENTITY_1, DATE, String.format("%d",VALUE_1)},
+                {ENTITY_2, DATE, String.format("%d",VALUE_2)}
         };
         assertSqlQueryRows(String.format("%s expected to return two rows.", sqlQuery), expectedResult, sqlQuery);
     }
@@ -92,7 +92,7 @@ public class SqlInOperatorExclusionTest extends SqlTest {
     public void inOperatorNotRequestedValuesExclusionTest() {
         String sqlQuery = String.format("SELECT entity, datetime, value FROM \"%s\" WHERE value IN (%d)", METRIC, VALUE_1);
         String[][] expectedResult = {
-                {ENTITY_1, DATE, VALUE_1.toString()}
+                {ENTITY_1, DATE, String.format("%d",VALUE_1)}
         };
         assertSqlQueryRows(String.format("%s expected to return one row.", sqlQuery), expectedResult, sqlQuery);
     }
@@ -102,8 +102,8 @@ public class SqlInOperatorExclusionTest extends SqlTest {
     public void inOperatorNotRequestedValueExclusionTest() {
         String sqlQuery = String.format("SELECT entity, datetime, value FROM \"%s\" WHERE value IN (%d, %d)", METRIC, VALUE_1, VALUE_2);
         String[][] expectedResult = {
-                {ENTITY_1, DATE, VALUE_1.toString()},
-                {ENTITY_2, DATE, VALUE_2.toString()}
+                {ENTITY_1, DATE, String.format("%d",VALUE_1)},
+                {ENTITY_2, DATE, String.format("%d",VALUE_2)}
         };
         assertSqlQueryRows(String.format("%s expected to return two rows.", sqlQuery), expectedResult, sqlQuery);
     }
@@ -113,7 +113,7 @@ public class SqlInOperatorExclusionTest extends SqlTest {
     public void inOperatorExistingAndAbsentEntitiesExclusionTest() {
         String sqlQuery = String.format("SELECT entity, datetime, value FROM \"%s\" WHERE entity IN ('%s', '%s')", METRIC, ENTITY_1, NONEXISTENT_ENTITY_1);
         String[][] expectedResult = {
-                {ENTITY_1, DATE, VALUE_1.toString()}
+                {ENTITY_1, DATE, String.format("%d",VALUE_1)}
         };
         assertSqlQueryRows(String.format("%s expected to return one row.", sqlQuery), expectedResult, sqlQuery);
     }
@@ -123,7 +123,7 @@ public class SqlInOperatorExclusionTest extends SqlTest {
     public void inOperatorExistingAndAbsentValuesExclusionTest() {
         String sqlQuery = String.format("SELECT entity, datetime, value FROM \"%s\" WHERE value IN (%d, %d)", METRIC, VALUE_1, NONEXISTENT_VALUE_1);
         String[][] expectedResult = {
-                {ENTITY_1, DATE, VALUE_1.toString()}
+                {ENTITY_1, DATE, String.format("%d",VALUE_1)}
         };
         assertSqlQueryRows(String.format("%s expected to return one row.", sqlQuery), expectedResult, sqlQuery);
     }
