@@ -21,6 +21,7 @@ public class Group {
     Boolean truncate;
     Integer order;
     List<String> groupByEntityAndTags;
+    Place place;
 
     public Group(GroupType type) {
         this(type, null, null);

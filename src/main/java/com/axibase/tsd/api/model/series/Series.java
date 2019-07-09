@@ -24,7 +24,7 @@ public class Series {
     private String forecastName;
     private SeriesMeta meta;
     private SeriesGroupInfo group;
-    
+
     public Series() {
         data = new ArrayList<>();
         tags = new HashMap<>();
