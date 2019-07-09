@@ -61,27 +61,28 @@ public class SeriesQueryPlacementOptimalPartitioningTest extends SeriesMethod {
                     .setPlace(PLACE));
 
     @BeforeClass
-    private void insertSeries() throws Exception {
-        int seriesCount = 5;
+    private void prepareData() throws Exception {
+        final double[][] seriesValuesToInsert = {
+                {1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
+                {2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
+                {4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
+                {3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
+                {2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
+        };
+
+        final int seriesCount = seriesValuesToInsert.length;
         Series[] seriesArray = new Series[seriesCount];
         for (int i = 0; i < seriesCount; i++) {
             seriesArray[i] = new Series(String.format("lp_%s", i + 1), METRIC_NAME);
         }
 
-        long totalSamplesCount = 10;
+        final int totalSamplesCount = seriesValuesToInsert[0].length;
 
         for (int i = 0; i < totalSamplesCount; i++) {
-            final List<Double[]> value = new ArrayList<>(Arrays.asList(
-                    new Double[]{1.0, 1.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 1.0, 1.0},
-                    new Double[]{2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 2.0, 2.0},
-                    new Double[]{4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0},
-                    new Double[]{3.0, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.0},
-                    new Double[]{2.0, 1.9, 1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.1, 1.0}
-            ));
 
             String time = TestUtil.addTimeUnitsInTimezone(START_DATE, ZoneId.of(ZONE_ID), TimeUnit.HOUR, i);
             for (int j = 0; j < seriesArray.length; j++) {
-                seriesArray[j].addSamples(Sample.ofDateDecimal(time, new BigDecimal(value.get(j)[i])));
+                seriesArray[j].addSamples(Sample.ofDateDecimal(time, new BigDecimal(seriesValuesToInsert[j][i])));
             }
         }
 
