@@ -25,7 +25,7 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Series series = new Series(Mocks.entity().replaceAll("-", "\\\\"), Mocks.metric());
+        Series series = new Series(Mocks.entity().replaceAll("-", "\\\\\\\\"), Mocks.metric());
         Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 
@@ -42,7 +42,7 @@ public class DoubleBackslashCharEscapeTest extends SeriesTest {
     @Issue("6319")
     @Test
     public void testMetric() throws Exception {
-        Series series = new Series(Mocks.entity(), Mocks.metric().replaceAll("-", "\\\\"));
+        Series series = new Series(Mocks.entity(), Mocks.metric().replaceAll("-", "\\\\\\\\"));
         Sample sample = Sample.ofJavaDateInteger(TestUtil.getCurrentDate(), 1);
         series.addSamples(sample);
 

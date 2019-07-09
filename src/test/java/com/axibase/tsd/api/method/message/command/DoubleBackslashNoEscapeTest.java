@@ -26,7 +26,7 @@ public class DoubleBackslashNoEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Message message = new Message(Mocks.entity().replaceAll("-", "\\\\"), "message-command-test-t10");
+        Message message = new Message(Mocks.entity().replaceAll("-", "\\\\\\\\"), "message-command-test-t10");
         message.setMessage("message10");
         message.setDate(getCurrentDate());
 

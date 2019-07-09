@@ -26,7 +26,7 @@ public class BackslashNoEscapeTest extends MessageMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Message message = new Message(Mocks.entity().replaceAll("-", "\\"), "message-command-test-t7");
+        Message message = new Message(Mocks.entity().replaceAll("-", "\\\\"), "message-command-test-t7");
         message.setMessage("message7");
         message.setDate(getCurrentDate());
 

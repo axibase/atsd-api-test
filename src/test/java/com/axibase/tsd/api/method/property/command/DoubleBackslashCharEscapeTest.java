@@ -34,7 +34,7 @@ public class DoubleBackslashCharEscapeTest extends PropertyMethod {
     @Issue("6319")
     @Test
     public void testEntity() throws Exception {
-        Property property = new Property(Mocks.propertyType(), Mocks.entity().replaceAll("-", "\\\\"));
+        Property property = new Property(Mocks.propertyType(), Mocks.entity().replaceAll("-", "\\\\\\\\"));
         property.setTags(DEFAULT_PROPERTY_TAGS);
         property.setDate(getCurrentDate());
         PlainCommand command = new PropertyCommand(property);
@@ -47,7 +47,7 @@ public class DoubleBackslashCharEscapeTest extends PropertyMethod {
     @Issue("6319")
     @Test
     public void testType() throws Exception {
-        Property property = new Property(Mocks.propertyType().replaceAll("-", "\\\\"), Mocks.entity());
+        Property property = new Property(Mocks.propertyType().replaceAll("-", "\\\\\\\\"), Mocks.entity());
         property.setTags(DEFAULT_PROPERTY_TAGS);
         property.setDate(getCurrentDate());
         PlainCommand command = new PropertyCommand(property);
