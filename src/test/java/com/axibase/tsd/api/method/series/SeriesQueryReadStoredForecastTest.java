@@ -46,7 +46,7 @@ public class SeriesQueryReadStoredForecastTest extends SeriesMethod {
             .setTimeFormat("iso");
 
     @BeforeClass
-    private void insertSeries() throws Exception {
+    private void prepareData() throws Exception {
         List<Series> seriesList = Arrays.asList(SERIES_1, SERIES_2, SERIES_3, SERIES_4, SERIES_5, SERIES_6, SERIES_7, SERIES_8, SERIES_9);
         Sample sample = Sample.ofDateInteger(START_DATE, 1);
         for (Series series : seriesList) {
