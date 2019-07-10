@@ -310,7 +310,7 @@ public class MetricCommandTest extends MetricTest {
     public void testIncorrectEnabled(String enabled) throws Exception {
         String metricName = metric();
         StringCommand command = new StringCommand(String.format("metric m:%s b:%s", metricName, enabled));
-        String assertMessage ="Bad metric was accepted :: " + command;
+        String assertMessage = "Bad metric was accepted :: " + command;
         assertFalse(assertMessage, transport.send(command));
         Response serverResponse = MetricMethod.queryMetric(metricName);
 

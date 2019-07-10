@@ -1,31 +1,37 @@
 package com.axibase.tsd.api.method.property.command;
 
-import com.axibase.tsd.api.method.extended.CommandMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.command.PropertyCommand;
-import com.axibase.tsd.api.model.extended.CommandSendingResult;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.transport.Transport;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 
 import static com.axibase.tsd.api.method.property.PropertyTest.assertPropertyExisting;
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.propertyType;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 
 public class LengthTest extends PropertyMethod {
     private static final int MAX_LENGTH = 128 * 1024;
+    private final Transport transport;
+
+    @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
+    public LengthTest(Transport transport) {
+        this.transport = transport;
+    }
 
 
     @Issue("2412")
+    @Issue("6319")
     @Test
     public void testMaxLength() throws Exception {
-        final Property property = new Property(propertyType(), entity());
+        final Property property = new Property(Mocks.propertyType(), Mocks.entity());
         property.setDate(Mocks.ISO_TIME);
         property.setKey(Collections.emptyMap());
         property.addTag("type", property.getType());
@@ -48,14 +54,15 @@ public class LengthTest extends PropertyMethod {
         }
         command = new PropertyCommand(property);
         assertEquals("Command length is not maximal", MAX_LENGTH, command.compose().length());
-        CommandMethod.send(command);
+        transport.sendNoDebug(command);
         assertPropertyExisting("Inserted property can not be received", property);
     }
 
     @Issue("2412")
+    @Issue("6319")
     @Test
     public void testMaxLengthOverflow() throws Exception {
-        final Property property = new Property(propertyType(), entity());
+        final Property property = new Property(Mocks.propertyType(), Mocks.entity());
         property.setDate(Mocks.ISO_TIME);
         property.setKey(Collections.emptyMap());
         property.addTag("type", property.getType());
@@ -68,9 +75,7 @@ public class LengthTest extends PropertyMethod {
             property.addTag(tagName, textValue);
         }
         command = new PropertyCommand(property);
-        CommandSendingResult actualResult = CommandMethod.send(command);
-        CommandSendingResult expectedResult = new CommandSendingResult(1, 0);
-        assertEquals("Managed to insert command that length is overflow max", expectedResult, actualResult);
+        assertFalse("Managed to insert command that length is overflow max", transport.sendNoDebug(command));
     }
 
 

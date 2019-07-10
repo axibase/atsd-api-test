@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.model.series;
 
 import com.axibase.tsd.api.model.command.SeriesCommand;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,6 +24,7 @@ public class Series {
     private SeriesType type;
     private String forecastName;
     private SeriesMeta meta;
+    private Aggregate aggregate;
     private SeriesGroupInfo group;
 
     public Series() {
