@@ -19,12 +19,11 @@ import static org.testng.AssertJUnit.*;
 
 public class LengthTest extends SeriesMethod {
     private final Transport transport;
-    private final int maxLength;
+    private static final int MAX_LENGTH = 128 * 1024;
 
     @Factory(dataProvider = "transport", dataProviderClass = Transport.class)
     public LengthTest(Transport transport) {
         this.transport = transport;
-        this.maxLength = transport.equals(Transport.HTTP) ? 128 * 1024 : 128 * 1024 - 6; //TCP seems to  have additional reserved bytes
     }
 
 
@@ -41,17 +40,17 @@ public class LengthTest extends SeriesMethod {
         List<Series> seriesList = new ArrayList<>();
         Map<String, String> values = new HashMap<>();
 
-        while (currentLength <= maxLength) {
+        while (currentLength <= MAX_LENGTH) {
             Series series = new Series(seriesCommand.getEntityName(), Mocks.metric());
             series.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
-            if (currentLength < maxLength) {
+            if (currentLength < MAX_LENGTH) {
                 values.put(series.getMetric(), "1");
                 seriesList.add(series);
             } else {
                 currentLength -= appendix.length();
-                Integer leftCount = maxLength - currentLength;
+                Integer leftCount = MAX_LENGTH - currentLength;
                 String repeated = new String(new char[leftCount + 1]).replace("\0", "1");
                 Integer lastIndex = seriesList.size() - 1;
                 Series lastSeries = seriesList.get(lastIndex);
@@ -63,8 +62,8 @@ public class LengthTest extends SeriesMethod {
             }
         }
         seriesCommand.setValues(values);
-        assertEquals("Command length is not maximal", seriesCommand.compose().length(), maxLength);
-        transport.send(seriesCommand);
+        assertEquals("Command length is not maximal", seriesCommand.compose().length(), MAX_LENGTH);
+        transport.sendNoDebug(seriesCommand);
         assertSeriesExisting("Cannot send series with " + transport, seriesList);
     }
 
@@ -80,7 +79,7 @@ public class LengthTest extends SeriesMethod {
 
         Map<String, String> values = new HashMap<>();
 
-        while (currentLength <= maxLength) {
+        while (currentLength <= MAX_LENGTH) {
             Series series = new Series(seriesCommand.getEntityName(), Mocks.metric());
             series.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
@@ -88,9 +87,9 @@ public class LengthTest extends SeriesMethod {
             values.put(series.getMetric(), "1");
         }
         seriesCommand.setValues(values);
-        assertTrue("SeriesCommand length is not overflow", seriesCommand.compose().length() > maxLength);
+        assertTrue("SeriesCommand length is not overflow", seriesCommand.compose().length() > MAX_LENGTH);
 
-        assertFalse("Sending result must contain one failed command", transport.send(seriesCommand));
+        assertFalse("Sending result must contain one failed command", transport.sendNoDebug(seriesCommand));
     }
 
 
