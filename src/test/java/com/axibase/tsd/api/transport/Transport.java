@@ -21,7 +21,13 @@ public enum Transport {
         @Override
         public boolean send(final PlainCommand command) throws IOException {
             final String response = TCPSender.send(command, true);
-            return response.equals("ok");
+            return "ok".equals(response);
+        }
+
+        @Override
+        public boolean sendNoDebug(PlainCommand command) throws IOException {
+            final String response = TCPSender.send(command, false);
+            return "ok".equals(response);
         }
     };
 
@@ -31,4 +37,8 @@ public enum Transport {
     }
 
     public abstract boolean send(PlainCommand command) throws IOException;
+
+    public boolean sendNoDebug(PlainCommand command) throws IOException {
+        return send(command);
+    }
 }
