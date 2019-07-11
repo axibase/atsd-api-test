@@ -114,7 +114,8 @@ public class TestNameGenerator {
         ENTITY_GROUP("entity-group"),
         MESSAGE("message"),
         PROPERTY("property"),
-        PROPERTY_TYPE("property-type");
+        PROPERTY_TYPE("property-type"),
+        REPLACEMENT_TABLE("replacement-table");
 
         private String textValue;
 
