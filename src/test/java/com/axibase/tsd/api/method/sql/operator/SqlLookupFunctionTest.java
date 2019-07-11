@@ -179,6 +179,7 @@ public class SqlLookupFunctionTest extends SqlTest {
     }
 
     @Issue("3555")
+    @Issue("6366")
     @Test
     public void testLookupWithWrongTable() {
         String replacementTableName = "notable";

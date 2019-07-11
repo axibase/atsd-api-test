@@ -524,7 +524,8 @@ public class CastTest extends SqlTest {
     }
 
     @Issue("4182")
-    @Test
+    @Issue("6366")
+    @Test (enabled = false)
     public void testCastIsNullLookup() {
         String sqlQuery = String.format(
                 "SELECT CAST(ISNULL(LOOKUP('repl-table', value), '3') AS NUMBER) FROM \"%s\" ",
@@ -539,7 +540,8 @@ public class CastTest extends SqlTest {
     }
 
     @Issue("4182")
-    @Test
+    @Issue("6366")
+    @Test(enabled = false)
     public void testCastIsNullLookupExpression() {
         String sqlQuery = String.format(
                 "SELECT CAST(ISNULL(LOOKUP('repl-table', value), LENGTH(CONCAT('test', '123'))) AS NUMBER) FROM \"%s\" ",
