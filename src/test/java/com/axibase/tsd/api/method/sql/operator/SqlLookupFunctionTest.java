@@ -182,7 +182,7 @@ public class SqlLookupFunctionTest extends SqlTest {
     @Issue("6366")
     @Test
     public void testLookupWithWrongTable() {
-        String replacementTableName = "notable";
+        String replacementTableName = "noTable";
         String sqlQuery = String.format(
                 "SELECT LOOKUP('%s', t1.text) " +
                         "FROM \"%s\" t1",
