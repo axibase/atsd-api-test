@@ -53,7 +53,7 @@ public class Mocks {
     }
 
     public static String replacementTable() {
-        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.PROPERTY_TYPE);
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.REPLACEMENT_TABLE);
     }
 
     public static Series series() {
