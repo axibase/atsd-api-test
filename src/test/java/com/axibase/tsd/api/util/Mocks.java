@@ -54,6 +54,7 @@ public class Mocks {
 
     public static String replacementTable() {return NAME_GENERATOR.newTestName(TestNameGenerator.Key.REPLACEMENT_TABLE);}
 
+
     public static Series series() {
         Series resultSeries = new Series(entity(), metric(), TAGS);
         resultSeries.addSamples(SAMPLE);

@@ -1,8 +1,11 @@
 package com.axibase.tsd.api.method.sql.function.string;
 
+import com.axibase.tsd.api.method.replacementtable.ReplacementTableMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
+import com.axibase.tsd.api.model.replacementtable.SupportedFormat;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
@@ -18,20 +21,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.axibase.tsd.api.util.Mocks.entity;
-import static com.axibase.tsd.api.util.Mocks.metric;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class CastTest extends SqlTest {
-    private static final String TEST_METRIC1_NAME = metric();
-    private static final String TEST_METRIC2_NAME = metric();
-    private static final String TEST_METRIC3_NAME = metric();
-    private static final String TEST_ENTITY_NAME = entity();
+    private static final String TEST_METRIC1_NAME = Mocks.metric();
+    private static final String TEST_METRIC2_NAME = Mocks.metric();
+    private static final String TEST_METRIC3_NAME = Mocks.metric();
+    private static final String TEST_ENTITY_NAME = Mocks.entity();
 
-    private static final String TEST_METRIC1_NAME_3841 = metric();
-    private static final String TEST_METRIC2_NAME_3841 = metric();
-    private static final String TEST_ENTITY_NAME_3841 = entity();
+    private static final String TEST_METRIC1_NAME_3841 = Mocks.metric();
+    private static final String TEST_METRIC2_NAME_3841 = Mocks.metric();
+    private static final String TEST_ENTITY_NAME_3841 = Mocks.entity();
+
+    private static final String REPLACEMENT_TABLE_NAME = Mocks.replacementTable();
 
     private Series castNumberAsStringSeries;
 
@@ -66,6 +69,9 @@ public class CastTest extends SqlTest {
         seriesList.add(series2);
 
         SeriesMethod.insertSeriesCheck(seriesList);
+
+        ReplacementTableMethod.createCheck(ReplacementTable.of(REPLACEMENT_TABLE_NAME, SupportedFormat.LIST)
+                                                            .addValue("0", "0")); //Replacement table cannot be created without values
     }
 
     @Issue("3661")
@@ -524,10 +530,12 @@ public class CastTest extends SqlTest {
     }
 
     @Issue("4182")
+    @Issue("6366")
     @Test
     public void testCastIsNullLookup() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), '3') AS NUMBER) FROM \"%s\" ",
+                "SELECT CAST(ISNULL(LOOKUP('%s', value), '3') AS NUMBER) FROM \"%s\" ",
+                REPLACEMENT_TABLE_NAME,
                 TEST_METRIC1_NAME
         );
 
@@ -539,10 +547,12 @@ public class CastTest extends SqlTest {
     }
 
     @Issue("4182")
+    @Issue("6366")
     @Test
     public void testCastIsNullLookupExpression() {
         String sqlQuery = String.format(
-                "SELECT CAST(ISNULL(LOOKUP('repl-table', value), LENGTH(CONCAT('test', '123'))) AS NUMBER) FROM \"%s\" ",
+                "SELECT CAST(ISNULL(LOOKUP('%s', value), LENGTH(CONCAT('test', '123'))) AS NUMBER) FROM \"%s\" ",
+                REPLACEMENT_TABLE_NAME,
                 TEST_METRIC1_NAME
         );
 

@@ -106,6 +106,7 @@ public class AppendFieldTest extends CommandMethodTest {
     }
 
     @Issue("3874")
+    @Issue("6319")
     @Test
     public void testDecimalFieldToTextField() throws Exception {
         final String entityName = Mocks.entity();
@@ -126,6 +127,7 @@ public class AppendFieldTest extends CommandMethodTest {
     }
 
     @Issue("3885")
+    @Issue("6319")
     @Test
     public void testAppendTextViaBatchOfCommands() throws Exception {
         final String entityName = Mocks.entity();
@@ -148,6 +150,7 @@ public class AppendFieldTest extends CommandMethodTest {
     }
 
     @Issue("3902")
+    @Issue("6319")
     @Test
     public void testTextFieldAfterAdditionOfDecimalValue() throws Exception {
         final String entityName = Mocks.entity();
