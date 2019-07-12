@@ -82,7 +82,7 @@ public class Sample {
     }
 
     public static Sample ofRawDateInteger(String date, int value) {
-        return new Sample(null, null, BigDecimal.valueOf(value), null, false);
+        return new Sample(null, date, BigDecimal.valueOf(value), null, false);
     }
 
     public static Sample ofDateDecimal(String date, BigDecimal value) {
