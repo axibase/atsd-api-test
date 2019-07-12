@@ -16,8 +16,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageContains;
 import static com.axibase.tsd.api.util.CommonAssertions.assertErrorMessageStart;
-import static com.axibase.tsd.api.util.ErrorTemplate.TAG_VALUE_ARRAY_PREFIX;
+import static com.axibase.tsd.api.util.ErrorTemplate.TAG_VALUE_ARRAY_SUBSTRING;
 import static com.axibase.tsd.api.util.ErrorTemplate.UNKNOWN_ENTITY_FIELD_PREFIX;
 import static com.axibase.tsd.api.util.Util.MIN_STORABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
@@ -243,7 +244,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         final Response response = createOrReplaceEntity(entityName, createOrReplaceEntityQuery);
         assertEquals("Request should be failed", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertErrorMessageStart(extractErrorMessage(response), TAG_VALUE_ARRAY_PREFIX);
+        assertErrorMessageContains(extractErrorMessage(response), TAG_VALUE_ARRAY_SUBSTRING);
         assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntityResponse(entityName).getStatus());
 
     }
@@ -263,7 +264,7 @@ public class EntityCreateOrReplaceTest extends EntityMethod {
         createOrReplaceEntityQuery.put("tags", tags);
         final Response response = createOrReplaceEntity(entityName, createOrReplaceEntityQuery);
         assertEquals("Request should be failed", BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertErrorMessageStart(extractErrorMessage(response), TAG_VALUE_ARRAY_PREFIX);
+        assertErrorMessageContains(extractErrorMessage(response), TAG_VALUE_ARRAY_SUBSTRING);
         assertEquals("Entity should not be created", NOT_FOUND.getStatusCode(), getEntityResponse(entityName).getStatus());
     }
 
