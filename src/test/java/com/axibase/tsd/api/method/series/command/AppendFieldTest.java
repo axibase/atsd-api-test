@@ -103,7 +103,7 @@ public class AppendFieldTest extends CommandMethodTest {
         }
 
 //        transport.send(new ListCommand(commandList));
-        Transport.HTTP.send(new ListCommand(commandList)); // Fix when TCP errors details are ready
+        Transport.HTTP.send(new ListCommand(commandList)); // TODO Fix when TCP errors details are ready
         assertTextDataEquals(series, "Append with erase doesn't work");
     }
 
