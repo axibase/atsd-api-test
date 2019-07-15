@@ -39,7 +39,7 @@ public class CommonAssertions {
     }
 
     public static void assertCheck(AbstractCheck check, String assertMessage) {
-        Boolean result = true;
+        boolean result = true;
         try {
             Checker.check(check);
         } catch (NotCheckedException e) {
