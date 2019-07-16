@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -193,29 +194,13 @@ public class Series implements Comparable<Series> {
         if (another == null) {
             throw new NullPointerException("Expect not null argument.");
         }
-        if (metric == null && another.metric != null) {
-            return -1;
+        int byMetric = StringUtils.compareIgnoreCase(metric, another.metric);
+        if (byMetric != 0) {
+            return byMetric;
         }
-        if (metric != null && another.metric == null) {
-            return 1;
-        }
-        if (metric != null) {
-            int byMetric = this.metric.compareToIgnoreCase(another.metric);
-            if (byMetric != 0) {
-                return byMetric;
-            }
-        }
-        if (entity == null && another.entity != null) {
-            return -1;
-        }
-        if (entity != null && another.entity == null) {
-            return 1;
-        }
-        if (entity != null) {
-            int byEntity = this.entity.compareToIgnoreCase(another.entity);
-            if (byEntity != 0) {
-                return byEntity;
-            }
+        int byEntity = StringUtils.compareIgnoreCase(entity, another.entity);
+        if (byEntity != 0) {
+            return byEntity;
         }
         if ((this.tags == null || this.tags.isEmpty()) && (another.tags == null || another.tags.isEmpty())) {
             return 0;
@@ -244,5 +229,9 @@ public class Series implements Comparable<Series> {
             }
         }
         return anotherIt.hasNext() ? -1 : 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(StringUtils.compareIgnoreCase(null, ""));
     }
 }
