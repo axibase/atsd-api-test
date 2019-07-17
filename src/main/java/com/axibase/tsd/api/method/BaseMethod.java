@@ -125,6 +125,15 @@ public abstract class BaseMethod {
         }
     }
 
+    public static String responseAsString(Response response) {
+        try {
+            return response.readEntity(String.class);
+        } catch (Exception e) {
+            logger.warn("Could not read response: {}", e.getMessage());
+            return "";
+        }
+    }
+
     public static Response executeRootRequest(Function<WebTarget, Response> requestFunction) {
         return executeRequest(rootTargetPool, requestFunction);
     }
