@@ -21,6 +21,7 @@ import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpo
 import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
 import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomUtils;
@@ -266,7 +267,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
             final String message = BaseMethod.extractErrorMessage(response);
             assertEquals("Attempt to insert date before min storable date doesn't return error",
-                    "IllegalArgumentException: Too large timestamp " + calendar.getTime().getTime() + ". Max allowed value is " + MAX_STORABLE_TIMESTAMP,
+                    "IllegalArgumentException: Too large timestamp " + Util.getUnixTime(series.getData().get(0).getRawDate()) + ". Max allowed value is " + MAX_STORABLE_TIMESTAMP,
                     message);
             setRandomTimeDuringNextDay(calendar);
         }
