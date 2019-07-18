@@ -20,7 +20,8 @@
                 <expression>
                     return logger.contains("org.apache.http") ||
                     logger.equals("org.jvnet.hk2.logger") ||
-                    message.startsWith("Selected ExecutorServiceProvider implementation");
+                    message.startsWith("Selected ExecutorServiceProvider implementation") ||
+                    message.startsWith("Selected ScheduledExecutorServiceProvider implementation") ||
                 </expression>
             </evaluator>
             <onMatch>DENY</onMatch>

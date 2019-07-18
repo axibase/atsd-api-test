@@ -50,9 +50,9 @@ public class LengthTest extends SeriesMethod {
                 seriesList.add(series);
             } else {
                 currentLength -= appendix.length();
-                Integer leftCount = MAX_LENGTH - currentLength;
+                int leftCount = MAX_LENGTH - currentLength;
                 String repeated = new String(new char[leftCount + 1]).replace("\0", "1");
-                Integer lastIndex = seriesList.size() - 1;
+                int lastIndex = seriesList.size() - 1;
                 Series lastSeries = seriesList.get(lastIndex);
                 seriesList.remove(lastSeries);
                 lastSeries.setSamples(Collections.singletonList(Sample.ofDateDecimal(Mocks.ISO_TIME, new BigDecimal(repeated))));
@@ -80,8 +80,10 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series(seriesCommand.getEntityName(), Mocks.metric());
-            series.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
+            Series series = new Series()
+                    .setMetric(Mocks.metric())
+                    .setEntity(seriesCommand.getEntityName())
+                    .addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             values.put(series.getMetric(), "1");
