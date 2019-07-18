@@ -266,7 +266,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
             final String message = BaseMethod.extractErrorMessage(response);
             assertEquals("Attempt to insert date before min storable date doesn't return error",
-                    "IllegalArgumentException: Too large timestamp " + calendar.getTime() + ". Max allowed value is " + MAX_STORABLE_TIMESTAMP,
+                    "IllegalArgumentException: Too large timestamp " + calendar.getTime().getTime() + ". Max allowed value is " + MAX_STORABLE_TIMESTAMP,
                     message);
             setRandomTimeDuringNextDay(calendar);
         }
