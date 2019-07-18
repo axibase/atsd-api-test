@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.series;
 
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.PeriodAlignment;
@@ -263,6 +264,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
+
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     "{\"error\":\"IllegalArgumentException: Too large timestamp " + Util.getUnixTime(series.getData().get(0).getRawDate()) + ". Max allowed value is " + MAX_STORABLE_TIMESTAMP + "\"}",
                     response.readEntity(String.class));
