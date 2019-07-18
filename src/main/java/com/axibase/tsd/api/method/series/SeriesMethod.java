@@ -51,8 +51,8 @@ public class SeriesMethod extends BaseMethod {
         return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword());
     }
 
-    public static <T> Response querySeries(T... queries) {
-        return querySeries(Arrays.asList(queries));
+    public static <T> Response querySeries(T query) {
+        return querySeries(Collections.singletonList(query));
     }
 
     public static <T> Response querySeries(List<T> queries) {
@@ -189,7 +189,7 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static List<Series> querySeriesAsList(SeriesQuery... seriesQuery) {
-        Response response = querySeries(seriesQuery);
+        Response response = querySeries(Arrays.asList(seriesQuery));
         return Arrays.asList(response.readEntity(Series[].class));
     }
 
