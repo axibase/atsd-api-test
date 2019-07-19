@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.util.Util;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jersey.client.ClientResponse;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
@@ -30,23 +31,30 @@ public class LoggingFilter implements ClientResponseFilter {
         }
     }
 
-    private static void appendResponseDescription(ClientResponseContext responseContext, StringBuilder builder) {
+    private static void appendResponseDescription(ClientResponseContext responseContext, StringBuilder builder, boolean full) {
         builder.append(" < ").append(responseContext.getStatus()).append('\n');
         try {
-            InputStream entityStream = responseContext.getEntityStream();
-            if (responseContext.hasEntity()) {
-                if (!entityStream.markSupported()) {
-                    entityStream = new BufferedInputStream(entityStream);
+            if (full) {
+                if (responseContext instanceof ClientResponse) {
+                    final ClientResponse response = (ClientResponse) responseContext;
+                    builder.append(response.readEntity(String.class));
                 }
-                entityStream.mark(MAX_ENTITY_SIZE + 1);
-                final byte[] entity = new byte[MAX_ENTITY_SIZE + 1];
-                final int entitySize = readNBytes(entityStream, entity, entity.length);
-                entityStream.reset();
-                appendPrettyPrintedJson(entity, entitySize, builder);
-                if (entitySize > MAX_ENTITY_SIZE) {
-                    builder.append("...more...");
+            } else {
+                InputStream entityStream = responseContext.getEntityStream();
+                if (responseContext.hasEntity()) {
+                    if (!entityStream.markSupported()) {
+                        entityStream = new BufferedInputStream(entityStream);
+                    }
+                    entityStream.mark(MAX_ENTITY_SIZE + 1);
+                    final byte[] entity = new byte[MAX_ENTITY_SIZE + 1];
+                    final int entitySize = readNBytes(entityStream, entity, entity.length);
+                    entityStream.reset();
+                    appendPrettyPrintedJson(entity, entitySize, builder);
+                    if (entitySize > MAX_ENTITY_SIZE) {
+                        builder.append("...more...");
+                    }
+                    builder.append("\n\n");
                 }
-                builder.append("\n\n");
             }
         } catch (IOException e) {
             log.debug("Failed to get Entity Description");
@@ -80,14 +88,14 @@ public class LoggingFilter implements ClientResponseFilter {
         final RequestAndResponse requestAndResponse = new RequestAndResponse(clientRequestContext, clientResponseContext);
         lastRequestAndResponse.set(requestAndResponse);
         if (log.isDebugEnabled() && (isCheckLoggingEnable || !isCalledByClass(Checker.class))) {
-            log.debug(composeRequestAndResponse(requestAndResponse));
+            log.debug(composeRequestAndResponse(requestAndResponse, false));
         }
     }
 
-    private static String composeRequestAndResponse(RequestAndResponse requestAndResponse) {
+    private static String composeRequestAndResponse(RequestAndResponse requestAndResponse, boolean fullResponse) {
         StringBuilder buffer = new StringBuilder();
         appendRequestDescription(requestAndResponse.clientRequestContext, buffer);
-        appendResponseDescription(requestAndResponse.clientResponseContext, buffer);
+        appendResponseDescription(requestAndResponse.clientResponseContext, buffer, fullResponse);
         return buffer.toString();
     }
 
@@ -117,7 +125,7 @@ public class LoggingFilter implements ClientResponseFilter {
 
     public static String getRequestAndResponse() {
         final RequestAndResponse requestAndResponse = lastRequestAndResponse.get();
-        return requestAndResponse == null ? null : composeRequestAndResponse(requestAndResponse);
+        return requestAndResponse == null ? null : composeRequestAndResponse(requestAndResponse, true);
     }
 
     @Data
