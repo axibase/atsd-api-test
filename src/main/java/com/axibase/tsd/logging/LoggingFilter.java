@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.util.Util;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.client.ClientRequestContext;
@@ -17,7 +18,8 @@ import java.util.Objects;
 @Slf4j
 public class LoggingFilter implements ClientResponseFilter {
     private static final int MAX_ENTITY_SIZE = 1024 * 8;
-    private boolean isCheckLoggingEnable = Config.getInstance().isCheckLoggingEnable();
+    private static final ThreadLocal<RequestAndResponse> lastRequestAndResponse = new ThreadLocal<>();
+    private final boolean isCheckLoggingEnable = Config.getInstance().isCheckLoggingEnable();
 
     private static void appendRequestDescription(ClientRequestContext requestContext, StringBuilder builder) {
         builder.append(" > ").append(requestContext.getMethod())
@@ -75,12 +77,18 @@ public class LoggingFilter implements ClientResponseFilter {
 
     @Override
     public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext) throws IOException {
+        final RequestAndResponse requestAndResponse = new RequestAndResponse(clientRequestContext, clientResponseContext);
+        lastRequestAndResponse.set(requestAndResponse);
         if (log.isDebugEnabled() && (isCheckLoggingEnable || !isCalledByClass(Checker.class))) {
-            StringBuilder buffer = new StringBuilder();
-            appendRequestDescription(clientRequestContext, buffer);
-            appendResponseDescription(clientResponseContext, buffer);
-            log.debug("{}", buffer);
+            log.debug("{}", composeRequestAndResponse(requestAndResponse));
         }
+    }
+
+    private static String composeRequestAndResponse(RequestAndResponse requestAndResponse) {
+        StringBuilder buffer = new StringBuilder();
+        appendRequestDescription(requestAndResponse.clientRequestContext, buffer);
+        appendResponseDescription(requestAndResponse.clientResponseContext, buffer);
+        return buffer.toString();
     }
 
     private boolean isCalledByClass(Class<?> tClass) {
@@ -101,5 +109,20 @@ public class LoggingFilter implements ClientResponseFilter {
             log.debug("Failed to print stream for entity.");
             throw e;
         }
+    }
+
+    public static void clear() {
+        lastRequestAndResponse.remove();
+    }
+
+    public static String getRequestAndResponse() {
+        final RequestAndResponse requestAndResponse = lastRequestAndResponse.get();
+        return requestAndResponse == null ? null : composeRequestAndResponse(requestAndResponse);
+    }
+
+    @Data
+    private static final class RequestAndResponse {
+        private final ClientRequestContext clientRequestContext;
+        private final ClientResponseContext clientResponseContext;
     }
 }

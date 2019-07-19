@@ -221,6 +221,12 @@
                     <excludes>
                         <exclude>**/MessageQueryStatsTest.java</exclude>
                     </excludes>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>com.axibase.tsd.api.listeners.RequestResponseOnFailWriter</value>
+                        </property>
+                    </properties>
                 </configuration>
             </plugin>
         </plugins>

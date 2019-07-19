@@ -42,6 +42,8 @@
 
     <logger name="org.glassfish.jersey.internal.util" level="ERROR"/>
 
+    <logger name="com.axibase.tsd.api.listeners.RequestResponseOnFailWriter" level="INFO"/>
+
     <root level="${loggerLevel}">
         <!--<root level="info">-->
         <appender-ref ref="STDOUT"/>

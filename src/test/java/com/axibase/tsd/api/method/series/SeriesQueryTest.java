@@ -1,6 +1,5 @@
 package com.axibase.tsd.api.method.series;
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.PeriodAlignment;
@@ -274,7 +273,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("2979")
     @Test
-    public void testEntitesExpressionStarChar() throws Exception {
+    public void testEntitiesExpressionStarChar() throws Exception {
         Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
         series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
@@ -292,7 +291,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("2979")
     @Test
-    public void testEntitшesExpressionQuestionChar() throws Exception {
+    public void testEntitiesExpressionQuestionChar() throws Exception {
         Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
         series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));

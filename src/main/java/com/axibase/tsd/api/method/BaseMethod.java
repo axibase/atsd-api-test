@@ -34,8 +34,8 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 public abstract class BaseMethod {
-    public static final Long REQUEST_INTERVAL = 200L;
-    public static final Long UPPER_BOUND_FOR_CHECK = 100000L;
+    public static final long REQUEST_INTERVAL = 200L;
+    public static final long UPPER_BOUND_FOR_CHECK = 100000L;
 
     private static final int DEFAULT_BORROW_MAX_TIME_MS = 3000;
     private static final int DEFAULT_MAX_TOTAL = 8;
@@ -43,7 +43,7 @@ public abstract class BaseMethod {
 
     private static final GenericObjectPool<HttpClient> apiTargetPool;
     private static final GenericObjectPool<HttpClient> rootTargetPool;
-    private static final Integer DEFAULT_CONNECT_TIMEOUT = 180000;
+    private static final int DEFAULT_CONNECT_TIMEOUT = 180000;
     private static final Logger logger = LoggerFactory.getLogger(BaseMethod.class);
 
     protected static final ObjectMapper jacksonMapper;
