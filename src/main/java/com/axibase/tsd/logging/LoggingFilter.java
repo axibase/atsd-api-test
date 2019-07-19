@@ -80,7 +80,7 @@ public class LoggingFilter implements ClientResponseFilter {
         final RequestAndResponse requestAndResponse = new RequestAndResponse(clientRequestContext, clientResponseContext);
         lastRequestAndResponse.set(requestAndResponse);
         if (log.isDebugEnabled() && (isCheckLoggingEnable || !isCalledByClass(Checker.class))) {
-            log.debug("{}", composeRequestAndResponse(requestAndResponse));
+            log.debug(composeRequestAndResponse(requestAndResponse));
         }
     }
 
