@@ -12,6 +12,7 @@ import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchResult;
 import com.axibase.tsd.api.util.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,6 +27,7 @@ import java.util.*;
 
 import static javax.ws.rs.core.Response.Status.FOUND;
 
+@Slf4j
 public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_INSERT = "/series/insert";
     private static final String METHOD_SERIES_QUERY = "/series/query";
@@ -152,13 +154,16 @@ public class SeriesMethod extends BaseMethod {
                 .request()
                 .get());
 
+        response.bufferEntity();
+        String result = response.readEntity(String.class);
+
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
+            log.error("Failed to get search index status. Response:\n{}", response);
             throw new Exception("Failed to get search index status");
         }
 
-        response.bufferEntity();
         try {
-            Document document = Jsoup.parse(response.readEntity(String.class));
+            Document document = Jsoup.parse(result);
             Element indexInfoTableElement = document.getElementById("indexInfo");
             Elements tableInfoElements = indexInfoTableElement.select("tr");
             Element statusRow = tableInfoElements.get(3);
