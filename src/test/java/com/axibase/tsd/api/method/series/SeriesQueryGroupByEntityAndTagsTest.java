@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -138,36 +139,42 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
         insertSeriesCheck(seriesArray);
     }
 
+    @Issue("6146")
     @Test(description = "Check number of grouped series when parameter 'groupByEntityAndTags' is null")
     public void testNumberOfSeriesWhereParameterIsNull() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsNull);
         assertEquals(seriesList.size(), 1, "Wrong series count");
     }
 
+    @Issue("6146")
     @Test(description = "Check number of grouped series when parameter 'groupByEntityAndTags' is empty (not null)")
     public void testNumberOfSeriesWhereParameterIsEmpty() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsEmpty);
         assertEquals(seriesList.size(), 2, "Wrong series count");
     }
 
+    @Issue("6146")
     @Test(description = "Check number of grouped series when parameter 'groupByEntityAndTags' adjusted by first tag")
     public void testNumberOfSeriesWhereParameterIsFirstTag() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsFirstTag);
         assertEquals(seriesList.size(), 5, "Wrong series count");
     }
 
+    @Issue("6146")
     @Test(description = "Check number of grouped series when parameter 'groupByEntityAndTags' adjusted by second tag")
     public void testNumberOfSeriesWhereParameterIsSecondTag() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsSecondTag);
         assertEquals(seriesList.size(), 3, "Wrong series count");
     }
 
+    @Issue("6146")
     @Test(description = "Check number of grouped series when parameter 'groupByEntityAndTags' adjusted by list of tags")
     public void testNumberOfSeriesWhereParameterIsListBothTags() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsListBothTags);
         assertEquals(seriesList.size(), 7, "Wrong series count");
     }
 
+    @Issue("6146")
     @Test(description = "Check the value in grouped series when parameter 'groupByEntityAndTags' is null")
     public void testValuesWhereParameterIsNull() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsNull);
@@ -178,6 +185,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of values of series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check the value in grouped series when parameter 'groupByEntityAndTags' is empty (not null)")
     public void testValuesWhereParameterIsEmpty() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsEmpty);
@@ -188,6 +196,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of values of series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check the value in grouped series when parameter 'groupByEntityAndTags' adjusted by first tag")
     public void testValuesWhereParameterIsFirstTag() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsFirstTag);
@@ -198,6 +207,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of values of series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check the value in grouped series when parameter 'groupByEntityAndTags' adjusted by second tag")
     public void testValuesWhereParameterIsSecondTag() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsSecondTag);
@@ -208,6 +218,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of values of series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check the value in grouped series when parameter 'groupByEntityAndTags' adjusted by list of tags")
     public void testValuesWhereParameterIsListBothTags() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsListBothTags);
@@ -218,6 +229,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of values of series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags in grouped series when parameter 'groupByEntityAndTags' is null")
     public void testEntityAndTagsWhereParameterIsNull() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsNull);
@@ -229,6 +241,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of pairs 'entity-tags' for series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags in grouped series when parameter 'groupByEntityAndTags' is empty (not null)")
     public void testEntityAndTagsWhereParameterIsEmpty() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsEmpty);
@@ -241,6 +254,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of pairs 'entity-tags' for series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags in grouped series when parameter 'groupByEntityAndTags' adjusted by first tag")
     public void testEntityAndTagsWhereParameterIsFirstTag() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsFirstTag);
@@ -256,6 +270,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of pairs 'entity-tags' for series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags in grouped series when parameter 'groupByEntityAndTags' adjusted by second tag")
     public void testEntityAndTagsWhereParameterIsSecondTag() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsSecondTag);
@@ -269,6 +284,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of pairs 'entity-tags' for series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags in grouped series when parameter 'groupByEntityAndTags' adjusted by list of tags")
     public void testEntityAndTagsWhereParameterIsListBothTags() {
         List<Series> seriesList = querySeriesAsList(queryWithParameterIsListBothTags);
@@ -286,6 +302,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Set of pairs 'entity-tags' for series not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags inside fields series in group." +
             "For each grouped series formed set of pairs of this parameters." +
             "Parameter 'groupByEntityAndTags' is null")
@@ -307,6 +324,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Sets of pairs 'entity-tags' for each group not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags inside fields series in group." +
             "For each grouped series formed set of pairs of this parameters." +
             "Parameter 'groupByEntityAndTags' is empty (not null)")
@@ -329,6 +347,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Sets of pairs 'entity-tags' for each group not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags inside fields series in group." +
             "For each grouped series formed set of pairs of this parameters." +
             "Parameter 'groupByEntityAndTags' adjusted by first tag")
@@ -351,6 +370,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Sets of pairs 'entity-tags' for each group not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags inside fields series in group." +
             "For each grouped series formed set of pairs of this parameters." +
             "Parameter 'groupByEntityAndTags' adjusted by second tag")
@@ -374,6 +394,7 @@ public class SeriesQueryGroupByEntityAndTagsTest extends SeriesMethod {
                 "Sets of pairs 'entity-tags' for each group not match expected");
     }
 
+    @Issue("6146")
     @Test(description = "Check fields entity and tags inside fields series in group." +
             "For each grouped series formed set of pairs of this parameters." +
             "Parameter 'groupByEntityAndTags' adjusted by list of tags")

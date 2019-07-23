@@ -179,30 +179,18 @@ public class SqlLookupFunctionTest extends SqlTest {
     }
 
     @Issue("3555")
+    @Issue("6366")
     @Test
     public void testLookupWithWrongTable() {
+        String replacementTableName = "noTable";
         String sqlQuery = String.format(
-                "SELECT LOOKUP('noTable', t1.text) " +
+                "SELECT LOOKUP('%s', t1.text) " +
                         "FROM \"%s\" t1",
+                replacementTableName,
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
 
-        String[][] expectedRows = {
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"},
-                {"null"}
-        };
-
-        assertSqlQueryRows("LOOKUP should return null with nonexist table, " +
-                "using Replacement Table with parameters: " + TABLE_BASE_LOOKUP_TEST.toString(), expectedRows, sqlQuery);
+        assertBadRequest("LOOKUP should throw with nonexistent table",String.format("Lookup table not found for name '%s'", replacementTableName), sqlQuery);
     }
 
     @Issue("3555")

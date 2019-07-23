@@ -9,7 +9,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 
 import javax.ws.rs.core.Response;
-
 import java.math.BigDecimal;
 
 import static org.testng.AssertJUnit.assertTrue;
@@ -27,12 +26,20 @@ public class CommonAssertions {
         assertTrue(assertMessage, actualMessage.startsWith(expectedMessageStart));
     }
 
+    public static void assertErrorMessageContains(String actualMessage, String expectedPattern) {
+        String assertMessage = String.format(
+                "Error message mismatch!%nActual message:\t\t%s %n%nmust contain:\t%s",
+                actualMessage, expectedPattern
+        );
+        assertTrue(assertMessage, actualMessage.contains(expectedPattern));
+    }
+
     public static void assertCheck(AbstractCheck check) {
         assertCheck(check, DEFAULT_ASSERT_CHECK_MESSAGE);
     }
 
     public static void assertCheck(AbstractCheck check, String assertMessage) {
-        Boolean result = true;
+        boolean result = true;
         try {
             Checker.check(check);
         } catch (NotCheckedException e) {

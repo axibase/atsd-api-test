@@ -2,6 +2,7 @@ package com.axibase.tsd.api.model.series.query.transformation.forecast;
 
 import com.axibase.tsd.api.model.series.SeriesType;
 import com.axibase.tsd.api.model.series.query.Interval;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,12 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class Forecast {
+    /* Enable input series aggregation by specified aggregationFunction before the forecast */
+    private boolean autoAggregate;
+
+    /* Aggregation function used if autoAggregate is true. Default: "avg" */
+    private AggregationType aggregationFunction;
+
     /* Forecast length. Required. */
     private Horizon horizon;
 

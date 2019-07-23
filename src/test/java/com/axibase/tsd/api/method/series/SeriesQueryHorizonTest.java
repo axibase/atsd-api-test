@@ -15,6 +15,7 @@ import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregati
 import com.axibase.tsd.api.model.series.query.transformation.forecast.*;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
+import io.qameta.allure.Issue;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -114,6 +115,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         insertSeriesCheck(series);
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonInterval() {
         SeriesQuery query = generateQuery()
@@ -127,6 +129,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonIntervalWithStartDateBeforeSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -141,6 +144,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonIntervalWithStartDateAfterSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -155,6 +159,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonLength() {
         SeriesQuery query = generateQuery()
@@ -168,6 +173,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonLengthWithStartDateBeforeSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -182,6 +188,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonLengthWithStartDateAfterSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -196,6 +203,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonEndDate() {
         SeriesQuery query = generateQuery()
@@ -209,6 +217,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonEndDateWithStartDateBeforeSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -223,6 +232,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testHWHorizonEndDateWithStartDateAfterSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -237,6 +247,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonInterval() {
         SeriesQuery query = generateQuery()
@@ -250,6 +261,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonIntervalWithStartDateBeforeSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -264,6 +276,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonIntervalWithStartDateAfterSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -278,6 +291,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonLength() {
         SeriesQuery query = generateQuery()
@@ -291,6 +305,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonLengthWithStartDateBeforeSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -305,6 +320,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonLengthWithStartDateAfterSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -319,6 +335,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonEndDate() {
         SeriesQuery query = generateQuery()
@@ -332,6 +349,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonEndDateWithStartDateBeforeSeriesEnd() {
         SeriesQuery query = generateQuery()
@@ -346,6 +364,7 @@ public class SeriesQueryHorizonTest extends SeriesMethod{
         assertEquals(actualData, expectedData, "Checked parameters not match expected");
     }
 
+    @Issue("6145")
     @Test(description = "Checks that object CheckedParameters composed from response equals expected")
     public void testSSAHorizonEndDateWithStartDateAfterSeriesEnd() {
         SeriesQuery query = generateQuery()

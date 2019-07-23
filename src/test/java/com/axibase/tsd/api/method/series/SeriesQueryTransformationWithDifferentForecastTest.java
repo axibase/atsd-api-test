@@ -17,6 +17,7 @@ import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
+import io.qameta.allure.Issue;
 import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -116,6 +117,7 @@ public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMe
         return generateTestData(false);
     }
 
+    @Issue("6093")
     @Test(dataProvider = "bad_response_data",
             description = "Take order of series transformations with irregular series before forecast. " +
                     "Check that response contains error")
@@ -124,6 +126,7 @@ public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMe
                 "Incorrect status of response (Expected: 400, Bad request)");
     }
 
+    @Issue("6093")
     @Test(dataProvider = "good_response_data",
             description = "Check that response contains correct number of generated series for each permutation of the transformations.")
     public void testGoodResponse(SeriesQuery query) {
