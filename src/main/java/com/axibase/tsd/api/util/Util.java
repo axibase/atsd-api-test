@@ -6,15 +6,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 
 public class Util {
@@ -25,20 +31,14 @@ public class Util {
     public static final long MIN_STORABLE_TIMESTAMP = 0L;
     public static final long MAX_STORABLE_TIMESTAMP = 4294969199999L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
-    private static ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-    private static TimeZone serverTimeZone;
+    private static final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     public static TimeZone getServerTimeZone() {
-        if (serverTimeZone == null) {
-            Version version = VersionMethod.queryVersion().readEntity(Version.class);
-            serverTimeZone = TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
-        }
-        return serverTimeZone;
+        return AtsdVersionInfo.TIME_ZONE;
     }
 
     public static String getHBaseVersion() {
-        Version version = VersionMethod.queryVersion().readEntity(Version.class);
-        return version.getBuildInfo().getHbaseVersion();
+        return AtsdVersionInfo.HBASE_VERSION;
     }
 
     public static String ISOFormat(Date date) {
@@ -83,10 +83,28 @@ public class Util {
     }
 
     public static String prettyPrint(Object o) {
+        if (o instanceof Form) {
+            final List<BasicNameValuePair> keyValuePairs = ((Form) o).asMap().entrySet()
+                    .stream()
+                    .flatMap(e -> e.getValue().stream().map(value -> new BasicNameValuePair(e.getKey(), value)))
+                    .collect(Collectors.toList());
+            return URLEncodedUtils.format(keyValuePairs, StandardCharsets.UTF_8);
+        }
         try {
             return objectWriter.writeValueAsString(o);
         } catch (JsonProcessingException e) {
             return o.toString();
+        }
+    }
+
+    private static final class AtsdVersionInfo {
+        private static final TimeZone TIME_ZONE;
+        private static final String HBASE_VERSION;
+
+        static {
+            final Version version = VersionMethod.queryVersion().readEntity(Version.class);
+            TIME_ZONE = TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
+            HBASE_VERSION = version.getBuildInfo().getHbaseVersion();
         }
     }
 }
