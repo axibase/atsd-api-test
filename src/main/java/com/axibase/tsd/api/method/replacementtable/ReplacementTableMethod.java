@@ -76,7 +76,8 @@ public class ReplacementTableMethod extends BaseMethod {
             }
             for(Map.Entry<String, String> entry: newReplacementTable.getKeys().entrySet()) {
                 if(!replacementTable.getKeys().get(entry.getKey()).equals(entry.getValue())) {
-                    return false;
+                    String message = "ReplacementTable with the name " + replacementTableName + " exists, but does not equal to the given one.";
+                    throw new NotCheckedException(message);
                 }
             }
 
