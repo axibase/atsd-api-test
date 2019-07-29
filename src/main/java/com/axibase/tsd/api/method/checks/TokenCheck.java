@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 
 public class TokenCheck extends AbstractCheck {
-    private static final String ERROR_MESSAGE = "Token check failed!";
+    private static final String ERROR_MESSAGE = "Token creation failed!";
     private String token;
 
     public TokenCheck(String token) {

@@ -55,47 +55,12 @@ public class ReplacementTableMethod extends BaseMethod {
         return response;
     }
 
-    public static boolean replacementTableExist(ReplacementTable replacementTable) throws NotCheckedException {
-        String replacementTableName = replacementTable.getName().replace(" ", "_").toLowerCase();
-        final Response response = getReplacementTablesResponse(replacementTableName);
+    private static ReplacementTable findReplacementTable(final String replacementTableName) throws NotCheckedException {
+        String replacementTableNameLowerCase = replacementTableName.replace(" ", "_").toLowerCase();
+        final Response response = getReplacementTablesResponse(replacementTableNameLowerCase);
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
             if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-                return false;
-            }
-            String message = "Fail to execute replacement table query: " + response.getStatusInfo();
-            log.error(message);
-            throw new NotCheckedException(message);
-        }
-
-        try {
-            ReplacementTable newReplacementTable = response.readEntity(ReplacementTable.class);
-            if (!StringUtils.equalsIgnoreCase(replacementTableName, newReplacementTable.getName())) {
-                String message = "ReplacementTable API returned an entry we weren't asking for.";
-                log.error(message);
-                throw new NotCheckedException(message);
-            }
-            for(Map.Entry<String, String> entry: newReplacementTable.getKeys().entrySet()) {
-                if(!replacementTable.getKeys().get(entry.getKey()).equals(entry.getValue())) {
-                    String message = "ReplacementTable with the name " + replacementTableName + " exists, but does not equal to the given one.";
-                    throw new NotCheckedException(message);
-                }
-            }
-
-        } catch (ProcessingException err) {
-            NotCheckedException exception = new NotCheckedException("Could not parse Replacement Table from JSON: " + err.getMessage());
-            exception.addSuppressed(err);
-            log.error(exception.getMessage());
-            throw exception;
-        }
-        return true;
-    }
-
-    public static boolean replacementTableExist(String replacementTableName) throws NotCheckedException {
-        replacementTableName = replacementTableName.replace(" ", "_").toLowerCase();
-        final Response response = getReplacementTablesResponse(replacementTableName);
-        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
-            if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-                return false;
+                return null;
             }
             String message = "Fail to execute replacement table query: " + response.getStatusInfo();
             log.error(message);
@@ -104,17 +69,51 @@ public class ReplacementTableMethod extends BaseMethod {
 
         try {
             ReplacementTable replacementTable = response.readEntity(ReplacementTable.class);
-            if (!StringUtils.equalsIgnoreCase(replacementTableName, replacementTable.getName())) {
-                String message = "ReplacementTable API returned an entry we weren't asking for.";
-                log.error(message);
-                throw new NotCheckedException(message);
-            }
+
+            return replacementTable;
+
         } catch (ProcessingException err) {
             NotCheckedException exception = new NotCheckedException("Could not parse Replacement Table from JSON: " + err.getMessage());
-            exception.addSuppressed(err);
             log.error(exception.getMessage());
             throw exception;
         }
+    }
+
+    private static void checkReplacementTableName(ReplacementTable replacementTable, String expectedName) throws NotCheckedException {
+        if (!StringUtils.equalsIgnoreCase(replacementTable.getName(), expectedName)) {
+            String message = "ReplacementTable API returned an entry we weren't asking for.";
+            log.error(message);
+            throw new NotCheckedException(message);
+        }
+    }
+
+    private static void checkReplacementTableContent(ReplacementTable replacementTable, Map<String, String> expectedContent) throws NotCheckedException {
+        for (Map.Entry<String, String> entry : expectedContent.entrySet()) {
+            if (!replacementTable.getKeys().get(entry.getKey()).equals(entry.getValue())) {
+                String message = "ReplacementTable with the name " + replacementTable.getName() + " exists, but does not equal to the given one.";
+                throw new NotCheckedException(message);
+            }
+        }
+    }
+
+    public static boolean replacementTableExist(ReplacementTable replacementTable) throws NotCheckedException {
+        ReplacementTable receivedReplacementTable = findReplacementTable(replacementTable.getName());
+
+        if (receivedReplacementTable == null) {
+            return false;
+        }
+        checkReplacementTableName(receivedReplacementTable, replacementTable.getName());
+        checkReplacementTableContent(receivedReplacementTable, replacementTable.getKeys());
+        return true;
+    }
+
+    public static boolean replacementTableExist(String replacementTableName) throws NotCheckedException {
+        ReplacementTable receivedReplacementTable = findReplacementTable(replacementTableName);
+
+        if (receivedReplacementTable == null) {
+            return false;
+        }
+        checkReplacementTableName(receivedReplacementTable, replacementTableName);
         return true;
     }
 }

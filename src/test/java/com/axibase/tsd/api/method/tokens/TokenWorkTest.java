@@ -7,7 +7,6 @@ import com.axibase.tsd.api.method.alert.AlertTest;
 import com.axibase.tsd.api.method.checks.*;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
-import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
@@ -22,14 +21,12 @@ import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
-import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -47,27 +44,27 @@ import static org.testng.AssertJUnit.*;
 
 public class TokenWorkTest extends BaseMethod {
     private static final String USER_NAME = "apitokenuser_worktest";
-    private static final String USER_PASSWORD = RandomStringUtils.random(10, true, true);
     private static final String ADMIN_NAME = Config.getInstance().getLogin();
-    private static final String API_PATH = Config.getInstance().getApiPath();
+    public static final String API_PATH = Config.getInstance().getApiPath();
 
     @DataProvider
-    private Object[][] users() {
+    public Object[][] users() {
         return new String[][]{
                 {ADMIN_NAME},
                 {USER_NAME}
         };
     }
 
-    @BeforeClass
-    private void createUser() {
+    @BeforeSuite
+    public void createUser() {
         String path = "/admin/users/edit.xhtml";
+        String userPassword = RandomStringUtils.random(10, true, true);
 
         executeRootRequest(webTarget -> webTarget.path(path)
                 .queryParam("enabled", "on")
                 .queryParam("userBean.username", USER_NAME)
-                .queryParam("userBean.password", USER_PASSWORD)
-                .queryParam("repeatPassword", USER_PASSWORD)
+                .queryParam("userBean.password", userPassword)
+                .queryParam("repeatPassword", userPassword)
                 .queryParam("save", "Save")
                 .queryParam("userBean.userRoles", "ROLE_API_DATA_WRITE")
                 .queryParam("userBean.userRoles", "ROLE_API_META_WRITE")
@@ -78,68 +75,6 @@ public class TokenWorkTest extends BaseMethod {
                 .request()
                 .method(HttpMethod.POST))
                 .bufferEntity();
-    }
-
-    @Issue("6052")
-    @Test(
-            dataProvider = "users"
-    )
-    public void tokenSeriesTest(String username) throws Exception {
-        Response responseWithToken;
-
-        String responseTokenEntity;
-        String entity = Mocks.entity();
-        String metric = Mocks.metric();
-        long startUnixTime = System.currentTimeMillis();
-        int value = 22;
-
-        String insertURL = "/series/insert";
-        String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
-        List<Series> seriesList = new ArrayList<>();
-        Series series = new Series(entity, metric);
-        Sample sample = Sample.ofTimeInteger(startUnixTime, value);
-        series.addSamples(sample);
-        seriesList.add(series);
-        insert(username, insertURL, seriesList, insertToken);
-        Checker.check(new SeriesCheck(seriesList));
-        //checking get method
-        String getURL = "/series/json/" + entity + "/" + metric;
-        String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL + "?startDate=previous_hour&endDate=next_day");
-        responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + getURL)
-                .queryParam("startDate", "previous_hour")
-                .queryParam("endDate", "next_day")
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
-                .method(HttpMethod.GET));
-        responseWithToken.bufferEntity();
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.contains("warning")));
-        compareJsonString(prettyPrint(seriesList), responseTokenEntity, false);
-        //checking queries
-        String queryURL = "/series/query";
-        SeriesQuery q = new SeriesQuery(entity, metric, startUnixTime, System.currentTimeMillis());
-        String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
-        List<SeriesQuery> query = new ArrayList<>();
-        query.add(q);
-        responseWithToken = query(queryURL, query, queryToken);
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.contains("warning")));
-        compareJsonString(prettyPrint(query), responseTokenEntity, false);
-        //checking delete method
-        String deleteURL = "/series/delete";
-        SeriesQuery delete = new SeriesQuery(entity, metric);
-        delete.setExactMatch(false);
-        List<SeriesQuery> deleteQuery = new ArrayList<>();
-        deleteQuery.add(delete);
-        String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.POST, Entity.json(deleteQuery)))
-                .bufferEntity();
-        //checking that series was successfully deleted
-        Checker.check(new NotPassedCheck(new SeriesCheck(seriesList)));
     }
 
     @Issue("6052")
@@ -600,7 +535,7 @@ public class TokenWorkTest extends BaseMethod {
         assertTrue("Metric was not inserted with dual token for user " + username, !secondResponse.readEntity(String.class).contains("error"));
     }
 
-    private Response insert(String username, String insertURL, Object insertData, String insertToken) {
+    public static Response insert(String username, String insertURL, Object insertData, String insertToken) {
         Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + insertURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -611,7 +546,7 @@ public class TokenWorkTest extends BaseMethod {
         return responseWithToken;
     }
 
-    private Response get(String getURL, String getToken) {
+    public static Response get(String getURL, String getToken) {
         Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + getURL)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
@@ -620,7 +555,7 @@ public class TokenWorkTest extends BaseMethod {
         return responseWithToken;
     }
 
-    private Response query(String queryURL, Object query, String queryToken) {
+    public static Response query(String queryURL, Object query, String queryToken) {
         Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + queryURL)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -630,7 +565,7 @@ public class TokenWorkTest extends BaseMethod {
         return responseWithToken;
     }
 
-    private Response createOrReplace(String username, String url, Object data, String token) {
+    public static Response createOrReplace(String username, String url, Object data, String token) {
         Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + url)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -641,7 +576,7 @@ public class TokenWorkTest extends BaseMethod {
         return responseWithToken;
     }
 
-    private Response update(String username, String url, Object data, String token) {
+    public static Response update(String username, String url, Object data, String token) {
         Response responseWithToken = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + url)
                 .request()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
