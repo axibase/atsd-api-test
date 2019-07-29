@@ -319,9 +319,9 @@ public class MetaDataTest extends SqlMetaTest {
                 "string",
                 "string"
         };
-
+       
         assertSqlMetaNamesAndTypes("Wrong /api/sql/meta tags expansion for multiple existent metrics from atsd_series",
-                expectedNames, expectedTypes, sqlQuery);
+                    expectedNames, expectedTypes, sqlQuery);
     }
 
     @Issue("4363")

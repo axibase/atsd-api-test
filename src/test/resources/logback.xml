@@ -20,7 +20,8 @@
                 <expression>
                     return logger.contains("org.apache.http") ||
                     logger.equals("org.jvnet.hk2.logger") ||
-                    message.startsWith("Selected ExecutorServiceProvider implementation");
+                    message.startsWith("Selected ExecutorServiceProvider implementation") ||
+                    message.startsWith("Selected ScheduledExecutorServiceProvider implementation");
                 </expression>
             </evaluator>
             <onMatch>DENY</onMatch>
@@ -40,6 +41,8 @@
     </appender>
 
     <logger name="org.glassfish.jersey.internal.util" level="ERROR"/>
+
+    <logger name="com.axibase.tsd.api.listeners.RequestResponseOnFailWriter" level="INFO"/>
 
     <root level="${loggerLevel}">
         <!--<root level="info">-->

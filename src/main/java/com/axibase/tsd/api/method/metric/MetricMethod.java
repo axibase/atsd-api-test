@@ -135,7 +135,7 @@ public class MetricMethod extends BaseMethod {
             return false;
         }
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
-            throw new Exception("Fail to execute queryMetric query");
+            throw new Exception("Fail to execute metric query: " + responseAsString(response));
         }
         return compareJsonString(jacksonMapper.writeValueAsString(metric), response.readEntity(String.class));
     }
@@ -151,6 +151,6 @@ public class MetricMethod extends BaseMethod {
             return metricExist(metric.replace(" ", "_"));
         }
 
-        throw new NotCheckedException("Fail to execute metric query");
+        throw new NotCheckedException("Fail to execute metric query: " + responseAsString(response));
     }
 }

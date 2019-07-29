@@ -522,7 +522,7 @@ public class DetailInterpolationTest extends SqlTest {
         Response response = SqlMethod.queryResponse(sqlQuery);
 
         assertBadRequest(
-                "Syntax error at line 1 position 316: no viable alternative at input 'WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, TRUE,'",
+                "Syntax error at line 1 position 366: no viable alternative at input 'WITH INTERPOLATE (DETAIL, PREVIOUS, OUTER, TRUE,'",
                 response);
     }
 }
