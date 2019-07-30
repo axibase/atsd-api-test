@@ -23,15 +23,15 @@ public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
 
-    public static <T> Response createOrReplaceEntity(String entityName, T query,  String token) {
+    public static <T> Response createOrReplaceEntity(String entityName, T query, String token) {
         Response response;
-        if(token != null) {
+        if (token != null) {
             response = executeTokenRootRequest(webTarget -> webTarget.path(Util.API_PATH + METHOD_ENTITY)
-                                        .resolveTemplate("entity", entityName)
-                                        .request()
-                                        .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                                        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                                        .put(json(query)));
+                    .resolveTemplate("entity", entityName)
+                    .request()
+                    .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
+                    .put(json(query)));
         } else {
             response = executeApiRequest(webTarget -> webTarget
                     .path(METHOD_ENTITY)
@@ -84,7 +84,7 @@ public class EntityMethod extends BaseMethod {
         } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             return false;
         }
-        if (entity.contains(" ")){
+        if (entity.contains(" ")) {
             return entityExist(entity.replace(" ", "_"));
         }
 
@@ -93,7 +93,7 @@ public class EntityMethod extends BaseMethod {
 
     public static Response getEntityResponse(String entityName, String token) {
         Response response;
-        if(token != null) {
+        if (token != null) {
             response = executeTokenRootRequest(webTarget -> webTarget.path(Util.API_PATH + METHOD_ENTITY)
                     .resolveTemplate("entity", entityName)
                     .request()
@@ -163,7 +163,7 @@ public class EntityMethod extends BaseMethod {
 
     public static Response deleteEntity(String entityName, String token) {
         Response response;
-        if(token != null) {
+        if (token != null) {
             response = executeApiRequest(webTarget -> webTarget
                     .path(Util.API_PATH + METHOD_ENTITY)
                     .resolveTemplate("entity", entityName)
@@ -187,7 +187,7 @@ public class EntityMethod extends BaseMethod {
 
     public static Response queryEntityMetrics(String entityName, Map<String, String> parameters, String token) {
         Response response;
-        if(token!=null) {
+        if (token != null) {
             response = executeApiRequest(webTarget -> {
                 WebTarget target = webTarget.path(Util.API_PATH + METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
                 for (Map.Entry<String, String> entry : parameters.entrySet()) {
@@ -209,7 +209,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response queryEntityMetrics(String entityName, String token) {
-        return queryEntityMetrics(entityName, new HashMap<>(),token);
+        return queryEntityMetrics(entityName, new HashMap<>(), token);
     }
 
     private static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
@@ -265,12 +265,6 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response queryEntityPropertyTypes(String entityName) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_ENTITY_PROPERTY_TYPES)
-                .resolveTemplate("entity", entityName)
-                .request()
-                .get());
-        response.bufferEntity();
-        return response;
+        return queryEntityPropertyTypes(entityName, null);
     }
 }
