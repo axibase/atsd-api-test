@@ -2,8 +2,8 @@ package com.axibase.tsd.api.method.checks;
 
 
 public class DeletionCheck extends AbstractCheck {
-    private static final String ERROR_MESSAGE = "Failed to delete!";
     private AbstractCheck check;
+    private final String errorMessage = check.getClass().getSimpleName() + " passed, but must have failed.";
 
     public DeletionCheck(AbstractCheck check) {
         this.check = check;
@@ -16,6 +16,6 @@ public class DeletionCheck extends AbstractCheck {
 
     @Override
     public String getErrorMessage() {
-        return ERROR_MESSAGE;
+        return errorMessage;
     }
 }
