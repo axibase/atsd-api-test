@@ -5,10 +5,12 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.util.AuthorizationType;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +24,32 @@ public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
 
-    public static <T> Response createOrReplaceEntity(String entityName, T query) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_ENTITY)
-                .resolveTemplate("entity", entityName)
-                .request()
-                .put(json(query)));
+    private static <T> Response createOrReplaceEntity(String entityName, T query, AuthorizationType authorizationType, String token) {
+        Response response;
+        if(authorizationType == AuthorizationType.BEARER) {
+            response = executeTokenRootRequest(webTarget -> webTarget.path(Util.API_PATH + METHOD_ENTITY)
+                                        .resolveTemplate("entity", entityName)
+                                        .request()
+                                        .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .header(HttpHeaders.AUTHORIZATION, String.format("%s %s", authorizationType.getName(), token))
+                                        .put(json(query)));
+        } else {
+            response = executeApiRequest(webTarget -> webTarget
+                    .path(METHOD_ENTITY)
+                    .resolveTemplate("entity", entityName)
+                    .request()
+                    .put(json(query)));
+        }
         response.bufferEntity();
         return response;
+    }
+
+    public static Response createOrReplaceEntity(Entity entity, String token) {
+        return createOrReplaceEntity(entity.getName(), entity, AuthorizationType.BEARER, token);
+    }
+
+    public static <T> Response createOrReplaceEntity(String entityName, T query) {
+        return createOrReplaceEntity(entityName, query, AuthorizationType.BASIC, null);
     }
 
     public static Response createOrReplaceEntity(Entity entity) {

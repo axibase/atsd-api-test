@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.util;
 
+import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +32,7 @@ public class Util {
     public static final long MIN_STORABLE_TIMESTAMP = 0L;
     public static final long MAX_STORABLE_TIMESTAMP = 4294969199999L;
     public static final String DEFAULT_TIMEZONE_NAME = "UTC";
+    public static final String API_PATH = Config.getInstance().getApiPath();
     private static final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     public static TimeZone getServerTimeZone() {
