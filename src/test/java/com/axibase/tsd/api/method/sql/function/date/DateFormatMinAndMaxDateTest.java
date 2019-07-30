@@ -23,7 +23,10 @@ public class DateFormatMinAndMaxDateTest extends SqlTest {
         SeriesMethod.insertSeriesCheck(series);
     }
 
-    @Test
+    @Test(
+            description = "In original issue date_format(min(time)) return start date of period, not the date of first sample, when group by period was enabled." +
+                    "This test checks date_format(min(time)) function behavior for query with grouping by period."
+    )
     @Issue("6416")
     public void testMinDate() {
         String sqlQuery = String.format("SELECT date_format(min(time)) FROM \"%s\" WHERE datetime BETWEEN '%s' AND '%s'" +
@@ -35,7 +38,10 @@ public class DateFormatMinAndMaxDateTest extends SqlTest {
         assertSqlQueryRows("Min date is incorrect for date_format function", expectedRow, sqlQuery);
     }
 
-    @Test
+    @Test(
+            description = "In original issue date_format(min(time)) return start date of period, not the date of first sample, when group by period was enabled." +
+                    "This test checks date_format(max(time)) function behavior for query with grouping by period."
+    )
     @Issue("6416")
     public void testMaxDate() {
         String sqlQuery = String.format("SELECT date_format(max(time)) FROM \"%s\" WHERE datetime BETWEEN '%s' AND '%s'" +
@@ -44,6 +50,6 @@ public class DateFormatMinAndMaxDateTest extends SqlTest {
         String[][] expectedRow = {
                 {STORED_TIME}
         };
-        assertSqlQueryRows("Min date is incorrect for date_format function", expectedRow, sqlQuery);
+        assertSqlQueryRows("Max date is incorrect for date_format function", expectedRow, sqlQuery);
     }
 }
