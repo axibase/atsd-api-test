@@ -20,8 +20,10 @@ import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpo
 import com.axibase.tsd.api.util.CommonAssertions;
 import com.axibase.tsd.api.util.Filter;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
 import com.google.common.collect.Sets;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,9 +48,6 @@ public class SeriesQueryTest extends SeriesMethod {
     private final Series TEST_SERIES1 = Mocks.series();
     private final Series TEST_SERIES2 = Mocks.series();
     private final Series TEST_SERIES3 = Mocks.series();
-
-    private Random random = new Random();
-    private Calendar calendar = Calendar.getInstance();
 
     @BeforeClass
     public void prepare() throws Exception {
@@ -204,7 +203,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         assertEquals("Empty data for query interval that intersects stored interval from right", 1, data.size());
         assertEquals("Incorrect stored date", MIN_STORABLE_DATE, data.get(0).getRawDate());
-        assertTrue("Incorrect stored value", v.compareTo(data.get(0).getValue()) == 0);
+        assertEquals("Incorrect stored value", v.compareTo(data.get(0).getValue()), 0);
     }
 
     @Issue("3043")
@@ -213,6 +212,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series("e-query-range-19", "m-query-range-19");
         BigDecimal v = new BigDecimal("7");
 
+        final Calendar calendar = Calendar.getInstance();
         calendar.setTime(parseDate("1969-01-01T00:00:00.000Z"));
         Date endDate = parseDate(MIN_STORABLE_DATE);
 
@@ -235,6 +235,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series("e-query-range-20", "m-query-range-20");
         BigDecimal v = new BigDecimal("8");
 
+        final Calendar calendar = Calendar.getInstance();
         calendar.setTime(parseDate(MIN_STORABLE_DATE));
         Date maxStorableDay = parseDate(MAX_STORABLE_DATE);
 
@@ -252,6 +253,7 @@ public class SeriesQueryTest extends SeriesMethod {
         Series series = new Series("e-query-range-21", "m-query-range-21");
         BigDecimal v = new BigDecimal("9");
 
+        final Calendar calendar = Calendar.getInstance();
         calendar.setTime(parseDate(addOneMS(MAX_STORABLE_DATE)));
         Date endDate = parseDate("2110-01-01T00:00:00.000Z");
 
@@ -261,16 +263,17 @@ public class SeriesQueryTest extends SeriesMethod {
 
             assertEquals("Attempt to insert date before min storable date doesn't return error",
                     BAD_REQUEST.getStatusCode(), response.getStatusInfo().getStatusCode());
-            assertTrue("Attempt to insert date before min storable date doesn't return error",
-                    response.readEntity(String.class).startsWith("{\"error\":\"IllegalArgumentException: Too large timestamp"));
 
+            assertEquals("Attempt to insert date before min storable date doesn't return error",
+                    "{\"error\":\"IllegalArgumentException: Too large timestamp " + Util.getUnixTime(series.getData().get(0).getRawDate()) + ". Max allowed value is " + MAX_STORABLE_TIMESTAMP + "\"}",
+                    response.readEntity(String.class));
             setRandomTimeDuringNextDay(calendar);
         }
     }
 
     @Issue("2979")
     @Test
-    public void testEntitesExpressionStarChar() throws Exception {
+    public void testEntitiesExpressionStarChar() throws Exception {
         Series series = new Series("e-query-wildcard-22-1", "m-query-wildcard-22");
         series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
@@ -288,7 +291,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
     @Issue("2979")
     @Test
-    public void testEntitesExpressionQuestionChar() throws Exception {
+    public void testEntitiesExpressionQuestionChar() throws Exception {
         Series series = new Series("e-query-wildcard-23-1", "m-query-wildcard-23");
         series.addSamples(Sample.ofDateInteger("2010-01-01T00:00:00.000Z", 0));
         insertSeriesCheck(Collections.singletonList(series));
@@ -652,7 +655,7 @@ public class SeriesQueryTest extends SeriesMethod {
 
         CommonAssertions.jsonAssert(
                 Arrays.asList(TEST_SERIES3, TEST_SERIES3),
-                SeriesMethod.querySeries(query, query)
+                SeriesMethod.querySeries(Arrays.asList(query, query))
         );
     }
 
@@ -956,10 +959,10 @@ public class SeriesQueryTest extends SeriesMethod {
                 result.get(0));
     }
 
-    private void setRandomTimeDuringNextDay(Calendar calendar) {
+    private static void setRandomTimeDuringNextDay(Calendar calendar) {
         calendar.add(Calendar.DAY_OF_YEAR, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, random.nextInt(24));
-        calendar.set(Calendar.MINUTE, random.nextInt(60));
+        calendar.set(Calendar.HOUR_OF_DAY, RandomUtils.nextInt(0, 24));
+        calendar.set(Calendar.MINUTE, RandomUtils.nextInt(0, 60));
     }
 
     private SeriesQuery buildQuery() {

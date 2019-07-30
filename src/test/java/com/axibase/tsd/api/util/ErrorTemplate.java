@@ -22,7 +22,7 @@ public class ErrorTemplate {
     public static final String CANNOT_MODIFY_ENTITY_TPL = "IllegalArgumentException: Can not modify entities for entity group '%s'. Please reset expression field first.";
 
     public static final String UNKNOWN_ENTITY_FIELD_PREFIX = "com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException:";
-    public static final String TAG_VALUE_ARRAY_PREFIX = "com.fasterxml.jackson.databind.JsonMappingException: Can not deserialize instance";
+    public static final String TAG_VALUE_ARRAY_SUBSTRING = "not deserialize instance";
     public static final String INTERPOLATE_TYPE_REQUIRED = "IllegalArgumentException: Interpolation type is required";
     public static final String AGGREGATE_NON_DETAIL_REQUIRE_PERIOD = "IllegalArgumentException: Aggregation period is required for aggregation type '%s'";
 

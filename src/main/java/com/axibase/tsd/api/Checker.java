@@ -7,7 +7,7 @@ import com.axibase.tsd.api.util.NotCheckedException;
 
 public class Checker {
     public static void check(AbstractCheck check) {
-        Long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         while (!check.isChecked()) {
             if (System.currentTimeMillis() - BaseMethod.UPPER_BOUND_FOR_CHECK > startTime) {
                 throw new NotCheckedException(check.getErrorMessage());
