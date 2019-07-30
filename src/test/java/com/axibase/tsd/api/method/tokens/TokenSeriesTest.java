@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.tokens;
 
 import com.axibase.tsd.api.Checker;
-import com.axibase.tsd.api.method.checks.NotPassedCheck;
+import com.axibase.tsd.api.method.checks.DeletionCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.series.Sample;
@@ -116,6 +116,6 @@ public class TokenSeriesTest extends TokenWorkTest {
                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                 .bufferEntity();
         //checking that series was successfully deleted
-        Checker.check(new NotPassedCheck(new SeriesCheck(Collections.singletonList(deletionSeries))));
+        Checker.check(new DeletionCheck(new SeriesCheck(Collections.singletonList(deletionSeries))));
     }
 }

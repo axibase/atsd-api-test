@@ -1,11 +1,11 @@
 package com.axibase.tsd.api.method.checks;
 
 
-public class NotPassedCheck extends AbstractCheck {
+public class DeletionCheck extends AbstractCheck {
     private static final String ERROR_MESSAGE = "Failed to delete!";
     private AbstractCheck check;
 
-    public NotPassedCheck(AbstractCheck check) {
+    public DeletionCheck(AbstractCheck check) {
         this.check = check;
     }
 

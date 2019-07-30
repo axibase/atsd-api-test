@@ -140,7 +140,7 @@ public class TokenWorkTest extends BaseMethod {
                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                 .bufferEntity();
         //checking that series was successfully deleted
-        Checker.check(new NotPassedCheck(new PropertyCheck(property)));
+        Checker.check(new DeletionCheck(new PropertyCheck(property)));
     }
 
     @Issue("6052")
@@ -244,7 +244,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.POST, Entity.json(deleteQuery)))
                 .bufferEntity();
-        Checker.check(new NotPassedCheck(new AlertsCheck(query)));
+        Checker.check(new DeletionCheck(new AlertsCheck(query)));
     }
 
     @Issue("6052")
@@ -296,7 +296,7 @@ public class TokenWorkTest extends BaseMethod {
         metricName = metricName + "_1";
         Metric newMetric = new Metric(metricName);
         insert(username, renameURL, newMetric, renameToken);
-        Checker.check(new NotPassedCheck(new MetricCheck(metric)));
+        Checker.check(new DeletionCheck(new MetricCheck(metric)));
         Checker.check(new MetricCheck(newMetric));
         //checking delete method
         String deleteURL = "/metrics/" + metricName;
@@ -306,7 +306,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
-        Checker.check(new NotPassedCheck(new MetricCheck(newMetric)));
+        Checker.check(new DeletionCheck(new MetricCheck(newMetric)));
     }
 
     @Issue("6052")
@@ -384,7 +384,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
-        Checker.check(new NotPassedCheck(new EntityCheck(entity)));
+        Checker.check(new DeletionCheck(new EntityCheck(entity)));
 
     }
 
@@ -458,7 +458,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
-        Checker.check(new NotPassedCheck(new EntityGroupCheck(entityGroup)));
+        Checker.check(new DeletionCheck(new EntityGroupCheck(entityGroup)));
     }
 
     @Issue("6052")
@@ -502,7 +502,7 @@ public class TokenWorkTest extends BaseMethod {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
                 .method(HttpMethod.DELETE))
                 .bufferEntity();
-        Checker.check(new NotPassedCheck(new ReplacementTableCheck(new ReplacementTable().setName(replacementTableName))));
+        Checker.check(new DeletionCheck(new ReplacementTableCheck(new ReplacementTable().setName(replacementTableName))));
     }
 
     @Issue("6052")
