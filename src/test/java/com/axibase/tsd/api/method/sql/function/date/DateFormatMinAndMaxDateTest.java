@@ -26,7 +26,8 @@ public class DateFormatMinAndMaxDateTest extends SqlTest {
     @Test
     @Issue("6416")
     public void testMinDate() {
-        String sqlQuery = String.format("SELECT date_format(min(time)) FROM \"%s\" WHERE datetime BETWEEN '%s' AND '%s'", METRIC,
+        String sqlQuery = String.format("SELECT date_format(min(time)) FROM \"%s\" WHERE datetime BETWEEN '%s' AND '%s'" +
+                        " GROUP BY PERIOD(1 day)", METRIC,
                 Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         String[][] expectedRow = {
                 {STORED_TIME}
@@ -37,7 +38,8 @@ public class DateFormatMinAndMaxDateTest extends SqlTest {
     @Test
     @Issue("6416")
     public void testMaxDate() {
-        String sqlQuery = String.format("SELECT date_format(max(time)) FROM \"%s\" WHERE datetime BETWEEN '%s' AND '%s'", METRIC,
+        String sqlQuery = String.format("SELECT date_format(max(time)) FROM \"%s\" WHERE datetime BETWEEN '%s' AND '%s'" +
+                        " GROUP BY PERIOD(1 day)", METRIC,
                 Util.MIN_STORABLE_DATE, Util.MAX_STORABLE_DATE);
         String[][] expectedRow = {
                 {STORED_TIME}
