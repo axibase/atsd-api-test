@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class DateFormatMinAndMaxDateTest extends SqlTest {
     private static final String ENTITY = Mocks.entity();
     private static final String METRIC = Mocks.metric();
-    private static final String STORED_TIME = Mocks.ISO_TIME;
+    private static final String STORED_TIME = "2019-07-30T10:22:47.019Z";
     private static final int VALUE = Mocks.INT_VALUE;
 
     @BeforeClass
