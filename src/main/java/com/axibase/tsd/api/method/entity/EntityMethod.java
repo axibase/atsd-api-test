@@ -131,7 +131,7 @@ public class EntityMethod extends BaseMethod {
     public static <T> Response updateEntity(String entityName, T query, String token) {
         Response response;
         if (token != null) {
-            response = executeApiRequest(webTarget -> webTarget
+            response = executeTokenRootRequest(webTarget -> webTarget
                     .path(Util.API_PATH + METHOD_ENTITY)
                     .resolveTemplate("entity", entityName)
                     .request()
@@ -164,7 +164,7 @@ public class EntityMethod extends BaseMethod {
     public static Response deleteEntity(String entityName, String token) {
         Response response;
         if (token != null) {
-            response = executeApiRequest(webTarget -> webTarget
+            response = executeTokenRootRequest(webTarget -> webTarget
                     .path(Util.API_PATH + METHOD_ENTITY)
                     .resolveTemplate("entity", entityName)
                     .request()
@@ -188,7 +188,7 @@ public class EntityMethod extends BaseMethod {
     public static Response queryEntityMetrics(String entityName, Map<String, String> parameters, String token) {
         Response response;
         if (token != null) {
-            response = executeApiRequest(webTarget -> {
+            response = executeTokenRootRequest(webTarget -> {
                 WebTarget target = webTarget.path(Util.API_PATH + METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
                 for (Map.Entry<String, String> entry : parameters.entrySet()) {
                     target = target.queryParam(entry.getKey(), entry.getValue());
@@ -223,7 +223,7 @@ public class EntityMethod extends BaseMethod {
     public static Response queryEntityGroups(String entityName, String token) {
         Response response;
         if (token != null) {
-            response = executeApiRequest(webTarget -> webTarget
+            response = executeTokenRootRequest(webTarget -> webTarget
                     .path(Util.API_PATH + METHOD_ENTITY_GROUPS)
                     .resolveTemplate("entity", entityName)
                     .request()
@@ -246,8 +246,9 @@ public class EntityMethod extends BaseMethod {
 
     public static Response queryEntityPropertyTypes(String entityName, String token) {
         Response response;
+        System.err.println(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES);
         if (token != null) {
-            response = executeApiRequest(webTarget -> webTarget
+            response = executeTokenRootRequest(webTarget -> webTarget
                     .path(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES)
                     .resolveTemplate("entity", entityName)
                     .request()
