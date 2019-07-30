@@ -28,7 +28,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class TokenSeriesTest extends TokenWorkTest {
     private final String entity = Mocks.entity();
     private final String metric = Mocks.metric();
-    private static final int VALUE = Mocks.value();
+    private static final int VALUE = Mocks.INT_VALUE;
     private static final String SAMPLE_TIME = Mocks.ISO_TIME;
 
     private Series series;
