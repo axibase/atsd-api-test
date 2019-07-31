@@ -8,11 +8,13 @@ import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -22,21 +24,24 @@ public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
     private static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
+    private static final String ENTITY_KEYWORD = "entity";
+
+    private static Function<WebTarget, Invocation.Builder> builderFunction(String path, String entityName) {
+        return webTarget -> webTarget.path(path)
+                .resolveTemplate(ENTITY_KEYWORD, entityName)
+                .request();
+    }
 
     public static <T> Response createOrReplaceEntity(String entityName, T query, String token) {
         Response response;
         if (token != null) {
-            response = executeTokenRootRequest(webTarget -> webTarget.path(Util.API_PATH + METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/json")
+            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                     .put(json(query)));
         } else {
-            response = executeApiRequest(webTarget -> webTarget
-                    .path(METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .put(json(query)));
         }
         response.bufferEntity();
@@ -94,16 +99,13 @@ public class EntityMethod extends BaseMethod {
     public static Response getEntityResponse(String entityName, String token) {
         Response response;
         if (token != null) {
-            response = executeTokenRootRequest(webTarget -> webTarget.path(Util.API_PATH + METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                     .get());
         } else {
-            response = executeApiRequest(webTarget -> webTarget
-                    .path(METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .get());
         }
         response.bufferEntity();
@@ -131,18 +133,14 @@ public class EntityMethod extends BaseMethod {
     public static <T> Response updateEntity(String entityName, T query, String token) {
         Response response;
         if (token != null) {
-            response = executeTokenRootRequest(webTarget -> webTarget
-                    .path(Util.API_PATH + METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .header(HttpHeaders.CONTENT_TYPE, "application/json")
                     .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                     .method("PATCH", json(query)));
         } else {
-            response = executeApiRequest(webTarget -> webTarget
-                    .path(METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .method("PATCH", json(query)));
         }
         response.bufferEntity();
@@ -164,17 +162,13 @@ public class EntityMethod extends BaseMethod {
     public static Response deleteEntity(String entityName, String token) {
         Response response;
         if (token != null) {
-            response = executeTokenRootRequest(webTarget -> webTarget
-                    .path(Util.API_PATH + METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                     .delete());
         } else {
-            response = executeApiRequest(webTarget -> webTarget
-                    .path(METHOD_ENTITY)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
+                    .apply(webTarget)
                     .delete());
         }
         response.bufferEntity();
@@ -223,17 +217,13 @@ public class EntityMethod extends BaseMethod {
     public static Response queryEntityGroups(String entityName, String token) {
         Response response;
         if (token != null) {
-            response = executeTokenRootRequest(webTarget -> webTarget
-                    .path(Util.API_PATH + METHOD_ENTITY_GROUPS)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY_GROUPS, entityName)
+                    .apply(webTarget)
                     .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                     .get());
         } else {
-            response = executeApiRequest(webTarget -> webTarget
-                    .path(METHOD_ENTITY_GROUPS)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY_GROUPS, entityName)
+                    .apply(webTarget)
                     .get());
         }
         response.bufferEntity();
@@ -248,17 +238,13 @@ public class EntityMethod extends BaseMethod {
         Response response;
         System.err.println(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES);
         if (token != null) {
-            response = executeTokenRootRequest(webTarget -> webTarget
-                    .path(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES, entityName)
+                    .apply(webTarget)
                     .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
                     .get());
         } else {
-            response = executeApiRequest(webTarget -> webTarget
-                    .path(METHOD_ENTITY_PROPERTY_TYPES)
-                    .resolveTemplate("entity", entityName)
-                    .request()
+            response = executeApiRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES, entityName)
+                    .apply(webTarget)
                     .get());
         }
         response.bufferEntity();

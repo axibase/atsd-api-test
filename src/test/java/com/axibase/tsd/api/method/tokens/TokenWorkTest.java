@@ -324,12 +324,12 @@ public class TokenWorkTest extends BaseMethod {
         //checking create method
         String createURL = "/entities/" + entityName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
-        createOrReplace(username, createURL, entity, createToken);
+        EntityMethod.createOrReplaceEntity(entity, createToken);
         Checker.check(new EntityCheck(entity));
         //checking get method
         String getURL = "/entities/" + entityName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        responseWithToken = get(getURL, getToken);
+        responseWithToken = EntityMethod.getEntityResponse(entityName, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Entity was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
         compareJsonString(entity.toString(), responseTokenEntity, false);
@@ -337,7 +337,7 @@ public class TokenWorkTest extends BaseMethod {
         String updateURL = "/entities/" + entityName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         entity.addTag(tagName, tagValue);
-        update(username, updateURL, entity, updateToken);
+        EntityMethod.updateEntity(entity, updateToken);
         Checker.check(new EntityCheck(entity));
         //checking entity groups, metrics and property types methods
         Metric metric = new Metric()
@@ -350,7 +350,7 @@ public class TokenWorkTest extends BaseMethod {
         SeriesMethod.insertSeriesCheck(series);
         String metricsURL = "/entities/" + entityName + "/metrics";
         String metricsToken = TokenRepository.getToken(username, HttpMethod.GET, metricsURL);
-        responseWithToken = get(metricsURL, metricsToken);
+        responseWithToken = EntityMethod.queryEntityMetrics(entityName, metricsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         compareJsonString(metric.toString(), responseTokenEntity, false);
 
@@ -361,7 +361,7 @@ public class TokenWorkTest extends BaseMethod {
         EntityGroupMethod.addEntities(entityGroup.getName(), Collections.singletonList(entityName));
         String entityGroupsURL = "/entities/" + entityName + "/groups";
         String entityGroupsToken = TokenRepository.getToken(username, HttpMethod.GET, entityGroupsURL);
-        responseWithToken = get(entityGroupsURL, entityGroupsToken);
+        responseWithToken = EntityMethod.queryEntityGroups(entityName, entityGroupsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         compareJsonString(entityGroup.toString(), responseTokenEntity, false);
 
@@ -372,18 +372,14 @@ public class TokenWorkTest extends BaseMethod {
         PropertyMethod.insertPropertyCheck(property);
         String propertyTypesURL = "/entities/" + entityName + "/property-types";
         String propertyTypesToken = TokenRepository.getToken(username, HttpMethod.GET, propertyTypesURL);
-        responseWithToken = get(propertyTypesURL, propertyTypesToken);
+        responseWithToken = EntityMethod.queryEntityPropertyTypes(entityName, propertyTypesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertEquals("Entity Property Types method does not work with tokens for user " + username, "[\"" + property.getType() + "\"]", responseTokenEntity);
 
         //checking delete method
         String deleteURL = "/entities/" + entityName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.DELETE))
-                .bufferEntity();
+        EntityMethod.deleteEntity(entityName, deleteToken);
         Checker.check(new DeletionCheck(new EntityCheck(entity)));
 
     }
