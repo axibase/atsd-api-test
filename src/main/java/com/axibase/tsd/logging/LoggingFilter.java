@@ -7,13 +7,16 @@ import com.axibase.tsd.api.util.Util;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.client.ClientResponse;
+import org.glassfish.jersey.message.internal.HeaderUtils;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -22,9 +25,23 @@ public class LoggingFilter implements ClientResponseFilter {
     private static final ThreadLocal<RequestAndResponse> lastRequestAndResponse = new ThreadLocal<>();
     private final boolean isCheckLoggingEnable = Config.getInstance().isCheckLoggingEnable();
 
+    @SuppressWarnings("unchecked")
+    private static void appendHeaders(MultivaluedMap headers, StringBuilder buffer) {
+        final Map<String, String> headersSingleValue = HeaderUtils.asStringHeadersSingleValue(headers);
+        for (Map.Entry<String, String> header : headersSingleValue.entrySet()) {
+            final String value = header.getValue();
+            buffer.append(header.getKey()).append(": ");
+            if (value != null) {
+                buffer.append(value);
+            }
+            buffer.append("\r\n");
+        }
+    }
+
     private static void appendRequestDescription(ClientRequestContext requestContext, StringBuilder builder) {
         builder.append(" > ").append(requestContext.getMethod())
                 .append("  ").append(requestContext.getUri()).append('\n');
+        appendHeaders(requestContext.getHeaders(), builder);
         if (requestContext.hasEntity()) {
             builder.append(Util.prettyPrint(requestContext.getEntity()))
                     .append("\n\n");
@@ -33,6 +50,7 @@ public class LoggingFilter implements ClientResponseFilter {
 
     private static void appendResponseDescription(ClientResponseContext responseContext, StringBuilder builder, boolean full) {
         builder.append(" < ").append(responseContext.getStatus()).append('\n');
+        appendHeaders(responseContext.getHeaders(), builder);
         try {
             if (full) {
                 if (responseContext instanceof ClientResponse) {
