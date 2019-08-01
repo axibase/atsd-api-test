@@ -36,6 +36,10 @@ public class EntityMethod extends BaseMethod {
         return createOrReplaceEntity(entity.getName(), entity);
     }
 
+    public static void createOrReplaceEntityCheck(String entityName) throws Exception {
+        createOrReplaceEntityCheck(new Entity(entityName));
+    }
+
     public static void createOrReplaceEntityCheck(Entity entity) throws Exception {
         createOrReplaceEntityCheck(entity, new EntityCheck(entity));
     }
