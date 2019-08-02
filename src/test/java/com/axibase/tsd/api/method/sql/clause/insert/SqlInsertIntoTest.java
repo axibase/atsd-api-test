@@ -9,6 +9,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -43,6 +44,10 @@ public class SqlInsertIntoTest extends SqlTest {
     private static final String METRIC_6 = Mocks.metric();
     private static final int NEGATIVE_VALUE = -1;
 
+    private static final String ENTITY_7 = Mocks.entity();
+    private static final String METRIC_7 = Mocks.metric();
+    private static final String SCIENTIFIC_NOTATION_VALUE = Mocks.SCIENTIFIC_NOTATION_VALUE;
+
     @BeforeClass
     public void prepareData() throws Exception {
         series = new Series(ENTITY_1, METRIC_1);
@@ -54,12 +59,14 @@ public class SqlInsertIntoTest extends SqlTest {
         EntityMethod.createOrReplaceEntityCheck(ENTITY_4);
         EntityMethod.createOrReplaceEntityCheck(ENTITY_5);
         EntityMethod.createOrReplaceEntityCheck(ENTITY_6);
+        EntityMethod.createOrReplaceEntityCheck(ENTITY_7);
 
         MetricMethod.createOrReplaceMetricCheck(METRIC_2);
         MetricMethod.createOrReplaceMetricCheck(METRIC_3);
         MetricMethod.createOrReplaceMetricCheck(METRIC_4);
         MetricMethod.createOrReplaceMetricCheck(METRIC_5);
         MetricMethod.createOrReplaceMetricCheck(METRIC_6);
+        MetricMethod.createOrReplaceMetricCheck(METRIC_7);
     }
 
     @Test(
@@ -68,10 +75,13 @@ public class SqlInsertIntoTest extends SqlTest {
     @Issue("5962")
     public void testInsertion() {
         int newValue = VALUE + 1;
+        String newTime = Util.ISOFormat(MILLIS_TIME + 1);
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %d)"
-                , METRIC_1, ENTITY_1, ISO_TIME, newValue);
+                , METRIC_1, ENTITY_1, newTime, newValue);
         assertOkRequest("Insertion of series with SQL failed!", sqlQuery);
-        Checker.check(new SeriesCheck(Collections.singletonList(series.addSamples(Sample.ofDateInteger(ISO_TIME, newValue)))));
+        Checker.check(new SeriesCheck(Collections.singletonList(series.addSamples(
+                Sample.ofDateInteger(newTime, newValue)
+        ))));
     }
 
     @Test(
@@ -97,7 +107,7 @@ public class SqlInsertIntoTest extends SqlTest {
     @Issue("5962")
     public void testInsertionViaAtsdSeries() {
         String sqlQuery = String.format("INSERT INTO \"atsd_series\"(entity, datetime, \"%s\") VALUES('%s', '%s', %d)"
-                ,METRIC_3, ENTITY_3, ISO_TIME, VALUE );
+                , METRIC_3, ENTITY_3, ISO_TIME, VALUE);
         assertOkRequest("Insertion of series via atsd_series with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
@@ -129,7 +139,7 @@ public class SqlInsertIntoTest extends SqlTest {
     @Issue("5962")
     public void testInsertionOfText() {
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, text) VALUES('%s', '%s', '%s')"
-                ,METRIC_5, ENTITY_5, ISO_TIME, TEXT );
+                , METRIC_5, ENTITY_5, ISO_TIME, TEXT);
         assertOkRequest("Insertion of series with text sample with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
@@ -145,13 +155,29 @@ public class SqlInsertIntoTest extends SqlTest {
     @Issue("5962")
     public void testInsertionWithNegativeValue() {
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %d)"
-                ,METRIC_6, ENTITY_6, ISO_TIME, NEGATIVE_VALUE );
+                , METRIC_6, ENTITY_6, ISO_TIME, NEGATIVE_VALUE);
         assertOkRequest("Insertion of series with negative sample with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
                         .setEntity(ENTITY_6)
                         .setMetric(METRIC_6)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, NEGATIVE_VALUE))
+        )));
+    }
+
+    @Test(
+            description = "Tests that series can be inserted with scientific notation."
+    )
+    @Issue("5962")
+    public void testInsertionWithScientificNotation() {
+        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %s)"
+                , METRIC_7, ENTITY_7, ISO_TIME, SCIENTIFIC_NOTATION_VALUE);
+        assertOkRequest("Insertion of series with scientific notation with SQL failed!", sqlQuery);
+        Checker.check(new SeriesCheck(Collections.singletonList(
+                new Series()
+                        .setEntity(ENTITY_7)
+                        .setMetric(METRIC_7)
+                        .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
         )));
     }
 }
