@@ -15,7 +15,7 @@ public class SqlInsertionErrorsTest extends SqlTest {
     @Issue("5962")
     public void testUnsetDeclaredParameterInsertion() {
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value, not_set) VALUES('%s', '%s', %d)"
-                ,Mocks.metric(), Mocks.entity(), ISO_TIME, VALUE);
+                , Mocks.metric(), Mocks.entity(), ISO_TIME, VALUE);
         assertBadSqlRequest("Invalid SQL query with unset declared parameter was accepted!", sqlQuery);
     }
 
@@ -25,7 +25,7 @@ public class SqlInsertionErrorsTest extends SqlTest {
     @Issue("5962")
     public void testUnsetRequiredParameterInsertion() {
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime) VALUES('%s','%s')"
-                ,Mocks.metric(), Mocks.entity(), ISO_TIME);
+                , Mocks.metric(), Mocks.entity(), ISO_TIME);
         assertBadSqlRequest("Invalid SQL query with unset required parameter was accepted!", sqlQuery);
     }
 }
