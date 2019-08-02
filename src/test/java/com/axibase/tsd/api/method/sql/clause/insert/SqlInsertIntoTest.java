@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
@@ -53,6 +54,9 @@ public class SqlInsertIntoTest extends SqlTest {
     private static final String METRIC_8 = Mocks.metric();
     private static final String NaN = TestUtil.NaN;
 
+    private static final String ENTITY_9 = Mocks.entity();
+    private static final String METRIC_9 = Mocks.metric();
+
     @BeforeClass
     public void prepareData() throws Exception {
         series = new Series(ENTITY_1, METRIC_1);
@@ -66,6 +70,7 @@ public class SqlInsertIntoTest extends SqlTest {
         EntityMethod.createOrReplaceEntityCheck(ENTITY_6);
         EntityMethod.createOrReplaceEntityCheck(ENTITY_7);
         EntityMethod.createOrReplaceEntityCheck(ENTITY_8);
+        EntityMethod.createOrReplaceEntityCheck(ENTITY_9);
 
         MetricMethod.createOrReplaceMetricCheck(METRIC_2);
         MetricMethod.createOrReplaceMetricCheck(METRIC_3);
@@ -74,6 +79,9 @@ public class SqlInsertIntoTest extends SqlTest {
         MetricMethod.createOrReplaceMetricCheck(METRIC_6);
         MetricMethod.createOrReplaceMetricCheck(METRIC_7);
         MetricMethod.createOrReplaceMetricCheck(METRIC_8);
+        MetricMethod.createOrReplaceMetricCheck(new Metric()
+                .setName(METRIC_9)
+                .setVersioned(true));
     }
 
     @Test(
@@ -191,6 +199,7 @@ public class SqlInsertIntoTest extends SqlTest {
     @Test(
             description = "Test insertion of series with NaN value"
     )
+    @Issue("5962")
     public void testInsertionWithNanValue() {
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %s)"
                 , METRIC_8, ENTITY_8, ISO_TIME, NaN);
@@ -200,5 +209,22 @@ public class SqlInsertIntoTest extends SqlTest {
                 {NaN}
         };
         assertSqlQueryRows("NaN value not found after insertion!", expectedRow, selectQuery);
+    }
+
+    @Test(
+            description = "Tests that if versioning is present, only no additional samples will be inserted."
+    )
+    @Issue("5962")
+    @Issue("6342")
+    public void testInsertionWithVersionedMetric() {
+        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %d)"
+                , METRIC_9, ENTITY_9, ISO_TIME, VALUE);
+        assertOkRequest("Insertion of series with negative sample with SQL failed!", sqlQuery);
+        Checker.check(new SeriesCheck(Collections.singletonList(
+                new Series()
+                        .setEntity(ENTITY_9)
+                        .setMetric(METRIC_9)
+                        .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
+        )));
     }
 }
