@@ -194,7 +194,7 @@ public class SqlInsertIntoTest extends SqlTest {
     public void testInsertionWithNanValue() {
         String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %s)"
                 , METRIC_8, ENTITY_8, ISO_TIME, NaN);
-        assertOkRequest("Onsertion of series with NaN value failed!", sqlQuery);
+        assertOkRequest("Insertion of series with NaN value failed!", sqlQuery);
         String selectQuery = String.format("SELECT value FROM \"%s\"", METRIC_8); //NaN value cannot be added to sample, checker cannot be used
         String[][] expectedRow = {
                 {NaN}
