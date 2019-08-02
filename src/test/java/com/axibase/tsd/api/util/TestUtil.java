@@ -26,6 +26,7 @@ import static com.axibase.tsd.api.util.Util.*;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 86400000L;
+    public static final String NaN = Double.toString(Double.NaN);
 
     public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL

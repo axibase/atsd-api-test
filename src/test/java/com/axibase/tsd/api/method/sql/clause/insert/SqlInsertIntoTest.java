@@ -9,6 +9,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
@@ -48,6 +49,10 @@ public class SqlInsertIntoTest extends SqlTest {
     private static final String METRIC_7 = Mocks.metric();
     private static final String SCIENTIFIC_NOTATION_VALUE = Mocks.SCIENTIFIC_NOTATION_VALUE;
 
+    private static final String ENTITY_8 = Mocks.entity();
+    private static final String METRIC_8 = Mocks.metric();
+    private static final String NaN = TestUtil.NaN;
+
     @BeforeClass
     public void prepareData() throws Exception {
         series = new Series(ENTITY_1, METRIC_1);
@@ -60,6 +65,7 @@ public class SqlInsertIntoTest extends SqlTest {
         EntityMethod.createOrReplaceEntityCheck(ENTITY_5);
         EntityMethod.createOrReplaceEntityCheck(ENTITY_6);
         EntityMethod.createOrReplaceEntityCheck(ENTITY_7);
+        EntityMethod.createOrReplaceEntityCheck(ENTITY_8);
 
         MetricMethod.createOrReplaceMetricCheck(METRIC_2);
         MetricMethod.createOrReplaceMetricCheck(METRIC_3);
@@ -67,6 +73,7 @@ public class SqlInsertIntoTest extends SqlTest {
         MetricMethod.createOrReplaceMetricCheck(METRIC_5);
         MetricMethod.createOrReplaceMetricCheck(METRIC_6);
         MetricMethod.createOrReplaceMetricCheck(METRIC_7);
+        MetricMethod.createOrReplaceMetricCheck(METRIC_8);
     }
 
     @Test(
@@ -179,5 +186,19 @@ public class SqlInsertIntoTest extends SqlTest {
                         .setMetric(METRIC_7)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
         )));
+    }
+
+    @Test(
+            description = "Test insertion of series with NaN value"
+    )
+    public void testInsertionWithNanValue() {
+        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %s)"
+                , METRIC_8, ENTITY_8, ISO_TIME, NaN);
+        assertOkRequest("Onsertion of series with NaN value failed!", sqlQuery);
+        String selectQuery = String.format("SELECT value FROM \"%s\"", METRIC_8); //NaN value cannot be added to sample, checker cannot be used
+        String[][] expectedRow = {
+                {NaN}
+        };
+        assertSqlQueryRows("NaN value not found after insertion!", expectedRow, selectQuery);
     }
 }
