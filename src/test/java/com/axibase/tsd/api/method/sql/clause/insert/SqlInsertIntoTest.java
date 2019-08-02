@@ -89,8 +89,8 @@ public class SqlInsertIntoTest extends SqlTest {
     )
     @Issue("5962")
     public void testInsertionWithTags() {
-        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value, tags.%s) VALUES('%s', '%s', %d, '%s')",
-                METRIC_2, TAG_KEY, ENTITY_2, ISO_TIME, VALUE, TAG_VALUE);
+        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value, tags.%s) VALUES('%s', '%s', %d, '%s')"
+                , METRIC_2, TAG_KEY, ENTITY_2, ISO_TIME, VALUE, TAG_VALUE);
         assertOkRequest("Insertion of series with tag with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
@@ -118,7 +118,7 @@ public class SqlInsertIntoTest extends SqlTest {
     }
 
     @Test(
-            description = "Tests insertion of series with time in millis"
+            description = "Tests insertion of series with time in millis."
     )
     @Issue("5962")
     public void testInsertionWithMillis() {
@@ -134,7 +134,7 @@ public class SqlInsertIntoTest extends SqlTest {
     }
 
     @Test(
-            description = "Tests insertion of series with text sample"
+            description = "Tests insertion of series with text sample."
     )
     @Issue("5962")
     public void testInsertionOfText() {
@@ -150,7 +150,7 @@ public class SqlInsertIntoTest extends SqlTest {
     }
 
     @Test(
-            description = "Tests insertion of series with negative value"
+            description = "Tests insertion of series with negative value."
     )
     @Issue("5962")
     public void testInsertionWithNegativeValue() {
