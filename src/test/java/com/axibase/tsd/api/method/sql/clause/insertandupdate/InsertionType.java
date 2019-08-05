@@ -40,7 +40,7 @@ public enum InsertionType {
         if (object.getClass().getSuperclass().getSimpleName().equals("Number") || object.getClass().getSimpleName().equals("ScientificNotationNumber")) {
             return object.toString();
         } else {
-            return String.format("'%s'", object.toString());
+            return String.format("'%s'", object);
         }
     }
 }
