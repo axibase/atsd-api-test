@@ -70,8 +70,7 @@ public class SqlInsertNonExistentMetricTest extends SqlTest {
     public void testEntityCreationWithWhitespacesWhenInserting() {
         String sqlQuery = insertionType.insertionQuery(metric3,
                 ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "value", VALUE));
-        assertOkRequest("Insertion of series with nonexistent with whitespaces in name entity failed!", sqlQuery);
-        assertOkRequest("Insertion of series with nonexistent with whitespaces in name metric failed!", sqlQuery);
+        assertOkRequest("Insertion of series with nonexistent metric with whitespaces in name failed!", sqlQuery);
         Checker.check(new MetricCheck(
                 new Metric()
                         .setName(metric3.replaceAll(" ", "_"))));
@@ -84,7 +83,7 @@ public class SqlInsertNonExistentMetricTest extends SqlTest {
     public void testEntityCreationWithAtsdSeriesWhenInserting() {
         String sqlQuery = insertionType.insertionQuery("atsd_series",
                 ImmutableMap.of("entity", entity, "datetime", ISO_TIME, String.format("\"%s\"", metric4), VALUE));
-        assertOkRequest("Insertion of series with nonexistent via atsd_series metric failed!", sqlQuery);
+        assertOkRequest("Insertion of series with nonexistent metric via atsd_series failed!", sqlQuery);
         Checker.check(new MetricCheck(
                 new Metric()
                         .setName(metric4)));
