@@ -12,6 +12,8 @@ public class RequestSenderWithBasicAuthorization extends RequestSenderWithAuthor
     private final String username;
     private final String password;
 
+    public static final RequestSenderWithBasicAuthorization DEFAULT_BASIC_SENDER = new RequestSenderWithBasicAuthorization();
+
     public RequestSenderWithBasicAuthorization() {
         Config config = Config.getInstance();
         this.username = config.getLogin();

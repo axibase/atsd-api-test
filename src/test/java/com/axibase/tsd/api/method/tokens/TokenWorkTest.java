@@ -319,7 +319,7 @@ public class TokenWorkTest extends BaseMethod {
         String entityName = Mocks.entity();
         String tagName = "name";
         String tagValue = "value";
-        com.axibase.tsd.api.model.entity.Entity entity = new com.axibase.tsd.api.model.entity.Entity(entityName);
+        com.axibase.tsd.api.model.entity.Entity entity = new com.axibase.tsd.api.model.entity.Entity().setName(entityName);
         entity.setEnabled(true);
         //checking create method
         String createURL = "/entities/" + entityName;
