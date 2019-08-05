@@ -6,23 +6,32 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.util.Mocks;
+import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 public class SqlInsertNonExistentEntityTest extends SqlTest {
-    private static final String ENTITY_1 = Mocks.entity();
-    private static final String ENTITY_2 = Mocks.entity();
-    private static final String ENTITY_3 = Mocks.entity().replaceAll("-", " "); //entity is used to check entity creation with whitespaces
-    private static final String ENTITY_4 = Mocks.entity();
+    private final String entity1 = Mocks.entity();
+    private final String entity2 = Mocks.entity();
+    private final String entity3 = Mocks.entity().replaceAll("-", " "); //entity is used to check entity creation with whitespaces
+    private final String entity4 = Mocks.entity();
 
-    private static final String METRIC = Mocks.metric();
+    private final String metric = Mocks.metric();
     private static final String ISO_TIME = Mocks.ISO_TIME;
     private static final int VALUE = Mocks.INT_VALUE;
 
+    private final InsertionType insertionType;
+
+    @Factory(dataProvider = "insertionType", dataProviderClass = InsertionType.class)
+    public SqlInsertNonExistentEntityTest(InsertionType insertionType) {
+        this.insertionType = insertionType;
+    }
+
     @BeforeClass
     public void prepareData() throws Exception {
-        MetricMethod.createOrReplaceMetricCheck(METRIC);
+        MetricMethod.createOrReplaceMetricCheck(metric);
     }
 
     @Test(
@@ -30,12 +39,12 @@ public class SqlInsertNonExistentEntityTest extends SqlTest {
     )
     @Issue("5962")
     public void testEntityCreationWhenInserting() {
-        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %d)"
-                , METRIC, ENTITY_1, ISO_TIME, VALUE);
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity1, "datetime", ISO_TIME, "value", VALUE));
         assertOkRequest("Insertion of series with nonexistent entity failed!", sqlQuery);
         Checker.check(new EntityCheck(
                 new Entity()
-                        .setName(ENTITY_1)));
+                        .setName(entity1)));
     }
 
     @Test(
@@ -44,12 +53,12 @@ public class SqlInsertNonExistentEntityTest extends SqlTest {
     @Issue("5962")
     public void testEntityCreationWithLabelWhenInserting() {
         String label = Mocks.LABEL;
-        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value, entity.label) VALUES('%s', '%s', %d, '%s')"
-                , METRIC, ENTITY_2, ISO_TIME, VALUE, label);
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity2, "datetime", ISO_TIME, "value", VALUE, "entity.label", label));
         assertOkRequest("Insertion of series with nonexistent entity with label failed!", sqlQuery);
         Checker.check(new EntityCheck(
                 new Entity()
-                        .setName(ENTITY_2)
+                        .setName(entity2)
                         .setLabel(label)));
     }
 
@@ -58,12 +67,12 @@ public class SqlInsertNonExistentEntityTest extends SqlTest {
     )
     @Issue("5962")
     public void testEntityCreationWithWhitespacesWhenInserting() {
-        String sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value) VALUES('%s', '%s', %d)"
-                , METRIC, ENTITY_3, ISO_TIME, VALUE);
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity3, "datetime", ISO_TIME, "value", VALUE));
         assertOkRequest("Insertion of series with nonexistent with whitespaces in name entity failed!", sqlQuery);
         Checker.check(new EntityCheck(
                 new Entity()
-                        .setName(ENTITY_3.replaceAll(" ", "_"))));
+                        .setName(entity3.replaceAll(" ", "_"))));
     }
 
     @Test(
@@ -71,11 +80,11 @@ public class SqlInsertNonExistentEntityTest extends SqlTest {
     )
     @Issue("5962")
     public void testEntityCreationWithAtsdSeriesWhenInserting() {
-        String sqlQuery = String.format("INSERT INTO \"atsd_series\"(entity, datetime, \"%s\") VALUES('%s', '%s', %d)"
-                , METRIC, ENTITY_4, ISO_TIME, VALUE);
+        String sqlQuery = insertionType.insertionQuery("atsd_series",
+                ImmutableMap.of("entity", entity4, "datetime", ISO_TIME, "\"metric\"", VALUE));
         assertOkRequest("Insertion of series with nonexistent via atsd_series entity failed!", sqlQuery);
         Checker.check(new EntityCheck(
                 new Entity()
-                        .setName(ENTITY_4)));
+                        .setName(entity4)));
     }
 }
