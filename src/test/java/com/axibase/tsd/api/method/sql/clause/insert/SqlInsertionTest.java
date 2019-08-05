@@ -10,6 +10,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.ScientificNotationNumber;
 import com.axibase.tsd.api.util.TestUtil;
 import com.axibase.tsd.api.util.Util;
 import com.google.common.collect.ImmutableMap;
@@ -50,7 +51,7 @@ public class SqlInsertionTest extends SqlTest {
 
     private final String entity7 = Mocks.entity();
     private final String metric7 = Mocks.metric();
-    private static final String SCIENTIFIC_NOTATION_VALUE = Mocks.SCIENTIFIC_NOTATION_VALUE;
+    private static final ScientificNotationNumber SCIENTIFIC_NOTATION_VALUE = Mocks.SCIENTIFIC_NOTATION_VALUE;
 
     private final String entity8 = Mocks.entity();
     private final String metric8 = Mocks.metric();
@@ -191,6 +192,7 @@ public class SqlInsertionTest extends SqlTest {
     @Issue("5962")
     public void testInsertionWithScientificNotation() {
         //TODO resolve problems with scientific notation. Probably, new class ScientificNotationNumber extends Number should be created
+        System.err.println(new ScientificNotationNumber(VALUE).toString());
         String sqlQuery = insertionType.insertionQuery(metric7, ImmutableMap.of("entity", entity7, "datetime", ISO_TIME, "value", SCIENTIFIC_NOTATION_VALUE));
         assertOkRequest("Insertion of series with scientific notation with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
@@ -206,7 +208,6 @@ public class SqlInsertionTest extends SqlTest {
     )
     @Issue("5962")
     public void testInsertionWithNanValue() {
-        //TODO do we still need String representation of NaN?
         String sqlQuery = insertionType.insertionQuery(metric8, ImmutableMap.of("entity", entity8, "datetime", ISO_TIME, "value", Double.NaN));
         assertOkRequest("Insertion of series with NaN value failed!", sqlQuery);
         String selectQuery = String.format("SELECT value FROM \"%s\"", metric8); //NaN value cannot be added to sample, checker cannot be used

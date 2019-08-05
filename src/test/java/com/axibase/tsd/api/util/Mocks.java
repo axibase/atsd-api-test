@@ -25,7 +25,7 @@ public class Mocks {
     public static final int ALERT_OPEN_VALUE = 1;
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
     public static final int INT_VALUE = 22;
-    public static final String SCIENTIFIC_NOTATION_VALUE = new DecimalFormat("0.#E0").format(INT_VALUE);
+    public static final ScientificNotationNumber SCIENTIFIC_NOTATION_VALUE = new ScientificNotationNumber(INT_VALUE);
 
     public static Date date() {
         return Util.parseDate(ISO_TIME);
