@@ -12,7 +12,6 @@ import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorizatio
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -36,16 +35,6 @@ public class EntityMethod extends BaseMethod {
 
     public static <T> Response createOrReplaceEntity(String entityName, T query, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.PUT, json(query));
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                    .put(json(query)));
-        } else {
-            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .put(json(query)));
-        }*/
         response.bufferEntity();
         return response;
     }
@@ -100,16 +89,6 @@ public class EntityMethod extends BaseMethod {
 
     public static Response getEntityResponse(String entityName, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.GET);
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                    .get());
-        } else {
-            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .get());
-        }*/
         response.bufferEntity();
         return response;
     }
@@ -140,17 +119,6 @@ public class EntityMethod extends BaseMethod {
         Map<String, Object> contentTypeMap = new HashMap<>();
         contentTypeMap.put(HttpHeaders.CONTENT_TYPE, "application/json");
         Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), contentTypeMap, "PATCH", json(query));
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                    .method("PATCH", json(query)));
-        } else {
-            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .method("PATCH", json(query)));
-        }*/
         response.bufferEntity();
         return response;
     }
@@ -169,16 +137,6 @@ public class EntityMethod extends BaseMethod {
 
     public static Response deleteEntity(String entityName, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.DELETE);
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                    .delete());
-        } else {
-            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY, entityName)
-                    .apply(webTarget)
-                    .delete());
-        }*/
         response.bufferEntity();
         return response;
     }
@@ -193,23 +151,6 @@ public class EntityMethod extends BaseMethod {
 
     public static Response queryEntityMetrics(String entityName, Map<String, Object> parameters, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_ENTITY_METRICS, nameTemplate(entityName), parameters, new HashMap<>(), HttpMethod.GET);
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> {
-                WebTarget target = webTarget.path(Util.API_PATH + METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
-                for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                    target = target.queryParam(entry.getKey(), entry.getValue());
-                }
-                return target.request().header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token)).get();
-            });
-        } else {
-            response = executeApiRequest(webTarget -> {
-                WebTarget target = webTarget.path(METHOD_ENTITY_METRICS).resolveTemplate("entity", entityName);
-                for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                    target = target.queryParam(entry.getKey(), entry.getValue());
-                }
-                return target.request().get();
-            });
-        }*/
         response.bufferEntity();
         return response;
     }
@@ -228,16 +169,6 @@ public class EntityMethod extends BaseMethod {
 
     public static Response queryEntityGroups(String entityName, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_ENTITY_GROUPS, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.GET);
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY_GROUPS, entityName)
-                    .apply(webTarget)
-                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                    .get());
-        } else {
-            response = executeApiRequest(webTarget -> builderFunction(METHOD_ENTITY_GROUPS, entityName)
-                    .apply(webTarget)
-                    .get());
-        }*/
         response.bufferEntity();
         return response;
     }
@@ -253,16 +184,6 @@ public class EntityMethod extends BaseMethod {
     public static Response queryEntityPropertyTypes(String entityName, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_ENTITY_PROPERTY_TYPES, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.GET);
         System.err.println(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES);
-        /*if (token != null) {
-            response = executeTokenRootRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES, entityName)
-                    .apply(webTarget)
-                    .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token))
-                    .get());
-        } else {
-            response = executeApiRequest(webTarget -> builderFunction(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES, entityName)
-                    .apply(webTarget)
-                    .get());
-        }*/
         response.bufferEntity();
         return response;
     }

@@ -29,7 +29,7 @@ public class RequestSenderWithBasicAuthorization extends RequestSenderWithAuthor
     @Override
     public Response executeApiRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params,
                                       Map<String, Object> additionalHeaders, String httpMethod, Entity<?> entity) {
-        return BaseMethod.executeTokenRootRequest(webTarget ->
+        return BaseMethod.executeApiRequest(webTarget ->
                 prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
                         .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, username)
                         .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password)
@@ -40,7 +40,7 @@ public class RequestSenderWithBasicAuthorization extends RequestSenderWithAuthor
     @Override
     public Response executeApiRequest(String path, Map<String, Object> templateReplacements,
                                       Map<String, Object> params, Map<String, Object> additionalHeaders, String httpMethod) {
-        return BaseMethod.executeTokenRootRequest(webTarget ->
+        return BaseMethod.executeApiRequest(webTarget ->
                 prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
                         .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, username)
                         .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password)
