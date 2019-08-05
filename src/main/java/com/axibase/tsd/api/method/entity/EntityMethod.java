@@ -14,7 +14,9 @@ import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorizati
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static javax.ws.rs.client.Entity.json;
@@ -28,13 +30,13 @@ public class EntityMethod extends BaseMethod {
     private static final String ENTITY_KEYWORD = "entity";
 
     private static Map<String, Object> nameTemplate(String entityName) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put(ENTITY_KEYWORD, entityName);
-        return map;
+        return Collections.unmodifiableMap(map);
     }
 
     public static <T> Response createOrReplaceEntity(String entityName, T query, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.PUT, json(query));
+        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), HttpMethod.PUT, json(query));
         response.bufferEntity();
         return response;
     }
@@ -88,7 +90,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response getEntityResponse(String entityName, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.GET);
+        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
@@ -118,7 +120,7 @@ public class EntityMethod extends BaseMethod {
     public static <T> Response updateEntity(String entityName, T query, RequestSenderWithAuthorization sender) {
         Map<String, Object> contentTypeMap = new HashMap<>();
         contentTypeMap.put(HttpHeaders.CONTENT_TYPE, "application/json");
-        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), contentTypeMap, "PATCH", json(query));
+        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), Collections.EMPTY_MAP, contentTypeMap, "PATCH", json(query));
         response.bufferEntity();
         return response;
     }
@@ -136,7 +138,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response deleteEntity(String entityName, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.DELETE);
+        Response response = sender.executeApiRequest(METHOD_ENTITY, nameTemplate(entityName), HttpMethod.DELETE);
         response.bufferEntity();
         return response;
     }
@@ -150,7 +152,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response queryEntityMetrics(String entityName, Map<String, Object> parameters, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY_METRICS, nameTemplate(entityName), parameters, new HashMap<>(), HttpMethod.GET);
+        Response response = sender.executeApiRequest(METHOD_ENTITY_METRICS, nameTemplate(entityName), parameters, Collections.EMPTY_MAP, HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
@@ -168,7 +170,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response queryEntityGroups(String entityName, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY_GROUPS, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.GET);
+        Response response = sender.executeApiRequest(METHOD_ENTITY_GROUPS, nameTemplate(entityName), HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
@@ -182,7 +184,7 @@ public class EntityMethod extends BaseMethod {
     }
 
     public static Response queryEntityPropertyTypes(String entityName, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY_PROPERTY_TYPES, nameTemplate(entityName), new HashMap<>(), new HashMap<>(), HttpMethod.GET);
+        Response response = sender.executeApiRequest(METHOD_ENTITY_PROPERTY_TYPES, nameTemplate(entityName), HttpMethod.GET);
         System.err.println(Util.API_PATH + METHOD_ENTITY_PROPERTY_TYPES);
         response.bufferEntity();
         return response;

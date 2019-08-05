@@ -9,10 +9,19 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.metric.MetricSeriesTags;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
@@ -20,44 +29,80 @@ public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC = "/metrics/{metric}";
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
     private static final String METHOD_METRIC_SERIES_TAGS = "/metrics/{metric}/series/tags";
+    private static final String METHOD_METRIC_RENAME ="/metrics/{metric}/rename";
     public static final String METRIC_KEYWORD = "metric";
 
+    private static Map<String, Object> nameReplacement(String metricName) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put(METRIC_KEYWORD, metricName);
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <T> Response createOrReplaceMetric(String metricName, T query, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC, nameReplacement(metricName), HttpMethod.PUT, Entity.json(query));
+        response.bufferEntity();
+        return response;
+    }
+
     public static <T> Response createOrReplaceMetric(String metricName, T query) {
-        Response response = executeApiRequest(webTarget -> webTarget
+        /*Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
                 .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .put(Entity.json(query)));
-        response.bufferEntity();
-        return response;
+        response.bufferEntity();*/
+        return createOrReplaceMetric(metricName, query, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
     }
 
     public static Response createOrReplaceMetric(Metric metric) {
         return createOrReplaceMetric(metric.getName(), metric);
     }
 
+    public static Response createOrReplaceMetric(Metric metric, String token) {
+        return createOrReplaceMetric(metric.getName(), metric, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static <T> Response updateMetric(String metricName, T query, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC, nameReplacement(metricName), "PATCH", Entity.json(query));
+        response.bufferEntity();
+        return response;
+    }
+
     public static <T> Response updateMetric(String metricName, T query) {
-        Response response = executeApiRequest(webTarget -> webTarget
+        /*Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
                 .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .method("PATCH", Entity.json(query)));
-        response.bufferEntity();
-        return response;
+        response.bufferEntity();*/
+        return updateMetric(metricName, query, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
     }
 
     public static Response updateMetric(Metric metric) {
         return updateMetric(metric.getName(), metric);
     }
 
+    public static Response updateMetric(Metric metric, String token) {
+        return updateMetric(metric.getName(), metric, new RequestSenderWithBearerAuthorization(token));
+    }
+    public static Response queryMetric(String metricName, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC, nameReplacement(metricName),HttpMethod.GET);
+        response.bufferEntity();
+        return response;
+    }
+
     public static Response queryMetric(String metricName) {
-        Response response = executeApiRequest(webTarget -> webTarget
+        /*Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
                 .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .get());
-        response.bufferEntity();
-        return response;
+        response.bufferEntity();*/
+        return queryMetric(metricName, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response queryMetric(String metricName, String token) {
+        return queryMetric(metricName, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static Metric getMetric(String entityName) {
@@ -74,48 +119,90 @@ public class MetricMethod extends BaseMethod {
         return response.readEntity(Metric.class);
     }
 
+    public static Response queryMetricSeries(String metricName, String token) {
+        return queryMetricSeries(metricName, null, new RequestSenderWithBearerAuthorization(token));
+    }
+
     public static Response queryMetricSeries(String metricName) {
-        return queryMetricSeries(metricName, null);
+        return queryMetricSeries(metricName, (MetricSeriesParameters)null);
     }
 
     public static Response queryMetricSeries(String metricName,
                                              MetricSeriesParameters parameters) {
-        Response response = executeApiRequest(webTarget -> {
+       /* Response response = executeApiRequest(webTarget -> {
             WebTarget target = webTarget.path(METHOD_METRIC_SERIES).resolveTemplate(METRIC_KEYWORD, metricName);
             target = addParameters(target, parameters);
             return target.request().get();
         });
+        response.bufferEntity();*/
+        return queryMetricSeries(metricName, parameters, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response queryMetricSeries(String metricName, MetricSeriesParameters parameters, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC_SERIES, nameReplacement(metricName),
+                parameters == null? Collections.EMPTY_MAP : parameters.toUnmodifiableMap(), Collections.EMPTY_MAP, HttpMethod.GET);
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response deleteMetric(String metricName, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC, nameReplacement(metricName), HttpMethod.DELETE);
         response.bufferEntity();
         return response;
     }
 
     public static Response deleteMetric(String metricName) {
-        Response response = executeApiRequest(webTarget -> webTarget
+        /*Response response = executeApiRequest(webTarget -> webTarget
                 .path(METHOD_METRIC)
                 .resolveTemplate(METRIC_KEYWORD, metricName)
                 .request()
                 .delete());
 
+        response.bufferEntity(); */
+        return deleteMetric(metricName, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response deleteMetric(String metricName, String token) {
+        return deleteMetric(metricName, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static Response queryMetricSeriesTagsResponse(String metricName, MethodParameters parameters, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC_SERIES_TAGS, nameReplacement(metricName),
+                parameters == null? Collections.EMPTY_MAP : parameters.toUnmodifiableMap(), Collections.EMPTY_MAP, HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
 
     public static Response queryMetricSeriesTagsResponse(String metricName,
                                                          MethodParameters parameters) {
-        Response response = executeApiRequest(webTarget -> {
+        /*Response response = executeApiRequest(webTarget -> {
             WebTarget target = webTarget.path(METHOD_METRIC_SERIES_TAGS)
                     .resolveTemplate(METRIC_KEYWORD, metricName);
             target = addParameters(target, parameters);
             return target.request().get();
         });
-        response.bufferEntity();
-        return response;
+        response.bufferEntity();*/
+        return queryMetricSeriesTagsResponse(metricName, parameters, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response queryMetricSeriesTagsResponse(String metricName, MethodParameters parameters, String token) {
+        return queryMetricSeriesTagsResponse(metricName, parameters, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static MetricSeriesTags queryMetricSeriesTags(final String metricName,
                                                          final MethodParameters parameters) {
         return queryMetricSeriesTagsResponse(metricName, parameters)
                 .readEntity(MetricSeriesTags.class);
+    }
+
+    public static Response renameMetric(String oldName, String newName, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_METRIC_RENAME, nameReplacement(oldName), HttpMethod.POST, Entity.json(new Metric(newName)));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response renameMetric(String oldName, String newName, String token) {
+        return renameMetric(oldName, newName, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static void createOrReplaceMetricCheck(Metric metric, AbstractCheck check) throws Exception {

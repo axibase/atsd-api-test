@@ -4,6 +4,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.Map;
 
 
@@ -21,8 +22,17 @@ public abstract class RequestSenderWithAuthorization {
      */
     public abstract Response executeApiRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params,
                                                Map<String, Object> additionalHeaders, String httpMethod, Entity<?> entity);
+
     public abstract Response executeApiRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params,
                                                Map<String, Object> additionalHeaders, String httpMethod);
+
+    public Response executeApiRequest(String path, Map<String, Object> templateReplacements, String httpMethod, Entity<?> entity) {
+        return executeApiRequest(path, templateReplacements, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod, entity);
+    }
+
+    public Response executeApiRequest(String path, Map<String, Object> templateReplacements, String httpMethod) {
+        return executeApiRequest(path, templateReplacements, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod);
+    }
 
     protected Invocation.Builder prepareBuilder(WebTarget webTarget,
                                                 String path, Map<String, Object> templateReplacements, Map<String, Object> params,

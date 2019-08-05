@@ -14,6 +14,10 @@ public abstract class MethodParameters {
         return MAPPER.convertValue(this, Map.class);
     }
 
+    public Map<String, Object> toUnmodifiableMap() {
+        return Collections.unmodifiableMap(this.toMap());
+    }
+
     @SuppressWarnings("unchecked")
     private static WebTarget appendMap(WebTarget target, Deque<String> path, Map<String, Object> map) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -25,7 +29,7 @@ public abstract class MethodParameters {
                 } else if (value instanceof Map) {
                     appendMap(target, path, (Map<String, Object>) value);
                 } else if (value instanceof Collection) {
-                    target = target.queryParam(formatParameterName(path), formatCollection((Collection<?>)value));
+                    target = target.queryParam(formatParameterName(path), formatCollection((Collection<?>) value));
                 } else if (value instanceof MethodParameters) {
                     appendMap(target, path, ((MethodParameters) value).toMap());
                 } else {

@@ -7,6 +7,7 @@ import com.axibase.tsd.api.method.alert.AlertTest;
 import com.axibase.tsd.api.method.checks.*;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
+import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
@@ -263,12 +264,12 @@ public class TokenWorkTest extends BaseMethod {
         //checking create method
         String createURL = "/metrics/" + metricName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
-        createOrReplace(username, createURL, metric, createToken);
+        MetricMethod.createOrReplaceMetric(metric, createToken);
         Checker.check(new MetricCheck(metric));
         //checking get method
         String getURL = "/metrics/" + metricName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        responseWithToken = get(getURL, getToken);
+        responseWithToken = MetricMethod.queryMetric(metricName, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Metric was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
         compareJsonString(metric.toString(), responseTokenEntity, false);
@@ -276,18 +277,18 @@ public class TokenWorkTest extends BaseMethod {
         String updateURL = "/metrics/" + metricName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         metric.addTag(tagName, tagValue);
-        update(username, updateURL, metric, updateToken);
+        MetricMethod.updateMetric(metric, updateToken);
         Checker.check(new MetricCheck(metric));
         //checking series and series tags methods
         String defaultMetricName = "entity.count"; //methods will be executed fot built-in metric
         String seriesURL = "/metrics/" + defaultMetricName + "/series";
         String seriesToken = TokenRepository.getToken(username, HttpMethod.GET, seriesURL);
-        responseWithToken = get(seriesURL, seriesToken);
+        responseWithToken = MetricMethod.queryMetricSeries(metricName, seriesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         compareJsonString(metric.toString(), responseTokenEntity, false);
         String seriesTagsURL = "/metrics/" + defaultMetricName + "/series/tags";
         String seriesTagsToken = TokenRepository.getToken(username, HttpMethod.GET, seriesTagsURL);
-        responseWithToken = get(seriesTagsURL, seriesTagsToken);
+        responseWithToken = MetricMethod.queryMetricSeriesTagsResponse(metricName, null, seriesTagsToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         compareJsonString("{\"" + tagName + "\": [\"" + tagValue + "\"]}", responseTokenEntity, false);
         //checking rename method
@@ -295,17 +296,13 @@ public class TokenWorkTest extends BaseMethod {
         String renameToken = TokenRepository.getToken(username, HttpMethod.POST, renameURL);
         metricName = metricName + "_1";
         Metric newMetric = new Metric(metricName);
-        insert(username, renameURL, newMetric, renameToken);
+        MetricMethod.renameMetric(metric.getName(), metricName, renameToken);
         Checker.check(new DeletionCheck(new MetricCheck(metric)));
         Checker.check(new MetricCheck(newMetric));
         //checking delete method
         String deleteURL = "/metrics/" + metricName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.DELETE))
-                .bufferEntity();
+        MetricMethod.deleteMetric(metricName, deleteToken);
         Checker.check(new DeletionCheck(new MetricCheck(newMetric)));
     }
 
