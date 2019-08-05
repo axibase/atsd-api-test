@@ -277,7 +277,7 @@ public class TestUtil {
         return mapTags;
     }
 
-    public static String devideWithEqualityMark(String key, String value) {
+    public static String divideWithEqualityMark(String key, String value) {
         return String.format("%s=%s", key, value);
     }
 }

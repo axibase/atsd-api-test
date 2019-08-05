@@ -32,7 +32,7 @@ public enum InsertionType {
             String keysAndValues = "";
             int i = 0;
             for (Map.Entry<String, Object> entry : columns.entrySet()) {
-                keysAndValues += TestUtil.devideWithEqualityMark(entry.getKey(), encloseInQuotes(entry.getValue()));
+                keysAndValues += TestUtil.divideWithEqualityMark(entry.getKey(), encloseInQuotes(entry.getValue()));
                 i++;
                 if (i != columns.entrySet().size()) {
                     keysAndValues += ", ";
