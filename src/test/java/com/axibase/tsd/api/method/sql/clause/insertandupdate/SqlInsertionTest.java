@@ -27,34 +27,6 @@ public class SqlInsertionTest extends SqlTest {
     private static final long MILLIS_TIME = Mocks.MILLS_TIME;
     private static final int VALUE = Mocks.INT_VALUE;
 
-    private final String entity1 = Mocks.entity();
-    private final String metric1 = Mocks.metric();
-    private Series series;
-
-    private final String entity2 = Mocks.entity();
-    private final String metric2 = Mocks.metric();
-
-    private final String entity3 = Mocks.entity();
-    private final String metric3 = Mocks.metric();
-
-    private final String entity4 = Mocks.entity();
-    private final String metric4 = Mocks.metric();
-
-    private final String entity5 = Mocks.entity();
-    private final String metric5 = Mocks.metric();
-
-    private final String entity6 = Mocks.entity();
-    private final String metric6 = Mocks.metric();
-
-    private final String entity7 = Mocks.entity();
-    private final String metric7 = Mocks.metric();
-
-    private final String entity8 = Mocks.entity();
-    private final String metric8 = Mocks.metric();
-
-    private final String entity9 = Mocks.entity();
-    private final String metric9 = Mocks.metric();
-
     private final InsertionType insertionType;
 
     @Factory(dataProvider = "insertionType", dataProviderClass = InsertionType.class)
@@ -62,42 +34,22 @@ public class SqlInsertionTest extends SqlTest {
         this.insertionType = insertionType;
     }
 
-    @BeforeClass
-    public void prepareData() throws Exception {
-        series = new Series(entity1, metric1);
-        series.addSamples(Sample.ofDateInteger(ISO_TIME, VALUE));
-        SeriesMethod.insertSeriesCheck(series);
-
-        EntityMethod.createOrReplaceEntityCheck(entity2);
-        EntityMethod.createOrReplaceEntityCheck(entity3);
-        EntityMethod.createOrReplaceEntityCheck(entity4);
-        EntityMethod.createOrReplaceEntityCheck(entity5);
-        EntityMethod.createOrReplaceEntityCheck(entity6);
-        EntityMethod.createOrReplaceEntityCheck(entity7);
-        EntityMethod.createOrReplaceEntityCheck(entity8);
-        EntityMethod.createOrReplaceEntityCheck(entity9);
-
-        MetricMethod.createOrReplaceMetricCheck(metric2);
-        MetricMethod.createOrReplaceMetricCheck(metric3);
-        MetricMethod.createOrReplaceMetricCheck(metric4);
-        MetricMethod.createOrReplaceMetricCheck(metric5);
-        MetricMethod.createOrReplaceMetricCheck(metric6);
-        MetricMethod.createOrReplaceMetricCheck(metric7);
-        MetricMethod.createOrReplaceMetricCheck(metric8);
-        MetricMethod.createOrReplaceMetricCheck(new Metric()
-                .setName(metric9)
-                .setVersioned(true));
-    }
 
     @Test(
             description = "Tests that if series already exists, new sample is inserted."
     )
     @Issue("5962")
-    public void testInsertion() {
+    public void testInsertion() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        Series series = new Series(entity, metric);
+        series.addSamples(Sample.ofDateInteger(ISO_TIME, VALUE));
+        SeriesMethod.insertSeriesCheck(series);
+
         int newValue = VALUE + 1;
         String newTime = Util.ISOFormat(MILLIS_TIME + 1);
-        String sqlQuery = insertionType.insertionQuery(metric1,
-                ImmutableMap.of("entity", entity1, "datetime", newTime, "value", newValue));
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", newTime, "value", newValue));
         assertOkRequest("Insertion of series with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(series.addSamples(
                 Sample.ofDateInteger(newTime, newValue)
@@ -108,17 +60,22 @@ public class SqlInsertionTest extends SqlTest {
             description = "Tests that series with tags can be inserted."
     )
     @Issue("5962")
-    public void testInsertionWithTags() {
+    public void testInsertionWithTags() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
         String tagKey = "tag";
         String tagValue = "value";
-        String sqlQuery = insertionType.insertionQuery(metric2,
-                ImmutableMap.of("entity", entity2, "datetime", ISO_TIME, "value", VALUE
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "value", VALUE
                         , String.format("tags.%s", tagKey), tagValue));
         assertOkRequest("Insertion of series with tag with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity2)
-                        .setMetric(metric2)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
                         .addTag(tagKey, tagValue)
         )));
@@ -128,15 +85,20 @@ public class SqlInsertionTest extends SqlTest {
             description = "Tests insertion of series via atsd_series option."
     )
     @Issue("5962")
-    public void testInsertionViaAtsdSeries() {
+    public void testInsertionViaAtsdSeries() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
         String sqlQuery = insertionType.insertionQuery("atsd_series",
-                ImmutableMap.of("entity", entity3, "datetime", ISO_TIME
-                        , String.format("\"%s\"", metric3), VALUE));
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME
+                        , String.format("\"%s\"", metric), VALUE));
         assertOkRequest("Insertion of series via atsd_series with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity3)
-                        .setMetric(metric3)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
         )));
     }
@@ -145,14 +107,19 @@ public class SqlInsertionTest extends SqlTest {
             description = "Tests insertion of series with time in millis."
     )
     @Issue("5962")
-    public void testInsertionWithMillis() {
-        String sqlQuery = insertionType.insertionQuery(metric4,
-                ImmutableMap.of("entity", entity4, "time", MILLIS_TIME, "value", VALUE));
+    public void testInsertionWithMillis() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "time", MILLIS_TIME, "value", VALUE));
         assertOkRequest("Insertion of series with millis time with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity4)
-                        .setMetric(metric4)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofTimeInteger(MILLIS_TIME, VALUE))
         )));
     }
@@ -161,15 +128,20 @@ public class SqlInsertionTest extends SqlTest {
             description = "Tests insertion of series with text sample."
     )
     @Issue("5962")
-    public void testInsertionOfText() {
+    public void testInsertionOfText() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
         String textValue = Mocks.TEXT_VALUE;
-        String sqlQuery = insertionType.insertionQuery(metric5,
-                ImmutableMap.of("entity", entity5, "datetime", ISO_TIME, "text", textValue));
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "text", textValue));
         assertOkRequest("Insertion of series with text sample with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity5)
-                        .setMetric(metric5)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofDateText(ISO_TIME, textValue))
         )));
     }
@@ -178,15 +150,20 @@ public class SqlInsertionTest extends SqlTest {
             description = "Tests insertion of series with negative value."
     )
     @Issue("5962")
-    public void testInsertionWithNegativeValue() {
+    public void testInsertionWithNegativeValue() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
         int negativeValue = -1;
-        String sqlQuery = insertionType.insertionQuery(metric6,
-                ImmutableMap.of("entity", entity6, "datetime", ISO_TIME, "value", negativeValue));
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "value", negativeValue));
         assertOkRequest("Insertion of series with negative sample with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity6)
-                        .setMetric(metric6)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, negativeValue))
         )));
     }
@@ -195,15 +172,20 @@ public class SqlInsertionTest extends SqlTest {
             description = "Tests that series can be inserted with scientific notation."
     )
     @Issue("5962")
-    public void testInsertionWithScientificNotation() {
+    public void testInsertionWithScientificNotation() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
         ScientificNotationNumber scientificNotationValue = Mocks.SCIENTIFIC_NOTATION_VALUE;
-        String sqlQuery = insertionType.insertionQuery(metric7,
-                ImmutableMap.of("entity", entity7, "datetime", ISO_TIME, "value", scientificNotationValue));
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "value", scientificNotationValue));
         assertOkRequest("Insertion of series with scientific notation with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity7)
-                        .setMetric(metric7)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
         )));
     }
@@ -212,11 +194,16 @@ public class SqlInsertionTest extends SqlTest {
             description = "Test insertion of series with NaN value"
     )
     @Issue("5962")
-    public void testInsertionWithNanValue() {
-        String sqlQuery = insertionType.insertionQuery(metric8,
-                ImmutableMap.of("entity", entity8, "datetime", ISO_TIME, "value", Double.NaN));
+    public void testInsertionWithNanValue() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "value", Double.NaN));
         assertOkRequest("Insertion of series with NaN value failed!", sqlQuery);
-        String selectQuery = String.format("SELECT value FROM \"%s\"", metric8); //NaN value cannot be added to sample, checker cannot be used
+        String selectQuery = String.format("SELECT value FROM \"%s\"", metric); //NaN value cannot be added to sample, checker cannot be used
         String[][] expectedRow = {
                 {TestUtil.NaN}
         };
@@ -228,14 +215,19 @@ public class SqlInsertionTest extends SqlTest {
     )
     @Issue("5962")
     @Issue("6342")
-    public void testInsertionWithVersionedMetric() {
-        String sqlQuery = insertionType.insertionQuery(metric9,
-                ImmutableMap.of("entity", entity9, "datetime", ISO_TIME, "value", VALUE));
+    public void testInsertionWithVersionedMetric() throws Exception {
+        String entity = Mocks.entity();
+        String metric = Mocks.metric();
+        EntityMethod.createOrReplaceEntityCheck(entity);
+        MetricMethod.createOrReplaceMetricCheck(metric);
+
+        String sqlQuery = insertionType.insertionQuery(metric,
+                ImmutableMap.of("entity", entity, "datetime", ISO_TIME, "value", VALUE));
         assertOkRequest("Insertion of series with versioned with SQL failed!", sqlQuery);
         Checker.check(new SeriesCheck(Collections.singletonList(
                 new Series()
-                        .setEntity(entity9)
-                        .setMetric(metric9)
+                        .setEntity(entity)
+                        .setMetric(metric)
                         .addSamples(Sample.ofDateInteger(ISO_TIME, VALUE))
         )));
     }
