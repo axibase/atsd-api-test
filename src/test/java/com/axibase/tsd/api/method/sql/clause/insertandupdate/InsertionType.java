@@ -37,6 +37,9 @@ public enum InsertionType {
 
 
     protected String encloseInQuotes(Object object) {
+        if(object == null) {
+            return "";
+        }
         if (object.getClass().getSuperclass().getSimpleName().equals("Number") || object.getClass().getSimpleName().equals("ScientificNotationNumber")) {
             return object.toString();
         } else {

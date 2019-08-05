@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import org.apache.commons.collections4.map.UnmodifiableMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -277,7 +278,17 @@ public class TestUtil {
         return mapTags;
     }
 
-    public static String divideWithEqualityMark(String key, String value) {
-        return String.format("%s=%s", key, value);
+    public static Map<String, Object> toUnmodifiableMap(Object... objects) {
+        if(objects.length %2 != 0) {
+            throw new IllegalArgumentException("Objects count must be even!");
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        for(int i = 0; i < objects.length; i+=2) {
+            if(!objects[i].getClass().getSimpleName().equals("String")) {
+                throw new IllegalArgumentException("Keys must be Strings!");
+            }
+            map.put(objects[i].toString(), objects[i+1]);
+        }
+        return Collections.unmodifiableMap(map);
     }
 }

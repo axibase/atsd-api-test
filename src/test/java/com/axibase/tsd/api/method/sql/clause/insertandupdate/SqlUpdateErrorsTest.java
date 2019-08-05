@@ -2,38 +2,28 @@ package com.axibase.tsd.api.method.sql.clause.insertandupdate;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
 import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Issue;
-import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
-public class SqlInsertionErrorsTest extends SqlTest {
+public class SqlUpdateErrorsTest extends SqlTest {
     private static final String ISO_TIME = Mocks.ISO_TIME;
     private static final int VALUE = Mocks.INT_VALUE;
 
-    private final InsertionType insertionType;
+    private static final InsertionType INSERTION_TYPE = InsertionType.UPDATE;
 
-    @Factory(dataProvider = "insertionType", dataProviderClass = InsertionType.class)
-    public SqlInsertionErrorsTest(InsertionType insertionType) {
-        this.insertionType = insertionType;
-    }
 
     @Test(
             description = "Tests that if one of the declared parameters is not set, error will be thrown."
     )
     @Issue("5962")
     public void testUnsetDeclaredParameterInsertion() {
-        String sqlQuery;
-        String assertMessage;
-        if(insertionType == InsertionType.INSERT_INTO) { //cannot create ImmutableMap with unset parameter
-            sqlQuery = String.format("INSERT INTO \"%s\"(entity, datetime, value, not_set) VALUES('%s', '%s', %d)"
-                    , Mocks.metric(), Mocks.entity(), ISO_TIME, VALUE);
-            assertMessage = "IllegalArgumentException: No value specified for column 'not_set'";
-        } else {
-            sqlQuery = String.format("UPDATE \"%s\" SET entity='%s', datetime='%s', value=%d, not_set="
-                    , Mocks.metric(), Mocks.entity(), ISO_TIME, VALUE);
-            assertMessage = "net.sf.jsqlparser.parser.ParseException: Encountered unexpected token:<EOF>\n" + //assert messages are different for two clauses
-                    "    at line 1, column 326.\n" +
+        String sqlQuery = INSERTION_TYPE.insertionQuery(Mocks.metric(), TestUtil.toUnmodifiableMap(
+                "entity", Mocks.entity(), "datetime", ISO_TIME, "value", VALUE, "not_set", null
+        ));
+        String assertMessage = "net.sf.jsqlparser.parser.ParseException: Encountered unexpected token:<EOF>\n" + //assert messages are different for two clauses
+                    "    at line 1, column 338.\n" +
                     "\n" +
                     "Was expecting one of:\n" +
                     "\n" +
@@ -105,7 +95,6 @@ public class SqlInsertionErrorsTest extends SqlTest {
                     "    <S_IDENTIFIER>\n" +
                     "    <S_LONG>\n" +
                     "    <S_QUOTED_IDENTIFIER>\n";
-        }
         assertBadRequest("Invalid SQL query with unset declared parameter was accepted!", assertMessage, sqlQuery);
     }
 
@@ -114,7 +103,7 @@ public class SqlInsertionErrorsTest extends SqlTest {
     )
     @Issue("5962")
     public void testUnsetRequiredParameterInsertion() {
-        String sqlQuery = insertionType.insertionQuery(Mocks.metric(),
+        String sqlQuery = INSERTION_TYPE.insertionQuery(Mocks.metric(),
                 ImmutableMap.of("entity", Mocks.entity(), "datetime", ISO_TIME)); //value is not set
         assertBadRequest("Invalid SQL query with unset required parameter was accepted!", "IllegalArgumentException: Either value or text is required",sqlQuery);
     }

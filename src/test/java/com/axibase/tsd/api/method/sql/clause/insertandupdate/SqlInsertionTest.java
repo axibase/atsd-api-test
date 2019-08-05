@@ -7,6 +7,7 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.serialization.ValueDeserializer;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
@@ -196,7 +197,6 @@ public class SqlInsertionTest extends SqlTest {
     @Issue("5962")
     public void testInsertionWithScientificNotation() {
         ScientificNotationNumber scientificNotationValue = Mocks.SCIENTIFIC_NOTATION_VALUE;
-        System.err.println(new ScientificNotationNumber(VALUE).toString());
         String sqlQuery = insertionType.insertionQuery(metric7,
                 ImmutableMap.of("entity", entity7, "datetime", ISO_TIME, "value", scientificNotationValue));
         assertOkRequest("Insertion of series with scientific notation with SQL failed!", sqlQuery);
