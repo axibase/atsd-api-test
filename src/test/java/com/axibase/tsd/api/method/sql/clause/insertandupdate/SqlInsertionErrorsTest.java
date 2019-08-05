@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.sql.clause.insert;
+package com.axibase.tsd.api.method.sql.clause.insertandupdate;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.Mocks;
