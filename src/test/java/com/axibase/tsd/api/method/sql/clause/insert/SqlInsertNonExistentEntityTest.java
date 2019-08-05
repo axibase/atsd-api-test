@@ -81,7 +81,7 @@ public class SqlInsertNonExistentEntityTest extends SqlTest {
     @Issue("5962")
     public void testEntityCreationWithAtsdSeriesWhenInserting() {
         String sqlQuery = insertionType.insertionQuery("atsd_series",
-                ImmutableMap.of("entity", entity4, "datetime", ISO_TIME, "\"metric\"", VALUE));
+                ImmutableMap.of("entity", entity4, "datetime", ISO_TIME, String.format("\"%s\"", metric), VALUE));
         assertOkRequest("Insertion of series with nonexistent via atsd_series entity failed!", sqlQuery);
         Checker.check(new EntityCheck(
                 new Entity()
