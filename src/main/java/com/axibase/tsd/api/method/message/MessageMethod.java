@@ -9,9 +9,14 @@ import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,17 +27,26 @@ public class MessageMethod extends BaseMethod {
     private static final String METHOD_MESSAGE_QUERY = "/messages/query";
     private static final String METHOD_MESSAGE_STATS_QUERY = "/messages/stats/query";
 
+    private static<T> Response executeRequest(String path, List<T> query, RequestSenderWithAuthorization sender) { //Message's endpoints all don't need templates and have POST method
+        Response response = sender.executeApiRequest(path, Collections.EMPTY_MAP, HttpMethod.POST, Entity.json(query));
+        response.bufferEntity();
+        return response;
+    }
+
     public static Response insertMessageReturnResponse(final Message message) {
         return insertMessageReturnResponse(Collections.singletonList(message));
     }
 
+    public static Response insertMessageReturnResponse(final Message message, String token) {
+        return insertMessageReturnResponse(Collections.singletonList(message), new RequestSenderWithBearerAuthorization(token));
+    }
+
     public static Response insertMessageReturnResponse(List<Message> messageList) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_MESSAGE_INSERT)
-                .request()
-                .post(Entity.json(messageList)));
-        response.bufferEntity();
-        return response;
+        return insertMessageReturnResponse(messageList, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response insertMessageReturnResponse(List<Message> messageList, RequestSenderWithAuthorization sender) {
+        return executeRequest(METHOD_MESSAGE_INSERT, messageList, sender);
     }
 
     public static void insertMessageCheck(final Message message, AbstractCheck check) {
@@ -48,13 +62,16 @@ public class MessageMethod extends BaseMethod {
         insertMessageCheck(message, new MessageCheck(message));
     }
 
+    public static <T> Response queryMessageStats(List<T> query, String token) {
+        return queryMessageStats(Collections.singletonList(query), new RequestSenderWithBearerAuthorization(token));
+    }
+
     public static <T> Response queryMessageStats(T... query) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_MESSAGE_STATS_QUERY)
-                .request()
-                .post(Entity.json(query)));
-        response.bufferEntity();
-        return response;
+        return queryMessageStats(Arrays.asList(query), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response queryMessageStats(List<T> query, RequestSenderWithAuthorization sender) {
+        return executeRequest(METHOD_MESSAGE_STATS_QUERY,query, sender);
     }
 
     public static <T> List<Series> queryMessageStatsReturnSeries(T... query) {
@@ -69,11 +86,16 @@ public class MessageMethod extends BaseMethod {
         return queryMessageResponse(queries).readEntity(ResponseAsList.ofMessages());
     }
 
+    public static<T> Response queryMessageResponse(List<T> query, String token) {
+        return queryMessageResponse(query, new RequestSenderWithBearerAuthorization(token));
+    }
+
     public static <T> Response queryMessageResponse(T... messageQuery) {
-        Entity<T[]> json = Entity.json(messageQuery);
-        Response response = executeApiRequest(webTarget -> webTarget.path(METHOD_MESSAGE_QUERY).request().post(json));
-        response.bufferEntity();
-        return response;
+        return queryMessageResponse(Arrays.asList(messageQuery), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response queryMessageResponse(List<T> query, RequestSenderWithAuthorization sender) {
+        return executeRequest(METHOD_MESSAGE_QUERY, query, sender);
     }
 
     public static boolean messageExist(final Message message) throws Exception {

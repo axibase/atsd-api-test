@@ -7,6 +7,7 @@ import com.axibase.tsd.api.method.alert.AlertTest;
 import com.axibase.tsd.api.method.checks.*;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
+import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
@@ -163,8 +164,8 @@ public class TokenWorkTest extends BaseMethod {
 
         String insertURL = "/messages/insert";
         String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
-        insert(username, insertURL, messageList, insertToken);
-        Checker.check(new EntityCheck(new com.axibase.tsd.api.model.entity.Entity(entity)));
+        MessageMethod.insertMessageReturnResponse(message, insertToken);
+        Checker.check(new EntityCheck(new com.axibase.tsd.api.model.entity.Entity().setName(entity)));
         Checker.check(new MessageCheck(message));
         //check message query
         String queryURL = "/messages/query";
@@ -173,7 +174,7 @@ public class TokenWorkTest extends BaseMethod {
         q.setEntity(entity).setStartDate(Util.ISOFormat(startUnixTime - 10)).setEndDate(Util.ISOFormat(System.currentTimeMillis())).setType(type);
         List<MessageQuery> query = new ArrayList<>();
         query.add(q);
-        responseWithToken = query(queryURL, query, queryToken);
+        responseWithToken = MessageMethod.queryMessageResponse(query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Message insertion with token failed. Response : " + responseTokenEntity, !(responseTokenEntity.contains("error") || responseTokenEntity.equals(prettyPrint(new ArrayList<>()))));
         compareJsonString(prettyPrint(query), responseTokenEntity, false);
@@ -187,7 +188,7 @@ public class TokenWorkTest extends BaseMethod {
         msq.setEndDate(Util.ISOFormat((System.currentTimeMillis())));
         List<MessageStatsQuery> messageStatsQueryList = new ArrayList<>();
         messageStatsQueryList.add(msq);
-        responseWithToken = query(countURL, messageStatsQueryList, countToken);
+        responseWithToken = MessageMethod.queryMessageStats(msq, countToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         compareJsonString(prettyPrint(messageStatsQueryList), responseTokenEntity, false);
     }
