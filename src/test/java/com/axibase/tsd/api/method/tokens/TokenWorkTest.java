@@ -398,12 +398,12 @@ public class TokenWorkTest extends BaseMethod {
         //checking create method
         String createURL = "/entity-groups/" + entityGroupName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
-        createOrReplace(username, createURL, entityGroup, createToken);
+        EntityGroupMethod.createOrReplaceEntityGroup(entityGroup, createToken);
         Checker.check(new EntityGroupCheck(entityGroup));
         //checking get method
         String getURL = "/entity-groups/" + entityGroupName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        responseWithToken = get(getURL, getToken);
+        responseWithToken = EntityGroupMethod.getEntityGroup(entityGroupName, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Entity group was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
         compareJsonString(entityGroup.toString(), responseTokenEntity, false);
@@ -411,46 +411,42 @@ public class TokenWorkTest extends BaseMethod {
         String updateURL = "/entity-groups/" + entityGroupName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         entityGroup.addTag(tagName, tagValue);
-        update(username, updateURL, entityGroup, updateToken);
+        EntityGroupMethod.updateEntityGroup(entityGroup, updateToken);
         Checker.check(new EntityGroupCheck(entityGroup));
         //checking get- add- set- and delete- entities methods
         String getEntitiesURL = "/entity-groups/" + entityGroupName + "/entities";
         String getEntitiesToken = TokenRepository.getToken(username, HttpMethod.GET, getEntitiesURL);
-        responseWithToken = get(getEntitiesURL, getEntitiesToken);
+        responseWithToken = EntityGroupMethod.getEntities(entityGroupName, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         compareJsonString("[]", responseTokenEntity, false);
 
         String responseWithoutEntities = responseTokenEntity; //response body for empty entity group
-        String addEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/add";
+        String addEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/add?createEntities=true";
         List<String> entities = Collections.singletonList(entity);
         String addEntitiesToken = TokenRepository.getToken(username, HttpMethod.POST, addEntitiesURL);
-        insert(username, addEntitiesURL, entities, addEntitiesToken); //add
-        responseWithToken = get(getEntitiesURL, getEntitiesToken);
+        EntityGroupMethod.addEntities(entityGroupName, entities, addEntitiesToken); //add
+        responseWithToken = EntityGroupMethod.getEntities(entityGroupName, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Entities add to entity group failed for user " + username, !responseTokenEntity.equals(responseWithoutEntities));
         String responseWithEntities = responseTokenEntity;
 
         String deleteEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/delete";
         String deleteEntitiesToken = TokenRepository.getToken(username, HttpMethod.POST, deleteEntitiesURL);
-        insert(username, deleteEntitiesURL, entities, deleteEntitiesToken); //delete
+        EntityGroupMethod.deleteEntities(entityGroupName, entities, deleteEntitiesToken); //delete
         responseWithToken = get(getEntitiesURL, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Entities delete from entity group failed for user " + username, !responseTokenEntity.equals(responseWithEntities));
 
-        String setEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/set";
+        String setEntitiesURL = "/entity-groups/" + entityGroupName + "/entities/set?createEntities=true";
         String setEntitiesToken = TokenRepository.getToken(username, HttpMethod.POST, setEntitiesURL);
-        insert(username, setEntitiesURL, entities, setEntitiesToken);
+        EntityGroupMethod.setEntities(entityGroupName, entities, setEntitiesToken);
         responseWithToken = get(getEntitiesURL, getEntitiesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Entities set to entity group failed for user " + username, !responseTokenEntity.equals(responseWithoutEntities));
         //checking delete method
         String deleteURL = "/entity-groups/" + entityGroupName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.DELETE))
-                .bufferEntity();
+        EntityGroupMethod.deleteEntityGroup(entityGroupName, deleteToken);
         Checker.check(new DeletionCheck(new EntityGroupCheck(entityGroup)));
     }
 

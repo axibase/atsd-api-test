@@ -151,8 +151,9 @@ public class EntityMethod extends BaseMethod {
         return deleteEntity(entityName, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
     }
 
-    public static Response queryEntityMetrics(String entityName, Map<String, Object> parameters, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_ENTITY_METRICS, nameTemplate(entityName), parameters, Collections.EMPTY_MAP, HttpMethod.GET);
+    public static Response queryEntityMetrics(String entityName, Map<String, String> parameters, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_ENTITY_METRICS, nameTemplate(entityName), Util.toStringObjectMap(parameters),
+                Collections.EMPTY_MAP, HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
@@ -161,12 +162,12 @@ public class EntityMethod extends BaseMethod {
         return queryEntityMetrics(entityName, new HashMap<>(), new RequestSenderWithBearerAuthorization(token));
     }
 
-    private static Response queryEntityMetrics(String entityName, Map<String, Object> parameters) {
+    private static Response queryEntityMetrics(String entityName, Map<String, String> parameters) {
         return queryEntityMetrics(entityName, parameters, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
     }
 
     public static Response queryEntityMetrics(String entityName) {
-        return queryEntityMetrics(entityName, new HashMap<>());
+        return queryEntityMetrics(entityName, Collections.EMPTY_MAP);
     }
 
     public static Response queryEntityGroups(String entityName, RequestSenderWithAuthorization sender) {

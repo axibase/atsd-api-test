@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -97,6 +98,10 @@ public class Util {
         } catch (JsonProcessingException e) {
             return o.toString();
         }
+    }
+
+    public static Map<String, Object> toStringObjectMap(Map<String, String> map) {
+        return map.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
     }
 
     private static final class AtsdVersionInfo {
