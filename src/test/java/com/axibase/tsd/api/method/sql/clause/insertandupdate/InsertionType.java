@@ -1,5 +1,6 @@
 package com.axibase.tsd.api.method.sql.clause.insertandupdate;
 
+import com.axibase.tsd.api.util.ScientificNotationNumber;
 import com.axibase.tsd.api.util.TestUtil;
 import org.testng.annotations.DataProvider;
 
@@ -40,7 +41,7 @@ public enum InsertionType {
         if(object == null) {
             return "";
         }
-        if (object.getClass().getSuperclass().getSimpleName().equals("Number") || object.getClass().getSimpleName().equals("ScientificNotationNumber")) {
+        if (object instanceof Number || object instanceof ScientificNotationNumber) {
             return object.toString();
         } else {
             return String.format("'%s'", object);
