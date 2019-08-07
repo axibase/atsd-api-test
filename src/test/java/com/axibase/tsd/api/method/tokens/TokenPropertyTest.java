@@ -1,7 +1,13 @@
 package com.axibase.tsd.api.method.tokens;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.DeletionCheck;
+import com.axibase.tsd.api.method.checks.PropertyCheck;
 import com.axibase.tsd.api.method.property.PropertyMethod;
+import com.axibase.tsd.api.model.Period;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -11,17 +17,19 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 
+import static org.testng.AssertJUnit.assertTrue;
 
 public class TokenPropertyTest extends PropertyMethod {
     private final String entity = Mocks.entity();
     private final String propertyType = Mocks.propertyType();
-    private Property property;
-    private static final String TIME = Mocks.ISO_TIME;
+    private static final String ISO_TIME = Mocks.ISO_TIME;
     private static final String TAG_NAME = "name";
     private static final String TAG_VALUE = "value";
 
     private final String username;
+    private Property property;
 
     @Factory(
             dataProvider = "users", dataProviderClass = UserCreator.class
@@ -33,20 +41,79 @@ public class TokenPropertyTest extends PropertyMethod {
     @BeforeClass
     public void prepareData() throws Exception {
         property = new Property(propertyType, entity)
-                .setDate(TIME)
+                .setDate(ISO_TIME)
                 .addTag(TAG_NAME, TAG_VALUE);
         insertPropertyCheck(property);
     }
 
     @Test(
-            description = "Tests properties get endpoint with tokens."
+            description = "Tests properties get endpoint with tokens.",
+            enabled = false //TODO enable when problems with API are solved
     )
     @Issue("6052")
     public void testGetMethod() throws Exception {
-        String getURL = "/properties/" + entity + "/types/" + propertyType;
-        String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        Response response = PropertyMethod.urlQueryProperty(propertyType, entity, getToken);
-        compareJsonString(Util.prettyPrint(property), response.readEntity(String.class), false);
+        String url = "/properties/" + entity + "/types/" + propertyType;
+        String token = TokenRepository.getToken(username, HttpMethod.GET, url);
+        Response response = PropertyMethod.urlQueryProperty(propertyType, entity, token);
+        assertTrue(compareJsonString(Util.prettyPrint(property), response.readEntity(String.class)));
     }
-    //TODO other methods
+
+    @Test(
+            description = "Tests properties get types  endpoint with tokens."
+    )
+    @Issue("6052")
+    public void testGetTypesMethod() throws Exception {
+        String url = "/properties/" + entity + "/types";
+        String token = TokenRepository.getToken(username, HttpMethod.GET, url);
+        Response response = PropertyMethod.typeQueryProperty(entity, token);
+        String expectedResponse = String.format("[\"%s\"]", propertyType);
+        assertTrue(compareJsonString(expectedResponse, response.readEntity(String.class)));
+    }
+
+    @Test(
+            description = "Tests properties get types  endpoint with tokens."
+    )
+    @Issue("6052")
+    public void testQueryMethod() throws Exception {
+        String url = "/properties/query";
+        String token = TokenRepository.getToken(username, HttpMethod.POST, url);
+        PropertyQuery query = new PropertyQuery(propertyType, entity)
+                .setStartDate(ISO_TIME)
+                .setInterval(new Period(1, TimeUnit.DAY));
+        Response response = queryProperty(Collections.singletonList(query), token);
+        assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(property)), response.readEntity(String.class)));
+    }
+
+    @Test(
+            description = "Tests properties insert endpoint with tokens."
+    )
+    @Issue("6052")
+    public void testInsertMethod() throws Exception {
+        String url = "/properties/insert";
+        String token = TokenRepository.getToken(username, HttpMethod.POST, url);
+        Property insertedProperty = new Property(Mocks.propertyType(), Mocks.entity())
+                .addTag(TAG_NAME, TAG_VALUE)
+                .setDate(ISO_TIME);
+        insertProperty(Collections.singletonList(insertedProperty), token);
+        Checker.check(new PropertyCheck(insertedProperty));
+    }
+
+    @Test(
+            description = "Tests properties delete endpoint with tokens."
+    )
+    @Issue("6052")
+    public void testDeleteMethod() throws Exception {
+        Property propertyToDelete = new Property(Mocks.propertyType(), Mocks.entity()) //creating data for deletion
+                .addTag(TAG_NAME, TAG_VALUE)
+                .setDate(ISO_TIME);
+        insertPropertyCheck(propertyToDelete);
+
+        String url = "/properties/delete";
+        String token = TokenRepository.getToken(username, HttpMethod.POST, url);
+        PropertyQuery query = new PropertyQuery(propertyType, entity)
+                .setStartDate(ISO_TIME)
+                .setEndDate(Util.ISOFormat(System.currentTimeMillis()));
+        deleteProperty(Collections.singletonList(query), token);
+        Checker.check(new DeletionCheck(new PropertyCheck(property)));
+    }
 }

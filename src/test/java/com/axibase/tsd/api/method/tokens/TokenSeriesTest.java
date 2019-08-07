@@ -4,10 +4,14 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.DeletionCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.SeriesType;
+import com.axibase.tsd.api.model.series.query.Interval;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Factory;
@@ -18,7 +22,6 @@ import javax.ws.rs.core.Response;
 
 import java.util.*;
 
-import static com.axibase.tsd.api.util.Util.prettyPrint;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class TokenSeriesTest extends SeriesMethod {
@@ -40,8 +43,9 @@ public class TokenSeriesTest extends SeriesMethod {
 
     @BeforeClass
     public void prepareData() throws Exception {
-        series = new Series(entity, metric);
-        series.addSamples(Sample.ofDateInteger(SAMPLE_TIME, VALUE));
+        series = new Series(entity, metric)
+                .addSamples(Sample.ofDateInteger(SAMPLE_TIME, VALUE))
+                .setType(SeriesType.HISTORY);
         insertSeriesCheck(series);
     }
 
@@ -51,14 +55,13 @@ public class TokenSeriesTest extends SeriesMethod {
     @Issue("6052")
     public void testGetMethod() throws Exception{
         String getURL = "/series/json/" + entity + "/" + metric;
-        String getToken = TokenRepository.getToken(username, HttpMethod.GET, String.format(getURL + "?startDate=%s&endDate=%s", SAMPLE_TIME, SAMPLE_TIME));
+        String getToken = TokenRepository.getToken(username, HttpMethod.GET, String.format(getURL + "?startDate=%s&interval=%s&timeFormat=%s", SAMPLE_TIME, "1-DAY", "iso"));
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("startDate", SAMPLE_TIME);
-        parameters.put("endDate", SAMPLE_TIME);
+        parameters.put("interval", "1-DAY");
+        parameters.put("timeFormat", "iso");
         Response response = urlQuerySeries(entity, metric, parameters, getToken);
-        String responseEntity = response.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseEntity, !(responseEntity.contains("warning")));
-        compareJsonString(prettyPrint(Collections.singletonList(series)), responseEntity, false);
+        assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(series)), response.readEntity(String.class), false));
     }
 
     @Test(
@@ -67,14 +70,12 @@ public class TokenSeriesTest extends SeriesMethod {
     @Issue("6052")
     public void testQueryMethod() throws Exception {
         String queryURL = "/series/query";
-        SeriesQuery q = new SeriesQuery(entity, metric, SAMPLE_TIME, SAMPLE_TIME);
+        SeriesQuery query = new SeriesQuery(entity, metric)
+                .setStartDate(SAMPLE_TIME)
+                .setInterval(new Interval(1, TimeUnit.DAY));
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
-        List<SeriesQuery> query = new ArrayList<>();
-        query.add(q);
-        Response response = querySeries(query, queryToken);
-        String responseEntity = response.readEntity(String.class);
-        assertTrue("User: " + username + " Response contains warning: " + responseEntity, !(responseEntity.contains("warning")));
-        compareJsonString(prettyPrint(query), responseEntity, false);
+        Response response = querySeries(Collections.singletonList(query), queryToken);
+        assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(series)), response.readEntity(String.class), false));
     }
 
     @Test(
