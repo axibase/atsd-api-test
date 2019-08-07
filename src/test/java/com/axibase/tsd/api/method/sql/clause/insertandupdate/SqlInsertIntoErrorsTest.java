@@ -11,9 +11,6 @@ public class SqlInsertIntoErrorsTest extends SqlTest {
     private static final String ISO_TIME = Mocks.ISO_TIME;
     private static final int VALUE = Mocks.INT_VALUE;
 
-    private static final InsertionType INSERTION_TYPE = InsertionType.INSERT_INTO;
-
-
     @Test(
             description = "Tests that if one of the declared parameters is not set, error will be thrown."
     )
@@ -30,7 +27,7 @@ public class SqlInsertIntoErrorsTest extends SqlTest {
     )
     @Issue("5962")
     public void testEmptyDeclaredParameterInsertion(){
-        String sqlQuery = INSERTION_TYPE.insertionQuery(Mocks.metric(), TestUtil.toUnmodifiableMap(
+        String sqlQuery = InsertionType.INSERT_INTO.insertionQuery(Mocks.metric(), TestUtil.toUnmodifiableMap(
                 "entity", Mocks.entity(), "datetime", ISO_TIME, "value", VALUE, "empty", null
                 ));
         String errorMessage = "net.sf.jsqlparser.parser.ParseException: Encountered unexpected token: \")\" \")\"\n" +
@@ -114,7 +111,7 @@ public class SqlInsertIntoErrorsTest extends SqlTest {
     )
     @Issue("5962")
     public void testUnsetRequiredParameterInsertion() {
-        String sqlQuery = INSERTION_TYPE.insertionQuery(Mocks.metric(),
+        String sqlQuery = InsertionType.INSERT_INTO.insertionQuery(Mocks.metric(),
                 ImmutableMap.of("entity", Mocks.entity(), "datetime", ISO_TIME)); //value is not set
         assertBadRequest("Invalid SQL query with unset required parameter was accepted!", "IllegalArgumentException: Either value or text is required",sqlQuery);
     }
