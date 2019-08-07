@@ -12,6 +12,9 @@ import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchResult;
 import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.jsoup.Jsoup;
@@ -19,6 +22,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -34,23 +38,36 @@ public class SeriesMethod extends BaseMethod {
     private static final String METHOD_SERIES_URL_QUERY = "/series/{format}/{entity}/{metric}";
     private static final String METHOD_SERIES_SEARCH = "/search";
     private static final String METHOD_REINDEX = "/admin/series/index";
+    private static final String METHOD_SERIES_DELETE = "/series/delete";
 
-    public static <T> Response insertSeries(final T seriesList, String user, String password) {
-        Response response = executeApiRequest(webTarget -> {
-            Invocation.Builder builder = webTarget.path(METHOD_SERIES_INSERT).request();
+    private static Map<String, Object> formatEntityMetricTemplate(String format, String entity, String metric) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("format", format);
+        map.put("entity", entity);
+        map.put("metric", metric);
+        return Collections.unmodifiableMap(map);
+    }
 
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-            builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
-
-            return builder.post(Entity.json(seriesList));
-        });
-
+    public static <T> Response insertSeries(final T seriesList, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_SERIES_INSERT, HttpMethod.POST, Entity.json(seriesList));
         response.bufferEntity();
         return response;
     }
 
+    public static <T> Response insertSeries(final T seriesList, String user, String password) {
+        return insertSeries(seriesList, new RequestSenderWithBasicAuthorization(user, password));
+    }
+
     public static <T> Response insertSeries(final T seriesList) {
         return insertSeries(seriesList, Config.getInstance().getLogin(), Config.getInstance().getPassword());
+    }
+
+    public static <T> Response insertSeries(final T seriesList, String token) {
+        return insertSeries(seriesList, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static <T> Response querySeries(List<T> queries, String token) {
+        return querySeries(queries, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static <T> Response querySeries(T query) {
@@ -58,19 +75,15 @@ public class SeriesMethod extends BaseMethod {
     }
 
     public static <T> Response querySeries(List<T> queries) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_SERIES_QUERY)
-                .request()
-                .post(Entity.json(queries)));
-        response.bufferEntity();
-        return response;
+        return querySeries(queries, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
     }
 
     public static Response querySeries(String query) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_SERIES_QUERY)
-                .request()
-                .post(Entity.text(query)));
+        return querySeries(query, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static<T> Response querySeries(T query, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_SERIES_QUERY, HttpMethod.POST, Entity.json(query));
         response.bufferEntity();
         return response;
     }
@@ -86,33 +99,29 @@ public class SeriesMethod extends BaseMethod {
             Map<String, String> parameters,
             String user,
             String password) {
-        Response response = executeApiRequest(webTarget -> {
-            WebTarget target = webTarget
-                .path(METHOD_SERIES_URL_QUERY)
-                .resolveTemplate("format", format.toString())
-                .resolveTemplate("entity", entity)
-                .resolveTemplate("metric", metric);
-
-            for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                target = target.queryParam(entry.getKey(), entry.getValue());
-            }
-
-            Invocation.Builder builder = target.request();
-
-            if (user != null && password != null) {
-                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, user);
-                builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
-            }
-            return builder.get();
-        });
-
-        response.bufferEntity();
-        return response;
+        return urlQuerySeries(entity, metric, format, parameters, new RequestSenderWithBasicAuthorization(user, password));
     }
 
     public static Response urlQuerySeries(String entity, String metric, Map<String, String> parameters) {
         return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters);
     }
+
+    public static Response urlQuerySeries(String entity, String metric, Map<String, String> parameters, String token){
+        return urlQuerySeries(entity, metric, OutputFormat.JSON, parameters, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static Response urlQuerySeries(
+            String entity,
+            String metric,
+            OutputFormat format,
+            Map<String, String> parameters,
+            RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_SERIES_URL_QUERY, formatEntityMetricTemplate(format.toString(), entity, metric)
+                ,Util.toStringObjectMap(parameters), Collections.EMPTY_MAP, HttpMethod.GET);
+        response.bufferEntity();
+        return response;
+    }
+
 
     public static SeriesSearchResult searchSeries(SeriesSearchQuery query) {
         Response response = executeApiRequest(webTarget -> {
@@ -215,5 +224,15 @@ public class SeriesMethod extends BaseMethod {
 
         response.bufferEntity();
         return response;
+    }
+
+    public static <T> Response deleteSeries(T query, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_SERIES_DELETE, HttpMethod.POST, Entity.json(query));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static <T> Response deleteSeries(T query, String token) {
+        return deleteSeries(query, new RequestSenderWithBearerAuthorization(token));
     }
 }

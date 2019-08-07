@@ -18,14 +18,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.axibase.tsd.api.util.Util.prettyPrint;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class TokenSeriesTest extends TokenWorkTest {
+public class TokenSeriesTest extends SeriesMethod {
     private final String entity = Mocks.entity();
     private final String metric = Mocks.metric();
     private static final int VALUE = Mocks.INT_VALUE;
@@ -36,7 +34,7 @@ public class TokenSeriesTest extends TokenWorkTest {
 
 
     @Factory(
-            dataProvider = "users"
+            dataProvider = "users", dataProviderClass = TokenWorkTest.class
     )
     public TokenSeriesTest(String username) {
         this.username = username;
@@ -46,7 +44,7 @@ public class TokenSeriesTest extends TokenWorkTest {
     public void prepareData() throws Exception {
         series = new Series(entity, metric);
         series.addSamples(Sample.ofDateInteger(SAMPLE_TIME, VALUE));
-        SeriesMethod.insertSeriesCheck(series);
+        insertSeriesCheck(series);
     }
 
     @Test
@@ -54,13 +52,10 @@ public class TokenSeriesTest extends TokenWorkTest {
     public void getMethodTest() throws Exception{
         String getURL = "/series/json/" + entity + "/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, String.format(getURL + "?startDate=%s&endDate=%s", SAMPLE_TIME, SAMPLE_TIME));
-        Response response = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + getURL)
-                .queryParam("startDate", "previous_hour")
-                .queryParam("endDate", "next_day")
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getToken)
-                .method(HttpMethod.GET));
-        response.bufferEntity();
+        Map<String, String> parameters = new LinkedHashMap<>();
+        parameters.put("startDate", SAMPLE_TIME);
+        parameters.put("endDate", SAMPLE_TIME);
+        Response response = urlQuerySeries(entity, metric, parameters, getToken);
         String responseEntity = response.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseEntity, !(responseEntity.contains("warning")));
         compareJsonString(prettyPrint(Collections.singletonList(series)), responseEntity, false);
@@ -74,7 +69,7 @@ public class TokenSeriesTest extends TokenWorkTest {
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
         List<SeriesQuery> query = new ArrayList<>();
         query.add(q);
-        Response response = query(queryURL, query, queryToken);
+        Response response = querySeries(query, queryToken);
         String responseEntity = response.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseEntity, !(responseEntity.contains("warning")));
         compareJsonString(prettyPrint(query), responseEntity, false);
@@ -89,7 +84,7 @@ public class TokenSeriesTest extends TokenWorkTest {
         Series series = new Series(Mocks.entity(), Mocks.metric());
         series.addSamples(Sample.ofDateInteger(SAMPLE_TIME, VALUE));
         seriesList.add(series);
-        insert(username, insertURL, seriesList, insertToken);
+        insertSeries(seriesList, insertToken);
         Checker.check(new SeriesCheck(seriesList));
     }
 
@@ -101,7 +96,7 @@ public class TokenSeriesTest extends TokenWorkTest {
         String deletionMetric = Mocks.metric();
         Series deletionSeries = new Series(deletionEntity, deletionMetric);
         deletionSeries.addSamples(Sample.ofDateInteger(SAMPLE_TIME, VALUE));
-        SeriesMethod.insertSeriesCheck(deletionSeries);
+        insertSeriesCheck(deletionSeries);
 
         String deleteURL = "/series/delete";
         SeriesQuery delete = new SeriesQuery(deletionEntity, deletionMetric);
@@ -109,12 +104,7 @@ public class TokenSeriesTest extends TokenWorkTest {
         List<SeriesQuery> deleteQuery = new ArrayList<>();
         deleteQuery.add(delete);
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.POST, Entity.json(deleteQuery)))
-                .bufferEntity();
+        deleteSeries(deleteQuery, deleteToken);
         //checking that series was successfully deleted
         Checker.check(new DeletionCheck(new SeriesCheck(Collections.singletonList(deletionSeries))));
     }

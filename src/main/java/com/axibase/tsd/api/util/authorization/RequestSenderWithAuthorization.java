@@ -7,7 +7,6 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.Map;
 
-
 public abstract class RequestSenderWithAuthorization {
     /**
      * Executes request to /api/v1/* endpoint

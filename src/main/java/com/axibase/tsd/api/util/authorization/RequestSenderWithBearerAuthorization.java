@@ -8,7 +8,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 
-
 public class RequestSenderWithBearerAuthorization extends RequestSenderWithAuthorization {
     private final String headerValue;
     private static final String API_PATH = Config.getInstance().getApiPath();
