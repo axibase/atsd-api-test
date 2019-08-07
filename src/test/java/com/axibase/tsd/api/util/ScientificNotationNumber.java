@@ -1,16 +1,17 @@
 package com.axibase.tsd.api.util;
 
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Delegate;
+
 import java.text.DecimalFormat;
 
-public class ScientificNotationNumber {
-    private final String scientificNotation;
-
-    public ScientificNotationNumber(double number) {
-        this.scientificNotation = new DecimalFormat("0.0E0").format(number);
-    }
+@RequiredArgsConstructor
+public class ScientificNotationNumber extends Number {
+    @Delegate
+    private final Number delegate;
 
     @Override
     public String toString() {
-        return scientificNotation;
+        return new DecimalFormat("0.0E0").format(delegate);
     }
 }

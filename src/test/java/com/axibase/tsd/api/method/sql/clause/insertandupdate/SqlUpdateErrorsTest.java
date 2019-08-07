@@ -22,7 +22,7 @@ public class SqlUpdateErrorsTest extends SqlTest {
         String sqlQuery = INSERTION_TYPE.insertionQuery(Mocks.metric(), TestUtil.toUnmodifiableMap(
                 "entity", Mocks.entity(), "datetime", ISO_TIME, "value", VALUE, "not_set", null
         ));
-        String errorMessage = "net.sf.jsqlparser.parser.ParseException: Encountered unexpected token:<EOF>\n" + //assert messages are different for two clauses
+        String errorMessage = "net.sf.jsqlparser.parser.ParseException: Encountered unexpected token:<EOF>\n" +
                     "    at line 1, column 332.\n" +
                     "\n" +
                     "Was expecting one of:\n" +

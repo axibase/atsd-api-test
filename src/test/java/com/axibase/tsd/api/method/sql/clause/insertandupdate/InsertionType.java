@@ -41,7 +41,7 @@ public enum InsertionType {
         if(object == null) {
             return "";
         }
-        if (object instanceof Number || object instanceof ScientificNotationNumber) {
+        if (object instanceof Number) {
             return object.toString();
         } else {
             return String.format("'%s'", object);
