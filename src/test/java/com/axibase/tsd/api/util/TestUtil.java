@@ -289,7 +289,7 @@ public class TestUtil {
         }
         Map<String, Object> map = new LinkedHashMap<>();
         for(int i = 0; i < objects.length; i+=2) {
-            if(!objects[i].getClass().getSimpleName().equals("String")) {
+            if(!(objects[i] instanceof String)) {
                 throw new IllegalArgumentException("Keys must be Strings!");
             }
             map.put(objects[i].toString(), objects[i+1]);
