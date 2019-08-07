@@ -44,18 +44,20 @@ public class Property {
         setDate(oldProperty.getDate());
     }
 
-    public void addTag(String tagName, String tagValue) {
+    public Property addTag(String tagName, String tagValue) {
         if (tags == null) {
             tags = new HashMap<>();
         }
         tags.put(tagName, tagValue);
+        return this;
     }
 
-    public void addKey(String keyName, String keyValue) {
+    public Property addKey(String keyName, String keyValue) {
         if (key == null) {
             key = new HashMap<>();
         }
         key.put(keyName, keyValue);
+        return this;
     }
 
     public Map<String, String> getKey() {

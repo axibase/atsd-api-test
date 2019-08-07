@@ -84,7 +84,7 @@ public class PropertyMethod extends BaseMethod {
         return deleteProperty(queries, new RequestSenderWithBearerAuthorization(token));
     }
 
-    public static Response urlQueryProperty(String propertyType, String entityName,RequestSenderWithAuthorization sender) {
+    public static Response urlQueryProperty(String propertyType, String entityName, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_PROPERTY_URL_QUERY, propertyAndEntityTypeTemplate(entityName, propertyType)
                 , HttpMethod.GET);
         response.bufferEntity();
@@ -101,7 +101,7 @@ public class PropertyMethod extends BaseMethod {
 
     public static Response typeQueryProperty(String entityName, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_PROPERTY_TYPE_QUERY, entityNameTemplate(entityName)
-                ,HttpMethod.GET);
+                , HttpMethod.GET);
         response.bufferEntity();
         return response;
     }

@@ -46,7 +46,7 @@ import java.util.*;
 import static com.axibase.tsd.api.util.Util.*;
 import static org.testng.AssertJUnit.*;
 
-public class TokenWorkTest extends BaseMethod {
+public class UserCreator extends BaseMethod {
     private static final String USER_NAME = "apitokenuser_worktest";
     private static final String ADMIN_NAME = Config.getInstance().getLogin();
     public static final String API_PATH = Config.getInstance().getApiPath();

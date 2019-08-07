@@ -14,8 +14,6 @@ import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import java.util.*;
@@ -34,7 +32,7 @@ public class TokenSeriesTest extends SeriesMethod {
 
 
     @Factory(
-            dataProvider = "users", dataProviderClass = TokenWorkTest.class
+            dataProvider = "users", dataProviderClass = UserCreator.class
     )
     public TokenSeriesTest(String username) {
         this.username = username;
@@ -47,9 +45,11 @@ public class TokenSeriesTest extends SeriesMethod {
         insertSeriesCheck(series);
     }
 
-    @Test
+    @Test(
+            description = "Tests series get endpoint with tokens."
+    )
     @Issue("6052")
-    public void getMethodTest() throws Exception{
+    public void testGetMethod() throws Exception{
         String getURL = "/series/json/" + entity + "/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, String.format(getURL + "?startDate=%s&endDate=%s", SAMPLE_TIME, SAMPLE_TIME));
         Map<String, String> parameters = new LinkedHashMap<>();
@@ -61,9 +61,11 @@ public class TokenSeriesTest extends SeriesMethod {
         compareJsonString(prettyPrint(Collections.singletonList(series)), responseEntity, false);
     }
 
-    @Test
+    @Test(
+            description = "Tests series query endpoint with tokens."
+    )
     @Issue("6052")
-    public void queryMethodTest() throws Exception {
+    public void testQueryMethod() throws Exception {
         String queryURL = "/series/query";
         SeriesQuery q = new SeriesQuery(entity, metric, SAMPLE_TIME, SAMPLE_TIME);
         String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
@@ -75,9 +77,11 @@ public class TokenSeriesTest extends SeriesMethod {
         compareJsonString(prettyPrint(query), responseEntity, false);
     }
 
-    @Test
+    @Test(
+            description = "Tests series insert endpoint with tokens."
+    )
     @Issue("6052")
-    public void insertMethodTest() throws Exception {
+    public void testInsertMethod() throws Exception {
         String insertURL = "/series/insert";
         String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
         List<Series> seriesList = new ArrayList<>();
@@ -88,9 +92,11 @@ public class TokenSeriesTest extends SeriesMethod {
         Checker.check(new SeriesCheck(seriesList));
     }
 
-    @Test
+    @Test(
+            description = "Tests series delete endpoint with tokens."
+    )
     @Issue("6052")
-    public void deleteMethodTest() throws Exception {
+    public void testDeleteMethod() throws Exception {
         //creating data for series that will be deleted
         String deletionEntity = Mocks.entity();
         String deletionMetric = Mocks.metric();
