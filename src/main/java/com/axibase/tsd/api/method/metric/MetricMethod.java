@@ -15,11 +15,9 @@ import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorizati
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

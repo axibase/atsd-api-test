@@ -4,16 +4,17 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.client.ClientProperties;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Slf4j
 public class ReplacementTableMethod extends BaseMethod {
     private static final String METHOD_TABLE_JSON = "/replacement-tables/json/{table}";
+    private static final String METHOD_REPLACEMENT_TABLE = "/replacement-tables/{table}";
 
     private static Map<String, Object> nameTemplate(String name) {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -30,20 +32,19 @@ public class ReplacementTableMethod extends BaseMethod {
         return Collections.unmodifiableMap(map);
     }
 
-    private static WebTarget resolveTable(WebTarget webTarget, String tableName) {
-        return webTarget.path(METHOD_TABLE_JSON).resolveTemplate("table", tableName);
+    public static Response createResponse(ReplacementTable replacementTable, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_TABLE_JSON, nameTemplate(replacementTable.getName()),
+                HttpMethod.PUT, Entity.json(replacementTable));
+        response.bufferEntity();
+        return response;
     }
 
     private static Response createResponse(ReplacementTable table) {
-        Response response = executeApiRequest(webTarget ->
-                resolveTable(webTarget, table.getName())
-                        .property(ClientProperties.FOLLOW_REDIRECTS, false)
-                        .request()
-                        .put(Entity.json(table)));
+        return createResponse(table, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
 
-        response.bufferEntity();
-
-        return response;
+    public static Response createResponse(ReplacementTable table, String token) {
+        return createResponse(table, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static void createCheck(ReplacementTable table) {
@@ -56,12 +57,18 @@ public class ReplacementTableMethod extends BaseMethod {
         }
     }
 
-    private static Response getReplacementTablesResponse(String replacementTableName) {
-        Response response = executeApiRequest(webTarget ->
-                resolveTable(webTarget, replacementTableName)
-                        .request().get());
+    public static Response getReplacementTablesResponse(String replacementTableName, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_TABLE_JSON, nameTemplate(replacementTableName), HttpMethod.GET);
         response.bufferEntity();
         return response;
+    }
+
+    private static Response getReplacementTablesResponse(String replacementTableName) {
+        return getReplacementTablesResponse(replacementTableName, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response getReplacementTablesResponse(String replacementTableName, String token) {
+        return getReplacementTablesResponse(replacementTableName, new RequestSenderWithBearerAuthorization(token));
     }
 
     private static ReplacementTable findReplacementTable(final String replacementTableName) throws NotCheckedException {
@@ -124,5 +131,25 @@ public class ReplacementTableMethod extends BaseMethod {
         }
         checkReplacementTableName(receivedReplacementTable, replacementTableName);
         return true;
+    }
+
+    public static Response updateReplacementTableResponse(ReplacementTable table, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_TABLE_JSON, nameTemplate(table.getName()), "PATCH", Entity.json(table));
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response updateReplacementTableResponse(ReplacementTable table, String token) {
+        return updateReplacementTableResponse(table, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static Response deleteReplacementTableResponse(String tableName, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_REPLACEMENT_TABLE, nameTemplate(tableName), HttpMethod.DELETE);
+        response.bufferEntity();
+        return response;
+    }
+
+    public static Response deleteReplacementTableResponse(String tableName, String token) {
+        return deleteReplacementTableResponse(tableName, new RequestSenderWithBearerAuthorization(token));
     }
 }

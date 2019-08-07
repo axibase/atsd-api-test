@@ -10,6 +10,7 @@ import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
+import com.axibase.tsd.api.method.replacementtable.ReplacementTableMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.model.alert.AlertQuery;
@@ -21,6 +22,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
+import com.axibase.tsd.api.model.replacementtable.SupportedFormat;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
@@ -456,37 +458,33 @@ public class TokenWorkTest extends BaseMethod {
         String replacementTableName = Mocks.replacementTable();
         String csvPayload = "1,Ok";
         //checking create method
-        ReplacementTable replacementTable = new ReplacementTable().setName(replacementTableName);
+        ReplacementTable replacementTable = new ReplacementTable().setName(replacementTableName).setAuthor(username).setValueFormat(SupportedFormat.LIST);
         replacementTable.addValue(StringUtils.substringBefore(csvPayload, ","), StringUtils.substringAfterLast(csvPayload, ","));
-        String createURL = "/replacement-tables/csv/" + replacementTableName;
+        String createURL = "/replacement-tables/json/" + replacementTableName;
         String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
-        createOrReplace(username, createURL, csvPayload, createToken);
+        ReplacementTableMethod.createResponse(replacementTable, createToken);
         Checker.check(new ReplacementTableCheck(replacementTable));
         //checking get method
-        String getURL = "/replacement-tables/csv/" + replacementTableName;
+        String getURL = "/replacement-tables/json/" + replacementTableName;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        responseWithToken = get(getURL, getToken);
+        responseWithToken = ReplacementTableMethod.getReplacementTablesResponse(replacementTableName, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("Replacement table was not created for user " + username, responseWithToken.getStatus() != 404);
-        assertEquals("Replacement table get request executed with token and with API does not equal for user: " + username, "Key,Value\r\n" + csvPayload + "\r\n", responseTokenEntity);
+        compareJsonString(Util.prettyPrint(replacementTable), responseTokenEntity);
         String oldGetResponse = responseTokenEntity; //buffering get response to check update method
         //checking update method
-        String updateURL = "/replacement-tables/csv/" + replacementTableName;
+        String updateURL = "/replacement-tables/json/" + replacementTableName;
         String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
         String newCsvPayload = "0,Unknown";
         replacementTable.addValue(StringUtils.substringBefore(newCsvPayload, ","), StringUtils.substringAfterLast(newCsvPayload, ","));
-        update(username, updateURL, newCsvPayload, updateToken);
+        ReplacementTableMethod.updateReplacementTableResponse(replacementTable, updateToken);
         responseWithToken = get(getURL, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         Checker.check(new ReplacementTableCheck(replacementTable));
         //checking delete method
         String deleteURL = "/replacement-tables/" + replacementTableName;
         String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.DELETE))
-                .bufferEntity();
+        ReplacementTableMethod.deleteReplacementTableResponse(replacementTableName, deleteToken);
         Checker.check(new DeletionCheck(new ReplacementTableCheck(new ReplacementTable().setName(replacementTableName))));
     }
 
