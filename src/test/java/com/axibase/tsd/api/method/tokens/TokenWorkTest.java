@@ -51,16 +51,19 @@ public class TokenWorkTest extends BaseMethod {
     private static final String ADMIN_NAME = Config.getInstance().getLogin();
     public static final String API_PATH = Config.getInstance().getApiPath();
 
+    static {
+        createUser();
+    }
+
     @DataProvider
-    public Object[][] users() {
+    public static Object[][] users() {
         return new String[][]{
                 {ADMIN_NAME},
                 {USER_NAME}
         };
     }
 
-    @BeforeSuite
-    public void createUser() {
+    public static void createUser() {
         String path = "/admin/users/edit.xhtml";
         String userPassword = RandomStringUtils.random(10, true, true);
 
