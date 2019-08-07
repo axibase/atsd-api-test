@@ -27,11 +27,10 @@ public class EntityMethod extends BaseMethod {
     private static final String METHOD_ENTITY_METRICS = "/entities/{entity}/metrics";
     private static final String METHOD_ENTITY_GROUPS = "/entities/{entity}/groups";
     private static final String METHOD_ENTITY_PROPERTY_TYPES = "/entities/{entity}/property-types";
-    private static final String ENTITY_KEYWORD = "entity";
 
     private static Map<String, Object> nameTemplate(String entityName) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put(ENTITY_KEYWORD, entityName);
+        map.put("entity", entityName);
         return Collections.unmodifiableMap(map);
     }
 

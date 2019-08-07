@@ -26,11 +26,10 @@ public class EntityGroupMethod extends BaseMethod {
     private final static String METHOD_ENTITYGROUP_ENTITIES_SET = "/entity-groups/{group}/entities/set";
     private final static String METHOD_ENTITYGROUP_ENTITIES_DELETE = "/entity-groups/{group}/entities/delete";
     final static String SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION = "properties('some.prop').size() > 0";
-    private static final String ENTITYGROUP_KEYWORD = "group";
 
     private static Map<String, Object> nameTemplate(String entityGroupName) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put(ENTITYGROUP_KEYWORD, entityGroupName);
+        map.put("group", entityGroupName);
         return Collections.unmodifiableMap(map);
     }
 

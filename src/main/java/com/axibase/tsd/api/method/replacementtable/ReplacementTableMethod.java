@@ -13,6 +13,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -20,6 +23,12 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Slf4j
 public class ReplacementTableMethod extends BaseMethod {
     private static final String METHOD_TABLE_JSON = "/replacement-tables/json/{table}";
+
+    private static Map<String, Object> nameTemplate(String name) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("table", name);
+        return Collections.unmodifiableMap(map);
+    }
 
     private static WebTarget resolveTable(WebTarget webTarget, String tableName) {
         return webTarget.path(METHOD_TABLE_JSON).resolveTemplate("table", tableName);

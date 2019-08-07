@@ -30,11 +30,10 @@ public class MetricMethod extends BaseMethod {
     private static final String METHOD_METRIC_SERIES = "/metrics/{metric}/series";
     private static final String METHOD_METRIC_SERIES_TAGS = "/metrics/{metric}/series/tags";
     private static final String METHOD_METRIC_RENAME = "/metrics/{metric}/rename";
-    public static final String METRIC_KEYWORD = "metric";
 
     private static Map<String, Object> nameReplacement(String metricName) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put(METRIC_KEYWORD, metricName);
+        map.put("metric", metricName);
         return Collections.unmodifiableMap(map);
     }
 

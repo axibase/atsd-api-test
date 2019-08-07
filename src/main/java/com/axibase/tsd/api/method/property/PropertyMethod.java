@@ -29,18 +29,16 @@ public class PropertyMethod extends BaseMethod {
     private static final String METHOD_PROPERTY_DELETE = "/properties/delete";
     private static final String METHOD_PROPERTY_TYPE_QUERY = "/properties/{entity}/types";
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String KEYWORD_PROPERTY_TYPE = "type";
-    private static final String KEYWORD_ENTITY = "entity";
 
     private static Map<String, Object> entityNameTemplate(String entityName) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put(KEYWORD_ENTITY, entityName);
+        map.put("entity", entityName);
         return Collections.unmodifiableMap(map);
     }
 
     private static Map<String, Object> propertyAndEntityTypeTemplate(String entityName, String propertyType) {
         Map<String, Object> map = new LinkedHashMap<>(entityNameTemplate(entityName));
-        map.put(KEYWORD_PROPERTY_TYPE, propertyType);
+        map.put("type", propertyType);
         return Collections.unmodifiableMap(map);
     }
 
