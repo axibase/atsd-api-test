@@ -8,9 +8,13 @@ import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.lang.invoke.MethodHandles;
@@ -38,52 +42,78 @@ public class PropertyMethod extends BaseMethod {
         Map<String, Object> map = new LinkedHashMap<>(entityNameTemplate(entityName));
         map.put(KEYWORD_PROPERTY_TYPE, propertyType);
         return Collections.unmodifiableMap(map);
-    } //TODO
+    }
+
+    public static <T> Response insertProperty(List<T> queries, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_PROPERTY_INSERT, HttpMethod.POST, Entity.json(queries));
+        response.bufferEntity();
+        return response;
+    }
 
     public static <T> Response insertProperty(T... queries) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_PROPERTY_INSERT)
-                .request()
-                .post(Entity.json(Arrays.asList(queries))));
+        return insertProperty(Arrays.asList(queries), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response insertProperty(List<T> queries, String token) {
+        return insertProperty(queries, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static <T> Response queryProperty(List<T> queries, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_PROPERTY_QUERY, HttpMethod.POST, Entity.json(queries));
         response.bufferEntity();
         return response;
     }
 
     public static <T> Response queryProperty(T... queries) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_PROPERTY_QUERY)
-                .request()
-                .post(Entity.json(Arrays.asList(queries))));
+        return queryProperty(Arrays.asList(queries), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response queryProperty(List<T> queries, String token) {
+        return queryProperty(queries, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static <T> Response deleteProperty(List<T> queries, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_PROPERTY_DELETE, HttpMethod.POST, Entity.json(queries));
         response.bufferEntity();
         return response;
     }
 
     public static <T> Response deleteProperty(T... queries) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_PROPERTY_DELETE)
-                .request()
-                .post(Entity.json(Arrays.asList(queries))));
+        return deleteProperty(Arrays.asList(queries), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response deleteProperty(List<T> queries, String token) {
+        return deleteProperty(queries, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static Response urlQueryProperty(String propertyType, String entityName,RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_PROPERTY_URL_QUERY, propertyAndEntityTypeTemplate(entityName, propertyType)
+                , HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
 
     public static Response urlQueryProperty(String propertyType, String entityName) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_PROPERTY_URL_QUERY)
-                .resolveTemplate("entity", entityName)
-                .resolveTemplate("type", propertyType)
-                .request().get());
+        return urlQueryProperty(propertyType, entityName, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response urlQueryProperty(String propertyType, String entityName, String token) {
+        return urlQueryProperty(propertyType, entityName, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static Response typeQueryProperty(String entityName, RequestSenderWithAuthorization sender) {
+        Response response = sender.executeApiRequest(METHOD_PROPERTY_TYPE_QUERY, entityNameTemplate(entityName)
+                ,HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
 
     public static Response typeQueryProperty(String entityName) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_PROPERTY_TYPE_QUERY)
-                .resolveTemplate("entity", entityName)
-                .request().get());
-        response.bufferEntity();
-        return response;
+        return typeQueryProperty(entityName, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static Response typeQueryProperty(String entityName, String token) {
+        return typeQueryProperty(entityName, new RequestSenderWithBearerAuthorization(token));
     }
 
 

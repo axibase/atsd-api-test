@@ -28,7 +28,7 @@ public class MessageMethod extends BaseMethod {
     private static final String METHOD_MESSAGE_STATS_QUERY = "/messages/stats/query";
 
     private static<T> Response executeRequest(String path, List<T> query, RequestSenderWithAuthorization sender) { //Message's endpoints all don't need templates and have POST method
-        Response response = sender.executeApiRequest(path, Collections.EMPTY_MAP, HttpMethod.POST, Entity.json(query));
+        Response response = sender.executeApiRequest(path, HttpMethod.POST, Entity.json(query));
         response.bufferEntity();
         return response;
     }

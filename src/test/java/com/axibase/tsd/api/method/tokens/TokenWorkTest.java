@@ -99,19 +99,19 @@ public class TokenWorkTest extends BaseMethod {
 
         String insertURL = "/properties/insert";
         String insertToken = TokenRepository.getToken(username, HttpMethod.POST, insertURL);
-        insert(username, insertURL, propertyList, insertToken);
+        PropertyMethod.insertProperty(propertyList, insertToken);
         Checker.check(new PropertyCheck(property));
         //checking get method
         String getURL = "/properties/" + entity + "/types/" + type;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        responseWithToken = get(getURL, getToken);
+        responseWithToken = PropertyMethod.urlQueryProperty(type, entity, getToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Properties get response gives empty output after token insertion", !(responseTokenEntity.equals("[]")));
         compareJsonString(prettyPrint(propertyList), responseTokenEntity, false);
         //checking properties get types request
         String getTypesURL = "/properties/" + entity + "/types";
         String getTypesToken = TokenRepository.getToken(username, HttpMethod.GET, getTypesURL);
-        responseWithToken = get(getTypesURL, getTypesToken);
+        responseWithToken = PropertyMethod.typeQueryProperty(entity, getTypesToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Properties get types response gives empty output after token insertion", !(responseTokenEntity.equals("[]")));
         compareJsonString("[\"" + type + "\"]", responseTokenEntity, false);
@@ -123,7 +123,7 @@ public class TokenWorkTest extends BaseMethod {
         q.setEndDate(Util.ISOFormat(System.currentTimeMillis()));
         List<PropertyQuery> query = new ArrayList<>();
         query.add(q);
-        responseWithToken = query(queryURL, query, queryToken);
+        responseWithToken = PropertyMethod.queryProperty(query, queryToken);
         responseTokenEntity = responseWithToken.readEntity(String.class);
         assertTrue("User: " + username + " Response contains warning: " + responseTokenEntity, !(responseTokenEntity.equals("[]")));
         compareJsonString(prettyPrint(query), responseTokenEntity, false);
@@ -135,12 +135,7 @@ public class TokenWorkTest extends BaseMethod {
         delete.setEndDate(Util.ISOFormat(System.currentTimeMillis()));
         List<PropertyQuery> deleteQuery = new ArrayList<>();
         deleteQuery.add(delete);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.POST, Entity.json(deleteQuery)))
-                .bufferEntity();
+        PropertyMethod.deleteProperty(deleteQuery, deleteToken);
         //checking that series was successfully deleted
         Checker.check(new DeletionCheck(new PropertyCheck(property)));
     }
