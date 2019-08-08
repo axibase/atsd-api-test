@@ -3,7 +3,7 @@ package com.axibase.tsd.api.method.tokens;
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.DeletionCheck;
 import com.axibase.tsd.api.method.checks.SeriesCheck;
-import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.series.SeriesTest;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
@@ -24,7 +24,7 @@ import java.util.*;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-public class TokenSeriesTest extends SeriesMethod {
+public class TokenSeriesTest extends SeriesTest {
     private final String entity = Mocks.entity();
     private final String metric = Mocks.metric();
     private static final int VALUE = Mocks.INT_VALUE;
@@ -106,12 +106,9 @@ public class TokenSeriesTest extends SeriesMethod {
         insertSeriesCheck(deletionSeries);
 
         String deleteURL = "/series/delete";
-        SeriesQuery delete = new SeriesQuery(deletionEntity, deletionMetric);
-        delete.setExactMatch(false);
-        List<SeriesQuery> deleteQuery = new ArrayList<>();
-        deleteQuery.add(delete);
+        SeriesQuery deleteQuery = new SeriesQuery(deletionEntity, deletionMetric);
         String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
-        deleteSeries(deleteQuery, deleteToken);
+        deleteSeries(Collections.singletonList(deleteQuery), deleteToken);
         //checking that series was successfully deleted
         Checker.check(new DeletionCheck(new SeriesCheck(Collections.singletonList(deletionSeries))));
     }

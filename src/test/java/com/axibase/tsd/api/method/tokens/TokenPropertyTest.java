@@ -3,9 +3,7 @@ package com.axibase.tsd.api.method.tokens;
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.DeletionCheck;
 import com.axibase.tsd.api.method.checks.PropertyCheck;
-import com.axibase.tsd.api.method.property.PropertyMethod;
-import com.axibase.tsd.api.model.Period;
-import com.axibase.tsd.api.model.TimeUnit;
+import com.axibase.tsd.api.method.property.PropertyTest;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.util.Mocks;
@@ -21,7 +19,7 @@ import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-public class TokenPropertyTest extends PropertyMethod {
+public class TokenPropertyTest extends PropertyTest {
     private final String entity = Mocks.entity();
     private final String propertyType = Mocks.propertyType();
     private static final String ISO_TIME = Mocks.ISO_TIME;
@@ -48,13 +46,13 @@ public class TokenPropertyTest extends PropertyMethod {
 
     @Test(
             description = "Tests properties get endpoint with tokens.",
-            enabled = false //TODO enable when problems with API are solved
+            enabled = false //TODO enable when issue 6446 is resolved
     )
     @Issue("6052")
     public void testGetMethod() throws Exception {
         String url = "/properties/" + entity + "/types/" + propertyType;
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
-        Response response = PropertyMethod.urlQueryProperty(propertyType, entity, token);
+        Response response = urlQueryProperty(propertyType, entity, token);
         assertTrue(compareJsonString(Util.prettyPrint(property), response.readEntity(String.class)));
     }
 
@@ -65,13 +63,13 @@ public class TokenPropertyTest extends PropertyMethod {
     public void testGetTypesMethod() throws Exception {
         String url = "/properties/" + entity + "/types";
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
-        Response response = PropertyMethod.typeQueryProperty(entity, token);
+        Response response = typeQueryProperty(entity, token);
         String expectedResponse = String.format("[\"%s\"]", propertyType);
         assertTrue(compareJsonString(expectedResponse, response.readEntity(String.class)));
     }
 
     @Test(
-            description = "Tests properties get types  endpoint with tokens."
+            description = "Tests properties query  endpoint with tokens."
     )
     @Issue("6052")
     public void testQueryMethod() throws Exception {
@@ -79,7 +77,7 @@ public class TokenPropertyTest extends PropertyMethod {
         String token = TokenRepository.getToken(username, HttpMethod.POST, url);
         PropertyQuery query = new PropertyQuery(propertyType, entity)
                 .setStartDate(ISO_TIME)
-                .setInterval(new Period(1, TimeUnit.DAY));
+                .setEndDate(Util.MAX_QUERYABLE_DATE);
         Response response = queryProperty(Collections.singletonList(query), token);
         assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(property)), response.readEntity(String.class)));
     }
@@ -110,10 +108,10 @@ public class TokenPropertyTest extends PropertyMethod {
 
         String url = "/properties/delete";
         String token = TokenRepository.getToken(username, HttpMethod.POST, url);
-        PropertyQuery query = new PropertyQuery(propertyType, entity)
+        PropertyQuery query = new PropertyQuery(propertyToDelete.getType(), propertyToDelete.getEntity())
                 .setStartDate(ISO_TIME)
-                .setEndDate(Util.ISOFormat(System.currentTimeMillis()));
+                .setEndDate(Util.MAX_QUERYABLE_DATE);
         deleteProperty(Collections.singletonList(query), token);
-        Checker.check(new DeletionCheck(new PropertyCheck(property)));
+        Checker.check(new DeletionCheck(new PropertyCheck(propertyToDelete)));
     }
 }

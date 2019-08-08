@@ -63,7 +63,7 @@ public class MessageMethod extends BaseMethod {
     }
 
     public static <T> Response queryMessageStats(List<T> query, String token) {
-        return queryMessageStats(Collections.singletonList(query), new RequestSenderWithBearerAuthorization(token));
+        return queryMessageStats(query, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static <T> Response queryMessageStats(T... query) {
