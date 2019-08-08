@@ -176,6 +176,10 @@ public class MetricMethod extends BaseMethod {
         createOrReplaceMetricCheck(metric, new MetricCheck(metric));
     }
 
+    public static void createOrReplaceMetricCheck(String metricName) throws Exception {
+        createOrReplaceMetricCheck(new Metric(metricName));
+    }
+
     public static boolean metricExist(final Metric metric) throws Exception {
         final Response response = queryMetric(metric.getName());
         if (response.getStatus() == NOT_FOUND.getStatusCode()) {

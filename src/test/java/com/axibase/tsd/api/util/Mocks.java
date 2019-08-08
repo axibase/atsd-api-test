@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class Mocks {
     public static final int ALERT_OPEN_VALUE = 1;
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
     public static final int INT_VALUE = 22;
+    public static final ScientificNotationNumber SCIENTIFIC_NOTATION_VALUE = new ScientificNotationNumber(INT_VALUE);
 
     public static Date date() {
         return Util.parseDate(ISO_TIME);
