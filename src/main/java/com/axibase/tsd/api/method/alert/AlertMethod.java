@@ -5,7 +5,11 @@ import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
+import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,32 +22,34 @@ public class AlertMethod extends BaseMethod {
     private static final String METHOD_ALERTS_DELETE = "/alerts/delete";
     private static final String METHOD_ALERTS_HISTORY_QUERY = "/alerts/history/query";
 
-    public static <T> Response queryAlerts(T... queries) {
-        Entity<List<T>> json = Entity.json(Arrays.asList(queries));
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_ALERTS_QUERY)
-                .request()
-                .post(json));
+    private static <T> Response executeRequest(String path, List<T> query, RequestSenderWithAuthorization sender) { //Alert's endpoints all don't need templates and have POST method
+        Response response = sender.executeApiRequest(path, HttpMethod.POST, Entity.json(query));
         response.bufferEntity();
         return response;
+    }
+
+    public static <T> Response queryAlerts(T... queries) {
+        return executeRequest(METHOD_ALERTS_QUERY, Arrays.asList(queries), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response queryAlerts(List<T> queries, String token) {
+        return executeRequest(METHOD_ALERTS_QUERY, queries, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static <T> Response updateAlerts(T... queries) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_ALERTS_UPDATE)
-                .request()
-                .post(Entity.json(Arrays.asList(queries))));
-        response.bufferEntity();
-        return response;
+        return executeRequest(METHOD_ALERTS_UPDATE, Arrays.asList(queries), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response updateAlerts(List<T> queries, String token) {
+        return executeRequest(METHOD_ALERTS_UPDATE, queries, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static <T> Response deleteAlerts(T... queries) {
-        Response response = executeApiRequest(webTarget -> webTarget
-                .path(METHOD_ALERTS_DELETE)
-                .request()
-                .post(Entity.json(Arrays.asList(queries))));
-        response.bufferEntity();
-        return response;
+        return executeRequest(METHOD_ALERTS_DELETE, Arrays.asList(queries), RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    }
+
+    public static <T> Response deleteAlerts(List<T> queries, String token) {
+        return executeRequest(METHOD_ALERTS_DELETE, queries, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static Response queryHistoryResponseRawJSON(String json) {
@@ -53,6 +59,10 @@ public class AlertMethod extends BaseMethod {
                 .post(Entity.entity(json, MediaType.APPLICATION_JSON)));
         response.bufferEntity();
         return response;
+    }
+
+    public static <T> Response queryHisttoryResponse(List<T> queries, String token) {
+        return executeRequest(METHOD_ALERTS_HISTORY_QUERY, queries, new RequestSenderWithBearerAuthorization(token));
     }
 
     public static List<Alert> queryHistory(List<AlertHistoryQuery> queryList) {

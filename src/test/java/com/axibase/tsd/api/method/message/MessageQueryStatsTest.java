@@ -31,10 +31,10 @@ public class MessageQueryStatsTest extends MessageMethod {
             "2018-05-21T00:04:01.000Z");
 
     @BeforeClass
-    public void insertMessages() throws Exception{
+    public void insertMessages() throws Exception {
         Message message = new Message(MESSAGE_STATS_ENTITY, MESSAGE_STATS_TYPE);
         message.setMessage("message-stats-test");
-        for(String date : DATES) {
+        for (String date : DATES) {
             message.setDate(date);
             insertMessageCheck(message);
         }
