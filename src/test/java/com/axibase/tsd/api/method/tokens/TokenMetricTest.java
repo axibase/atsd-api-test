@@ -7,7 +7,6 @@ import com.axibase.tsd.api.method.metric.MetricTest;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.metric.MetricSeriesResponse;
-import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TestUtil;
@@ -27,7 +26,7 @@ public class TokenMetricTest extends MetricTest {
     private final String username;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenMetricTest(String username) {
         this.username = username;

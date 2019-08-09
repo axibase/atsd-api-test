@@ -31,7 +31,7 @@ public class TokenMessageTest extends MessageTest {
     private Message message;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenMessageTest(String username) {
         this.username = username;

@@ -30,7 +30,7 @@ public class TokenEntityTest extends EntityTest {
     private final String username;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenEntityTest(String username) {
         this.username = username;

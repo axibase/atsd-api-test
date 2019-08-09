@@ -30,7 +30,7 @@ public class TokenPropertyTest extends PropertyTest {
     private Property property;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenPropertyTest(String username) {
         this.username = username;

@@ -21,7 +21,7 @@ public class TokenReplacementTableTest extends ReplacementTableMethod {
     private final String username;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenReplacementTableTest(String username) {
         this.username = username;

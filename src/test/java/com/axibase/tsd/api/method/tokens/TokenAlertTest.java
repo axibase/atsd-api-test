@@ -25,7 +25,7 @@ public class TokenAlertTest extends AlertTest {
     private final String username;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenAlertTest(String username) {
         this.username = username;

@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.tokens;
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.DeletionCheck;
 import com.axibase.tsd.api.method.checks.EntityGroupCheck;
-import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
@@ -25,7 +24,7 @@ public class TokenEntityGroupTest extends EntityGroupMethod {
     private final String username;
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenEntityGroupTest(String username) {
         this.username = username;

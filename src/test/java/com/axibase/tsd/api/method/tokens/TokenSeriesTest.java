@@ -35,7 +35,7 @@ public class TokenSeriesTest extends SeriesTest {
 
 
     @Factory(
-            dataProvider = "users", dataProviderClass = UserCreator.class
+            dataProvider = "users", dataProviderClass = TokenUsers.class
     )
     public TokenSeriesTest(String username) {
         this.username = username;
