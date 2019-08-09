@@ -51,5 +51,4 @@ public class Alert {
     public void setAdditionalProperties(Map<String, Object> additionalProperties) {
         this.additionalProperties = additionalProperties;
     }
-    //TODO consider adding method fromMap
 }

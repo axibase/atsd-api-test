@@ -2,23 +2,20 @@ package com.axibase.tsd.api.method.checks;
 
 import com.axibase.tsd.api.method.alert.AlertMethod;
 import com.axibase.tsd.api.model.alert.AlertQuery;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.ResponseAsList;
 
-import javax.ws.rs.core.Response;
-import java.util.Collection;
-
-public class AlertsCheck extends AbstractCheck {
+public class AlertCheck extends AbstractCheck {
     private static final String ERROR_MESSAGE = "Failed to create Alerts!";
-    private Collection<AlertQuery> alerts;
+    private AlertQuery alertQuery;
 
-    public AlertsCheck(Collection<AlertQuery> alerts) {
-        this.alerts = alerts;
+    public AlertCheck(AlertQuery alertQuery) {
+        this.alertQuery = alertQuery;
     }
 
     @Override
     public boolean isChecked() {
         try {
-            if (Response.Status.Family.CLIENT_ERROR.equals(Util.responseFamily(AlertMethod.queryAlerts(alerts)))) {
+            if (AlertMethod.queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts()).isEmpty()) { //checking that response is not empty
                 return false;
             }
             return true;

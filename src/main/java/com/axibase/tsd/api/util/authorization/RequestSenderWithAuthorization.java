@@ -33,12 +33,8 @@ public abstract class RequestSenderWithAuthorization {
         return executeApiRequest(path, templateReplacements, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod);
     }
 
-    public Response executeApiRequest(String path,String httpMethod, Entity<?> entity) {
+    public Response executeApiRequest(String path, String httpMethod, Entity<?> entity) {
         return executeApiRequest(path, Collections.EMPTY_MAP, httpMethod, entity);
-    }
-
-    public Response executeApiRequest(String path,String httpMethod) {
-        return executeApiRequest(path, Collections.EMPTY_MAP, httpMethod);
     }
 
     protected Invocation.Builder prepareBuilder(WebTarget webTarget,

@@ -7,7 +7,6 @@ import com.axibase.tsd.api.method.alert.AlertTest;
 import com.axibase.tsd.api.method.checks.*;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
-import com.axibase.tsd.api.method.message.MessageMethod;
 import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.method.replacementtable.ReplacementTableMethod;
@@ -15,12 +14,8 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.alert.AlertHistoryQuery;
 import com.axibase.tsd.api.model.alert.AlertQuery;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
-import com.axibase.tsd.api.model.message.Message;
-import com.axibase.tsd.api.model.message.MessageQuery;
-import com.axibase.tsd.api.model.message.MessageStatsQuery;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
-import com.axibase.tsd.api.model.property.PropertyQuery;
 import com.axibase.tsd.api.model.replacementtable.ReplacementTable;
 import com.axibase.tsd.api.model.replacementtable.SupportedFormat;
 import com.axibase.tsd.api.model.series.Sample;
@@ -30,7 +25,6 @@ import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -82,62 +76,6 @@ public class UserCreator extends BaseMethod {
                 .request()
                 .method(HttpMethod.POST))
                 .bufferEntity();
-    }
-
-    @Issue("6052")
-    @Test(
-            dataProvider = "users"
-    )
-    public void tokenAlertsTest(String username) throws Exception {
-        Response responseWithToken;
-        String responseTokenEntity;
-        String entity = Mocks.entity();
-        String metric = AlertTest.RULE_METRIC_NAME;
-        AlertTest.generateAlertForEntity(entity);
-        //checking alerts query method
-        String queryURL = "/alerts/query";
-        String queryToken = TokenRepository.getToken(username, HttpMethod.POST, queryURL);
-        AlertQuery q = new AlertQuery(entity);
-        q.setStartDate(MIN_QUERYABLE_DATE);
-        q.setEndDate(MAX_QUERYABLE_DATE);
-        q.addMetric(metric);
-        List<AlertQuery> query = new ArrayList<>();
-        query.add(q);
-        responseWithToken = query(queryURL, query, queryToken);
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Alert failed to get read by token for user " + username, !(responseTokenEntity.equals("[]")));
-        compareJsonString(prettyPrint(query), responseTokenEntity, false);
-        //reading alert data from entity
-        List<LinkedHashMap> alertList = responseWithToken.readEntity(List.class);
-        LinkedHashMap alert = alertList.get(0);
-        Integer id = (Integer) alert.get("id");
-        Boolean acknowledged = (Boolean) alert.get("acknowledged");
-        //check history query
-        String historyQueryURL = "/alerts/history/query";
-        String historyQueryToken = TokenRepository.getToken(username, HttpMethod.POST, historyQueryURL);
-        AlertHistoryQuery ahq = new AlertHistoryQuery();
-        ahq.setEntity(entity);
-        ahq.setStartDate(MIN_QUERYABLE_DATE);
-        ahq.setEndDate(MAX_QUERYABLE_DATE);
-        List<AlertHistoryQuery> alertHistoryQueryList = new ArrayList<>();
-        alertHistoryQueryList.add(ahq);
-        responseWithToken = query(historyQueryURL, alertHistoryQueryList, historyQueryToken);
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        compareJsonString(prettyPrint(alertHistoryQueryList), responseTokenEntity, false);
-        //check delete query
-        String deleteURL = "/alerts/delete";
-        String deleteToken = TokenRepository.getToken(username, HttpMethod.POST, deleteURL);
-        AlertQuery delete = new AlertQuery();
-        delete.setId(id);
-        List<AlertQuery> deleteQuery = new ArrayList<>();
-        deleteQuery.add(delete);
-        executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + deleteURL)
-                .request()
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + deleteToken)
-                .method(HttpMethod.POST, Entity.json(deleteQuery)))
-                .bufferEntity();
-        Checker.check(new DeletionCheck(new AlertsCheck(query)));
     }
 
     @Issue("6052")
