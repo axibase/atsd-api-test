@@ -30,7 +30,7 @@ public class TokenAccessTest extends BaseMethod {
     private static final String ADMIN_NAME = Config.getInstance().getLogin();
     private static final String API_PATH = Config.getInstance().getApiPath();
 
-    //TODO use request senders
+    //TODO use request senders, separate into two classes - for data API and meta API
 
     @DataProvider
     private Object[][] availablePaths() {
@@ -148,10 +148,11 @@ public class TokenAccessTest extends BaseMethod {
                 .bufferEntity();
     }
 
-    @Issue("6052")
+
     @Test(
             dataProvider = "userAndPathAndMethod"
     )
+    @Issue("6052")
     public void tokenAccessToItsUrlTest(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response response;
@@ -163,10 +164,10 @@ public class TokenAccessTest extends BaseMethod {
         assertTrue("Token for path " + path + " and method " + method + " failed to authorise user " + username + " token: " + token + " response: " + response.readEntity(String.class), response.getStatus() != 401);
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "userAndPathAndMethod"
     )
+    @Issue("6052")
     public void tokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
         String availablePath = "/csv";
         String availableMethod = HttpMethod.POST;
@@ -185,10 +186,10 @@ public class TokenAccessTest extends BaseMethod {
 
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "userAndPathAndMethod"
     )
+    @Issue("6052")
     public void tokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response responseRoot; //response from root request
@@ -204,10 +205,10 @@ public class TokenAccessTest extends BaseMethod {
         assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for /api request.", 401, responseAPI.getStatus());
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "users"
     )
+    @Issue("6052")
     public void tokenAccessToUrlParamsDenialTest(String username) throws Exception {
         String path = "/csv";
         String paramName = "config";
@@ -221,10 +222,10 @@ public class TokenAccessTest extends BaseMethod {
         assertTrue("Token for path " + path + " and method " + method + "with params " + paramName + "=" + paramValue + " did not give code 15 in response for user " + username + " Response: " + entity, entity.contains("code 15"));
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "userAndPathAndMethod"
     )
+    @Issue("6052")
     public void dualTokenAccessToItsUrlsTest(String path, String method, String username) throws Exception {
         String anotherPath;
         switch (method) {
@@ -265,10 +266,10 @@ public class TokenAccessTest extends BaseMethod {
 
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "userAndPathAndMethod"
     )
+    @Issue("6052")
     public void dualTokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
         String firstPath = "/csv";
         String secondPath = "/command";
@@ -287,10 +288,10 @@ public class TokenAccessTest extends BaseMethod {
         }
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "userAndPathAndMethod"
     )
+    @Issue("6052")
     public void dualTokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
         String anotherPath;
         switch (method) {
@@ -340,10 +341,10 @@ public class TokenAccessTest extends BaseMethod {
         assertEquals("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + anotherPath, 401, secondResponseAPI.getStatus());
     }
 
-    @Issue("6052")
     @Test(
             dataProvider = "users"
     )
+    @Issue("6052")
     public void dualTokenAccessToUrlParamsDenialTest(String username) throws Exception {
         String firstPath = "/csv";
         String fistParamName = "config";
@@ -402,7 +403,7 @@ public class TokenAccessTest extends BaseMethod {
         return response;
     }
 
-    private Response executeMethodWithEntity(String token, String path, String method) throws Exception {
+    private Response executeMethodWithEntity(String token, String path, String method) {
         final Response response = executeTokenRootRequest(webTarget -> webTarget.path(API_PATH + path)
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
