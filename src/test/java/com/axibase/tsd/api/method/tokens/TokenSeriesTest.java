@@ -53,7 +53,7 @@ public class TokenSeriesTest extends SeriesTest {
             description = "Tests series get endpoint with tokens."
     )
     @Issue("6052")
-    public void testGetMethod() throws Exception{
+    public void testGetMethod() throws Exception {
         String getURL = "/series/json/" + entity + "/" + metric;
         String getToken = TokenRepository.getToken(username, HttpMethod.GET, String.format(getURL + "?startDate=%s&interval=%s&timeFormat=%s", SAMPLE_TIME, "1-DAY", "iso"));
         Map<String, String> parameters = new LinkedHashMap<>();

@@ -30,6 +30,7 @@ public class TokenAccessTest extends BaseMethod {
     private static final String ADMIN_NAME = Config.getInstance().getLogin();
     private static final String API_PATH = Config.getInstance().getApiPath();
 
+    //TODO use request senders
 
     @DataProvider
     private Object[][] availablePaths() {

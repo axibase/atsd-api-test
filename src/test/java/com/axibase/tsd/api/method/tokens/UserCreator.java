@@ -82,64 +82,6 @@ public class UserCreator extends BaseMethod {
     @Test(
             dataProvider = "users"
     )
-    public void tokenMetricTest(String username) throws Exception {
-        Response responseWithToken;
-        String responseTokenEntity;
-        String metricName = Mocks.metric();
-        String tagName = "name";
-        String tagValue = "value";
-        Metric metric = new Metric();
-        metric.setEnabled(true);
-        metric.setName(metricName);
-        //checking create method
-        String createURL = "/metrics/" + metricName;
-        String createToken = TokenRepository.getToken(username, HttpMethod.PUT, createURL);
-        MetricMethod.createOrReplaceMetric(metric, createToken);
-        Checker.check(new MetricCheck(metric));
-        //checking get method
-        String getURL = "/metrics/" + metricName;
-        String getToken = TokenRepository.getToken(username, HttpMethod.GET, getURL);
-        responseWithToken = MetricMethod.queryMetric(metricName, getToken);
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        assertTrue("Metric was not inserted with token for user " + username, !responseTokenEntity.contains("error"));
-        compareJsonString(metric.toString(), responseTokenEntity, false);
-        //checking update method
-        String updateURL = "/metrics/" + metricName;
-        String updateToken = TokenRepository.getToken(username, "PATCH", updateURL);
-        metric.addTag(tagName, tagValue);
-        MetricMethod.updateMetric(metric, updateToken);
-        Checker.check(new MetricCheck(metric));
-        //checking series and series tags methods
-        String defaultMetricName = "entity.count"; //methods will be executed fot built-in metric
-        String seriesURL = "/metrics/" + defaultMetricName + "/series";
-        String seriesToken = TokenRepository.getToken(username, HttpMethod.GET, seriesURL);
-        responseWithToken = MetricMethod.queryMetricSeries(metricName, seriesToken);
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        compareJsonString(metric.toString(), responseTokenEntity, false);
-        String seriesTagsURL = "/metrics/" + defaultMetricName + "/series/tags";
-        String seriesTagsToken = TokenRepository.getToken(username, HttpMethod.GET, seriesTagsURL);
-        responseWithToken = MetricMethod.queryMetricSeriesTagsResponse(metricName, null, seriesTagsToken);
-        responseTokenEntity = responseWithToken.readEntity(String.class);
-        compareJsonString("{\"" + tagName + "\": [\"" + tagValue + "\"]}", responseTokenEntity, false);
-        //checking rename method
-        String renameURL = "/metrics/" + metricName + "/rename";
-        String renameToken = TokenRepository.getToken(username, HttpMethod.POST, renameURL);
-        metricName = metricName + "_1";
-        Metric newMetric = new Metric(metricName);
-        MetricMethod.renameMetric(metric.getName(), metricName, renameToken);
-        Checker.check(new DeletionCheck(new MetricCheck(metric)));
-        Checker.check(new MetricCheck(newMetric));
-        //checking delete method
-        String deleteURL = "/metrics/" + metricName;
-        String deleteToken = TokenRepository.getToken(username, HttpMethod.DELETE, deleteURL);
-        MetricMethod.deleteMetric(metricName, deleteToken);
-        Checker.check(new DeletionCheck(new MetricCheck(newMetric)));
-    }
-
-    @Issue("6052")
-    @Test(
-            dataProvider = "users"
-    )
     public void tokenEntityTest(String username) throws Exception {
         Response responseWithToken;
         String responseTokenEntity;

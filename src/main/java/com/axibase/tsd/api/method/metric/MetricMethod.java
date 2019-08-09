@@ -6,6 +6,7 @@ import com.axibase.tsd.api.method.MethodParameters;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.MetricCheck;
 import com.axibase.tsd.api.model.metric.Metric;
+import com.axibase.tsd.api.model.metric.MetricRenameQuery;
 import com.axibase.tsd.api.model.series.metric.MetricSeriesTags;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.api.util.Util;
@@ -156,7 +157,7 @@ public class MetricMethod extends BaseMethod {
     }
 
     public static Response renameMetric(String oldName, String newName, RequestSenderWithAuthorization sender) {
-        Response response = sender.executeApiRequest(METHOD_METRIC_RENAME, nameReplacement(oldName), HttpMethod.POST, Entity.json(new Metric(newName)));
+        Response response = sender.executeApiRequest(METHOD_METRIC_RENAME, nameReplacement(oldName), HttpMethod.POST, Entity.json(new MetricRenameQuery(newName)));
         response.bufferEntity();
         return response;
     }

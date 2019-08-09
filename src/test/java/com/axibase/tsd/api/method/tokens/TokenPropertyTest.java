@@ -45,15 +45,14 @@ public class TokenPropertyTest extends PropertyTest {
     }
 
     @Test(
-            description = "Tests properties get endpoint with tokens.",
-            enabled = false //TODO enable when issue 6446 is resolved
+            description = "Tests properties get endpoint with tokens."
     )
     @Issue("6052")
     public void testGetMethod() throws Exception {
         String url = "/properties/" + entity + "/types/" + propertyType;
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
         Response response = urlQueryProperty(propertyType, entity, token);
-        assertTrue(compareJsonString(Util.prettyPrint(property), response.readEntity(String.class)));
+        assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(property)), response.readEntity(String.class)));
     }
 
     @Test(

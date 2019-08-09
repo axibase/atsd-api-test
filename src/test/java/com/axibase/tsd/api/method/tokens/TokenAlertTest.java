@@ -21,13 +21,13 @@ import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-public class TokenAlertsTest extends AlertTest {
+public class TokenAlertTest extends AlertTest {
     private final String username;
 
     @Factory(
             dataProvider = "users", dataProviderClass = UserCreator.class
     )
-    public TokenAlertsTest(String username) {
+    public TokenAlertTest(String username) {
         this.username = username;
     }
 
@@ -38,7 +38,7 @@ public class TokenAlertsTest extends AlertTest {
     @Issue("6052")
     public void testQueryMethod() throws Exception {
         String url = "/alerts/query";
-        String token =  TokenRepository.getToken(username, HttpMethod.POST, url);
+        String token = TokenRepository.getToken(username, HttpMethod.POST, url);
         String entity = Mocks.entity();
         generateAlertForEntity(entity);
         AlertQuery query = new AlertQuery()
@@ -91,7 +91,7 @@ public class TokenAlertsTest extends AlertTest {
                 .setEntity(entity);
         Alert alert = queryAlerts(query).readEntity(ResponseAsList.ofAlerts()).get(0);
 
-        Response response = deleteAlerts(Collections.singletonList(new AlertDeleteQuery(alert.getId())), token);
+        deleteAlerts(Collections.singletonList(new AlertDeleteQuery(alert.getId())), token);
         Checker.check(new DeletionCheck(new AlertCheck(query)));
     }
 }
