@@ -41,10 +41,11 @@ public class TokenMetricTest extends MetricTest {
         String metricName = Mocks.metric();
         String url = "/metrics/" + metricName;
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
-        createOrReplaceMetricCheck(metricName);
+        Metric metric = new Metric(metricName);
+        createOrReplaceMetricCheck(metric);
 
         Response response = queryMetric(metricName, token);
-        assertTrue(compareJsonString(Util.prettyPrint(new Metric().setName(metricName)), response.readEntity(String.class)));
+        assertTrue(compareJsonString(Util.prettyPrint(metric), response.readEntity(String.class)));
     }
 
     @Test(
@@ -56,7 +57,7 @@ public class TokenMetricTest extends MetricTest {
         String url = "/metrics/" + metricName;
         String token = TokenRepository.getToken(username, "PATCH", url);
         Metric metric = new Metric(metricName);
-        createOrReplaceMetricCheck(metricName);
+        createOrReplaceMetricCheck(metric);
 
         metric.setLabel(Mocks.LABEL);
         updateMetric(metric, token);
@@ -117,7 +118,7 @@ public class TokenMetricTest extends MetricTest {
         String url = "/metrics/" + metricName + "/series";
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
         Series series = new Series(Mocks.entity(), metricName)
-                .addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, Mocks.INT_VALUE));
+                .addSamples(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(series);
 
         Response response = queryMetricSeries(metricName, token);
@@ -134,7 +135,7 @@ public class TokenMetricTest extends MetricTest {
         String url = "/metrics/" + metricName + "/series/tags";
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
         Series series = new Series(Mocks.entity(), metricName)
-                .addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, Mocks.INT_VALUE))
+                .addSamples(Mocks.SAMPLE)
                 .setTags(Mocks.TAGS);
         SeriesMethod.insertSeriesCheck(series);
 

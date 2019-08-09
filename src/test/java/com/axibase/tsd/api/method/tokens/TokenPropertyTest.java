@@ -63,8 +63,7 @@ public class TokenPropertyTest extends PropertyTest {
         String url = "/properties/" + entity + "/types";
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
         Response response = typeQueryProperty(entity, token);
-        String expectedResponse = String.format("[\"%s\"]", propertyType);
-        assertTrue(compareJsonString(expectedResponse, response.readEntity(String.class)));
+        assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(propertyType)), response.readEntity(String.class)));
     }
 
     @Test(
