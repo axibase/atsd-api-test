@@ -4,7 +4,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.alert.AlertTest;
 import com.axibase.tsd.api.method.checks.AlertCheck;
 import com.axibase.tsd.api.method.checks.DeletionCheck;
-import com.axibase.tsd.api.model.alert.ALertDeleteQuery;
+import com.axibase.tsd.api.model.alert.AlertDeleteQuery;
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.alert.AlertQuery;
 import com.axibase.tsd.api.model.alert.AlertUpdateQuery;
@@ -91,7 +91,7 @@ public class TokenAlertsTest extends AlertTest {
                 .setEntity(entity);
         Alert alert = queryAlerts(query).readEntity(ResponseAsList.ofAlerts()).get(0);
 
-        Response response = deleteAlerts(Collections.singletonList(new ALertDeleteQuery(alert.getId())), token);
+        Response response = deleteAlerts(Collections.singletonList(new AlertDeleteQuery(alert.getId())), token);
         Checker.check(new DeletionCheck(new AlertCheck(query)));
     }
 }

@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class ALertDeleteQuery {
+public class AlertDeleteQuery {
     private final int id;
 }
