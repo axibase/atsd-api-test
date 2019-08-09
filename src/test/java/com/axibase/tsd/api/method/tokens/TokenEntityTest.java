@@ -119,7 +119,7 @@ public class TokenEntityTest extends EntityTest {
             description = "Tests entity metrics endpoint."
     )
     @Issue("6052")
-    public void testEntityMetricsMethod() throws Exception {
+    public void testMetricsMethod() throws Exception {
         String entityName = Mocks.entity();
         String url = "/entities/" + entityName + "/metrics";
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
@@ -136,7 +136,7 @@ public class TokenEntityTest extends EntityTest {
             description = "Tests entity property types endpoint."
     )
     @Issue("6052")
-    public void testEntityPropertyTypesMethod() throws Exception{
+    public void testPropertyTypesMethod() throws Exception {
         String entityName = Mocks.entity();
         String url = "/entities/" + entityName + "/property-types";
         String token = TokenRepository.getToken(username, HttpMethod.GET, url);
