@@ -277,13 +277,14 @@ public class PreEvaluationTest extends SeriesMethod {
      * 2019-07-01T00:19:00Z
      */
     private List<Sample> generateSamples(int value) {
-        List<Sample> result = new ArrayList<>();
-        result.add(Sample.ofDateDecimal("2019-07-01T00:00:00Z", BigDecimal.valueOf(value)));
-        result.add(Sample.ofDateDecimal("2019-07-01T00:05:00Z", BigDecimal.valueOf(value)));
-        result.add(Sample.ofDateDecimal("2019-07-01T00:09:00Z", BigDecimal.valueOf(value)));
-        result.add(Sample.ofDateDecimal("2019-07-01T00:15:00Z", BigDecimal.valueOf(value)));
-        result.add(Sample.ofDateDecimal("2019-07-01T00:19:00Z", BigDecimal.valueOf(value)));
-        return result;
+        BigDecimal number = BigDecimal.valueOf(value);
+        return Arrays.asList(
+                Sample.ofDateDecimal("2019-07-01T00:00:00Z", number),
+                Sample.ofDateDecimal("2019-07-01T00:05:00Z", number),
+                Sample.ofDateDecimal("2019-07-01T00:09:00Z", number),
+                Sample.ofDateDecimal("2019-07-01T00:15:00Z", number),
+                Sample.ofDateDecimal("2019-07-01T00:19:00Z", number)
+        );
     }
 
 }
