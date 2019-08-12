@@ -16,7 +16,8 @@ import io.qameta.allure.Issue;
 
 import java.util.*;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 
 public class TokenAccessTest extends BaseMethod {
@@ -124,8 +125,8 @@ public class TokenAccessTest extends BaseMethod {
     public void tokenAccessToItsUrlTest(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeApiRequest(token, path, method);
-        assertNotSame("Token for path " + path + " and method " + method + " failed to authorise user " + username,
-                Response.Status.UNAUTHORIZED,response.getStatusInfo());
+        assertNotUnauthorized("Token for path " + path + " and method " + method + " failed to authorise user " + username,
+                response);
     }
 
     @Test(
@@ -135,15 +136,15 @@ public class TokenAccessTest extends BaseMethod {
     public void tokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
         String availablePath = "/csv";
         String availableMethod = HttpMethod.POST;
+        if ((path.equals(availablePath) && method.equals(availableMethod))) {
+            return;
+        }
         String token = TokenRepository.getToken(username, availableMethod, availablePath);
         Response response = executeApiRequest(token, path, method);
-        if (!(path.equals(availablePath) && method.equals(availableMethod))) {
-            assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username,
-                    Response.Status.UNAUTHORIZED, response.getStatusInfo());
-            assertTrue("Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username,
-                    response.readEntity(String.class).contains("code 15"));
-        }
-
+        assertUnauthorized("Token for path " + path + " and method " + method + " did not fail to authorise user " + username,
+                response);
+        assertCode15("Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username,
+                response);
     }
 
     @Test(
@@ -153,8 +154,8 @@ public class TokenAccessTest extends BaseMethod {
     public void tokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeRootRequest(token, path, method);
-        assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for root request.",
-                Response.Status.UNAUTHORIZED, response.getStatusInfo());
+        assertUnauthorized("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for root request.",
+                response);
     }
 
     @Test(
@@ -164,8 +165,8 @@ public class TokenAccessTest extends BaseMethod {
     public void testTokenAccessToSimilarApiUrlsDenial(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeRootRequest(token, "/api" + path, method);
-        assertEquals("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for /api request.",
-                Response.Status.UNAUTHORIZED, response.getStatusInfo());
+        assertUnauthorized("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for /api request.",
+                response);
     }
 
     @Test(
@@ -180,10 +181,10 @@ public class TokenAccessTest extends BaseMethod {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeApiRequestWithParams(token, path, method, ImmutableMap.of(paramName, paramValue));
 
-        assertEquals("Authorisation not failed with not valid parameter on token: " + token + " Path: " + path + " Method: " + method + "User: " + username,
-                Response.Status.UNAUTHORIZED, response.getStatusInfo());
-        assertTrue("Token for path " + path + " and method " + method + "with params " + paramName + "=" + paramValue + " did not give code 15 in response for user " + username,
-                response.readEntity(String.class).contains("code 15"));
+        assertUnauthorized("Authorisation not failed with not valid parameter on token: " + token + " Path: " + path + " Method: " + method + "User: " + username,
+                response);
+        assertCode15("Token for path " + path + " and method " + method + "with params " + paramName + "=" + paramValue + " did not give code 15 in response for user " + username,
+                response);
     }
 
     @Test(
@@ -199,10 +200,10 @@ public class TokenAccessTest extends BaseMethod {
         Response firstResponse = executeApiRequest(token, path, method);
         Response secondResponse = executeApiRequest(token, anotherPath, method);
 
-        assertNotSame("Dual token for urls " + path + "," + anotherPath + " failed to grand access to " + path + " for user " + username,
-                Response.Status.UNAUTHORIZED, firstResponse.getStatusInfo());
-        assertNotSame("Dual token for urls " + path + "," + anotherPath + " failed to grand access to " + anotherPath + " for user " + username,
-                Response.Status.UNAUTHORIZED, secondResponse.getStatusInfo());
+        assertNotUnauthorized("Dual token for urls " + path + "," + anotherPath + " failed to grand access to " + path + " for user " + username,
+                firstResponse);
+        assertNotUnauthorized("Dual token for urls " + path + "," + anotherPath + " failed to grand access to " + anotherPath + " for user " + username,
+                secondResponse);
     }
 
     @Test(
@@ -219,10 +220,10 @@ public class TokenAccessTest extends BaseMethod {
         String token = TokenRepository.getToken(username, availableMethod, firstPath + "," + secondPath);
         Response response = executeApiRequest(token, path, method);
 
-        assertEquals("Dual token for urls " + firstPath + "," + secondPath + " and method " + method + " did not fail to authorise user " + username + " to path " + path,
-                Response.Status.UNAUTHORIZED, response.getStatusInfo());
-        assertTrue("Dual Token for path " + path + " and method " + method + " did not give code 15 in response for user " + username,
-                response.readEntity(String.class).contains("code 15"));
+        assertUnauthorized("Dual token for urls " + firstPath + "," + secondPath + " and method " + method + " did not fail to authorise user " + username + " to path " + path,
+                response);
+        assertCode15("Dual token for urls " + firstPath + "," + secondPath + " and method " + method + " did not fail to authorise user " + username + " to path " + path,
+                response);
     }
 
     @Test(
@@ -238,10 +239,10 @@ public class TokenAccessTest extends BaseMethod {
         Response firstResponse = executeRootRequest(token, path, method);
         Response secondResponse = executeRootRequest(token, anotherPath, method);
 
-        assertEquals("Dual Token for path " + path + "and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for root request for path " + path,
-                Response.Status.UNAUTHORIZED, firstResponse.getStatusInfo());
-        assertEquals("Dual Token for path " + path + "and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for root request for path " + anotherPath,
-                Response.Status.UNAUTHORIZED, secondResponse.getStatusInfo());
+        assertUnauthorized("Dual Token for path " + path + "and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for root request for path " + path,
+                firstResponse);
+        assertUnauthorized("Dual Token for path " + path + "and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for root request for path " + path,
+                secondResponse);
     }
 
     @Test(
@@ -256,10 +257,10 @@ public class TokenAccessTest extends BaseMethod {
         String token = TokenRepository.getToken(username, method, path + "," + anotherPath);
         Response firstResponse = executeRootRequest(token, "/api" + path, method);
         Response secondResponse = executeRootRequest(token, "/api/" + anotherPath, method);
-        assertEquals("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + path,
-                Response.Status.UNAUTHORIZED, firstResponse.getStatusInfo());
-        assertEquals("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + anotherPath,
-                Response.Status.UNAUTHORIZED, secondResponse.getStatusInfo());
+        assertUnauthorized("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + path,
+                firstResponse);
+        assertUnauthorized("Dual Token for path " + path + " and " + anotherPath + " and method " + method + " did not fail to authorise user " + username + " for /api request for path " + anotherPath,
+                secondResponse);
     }
 
     @Test(
@@ -278,14 +279,26 @@ public class TokenAccessTest extends BaseMethod {
         Response firstResponse = executeApiRequestWithParams(token, firstPath, method, ImmutableMap.of(fistParamName, firstParamValue));
         Response secondResponse = executeApiRequestWithParams(token, secondPath, method, ImmutableMap.of(secondParamName, secondParamValue));
 
-        assertEquals("Authorisation not failed with not valid parameter on dual token: " + token + " Path: " + firstPath + " Method: " + method + "User: " + username,
-                Response.Status.UNAUTHORIZED, firstResponse.getStatusInfo());
-        assertTrue("Dual Token for path " + firstPath + " and method " + method + "with params " + fistParamName + "=" + firstParamValue + " did not give code 15 in response for user " + username,
-                firstResponse.readEntity(String.class).contains("code 15"));
-        assertEquals("Authorisation not failed with not valid parameter on dual token: " + token + " Path: " + secondPath + " Method: " + method + "User: " + username,
-                Response.Status.UNAUTHORIZED, secondResponse.getStatusInfo());
-        assertTrue("Dual Token for path " + secondPath + " and method " + method + "with params " + secondParamName + "=" + secondParamValue + " did not give code 15 in response for user " + username,
-                secondResponse.readEntity(String.class).contains("code 15"));
+        assertUnauthorized("Authorisation not failed with not valid parameter on dual token: " + token + " Path: " + firstPath + " Method: " + method + "User: " + username,
+                firstResponse);
+        assertCode15("Dual Token for path " + firstPath + " and method " + method + "with params " + fistParamName + "=" + firstParamValue + " did not give code 15 in response for user " + username,
+                firstResponse);
+        assertUnauthorized("Authorisation not failed with not valid parameter on dual token: " + token + " Path: " + secondPath + " Method: " + method + "User: " + username,
+                secondResponse);
+        assertCode15("Dual Token for path " + secondPath + " and method " + method + "with params " + secondParamName + "=" + secondParamValue + " did not give code 15 in response for user " + username,
+                secondResponse);
+    }
+
+    private void assertUnauthorized(String message, Response response) {
+        assertEquals(message, Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    }
+
+    private void assertNotUnauthorized(String message, Response response) {
+        assertTrue(message, Response.Status.UNAUTHORIZED.getStatusCode() != response.getStatus());
+    }
+
+    private void assertCode15(String message, Response response) {
+        assertTrue(message, response.readEntity(String.class).contains("code 15"));
     }
 
     private String findAnotherPath(String method) {
@@ -293,13 +306,13 @@ public class TokenAccessTest extends BaseMethod {
             case (HttpMethod.GET):
                 return "/entities";
             case (HttpMethod.POST):
-                return  "/csv";
+                return "/csv";
             case (HttpMethod.DELETE):
-                return  "/entities/entity";
+                return "/entities/entity";
             case (HttpMethod.PUT):
-                return  "/entities/entity";
+                return "/entities/entity";
             case ("PATCH"):
-                return  "/entities/entity";
+                return "/entities/entity";
             default:
                 throw new IllegalArgumentException(method + " is not a valid Http method");
         }
@@ -307,28 +320,37 @@ public class TokenAccessTest extends BaseMethod {
 
     private Response executeApiRequest(String token, String path, String method) {
         RequestSenderWithBearerAuthorization sender = new RequestSenderWithBearerAuthorization(token);
+        Response response;
         if (method.equals(HttpMethod.GET) || method.equals(HttpMethod.DELETE)) {
-            return sender.executeApiRequest(path, method);
+            response = sender.executeApiRequest(path, method);
         } else {
-            return sender.executeApiRequest(path, method, Mocks.JSON_OBJECT);
+            response = sender.executeApiRequest(path, method, Mocks.JSON_OBJECT);
         }
+        response.bufferEntity();
+        return response;
     }
 
     private Response executeRootRequest(String token, String path, String method) {
         RequestSenderWithBearerAuthorization sender = new RequestSenderWithBearerAuthorization(token);
+        Response response;
         if (method.equals(HttpMethod.GET) || method.equals(HttpMethod.DELETE)) {
-            return sender.executeRootRequest(path, method);
+            response = sender.executeRootRequest(path, method);
         } else {
-            return sender.executeRootRequest(path, method, Mocks.JSON_OBJECT);
+            response = sender.executeRootRequest(path, method, Mocks.JSON_OBJECT);
         }
+        response.bufferEntity();
+        return response;
     }
 
     private Response executeApiRequestWithParams(String token, String path, String method, Map<String, Object> params) {
         RequestSenderWithBearerAuthorization sender = new RequestSenderWithBearerAuthorization(token);
+        Response response;
         if (method.equals(HttpMethod.GET) || method.equals(HttpMethod.DELETE)) {
-            return sender.executeApiRequest(path, Collections.EMPTY_MAP, params, Collections.EMPTY_MAP, method);
+            response = sender.executeApiRequest(path, Collections.EMPTY_MAP, params, Collections.EMPTY_MAP, method);
         } else {
-            return sender.executeApiRequest(path, Collections.EMPTY_MAP, params, Collections.EMPTY_MAP, method, Mocks.JSON_OBJECT);
+            response = sender.executeApiRequest(path, Collections.EMPTY_MAP, params, Collections.EMPTY_MAP, method, Mocks.JSON_OBJECT);
         }
+        response.bufferEntity();
+        return response;
     }
 }
