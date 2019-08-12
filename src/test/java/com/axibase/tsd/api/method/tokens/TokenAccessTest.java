@@ -105,7 +105,7 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @DataProvider
-    private Object[][] userAndPathAndMethod() {
+    private Object[][] endpointsAndUsers() {
         List<Object[]> pathsAndMethods = Arrays.asList(availablePaths());
         List<Object[]> result = new ArrayList<>();
 
@@ -119,10 +119,11 @@ public class TokenAccessTest extends BaseMethod {
 
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that tokens have access to their urls."
     )
     @Issue("6052")
-    public void tokenAccessToItsUrlTest(String path, String method, String username) throws Exception {
+    public void testTokenAccessToItsUrl(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeApiRequest(token, path, method);
         assertNotUnauthorized("Token for path " + path + " and method " + method + " failed to authorise user " + username,
@@ -130,10 +131,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that tokens do not have access to other urls."
     )
     @Issue("6052")
-    public void tokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
+    public void testTokenAccessToOtherUrls(String path, String method, String username) throws Exception {
         String availablePath = "/csv";
         String availableMethod = HttpMethod.POST;
         if ((path.equals(availablePath) && method.equals(availableMethod))) {
@@ -148,10 +150,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that tokens issued to /api/v1/* endpoints cannot get access to similar root urls."
     )
     @Issue("6052")
-    public void tokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
+    public void testTokenAccessToSimilarRootUrlsDenial(String path, String method, String username) throws Exception {
         String token = TokenRepository.getToken(username, method, path);
         Response response = executeRootRequest(token, path, method);
         assertUnauthorized("Token for path " + path + " and method " + method + " did not fail to authorise user " + username + " for root request.",
@@ -159,7 +162,8 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that tokens issued to /api/v1/* endpoint cannot get access to similar /api/* endpoint."
     )
     @Issue("6052")
     public void testTokenAccessToSimilarApiUrlsDenial(String path, String method, String username) throws Exception {
@@ -170,10 +174,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "users"
+            dataProvider = "users",
+            description = "Tests that tokens cannot get access to the same url with parameters."
     )
     @Issue("6052")
-    public void tokenAccessToUrlParamsDenialTest(String username) throws Exception {
+    public void testTokenAccessToUrlParamsDenial(String username) throws Exception {
         String path = "/csv";
         String paramName = "config";
         String paramValue = "not_valid_config";
@@ -188,10 +193,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that dual token has access to both of it's urls."
     )
     @Issue("6052")
-    public void dualTokenAccessToItsUrlsTest(String path, String method, String username) throws Exception {
+    public void testDualTokenAccessToItsUrls(String path, String method, String username) throws Exception {
         String anotherPath = findAnotherPath(method);
         if (path.equals(anotherPath)) {
             return;
@@ -207,10 +213,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that dual token cannot get acces to urls it's not issued to."
     )
     @Issue("6052")
-    public void dualTokenAccessToOtherUrlsTest(String path, String method, String username) throws Exception {
+    public void testDualTokenAccessToOtherUrls(String path, String method, String username) throws Exception {
         String firstPath = "/csv";
         String secondPath = "/command";
         String availableMethod = HttpMethod.POST;
@@ -227,10 +234,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that dual token issued to /api/v1/* endpoints cannot get access to the same root urls."
     )
     @Issue("6052")
-    public void dualTokenAccessToSimilarRootUrlsDenialTest(String path, String method, String username) throws Exception {
+    public void testDualTokenAccessToSimilarRootUrlsDenial(String path, String method, String username) throws Exception {
         String anotherPath = findAnotherPath(method);
         if (path.equals(anotherPath)) {
             return;
@@ -246,7 +254,8 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "userAndPathAndMethod"
+            dataProvider = "endpointsAndUsers",
+            description = "Tests that dual token issued to /api/v1/* endpoints cannot get access to the same /api/* urls."
     )
     @Issue("6052")
     public void testDualTokenAccessToSimilarApiUrlsDenial(String path, String method, String username) throws Exception {
@@ -264,10 +273,11 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @Test(
-            dataProvider = "users"
+            dataProvider = "users",
+            description = "Tests that dual token cannot get access to urls with parameters, if it is not issued to it"
     )
     @Issue("6052")
-    public void dualTokenAccessToUrlParamsDenialTest(String username) throws Exception {
+    public void testDualTokenAccessToUrlParamsDenial(String username) throws Exception {
         String firstPath = "/csv";
         String fistParamName = "config";
         String firstParamValue = "not_valid_config";
