@@ -4,6 +4,7 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import org.apache.commons.collections4.map.UnmodifiableMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +27,7 @@ import static com.axibase.tsd.api.util.Util.*;
 
 public class TestUtil {
     public static final Long MILLIS_IN_DAY = 86400000L;
+    public static final String NaN = Double.toString(Double.NaN);
 
     public enum TimeTranslation {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
@@ -274,5 +276,24 @@ public class TestUtil {
         }
 
         return mapTags;
+    }
+
+    /**
+     * Transforms object vararg to unmodifiable {@code LinkedHashMap<String, Object>}. Use this method instead of guava ImmutableMap when you have null in values
+     * @param objects vararg to transform into map. Count must be even and every non-even element must be String
+     * @return Unmodifiable LinkedHashMap<String, Object>
+     */
+    public static Map<String, Object> toUnmodifiableMap(Object... objects) {
+        if(objects.length %2 != 0) {
+            throw new IllegalArgumentException("Objects count must be even!");
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        for(int i = 0; i < objects.length; i+=2) {
+            if(!(objects[i] instanceof String)) {
+                throw new IllegalArgumentException("Keys must be Strings!");
+            }
+            map.put(objects[i].toString(), objects[i+1]);
+        }
+        return Collections.unmodifiableMap(map);
     }
 }

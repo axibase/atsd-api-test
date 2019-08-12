@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.transport.Transport;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 import com.axibase.tsd.api.util.Mocks;
@@ -41,8 +42,10 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series(seriesCommand.getEntityName(), Mocks.metric());
-            series.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
+            Series series = new Series()
+                    .setMetric(Mocks.metric())
+                    .setEntity(seriesCommand.getEntityName())
+                    .addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             if (currentLength < MAX_LENGTH) {
@@ -50,11 +53,9 @@ public class LengthTest extends SeriesMethod {
                 seriesList.add(series);
             } else {
                 currentLength -= appendix.length();
-                Integer leftCount = MAX_LENGTH - currentLength;
-                String repeated = new String(new char[leftCount + 1]).replace("\0", "1");
-                Integer lastIndex = seriesList.size() - 1;
-                Series lastSeries = seriesList.get(lastIndex);
-                seriesList.remove(lastSeries);
+                int leftCount = MAX_LENGTH - currentLength;
+                String repeated = StringUtils.repeat('1', leftCount + 1);
+                Series lastSeries = seriesList.remove(seriesList.size() - 1);
                 lastSeries.setSamples(Collections.singletonList(Sample.ofDateDecimal(Mocks.ISO_TIME, new BigDecimal(repeated))));
                 values.put(lastSeries.getMetric(), repeated);
                 seriesList.add(lastSeries);
@@ -80,8 +81,10 @@ public class LengthTest extends SeriesMethod {
         Map<String, String> values = new HashMap<>();
 
         while (currentLength <= MAX_LENGTH) {
-            Series series = new Series(seriesCommand.getEntityName(), Mocks.metric());
-            series.addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
+            Series series = new Series()
+                    .setMetric(Mocks.metric())
+                    .setEntity(seriesCommand.getEntityName())
+                    .addSamples(Sample.ofDateInteger(Mocks.ISO_TIME, 1));
             String appendix = FieldFormat.keyValue("m", series.getMetric(), "1");
             currentLength += appendix.length();
             values.put(series.getMetric(), "1");

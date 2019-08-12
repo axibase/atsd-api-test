@@ -282,7 +282,11 @@ public abstract class SqlTest extends SqlMethod {
                     .getJSONObject(0)
                     .getString("message");
         } catch (JSONException e) {
-            return null;
+            try { //if response body is in different format
+                return json.getString("error");
+            } catch (JSONException e2) {
+                return null;
+            }
         }
     }
 }

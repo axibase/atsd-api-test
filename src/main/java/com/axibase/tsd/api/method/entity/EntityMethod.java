@@ -36,6 +36,10 @@ public class EntityMethod extends BaseMethod {
         return createOrReplaceEntity(entity.getName(), entity);
     }
 
+    public static void createOrReplaceEntityCheck(String entityName) throws Exception {
+        createOrReplaceEntityCheck(new Entity(entityName));
+    }
+
     public static void createOrReplaceEntityCheck(Entity entity) throws Exception {
         createOrReplaceEntityCheck(entity, new EntityCheck(entity));
     }
@@ -53,7 +57,7 @@ public class EntityMethod extends BaseMethod {
             return false;
         }
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
-            throw new Exception("Fail to execute queryMetric query");
+            throw new Exception("Fail to execute entity query: " + responseAsString(response));
         }
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class));
     }
@@ -69,7 +73,7 @@ public class EntityMethod extends BaseMethod {
             return entityExist(entity.replace(" ", "_"));
         }
 
-        throw new NotCheckedException("Fail to execute entity query");
+        throw new NotCheckedException("Fail to execute entity query: " + responseAsString(response));
     }
 
     public static Response getEntityResponse(String entityName) {
