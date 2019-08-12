@@ -43,6 +43,10 @@ public abstract class RequestSenderWithAuthorization {
         return executeApiRequest(path, Collections.EMPTY_MAP, httpMethod, entity);
     }
 
+    public Response executeApiRequest(String path, String httpMethod) {
+        return executeApiRequest(path, Collections.EMPTY_MAP, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod);
+    }
+
     public Response executeRootRequest(String path, String httpMethod, Entity<?> entity) {
         return executeRootRequest(path, Collections.EMPTY_MAP, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod, entity);
     }

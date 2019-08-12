@@ -3,6 +3,7 @@ package com.axibase.tsd.api.util;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 
+import javax.ws.rs.client.Entity;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -26,6 +27,7 @@ public class Mocks {
     public static final String ENTITY_TAGS_PROPERTY_TYPE = "$entity_tags";
     public static final int INT_VALUE = 22;
     public static final ScientificNotationNumber SCIENTIFIC_NOTATION_VALUE = new ScientificNotationNumber(INT_VALUE);
+    public static final Entity<?> JSON_OBJECT = Entity.json(TAGS); //forming json object from map
 
     public static Date date() {
         return Util.parseDate(ISO_TIME);

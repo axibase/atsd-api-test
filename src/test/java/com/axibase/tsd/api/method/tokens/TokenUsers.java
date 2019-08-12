@@ -9,9 +9,8 @@ import javax.ws.rs.HttpMethod;
 
 
 public class TokenUsers extends BaseMethod {
-    private static final String USER_NAME = "apitokenuser_worktest";
-    private static final String ADMIN_NAME = Config.getInstance().getLogin();
-    public static final String API_PATH = Config.getInstance().getApiPath();
+    public static final String USER_NAME = "apitokenuser_worktest";
+    public static final String ADMIN_NAME = Config.getInstance().getLogin();
 
     static {
         String path = "/admin/users/edit.xhtml";
