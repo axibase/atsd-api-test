@@ -183,11 +183,14 @@ public class PostEvaluationTest extends SeriesMethod {
         assertEquals(seriesList.size(), 3 * seriesCount);
         CommonAssertions.assertSeriesSize(seriesList, 2);
         CommonAssertions.checkValues(seriesList,
-                new String[]{"3", "2"},
-                new String[]{"6", "9"},
-                new String[]{"12", "18"},
-                new String[]{"3", "5"},
-                new String[]{"6", "10"});
+                new String[][]{
+                        {"3", "2"},
+                        {"6", "9"},
+                        {"12", "18"},
+                        {"3", "5"},
+                        {"6", "10"}
+                }
+        );
     }
 
     @Test(description = "Apply several aggregation functions and limits to evaluation-generated series.")
@@ -264,12 +267,14 @@ public class PostEvaluationTest extends SeriesMethod {
         List<Series> seriesList = querySeriesAsList(query);
         assertEquals(seriesList.size(), 6);
         CommonAssertions.checkValues(seriesList,
-                new String[]{"12", "8"},
-                new String[]{"3", "2"},
-                new String[]{"10", "40"},
-                new String[]{"5", "20"},
-                new String[]{"20", "45"},
-                new String[]{"10", "22.5"}
+                new String[][] {
+                        {"12", "8"},
+                        {"3", "2"},
+                        {"10", "40"},
+                        {"5", "20"},
+                        {"20", "45"},
+                        {"10", "22.5"}
+                }
         );
 
         // group then aggregate

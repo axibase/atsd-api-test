@@ -8,14 +8,13 @@ import com.axibase.tsd.api.model.series.Series;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.testng.Assert;
-
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -238,7 +237,7 @@ public class CommonAssertions {
         String msg = "Array of values %s not found in series list.";
         for (String[] valuesArray : values) {
             BigDecimal[] decimals = Arrays.stream(valuesArray).map(BigDecimal::new).toArray(BigDecimal[]::new);
-            if (!seriesList.stream().anyMatch(series -> hasValues(series, decimals))) {
+            if (seriesList.stream().noneMatch(series -> hasValues(series, decimals))) {
                 throw new AssertionError(String.format(msg, valuesArray));
             }
         }
@@ -258,16 +257,9 @@ public class CommonAssertions {
 
     /** True iff specified array is array of the series values (in the same order). */
     public static boolean hasValues(Series series, BigDecimal... valuesArray) {
-        if (series.getData().size() != valuesArray.length) {
-            return false;
-        }
-        int index = 0;
-        for (Sample sample : series.getData()) {
-            if (sample.getValue().compareTo(valuesArray[index]) != 0) {
-                return false;
-            }
-            index++;
-        }
-        return true;
+        List<Sample> samples = series.getData();
+        return samples.size() == valuesArray.length &&
+                IntStream.range(0, valuesArray.length)
+                        .allMatch(i -> valuesArray[i].compareTo(samples.get(i).getValue()) == 0);
     }
 }
