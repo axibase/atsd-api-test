@@ -49,65 +49,68 @@ public class Sample {
 
     private SampleVersion version;
 
-    private Sample(Long unixTime, String date, BigDecimal value, String text) {
-        this.unixTime = unixTime;
-        if (date != null) {
-            this.rawDate = convertDateToISO(date);
+    private Sample(Long unixTime, String date, BigDecimal value, String text, boolean convertDateToISOFormat) {
+        if (unixTime == null && date == null) {
+            throw new IllegalArgumentException("Timestamp is required to create a sample instance.");
         }
+        this.unixTime = unixTime;
+        this.rawDate = convertDateToISOFormat && date != null
+                ? convertDateToISO(date)
+                : date;
         this.value = value;
         this.text = text;
     }
 
     public Sample copy() {
-        return new Sample(unixTime, null, value, text).setRawDate(rawDate);
+        return new Sample(unixTime, rawDate, value, text, false);
     }
 
     public static Sample ofDate(String date) {
-        return new Sample(null, date, null, null);
+        return new Sample(null, date, null, null, true);
     }
 
     public static Sample ofDateIntegerText(String date, int value, String text) {
-        return new Sample(null, date, BigDecimal.valueOf(value), text);
+        return new Sample(null, date, BigDecimal.valueOf(value), text, true);
     }
 
     public static Sample ofDateDecimalText(String date, BigDecimal value, String text) {
-        return new Sample(null, date, value, text);
+        return new Sample(null, date, value, text, true);
     }
 
     public static Sample ofDateInteger(String date, int value) {
-        return new Sample(null, date, BigDecimal.valueOf(value), null);
+        return new Sample(null, date, BigDecimal.valueOf(value), null, true);
     }
 
     public static Sample ofRawDateInteger(String date, int value) {
-        return new Sample(null, null, BigDecimal.valueOf(value), null).setRawDate(date);
+        return new Sample(null, date, BigDecimal.valueOf(value), null, false);
     }
 
     public static Sample ofDateDecimal(String date, BigDecimal value) {
-        return new Sample(null, date, value, null);
+        return new Sample(null, date, value, null, true);
     }
 
     public static Sample ofTimeInteger(long time, int value) {
-        return new Sample(time, null, BigDecimal.valueOf(value), null);
+        return new Sample(time, null, BigDecimal.valueOf(value), null, true);
     }
 
     public static Sample ofTimeDecimal(long time, BigDecimal value) {
-        return new Sample(time, null, value, null);
+        return new Sample(time, null, value, null, true);
     }
 
     public static Sample ofJavaDateInteger(Date d, int v) {
-        return new Sample(null, Util.ISOFormat(d), BigDecimal.valueOf(v), null);
+        return new Sample(null, Util.ISOFormat(d), BigDecimal.valueOf(v), null, true);
     }
 
     public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v) {
-        return new Sample(null, d.format(DateTimeFormatter.ISO_DATE_TIME), BigDecimal.valueOf(v), null);
+        return new Sample(null, d.format(DateTimeFormatter.ISO_DATE_TIME), BigDecimal.valueOf(v), null, true);
     }
 
     public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v, final String text) {
-        return new Sample(null, d.format(ISO_ZONED_DATE_TIME), BigDecimal.valueOf(v), text);
+        return new Sample(null, d.format(ISO_ZONED_DATE_TIME), BigDecimal.valueOf(v), text, true);
     }
 
     public static Sample ofDateText(String date, String text) {
-        return new Sample(null, date, null, text);
+        return new Sample(null, date, null, text, true);
     }
 
     private String convertDateToISO(String dateString) {
@@ -122,7 +125,20 @@ public class Sample {
 
     @JsonIgnore
     public ZonedDateTime getZonedDateTime() {
-        return ZonedDateTime.parse(this.rawDate, DateTimeFormatter.ISO_DATE_TIME);
+        if (this.rawDate != null) {
+            return ZonedDateTime.parse(this.rawDate, DateTimeFormatter.ISO_DATE_TIME);
+        }
+        return Util.fromMillis(this.unixTime);
+    }
+
+    @JsonIgnore
+    /** Return timestamp translated to epoch milliseconds.
+     * Use the {@link #rawDate} if the {@link #unixTime} is null.*/
+    public long getEpochMillis() {
+        if (this.unixTime == null) {
+            return Util.getUnixTime(this.rawDate);
+        }
+        return this.unixTime;
     }
 
     public static List<Sample> withOffset(final TemporalUnit unit, final int offset,
@@ -139,5 +155,21 @@ public class Sample {
     @Override
     public String toString() {
         return Util.prettyPrint(this);
+    }
+
+    /**
+     * Calculate epoch time from the samples time fields, and compare calculated epochs.
+     * Compare values and deviations using {@link BigDecimal#compareTo(Object)}.
+     */
+    public boolean theSame(Sample sample) {
+        return  (this.getEpochMillis() == sample.getEpochMillis()) &&
+                !(this.value == null ^ sample.value == null) &&
+                (this.value == null || this.value.compareTo(sample.value) == 0) &&
+                !(this.deviation == null ^ sample.deviation == null) &&
+                (this.deviation == null || this.deviation.compareTo(sample.deviation) == 0) &&
+                !(this.text == null ^ sample.text == null) &&
+                (this.text == null || this.text.equals(sample.text)) &&
+                !(this.version == null ^ sample.version == null) &&
+                (this.version == null || this.version.equals(sample.version));
     }
 }

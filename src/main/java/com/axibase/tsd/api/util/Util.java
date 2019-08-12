@@ -16,7 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
@@ -83,6 +85,11 @@ public class Util {
     public static ZonedDateTime parseAsServerZoned(final String dateString) {
         final LocalDateTime localDateTime = LocalDateTime.parse(dateString);
         return ZonedDateTime.of(localDateTime, getServerTimeZone().toZoneId());
+    }
+
+    /** Return zoned date time in the {@link #DEFAULT_TIMEZONE_NAME}. */
+    public static ZonedDateTime fromMillis(long epochMillis) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.of(DEFAULT_TIMEZONE_NAME));
     }
 
     public static String prettyPrint(Object o) {

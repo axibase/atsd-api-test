@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -16,7 +17,7 @@ import java.util.*;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Series {
+public class Series implements Comparable<Series> {
     private String entity;
     private String metric;
     private List<Sample> data;
@@ -175,5 +176,57 @@ public class Series {
     @Override
     public String toString() {
         return Util.prettyPrint(this);
+    }
+
+    /**
+     * Compare series keys of this and another series.
+     * First compare (lexicographically) by metric, then by entity.
+     * Then sort tags of each series by tag names,
+     * and compare first tag names, then first tag values,
+     * then second tag names, then second tag values etc.
+     * (Null object is less than not-null object,
+     * but null tags and empty map of tags considered as equal.
+     * And empty string is less than any not empty string.)
+     */
+    @Override
+    public int compareTo(Series another) {
+        if (another == null) {
+            throw new NullPointerException("Expect not null argument.");
+        }
+        int byMetric = StringUtils.compareIgnoreCase(metric, another.metric);
+        if (byMetric != 0) {
+            return byMetric;
+        }
+        int byEntity = StringUtils.compareIgnoreCase(entity, another.entity);
+        if (byEntity != 0) {
+            return byEntity;
+        }
+        if ((this.tags == null || this.tags.isEmpty()) && (another.tags == null || another.tags.isEmpty())) {
+            return 0;
+        }
+        if (this.tags == null || this.tags.isEmpty()) {
+            return -1;
+        }
+        if (another.tags ==null || another.tags.isEmpty()) {
+            return 1;
+        }
+        Iterator<Map.Entry<String, String>> thisIt = this.tags.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> anotherIt = another.tags.entrySet().iterator();
+        while (thisIt.hasNext()) {
+            if (!anotherIt.hasNext()) {
+                return 1;
+            }
+            Map.Entry<String, String> thisTag = thisIt.next();
+            Map.Entry<String, String> anotherTag = anotherIt.next();
+            int byTagName = thisTag.getKey().compareTo(anotherTag.getKey());
+            if (byTagName != 0) {
+                return byTagName;
+            }
+            int byTagValue = thisTag.getValue().compareTo(anotherTag.getValue());
+            if (byTagValue != 0) {
+                return byTagValue;
+            }
+        }
+        return anotherIt.hasNext() ? -1 : 0;
     }
 }

@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.SeriesType;
 import com.axibase.tsd.api.model.series.query.transformation.Transformation;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.downsample.Downsample;
+import com.axibase.tsd.api.model.series.query.transformation.evaluate.Evaluate;
 import com.axibase.tsd.api.model.series.query.transformation.forecast.Forecast;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.interpolate.Interpolate;
@@ -19,6 +20,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +42,12 @@ public class SeriesQuery {
     private List<String> entities;
     private String forecastName;
     private String metric;
+    private String name;
+    private List<SeriesSettings> series;
     private String startDate;
     private String endDate;
     private Interval interval;
-    @Wither private Map<String, String> tags;
+    private Map<String, String> tags;
     private Aggregate aggregate;
     private Interpolate interpolate;
     private Group group;
@@ -51,6 +55,7 @@ public class SeriesQuery {
     private Smooth smooth;
     private Downsample downsample;
     private Forecast forecast;
+    private Evaluate evaluate;
     private String timeFormat;
     @Wither private Boolean exactMatch;
     private Integer limit;
@@ -118,6 +123,14 @@ public class SeriesQuery {
 
     public void addTag(String tag, String value) {
         tags.put(tag, value);
+    }
+
+    public SeriesQuery addSeries(SeriesSettings series) {
+        if (this.series == null) {
+            this.series = new ArrayList<>();
+        }
+        this.series.add(series);
+        return this;
     }
 
     private void setIntervalBasedOnSeriesDate(final Series series) {
