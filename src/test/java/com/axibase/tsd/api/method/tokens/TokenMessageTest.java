@@ -84,10 +84,10 @@ public class TokenMessageTest extends MessageTest {
                 "  },\n" +
                 "  \"type\" : \"HISTORY\",\n" +
                 "  \"aggregate\" : {\n" +
-                "    \"type\" : \"DETAIL\"\n" +
+                "    \"type\" : \"COUNT\"\n" +
                 "  },\n" +
-                "  \"data\" : [ ]\n" +
-                "} ]", entity);
+                "  \"data\" : [{\"d\":\"%s\", \"v\":1} ]\n" +
+                "} ]", entity, ISO_TIME);
         assertTrue(compareJsonString(expected, response.readEntity(String.class)));
     }
 

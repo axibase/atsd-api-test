@@ -115,7 +115,7 @@ public class MetricMethod extends BaseMethod {
 
     public static Response queryMetricSeries(String metricName, MetricSeriesParameters parameters, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_METRIC_SERIES, nameReplacement(metricName),
-                parameters == null ? Collections.EMPTY_MAP : parameters.toUnmodifiableMap(), Collections.EMPTY_MAP, HttpMethod.GET);
+                parameters == null ? Collections.EMPTY_MAP : parameters.toParameterMap(), Collections.EMPTY_MAP, HttpMethod.GET);
         response.bufferEntity();
         return response;
     }
@@ -136,7 +136,7 @@ public class MetricMethod extends BaseMethod {
 
     public static Response queryMetricSeriesTagsResponse(String metricName, MethodParameters parameters, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_METRIC_SERIES_TAGS, nameReplacement(metricName),
-                parameters == null ? Collections.EMPTY_MAP : parameters.toUnmodifiableMap(), Collections.EMPTY_MAP, HttpMethod.GET);
+                parameters == null ? Collections.EMPTY_MAP : parameters.toParameterMap(), Collections.EMPTY_MAP, HttpMethod.GET);
         response.bufferEntity();
         return response;
     }

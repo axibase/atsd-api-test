@@ -14,7 +14,7 @@ public abstract class MethodParameters {
         return MAPPER.convertValue(this, Map.class);
     }
 
-    public Map<String, Object> toUnmodifiableMap() {
+    public Map<String, Object> toParameterMap() {
         return Collections.unmodifiableMap(this.toMap());
     }
 

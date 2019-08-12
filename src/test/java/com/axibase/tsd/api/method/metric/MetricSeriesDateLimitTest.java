@@ -44,6 +44,7 @@ public class MetricSeriesDateLimitTest {
                         .setMaxInsertDate(maxDate);
         MetricSeriesResponse[] responseMetrics;
         try {
+
             responseMetrics = MetricMethod.queryMetricSeries(METRIC_NAME, params)
                     .readEntity(MetricSeriesResponse[].class);
         } catch (Exception e) {
