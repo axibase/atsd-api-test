@@ -230,8 +230,4 @@ public class Series implements Comparable<Series> {
         }
         return anotherIt.hasNext() ? -1 : 0;
     }
-
-    public static void main(String[] args) {
-        System.out.println(StringUtils.compareIgnoreCase(null, ""));
-    }
 }
