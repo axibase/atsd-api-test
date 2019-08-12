@@ -35,4 +35,22 @@ public class RequestSenderWithBearerAuthorization extends RequestSenderWithAutho
                         .method(httpMethod)
         );
     }
+
+    @Override
+    public Response executeRootRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params, Map<String, Object> additionalHeaders, String httpMethod, Entity<?> entity) {
+        return BaseMethod.executeTokenRootRequest(webTarget ->
+                prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
+                        .header(HttpHeaders.AUTHORIZATION, headerValue)
+                        .method(httpMethod, entity)
+        );
+    }
+
+    @Override
+    public Response executeRootRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params, Map<String, Object> additionalHeaders, String httpMethod) {
+        return BaseMethod.executeTokenRootRequest(webTarget ->
+                prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
+                        .header(HttpHeaders.AUTHORIZATION, headerValue)
+                        .method(httpMethod)
+        );
+    }
 }

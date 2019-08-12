@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.jsoup.Connection;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
@@ -37,6 +38,26 @@ public class RequestSenderWithBasicAuthorization extends RequestSenderWithAuthor
     public Response executeApiRequest(String path, Map<String, Object> templateReplacements,
                                       Map<String, Object> params, Map<String, Object> additionalHeaders, String httpMethod) {
         return BaseMethod.executeApiRequest(webTarget ->
+                prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
+                        .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, username)
+                        .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password)
+                        .method(httpMethod)
+        );
+    }
+
+    @Override
+    public Response executeRootRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params, Map<String, Object> additionalHeaders, String httpMethod, Entity<?> entity) {
+        return BaseMethod.executeRootRequest(webTarget ->
+                prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
+                        .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, username)
+                        .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password)
+                        .method(httpMethod, entity)
+        );
+    }
+
+    @Override
+    public Response executeRootRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params, Map<String, Object> additionalHeaders, String httpMethod) {
+        return BaseMethod.executeRootRequest(webTarget ->
                 prepareBuilder(webTarget, path, templateReplacements, params, additionalHeaders)
                         .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, username)
                         .property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password)

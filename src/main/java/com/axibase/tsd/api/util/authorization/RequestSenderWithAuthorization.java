@@ -25,6 +25,12 @@ public abstract class RequestSenderWithAuthorization {
     public abstract Response executeApiRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params,
                                                Map<String, Object> additionalHeaders, String httpMethod);
 
+    public abstract Response executeRootRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params,
+                                                Map<String, Object> additionalHeaders, String httpMethod, Entity<?> entity);
+
+    public abstract Response executeRootRequest(String path, Map<String, Object> templateReplacements, Map<String, Object> params,
+                                                Map<String, Object> additionalHeaders, String httpMethod);
+
     public Response executeApiRequest(String path, Map<String, Object> templateReplacements, String httpMethod, Entity<?> entity) {
         return executeApiRequest(path, templateReplacements, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod, entity);
     }
@@ -35,6 +41,14 @@ public abstract class RequestSenderWithAuthorization {
 
     public Response executeApiRequest(String path, String httpMethod, Entity<?> entity) {
         return executeApiRequest(path, Collections.EMPTY_MAP, httpMethod, entity);
+    }
+
+    public Response executeRootRequest(String path, String httpMethod, Entity<?> entity) {
+        return executeRootRequest(path, Collections.EMPTY_MAP, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod, entity);
+    }
+
+    public Response executeRootRequest(String path, String httpMethod) {
+        return executeRootRequest(path, Collections.EMPTY_MAP, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod);
     }
 
     protected Invocation.Builder prepareBuilder(WebTarget webTarget,
