@@ -1,25 +1,17 @@
 package com.axibase.tsd.api.method.tokens;
 
 import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.Config;
+import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.checks.TokenCheck;
 import lombok.Data;
-
-
-import java.util.concurrent.ConcurrentMap;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-
-import com.axibase.tsd.api.Config;
-import com.axibase.tsd.api.method.BaseMethod;
-
-import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.Test;
-
-import io.qameta.allure.Issue;
-
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class TokenRepository extends BaseMethod {
     private static final ConcurrentMap<TokenRequest, String> tokens = new ConcurrentHashMap<>();

@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Response;
-
 import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -159,6 +158,6 @@ public class TokenEntityGroupTest extends EntityGroupMethod {
         setEntities(entityGroupName, Collections.singletonList(entity.getName()));
         deleteEntities(entityGroupName, Collections.singletonList(entity.getName()), token);
         Response response = getEntities(entityGroupName);
-        assertEquals("Failed to delete entities from entity group using tokens","[]", response.readEntity(String.class));
+        assertEquals("Failed to delete entities from entity group using tokens", "[]", response.readEntity(String.class));
     }
 }

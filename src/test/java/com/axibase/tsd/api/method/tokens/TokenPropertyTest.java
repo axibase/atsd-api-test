@@ -20,12 +20,12 @@ import java.util.Collections;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class TokenPropertyTest extends PropertyTest {
-    private final String entity = Mocks.entity();
-    private final String propertyType = Mocks.propertyType();
     private static final String ISO_TIME = Mocks.ISO_TIME;
     private static final String TAG_NAME = "name";
     private static final String TAG_VALUE = "value";
 
+    private final String entity = Mocks.entity();
+    private final String propertyType = Mocks.propertyType();
     private final String username;
     private Property property;
 

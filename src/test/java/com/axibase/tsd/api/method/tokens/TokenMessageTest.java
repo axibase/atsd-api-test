@@ -24,9 +24,9 @@ import java.util.Collections;
 import static org.testng.Assert.assertTrue;
 
 public class TokenMessageTest extends MessageTest {
-    private final String entity = Mocks.entity();
     private static final String ISO_TIME = Mocks.ISO_TIME;
 
+    private final String entity = Mocks.entity();
     private final String username;
     private Message message;
 

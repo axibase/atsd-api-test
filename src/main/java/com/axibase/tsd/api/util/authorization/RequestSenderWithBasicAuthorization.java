@@ -4,7 +4,6 @@ import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.method.BaseMethod;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.jsoup.Connection;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
@@ -12,10 +11,9 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class RequestSenderWithBasicAuthorization extends RequestSenderWithAuthorization {
+    public static final RequestSenderWithBasicAuthorization DEFAULT_BASIC_SENDER = new RequestSenderWithBasicAuthorization();
     private final String username;
     private final String password;
-
-    public static final RequestSenderWithBasicAuthorization DEFAULT_BASIC_SENDER = new RequestSenderWithBasicAuthorization();
 
     private RequestSenderWithBasicAuthorization() {
         Config config = Config.getInstance();

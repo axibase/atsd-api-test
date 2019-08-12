@@ -9,8 +9,8 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 public class RequestSenderWithBearerAuthorization extends RequestSenderWithAuthorization {
-    private final String headerValue;
     private static final String API_PATH = Config.getInstance().getApiPath();
+    private final String headerValue;
 
     public RequestSenderWithBearerAuthorization(String token) {
         this.headerValue = "Bearer " + token;

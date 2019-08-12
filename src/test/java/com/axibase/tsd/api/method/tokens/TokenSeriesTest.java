@@ -19,19 +19,18 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Response;
-
 import java.util.*;
 
 import static org.testng.AssertJUnit.assertTrue;
 
 public class TokenSeriesTest extends SeriesTest {
-    private final String entity = Mocks.entity();
-    private final String metric = Mocks.metric();
     private static final int VALUE = Mocks.INT_VALUE;
     private static final String SAMPLE_TIME = Mocks.ISO_TIME;
 
-    private Series series;
+    private final String entity = Mocks.entity();
+    private final String metric = Mocks.metric();
     private final String username;
+    private Series series;
 
 
     @Factory(

@@ -21,7 +21,6 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Response;
-
 import java.util.Collections;
 
 import static org.testng.AssertJUnit.assertTrue;

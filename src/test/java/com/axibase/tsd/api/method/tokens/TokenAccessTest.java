@@ -1,19 +1,16 @@
 package com.axibase.tsd.api.method.tokens;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Response;
-
 import com.axibase.tsd.api.method.BaseMethod;
-
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 import com.google.common.collect.ImmutableMap;
+import io.qameta.allure.Issue;
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import io.qameta.allure.Issue;
-
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.Response;
 import java.util.*;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -23,7 +20,7 @@ import static org.testng.AssertJUnit.assertTrue;
 public class TokenAccessTest extends BaseMethod {
 
     @DataProvider
-    private Object[][] availablePaths() {
+    public Object[][] availablePaths() {
         return new String[][]{
                 // Data API
                 {"/series/query", HttpMethod.POST},
@@ -97,7 +94,7 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @DataProvider
-    private Object[][] users() {
+    public Object[][] users() {
         return new String[][]{
                 {TokenUsers.ADMIN_NAME},
                 {TokenUsers.USER_NAME}
@@ -105,7 +102,7 @@ public class TokenAccessTest extends BaseMethod {
     }
 
     @DataProvider
-    private Object[][] endpointsAndUsers() {
+    public Object[][] endpointsAndUsers() {
         List<Object[]> pathsAndMethods = Arrays.asList(availablePaths());
         List<Object[]> result = new ArrayList<>();
 
