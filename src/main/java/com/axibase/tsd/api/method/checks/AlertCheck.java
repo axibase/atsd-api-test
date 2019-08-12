@@ -15,10 +15,7 @@ public class AlertCheck extends AbstractCheck {
     @Override
     public boolean isChecked() {
         try {
-            if (AlertMethod.queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts()).isEmpty()) { //checking that response is not empty
-                return false;
-            }
-            return true;
+            return !(AlertMethod.queryAlerts(alertQuery).readEntity(ResponseAsList.ofAlerts()).isEmpty());
         } catch (Exception e) {
             throw new IllegalStateException(ERROR_MESSAGE);
         }

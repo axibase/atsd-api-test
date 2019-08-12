@@ -86,7 +86,7 @@ public class TokenEntityGroupTest extends EntityGroupMethod {
         EntityGroup entityGroup = new EntityGroup(entityGroupName);
         createOrReplaceEntityGroupCheck(entityGroup);
 
-        deleteEntityGroup(entityGroupName);
+        deleteEntityGroup(entityGroupName, token);
         Checker.check(new DeletionCheck(new EntityGroupCheck(entityGroup)));
     }
 
