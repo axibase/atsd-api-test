@@ -34,8 +34,7 @@ public class MetricSeriesParameters extends MethodParameters {
     @Override
     public Map<String, Object> toParameterMap() {
         Map<String, Object> parameters = this.toMap();
-        Map<String, String> tagMap = (Map)parameters.get("tags"); //getting tag map to rewrite it to format tags.name=value
-        for(Map.Entry<String, String> tag : tagMap.entrySet()) {
+        for(Map.Entry<String, String> tag : tags.entrySet()) {
             parameters.put("tags." + tag.getKey(), tag.getValue());
         }
         parameters.remove("tags");

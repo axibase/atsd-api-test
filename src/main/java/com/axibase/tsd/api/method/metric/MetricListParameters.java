@@ -6,7 +6,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Accessors(chain = true)
 @Setter @Getter
@@ -29,6 +31,13 @@ public class MetricListParameters extends MethodParameters {
 
     public List<String> getTags() {
         return new ArrayList<>(tags);
+    }
+
+    @Override
+    public Map<String, Object> toParameterMap() {
+        Map<String, Object> parameters = this.toMap();
+        parameters.put("tags", String.join(",", tags));
+        return Collections.unmodifiableMap(parameters);
     }
 
 }

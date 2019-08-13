@@ -58,7 +58,7 @@ public class Mocks {
     }
 
     public static String replacementTable() {
-        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.REPLACEMENT_TABLE).replaceAll(":","_");
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.REPLACEMENT_TABLE).replaceAll(":", "_");
     }
 
     public static Series series() {

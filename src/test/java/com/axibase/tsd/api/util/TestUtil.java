@@ -281,19 +281,20 @@ public class TestUtil {
 
     /**
      * Transforms object vararg to unmodifiable {@code LinkedHashMap<String, Object>}. Use this method instead of guava ImmutableMap when you have null in values
+     *
      * @param objects vararg to transform into map. Count must be even and every non-even element must be String
      * @return Unmodifiable LinkedHashMap<String, Object>
      */
     public static Map<String, Object> toUnmodifiableMap(Object... objects) {
-        if(objects.length %2 != 0) {
+        if (objects.length % 2 != 0) {
             throw new IllegalArgumentException("Objects count must be even!");
         }
         Map<String, Object> map = new LinkedHashMap<>();
-        for(int i = 0; i < objects.length; i+=2) {
-            if(!(objects[i] instanceof String)) {
+        for (int i = 0; i < objects.length; i += 2) {
+            if (!(objects[i] instanceof String)) {
                 throw new IllegalArgumentException("Keys must be Strings!");
             }
-            map.put(objects[i].toString(), objects[i+1]);
+            map.put(objects[i].toString(), objects[i + 1]);
         }
         return Collections.unmodifiableMap(map);
     }
@@ -301,6 +302,7 @@ public class TestUtil {
     /**
      * Transforms {@code Map<String, String>} to a the same map, where new values are singleton lists containing previous values.
      * Use this when you need to construct a json with format "key": ["value"], e.g. https://axibase.com/docs/atsd/api/meta/metric/series-tags.html
+     *
      * @param map Original map
      * @return Transformed map
      */
