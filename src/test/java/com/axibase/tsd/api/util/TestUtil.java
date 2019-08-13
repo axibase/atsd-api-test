@@ -281,7 +281,6 @@ public class TestUtil {
 
     /**
      * Transforms object vararg to unmodifiable {@code LinkedHashMap<String, Object>}. Use this method instead of guava ImmutableMap when you have null in values
-     *
      * @param objects vararg to transform into map. Count must be even and every non-even element must be String
      * @return Unmodifiable LinkedHashMap<String, Object>
      */
