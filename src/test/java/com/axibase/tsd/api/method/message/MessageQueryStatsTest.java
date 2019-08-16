@@ -6,7 +6,11 @@ import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
+import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Issue;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,7 +25,7 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageQueryStatsTest extends MessageMethod {
-    private final static String MESSAGE_STATS_ENTITY = "entity-message-statistics-1";
+    private final static String MESSAGE_STATS_ENTITY = Mocks.entity();
     private final static String MESSAGE_STATS_TYPE = "stats-type-1";
     private final static List<String> DATES = Arrays.asList(
             "2018-05-21T00:00:01.000Z",
@@ -29,6 +33,8 @@ public class MessageQueryStatsTest extends MessageMethod {
             "2018-05-21T00:02:01.000Z",
             "2018-05-21T00:03:01.000Z",
             "2018-05-21T00:04:01.000Z");
+    private static final String TAG_KEY = "key";
+    private static final String TAG_VALUE = "value";
 
     @BeforeClass
     public void insertMessages() throws Exception{
@@ -36,6 +42,7 @@ public class MessageQueryStatsTest extends MessageMethod {
         message.setMessage("message-stats-test");
         for(String date : DATES) {
             message.setDate(date);
+            message.setTags(ImmutableMap.of(TAG_KEY, TAG_VALUE));
             insertMessageCheck(message);
         }
     }
@@ -101,6 +108,58 @@ public class MessageQueryStatsTest extends MessageMethod {
         Response response = queryMessageStats(statsQuery);
 
         assertEquals("Query with unknown aggregate type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("6460")
+    @Test(
+            description = "Tests that messages that are found for matching tagsExpression field."
+    )
+    public void testTagsExpressionSelection() throws Exception {
+        MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
+                .setTagsExpression("tags.key='value'");
+
+        Response response = queryMessageStats(statsQuery);
+        JSONObject json = new JSONArray(response.readEntity(String.class)).getJSONObject(0);
+        assertEquals(json.getJSONArray("data").getJSONObject(0).getInt("v"), DATES.size()); //dates count and messages count are equal
+    }
+
+    @Issue("6460")
+    @Test(
+            description = "Tests that messages that not found for expression that does not match any field."
+    )
+    public void testTagsExpressionNoData() throws Exception {
+        MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
+                .setTagsExpression("false");
+
+        Response response = queryMessageStats(statsQuery);
+        JSONObject json = new JSONArray(response.readEntity(String.class)).getJSONObject(0);
+        assertEquals(json.getJSONArray("data").length(), 0);
+    }
+
+    @Issue("6460")
+    @Test(
+            description = "Tests that http error is returned if executing query with invalid expression.",
+            enabled = false //pending
+    )
+    public void testTagsExpressionError() {
+        MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
+                .setTagsExpression("type lke 'something'");
+
+        Response response = queryMessageStats(statsQuery);
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("6460")
+    @Test(
+            description = "Tests that http error is returned if executing query with call to nonexistent field. Problems were found for this case while testing",
+            enabled = false //pending
+    )
+    public void testTagsExpressionNotValidField() {
+        MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
+                .setTagsExpression("key='value'"); //key field does not exist in message
+
+        Response response = queryMessageStats(statsQuery);
+        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     private MessageStatsQuery prepareSimpleMessageStatsQuery(String entityName) {

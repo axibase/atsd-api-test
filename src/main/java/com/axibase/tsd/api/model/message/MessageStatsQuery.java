@@ -12,8 +12,7 @@ import java.util.Map;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessageStatsQuery {
-    private static final String MESSAGE_STATS_METRIC = "message-count";
-    private final static String metric = MESSAGE_STATS_METRIC;
+    private final String metric = "message-count";
     private String entity;
     private String type;
     private String startDate;
