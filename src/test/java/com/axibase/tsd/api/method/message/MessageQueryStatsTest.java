@@ -2,10 +2,10 @@ package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageStatsQuery;
-import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
-import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
+import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.util.Mocks;
 import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Issue;
@@ -37,10 +37,10 @@ public class MessageQueryStatsTest extends MessageMethod {
     private static final String TAG_VALUE = "value";
 
     @BeforeClass
-    public void insertMessages() throws Exception{
+    public void insertMessages() throws Exception {
         Message message = new Message(MESSAGE_STATS_ENTITY, MESSAGE_STATS_TYPE);
         message.setMessage("message-stats-test");
-        for(String date : DATES) {
+        for (String date : DATES) {
             message.setDate(date);
             message.setTags(ImmutableMap.of(TAG_KEY, TAG_VALUE));
             insertMessageCheck(message);
