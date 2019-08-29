@@ -22,7 +22,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
 
 public class MessageQueryStatsTest extends MessageMethod {
     private final static String MESSAGE_STATS_ENTITY = Mocks.entity();
@@ -138,28 +138,28 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that http error is returned if executing query with invalid expression.",
-            enabled = false //pending
+            description = "Tests that warning is returned if executing query with invalid expression. Error in \"lke\""
     )
-    public void testTagsExpressionError() {
+    public void testTagsExpressionError() throws Exception{
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
                 .setTagsExpression("type lke 'something'");
 
         Response response = queryMessageStats(statsQuery);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        String warning = new JSONArray(response.readEntity(String.class)).getJSONObject(0).getString("warning");
+        assertEquals(warning, "IllegalStateException: Syntax error at line 1 position 5: no viable alternative at input 'type lke'");
     }
 
     @Issue("6460")
     @Test(
-            description = "Tests that http error is returned if executing query with call to nonexistent field. Problems were found for this case while testing",
-            enabled = false //pending
+            description = "Tests that request is not stuck if executing query with call to nonexistent field. Problems were found for this case while testing. Field \"key\" does not exist"
     )
     public void testTagsExpressionNotValidField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
                 .setTagsExpression("key='value'"); //key field does not exist in message
 
         Response response = queryMessageStats(statsQuery);
-        assertEquals(BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     private MessageStatsQuery prepareSimpleMessageStatsQuery(String entityName) {
