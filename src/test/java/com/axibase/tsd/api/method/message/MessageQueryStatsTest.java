@@ -21,7 +21,6 @@ import java.util.List;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.testng.AssertJUnit.*;
 
 public class MessageQueryStatsTest extends MessageMethod {
@@ -96,7 +95,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
         Response response = queryMessageStats(statsQuery);
 
-        assertEquals("Query with unknown aggregate type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Query with unknown aggregate type should fail", Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Issue("2945")
@@ -107,7 +106,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
         Response response = queryMessageStats(statsQuery);
 
-        assertEquals("Query with unknown aggregate type should fail", BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Query with unknown aggregate type should fail", Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Issue("6460")
