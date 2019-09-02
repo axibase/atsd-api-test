@@ -25,8 +25,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with second argument"
     )
     @Issue("6528")
-    public void testAddSecond(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "second", isoTime);
+    public void testAddSecond(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "second", datetime);
         String[][] sqlQueryRow = {
                 {"2019-01-01 00:00:01"}
         };
@@ -38,8 +38,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with minute argument"
     )
     @Issue("6528")
-    public void testAddMinutes(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "minute", isoTime);
+    public void testAddMinutes(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "minute", datetime);
         String[][] sqlQueryRow = {
                 {"2019-01-01 00:01:00"}
         };
@@ -51,8 +51,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with hour argument"
     )
     @Issue("6528")
-    public void testAddHours(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "hour", isoTime);
+    public void testAddHours(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "hour", datetime);
         String[][] sqlQueryRow = {
                 {"2019-01-01 01:00:00"}
         };
@@ -64,8 +64,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with day argument"
     )
     @Issue("6528")
-    public void testAddDays(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "day", isoTime);
+    public void testAddDays(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "day", datetime);
         String[][] sqlQueryRow = {
                 {"2019-01-02 00:00:00"}
         };
@@ -77,8 +77,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with week argument"
     )
     @Issue("6528")
-    public void testAddWeeks(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "week", isoTime);
+    public void testAddWeeks(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "week", datetime);
         String[][] sqlQueryRow = {
                 {"2019-01-08 00:00:00"}
         };
@@ -90,8 +90,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with month argument"
     )
     @Issue("6528")
-    public void testAddMonths(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "month", isoTime);
+    public void testAddMonths(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "month", datetime);
         String[][] sqlQueryRow = {
                 {"2019-02-01 00:00:00"}
         };
@@ -103,8 +103,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with quarter argument"
     )
     @Issue("6528")
-    public void testAddQuarters(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "quarter", isoTime);
+    public void testAddQuarters(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "quarter", datetime);
         String[][] sqlQueryRow = {
                 {"2019-04-01 00:00:00"}
         };
@@ -116,8 +116,8 @@ public class DateAddTest extends SqlTest {
             description = "Test DATEADD with year argument"
     )
     @Issue("6528")
-    public void testAddYears(String isoTime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "year", isoTime);
+    public void testAddYears(String datetime) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "year", datetime);
         String[][] sqlQueryRow = {
                 {"2020-01-01 00:00:00"}
         };
