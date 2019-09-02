@@ -151,11 +151,11 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that request is not stuck if executing query with call to nonexistent field. Problems were found for this case while testing. Field \"key\" does not exist"
+            description = "Tests that request is not stuck if executing query with call to nonexistent field. Problems were found for this case while testing. Field \"non_existent_key\" does not exist"
     )
     public void testTagsExpressionNotValidField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
-                .setTagsExpression("key='value'"); //key field does not exist in message
+                .setTagsExpression("non_existent_key='value'"); //key field does not exist in message
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
