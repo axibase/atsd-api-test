@@ -5,11 +5,13 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DateAddTest extends SqlTest {
     private static final String SQL_QUERY_TEMPLATE = "SELECT date_format(DATEADD(%s, 1, '%s'), 'yyyy-MM-dd HH:mm:ss')";
 
-    @DataProvider
-    public Object[][] dateTime() {
+    private Object[][] dateTime() {
         return new String[][] {
                 {"2019"},
                 {"2019-01"},
@@ -20,107 +22,41 @@ public class DateAddTest extends SqlTest {
         };
     }
 
+    private Object[][] timeUnitAndExpectedResult() {
+        return new String[][] {
+                {"second", "2019-01-01 00:00:01"},
+                {"minute", "2019-01-01 00:01:00"},
+                {"hour", "2019-01-01 01:00:00"},
+                {"day", "2019-01-02 00:00:00"},
+                {"week", "2019-01-08 00:00:00"},
+                {"month", "2019-02-01 00:00:00"},
+                {"quarter", "2019-04-01 00:00:00"},
+                {"year", "2020-01-01 00:00:00"},
+        };
+    }
+
+    @DataProvider
+    public Object[][] datetimeUnitAndResult() {
+        List<Object[]> result = new ArrayList<>();
+        for(Object[] datetime: dateTime()) {
+            for(Object[] unitAndResult : timeUnitAndExpectedResult()) {
+                result.add(new Object[]{datetime[0], unitAndResult[0], unitAndResult[1]});
+            }
+        }
+        return result.toArray(new Object[dateTime().length * 3][3]);
+    }
+
     @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with second argument"
+            dataProvider = "datetimeUnitAndResult",
+            description = "Test DATEADD with different arguments"
     )
     @Issue("6528")
-    public void testAddSecond(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "second", datetime);
+    public void dateAddTest(String datetime, String timeUnit, String expectedResult) {
+        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, timeUnit, datetime);
         String[][] sqlQueryRow = {
-                {"2019-01-01 00:00:01"}
+                {expectedResult}
         };
         assertSqlQueryRows(sqlQueryRow, sqlQuery);
     }
 
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with minute argument"
-    )
-    @Issue("6528")
-    public void testAddMinutes(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "minute", datetime);
-        String[][] sqlQueryRow = {
-                {"2019-01-01 00:01:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with hour argument"
-    )
-    @Issue("6528")
-    public void testAddHours(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "hour", datetime);
-        String[][] sqlQueryRow = {
-                {"2019-01-01 01:00:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with day argument"
-    )
-    @Issue("6528")
-    public void testAddDays(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "day", datetime);
-        String[][] sqlQueryRow = {
-                {"2019-01-02 00:00:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with week argument"
-    )
-    @Issue("6528")
-    public void testAddWeeks(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "week", datetime);
-        String[][] sqlQueryRow = {
-                {"2019-01-08 00:00:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with month argument"
-    )
-    @Issue("6528")
-    public void testAddMonths(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "month", datetime);
-        String[][] sqlQueryRow = {
-                {"2019-02-01 00:00:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with quarter argument"
-    )
-    @Issue("6528")
-    public void testAddQuarters(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "quarter", datetime);
-        String[][] sqlQueryRow = {
-                {"2019-04-01 00:00:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    @Test(
-            dataProvider = "dateTime",
-            description = "Test DATEADD with year argument"
-    )
-    @Issue("6528")
-    public void testAddYears(String datetime) {
-        String sqlQuery = String.format(SQL_QUERY_TEMPLATE, "year", datetime);
-        String[][] sqlQueryRow = {
-                {"2020-01-01 00:00:00"}
-        };
-        assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
 }
