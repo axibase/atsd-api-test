@@ -114,11 +114,11 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that messages that are found for matching tagsExpression field."
+            description = "Tests that messages that are found for matching tagExpression field."
     )
     public void testTagsExpressionSelection() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
-                .setTagsExpression("tags.key='value'");
+                .setTagExpression("tags.key='value'");
 
         Response response = queryMessageStats(statsQuery);
         Series stats = TestUtil.readFromJson(response.readEntity(String.class), SERIES_LIST_TYPE_REFERENCE).get(0);
@@ -132,7 +132,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     )
     public void testTagsExpressionNoData() throws Exception {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
-                .setTagsExpression("false");
+                .setTagExpression("false");
 
         Response response = queryMessageStats(statsQuery);
         Series stats = TestUtil.readFromJson(response.readEntity(String.class), SERIES_LIST_TYPE_REFERENCE).get(0);
@@ -145,7 +145,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     )
     public void testTagsExpressionError() throws Exception{
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
-                .setTagsExpression("type lke 'something'");
+                .setTagExpression("type lke 'something'");
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -160,7 +160,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     )
     public void testTagsExpressionNotValidField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
-                .setTagsExpression("non_existent_key='value'");
+                .setTagExpression("non_existent_key='value'");
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
