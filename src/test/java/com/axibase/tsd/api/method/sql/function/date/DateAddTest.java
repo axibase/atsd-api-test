@@ -43,7 +43,7 @@ public class DateAddTest extends SqlTest {
                 result.add(new Object[]{datetime[0], unitAndResult[0], unitAndResult[1]});
             }
         }
-        return result.toArray(new Object[dateTime().length * 3][3]);
+        return result.toArray(new Object[dateTime().length * timeUnitAndExpectedResult().length][3]);
     }
 
     @Test(
