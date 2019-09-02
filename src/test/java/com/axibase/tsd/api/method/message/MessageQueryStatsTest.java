@@ -7,10 +7,10 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TestUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Issue;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
@@ -34,6 +35,8 @@ public class MessageQueryStatsTest extends MessageMethod {
             "2018-05-21T00:04:01.000Z");
     private static final String TAG_KEY = "key";
     private static final String TAG_VALUE = "value";
+    private static final TypeReference<List<Series>> SERIES_LIST_TYPE_REFERENCE =
+            new TypeReference<List<Series>>() {}; //Message stats are actually series, see documentation https://axibase.com/docs/atsd/api/data/messages/stats.html#response
 
     @BeforeClass
     public void insertMessages() throws Exception {
@@ -118,8 +121,9 @@ public class MessageQueryStatsTest extends MessageMethod {
                 .setTagsExpression("tags.key='value'");
 
         Response response = queryMessageStats(statsQuery);
-        JSONObject json = new JSONArray(response.readEntity(String.class)).getJSONObject(0);
-        assertEquals(json.getJSONArray("data").getJSONObject(0).getInt("v"), DATES.size()); //dates count and messages count are equal
+        Series stats = TestUtil.readFromJson(response.readEntity(String.class), SERIES_LIST_TYPE_REFERENCE).get(0);
+        BigDecimal value = stats.getData().get(0).getValue();
+        assertEquals(value, BigDecimal.valueOf(DATES.size())); //dates count and messages count are equal
     }
 
     @Issue("6460")
@@ -131,8 +135,8 @@ public class MessageQueryStatsTest extends MessageMethod {
                 .setTagsExpression("false");
 
         Response response = queryMessageStats(statsQuery);
-        JSONObject json = new JSONArray(response.readEntity(String.class)).getJSONObject(0);
-        assertEquals(json.getJSONArray("data").length(), 0);
+        Series stats = TestUtil.readFromJson(response.readEntity(String.class), SERIES_LIST_TYPE_REFERENCE).get(0);
+        assertEquals(stats.getData().size(), 0);
     }
 
     @Issue("6460")
@@ -145,7 +149,8 @@ public class MessageQueryStatsTest extends MessageMethod {
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        String warning = new JSONArray(response.readEntity(String.class)).getJSONObject(0).getString("warning");
+        String warning = TestUtil.readFromJson(response.readEntity(String.class), new TypeReference<List<Map<String, Object>>>() {})
+                .get(0).get("warning").toString();
         assertEquals(warning, "IllegalStateException: Syntax error at line 1 position 5: no viable alternative at input 'type lke'");
     }
 
@@ -155,7 +160,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     )
     public void testTagsExpressionNotValidField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
-                .setTagsExpression("non_existent_key='value'"); //key field does not exist in message
+                .setTagsExpression("non_existent_key='value'");
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
