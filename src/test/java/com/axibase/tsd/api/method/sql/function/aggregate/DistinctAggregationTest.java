@@ -13,14 +13,13 @@ import java.util.Arrays;
 
 public class DistinctAggregationTest extends SqlTest {
     private static final String METRIC = Mocks.metric();
-    private static final String ENTITY = Mocks.entity();
 
     private static final int[] DISTINCT_DATA = {1, 2, 3}; //each of the values will be inserted 2 times
 
     @BeforeClass
     public void prepareData() throws Exception {
         long time = Mocks.MILLS_TIME;
-        Series series = new Series(ENTITY, METRIC);
+        Series series = new Series(Mocks.entity(), METRIC);
         for(int data: DISTINCT_DATA) {
             series.addSamples(Sample.ofTimeInteger(time, data));
             time++;
