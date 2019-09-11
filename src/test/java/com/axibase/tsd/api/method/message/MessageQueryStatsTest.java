@@ -39,7 +39,7 @@ public class MessageQueryStatsTest extends MessageMethod {
     private static final String TAG_VALUE = "value";
 
     @BeforeClass
-    public void insertMessages() throws Exception {
+    public void insertMessages() {
         Message message = new Message(MESSAGE_STATS_ENTITY, MESSAGE_STATS_TYPE);
         message.setMessage("message-stats-test");
         for (String date : DATES) {
@@ -51,7 +51,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("2945")
     @Test(enabled = false)
-    public void testNoAggregate() throws Exception {
+    public void testNoAggregate() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
 
         List<Series> messageStatsList = queryMessageStatsReturnSeries(statsQuery);
@@ -64,7 +64,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("2945")
     @Test(enabled = false)
-    public void testAggregateCount() throws Exception {
+    public void testAggregateCount() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.COUNT));
 
@@ -78,7 +78,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("2945")
     @Test(enabled = false)
-    public void testAggregateDetail() throws Exception {
+    public void testAggregateDetail() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.DETAIL));
 
@@ -92,7 +92,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("2945")
     @Test
-    public void testAggregateUnknownRaiseError() throws Exception {
+    public void testAggregateUnknownRaiseError() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate(AggregationType.SUM));
 
@@ -103,7 +103,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("2945")
     @Test
-    public void testAggregateNoTypeRaiseError() throws Exception {
+    public void testAggregateNoTypeRaiseError() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY);
         statsQuery.setAggregate(new Aggregate());
 
@@ -116,12 +116,14 @@ public class MessageQueryStatsTest extends MessageMethod {
     @Test(
             description = "Tests that messages that are found for matching tagExpression field."
     )
-    public void testTagsExpressionSelection() throws Exception {
+    public void testTagsExpressionSelection() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
                 .setTagExpression("tags.key='value'");
 
         Response response = queryMessageStats(statsQuery);
-        MessageStats stats = response.readEntity(ResponseAsList.ofMessageStats()).get(0);
+        List<MessageStats> messageStatsList = response.readEntity(ResponseAsList.ofMessageStats());
+        assertEquals(1, messageStatsList.size());
+        MessageStats stats = messageStatsList.get(0);
         BigDecimal value = stats.getData().get(0).getValue();
         assertEquals(value, BigDecimal.valueOf(DATES.size())); //dates count and messages count are equal
     }
@@ -130,12 +132,14 @@ public class MessageQueryStatsTest extends MessageMethod {
     @Test(
             description = "Tests that messages that not found for expression that does not match any field."
     )
-    public void testTagsExpressionNoData() throws Exception {
+    public void testTagsExpressionNoData() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
                 .setTagExpression("false");
 
         Response response = queryMessageStats(statsQuery);
-        MessageStats stats = response.readEntity(ResponseAsList.ofMessageStats()).get(0);
+        List<MessageStats> messageStatsList = response.readEntity(ResponseAsList.ofMessageStats());
+        assertEquals(1, messageStatsList.size());
+        MessageStats stats = messageStatsList.get(0);
         assertEquals(stats.getData().size(), 0);
     }
 
@@ -143,13 +147,15 @@ public class MessageQueryStatsTest extends MessageMethod {
     @Test(
             description = "Tests that warning is returned if executing query with invalid expression. Error in \"lke\""
     )
-    public void testTagsExpressionError() throws Exception{
+    public void testTagsExpressionError() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
                 .setTagExpression("type lke 'something'");
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        String warning = response.readEntity(ResponseAsList.ofMessageStats()).get(0).getWarning();
+        List<MessageStats> messageStatsList = response.readEntity(ResponseAsList.ofMessageStats());
+        assertEquals(1, messageStatsList.size());
+        String warning = messageStatsList.get(0).getWarning();
         assertEquals(warning, "IllegalStateException: Syntax error at line 1 position 5: no viable alternative at input 'type lke'");
     }
 
