@@ -1,12 +1,14 @@
 package com.axibase.tsd.api.method.message;
 
 import com.axibase.tsd.api.model.message.Message;
+import com.axibase.tsd.api.model.message.MessageStats;
 import com.axibase.tsd.api.model.message.MessageStatsQuery;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.TestUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
@@ -35,8 +37,6 @@ public class MessageQueryStatsTest extends MessageMethod {
             "2018-05-21T00:04:01.000Z");
     private static final String TAG_KEY = "key";
     private static final String TAG_VALUE = "value";
-    private static final TypeReference<List<Series>> SERIES_LIST_TYPE_REFERENCE =
-            new TypeReference<List<Series>>() {}; //Message stats are actually series, see documentation https://axibase.com/docs/atsd/api/data/messages/stats.html#response
 
     @BeforeClass
     public void insertMessages() throws Exception {
@@ -121,7 +121,7 @@ public class MessageQueryStatsTest extends MessageMethod {
                 .setTagExpression("tags.key='value'");
 
         Response response = queryMessageStats(statsQuery);
-        Series stats = TestUtil.readFromJson(response.readEntity(String.class), SERIES_LIST_TYPE_REFERENCE).get(0);
+        MessageStats stats = response.readEntity(ResponseAsList.ofMessageStats()).get(0);
         BigDecimal value = stats.getData().get(0).getValue();
         assertEquals(value, BigDecimal.valueOf(DATES.size())); //dates count and messages count are equal
     }
@@ -135,7 +135,7 @@ public class MessageQueryStatsTest extends MessageMethod {
                 .setTagExpression("false");
 
         Response response = queryMessageStats(statsQuery);
-        Series stats = TestUtil.readFromJson(response.readEntity(String.class), SERIES_LIST_TYPE_REFERENCE).get(0);
+        MessageStats stats = response.readEntity(ResponseAsList.ofMessageStats()).get(0);
         assertEquals(stats.getData().size(), 0);
     }
 
@@ -149,8 +149,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        String warning = TestUtil.readFromJson(response.readEntity(String.class), new TypeReference<List<Map<String, Object>>>() {})
-                .get(0).get("warning").toString();
+        String warning = response.readEntity(ResponseAsList.ofMessageStats()).get(0).getWarning();
         assertEquals(warning, "IllegalStateException: Syntax error at line 1 position 5: no viable alternative at input 'type lke'");
     }
 
