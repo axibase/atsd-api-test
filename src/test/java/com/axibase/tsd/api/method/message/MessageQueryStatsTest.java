@@ -9,8 +9,6 @@ import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.ResponseAsList;
-import com.axibase.tsd.api.util.TestUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
@@ -21,16 +19,15 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class MessageQueryStatsTest extends MessageMethod {
-    private final static String MESSAGE_STATS_ENTITY = Mocks.entity();
-    private final static String MESSAGE_STATS_TYPE = "stats-type-1";
-    private final static List<String> DATES = Arrays.asList(
+    private static final String MESSAGE_STATS_ENTITY = Mocks.entity();
+    private static final String MESSAGE_STATS_TYPE = "stats-type-1";
+    private static final List<String> DATES = Arrays.asList(
             "2018-05-21T00:00:01.000Z",
             "2018-05-21T00:01:01.000Z",
             "2018-05-21T00:02:01.000Z",
@@ -41,8 +38,8 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @BeforeClass
     public void insertMessages() {
-        Message message = new Message(MESSAGE_STATS_ENTITY, MESSAGE_STATS_TYPE);
-        message.setMessage("message-stats-test");
+        Message message = new Message(MESSAGE_STATS_ENTITY, MESSAGE_STATS_TYPE)
+            .setMessage("message-stats-test");
         for (String date : DATES) {
             message.setDate(date);
             message.setTags(ImmutableMap.of(TAG_KEY, TAG_VALUE));
@@ -115,7 +112,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that messages that are found for matching tagExpression field."
+            description = "Tests that messages are found for matching tagExpression field."
     )
     public void testTagsExpressionSelection() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
@@ -131,7 +128,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that messages that not found for expression that does not match any field."
+            description = "Tests that messages are not found for expression that does not match any field."
     )
     public void testTagsExpressionNoData() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
@@ -162,7 +159,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that request is not stuck if executing query with call to nonexistent field. Problems were found for this case while testing. Field \"non_existent_key\" does not exist"
+            description = "Tests that request is not stuck if executing query with call to non-existent field"
     )
     public void testTagsExpressionNotValidField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
@@ -174,7 +171,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that OK response is returned, if expression field is blank"
+            description = "Tests that OK response is returned if expression field is blank"
     )
     public void testBlankExpressionField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
@@ -186,7 +183,7 @@ public class MessageQueryStatsTest extends MessageMethod {
 
     @Issue("6460")
     @Test(
-            description = "Tests that error response is returned, if expression field is not blank"
+            description = "Tests that error response is returned if expression field is not blank"
     )
     public void testNotBlankExpressionField() {
         MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
