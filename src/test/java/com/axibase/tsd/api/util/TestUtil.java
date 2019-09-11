@@ -1,5 +1,8 @@
 package com.axibase.tsd.api.util;
 
+import com.axibase.date.DatetimeProcessor;
+import com.axibase.date.NamedPatterns;
+import com.axibase.date.PatternResolver;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +37,12 @@ public class TestUtil {
     }
 
     public static String formatDate(Date date, String pattern, TimeZone timeZone) {
-        SimpleDateFormat format;
+        DatetimeProcessor processor = PatternResolver.createNewFormatter(pattern, timeZone.toZoneId());
+        return processor.print(date.getTime());
+        /*SimpleDateFormat format;
         format = new SimpleDateFormat(pattern);
         format.setTimeZone(timeZone);
-        return format.format(date);
+        return format.format(date);*/
     }
 
     public static String formatDate(Date date, String pattern) {
@@ -67,7 +72,7 @@ public class TestUtil {
             time -= offset;
         }
 
-        return ISOFormat(time);
+        return PatternResolver.createNewFormatter(NamedPatterns.ISO).print(time);
     }
 
     public static Sample sampleToServerTimezone(final Sample sample) {
@@ -130,16 +135,20 @@ public class TestUtil {
             }
         }
 
-        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
-        return localDate.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
+        /*DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
+        return localDate.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);*/
+        DatetimeProcessor processor = PatternResolver.createNewFormatter(NamedPatterns.ISO);
+        return processor.print(localDate.toEpochSecond(), localDate.getZone());
     }
 
     public static String formatAsLocalTime(String isoDate) {
         TimeZone serverTimeZone = Util.getServerTimeZone();
         Date parsedDate = parseDate(isoDate);
-        SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        /*SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         localDateFormat.setTimeZone(serverTimeZone);
-        return localDateFormat.format(parsedDate);
+        return localDateFormat.format(parsedDate); */
+        DatetimeProcessor processor = PatternResolver.createNewFormatter(NamedPatterns.ISO);
+        return processor.print(parsedDate.getTime(), serverTimeZone.toZoneId());
     }
 
     public static long truncateTime(long time, TimeZone trucnationTimeZone, TemporalUnit truncationUnit) {

@@ -19,11 +19,18 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jersey.version>2.29</jersey.version>
         <jacoco.version>0.7.7.201606060606</jacoco.version>
+        <date-processor.version>1.0.2</date-processor.version>
     </properties>
 
 
     <dependencies>
 
+        <!-- date processing -->
+        <dependency>
+            <groupId>com.axibase</groupId>
+            <artifactId>date-processor</artifactId>
+            <version>${date-processor.version}</version>
+        </dependency>
 
         <!--logging-->
         <dependency>

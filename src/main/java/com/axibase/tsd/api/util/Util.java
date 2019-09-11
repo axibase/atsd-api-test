@@ -1,5 +1,8 @@
 package com.axibase.tsd.api.util;
 
+import com.axibase.date.DatetimeProcessor;
+import com.axibase.date.NamedPatterns;
+import com.axibase.date.PatternResolver;
 import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -73,20 +76,22 @@ public class Util {
 
     public static Date parseDate(String date) {
         try {
-            return ISO8601Utils.parse(date, new ParsePosition(0));
-        } catch (ParseException e) {
+            return Date.from(PatternResolver.createNewFormatter(NamedPatterns.ISO).parse(date).toInstant());
+        } catch (Exception e) {
             throw new IllegalArgumentException(String.format("Fail to parse date: %s", date));
         }
     }
 
     public static ZonedDateTime parseAsServerZoned(final String dateString) {
-        final LocalDateTime localDateTime = LocalDateTime.parse(dateString);
+        final LocalDateTime localDateTime = LocalDateTime.parse(dateString); //TODO could not replace functionality of this method by dateformatter
         return ZonedDateTime.of(localDateTime, getServerTimeZone().toZoneId());
+        /*DatetimeProcessor processor = PatternResolver.createNewFormatter("yyyy-MM-ddThh:mm:ss");
+        return processor.parse(dateString, getServerTimeZone().toZoneId());*/
     }
 
     /** Return zoned date time in the {@link #DEFAULT_TIMEZONE_NAME}. */
     public static ZonedDateTime fromMillis(long epochMillis) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.of(DEFAULT_TIMEZONE_NAME));
+        return PatternResolver.createNewFormatter(NamedPatterns.MILLISECONDS).parse(String.valueOf(epochMillis));
     }
 
     public static String prettyPrint(Object o) {
