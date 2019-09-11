@@ -12,6 +12,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class DistinctAggregationTest extends SqlTest {
     private static final String METRIC = Mocks.metric();
@@ -27,10 +31,14 @@ public class DistinctAggregationTest extends SqlTest {
     public void prepareData() throws Exception {
         long time = Mocks.MILLS_TIME;
         Series series = new Series(Mocks.entity(), METRIC);
-        for(int i = 0; i < 3; i++) {
-            for(int data: DISTINCT_DATA) {
-                series.addSamples(Sample.ofTimeInteger(time++, data));
-            }
+        final List<Integer> values = Arrays.stream(DISTINCT_DATA)
+                .mapToInt(i -> i)
+                .flatMap(i -> IntStream.generate(() -> i).limit(i))
+                .boxed()
+                .collect(Collectors.toList());
+        Collections.shuffle(values);
+        for (Integer value : values) {
+            series.addSamples(Sample.ofTimeInteger(time++, value));
         }
         SeriesMethod.insertSeriesCheck(series);
     }
