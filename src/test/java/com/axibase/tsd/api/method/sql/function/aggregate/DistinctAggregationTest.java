@@ -72,7 +72,7 @@ public class DistinctAggregationTest extends SqlTest {
     public void testAvgAggregation() {
         String sqlQuery = String.format("SELECT AVG(DISTINCT value) FROM \"%s\"", METRIC);
         String[][] expectedResult = {
-                { NumberFormat.getInstance().format(Arrays.stream(DISTINCT_DATA).average()) }
+                { NumberFormat.getInstance().format(Arrays.stream(DISTINCT_DATA).average().getAsDouble()) }
         };
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
