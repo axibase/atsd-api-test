@@ -23,4 +23,5 @@ public class MessageStatsQuery {
     private Period interval;
     private Aggregate aggregate;
     private String tagExpression;
+    private String expression;
 }

@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -169,6 +170,32 @@ public class MessageQueryStatsTest extends MessageMethod {
 
         Response response = queryMessageStats(statsQuery);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("6460")
+    @Test(
+            description = "Tests that OK response is returned, if expression field is blank"
+    )
+    public void testBlankExpressionField() {
+        MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
+                .setExpression("");
+
+        Response response = queryMessageStats(statsQuery);
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
+
+    @Issue("6460")
+    @Test(
+            description = "Tests that error response is returned, if expression field is not blank"
+    )
+    public void testNotBlankExpressionField() {
+        MessageStatsQuery statsQuery = prepareSimpleMessageStatsQuery(MESSAGE_STATS_ENTITY)
+                .setExpression("test");
+
+        Response response = queryMessageStats(statsQuery);
+        String errorMessage = "IllegalArgumentException: The expression field is not supported";
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals(errorMessage, response.readEntity(LinkedHashMap.class).get("error"));
     }
 
     private MessageStatsQuery prepareSimpleMessageStatsQuery(String entityName) {
