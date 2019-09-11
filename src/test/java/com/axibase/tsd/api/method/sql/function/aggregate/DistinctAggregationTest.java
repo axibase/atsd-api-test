@@ -20,11 +20,11 @@ import java.util.stream.IntStream;
 public class DistinctAggregationTest extends SqlTest {
     private static final String METRIC = Mocks.metric();
 
-    private static final Integer[] DISTINCT_DATA = {1, 2, 3}; //each of the values will be inserted 2 times
+    private static final int[] DISTINCT_DATA = {1, 2, 3}; //each of the values will be inserted 2 times
 
     @DataProvider
     public Object[][] distinctDataProvider() {
-        return TestUtil.convertTo2DimArray(DISTINCT_DATA);
+        return TestUtil.convertTo2DimArray(Arrays.stream(DISTINCT_DATA).boxed().collect(Collectors.toList()));
     }
 
     @BeforeClass
@@ -32,7 +32,6 @@ public class DistinctAggregationTest extends SqlTest {
         long time = Mocks.MILLS_TIME;
         Series series = new Series(Mocks.entity(), METRIC);
         final List<Integer> values = Arrays.stream(DISTINCT_DATA)
-                .mapToInt(i -> i)
                 .flatMap(i -> IntStream.generate(() -> i).limit(i))
                 .boxed()
                 .collect(Collectors.toList());
@@ -58,7 +57,7 @@ public class DistinctAggregationTest extends SqlTest {
     public void testSumAggregation() {
         String sqlQuery = String.format("SELECT SUM(DISTINCT value) FROM \"%s\"", METRIC);
         String[][] expectedResult = {
-                {String.valueOf(Arrays.stream(DISTINCT_DATA).mapToInt(n -> n).sum())}
+                {String.valueOf(Arrays.stream(DISTINCT_DATA).sum())}
         };
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
@@ -68,7 +67,7 @@ public class DistinctAggregationTest extends SqlTest {
     public void testAvgAggregation() {
         String sqlQuery = String.format("SELECT AVG(DISTINCT value) FROM \"%s\"", METRIC);
         String[][] expectedResult = {
-                {String.valueOf(Arrays.stream(DISTINCT_DATA).mapToInt(n -> n).sum() / DISTINCT_DATA.length)}
+                {String.valueOf(Arrays.stream(DISTINCT_DATA).sum() / DISTINCT_DATA.length)}
         };
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
