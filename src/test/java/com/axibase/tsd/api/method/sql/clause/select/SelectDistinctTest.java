@@ -57,6 +57,21 @@ public class SelectDistinctTest extends SqlTest {
         assertSqlQueryRows(composeExpectedRows(DistinctSample::getTimestamp), sqlQuery);
     }
 
+    @Issue("6536")
+    @Test(description = "Tests that 'SELECT DISTINCT' returns unique values if multiple columns are requested")
+    public void testSelectMultipleDistinct() {
+        String sqlQuery = String.format("SELECT DISTINCT entity, value, time FROM \"%s\"", METRIC);
+        assertSqlQueryRows(composeExpectedRowsFromStringArray(sample ->
+            new String[] {sample.getEntity(), String.valueOf(sample.getValue()), String.valueOf(sample.getTimestamp())}
+        ), sqlQuery);
+    }
+
+    private static String[][] composeExpectedRowsFromStringArray(Function<DistinctSample, String[]> arrayComposer) {
+        return DISTINCT_SAMPLES.stream()
+                .map(arrayComposer)
+                .toArray(String[][]::new);
+    }
+
     private static String[][] composeExpectedRows(Function<DistinctSample, Object> fieldGetter) {
         return DISTINCT_SAMPLES.stream()
                 .map(fieldGetter)
