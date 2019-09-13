@@ -94,12 +94,46 @@ public class SelectDistinctTest extends SqlTest {
     }
 
     @Issue("6536")
-    @Test(description = "Tests that 'SELECT DISTINCT' returns unique rows if multiple columns are requested")
-    public void testSelectMultipleDistinct() {
-        String sqlQuery = String.format("SELECT DISTINCT entity, value, time FROM \"%s\"", METRIC_WITH_ALL_ROWS_UNIQUE);
-        assertSqlQueryRows(composeExpectedRows(DISTINCT_SAMPLES_ALL_ROWS_UNIQUE, DistinctSample::getEntity, DistinctSample::getValue, DistinctSample::getTimestamp), sqlQuery);
+    @Test(
+            description = "Tests that 'SELECT DISTINCT' returns expected rows if multiple columns are requested",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectAllDistinct(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT entity, value, time FROM \"%s\"", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getEntity, DistinctSample::getValue, DistinctSample::getTimestamp), sqlQuery);
     }
 
+    @Issue("6536")
+    @Test(
+            description = "Tests that 'SELECT DISTINCT entity, value' returns expected rows if multiple columns are requested",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectEntityValueDistinct(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT entity, value FROM \"%s\"", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getEntity, DistinctSample::getValue), sqlQuery);
+    }
+
+    @Issue("6536")
+    @Test(
+            description = "Tests that 'SELECT DISTINCT entity, time' returns expected rows if multiple columns are requested",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectEntityTimeDistinct(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT entity, time FROM \"%s\"", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getEntity, DistinctSample::getTimestamp), sqlQuery);
+    }
+
+    @Issue("6536")
+    @Test(
+            description = "Tests that 'SELECT DISTINCT value, time' returns expected rows if multiple columns are requested",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectValueTimeDistinct(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT value, time FROM \"%s\"", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getValue, DistinctSample::getTimestamp), sqlQuery);
+    }
+
+    @SafeVarargs
     private static String[][] composeExpectedRows(List<DistinctSample> sampleList, Function<DistinctSample, Object>... fieldGetters) {
         return sampleList.stream()
                 .map(sample -> Arrays.stream(fieldGetters)
