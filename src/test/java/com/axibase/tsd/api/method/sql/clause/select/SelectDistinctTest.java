@@ -90,7 +90,7 @@ public class SelectDistinctTest extends SqlTest {
         ), sqlQuery);
     }
 
-    private static String[][] composeExpectedRowsFromStringArray(List<DistinctSample> sampleList,Function<DistinctSample, String[]> arrayComposer) {
+    private static String[][] composeExpectedRowsFromStringArray(List<DistinctSample> sampleList, Function<DistinctSample, String[]> arrayComposer) {
         return sampleList.stream()
                 .map(arrayComposer)
                 .toArray(String[][]::new);
