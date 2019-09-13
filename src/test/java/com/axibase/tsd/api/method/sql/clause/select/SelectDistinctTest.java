@@ -9,6 +9,7 @@ import io.qameta.allure.Issue;
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -17,56 +18,90 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SelectDistinctTest extends SqlTest {
-    private static final String METRIC = Mocks.metric();
+    private static final String METRIC_WITH_ALL_ROWS_UNIQUE = Mocks.metric();
 
-    private static final List<DistinctSample> DISTINCT_SAMPLES = Arrays.asList(
+    private static final List<DistinctSample> DISTINCT_SAMPLES_ALL_ROWS_UNIQUE = Arrays.asList(
             DistinctSample.of(Mocks.entity(), Mocks.MILLS_TIME + 1, 1),
             DistinctSample.of(Mocks.entity(), Mocks.MILLS_TIME + 2, 2),
             DistinctSample.of(Mocks.entity(), Mocks.MILLS_TIME + 3, 3)
     );
 
+    private static final String METRIC_CONTAINING_REPEATING_VALUES = Mocks.metric();
+    private static final String REPEATED_ENTITY = Mocks.entity();
+    private static final List<DistinctSample> DISTINCT_SAMPLES_WITH_REPEATING_VALUES = Arrays.asList(
+            DistinctSample.of(REPEATED_ENTITY, Mocks.MILLS_TIME + 1, 1),
+            DistinctSample.of(REPEATED_ENTITY, Mocks.MILLS_TIME + 2, 1),
+            DistinctSample.of(REPEATED_ENTITY, Mocks.MILLS_TIME + 3, 2),
+            DistinctSample.of(REPEATED_ENTITY, Mocks.MILLS_TIME + 4, 2)
+    );
+
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        final List<Series> samples = DISTINCT_SAMPLES.stream()
+        final List<Series> samples = DISTINCT_SAMPLES_ALL_ROWS_UNIQUE.stream()
                 .map(s -> new Series()
-                        .setMetric(METRIC)
+                        .setMetric(METRIC_WITH_ALL_ROWS_UNIQUE)
                         .setEntity(s.entity)
                         .addSamples(Sample.ofTimeInteger(s.timestamp, s.value)))
                 .collect(Collectors.toList());
         SeriesMethod.insertSeriesCheck(samples);
+
+        final List<Series> repeatedSamples = DISTINCT_SAMPLES_WITH_REPEATING_VALUES.stream()
+                .map(s -> new Series()
+                        .setMetric(METRIC_CONTAINING_REPEATING_VALUES)
+                        .setEntity(s.entity)
+                        .addSamples(Sample.ofTimeInteger(s.timestamp, s.value)))
+                .collect(Collectors.toList());
+        SeriesMethod.insertSeriesCheck(repeatedSamples);
+    }
+
+    @DataProvider
+    public static Object[][] distinctLists() {
+        return new Object[][]{
+                {DISTINCT_SAMPLES_ALL_ROWS_UNIQUE, METRIC_WITH_ALL_ROWS_UNIQUE},
+                {DISTINCT_SAMPLES_WITH_REPEATING_VALUES, METRIC_CONTAINING_REPEATING_VALUES}
+        };
     }
 
     @Issue("6536")
-    @Test(description = "Tests that 'SELECT DISTINCT entity' returns unique entities")
-    public void testSelectDistinctEntity() {
-        String sqlQuery = String.format("SELECT DISTINCT entity FROM \"%s\" ORDER BY entity", METRIC);
-        assertSqlQueryRows(composeExpectedRows(DistinctSample::getEntity), sqlQuery);
+    @Test(
+            description = "Tests that 'SELECT DISTINCT entity' returns unique entities",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectDistinctEntity(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT entity FROM \"%s\" ORDER BY entity", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getEntity), sqlQuery);
     }
 
     @Issue("6536")
-    @Test(description = "Tests that 'SELECT DISTINCT value' returns unique values")
-    public void testSelectDistinctValue() {
-        String sqlQuery = String.format("SELECT DISTINCT value FROM \"%s\" ORDER BY value", METRIC);
-        assertSqlQueryRows(composeExpectedRows(DistinctSample::getValue), sqlQuery);
+    @Test(
+            description = "Tests that 'SELECT DISTINCT value' returns unique values",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectDistinctValue(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT value FROM \"%s\" ORDER BY value", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getValue), sqlQuery);
     }
 
     @Issue("6536")
-    @Test(description = "Tests that 'SELECT DISTINCT time' returns unique timestamps")
-    public void testSelectDistinctTime() {
-        String sqlQuery = String.format("SELECT DISTINCT time FROM \"%s\" ORDER BY time", METRIC);
-        assertSqlQueryRows(composeExpectedRows(DistinctSample::getTimestamp), sqlQuery);
+    @Test(
+            description = "Tests that 'SELECT DISTINCT time' returns unique timestamps",
+            dataProvider = "distinctLists"
+    )
+    public void testSelectDistinctTime(List<DistinctSample> distinctSamples, String metric) {
+        String sqlQuery = String.format("SELECT DISTINCT time FROM \"%s\" ORDER BY time", metric);
+        assertSqlQueryRows(composeExpectedRows(distinctSamples, DistinctSample::getTimestamp), sqlQuery);
     }
 
     @Issue("6536")
     @Test(description = "Tests that 'SELECT DISTINCT' returns unique rows if multiple columns are requested")
     public void testSelectMultipleDistinct() {
-        String sqlQuery = String.format("SELECT DISTINCT entity, value, time FROM \"%s\"", METRIC);
-        assertSqlQueryRows(composeExpectedRows(DistinctSample::getEntity, DistinctSample::getValue, DistinctSample::getTimestamp), sqlQuery);
+        String sqlQuery = String.format("SELECT DISTINCT entity, value, time FROM \"%s\"", METRIC_WITH_ALL_ROWS_UNIQUE);
+        assertSqlQueryRows(composeExpectedRows(DISTINCT_SAMPLES_ALL_ROWS_UNIQUE, DistinctSample::getEntity, DistinctSample::getValue, DistinctSample::getTimestamp), sqlQuery);
     }
 
-    private static String[][] composeExpectedRows(Function<DistinctSample, Object>... fieldGetters) {
-        return DISTINCT_SAMPLES.stream()
+    private static String[][] composeExpectedRows(List<DistinctSample> sampleList, Function<DistinctSample, Object>... fieldGetters) {
+        return sampleList.stream()
                 .map(sample -> Arrays.stream(fieldGetters)
                         .map(getter -> getter.apply(sample))
                         .map(String::valueOf)
