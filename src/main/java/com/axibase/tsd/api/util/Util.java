@@ -109,6 +109,11 @@ public class Util {
         }
     }
 
+    public static String formatDateInServerZone(String pattern, long timestamp) {
+        DatetimeProcessor processor = PatternResolver.createNewFormatter(pattern, getServerTimeZone().toZoneId());
+        return processor.print(timestamp);
+    }
+
     private static final class AtsdVersionInfo {
         private static final TimeZone TIME_ZONE;
         private static final String HBASE_VERSION;
