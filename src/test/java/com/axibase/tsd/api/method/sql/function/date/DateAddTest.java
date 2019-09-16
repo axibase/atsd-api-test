@@ -5,24 +5,29 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class DateAddTest extends SqlTest {
     private static final String SQL_QUERY_TEMPLATE = "SELECT date_format(DATEADD(%s, 1, '%s'), 'yyyy-MM-dd HH:mm:ss')";
+    private static final Date DATE = new Date(1546300800000l); //2019-01-01 00:00:00
 
-    private Object[][] dateTime() {
-        return new String[][] {
-                {"2019"},
-                {"2019-01"},
-                {"2019-01-01"},
-                {"2019-01-01 00:00:00"},
-                {"2019-01-01 00:00:00.000"},
-                {"2019-01-01T00:00:00.000+05:45"} //Kathmandu timezone
+    private String[] patterns() {
+        return new String[]{
+                "yyyy",
+                "yyyy-MM",
+                "yyyy-MM-dd",
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy-MM-dd HH:mm:ss.SSS",
+                //"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         };
     }
 
-    private Object[][] timeUnitAndExpectedResult() {
+    private String[][] timeUnitAndExpectedResult() {
+        ;
         return new String[][] {
                 {"second", "2019-01-01 00:00:01"},
                 {"minute", "2019-01-01 00:01:00"},
@@ -38,12 +43,13 @@ public class DateAddTest extends SqlTest {
     @DataProvider
     public Object[][] datetimeUnitAndResult() {
         List<Object[]> result = new ArrayList<>();
-        for(Object[] datetime: dateTime()) {
-            for(Object[] unitAndResult : timeUnitAndExpectedResult()) {
-                result.add(new Object[]{datetime[0], unitAndResult[0], unitAndResult[1]});
+        String[][] unitAndExpectedResult = timeUnitAndExpectedResult();
+        for (String pattern : patterns()) {
+            for (String[] unitAndResult : unitAndExpectedResult) {
+                result.add(new Object[]{simpleDateFormat(pattern), unitAndResult[0], unitAndResult[1]});
             }
         }
-        return result.toArray(new Object[dateTime().length * timeUnitAndExpectedResult().length][3]);
+        return result.toArray(new Object[0][0]);
     }
 
     @Test(
@@ -59,4 +65,9 @@ public class DateAddTest extends SqlTest {
         assertSqlQueryRows(sqlQueryRow, sqlQuery);
     }
 
+    private String simpleDateFormat(String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return format.format(DATE);
+    }
 }
