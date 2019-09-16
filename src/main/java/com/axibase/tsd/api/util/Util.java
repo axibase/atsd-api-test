@@ -91,7 +91,7 @@ public class Util {
 
     /** Return zoned date time in the {@link #DEFAULT_TIMEZONE_NAME}. */
     public static ZonedDateTime fromMillis(long epochMillis) {
-        return PatternResolver.createNewFormatter(NamedPatterns.MILLISECONDS).parse(String.valueOf(epochMillis));
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.of(DEFAULT_TIMEZONE_NAME));
     }
 
     public static String prettyPrint(Object o) {
