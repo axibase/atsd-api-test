@@ -27,7 +27,6 @@ public class DateAddTest extends SqlTest {
     }
 
     private String[][] timeUnitAndExpectedResult() {
-        ;
         return new String[][] {
                 {"second", "2019-01-01 00:00:01"},
                 {"minute", "2019-01-01 00:01:00"},
