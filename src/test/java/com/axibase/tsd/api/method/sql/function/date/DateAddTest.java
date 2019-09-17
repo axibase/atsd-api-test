@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -9,11 +10,12 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class DateAddTest extends SqlTest {
     private static final String SQL_QUERY_TEMPLATE = "SELECT date_format(DATEADD(%s, 1, '%s'), 'yyyy-MM-dd HH:mm:ss')";
-    private static final Date DATE = new Date(1546300800000L); //2019-01-01 00:00:00
+    private static final Date DATE = new Date(Util.parseAsServerZoned("2019-01-01T00:00:00")
+            .toInstant()
+            .toEpochMilli());
 
     private String[] patterns() {
         return new String[]{
@@ -22,7 +24,7 @@ public class DateAddTest extends SqlTest {
                 "yyyy-MM-dd",
                 "yyyy-MM-dd HH:mm:ss",
                 "yyyy-MM-dd HH:mm:ss.SSS",
-                TestUtil.isoPatternWithOffset(DATE)
+                "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
         };
     }
 
@@ -45,7 +47,7 @@ public class DateAddTest extends SqlTest {
         String[][] unitAndExpectedResult = timeUnitAndExpectedResult();
         for (String pattern : patterns()) {
             for (String[] unitAndResult : unitAndExpectedResult) {
-                result.add(new Object[]{TestUtil.formatDate(DATE, pattern , TimeZone.getTimeZone("UTC")), unitAndResult[0], unitAndResult[1]});
+                result.add(new Object[]{TestUtil.formatDate(DATE, pattern, Util.getServerTimeZone()), unitAndResult[0], unitAndResult[1]});
             }
         }
         return result.toArray(new Object[0][0]);
