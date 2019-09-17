@@ -186,7 +186,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
     @Issue("3229")
     @Test
-    public void testInCorrectOffsetWithoutLimit() {
+    public void testIncorrectOffsetWithoutLimit() {
         String sqlQuery = String.format(
                 "SELECT value FROM \"%s\" %nOFFSET 1",
                 TEST_METRIC_NAME
@@ -197,7 +197,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
                 extraneousErrorMessage("OFFSET", "{<EOF>, INTEGER_LITERAL, ID, WORD, METRIC_NAME," +
                         " STRING_LITERAL, DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER," +
-                        " FULL, JOIN, LOOKUP, OPTION}"));
+                        " FULL, JOIN, OPTION}"));
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
                 expectedErrorMessage, response

@@ -4,7 +4,6 @@ import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
-import org.apache.commons.collections4.map.UnmodifiableMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -228,7 +227,6 @@ public class TestUtil {
     private static <T> T jsonFile(File file, Class<T> clazz) throws IOException {
         return new ObjectMapper().readValue(file, clazz);
     }
-
 
     /**
      * Read JSON Array from file.
