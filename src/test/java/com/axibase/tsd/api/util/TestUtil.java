@@ -44,6 +44,15 @@ public class TestUtil {
         return formatDate(date, pattern, getServerTimeZone());
     }
 
+    public static String isoPatternWithOffset(Date date, TimeZone timeZone) {
+        return String.format("yyyy-MM-dd'T'HH:mm:ss.SSS'%tz'",
+                Instant.ofEpochMilli(date.getTime()).atZone(timeZone.toZoneId()));
+    }
+
+    public static String isoPatternWithOffset(Date date) {
+        return isoPatternWithOffset(date, Util.getServerTimeZone());
+    }
+
     public static Date getCurrentDate() {
         return new Date();
     }

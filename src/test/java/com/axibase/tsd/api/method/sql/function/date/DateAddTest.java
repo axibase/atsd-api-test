@@ -1,13 +1,11 @@
 package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.TestUtil;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +22,7 @@ public class DateAddTest extends SqlTest {
                 "yyyy-MM-dd",
                 "yyyy-MM-dd HH:mm:ss",
                 "yyyy-MM-dd HH:mm:ss.SSS",
-                String.format("yyyy-MM-dd'T'HH:mm:ss.SSS'%tz'", Instant.ofEpochMilli(DATE.getTime()).atZone(Util.getServerTimeZone().toZoneId()))
+                TestUtil.isoPatternWithOffset(DATE)
         };
     }
 
@@ -47,7 +45,7 @@ public class DateAddTest extends SqlTest {
         String[][] unitAndExpectedResult = timeUnitAndExpectedResult();
         for (String pattern : patterns()) {
             for (String[] unitAndResult : unitAndExpectedResult) {
-                result.add(new Object[]{simpleDateFormat(pattern), unitAndResult[0], unitAndResult[1]});
+                result.add(new Object[]{TestUtil.formatDate(DATE, pattern , TimeZone.getTimeZone("UTC")), unitAndResult[0], unitAndResult[1]});
             }
         }
         return result.toArray(new Object[0][0]);
@@ -64,11 +62,5 @@ public class DateAddTest extends SqlTest {
                 {expectedResult}
         };
         assertSqlQueryRows(sqlQueryRow, sqlQuery);
-    }
-
-    private String simpleDateFormat(String pattern) {
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return format.format(DATE);
     }
 }
