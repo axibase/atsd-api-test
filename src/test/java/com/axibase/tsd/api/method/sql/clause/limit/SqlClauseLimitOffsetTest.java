@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.ErrorTemplate;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,9 +18,8 @@ import java.util.List;
 
 
 public class SqlClauseLimitOffsetTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-clause-limit-offset-";
-    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
-    private static final String TESTS_ENTITY_NAME = TEST_PREFIX + "entity";
+    private static final String TEST_METRIC_NAME = Mocks.metric();
+    private static final String TESTS_ENTITY_NAME = Mocks.entity();
     private static final String ERROR_MESSAGE_TEMPLATE =
             "Syntax error at line %s position %s: %s";
     private static final String DEFAULT_ASSERT_MESSAGE = "Query must return  correct table";
@@ -197,7 +197,7 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
                 extraneousErrorMessage("OFFSET", "{<EOF>, INTEGER_LITERAL, ID, WORD, METRIC_NAME," +
                         " STRING_LITERAL, DQ_STRING_LITERAL, WHERE, AS, ORDER, GROUP, LIMIT, WITH, INNER, OUTER," +
-                        " FULL, JOIN, LOOKUP, OPTION}"));
+                        " FULL, JOIN, OPTION}"));
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
                 expectedErrorMessage, response
