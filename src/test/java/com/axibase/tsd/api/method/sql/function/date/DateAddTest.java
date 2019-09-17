@@ -1,11 +1,13 @@
 package com.axibase.tsd.api.method.sql.function.date;
 
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.TimeZone;
 
 public class DateAddTest extends SqlTest {
     private static final String SQL_QUERY_TEMPLATE = "SELECT date_format(DATEADD(%s, 1, '%s'), 'yyyy-MM-dd HH:mm:ss')";
-    private static final Date DATE = new Date(1546300800000l); //2019-01-01 00:00:00
+    private static final Date DATE = new Date(1546300800000L); //2019-01-01 00:00:00
 
     private String[] patterns() {
         return new String[]{
@@ -22,7 +24,7 @@ public class DateAddTest extends SqlTest {
                 "yyyy-MM-dd",
                 "yyyy-MM-dd HH:mm:ss",
                 "yyyy-MM-dd HH:mm:ss.SSS",
-                //"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                String.format("yyyy-MM-dd'T'HH:mm:ss.SSS'%tz'", Instant.ofEpochMilli(DATE.getTime()).atZone(Util.getServerTimeZone().toZoneId()))
         };
     }
 
@@ -66,7 +68,7 @@ public class DateAddTest extends SqlTest {
 
     private String simpleDateFormat(String pattern) {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(DATE);
     }
 }
