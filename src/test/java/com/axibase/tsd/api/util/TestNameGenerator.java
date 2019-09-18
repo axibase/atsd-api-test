@@ -116,7 +116,8 @@ public class TestNameGenerator {
         MESSAGE("message"),
         PROPERTY("property"),
         PROPERTY_TYPE("property-type"),
-        REPLACEMENT_TABLE("replacement-table");
+        REPLACEMENT_TABLE("replacement-table"),
+        NAMED_COLLECTION("named-collection");
 
         private String textValue;
 
