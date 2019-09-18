@@ -35,7 +35,7 @@ public class SqlCollectionTest extends SqlTest {
     public void testSelect() {
         String sqlQuery = String.format("SELECT collection('%s')", NAMED_COLLECTION.getName());
         String[][] expectedResult = {
-                {String.format("[\"%s\"]", String.join("\",\"", NAMED_COLLECTION))}
+                {String.format("[\"%s\"]", String.join("\",\"", NAMED_COLLECTION.getItems()))}
         };
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
@@ -43,7 +43,7 @@ public class SqlCollectionTest extends SqlTest {
     @Test(description = "Tests SELECT collection('...') where collection does not exist")
     @Issue("6559")
     public void testSelectNotValidCollection() {
-        String nonExistentCollection = Mocks.namedCollection();
+        String nonExistentCollection = "non-existent-collection";
         String sqlQuery = String.format("SELECT collection('%s')", nonExistentCollection);
         String expectedError = String.format("Collection not found for name '%s'", nonExistentCollection);
         assertBadRequest(sqlQuery + " did not return expected error", expectedError, sqlQuery);
@@ -52,7 +52,7 @@ public class SqlCollectionTest extends SqlTest {
     @Test(description = "Tests that operator IN can be applied to collection")
     @Issue("6559")
     public void testTagsInCollection() {
-        String sqlQuery = String.format("SELECT metric FROM \"%s\" WHERE tags.%s IN collection('%s')", METRIC, TAG_KEY, NAMED_COLLECTION.getName());
+        String sqlQuery = String.format("SELECT metric FROM \"%s\" WHERE tags.\"%s\" IN collection('%s')", METRIC, TAG_KEY, NAMED_COLLECTION.getName());
         String[][] expectedResult = {
                 {METRIC}
         };

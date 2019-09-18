@@ -13,7 +13,7 @@ public class NamedCollectionMethod extends BaseMethod {
         Response response = executeRootRequest(webTarget -> webTarget
                 .path(COLLECTIONS_PATH)
                 .queryParam("name", collection.getName())
-                .queryParam("values", String.join(",", collection))
+                .queryParam("values", String.join(",", collection.getItems()))
                 .queryParam("save", "Save")
                 .request()
                 .method(HttpMethod.POST));
