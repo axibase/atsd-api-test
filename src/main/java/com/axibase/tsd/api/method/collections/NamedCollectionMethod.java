@@ -6,7 +6,7 @@ import com.axibase.tsd.api.model.collections.NamedCollection;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Response;
 
-public class NamedCollectionsMethod extends BaseMethod {
+public class NamedCollectionMethod extends BaseMethod {
     private static final String COLLECTIONS_PATH = "/collections/name";
 
     public static Response insertCollection(NamedCollection collection) {
