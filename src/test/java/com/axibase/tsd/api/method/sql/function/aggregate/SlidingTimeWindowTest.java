@@ -7,17 +7,63 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SlidingTimeWindowTest extends SqlTest {
     private static final String METRIC = Mocks.metric();
 
     private static final int[] DATA = {1, 2, 3, 4};
+
+    private static Function<Integer, String> toFunction(Function<Integer, String> function) {
+        return function;
+    }
+
+    /**
+     * @return 1st value - function name 2nd value - Function transforming data to function result
+     */
+    @DataProvider
+    public Object[][] aggregateFunctions() {
+        return new Object[][]{
+                {"AVG", toFunction(String::valueOf)},
+                //{"CORREL"},
+                {"COUNT", toFunction(data -> "1")},
+                {"COUNTER", toFunction(data -> "NaN")},
+                //{"COVAR"},
+                {"DELTA", toFunction(data -> "NaN")},
+                {"FIRST", toFunction(String::valueOf)},
+                {"LAST", toFunction(String::valueOf)},
+                {"MAX", toFunction(String::valueOf)},
+                //{"MAX_VALUE_TIME"},
+                //{"MEDIAN"},
+                //{"MEDIAN_ABS_DEV"},
+                {"MIN", toFunction(String::valueOf)},
+                //{"MIN_VALUE_TIME"},
+                //{"PERCENTILE"},
+                {"SUM", toFunction(String::valueOf)},
+                {"STDDEV", toFunction(data -> "0.0")},
+                {"WAVG", toFunction(String::valueOf)},
+                {"WTAVG", toFunction(String::valueOf)}
+        };
+    }
+
+    /**
+     * @return 1st value - function name 2nd value - function transforming number of row in result set to a function result
+     */
+    @DataProvider
+    public Object[][] analyticalFunctions() {
+        return new Object[][]{
+                {"first_value", toFunction(rowNumber -> String.valueOf(DATA[0]))},
+                {"lag", toFunction(rowNumber -> (rowNumber == 0) ? "null" : String.valueOf(DATA[rowNumber - 1]))},
+                {"lead", toFunction(rowNumber -> (rowNumber == (DATA.length - 1)) ? "null" : String.valueOf(DATA[rowNumber + 1]))}
+        };
+    }
 
     @BeforeClass
     public void prepareData() throws Exception {
@@ -77,17 +123,33 @@ public class SlidingTimeWindowTest extends SqlTest {
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
 
-    @Test(description = "Tests that `first(value)` aggregation respects window boundaries.")
+    @Test(
+            description = "Tests that all aggregate functions respect boundaries",
+            dataProvider = "aggregateFunctions"
+    )
     @Issue("6560")
-    public void testFirstAggregation() {
-        String sqlQuery = String.format("SELECT value, first(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", METRIC);
-        List<List<String>> expectedResult = Arrays.stream(DATA)
+    public void testAllAggregateFunctions(String functionLiteral, Function<Integer, String> function) {
+        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", functionLiteral, METRIC);
+        List<List<String>> expectedValues = Arrays.stream(DATA)
                 .boxed()
                 .map(data -> Arrays.asList(
-                        String.valueOf(data), String.valueOf(data)
+                        String.valueOf(data), function.apply(data)
                 ))
                 .collect(Collectors.toList());
-        assertSqlQueryRows(expectedResult, sqlQuery);
+        assertSqlQueryRows(expectedValues, sqlQuery);
     }
 
+    @Test(
+            description = "Tests that analytical functions do not respect boundaries",
+            dataProvider = "analyticalFunctions"
+    )
+    @Issue("6560")
+    public void testAllAnalyticalFunctions(String functionLiteral, Function<Integer, String> function) {
+        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", functionLiteral, METRIC);
+        List<List<String>> expectedValues = new ArrayList<>();
+        for (int i = 0; i < DATA.length; i++) {
+            expectedValues.add(Arrays.asList(String.valueOf(DATA[i]), function.apply(i)));
+        }
+        assertSqlQueryRows(expectedValues, sqlQuery);
+    }
 }
