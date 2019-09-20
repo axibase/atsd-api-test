@@ -90,16 +90,4 @@ public class SlidingTimeWindowTest extends SqlTest {
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
 
-    @Test(description = "Tests that `first_value(value)` respects window boundaries.")
-    @Issue("6560")
-    public void testFirstValue() {
-        String sqlQuery = String.format("SELECT value, first_value(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", METRIC);
-        List<List<String>> expectedResult = Arrays.stream(DATA)
-                .boxed()
-                .map(data -> Arrays.asList(
-                        String.valueOf(data), String.valueOf(data)
-                ))
-                .collect(Collectors.toList());
-        assertSqlQueryRows(expectedResult, sqlQuery);
-    }
 }
