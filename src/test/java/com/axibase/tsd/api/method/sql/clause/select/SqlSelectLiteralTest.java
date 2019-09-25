@@ -14,18 +14,13 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
 
 public class SqlSelectLiteralTest extends SqlTest {
-
-    private static String metricName;
+    private static final Series mockSeries = Mocks.series();
 
     @BeforeClass
     public static void prepareData() throws Exception {
-        Series series = Mocks.series();
-        metricName = series.getMetric();
-
-        SeriesMethod.insertSeriesCheck(Collections.singletonList(series));
+        SeriesMethod.insertSeriesCheck(Collections.singletonList(mockSeries));
     }
 
     @DataProvider(name = "literalAndResultProvider")
@@ -43,14 +38,24 @@ public class SqlSelectLiteralTest extends SqlTest {
 
     @Issue("3837")
     @Test(dataProvider = "literalAndResultProvider")
-    public void testSelectLiteral(String literal, String result) {
-        String sqlQuery = String.format("SELECT %s FROM \"%s\"", literal, metricName);
+    public void testSelectLiteralWithMetric(String literal, String result) {
+        String sqlQuery = String.format("SELECT %s FROM \"%s\" LIMIT 1", literal, mockSeries.getMetric());
+        literalValuesChecks(sqlQuery, literal, result);
+    }
+
+    @Issue("3837")
+    @Test(dataProvider = "literalAndResultProvider")
+    public void testSelectLiteralWithoutMetric(String literal, String result) {
+        String sqlQuery = String.format("SELECT %s", literal);
+        literalValuesChecks(sqlQuery, literal, result);
+    }
+
+    private void literalValuesChecks(String sqlQuery, String literal, String expectedResult) {
         StringTable resultTable = queryTable(sqlQuery);
-
         List<List<String>> res = resultTable.filterRows(literal);
-
-        assertFalse(String.format("No column with name %s", literal), res.get(0).isEmpty());
-        assertEquals("Column value is not as expected", res.get(0).get(0), result);
+        assertEquals("Response is empty", 1, res.size());
+        assertEquals(String.format("No column with name %s", literal), 1, res.get(0).size());
+        assertEquals("Column value is not as expected", expectedResult, res.get(0).get(0));
     }
 
 }
