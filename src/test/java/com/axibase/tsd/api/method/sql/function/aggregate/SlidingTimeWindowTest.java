@@ -15,7 +15,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 
 public class SlidingTimeWindowTest extends SqlTest {
@@ -23,35 +22,31 @@ public class SlidingTimeWindowTest extends SqlTest {
 
     private static final int[] DATA = {1, 2, 3, 4};
 
-    private static Function<Integer, String> toFunction(Function<Integer, String> function) {
-        return function;
-    }
-
     /**
      * @return 1st value - function name 2nd value - function transforming number of row in result set to a function result
      */
     @DataProvider
     public Object[][] aggregateFunctions() {
         return new Object[][]{
-                {SqlFunction.of("AVG", toFunction(this::data))},
+                {SqlFunction.of("AVG", this::sampleValueAtRow)},
                 //{"CORREL"},
-                {SqlFunction.of("COUNT", toFunction(rowNumber -> "1"))},
-                {SqlFunction.of("COUNTER", toFunction(rowNumber -> "NaN"))},
+                {SqlFunction.of("COUNT", rowNumber -> "1")},
+                {SqlFunction.of("COUNTER", rowNumber -> "NaN")},
                 //{"COVAR"},
-                {SqlFunction.of("DELTA", toFunction(rowNumber -> "NaN"))},
-                {SqlFunction.of("FIRST", toFunction(this::data))},
-                {SqlFunction.of("LAST", toFunction(this::data))},
-                {SqlFunction.of("MAX", toFunction(this::data))},
+                {SqlFunction.of("DELTA", rowNumber -> "NaN")},
+                {SqlFunction.of("FIRST", this::sampleValueAtRow)},
+                {SqlFunction.of("LAST", this::sampleValueAtRow)},
+                {SqlFunction.of("MAX", this::sampleValueAtRow)},
                 //{"MAX_VALUE_TIME"},
                 //{"MEDIAN"},
                 //{"MEDIAN_ABS_DEV"},
-                {SqlFunction.of("MIN", toFunction(this::data))},
+                {SqlFunction.of("MIN", this::sampleValueAtRow)},
                 //{"MIN_VALUE_TIME"},
                 //{"PERCENTILE"},
-                {SqlFunction.of("SUM", toFunction(this::data))},
-                {SqlFunction.of("STDDEV", toFunction(rowNumber -> "0.0"))},
-                {SqlFunction.of("WAVG", toFunction(this::data))},
-                {SqlFunction.of("WTAVG", toFunction(this::data))}
+                {SqlFunction.of("SUM", this::sampleValueAtRow)},
+                {SqlFunction.of("STDDEV", rowNumber -> "0.0")},
+                {SqlFunction.of("WAVG", this::sampleValueAtRow)},
+                {SqlFunction.of("WTAVG", this::sampleValueAtRow)}
         };
     }
 
@@ -61,16 +56,16 @@ public class SlidingTimeWindowTest extends SqlTest {
     @DataProvider
     public Object[][] analyticalFunctions() {
         return new Object[][]{
-                {SqlFunction.of("first_value", toFunction(rowNumber -> data(0)))},
-                {SqlFunction.of("lag", toFunction(rowNumber -> (rowNumber == 0) ? "null" : data(rowNumber - 1)))},
-                {SqlFunction.of("lead", toFunction(rowNumber -> (rowNumber == (DATA.length - 1)) ? "null" : data(rowNumber + 1)))}
+                {SqlFunction.of("first_value", rowNumber -> sampleValueAtRow(0))},
+                {SqlFunction.of("lag", rowNumber -> (rowNumber == 0) ? "null" : sampleValueAtRow(rowNumber - 1))},
+                {SqlFunction.of("lead", rowNumber -> (rowNumber == (DATA.length - 1)) ? "null" : sampleValueAtRow(rowNumber + 1))}
         };
     }
 
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(Mocks.entity(), METRIC);
-        long interval = TimeUnit.HOUR.toMilliseconds(1); //interval is 1 hour
+        long interval = TimeUnit.HOUR.toMilliseconds(1);
         long date = Mocks.MILLS_TIME;
         for(int data: DATA) {
             series.addSamples(Sample.ofTimeInteger(date, data));
@@ -117,8 +112,8 @@ public class SlidingTimeWindowTest extends SqlTest {
     )
     @Issue("6560")
     public void testAllAggregateFunctions(SqlFunction function) {
-        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", function.functionLiteral, METRIC);
-        List<List<String>> expectedValues = prepareExpectedResult(function.function::apply);
+        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", function.literal, METRIC);
+        List<List<String>> expectedValues = prepareExpectedResult(function.aggregationValueProviderAtRow);
         assertSqlQueryRows(expectedValues, sqlQuery);
     }
 
@@ -128,26 +123,26 @@ public class SlidingTimeWindowTest extends SqlTest {
     )
     @Issue("6560")
     public void testAllAnalyticalFunctions(SqlFunction function) {
-        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", function.functionLiteral, METRIC);
-        List<List<String>> expectedValues = prepareExpectedResult(function.function::apply);
+        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", function.literal, METRIC);
+        List<List<String>> expectedValues = prepareExpectedResult(function.aggregationValueProviderAtRow);
         assertSqlQueryRows(expectedValues, sqlQuery);
     }
 
-    private String data(int row) {
+    private String sampleValueAtRow(int row) {
         return String.valueOf(DATA[row]);
     }
 
     private List<List<String>> prepareExpectedResult(IntFunction<String> rowFunction) {
         List<List<String>> result = new ArrayList<>();
         for (int i = 0; i < DATA.length; i++) {
-            result.add(Arrays.asList(data(i), rowFunction.apply(i)));
+            result.add(Arrays.asList(sampleValueAtRow(i), rowFunction.apply(i)));
         }
         return result;
     }
 
     @Data(staticConstructor = "of")
     private static final class SqlFunction {
-        private final String functionLiteral;
-        private final Function<Integer, String> function;
+        private final String literal;
+        private final IntFunction<String> aggregationValueProviderAtRow;
     }
 }
