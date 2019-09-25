@@ -3,3 +3,4 @@ target
 atsd-api-test.iml
 src/test/resources/dev.client.properties
 tests.iml
+.allure
