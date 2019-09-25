@@ -2,10 +2,12 @@ package com.axibase.tsd.api.method.sql.function.aggregate;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
+import lombok.Data;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.IntFunction;
 
 public class SlidingTimeWindowTest extends SqlTest {
     private static final String METRIC = Mocks.metric();
@@ -26,30 +28,30 @@ public class SlidingTimeWindowTest extends SqlTest {
     }
 
     /**
-     * @return 1st value - function name 2nd value - Function transforming data to function result
+     * @return 1st value - function name 2nd value - function transforming number of row in result set to a function result
      */
     @DataProvider
     public Object[][] aggregateFunctions() {
         return new Object[][]{
-                {"AVG", toFunction(String::valueOf)},
+                {SqlFunction.of("AVG", toFunction(this::data))},
                 //{"CORREL"},
-                {"COUNT", toFunction(data -> "1")},
-                {"COUNTER", toFunction(data -> "NaN")},
+                {SqlFunction.of("COUNT", toFunction(rowNumber -> "1"))},
+                {SqlFunction.of("COUNTER", toFunction(rowNumber -> "NaN"))},
                 //{"COVAR"},
-                {"DELTA", toFunction(data -> "NaN")},
-                {"FIRST", toFunction(String::valueOf)},
-                {"LAST", toFunction(String::valueOf)},
-                {"MAX", toFunction(String::valueOf)},
+                {SqlFunction.of("DELTA", toFunction(rowNumber -> "NaN"))},
+                {SqlFunction.of("FIRST", toFunction(this::data))},
+                {SqlFunction.of("LAST", toFunction(this::data))},
+                {SqlFunction.of("MAX", toFunction(this::data))},
                 //{"MAX_VALUE_TIME"},
                 //{"MEDIAN"},
                 //{"MEDIAN_ABS_DEV"},
-                {"MIN", toFunction(String::valueOf)},
+                {SqlFunction.of("MIN", toFunction(this::data))},
                 //{"MIN_VALUE_TIME"},
                 //{"PERCENTILE"},
-                {"SUM", toFunction(String::valueOf)},
-                {"STDDEV", toFunction(data -> "0.0")},
-                {"WAVG", toFunction(String::valueOf)},
-                {"WTAVG", toFunction(String::valueOf)}
+                {SqlFunction.of("SUM", toFunction(this::data))},
+                {SqlFunction.of("STDDEV", toFunction(rowNumber -> "0.0"))},
+                {SqlFunction.of("WAVG", toFunction(this::data))},
+                {SqlFunction.of("WTAVG", toFunction(this::data))}
         };
     }
 
@@ -59,16 +61,16 @@ public class SlidingTimeWindowTest extends SqlTest {
     @DataProvider
     public Object[][] analyticalFunctions() {
         return new Object[][]{
-                {"first_value", toFunction(rowNumber -> String.valueOf(DATA[0]))},
-                {"lag", toFunction(rowNumber -> (rowNumber == 0) ? "null" : String.valueOf(DATA[rowNumber - 1]))},
-                {"lead", toFunction(rowNumber -> (rowNumber == (DATA.length - 1)) ? "null" : String.valueOf(DATA[rowNumber + 1]))}
+                {SqlFunction.of("first_value", toFunction(rowNumber -> data(0)))},
+                {SqlFunction.of("lag", toFunction(rowNumber -> (rowNumber == 0) ? "null" : data(rowNumber - 1)))},
+                {SqlFunction.of("lead", toFunction(rowNumber -> (rowNumber == (DATA.length - 1)) ? "null" : data(rowNumber + 1)))}
         };
     }
 
     @BeforeClass
     public void prepareData() throws Exception {
         Series series = new Series(Mocks.entity(), METRIC);
-        long interval = 1000 * 60 * 60; //interval is 1 hour
+        long interval = TimeUnit.HOUR.toMilliseconds(1); //interval is 1 hour
         long date = Mocks.MILLS_TIME;
         for(int data: DATA) {
             series.addSamples(Sample.ofTimeInteger(date, data));
@@ -97,12 +99,7 @@ public class SlidingTimeWindowTest extends SqlTest {
     @Issue("6560")
     public void testAggregationWithLowerInterval() {
         String sqlQuery = String.format("SELECT value, COUNT(VALUE) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", METRIC);
-        List<List<String>> expectedResult = Arrays.stream(DATA)
-                .boxed()
-                .map(data -> Arrays.asList(
-                        String.valueOf(data), "1"
-                ))
-                .collect(Collectors.toList());
+        List<List<String>> expectedResult = prepareExpectedResult(row -> "1");
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
 
@@ -110,16 +107,7 @@ public class SlidingTimeWindowTest extends SqlTest {
     @Issue("6560")
     public void testAggregationWithTwoRowsAffected() {
         String sqlQuery = String.format("SELECT value, COUNT(VALUE) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 2 HOUR PRECEDING AND CURRENT ROW", METRIC);
-        List<List<String>> expectedResult = new ArrayList<>();
-        for(int i = 0; i < DATA.length; i++) {
-            List<String> row;
-            if(i == 0) {
-                row = Arrays.asList(String.valueOf(DATA[i]), "1");
-            } else {
-                row = Arrays.asList(String.valueOf(DATA[i]), "2");
-            }
-            expectedResult.add(row);
-        }
+        List<List<String>> expectedResult = prepareExpectedResult(row -> (row == 0) ? "1" : "2");
         assertSqlQueryRows(expectedResult, sqlQuery);
     }
 
@@ -128,14 +116,9 @@ public class SlidingTimeWindowTest extends SqlTest {
             dataProvider = "aggregateFunctions"
     )
     @Issue("6560")
-    public void testAllAggregateFunctions(String functionLiteral, Function<Integer, String> function) {
-        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", functionLiteral, METRIC);
-        List<List<String>> expectedValues = Arrays.stream(DATA)
-                .boxed()
-                .map(data -> Arrays.asList(
-                        String.valueOf(data), function.apply(data)
-                ))
-                .collect(Collectors.toList());
+    public void testAllAggregateFunctions(SqlFunction function) {
+        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", function.functionLiteral, METRIC);
+        List<List<String>> expectedValues = prepareExpectedResult(function.function::apply);
         assertSqlQueryRows(expectedValues, sqlQuery);
     }
 
@@ -144,12 +127,27 @@ public class SlidingTimeWindowTest extends SqlTest {
             dataProvider = "analyticalFunctions"
     )
     @Issue("6560")
-    public void testAllAnalyticalFunctions(String functionLiteral, Function<Integer, String> function) {
-        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", functionLiteral, METRIC);
-        List<List<String>> expectedValues = new ArrayList<>();
-        for (int i = 0; i < DATA.length; i++) {
-            expectedValues.add(Arrays.asList(String.valueOf(DATA[i]), function.apply(i)));
-        }
+    public void testAllAnalyticalFunctions(SqlFunction function) {
+        String sqlQuery = String.format("SELECT value, %s(value) FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY time) BETWEEN 1 MINUTE PRECEDING AND CURRENT ROW", function.functionLiteral, METRIC);
+        List<List<String>> expectedValues = prepareExpectedResult(function.function::apply);
         assertSqlQueryRows(expectedValues, sqlQuery);
+    }
+
+    private String data(int row) {
+        return String.valueOf(DATA[row]);
+    }
+
+    private List<List<String>> prepareExpectedResult(IntFunction<String> rowFunction) {
+        List<List<String>> result = new ArrayList<>();
+        for (int i = 0; i < DATA.length; i++) {
+            result.add(Arrays.asList(data(i), rowFunction.apply(i)));
+        }
+        return result;
+    }
+
+    @Data(staticConstructor = "of")
+    private static final class SqlFunction {
+        private final String functionLiteral;
+        private final Function<Integer, String> function;
     }
 }
