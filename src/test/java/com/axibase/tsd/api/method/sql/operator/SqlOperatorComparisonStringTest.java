@@ -56,7 +56,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testEntityLessOrEquals() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM \"%s\" %nWHERE entity <= '%s'",
+                "SELECT entity,value FROM \"%s\" %nWHERE entity <= '%s'%nORDER BY entity",
                 TEST_METRIC_NAME, TEST_ENTITY2_NAME
         );
 
@@ -97,7 +97,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testEntityGreaterOrEquals() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM \"%s\" %nWHERE entity >= '%s'",
+                "SELECT entity,value FROM \"%s\" %nWHERE entity >= '%s'%nORDER BY entity",
                 TEST_METRIC_NAME, TEST_ENTITY1_NAME
         );
 
@@ -118,11 +118,11 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
     @Test
     public void testCastComparison() {
         String sqlQuery = String.format(
-                "SELECT entity,value FROM \"%s\" %nWHERE value >= '-1'",
+                "SELECT entity,value FROM \"%s\" %nWHERE value >= '-1'%nORDER BY entity",
                 TEST_METRIC_NAME
         );
 
-        String[][] expectedRows = {{"sql-operator-entity-1", "0"}, {"sql-operator-entity-2", "1"}};
+        String[][] expectedRows = {{TEST_ENTITY1_NAME, "0"}, {TEST_ENTITY2_NAME, "1"}};
         assertSqlQueryRows(expectedRows, sqlQuery);
     }
 
