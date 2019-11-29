@@ -7,6 +7,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Mocks;
+import io.qameta.allure.Flaky;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -33,6 +34,7 @@ public class CompactedLimitTest extends SqlTest {
         CompactionMethod.performCompaction();
     }
 
+    @Flaky
     @Issue("4947")
     @Test(description = "Test if limit returns requested number of records " +
             "after performing compaction")

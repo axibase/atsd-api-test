@@ -61,6 +61,10 @@ public class Mocks {
         return NAME_GENERATOR.newTestName(TestNameGenerator.Key.REPLACEMENT_TABLE).replaceAll(":", "_");
     }
 
+    public static String namedCollection() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.NAMED_COLLECTION);
+    }
+
     public static Series series() {
         Series resultSeries = new Series(entity(), metric(), TAGS);
         resultSeries.addSamples(SAMPLE);

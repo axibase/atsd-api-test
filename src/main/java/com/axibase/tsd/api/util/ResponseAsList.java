@@ -2,6 +2,7 @@ package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.model.alert.Alert;
 import com.axibase.tsd.api.model.message.Message;
+import com.axibase.tsd.api.model.message.MessageStats;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.property.Property;
 import com.axibase.tsd.api.model.series.Series;
@@ -36,4 +37,6 @@ public class ResponseAsList {
     public static GenericType<List<Property>> ofProperties() {
         return new GenericType<List<Property>>(){};
     }
+
+    public static GenericType<List<MessageStats>> ofMessageStats() { return new GenericType<List<MessageStats>>(){}; }
 }
