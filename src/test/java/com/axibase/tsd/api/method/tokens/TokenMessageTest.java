@@ -78,13 +78,14 @@ public class TokenMessageTest extends MessageTest {
         Response response = queryMessageStats(Collections.singletonList(msq), token);
         String expected = String.format("[ {\n" +
                 "  \"entity\" : \"%s\",\n" +
-                "  \"metric\" : \"messages-count\",\n" +
+                "  \"metric\" : \"message-count\",\n" +
                 "  \"tags\" : {\n" +
                 "    \"type\" : \"logger\"\n" +
                 "  },\n" +
                 "  \"type\" : \"HISTORY\",\n" +
                 "  \"aggregate\" : {\n" +
-                "    \"type\" : \"COUNT\"\n" +
+                "    \"type\" : \"COUNT\",\n" +
+                "   \"period\":{\"count\":1,\"unit\":\"DAY\"}" +
                 "  },\n" +
                 "  \"data\" : [{\"d\":\"%s\", \"v\":1} ]\n" +
                 "} ]", entity, ISO_TIME);
