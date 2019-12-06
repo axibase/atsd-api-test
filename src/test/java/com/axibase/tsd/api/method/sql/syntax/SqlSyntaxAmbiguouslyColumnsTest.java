@@ -94,7 +94,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "tags list"),
-                "Tags list ambiguously defined", response);
+                "Tags list ambiguously defined at line 1 position 7 near \"tags\"", response);
     }
 
 
@@ -109,7 +109,7 @@ public class SqlSyntaxAmbiguouslyColumnsTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertBadRequest(String.format(BAD_REQUEST_ASSERT_MESSAGE_TEMPLATE, "metric tags list"),
-                "Metric tags list ambiguously defined", response);
+                "Metric tags list ambiguously defined at line 1 position 7 near \"metric\"", response);
     }
 
     @Issue("3157")
