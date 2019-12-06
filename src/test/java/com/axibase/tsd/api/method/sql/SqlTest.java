@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
 
 public abstract class SqlTest extends SqlMethod {
@@ -223,11 +224,19 @@ public abstract class SqlTest extends SqlMethod {
         assertBadRequest(assertionMessage, expectedMessage, queryResponse(sqlQuery));
     }
 
+    public void assertBadRequestWithPattern(String assertionMessage, String expectedPattern, String sqlQuery) {
+        assertBadRequest(assertionMessage, expectedPattern, queryResponse(sqlQuery), true);
+    }
+
     public void assertBadRequest(String expectedMessage, Response response) {
         assertBadRequest(DEFAULT_ASSERT_BAD_REQUEST_MESSAGE, expectedMessage, response);
     }
 
     public void assertBadRequest(String assertMessage, String expectedMessage, Response response) {
+        assertBadRequest(assertMessage, expectedMessage, response, false);
+    }
+
+    public void assertBadRequest(String assertMessage, String expectedMessage, Response response, boolean isPattern) {
         String responseMessage;
         int code = response.getStatus();
         if (Response.Status.Family.SUCCESSFUL == Util.responseFamily(response) || BAD_REQUEST.getStatusCode() == code) {
@@ -243,7 +252,12 @@ public abstract class SqlTest extends SqlMethod {
         if (responseMessage == null) {
             fail(assertMessage + ": Response doesn't contain error message");
         }
-        assertEquals(assertMessage + ": Error message is different from expected", expectedMessage, responseMessage);
+        if (!isPattern){
+            assertEquals(assertMessage + ": Error message is different from expected", expectedMessage, responseMessage);
+        } else {
+            Pattern pattern = Pattern.compile(expectedMessage);
+            assertTrue(assertMessage, pattern.matcher(responseMessage).matches());
+        }
     }
 
     /**

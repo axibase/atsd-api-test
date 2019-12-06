@@ -111,6 +111,6 @@ public class SqlOrderByColumnAliasTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        assertBadRequest("Unexpected expression: 'NonExistingColumn'", response);
+        assertBadRequest("Unexpected expression: 'NonExistingColumn' at line 1 position 141 near \"\"NonExistingColumn\"\"", response);
     }
 }

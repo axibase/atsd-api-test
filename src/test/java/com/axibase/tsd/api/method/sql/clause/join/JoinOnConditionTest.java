@@ -185,10 +185,10 @@ public class JoinOnConditionTest extends SqlTest {
                 condition.implicit.syntax, condition.explicit.expressionFor("t2", "t3")
         );
         final String assertMessage = "Double JOIN ON explicit condition should cause an error";
-        final String expectedMessage = "Unexpected ON clause expression: \'t2.entity = t3.entity\'";
+        final String expectedMessage = "Unexpected ON clause expression: 't2.entity = t3.entity' at line 1 position [0-9]+ near \"t2\"";
 
         // assert
-        assertBadRequest(assertMessage, expectedMessage, sqlQuery);
+        assertBadRequestWithPattern(assertMessage, expectedMessage, sqlQuery);
     }
 
     @Issue("4397")
@@ -204,7 +204,7 @@ public class JoinOnConditionTest extends SqlTest {
         );
 
         // assert
-        assertBadSqlRequest("Unexpected ON clause expression: 't1.time = t1.time'", sqlQuery);
+        assertBadSqlRequest("Unexpected ON clause expression: 't1.time = t1.time' at line 1 position 219 near \"t1\"", sqlQuery);
     }
 
     @Issue("4397")
@@ -220,7 +220,7 @@ public class JoinOnConditionTest extends SqlTest {
         );
 
         // assert
-        assertBadSqlRequest("Unexpected ON clause expression: 't1.value = t2.value'", sqlQuery);
+        assertBadSqlRequest("Unexpected ON clause expression: 't1.value = t2.value' at line 1 position 241 near \"t1\"", sqlQuery);
     }
 
     @Issue("4397")
@@ -238,7 +238,7 @@ public class JoinOnConditionTest extends SqlTest {
         );
 
         // assert
-        assertBadSqlRequest("Unexpected ON clause expression: 't1.time = t3.time'", sqlQuery);
+        assertBadSqlRequest("Unexpected ON clause expression: 't1.time = t3.time' at line 1 position 230 near \"t1\"", sqlQuery);
     }
 
     @AllArgsConstructor
