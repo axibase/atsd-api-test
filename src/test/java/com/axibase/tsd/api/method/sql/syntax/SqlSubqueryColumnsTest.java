@@ -117,7 +117,7 @@ public class SqlSubqueryColumnsTest extends SqlTest {
                         "   SELECT entity, datetime " +
                         "   FROM \"%s\")", TEST_METRIC);
 
-        assertBadSqlRequest("Unexpected expression: 'value'", sqlQuery);
+        assertBadSqlRequest("Unexpected expression: 'value' at line 1 position 25 near \"value\"", sqlQuery);
     }
 
     @Issue("5070")
@@ -129,7 +129,7 @@ public class SqlSubqueryColumnsTest extends SqlTest {
                         "   SELECT entity " +
                         "   FROM \"%s\")", TEST_METRIC);
 
-        assertBadSqlRequest("Unexpected expression: 'abc'", sqlQuery);
+        assertBadSqlRequest("Unexpected expression: 'abc' at line 1 position 15 near \"\"abc\"\"", sqlQuery);
     }
 
     @Issue("5070")

@@ -113,7 +113,8 @@ public class LikeEscapeTest extends SqlTest {
 
         Response response = queryResponse(query);
         String errorMessage =
-                "Invalid escape character: '123'. The escape character must be a character string of length 1";
+                "Invalid escape character: '123'. The escape character must be a character string of length 1 " +
+                        "at line 1 position 147 near \"'123'\"";
 
         assertBadRequest("Query allows incorrect escape sequence", errorMessage, response);
     }
@@ -129,7 +130,8 @@ public class LikeEscapeTest extends SqlTest {
 
         Response response = queryResponse(query);
         String errorMessage =
-                "Invalid escape character: ''. The escape character must be a character string of length 1";
+                "Invalid escape character: ''. The escape character must be a character string of length 1 " +
+                        "at line 1 position 147 near \"''\"";
 
         assertBadRequest("Query allows incorrect escape sequence", errorMessage, response);
     }

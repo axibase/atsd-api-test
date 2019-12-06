@@ -127,8 +127,8 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
                 METRIC_NAME2
         );
 
-        assertBadSqlRequest("entity.timezone in period function requires grouping by entity. " +
-                "Include \"entity\" column in the GROUP BY clause.", sqlQuery);
+        assertBadSqlRequest("entity.timezone in period function requires grouping by entity." +
+                " Include \"entity\" column in the GROUP BY clause. Error at line 1 position 150 near \"entity\"", sqlQuery);
     }
 
     @Issue("4147")

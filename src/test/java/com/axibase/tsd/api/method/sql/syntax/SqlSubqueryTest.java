@@ -56,7 +56,8 @@ public class SqlSubqueryTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadSqlRequest("Invalid expression for entity column", sqlQuery);
+        assertBadSqlRequest(String.format("Invalid expression for entity column at line 3 position 18 near " +
+                "\"'%s'\"", nonExistentEntityName), sqlQuery);
     }
 
     @Issue("4133")
@@ -73,7 +74,7 @@ public class SqlSubqueryTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadSqlRequest("Duplicate column name: value", sqlQuery);
+        assertBadSqlRequest("Duplicate column name: value at line 3 position 36 near \"value\"", sqlQuery);
     }
 
     @Issue("4133")
@@ -89,7 +90,7 @@ public class SqlSubqueryTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadSqlRequest("Invalid expression for tags column", sqlQuery);
+        assertBadSqlRequest("Invalid expression for tags column at line 2 position 32 near \"'x'\"", sqlQuery);
     }
 
     @Issue("4133")
@@ -126,7 +127,7 @@ public class SqlSubqueryTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadSqlRequest("Invalid expression for tags column", sqlQuery);
+        assertBadSqlRequest("Invalid expression for tags column at line 2 position 32 near \"'x'\"", sqlQuery);
     }
 
     @Issue("4133")

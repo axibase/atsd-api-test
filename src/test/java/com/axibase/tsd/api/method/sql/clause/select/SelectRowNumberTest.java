@@ -111,6 +111,6 @@ public class SelectRowNumberTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadRequest("row_number function requires WITH ROW_NUMBER clause ", queryResponse(sqlQuery));
+        assertBadRequest("row_number function requires WITH ROW_NUMBER clause. at line 1 position 14 near \"row_number\"", queryResponse(sqlQuery));
     }
 }

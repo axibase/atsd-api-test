@@ -45,7 +45,8 @@ public class SqlCollectionTest extends SqlTest {
     public void testSelectNotValidCollection() {
         String nonExistentCollection = "non-existent-collection";
         String sqlQuery = String.format("SELECT collection('%s')", nonExistentCollection);
-        String expectedError = String.format("Collection not found for name '%s'", nonExistentCollection);
+        String expectedError = String.format("Collection not found for name '%s' " +
+                "at line 1 position 7 near \"collection\"", nonExistentCollection);
         assertBadRequest(sqlQuery + " did not return expected error", expectedError, sqlQuery);
     }
 

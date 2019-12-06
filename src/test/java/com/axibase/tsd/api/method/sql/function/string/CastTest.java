@@ -468,7 +468,7 @@ public class CastTest extends SqlTest {
 
     @Issue("4020")
     @Test
-    public void testImplicitCastInMathExpressionsRizesError() throws Exception {
+    public void testImplicitCastInMathExpressionsRaisesError() throws Exception {
         Series series = Mocks.series();
         SeriesMethod.insertSeriesCheck(series);
 
@@ -480,7 +480,7 @@ public class CastTest extends SqlTest {
 
         assertBadRequest(
                 "Math expression with string variable applied",
-                "Invalid expression: 'concat(value, '') + 10'", queryResponse(sql)
+                "Invalid expression: 'concat(value, '') + 10' at line 1 position 7 near \"CONCAT\"", queryResponse(sql)
         );
     }
 

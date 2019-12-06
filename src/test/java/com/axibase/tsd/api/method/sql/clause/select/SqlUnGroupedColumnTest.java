@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.axibase.tsd.api.util.Mocks;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
@@ -19,8 +20,8 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class SqlUnGroupedColumnTest extends SqlTest {
     private static final String TEST_PREFIX = "sql-select-un-grouped-column-";
-    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
-    private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
+    private static final String TEST_METRIC_NAME = TEST_PREFIX + Mocks.metric();
+    private static final String TEST_ENTITY_NAME = TEST_PREFIX + Mocks.entity();
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -37,10 +38,11 @@ public class SqlUnGroupedColumnTest extends SqlTest {
                 TEST_METRIC_NAME
         );
 
-        Response response = queryResponse(sqlQuery);
 
-        assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertEquals(DATETIME_IN_GROUP_CLAUSE, getErrorMessageFromResponse(response));
+        String expectedMessage = "Invalid grouping for column \"datetime\". Remove the column from the SELECT clause, " +
+                "apply an aggregation function to the column, or add the column to the GROUP BY clause. " +
+                "Error at line 1 position [0-9]+ near \"datetime\"";
+        assertBadRequestWithPattern("Unexpected error message", expectedMessage, sqlQuery);
     }
 
     @Test
@@ -53,8 +55,8 @@ public class SqlUnGroupedColumnTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        String expected = "SELECT expression cannot include both an aggregation function " +
-                "and a column not referenced in GROUP BY clause.";
+        String expected = "SELECT expression cannot include both an aggregation function and a column " +
+                "not referenced in GROUP BY clause. at line 1 position 7 near \"entity\"";
         assertEquals(expected, getErrorMessageFromResponse(response));
     }
 

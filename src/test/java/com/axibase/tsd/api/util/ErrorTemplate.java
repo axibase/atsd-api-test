@@ -16,7 +16,7 @@ public class ErrorTemplate {
 
     public static final String EMPTY_TAG = "IllegalArgumentException: Tag \"%s\" has empty value";
 
-    public static final String SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL = "Column '%s' ambiguously defined";
+    public static final String SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL = "Column '%s' ambiguously defined at line [0-9]+ position [0-9]+ near \"%s\"";
     public static final String SQL_SYNTAX_COMPARISON_TPL = "Syntax error at line %s position %s: no viable alternative at input '%s'";
 
     public static final String CANNOT_MODIFY_ENTITY_TPL = "IllegalArgumentException: Can not modify entities for entity group '%s'. Please reset expression field first.";
@@ -30,7 +30,7 @@ public class ErrorTemplate {
         private static final String SYNTAX_ERROR = "Syntax error at line %d position %d: %s";
         private static final String INVALID_IDENTIFIER = "Invalid identifier '%s'";
         private static final String INVALID_DATE_VALUE = "Invalid date value: '%s'";
-        private static final String AMBIGUOUS_COLUMN = "Column '%s' ambiguously defined";
+        private static final String AMBIGUOUS_COLUMN = "Column '%s' ambiguously defined at line [0-9]+ position [0-9]+ near \"%s\"";
         public static final String MISSING_METRIC_EXPRESSION_IN_THE_WHERE_CLAUSE = "Missing metric expression in the where clause";
         public static final String AMBIGIOUSLY_CONDITION = "Condition in where clause ambiguously defined";
         public static final String DATETIME_IN_GROUP_CLAUSE = "Invalid grouping for column \"datetime\". Remove the " +
@@ -42,7 +42,7 @@ public class ErrorTemplate {
         }
 
         public static String ambigiouslyColumn(String columnName) {
-            return String.format(AMBIGUOUS_COLUMN, columnName);
+            return String.format(AMBIGUOUS_COLUMN, columnName, columnName);
         }
 
         public static String invalidIdentifier(String alias) {

@@ -190,7 +190,9 @@ public class SqlLookupFunctionTest extends SqlTest {
                 TEST_METRIC_NAME_BASE_LOOKUP_CASE
         );
 
-        assertBadRequest("LOOKUP should throw with nonexistent table",String.format("Lookup table not found for name '%s'", replacementTableName), sqlQuery);
+        assertBadRequest("LOOKUP should throw with nonexistent table",
+                String.format("Lookup table not found for name '%s' at line 1 position 7 near \"LOOKUP\"", replacementTableName),
+                sqlQuery);
     }
 
     @Issue("3555")
