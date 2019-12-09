@@ -98,7 +98,8 @@ public class SelectRowNumberTest extends SqlTest {
                 METRIC_NAME
         );
 
-        assertBadRequest("row_number() function is not allowed inside row_number clause", queryResponse(sqlQuery));
+        assertBadRequest("row_number() function is not allowed inside row_number clause " +
+                "at line 1 position 148 near \"row_number\"", queryResponse(sqlQuery));
     }
 
     @Issue("3845")

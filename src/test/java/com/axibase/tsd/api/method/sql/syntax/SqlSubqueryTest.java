@@ -36,7 +36,7 @@ public class SqlSubqueryTest extends SqlTest {
                 "    SELECT 1\n" +
                 ")";
 
-        assertBadSqlRequest("Invalid subquery", sqlQuery);
+        assertBadSqlRequest("Invalid subquery at line 3 position 4 near \"SELECT\"", sqlQuery);
     }
 
     @Issue("4133")

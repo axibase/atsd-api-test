@@ -18,7 +18,7 @@ public class FullInterpolationTest extends SqlTest {
     private static final String FULL_DETAILS_ASSERT_MSG =
             "DETAILS interpolation must cause error in FULL boundary mode";
     private static final String FULL_DETAILS_ERROR_MSG =
-            "FULL boundary mode is not suitable for DETAILS interpolation";
+            "FULL boundary mode is not suitable for DETAILS interpolation at line 1 position 325 near \"INTERPOLATE\"";
 
     @BeforeTest
     public void prepareData() throws Exception {
