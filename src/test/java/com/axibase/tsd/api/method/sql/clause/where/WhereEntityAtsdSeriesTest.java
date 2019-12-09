@@ -45,7 +45,7 @@ public class WhereEntityAtsdSeriesTest extends SqlTest {
         );
 
         assertBadRequest("Wrong result when using entity filter for atsd_series",
-                "Missing metric expression in the where clause", sqlQuery);
+                "Missing metric expression in the where clause at line 1 position 32 near \"entity\"", sqlQuery);
     }
 
     @Issue("4259")

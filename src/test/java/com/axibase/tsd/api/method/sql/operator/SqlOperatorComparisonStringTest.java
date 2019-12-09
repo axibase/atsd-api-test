@@ -6,6 +6,7 @@ import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.ErrorTemplate;
+import com.axibase.tsd.api.util.Mocks;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,10 +17,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlOperatorComparisonStringTest extends SqlTest {
-    private static final String TEST_PREFIX = "sql-operator-";
-    private static final String TEST_METRIC_NAME = TEST_PREFIX + "metric";
-    private static final String TEST_ENTITY1_NAME = TEST_PREFIX + "entity-1";
-    private static final String TEST_ENTITY2_NAME = TEST_PREFIX + "entity-2";
+    private static final String TEST_METRIC_NAME = Mocks.metric();
+    private static final String TEST_ENTITY1_NAME = Mocks.entity();
+    private static final String TEST_ENTITY2_NAME = Mocks.entity();
 
     @BeforeClass
     public static void prepareData() throws Exception {
@@ -283,7 +283,7 @@ public class SqlOperatorComparisonStringTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        String expectedErrorMessage = ErrorTemplate.Sql.invalidDateValue("value");
+        String expectedErrorMessage = "Invalid date value: 'value' at line 2 position 18 near \"'value'\"";
         assertBadRequest(expectedErrorMessage, response);
     }
 

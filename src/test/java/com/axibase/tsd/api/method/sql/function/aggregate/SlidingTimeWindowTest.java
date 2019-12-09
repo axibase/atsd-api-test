@@ -78,7 +78,8 @@ public class SlidingTimeWindowTest extends SqlTest {
     @Issue("6560")
     public void testNotTimeOrder() {
         String sqlQuery = String.format("SELECT value FROM \"%s\" WITH ROW_NUMBER(entity ORDER BY value) BETWEEN 1 HOUR PRECEDING AND CURRENT ROW", METRIC);
-        String errorMessage = "row_number with time window requires ordering by time or datetime ascending";
+        String errorMessage = "row_number with time window requires ordering by time or datetime ascending " +
+                "at line 1 position 114 near \"ROW_NUMBER\"";
         assertBadRequest("Request with ROW_NUMBER returned unexpected error", errorMessage, sqlQuery);
     }
 

@@ -422,7 +422,8 @@ public class JoinWithDatetimeTest extends SqlTest {
 
         Response response = SqlMethod.queryResponse(sqlQuery);
 
-        assertBadRequest("Invalid date conditions", response);
+        assertBadRequest(" Invalid date conditions " +
+                "at line 1 position 333 near \"'2017-01-05T00:00:00Z'\"", response);
     }
 
 
@@ -481,6 +482,6 @@ public class JoinWithDatetimeTest extends SqlTest {
 
         Response response = SqlMethod.queryResponse(sqlQuery);
 
-        assertBadRequest("Invalid date conditions", response);
+        assertBadRequest(" Invalid date conditions at line 1 position 308 near \"1483660800000\"", response);
     }
 }
