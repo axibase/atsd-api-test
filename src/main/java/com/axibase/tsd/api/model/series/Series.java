@@ -6,6 +6,7 @@ import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
@@ -17,16 +18,17 @@ import java.util.*;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({ "entity", "metric", "tags", "type", "forecastName", "meta", "aggregate", "group", "data" })
 public class Series implements Comparable<Series> {
     private String entity;
     private String metric;
-    private List<Sample> data;
     private Map<String, String> tags;
     private SeriesType type;
     private String forecastName;
     private SeriesMeta meta;
     private Aggregate aggregate;
     private SeriesGroupInfo group;
+    private List<Sample> data;
 
     public Series() {
         data = new ArrayList<>();
