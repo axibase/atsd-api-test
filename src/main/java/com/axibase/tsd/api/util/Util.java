@@ -6,20 +6,13 @@ import com.axibase.tsd.api.model.version.Version;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,18 +40,11 @@ public class Util {
     }
 
     public static String ISOFormat(Date date) {
-        return ISOFormat(date, true, DEFAULT_TIMEZONE_NAME);
+        return ISOFormat(date.getTime());
     }
 
-    public static String ISOFormat(long t) {
-        return ISOFormat(new Date(t));
-    }
-
-    public static String ISOFormat(Date date, boolean withMillis, String timeZoneName) {
-        String pattern = (withMillis) ? "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" : "yyyy-MM-dd'T'HH:mm:ssXXX";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneName));
-        return dateFormat.format(date);
+    public static String ISOFormat(long timestamp) {
+        return DateProcessorManager.ISO.print(timestamp, ZoneOffset.UTC);
     }
 
     public static Response.Status.Family responseFamily(final Response response) {
@@ -67,19 +53,15 @@ public class Util {
     }
 
     public static String addOneMS(String date) {
-        return ISOFormat(parseDate(date).getTime() + 1);
+        return ISOFormat(getUnixTime(date) + 1);
     }
 
     public static long getUnixTime(String date){
-        return parseDate(date).getTime();
+        return DateProcessorManager.ISO.parseMillis(date);
     }
 
     public static Date parseDate(String date) {
-        try {
-            return ISO8601Utils.parse(date, new ParsePosition(0));
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(String.format("Fail to parse date: %s", date));
-        }
+        return new Date(getUnixTime(date));
     }
 
     public static ZonedDateTime parseAsServerZoned(final String dateString) {

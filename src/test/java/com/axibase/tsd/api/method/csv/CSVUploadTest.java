@@ -1,13 +1,11 @@
 package com.axibase.tsd.api.method.csv;
 
 import com.axibase.tsd.api.method.series.SeriesMethod;
-import com.axibase.tsd.api.method.version.VersionMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
-import com.axibase.tsd.api.model.version.Version;
 import com.axibase.tsd.api.util.Registry;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
@@ -22,7 +20,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import static com.axibase.tsd.api.method.series.SeriesTest.assertSeriesQueryDataSize;
 import static com.axibase.tsd.api.util.Util.*;
@@ -38,7 +39,6 @@ public class CSVUploadTest extends CSVUploadMethod {
     private static final String RESOURCE_DIR = "csv_upload";
     private static final String ENTITY_PREFIX = "e-csv-simple-parser";
     private static final String METRIC_PREFIX = "m-csv-simple-parser";
-    private static String timezone = DEFAULT_TIMEZONE_NAME;
 
     @BeforeClass
     public static void installParser() throws URISyntaxException, FileNotFoundException {
@@ -49,9 +49,6 @@ public class CSVUploadTest extends CSVUploadMethod {
             if (!success)
                 fail("Failed to import parser");
         }
-
-        Version versionInfo = VersionMethod.queryVersion().readEntity(Version.class);
-        timezone = versionInfo.getDate().getTimeZone().getName();
     }
 
     @DataProvider(name = "parserProvider")
@@ -259,7 +256,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertSeriesQueryDataSize(seriesQuery, dataSize);
 
         Sample sample = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getData().get(0);
-        Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
+        Calendar serverCalendar = new GregorianCalendar(Util.getServerTimeZone());
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.MARCH, 24, 6, 17);
 
@@ -282,7 +279,7 @@ public class CSVUploadTest extends CSVUploadMethod {
         assertSeriesQueryDataSize(seriesQuery, 3);
         Sample sample = SeriesMethod.querySeriesAsList(seriesQuery).get(0).getData().get(0);
 
-        Calendar serverCalendar = new GregorianCalendar(TimeZone.getTimeZone(timezone));
+        Calendar serverCalendar = new GregorianCalendar(Util.getServerTimeZone());
         serverCalendar.clear();
         serverCalendar.set(2015, Calendar.NOVEMBER, 24, 6, 17);
 

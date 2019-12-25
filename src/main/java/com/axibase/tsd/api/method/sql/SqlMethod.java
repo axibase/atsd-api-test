@@ -58,7 +58,7 @@ public class SqlMethod extends BaseMethod {
 
     public static StringTable queryTable(String sqlQuery, Integer limit) {
         Response response = queryResponse(sqlQuery, limit);
-        Integer statusCode = response.getStatus();
+        int statusCode = response.getStatus();
         String atsdError;
 
         try {

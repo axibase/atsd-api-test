@@ -21,6 +21,12 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.axibase</groupId>
+            <artifactId>date-processor</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
         <!--logging-->
         <dependency>
             <groupId>org.slf4j</groupId>

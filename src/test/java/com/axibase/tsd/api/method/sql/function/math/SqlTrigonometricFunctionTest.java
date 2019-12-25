@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import java.util.function.Function;
 
 public class SqlTrigonometricFunctionTest extends SqlTest {
-    private static double DELTA = 1.0E-15;
+    private static final double DELTA = 1.0E-15;
 
     private enum TrigonometricAccessor {
         SIN("SIN", Math::sin),
@@ -97,7 +97,7 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
 
         Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
                 message + "datatype");
-        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), accessor.apply(accessorParameter), DELTA,
+        Assert.assertEquals(Double.parseDouble(resultTable.getRows().get(0).get(0)), accessor.apply(accessorParameter), DELTA,
                 message + "result");
     }
 
@@ -111,7 +111,7 @@ public class SqlTrigonometricFunctionTest extends SqlTest {
 
         Assert.assertEquals(resultTable.getTableMetaData().getColumnMeta(0).getDataType(), "double",
                 message + "datatype");
-        Assert.assertEquals(Double.valueOf(resultTable.getRows().get(0).get(0)), accessor.apply(accessorParameter), DELTA,
+        Assert.assertEquals(Double.parseDouble(resultTable.getRows().get(0).get(0)), accessor.apply(accessorParameter), DELTA,
                 message + "result");
     }
 

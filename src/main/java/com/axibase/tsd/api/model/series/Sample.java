@@ -6,14 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
@@ -28,8 +26,6 @@ import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sample {
-    private static final ISO8601DateFormat isoDateFormat = new ISO8601DateFormat();
-
     @JsonProperty("d")
     private String rawDate;
 
@@ -114,13 +110,14 @@ public class Sample {
     }
 
     private String convertDateToISO(String dateString) {
-        Date date;
+        long time;
         try {
-            date = isoDateFormat.parse(dateString);
-        } catch (ParseException ex) {
+            time = Util.getUnixTime(dateString);
+        } catch (Exception ex) {
             return null;
         }
-        return Util.ISOFormat(date, true, Util.DEFAULT_TIMEZONE_NAME);
+
+        return Util.ISOFormat(time);
     }
 
     @JsonIgnore

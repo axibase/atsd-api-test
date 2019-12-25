@@ -71,7 +71,7 @@ public abstract class BaseMethod {
                 .property(ClientProperties.CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT)
                 .property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 
-        GenericObjectPoolConfig objectPoolConfig = new GenericObjectPoolConfig();
+        GenericObjectPoolConfig<HttpClient> objectPoolConfig = new GenericObjectPoolConfig<>();
         objectPoolConfig.setMaxTotal(DEFAULT_MAX_TOTAL);
         objectPoolConfig.setMaxIdle(DEFAULT_MAX_IDLE);
 
