@@ -55,11 +55,11 @@ public class DatetimeTypeTest extends SqlTest {
 
         String[][] expectedRows = {
                 {
-                        Mocks.MILLS_TIME.toString()
+                        Long.toString(Mocks.MILLS_TIME)
 
                 },
                 {
-                        Mocks.MILLS_TIME.toString()
+                        Long.toString(Mocks.MILLS_TIME)
                 }
         };
 
@@ -81,11 +81,11 @@ public class DatetimeTypeTest extends SqlTest {
 
         String[][] expectedRows = {
                 {
-                        Mocks.DECIMAL_VALUE.toString(), Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series1.getEntity()
+                        Mocks.DECIMAL_VALUE.toString(), Mocks.ISO_TIME, Long.toString(Mocks.MILLS_TIME), series1.getEntity()
 
                 },
                 {
-                        Mocks.DECIMAL_VALUE.toString(), Mocks.ISO_TIME, Mocks.MILLS_TIME.toString(), series2.getEntity()
+                        Mocks.DECIMAL_VALUE.toString(), Mocks.ISO_TIME, Long.toString(Mocks.MILLS_TIME), series2.getEntity()
                 }
         };
 
@@ -165,15 +165,15 @@ public class DatetimeTypeTest extends SqlTest {
 
         String[][] expectedRows = {
                 {
-                        Mocks.MILLS_TIME.toString().toUpperCase(),
-                        Mocks.MILLS_TIME.toString().toLowerCase(),
-                        Mocks.MILLS_TIME.toString().replace('0', '9'),
-                        String.valueOf(Mocks.MILLS_TIME.toString().length()),
-                        Mocks.MILLS_TIME.toString() + "word",
-                        Mocks.MILLS_TIME.toString() + "123",
-                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
-                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
-                        Mocks.MILLS_TIME.toString().substring(13 - 1)
+                        Long.toString(Mocks.MILLS_TIME).toUpperCase(),
+                        Long.toString(Mocks.MILLS_TIME).toLowerCase(),
+                        Long.toString(Mocks.MILLS_TIME).replace('0', '9'),
+                        String.valueOf(Long.toString(Mocks.MILLS_TIME).length()),
+                        Mocks.MILLS_TIME + "word",
+                        Mocks.MILLS_TIME + "123",
+                        String.valueOf(Long.toString(Mocks.MILLS_TIME).indexOf("0") + 1),
+                        String.valueOf(Long.toString(Mocks.MILLS_TIME).indexOf("0") + 1),
+                        Long.toString(Mocks.MILLS_TIME).substring(13 - 1)
                 }
         };
 
@@ -195,15 +195,15 @@ public class DatetimeTypeTest extends SqlTest {
 
         String[][] expectedRows = {
                 {
-                        Mocks.MILLS_TIME.toString().toUpperCase(),
-                        Mocks.MILLS_TIME.toString().toLowerCase(),
-                        Mocks.MILLS_TIME.toString().replace('0', '9'),
-                        String.valueOf(Mocks.MILLS_TIME.toString().length()),
-                        Mocks.MILLS_TIME.toString() + "word",
-                        Mocks.MILLS_TIME.toString() + "123",
-                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
-                        String.valueOf(Mocks.MILLS_TIME.toString().indexOf("0") + 1),
-                        Mocks.MILLS_TIME.toString().substring(13 - 1)
+                        Long.toString(Mocks.MILLS_TIME).toUpperCase(),
+                        Long.toString(Mocks.MILLS_TIME).toLowerCase(),
+                        Long.toString(Mocks.MILLS_TIME).replace('0', '9'),
+                        String.valueOf(Long.toString(Mocks.MILLS_TIME).length()),
+                        Mocks.MILLS_TIME + "word",
+                        Mocks.MILLS_TIME + "123",
+                        String.valueOf(Long.toString(Mocks.MILLS_TIME).indexOf("0") + 1),
+                        String.valueOf(Long.toString(Mocks.MILLS_TIME).indexOf("0") + 1),
+                        Long.toString(Mocks.MILLS_TIME).substring(13 - 1)
                 }
         };
 
