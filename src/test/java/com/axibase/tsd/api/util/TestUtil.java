@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -33,15 +32,21 @@ public class TestUtil {
         LOCAL_TO_UNIVERSAL, UNIVERSAL_TO_LOCAL
     }
 
+    public static String formatDate(long timestamp, String format, ZoneId timeZone) {
+        return DateProcessorManager.getTimeProcessor(format).print(timestamp, timeZone);
+    }
+
     public static String formatDate(Date date, String pattern, TimeZone timeZone) {
-        SimpleDateFormat format;
-        format = new SimpleDateFormat(pattern);
-        format.setTimeZone(timeZone);
-        return format.format(date);
+        return formatDate(date.getTime(), pattern, timeZone.toZoneId());
     }
 
     public static String formatDate(Date date, String pattern) {
         return formatDate(date, pattern, getServerTimeZone());
+    }
+
+    public static String formatAsLocalTime(String isoDate) {
+        final long unixTime = getUnixTime(isoDate);
+        return TestUtil.formatDate(unixTime, "yyyy-MM-dd HH:mm:ss.SSS", Util.getServerZoneId());
     }
 
     public static Date getCurrentDate() {
@@ -132,14 +137,6 @@ public class TestUtil {
 
         DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ");
         return localDate.withZoneSameInstant(ZoneId.of("Etc/UTC")).format(isoFormatter);
-    }
-
-    public static String formatAsLocalTime(String isoDate) {
-        TimeZone serverTimeZone = Util.getServerTimeZone();
-        Date parsedDate = parseDate(isoDate);
-        SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        localDateFormat.setTimeZone(serverTimeZone);
-        return localDateFormat.format(parsedDate);
     }
 
     public static long truncateTime(long time, TimeZone trucnationTimeZone, TemporalUnit truncationUnit) {

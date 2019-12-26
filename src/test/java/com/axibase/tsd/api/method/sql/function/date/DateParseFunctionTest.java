@@ -3,22 +3,11 @@ package com.axibase.tsd.api.method.sql.function.date;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.util.Util;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 public class DateParseFunctionTest extends SqlTest {
-    private static TimeZone timeZone;
-
-    @BeforeClass
-    public static void requestTimeZone() throws Exception {
-        timeZone = Util.getServerTimeZone();
-    }
-
     @Issue("4050")
     @Test
     public void testDateParseISODefault() {
@@ -46,14 +35,12 @@ public class DateParseFunctionTest extends SqlTest {
     @Test
     public void testDateParseCustomFormat() throws ParseException {
         /* Use server local time */
+        String format = "dd.MM.yyyy HH:mm:ss.SSS";
         String strDate = "31.03.2017 12:36:03.283";
-        String sqlQuery = String.format("SELECT date_parse('%s', " +
-                "'dd.MM.yyyy HH:mm:ss.SSS')", strDate);
+        String sqlQuery = String.format("SELECT date_parse('%s', '" + format + "')", strDate);
 
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
-        format.setTimeZone(timeZone);
-
-        String[][] expectedRows = {{Long.toString(format.parse(strDate).getTime())}};
+        final long time = Util.parseAsMillis(strDate, format, Util.getServerZoneId());
+        String[][] expectedRows = {{Long.toString(time)}};
 
         assertSqlQueryRows("Incorrect result for date_parse with custom format",
                 expectedRows, sqlQuery);

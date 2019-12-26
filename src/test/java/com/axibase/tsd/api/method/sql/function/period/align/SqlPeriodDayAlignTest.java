@@ -11,7 +11,7 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static com.axibase.tsd.api.util.Mocks.entity;
@@ -102,12 +102,10 @@ public class SqlPeriodDayAlignTest extends SqlTest {
     }
 
     private List<String> formatRow(long time, int count) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DAY_FORMAT_PATTERN);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return Arrays.asList(dateFormat.format(new Date(time)), Integer.toString(count));
+        return Arrays.asList(TestUtil.formatDate(time, DAY_FORMAT_PATTERN, ZoneOffset.UTC), Integer.toString(count));
     }
 
-    private boolean isDayStart(Long time) {
+    private boolean isDayStart(long time) {
         return time % TestUtil.MILLIS_IN_DAY == 0;
     }
 

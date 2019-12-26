@@ -13,9 +13,7 @@ import java.util.List;
 
 public class DateAddTest extends SqlTest {
     private static final String SQL_QUERY_TEMPLATE = "SELECT date_format(DATEADD(%s, 1, '%s'), 'yyyy-MM-dd HH:mm:ss')";
-    private static final Date DATE = new Date(Util.parseAsServerZoned("2019-01-01T00:00:00")
-            .toInstant()
-            .toEpochMilli());
+    private static final Date DATE = new Date(Util.parseAsMillis("2019-01-01", "yyyy-MM-dd", Util.getServerZoneId()));
 
     private String[] patterns() {
         return new String[]{

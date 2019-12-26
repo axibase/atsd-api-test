@@ -15,8 +15,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -66,7 +65,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
             description = "Check that interpolated date is aligned correctly in different timezones",
             dataProvider = "provideTimezoneList"
     )
-    public void testInterpolateTimezoneAlign(String timeZoneId) throws ParseException {
+    public void testInterpolateTimezoneAlign(String timeZoneId) {
         String sqlQuery = String.format(
                 "SELECT date_format(datetime, 'yy-MM-dd HH:mm:ss', '%2$s') " +
                         "FROM \"%1$s\" " +
@@ -77,7 +76,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                 timeZoneId
         );
 
-        long testDate = new SimpleDateFormat("yy-MM-dd").parse("2017-10-11").getTime();
+        long testDate = Util.parseAsMillis("2017-10-11", "yyyy-MM-dd", ZoneId.systemDefault());
 
         String expectedDate =
                 TimeZone.getTimeZone(timeZoneId).getOffset(testDate) < -FIVE_HOURS ?
@@ -95,7 +94,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
             description = "Check that interpolation works with timezone=null. " +
                     "In this case, server timezone should be applied"
     )
-    public void testInterpolateServerTimezoneAlign() throws ParseException {
+    public void testInterpolateServerTimezoneAlign() {
         TimeZone timeZone = Util.getServerTimeZone();
 
         /* Here metric.timezone=null, INTERPOLATE should default to server timezone */
@@ -109,7 +108,7 @@ public class InterpolateUserTimeZoneTest extends SqlTest {
                 METRIC_NAME
         );
 
-        long testDate = new SimpleDateFormat("yy-MM-dd").parse("2017-10-11").getTime();
+        long testDate = Util.parseAsMillis("2017-10-11", "yyyy-MM-dd", ZoneId.systemDefault());
 
         String expectedDate =
                 timeZone.getOffset(testDate) < -FIVE_HOURS ? "17-10-11 00:00:00" : "17-10-12 00:00:00";

@@ -5,14 +5,12 @@ import com.axibase.tsd.api.method.metric.MetricMethod;
 import com.axibase.tsd.api.model.common.InterpolationMode;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.metric.Metric;
-import com.axibase.tsd.api.model.series.*;
+import com.axibase.tsd.api.model.series.DataType;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.search.SeriesSearchQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchResult;
 import com.axibase.tsd.api.model.series.search.SeriesSearchResultRecord;
-import com.axibase.tsd.api.util.Filter;
-import com.axibase.tsd.api.util.Filters;
-import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
+import com.axibase.tsd.api.util.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Issue;
@@ -24,8 +22,6 @@ import org.testng.collections.Sets;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.testng.Assert.*;
@@ -266,7 +262,6 @@ public class SeriesSearchTest extends SeriesMethod {
         Response response = SeriesMethod.searchRawSeries(query);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode resultNode = mapper.readTree(response.readEntity(String.class));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'");
         List<JsonNode> dateNodes = new ArrayList<>();
         dateNodes.addAll(resultNode.findValues("createdDate"));
         dateNodes.addAll(resultNode.findValues("lastInsertDate"));
@@ -274,8 +269,8 @@ public class SeriesSearchTest extends SeriesMethod {
         assertEquals(dateNodes.size(), 4, "Incorrect fields count");
         for (JsonNode node : dateNodes) {
             try {
-                dateFormat.parse(node.asText());
-            } catch (ParseException e) {
+                Util.getUnixTime(node.asText());
+            } catch (Exception e) {
                 fail("Incorrect date format", e);
             }
         }

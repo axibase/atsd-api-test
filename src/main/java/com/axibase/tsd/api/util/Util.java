@@ -35,6 +35,10 @@ public class Util {
         return AtsdVersionInfo.TIME_ZONE;
     }
 
+    public static ZoneId getServerZoneId() {
+        return AtsdVersionInfo.ZONE_ID;
+    }
+
     public static String getHBaseVersion() {
         return AtsdVersionInfo.HBASE_VERSION;
     }
@@ -68,9 +72,17 @@ public class Util {
         return new Date(getUnixTime(date));
     }
 
+    public static long parseAsMillis(String date, String format, ZoneId timeZone) {
+        return DateProcessorManager.getTimeProcessor(format).parseMillis(date, timeZone);
+    }
+
+    public static ZonedDateTime parseAsZonedDateTime(String date, String format, ZoneId timeZone) {
+        return DateProcessorManager.getTimeProcessor(format).parse(date, timeZone);
+    }
+
     public static ZonedDateTime parseAsServerZoned(final String dateString) {
         final LocalDateTime localDateTime = LocalDateTime.parse(dateString);
-        return ZonedDateTime.of(localDateTime, getServerTimeZone().toZoneId());
+        return ZonedDateTime.of(localDateTime, getServerZoneId());
     }
 
     /** Return zoned date time in the {@link #DEFAULT_TIMEZONE_NAME}. */
@@ -99,11 +111,13 @@ public class Util {
 
     private static final class AtsdVersionInfo {
         private static final TimeZone TIME_ZONE;
+        private static final ZoneId ZONE_ID;
         private static final String HBASE_VERSION;
 
         static {
             final Version version = VersionMethod.queryVersion().readEntity(Version.class);
             TIME_ZONE = TimeZone.getTimeZone(version.getDate().getTimeZone().getName());
+            ZONE_ID = TIME_ZONE.toZoneId();
             HBASE_VERSION = version.getBuildInfo().getHbaseVersion();
         }
     }
