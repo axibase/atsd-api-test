@@ -115,7 +115,7 @@ public class ApplyTest extends SqlTest {
     @Issue("3462")
     @Test
     public void testNullSeries() throws Exception {
-        Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z'").getTime();
+        Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z").getTime();
         Long endTime = Util.parseDate("2016-06-29T10:00:00.000Z").getTime();
         Series series = new Series(entity(), metric());
         for (long i = startTime; i < endTime; i += 60000) {
