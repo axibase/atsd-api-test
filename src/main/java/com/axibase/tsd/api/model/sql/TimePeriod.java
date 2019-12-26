@@ -1,12 +1,12 @@
 package com.axibase.tsd.api.model.sql;
 
 import com.axibase.tsd.api.util.Util;
+import lombok.Getter;
 
-import static com.axibase.tsd.api.util.Util.parseDate;
-
+@Getter
 public class TimePeriod {
-    private long startTime;
-    private long endTime;
+    private final long startTime;
+    private final long endTime;
 
     public TimePeriod(long startTime, long endTime) {
         this.startTime = startTime;
@@ -14,16 +14,7 @@ public class TimePeriod {
     }
 
     public TimePeriod(String startISODate, String endISODate) {
-        this.startTime = parseDate(startISODate).getTime();
-        this.endTime = parseDate(endISODate).getTime();
-    }
-
-    public Long getStartTime() {
-        return startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
+        this(Util.getUnixTime(startISODate), Util.getUnixTime(endISODate));
     }
 
     @Override

@@ -47,6 +47,10 @@ public class Util {
         return DateProcessorManager.ISO.print(timestamp, ZoneOffset.UTC);
     }
 
+    public static String ISOFormat(ZonedDateTime dateTime) {
+        return DateProcessorManager.ISO.print(dateTime.withZoneSameInstant(ZoneOffset.UTC));
+    }
+
     public static Response.Status.Family responseFamily(final Response response) {
         if (response == null) return null;
         return response.getStatusInfo().getFamily();

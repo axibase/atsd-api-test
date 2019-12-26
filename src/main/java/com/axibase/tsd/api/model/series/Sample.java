@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
-
 @Data
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -98,11 +96,7 @@ public class Sample {
     }
 
     public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v) {
-        return new Sample(null, d.format(DateTimeFormatter.ISO_DATE_TIME), BigDecimal.valueOf(v), null, true);
-    }
-
-    public static Sample ofJavaDateInteger(final ZonedDateTime d, final int v, final String text) {
-        return new Sample(null, d.format(ISO_ZONED_DATE_TIME), BigDecimal.valueOf(v), text, true);
+        return new Sample(null, Util.ISOFormat(d), BigDecimal.valueOf(v), null, true);
     }
 
     public static Sample ofDateText(String date, String text) {
@@ -156,7 +150,7 @@ public class Sample {
 
     /**
      * Calculate epoch time from the samples time fields, and compare calculated epochs.
-     * Compare values and deviations using {@link BigDecimal#compareTo(Object)}.
+     * Compare values and deviations using {@link BigDecimal#compareTo(BigDecimal)}.
      */
     public boolean theSame(Sample sample) {
         return  (this.getEpochMillis() == sample.getEpochMillis()) &&

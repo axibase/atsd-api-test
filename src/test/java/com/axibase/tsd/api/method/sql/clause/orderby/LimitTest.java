@@ -73,7 +73,7 @@ public class LimitTest extends SqlTest {
     public void prepareEntityOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
-            Long date = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
+            long date = Util.getUnixTime("2016-06-19T11:00:00.000Z");
             Series series = new Series(entity(), ENTITY_ORDER_METRIC);
             for (int j = 0; j < 10 - i; j++) {
                 Sample sample = Sample.ofDateInteger(Util.ISOFormat(date + j * TimeUnit.HOURS.toMillis(1)), j);
@@ -117,7 +117,7 @@ public class LimitTest extends SqlTest {
 
     @BeforeGroups(groups = {VALUE_ORDER_TEST_GROUP})
     public void prepareValueOrderData() throws Exception {
-        Long date = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
+        long date = Util.getUnixTime("2016-06-19T11:00:00.000Z");
         Series series = new Series(entity(), VALUE_ORDER_METRIC);
         float[] values = {1.23f, 3.12f, 5.67f, 4.13f, 5, -4, 4, 8, 6, 5};
         for (int i = 1; i < 10; i++) {
@@ -192,7 +192,7 @@ public class LimitTest extends SqlTest {
     public void prepareTagsTimeOrderData() throws Exception {
         List<Series> seriesList = new ArrayList<>();
         String entityName = entity();
-        Long startTime = Util.parseDate("2016-06-19T11:00:00.000Z").getTime();
+        long startTime = Util.getUnixTime("2016-06-19T11:00:00.000Z");
         int[] values = {6, 7, 0, -1, 5, 15, 88, 3, 11, 2};
         for (int i = 0; i < 3; i++) {
             Series series = new Series(entityName, TAGS_ORDER_METRIC);

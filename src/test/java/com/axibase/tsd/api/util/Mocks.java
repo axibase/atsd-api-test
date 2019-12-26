@@ -5,16 +5,14 @@ import com.axibase.tsd.api.model.series.Series;
 
 import javax.ws.rs.client.Entity;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 
 public class Mocks {
     private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
 
     public static final String ISO_TIME = "2017-08-01T00:00:00.000Z";
-    public static final Long MILLS_TIME = date().getTime();
+    public static final long MILLS_TIME = Util.getUnixTime(ISO_TIME);
     public static final BigDecimal DECIMAL_VALUE = new BigDecimal("123.4567");
     public static final String TEXT_VALUE = "text";
     public static final Sample SAMPLE = Sample.ofDateDecimal(ISO_TIME, DECIMAL_VALUE);
@@ -28,10 +26,6 @@ public class Mocks {
     public static final int INT_VALUE = 22;
     public static final ScientificNotationNumber SCIENTIFIC_NOTATION_VALUE = new ScientificNotationNumber(INT_VALUE);
     public static final Entity<?> JSON_OBJECT = Entity.json(TAGS); //forming json object from map
-
-    public static Date date() {
-        return Util.parseDate(ISO_TIME);
-    }
 
     public static String metric() {
         return NAME_GENERATOR.newMetricName();

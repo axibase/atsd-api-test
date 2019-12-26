@@ -109,7 +109,7 @@ public class EndtimeTimezoneTest extends SqlTest {
 
         StringTable resultTable = queryTable(sqlQuery);
 
-        long now = Long.valueOf(resultTable.getValueAt(0, 0));
+        long now = Long.parseLong(resultTable.getValueAt(0, 0));
         long endtimeResult = TestUtil.truncateTime(now,
                 TimeZone.getTimeZone(testData.timeZoneId), testData.truncation.truncationUnit);
 

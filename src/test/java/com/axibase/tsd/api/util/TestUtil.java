@@ -26,7 +26,7 @@ import static com.axibase.tsd.api.util.TestUtil.TimeTranslation.UNIVERSAL_TO_LOC
 import static com.axibase.tsd.api.util.Util.*;
 
 public class TestUtil {
-    public static final Long MILLIS_IN_DAY = 86400000L;
+    public static final long MILLIS_IN_DAY = 86400000L;
     public static final String NaN = Double.toString(Double.NaN);
 
     public enum TimeTranslation {

@@ -12,7 +12,6 @@ import com.axibase.tsd.api.util.Registry;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -54,7 +53,7 @@ public class SqlLargeDataTest extends SqlTest {
         assertSqlQueryRows("Large data query error", expectedRows, sqlQuery);
     }
 
-    private static Sample createTestSample(int value) throws ParseException {
+    private static Sample createTestSample(int value) {
         long millisTime = Mocks.MILLS_TIME + value * 1000;
         return Sample.ofJavaDateInteger(new Date(millisTime), value);
     }

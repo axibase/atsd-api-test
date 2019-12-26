@@ -115,8 +115,8 @@ public class ApplyTest extends SqlTest {
     @Issue("3462")
     @Test
     public void testNullSeries() throws Exception {
-        Long startTime = Util.parseDate("2016-06-29T07:00:00.000Z").getTime();
-        Long endTime = Util.parseDate("2016-06-29T10:00:00.000Z").getTime();
+        long startTime = Util.getUnixTime("2016-06-29T07:00:00.000Z");
+        long endTime = Util.getUnixTime("2016-06-29T10:00:00.000Z");
         Series series = new Series(entity(), metric());
         for (long i = startTime; i < endTime; i += 60000) {
             series.addSamples(Sample.ofDateDecimal(Util.ISOFormat(i), (BigDecimal) null));

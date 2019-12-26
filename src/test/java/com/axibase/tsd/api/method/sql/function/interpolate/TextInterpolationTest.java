@@ -220,9 +220,9 @@ public class TextInterpolationTest extends SqlTest {
             }
             i++;
         }
-        Long delta = 60000L;
-        Long startTime = Mocks.MILLS_TIME - delta;
-        Long endTime = Mocks.MILLS_TIME + delta;
+        long delta = 60000L;
+        long startTime = Mocks.MILLS_TIME - delta;
+        long endTime = Mocks.MILLS_TIME + delta;
         queryBuilder.append(String.format("WHERE t1.datetime BETWEEN '%s' AND '%s' %n", Util.ISOFormat(startTime), Util.ISOFormat(endTime)));
         queryBuilder.append("WITH INTERPOLATE(1 MINUTE, AUTO, OUTER, TRUE, START_TIME)");
         return queryBuilder.toString();

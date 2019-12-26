@@ -102,7 +102,7 @@ public class TimeZoneFieldAsArgumentTest extends SqlTest {
 
         StringTable resultTable = queryTable(sqlQuery);
 
-        long now = Long.valueOf(resultTable.getValueAt(0, 0));
+        long now = Long.parseLong(resultTable.getValueAt(0, 0));
         long currentDayEntity = TestUtil.truncateTime(now, ENTITY_ZONE, ChronoUnit.DAYS);
         long currentDayMetric = TestUtil.truncateTime(now, METRIC_ZONE, ChronoUnit.DAYS);
 

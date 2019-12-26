@@ -161,7 +161,7 @@ public class SeriesInsertTest extends SeriesTest {
     public void testPrecisionAfterCompaction(DataType type, BigDecimal valueBefore) throws Exception {
         Metric metric = new Metric(metric());
         metric.setDataType(type);
-        Long time = MILLS_TIME;
+        long time = MILLS_TIME;
 
         Series series = new Series(entity(), metric.getName());
         series.addSamples(Sample.ofDateDecimal(Util.ISOFormat(time), valueBefore));
@@ -295,8 +295,8 @@ public class SeriesInsertTest extends SeriesTest {
     @Issue("2957")
     @Test
     public void testTimeRangeMinInMSSaved() throws Exception {
-        Long time = 0L;
-        Long endTime = 1L;
+        long time = 0L;
+        long endTime = 1L;
         Series series = new Series("e-time-range-1", "m-time-range-1");
         series.addSamples(Sample.ofDateInteger(Util.ISOFormat(time), 0));
         insertSeriesCheck(Collections.singletonList(series));
@@ -322,8 +322,8 @@ public class SeriesInsertTest extends SeriesTest {
     @Issue("2957")
     @Test
     public void testTimeRangeInMSTimeSaved() throws Exception {
-        Long time = 1L;
-        Long endTime = 2L;
+        long time = 1L;
+        long endTime = 2L;
         Series series = new Series("e-time-range-3", "m-time-range-3");
         series.addSamples(Sample.ofDateInteger(Util.ISOFormat(time), 1));
         insertSeriesCheck(Collections.singletonList(series));
@@ -524,7 +524,7 @@ public class SeriesInsertTest extends SeriesTest {
         String metricName = "m-iso-13";
 
         Series series = new Series(entityName, metricName);
-        series.addSamples(Sample.ofRawDateInteger(Mocks.MILLS_TIME.toString(), 0));
+        series.addSamples(Sample.ofRawDateInteger(Long.toString(Mocks.MILLS_TIME), 0));
 
         Response response = insertSeries(Collections.singletonList(series));
 
