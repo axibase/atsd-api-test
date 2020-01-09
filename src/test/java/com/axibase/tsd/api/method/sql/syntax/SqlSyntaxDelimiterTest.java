@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.regex.Pattern;
 
 
 public class SqlSyntaxDelimiterTest extends SqlTest {
@@ -197,8 +197,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 43,
-                extraneousErrorMessage("a", "{<EOF>, '+', '-', '*', '/', '%', '!=', '<>', '<=', '>=', " +
-                        "'>', '<', '=', '.', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION, ESCAPE}")
+                extraneousErrorMessage("a", "<EOF>")
         );
         assertBadRequest(expectedErrorMessage, response);
     }
@@ -215,9 +214,7 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
         String expectedMessage = ErrorTemplate.Sql.syntaxError(
                 2, 43,
-                extraneousErrorMessage("1", "{<EOF>, '+', '-', '*', '/', '%', '!=', '<>', '<=', '>='," +
-                        " '>', '<', '=', '.', IS, AND, OR, NOT, LIKE, REGEX, IN, BETWEEN, ORDER, GROUP, LIMIT, WITH, OPTION, ESCAPE}"
-                )
+                extraneousErrorMessage("1", "<EOF>")
         );
         assertBadRequest("Query must return correct table",
                 expectedMessage, response
@@ -276,14 +273,11 @@ public class SqlSyntaxDelimiterTest extends SqlTest {
                 "SELECT * FROM \"%s\" %nWHERE entity='%s' AND;",
                 TEST_METRIC_NAME, TEST_ENTITY_NAME
         );
-
-        Response response = queryResponse(sqlQuery);
-
         String expectedMessage = ErrorTemplate.Sql.syntaxError(2, 46,
-                "no viable alternative at input '<EOF>'"
+                "mismatched input '<EOF>'"
         );
-        assertBadRequest("Query must return correct table",
-                expectedMessage, response);
+        assertBadRequestWithPattern("Query must return correct table",
+                Pattern.quote(expectedMessage) + ".*", sqlQuery);
     }
 
     private String tokenRecognitionError(String token) {

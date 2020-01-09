@@ -195,18 +195,12 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
 
         String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
-                extraneousErrorMessage("OFFSET", "{<EOF>, '.', INTEGER_LITERAL, ID, WORD, METRIC_NAME, " +
-                        "STRING_LITERAL, DQ_STRING_LITERAL, " +
-                        "WHERE, AS, ORDER, GROUP, LIMIT, WITH, " +
-                        "INNER, OUTER, FULL, JOIN, OPTION}"));
+               "Mismatched input or invalid table name. " +
+                       "Identifiers containing special characters must be enclosed in double quotes."
+        );
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
                 expectedErrorMessage, response
         );
-    }
-
-    private String extraneousErrorMessage(String actual, String expected) {
-        String template = "extraneous input '%s' expecting %s";
-        return String.format(template, actual, expected);
     }
 }
