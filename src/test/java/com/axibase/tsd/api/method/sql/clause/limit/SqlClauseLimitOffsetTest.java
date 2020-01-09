@@ -194,10 +194,10 @@ public class SqlClauseLimitOffsetTest extends SqlTest {
 
         Response response = queryResponse(sqlQuery);
 
-        String expectedErrorMessage = ErrorTemplate.Sql.syntaxError(2, 0,
-               "Mismatched input or invalid table name. " +
-                       "Identifiers containing special characters must be enclosed in double quotes."
-        );
+        String expectedErrorMessage =
+                       "Mismatched input or invalid table name. " +
+                       "Identifiers containing special characters must be enclosed in double quotes.";
+
         assertBadRequest(
                 DEFAULT_ASSERT_MESSAGE,
                 expectedErrorMessage, response
