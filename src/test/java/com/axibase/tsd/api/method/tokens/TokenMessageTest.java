@@ -4,6 +4,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.MessageCheck;
 import com.axibase.tsd.api.method.message.MessageTest;
 import com.axibase.tsd.api.model.Period;
+import com.axibase.tsd.api.model.PeriodAlignment;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
@@ -74,7 +75,7 @@ public class TokenMessageTest extends MessageTest {
                 .setType(message.getType())
                 .setStartDate(ISO_TIME)
                 .setEndDate(Util.MAX_QUERYABLE_DATE)
-                .setAggregate(new Aggregate(AggregationType.COUNT, new Period(1, TimeUnit.DAY)));
+                .setAggregate(new Aggregate(AggregationType.COUNT, new Period(1, TimeUnit.DAY, PeriodAlignment.START_TIME)));
         Response response = queryMessageStats(Collections.singletonList(msq), token);
         String expected = String.format("[ {\n" +
                 "  \"entity\" : \"%s\",\n" +
