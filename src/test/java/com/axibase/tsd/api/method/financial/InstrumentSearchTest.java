@@ -13,6 +13,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("share2", "TEST", "Second Share")
                 .trade("share10", "TEST", "")
                 .trade("share3", "TQBR", "Primary Share")
+                .trade("share2", "TQBR", "Primary Share Two")
                 .tradeUnassigned("share4", "EQOB", "Unassigned Share Four")
                 .tradeUnassigned("share5", "TQOB", "Unassigned Share Five")
                 .trade("descpfx", "TEST", "Shar_es4Test Inc.")
@@ -40,6 +41,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
     @Test
     public void testFoundByClassName() {
         searchAndTest("TQbR",
+                entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share")
         );
     }
@@ -49,6 +51,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
         // Instruments with positive display index should be placed first
         // Other instruments classes are considered same and sorted alphabetically
         searchAndTest("share",
+                entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share"),
                 entryUnassigned("share5", "TQOB", "Unassigned Share Five"),
                 entry("share1", "TEST", "First Share"),
@@ -66,6 +69,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
     @Test
     public void testFoundWithDescription() {
         searchAndTest("shar",
+                entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share"),
                 entryUnassigned("share5", "TQOB", "Unassigned Share Five"),
                 entry("share1", "TEST", "First Share"),
@@ -78,15 +82,16 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
 
     @Test
     public void testFoundLimited() {
-        searchAndTest("shar", 2,
+        searchAndTest("shar", 3,
+                entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share"),
                 entryUnassigned("share5", "TQOB", "Unassigned Share Five")
         );
     }
 
     @Test
-    public void testFoundBySubstring() {
-        searchAndTest("hARe",
+    public void testFoundBySubstring() { searchAndTest("hARe",
+                entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share"),
                 entryUnassigned("share5", "TQOB", "Unassigned Share Five"),
                 entry("share1", "TEST", "First Share"),

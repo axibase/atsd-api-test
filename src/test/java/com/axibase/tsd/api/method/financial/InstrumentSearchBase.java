@@ -42,7 +42,7 @@ public class InstrumentSearchBase {
         params.put("limit", limit > 0 ? String.valueOf(limit) : "");
         Response response = sender.executeRootRequestWithParams("/financial/trades/suggest/instruments", params, HttpMethod.GET);
         response.bufferEntity();
-        return response.readEntity(new InstrumentSearchResponse());
+        return response.readEntity(new GenericType<List<InstrumentSearchEntry>>() {});
     }
 
 
@@ -128,11 +128,8 @@ public class InstrumentSearchBase {
             Map<String, String> entityTags = new HashMap<>();
             entityTags.put("name", entry.getDescription());
             entityTags.put("short_name", entry.getDescription());
-            if (!entry.isAssigned()) {
-                // These tags must be already present for assigned instruments, do not overwrite them
-                entityTags.put("symbol", entry.getSymbol().toUpperCase());
-                entityTags.put("class_code", entry.getClassCode().toUpperCase());
-            }
+            entityTags.put("symbol", entry.getSymbol().toUpperCase());
+            entityTags.put("class_code", entry.getClassCode().toUpperCase());
 
             Entity entity = new Entity();
             entity.setName(makeEntityName(entry.getSymbol(), entry.getClassCode()));
@@ -169,7 +166,4 @@ public class InstrumentSearchBase {
         }
     }
 
-    private static class InstrumentSearchResponse extends GenericType<List<InstrumentSearchEntry>> {
-
-    }
 }
