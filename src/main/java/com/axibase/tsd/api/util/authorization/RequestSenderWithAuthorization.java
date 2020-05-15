@@ -55,6 +55,10 @@ public abstract class RequestSenderWithAuthorization {
         return executeRootRequest(path, Collections.EMPTY_MAP, Collections.EMPTY_MAP, Collections.EMPTY_MAP, httpMethod);
     }
 
+    public Response executeRootRequestWithParams(String path, Map<String, Object> params, String httpMethod) {
+        return executeRootRequest(path, Collections.EMPTY_MAP, params, Collections.EMPTY_MAP, httpMethod);
+    }
+
     protected Invocation.Builder prepareBuilder(WebTarget webTarget,
                                                 String path, Map<String, Object> templateReplacements, Map<String, Object> params,
                                                 Map<String, Object> additionalHeaders) {
