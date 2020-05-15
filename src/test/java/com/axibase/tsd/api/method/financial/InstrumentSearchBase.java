@@ -68,7 +68,6 @@ public class InstrumentSearchBase {
         return symbol.toLowerCase() + "_[" + classCode.toLowerCase() + "]";
     }
 
-
     protected static TradeBundle tradesBundle() {
         return new TradeBundle();
     }
