@@ -9,6 +9,7 @@ import com.axibase.tsd.api.transport.tcp.TCPTradesSender;
 import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.HttpMethod;
@@ -95,6 +96,7 @@ public class InstrumentSearchBase {
             return this;
         }
 
+        @SneakyThrows
         public void insert() throws IOException {
             // INSERT TRADES WITH CSV UPLOAD
             String[] commands = items.stream().filter(Entry::isAssigned).map(TradeBundle::makeCommand).toArray(String[]::new);
@@ -106,6 +108,9 @@ public class InstrumentSearchBase {
                     .map(TradeBundle::makeEntityCommand)
                     .collect(Collectors.toList());
             TCPSender.send(entityCommands);
+
+            // Let ATSD apply incoming commands
+            Thread.sleep(1000);
 
             updateInstrumentIndex();
         }

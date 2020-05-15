@@ -35,11 +35,8 @@ public class TCPTradesSender {
         final Config config = Config.getInstance();
         final String host = config.getServerName();
         final int port = config.getTradesTcpPort();
-        try (Socket socket = createSocket(host, port);
-             PrintWriter writer = new PrintWriter(socket.getOutputStream());
-             BufferedReader responseStream = new BufferedReader(
-                     new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8)
-             )) {
+        try (Socket socket = createSocket(host, port)) {
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
             log.debug(" > tcp://{}:{}\n\t{}", host, port, command);
             writer.println(command);
             writer.flush();
