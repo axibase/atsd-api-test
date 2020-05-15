@@ -1,9 +1,12 @@
 package com.axibase.tsd.api.method.financial;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.SeriesQueryDataSizeCheck;
 import com.axibase.tsd.api.model.command.EntityCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.financial.InstrumentSearchEntry;
+import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.transport.tcp.TCPTradesSender;
 import com.axibase.tsd.api.util.ResponseAsList;
@@ -15,10 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,8 @@ import static org.testng.AssertJUnit.assertSame;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 public class InstrumentSearchBase {
-    protected static String DEFAULT_EXCHANGE = "test";
+    protected static final String DEFAULT_EXCHANGE = "test";
+    protected static final String TRADE_PRICE_METRIC = "trade_price";
 
     protected static void searchAndTest(String query, InstrumentSearchEntry... expected) throws AssertionError {
         searchAndTest(query, -1, expected);
@@ -78,10 +80,11 @@ public class InstrumentSearchBase {
         private static class Entry {
             private final String classCode;
             private final String symbol;
+            private final String exchange = DEFAULT_EXCHANGE;
             private final String description;
             private final boolean assigned;
         }
-        private List<Entry> items = new ArrayList<>();
+        private final List<Entry> items = new ArrayList<>();
 
         public TradeBundle trade(String symbol, String classCode, String description) {
             return trade(symbol, classCode, description, true);
@@ -97,9 +100,12 @@ public class InstrumentSearchBase {
         }
 
         @SneakyThrows
-        public void insert() throws IOException {
+        public TradeBundle insert() throws IOException {
             // INSERT TRADES WITH CSV UPLOAD
-            String[] commands = items.stream().filter(Entry::isAssigned).map(TradeBundle::makeCommand).toArray(String[]::new);
+            String[] commands = items.stream()
+                    .filter(Entry::isAssigned)
+                    .map(TradeBundle::makeCommand)
+                    .toArray(String[]::new);
             TCPTradesSender.send(commands);
 
             // Insert descriptions for instruments, as well as unassigned instruments
@@ -113,6 +119,18 @@ public class InstrumentSearchBase {
             Thread.sleep(1000);
 
             updateInstrumentIndex();
+            return this;
+        }
+
+        public TradeBundle waitUntilTradesInsertedAtMost(long time, TimeUnit timeUnit) {
+            items.stream()
+                    .limit(1)
+                    .map(entry -> new SeriesQuery(makeEntityName(entry.getSymbol(), entry.getClassCode()), TRADE_PRICE_METRIC,
+                            IndicesGenerator.startTime, IndicesGenerator.timestamp.get() + 1)
+                        .setTags(Collections.singletonMap("exchange", entry.getExchange())))
+                    .map(query -> new SeriesQueryDataSizeCheck(query, 1))
+                    .forEach(check -> Checker.check(check, time, timeUnit));
+            return this;
         }
 
         private static boolean needUpdateEntity(Entry entry) {
@@ -133,13 +151,13 @@ public class InstrumentSearchBase {
         }
 
         private static String makeCommand(Entry entry) {
-            long ts = IndicesGenerator.timestamp();
-            long tn = IndicesGenerator.trade();
+            long timestamp = IndicesGenerator.timestamp();
+            long tradeNumber = IndicesGenerator.trade();
             String cls = entry.getClassCode();
-            String sym = entry.getSymbol();
-            String exch = DEFAULT_EXCHANGE;
+            String symbol = entry.getSymbol();
+            String exchange = entry.getExchange();
 
-            return String.format("%d,%d,0,%s,%s,%s,B,1,42.42,", tn, ts, cls, sym, exch);
+            return String.format("%d,%d,0,%s,%s,%s,B,1,42.42,", tradeNumber, timestamp, cls, symbol, exchange);
         }
 
         private static void updateInstrumentIndex() {
@@ -149,8 +167,9 @@ public class InstrumentSearchBase {
     }
 
     private static class IndicesGenerator {
-        private static AtomicLong timestamp = new AtomicLong(System.currentTimeMillis());
-        private static AtomicLong trade = new AtomicLong(1084842/* random */);
+        private static final long startTime = System.currentTimeMillis();
+        private static final AtomicLong timestamp = new AtomicLong(startTime);
+        private static final AtomicLong trade = new AtomicLong(1084842/* random */);
 
         public static long timestamp() {
             return timestamp.addAndGet(5);

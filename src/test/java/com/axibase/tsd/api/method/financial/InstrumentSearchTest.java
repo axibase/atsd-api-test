@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class InstrumentSearchTest extends InstrumentSearchBase {
     @BeforeClass
@@ -19,7 +20,8 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("descpfx", "TEST", "Shar_es4Test Inc.")
                 .trade("option1", "TEST", "First Option")
                 .trade("option2", "TEST", "Second Option")
-                .insert();
+                .insert()
+                .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
 
     @Test
