@@ -155,5 +155,4 @@ public class InstrumentSearchBase {
             return trade.incrementAndGet();
         }
     }
-
 }
