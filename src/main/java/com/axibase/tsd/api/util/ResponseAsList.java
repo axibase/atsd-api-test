@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.model.alert.Alert;
+import com.axibase.tsd.api.model.financial.InstrumentSearchEntry;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageStats;
 import com.axibase.tsd.api.model.metric.Metric;
@@ -39,4 +40,6 @@ public class ResponseAsList {
     }
 
     public static GenericType<List<MessageStats>> ofMessageStats() { return new GenericType<List<MessageStats>>(){}; }
+
+    public static GenericType<List<InstrumentSearchEntry>> ofInstrumentSearchEntries() { return new GenericType<List<InstrumentSearchEntry>>(){}; }
 }

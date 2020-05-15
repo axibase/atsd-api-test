@@ -3,14 +3,15 @@ package com.axibase.tsd.api.method.financial;
 import com.axibase.tsd.api.model.command.EntityCommand;
 import com.axibase.tsd.api.model.command.PlainCommand;
 import com.axibase.tsd.api.model.entity.Entity;
+import com.axibase.tsd.api.model.financial.InstrumentSearchEntry;
 import com.axibase.tsd.api.transport.tcp.TCPSender;
 import com.axibase.tsd.api.transport.tcp.TCPTradesSender;
+import com.axibase.tsd.api.util.ResponseAsList;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,23 +27,23 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 public class InstrumentSearchBase {
     protected static String DEFAULT_EXCHANGE = "test";
 
-    protected static void searchAndTest(String query, InstrumentSearchTest.InstrumentSearchEntry... expected) throws AssertionError {
+    protected static void searchAndTest(String query, InstrumentSearchEntry... expected) throws AssertionError {
         searchAndTest(query, -1, expected);
     }
 
-    protected static void searchAndTest(String query, int limit, InstrumentSearchTest.InstrumentSearchEntry... expected) throws AssertionError {
-        List<InstrumentSearchTest.InstrumentSearchEntry> foundEntries = search(query, limit);
-        assertArrayEquals(expected, foundEntries.toArray(new InstrumentSearchTest.InstrumentSearchEntry[0]));
+    protected static void searchAndTest(String query, int limit, InstrumentSearchEntry... expected) throws AssertionError {
+        List<InstrumentSearchEntry> foundEntries = search(query, limit);
+        assertArrayEquals(expected, foundEntries.toArray(new InstrumentSearchEntry[0]));
     }
 
-    protected static List<InstrumentSearchTest.InstrumentSearchEntry> search(String query, int limit) {
+    protected static List<InstrumentSearchEntry> search(String query, int limit) {
         RequestSenderWithBasicAuthorization sender = RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER;
         Map<String, Object> params = new HashMap<>();
         params.put("pattern", query);
         params.put("limit", limit > 0 ? String.valueOf(limit) : "");
         Response response = sender.executeRootRequestWithParams("/financial/trades/suggest/instruments", params, HttpMethod.GET);
         response.bufferEntity();
-        return response.readEntity(new GenericType<List<InstrumentSearchEntry>>() {});
+        return response.readEntity(ResponseAsList.ofInstrumentSearchEntries());
     }
 
 
@@ -70,16 +71,6 @@ public class InstrumentSearchBase {
 
     protected static TradeBundle tradesBundle() {
         return new TradeBundle();
-    }
-
-    @Data
-    public static class InstrumentSearchEntry {
-        private final String className;
-        private final String symbol;
-        private final String exchange;
-        private final String description;
-        private final String entity;
-
     }
 
     protected static class TradeBundle {
