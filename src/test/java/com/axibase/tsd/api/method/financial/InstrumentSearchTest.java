@@ -21,7 +21,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("option1", "TEST", "First Option")
                 .trade("option2", "TEST", "Second Option")
                 .insert()
-                .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+                .waitUntilTradesInsertedAtMost(5, TimeUnit.MINUTES);
     }
 
     @Test
