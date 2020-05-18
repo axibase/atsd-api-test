@@ -17,9 +17,10 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("share2", "TQBR", "Primary Share Two")
                 .tradeUnassigned("share4", "EQOB", "Unassigned Share Four")
                 .tradeUnassigned("share5", "TQOB", "Unassigned Share Five")
-                .trade("descpfx", "TEST", "Shar_es4Test Inc.")
+                .trade("descpfx", "TEST", "SharAEEEes4Test Inc.")
                 .trade("option1", "TEST", "First Option")
                 .trade("option2", "TEST", "Second Option")
+                .trade("ROGA", "TEST", "ПАО 'Рога и Копыта'")
                 .insert()
                 .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
@@ -37,6 +38,16 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
         searchAndTest("share1",
                 entry("share1", "TEST", "First Share"),
                 entry("share10", "TEST", "")
+        );
+    }
+
+    @Test
+    public void testFoundCyrillic() {
+        searchAndTest("Рога",
+                entry("ROGA", "TEST", "ПАО 'Рога и Копыта'")
+        );
+        searchAndTest("РогаИКо",
+                entry("ROGA", "TEST", "ПАО 'Рога и Копыта'")
         );
     }
 
@@ -78,7 +89,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 entry("share10", "TEST", ""),
                 entry("share2", "TEST", "Second Share"),
                 entryUnassigned("share4", "EQOB", "Unassigned Share Four"),
-                entry("descpfx", "TEST", "Shar_es4Test Inc.")
+                entry("descpfx", "TEST", "SharAEEEes4Test Inc.")
         );
     }
 
@@ -106,7 +117,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 entry("share1", "TEST", "First Share")
         );
         searchAndTest("4Test",
-                entry("descpfx", "TEST", "Shar_es4Test Inc.")
+                entry("descpfx", "TEST", "SharAEEEes4Test Inc.")
         );
     }
 }
