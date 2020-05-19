@@ -22,6 +22,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("option2", "TEST", "Second Option")
                 .trade("PRIM", "TEST", "ПАО 'Пример'")
                 .trade("PRIS", "TEST", "ОАО Пример и Примерчики")
+                .trade("TEST_ETF", "TEST", "THE ISH TEST")
                 .insert()
                 .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
@@ -58,6 +59,13 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
         searchAndTest("TQbR",
                 entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share")
+        );
+    }
+
+    @Test
+    public void testAcronymReplacement() {
+        searchAndTest("ishares",
+                entry("TEST_ETF", "TEST", "THE ISH TEST")
         );
     }
 
