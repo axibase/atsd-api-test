@@ -20,7 +20,8 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("descpfx", "TEST", "SharAEEEes4Test Inc.")
                 .trade("option1", "TEST", "First Option")
                 .trade("option2", "TEST", "Second Option")
-                .trade("ROGA", "TEST", "ПАО 'Рога и Копыта'")
+                .trade("PRIM", "TEST", "ПАО 'Пример'")
+                .trade("PRIS", "TEST", "ОАО Пример и Примерчики")
                 .insert()
                 .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
@@ -43,11 +44,12 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
 
     @Test
     public void testFoundCyrillic() {
-        searchAndTest("Рога",
-                entry("ROGA", "TEST", "ПАО 'Рога и Копыта'")
+        searchAndTest("Прим",
+                entry("PRIM", "TEST", "ПАО 'Пример'"),
+                entry("PRIS", "TEST", "ОАО Пример и Примерчики")
         );
-        searchAndTest("РогаИКо",
-                entry("ROGA", "TEST", "ПАО 'Рога и Копыта'")
+        searchAndTest("ПримерИ",
+                entry("PRIS", "TEST", "ОАО Пример и Примерчики")
         );
     }
 
