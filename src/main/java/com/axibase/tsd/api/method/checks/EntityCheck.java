@@ -17,7 +17,7 @@ public class EntityCheck extends AbstractCheck {
         try {
             return EntityMethod.entityExist(entity);
         } catch (Exception e) {
-            throw new IllegalStateException(ERROR_MESSAGE);
+            throw new IllegalStateException(ERROR_MESSAGE, e);
         }
     }
 

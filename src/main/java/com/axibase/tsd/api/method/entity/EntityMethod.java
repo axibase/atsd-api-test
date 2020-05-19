@@ -73,7 +73,13 @@ public class EntityMethod extends BaseMethod {
             return false;
         }
         if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
-            throw new Exception("Fail to execute entity query: " + responseAsString(response));
+            final String responseBody = responseAsString(response);
+            final String errorMessage = String.format("Unexpected response for '%s' entity query. Status: %s %n. " +
+                            "Response body: %s",
+                    entity.getName(),
+                    response.getStatus(),
+                    responseBody);
+            throw new Exception(errorMessage);
         }
         return compareJsonString(jacksonMapper.writeValueAsString(entity), response.readEntity(String.class));
     }
