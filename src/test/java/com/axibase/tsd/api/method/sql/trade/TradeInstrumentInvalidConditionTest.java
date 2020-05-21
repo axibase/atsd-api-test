@@ -1,6 +1,8 @@
 package com.axibase.tsd.api.method.sql.trade;
 
+import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
 import com.axibase.tsd.api.method.sql.SqlTest;
+import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.util.TradeSender;
 import org.testng.annotations.BeforeClass;
@@ -9,6 +11,7 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class TradeInstrumentInvalidConditionTest extends SqlTest {
@@ -27,9 +30,9 @@ public class TradeInstrumentInvalidConditionTest extends SqlTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
-//        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP1_NAME));
-//        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
-//        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_PREFIX + "symbol_[class]"));
+        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP1_NAME));
+        EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
+        EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_PREFIX + "symbol_[class]"));
 
         long timestamp = ZonedDateTime.parse("2020-05-21T10:15:14Z").toInstant().toEpochMilli();
         Trade trade1 = new Trade(EXCHANGE, CLASS_1, SYMBOL_1, 1, timestamp, BigDecimal.ONE, 1);
