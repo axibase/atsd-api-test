@@ -1,19 +1,18 @@
 package com.axibase.tsd.api.transport.tcp;
 
 import com.axibase.tsd.api.Config;
-import com.axibase.tsd.api.model.command.PlainCommand;
+import com.axibase.tsd.api.model.financial.Trade;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Slf4j
@@ -48,5 +47,17 @@ public class TCPTradesSender {
 
     public static void send(String... commands) throws IOException {
         send(StringUtils.join(commands, LINE_SEPARATOR));
+    }
+
+    public static void send(Trade... trades) throws IOException {
+        send(Arrays.stream(trades));
+    }
+
+    public static void send(Collection<Trade> trades) throws IOException {
+        send(trades.stream());
+    }
+
+    private static void send(Stream<Trade> trades) throws IOException {
+        send(trades.map(Trade::toCsvLine).collect(Collectors.joining(LINE_SEPARATOR)));
     }
 }
