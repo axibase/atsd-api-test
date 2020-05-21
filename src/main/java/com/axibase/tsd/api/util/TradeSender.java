@@ -9,29 +9,30 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class TradeSender {
 
     public static TradeBatchChecker send(Collection<Trade> trades) throws IOException {
         TCPTradesSender.send(trades);
-        return new TradeBatchChecker(trades.stream());
+        return new TradeBatchChecker(trades::stream);
     }
 
     public static TradeBatchChecker send(Trade... trades) throws IOException {
         TCPTradesSender.send(trades);
-        return new TradeBatchChecker(Arrays.stream(trades));
+        return new TradeBatchChecker(() -> Arrays.stream(trades));
     }
 
     public static class TradeBatchChecker {
-        private Stream<Trade> trades;
+        private Supplier<Stream<Trade>> tradesStreamSupplier;
 
-        private TradeBatchChecker(Stream<Trade> trades) {
-            this.trades = trades;
+        private TradeBatchChecker(Supplier<Stream<Trade>> tradesStreamSupplier) {
+            this.tradesStreamSupplier = tradesStreamSupplier;
         }
 
         public void waitUntilTradesInsertedAtMost(long time, TimeUnit timeUnit) {
-            trades.map(TradeCheck::new).forEach(check -> Checker.check(check, time, timeUnit));
+            tradesStreamSupplier.get().map(TradeCheck::new).forEach(check -> Checker.check(check, time, timeUnit));
         }
     }
 
