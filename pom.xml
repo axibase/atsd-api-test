@@ -194,7 +194,7 @@
                     <properties>
                         <property>
                             <name>listener</name>
-                            <value>com.axibase.tsd.api.listeners.RequestResponseOnFailWriter</value>
+                            <value>com.axibase.tsd.api.listeners.RequestResponseOnFailWriter,com.axibase.tsd.api.listeners.RetryAnnotationTransformer</value>
                         </property>
                     </properties>
                 </configuration>

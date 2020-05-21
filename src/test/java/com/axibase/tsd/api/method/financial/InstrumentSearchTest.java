@@ -24,7 +24,7 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("PRIS", "TEST", "ОАО Пример и Примерчики")
                 .trade("TEST_ETF", "TEST", "THE ISH TEST")
                 .insert()
-                .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+                .waitUntilTradesInsertedAtMost(5, TimeUnit.MINUTES);
     }
 
     @Test
