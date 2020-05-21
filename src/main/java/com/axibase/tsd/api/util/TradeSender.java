@@ -4,35 +4,30 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.TradeCheck;
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.transport.tcp.TCPTradesSender;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class TradeSender {
 
     public static TradeBatchChecker send(Collection<Trade> trades) throws IOException {
         TCPTradesSender.send(trades);
-        return new TradeBatchChecker(trades::stream);
+        return new TradeBatchChecker(trades);
     }
 
     public static TradeBatchChecker send(Trade... trades) throws IOException {
-        TCPTradesSender.send(trades);
-        return new TradeBatchChecker(() -> Arrays.stream(trades));
+        return send(Arrays.asList(trades));
     }
 
+    @RequiredArgsConstructor
     public static class TradeBatchChecker {
-        private Supplier<Stream<Trade>> tradesStreamSupplier;
-
-        private TradeBatchChecker(Supplier<Stream<Trade>> tradesStreamSupplier) {
-            this.tradesStreamSupplier = tradesStreamSupplier;
-        }
+        private final Collection<Trade> trades;
 
         public void waitUntilTradesInsertedAtMost(long time, TimeUnit timeUnit) {
-            tradesStreamSupplier.get().map(TradeCheck::new).forEach(check -> Checker.check(check, time, timeUnit));
+            trades.stream().map(TradeCheck::new).forEach(check -> Checker.check(check, time, timeUnit));
         }
     }
 

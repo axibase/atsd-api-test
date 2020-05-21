@@ -11,8 +11,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Slf4j
@@ -50,14 +48,10 @@ public class TCPTradesSender {
     }
 
     public static void send(Trade... trades) throws IOException {
-        send(Arrays.stream(trades));
+        send(Arrays.asList(trades));
     }
 
     public static void send(Collection<Trade> trades) throws IOException {
-        send(trades.stream());
-    }
-
-    private static void send(Stream<Trade> trades) throws IOException {
-        send(trades.map(Trade::toCsvLine).collect(Collectors.joining(LINE_SEPARATOR)));
+        send(trades.stream().map(Trade::toCsvLine).toArray(String[]::new));
     }
 }

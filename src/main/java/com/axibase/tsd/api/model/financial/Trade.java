@@ -6,8 +6,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -56,8 +56,7 @@ public class Trade {
     public String toCsvLine() {
         validate();
         String csvSide = side == null ? null : side.name().substring(0, 1);
-        return Arrays.asList(number, timestamp, microSeconds, clazz, symbol, exchange, csvSide, quantity, price, order)
-                .stream()
+        return Stream.of(number, timestamp, microSeconds, clazz, symbol, exchange, csvSide, quantity, price, order)
                 .map(n -> n == null ? "" : n.toString())
                 .collect(Collectors.joining(","));
     }
