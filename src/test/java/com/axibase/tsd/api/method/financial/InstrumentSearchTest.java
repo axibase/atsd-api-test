@@ -80,7 +80,8 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 entry("share1", "TEST", "First Share"),
                 entry("share10", "TEST", ""),
                 entry("share2", "TEST", "Second Share"),
-                entryUnassigned("share4", "EQOB", "Unassigned Share Four")
+                entryUnassigned("share4", "EQOB", "Unassigned Share Four"),
+                entry("TEST_ETF", "TEST", "THE ISH TEST")
         );
     }
 
@@ -99,7 +100,8 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 entry("share10", "TEST", ""),
                 entry("share2", "TEST", "Second Share"),
                 entryUnassigned("share4", "EQOB", "Unassigned Share Four"),
-                entry("descpfx", "TEST", "SharAEEEes4Test Inc.")
+                entry("descpfx", "TEST", "SharAEEEes4Test Inc."),
+                entry("TEST_ETF", "TEST", "THE ISH TEST")
         );
     }
 
@@ -113,14 +115,16 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
     }
 
     @Test
-    public void testFoundBySubstring() { searchAndTest("hARe",
+    public void testFoundBySubstring() {
+        searchAndTest("hARe",
                 entry("share2", "TQBR", "Primary Share Two"),
                 entry("share3", "TQBR", "Primary Share"),
                 entryUnassigned("share5", "TQOB", "Unassigned Share Five"),
                 entry("share1", "TEST", "First Share"),
                 entry("share10", "TEST", ""),
                 entry("share2", "TEST", "Second Share"),
-                entryUnassigned("share4", "EQOB", "Unassigned Share Four")
+                entryUnassigned("share4", "EQOB", "Unassigned Share Four"),
+                entry("TEST_ETF", "TEST", "THE ISH TEST")
         );
         searchAndTest("irst",
                 entry("option1", "TEST", "First Option"),
