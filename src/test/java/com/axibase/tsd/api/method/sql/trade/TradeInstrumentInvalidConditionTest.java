@@ -1,25 +1,22 @@
 package com.axibase.tsd.api.method.sql.trade;
 
 import com.axibase.tsd.api.method.entitygroup.EntityGroupMethod;
-import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.entitygroup.EntityGroup;
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.util.TradeSender;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-public class TradeInstrumentInvalidConditionTest extends SqlTest {
+public class TradeInstrumentInvalidConditionTest extends SqlTradeTest {
     private static final String TEST_PREFIX = "sql-trade-instrument-invalid-condition-";
     private static final String TEST_ENTITY_NAME = TEST_PREFIX + "entity";
     private static final String TEST_ENTITY_GROUP1_NAME = TEST_ENTITY_NAME + "-group-1";
     private static final String TEST_ENTITY_GROUP2_NAME = TEST_ENTITY_NAME + "-group-2";
-    private static final String EXCHANGE = TEST_PREFIX + "exchange";
     private static final String CLASS_1 = TEST_PREFIX + "class1";
     private static final String CLASS_2 = TEST_PREFIX + "class11";
     private static final String CLASS_3 = TEST_PREFIX + "class3";
@@ -34,10 +31,10 @@ public class TradeInstrumentInvalidConditionTest extends SqlTest {
         EntityGroupMethod.createOrReplaceEntityGroup(new EntityGroup(TEST_ENTITY_GROUP2_NAME));
         EntityGroupMethod.addEntities(TEST_ENTITY_GROUP2_NAME, Collections.singletonList(TEST_PREFIX + "symbol_[class]"));
 
-        long timestamp = ZonedDateTime.parse("2020-05-21T10:15:14Z").toInstant().toEpochMilli();
-        Trade trade1 = new Trade(EXCHANGE, CLASS_1, SYMBOL_1, 1, timestamp, BigDecimal.ONE, 1);
-        Trade trade2 = new Trade(EXCHANGE, CLASS_2, SYMBOL_2, 2, timestamp, BigDecimal.ONE, 1);
-        Trade trade3 = new Trade(EXCHANGE, CLASS_3, SYMBOL_3, 3, timestamp, BigDecimal.ONE, 1);
+        long timestamp = Util.getUnixTime("2020-05-21T10:15:14Z");
+        Trade trade1 = trade(timestamp).setClazz(CLASS_1).setSymbol(SYMBOL_1);
+        Trade trade2 = trade(timestamp).setClazz(CLASS_2).setSymbol(SYMBOL_2);
+        Trade trade3 = trade(timestamp).setClazz(CLASS_3).setSymbol(SYMBOL_3);
         TradeSender.send(trade1, trade2, trade3).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
 

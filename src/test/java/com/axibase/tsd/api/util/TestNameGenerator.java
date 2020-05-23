@@ -3,8 +3,6 @@ package com.axibase.tsd.api.util;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -117,7 +115,10 @@ public class TestNameGenerator {
         PROPERTY("property"),
         PROPERTY_TYPE("property-type"),
         REPLACEMENT_TABLE("replacement-table"),
-        NAMED_COLLECTION("named-collection");
+        NAMED_COLLECTION("named-collection"),
+        TRADE_EXCHANGE("exchange"),
+        TRADE_CLASS("class"),
+        TRADE_SYMBOL("symbol");
 
         private String textValue;
 

@@ -64,4 +64,16 @@ public class Mocks {
         resultSeries.addSamples(SAMPLE);
         return resultSeries;
     }
+
+    public static String tradeExchange() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_EXCHANGE);
+    }
+
+    public static String tradeClass() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_CLASS);
+    }
+
+    public static String tradeSymbol() {
+        return NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_SYMBOL);
+    }
 }
