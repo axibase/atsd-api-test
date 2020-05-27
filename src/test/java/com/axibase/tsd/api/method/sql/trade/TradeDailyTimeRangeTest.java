@@ -548,7 +548,17 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                         .addExpected("2020-05-20T10:43:03.456000Z", symbol())
                         .addExpected("2020-05-20T10:35:15.123000Z", symbol())
                         .addExpected("2020-05-19T10:21:49.123000Z", symbol())
-
+                ,
+                test("Test 'HH:mm:ss.SSS' Europe/Moscow timezone in date_format function forward scan")
+                        .setTimeZone("UTC")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm:ss.SSS', 'Europe/Moscow') BETWEEN '13:21:49.123' AND '13:43:03.456' ")
+                        .addExpected("2020-05-19T10:21:49.123000Z", symbol())
+                        .addExpected("2020-05-20T10:35:15.123000Z", symbol())
+                        .addExpected("2020-05-20T10:43:03.456000Z", symbol())
+                        .addExpected("2020-05-19T10:21:49.123000Z", symbolTwo())
+                        .addExpected("2020-05-20T10:35:15.123000Z", symbolTwo())
+                        .addExpected("2020-05-20T10:43:03.456000Z", symbolTwo())
         };
         return TestUtil.convertTo2DimArray(data);
     }
