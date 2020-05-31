@@ -107,6 +107,36 @@ class TradeCsvTest : SqlTradeTest() {
                         "2020-05-27T10:05:06.000000Z","test",12345678
 
                         """
+                ),
+                arrayOf("Test several BigDecimals at the beginning of the row",
+                        "select  time,  price, price, quantity, 'test' from atsd_trade where ${instrumentCondition()}",
+
+                        """
+                        "time","price","price","quantity","'test'"
+                        1590573906000.000,2200000,2200000,1000000,"test"
+                        1590573906000.000,15000.45,15000.45,12345678,"test"
+
+                        """
+                ),
+                arrayOf("Test several BigDecimals in the middle of the row",
+                        "select  'test', time,  price, price, quantity, 'test' from atsd_trade where ${instrumentCondition()}",
+
+                        """
+                        "'test'","time","price","price","quantity","'test'"
+                        "test",1590573906000.000,2200000,2200000,1000000,"test"
+                        "test",1590573906000.000,15000.45,15000.45,12345678,"test"
+
+                        """
+                ),
+                arrayOf("Test several BigDecimals at the end of the row",
+                        "select  'test', time,  price, price from atsd_trade where ${instrumentCondition()}",
+
+                        """
+                        "'test'","time","price","price"
+                        "test",1590573906000.000,2200000,2200000
+                        "test",1590573906000.000,15000.45,15000.45
+
+                        """
                 )
         )
     }
