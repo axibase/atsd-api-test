@@ -48,7 +48,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"6.0", "12.0"}
+                {"6", "12"}
         };
 
         assertSqlQueryRows("Join without Group by gives wrong result", expectedRows, sqlQuery);
@@ -116,7 +116,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"2", "1"}
+                {"2.0", "1.0"}
         };
 
         assertSqlQueryRows("Delta and Stddev with Join without Group by gives wrong result", expectedRows, sqlQuery);
@@ -132,7 +132,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"2", "1"}
+                {"2.0", "1.0"}
         };
 
         assertSqlQueryRows("Delta and Stddev with Join with Group by gives wrong result", expectedRows, sqlQuery);
@@ -164,7 +164,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"3.0", "5.0"}
+                {"3", "5"}
         };
 
         assertSqlQueryRows("Join with Group by and Where gives wrong result", expectedRows, sqlQuery);
@@ -180,7 +180,7 @@ public class SqlJoinWithAggregationsTest extends SqlTest {
         );
 
         String[][] expectedRows = {
-                {"3.0", "5.0"}
+                {"3", "5"}
         };
 
         assertSqlQueryRows("Join with Where gives wrong result", expectedRows, sqlQuery);

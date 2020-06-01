@@ -44,9 +44,9 @@ public class SlidingTimeWindowTest extends SqlTest {
                 //{"MIN_VALUE_TIME"},
                 //{"PERCENTILE"},
                 {SqlFunction.of("SUM", this::sampleValueAtRow)},
-                {SqlFunction.of("STDDEV", rowNumber -> "0.0")},
-                {SqlFunction.of("WAVG", this::sampleValueAtRow)},
-                {SqlFunction.of("WTAVG", this::sampleValueAtRow)}
+                {SqlFunction.of("STDDEV", rowNumber -> "0")},
+                {SqlFunction.of("WAVG", this::sampleDoubleValueAtRow)},
+                {SqlFunction.of("WTAVG", this::sampleDoubleValueAtRow)}
         };
     }
 
@@ -131,6 +131,10 @@ public class SlidingTimeWindowTest extends SqlTest {
 
     private String sampleValueAtRow(int row) {
         return String.valueOf(DATA[row]);
+    }
+
+    private String sampleDoubleValueAtRow(int row) {
+        return DATA[row] + ".0";
     }
 
     private List<List<String>> prepareExpectedResult(IntFunction<String> rowFunction) {

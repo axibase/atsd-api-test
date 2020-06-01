@@ -151,7 +151,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("0")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -171,7 +171,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("0")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -191,7 +191,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("0")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -211,7 +211,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("0")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -231,7 +231,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("0")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -291,7 +291,7 @@ public class SqlNullDataTypeTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Collections.singletonList("0.0")
+                Collections.singletonList("0")
         );
 
         assertTableRowsExist(expectedRows, resultTable);

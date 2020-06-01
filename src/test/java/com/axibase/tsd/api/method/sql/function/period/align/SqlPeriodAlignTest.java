@@ -79,10 +79,10 @@ public class SqlPeriodAlignTest extends SqlTest {
 
         final List<List<String>> expectedTableRows = Arrays.asList(
                 // Expect align by start time inclusive(123 ms)
-                Arrays.asList("2016-06-03T09:20:00.123Z", "16.0"),
+                Arrays.asList("2016-06-03T09:20:00.123Z", "16"),
                 Arrays.asList("2016-06-03T09:25:00.123Z", "8.1"),
-                Arrays.asList("2016-06-03T09:35:00.123Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.123Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.123Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.123Z", "19")
         );
         assertEquals(expectedTableRows, resultTableRows);
     }
@@ -103,10 +103,10 @@ public class SqlPeriodAlignTest extends SqlTest {
 
         final List<List<String>> expectedTableRows = Arrays.asList(
                 // Expect align by start time exclusive(124 ms)
-                Arrays.asList("2016-06-03T09:20:00.124Z", "16.0"),
+                Arrays.asList("2016-06-03T09:20:00.124Z", "16"),
                 Arrays.asList("2016-06-03T09:25:00.124Z", "8.1"),
-                Arrays.asList("2016-06-03T09:35:00.124Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.124Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.124Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.124Z", "19")
         );
         assertEquals(expectedTableRows, resultTableRows);
     }
@@ -129,8 +129,8 @@ public class SqlPeriodAlignTest extends SqlTest {
         final List<List<String>> expectedTableRows = Arrays.asList(
                 // Expect align by end time inclusive(322 ms)
                 Arrays.asList("2016-06-03T09:25:00.322Z", "8.1"),
-                Arrays.asList("2016-06-03T09:35:00.322Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.322Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.322Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.322Z", "19")
         );
         assertEquals(expectedTableRows, resultTableRows);
     }
@@ -153,8 +153,8 @@ public class SqlPeriodAlignTest extends SqlTest {
         final List<List<String>> expectedTableRows = Arrays.asList(
                 // Expect align by start time inclusive(324 ms)
                 Arrays.asList("2016-06-03T09:25:00.324Z", "8.1"),
-                Arrays.asList("2016-06-03T09:35:00.324Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.324Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.324Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.324Z", "19")
         );
         assertEquals(expectedTableRows, resultTableRows);
     }

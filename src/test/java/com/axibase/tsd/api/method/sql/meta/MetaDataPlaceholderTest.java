@@ -95,7 +95,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
 
         String[] expectedTypes = {
                 "string",
-                "double"
+                "decimal"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);
@@ -227,7 +227,7 @@ public class MetaDataPlaceholderTest extends SqlMetaTest {
 
         String[] expectedTypes = {
                 "bigint",
-                "double"
+                "decimal"
         };
 
         assertSqlMetaNamesAndTypes("", expectedNames, expectedTypes, sqlQuery);

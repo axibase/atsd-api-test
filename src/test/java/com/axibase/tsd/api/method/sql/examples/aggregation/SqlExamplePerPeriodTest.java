@@ -50,8 +50,8 @@ public class SqlExamplePerPeriodTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2015-09-30T09:00:05.000Z", "2.0", "3.0", "2.0", "3"),
-                Arrays.asList("2015-09-30T09:00:06.000Z", "3.0", "3.0", "3.0", "5")
+                Arrays.asList("2015-09-30T09:00:05.000Z", "2", "3", "2", "3"),
+                Arrays.asList("2015-09-30T09:00:06.000Z", "3", "3", "3", "5")
         );
 
         assertTableRowsExist(expectedRows, resultTable);

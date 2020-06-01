@@ -52,8 +52,8 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2.0", "3.0", "3.0", "3"),
-                Arrays.asList(TEST_ENTITY2_NAME, "4.5", "5.0", "5.0", "2")
+                Arrays.asList(TEST_ENTITY1_NAME, "2", "3", "3", "3"),
+                Arrays.asList(TEST_ENTITY2_NAME, "4.5", "5", "5", "2")
 
         );
 
@@ -75,10 +75,10 @@ public class SqlExampleSlidingWindowsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "a=b", "1.5", "2.0", "2.0", "2"),
-                Arrays.asList(TEST_ENTITY2_NAME, "a=b", "4.0", "4.0", "4.0", "1"),
-                Arrays.asList(TEST_ENTITY1_NAME, "b=c", "3.0", "3.0", "3.0", "1"),
-                Arrays.asList(TEST_ENTITY2_NAME, "b=c", "5.0", "5.0", "5.0", "1")
+                Arrays.asList(TEST_ENTITY1_NAME, "a=b", "1.5", "2", "2", "2"),
+                Arrays.asList(TEST_ENTITY2_NAME, "a=b", "4", "4", "4", "1"),
+                Arrays.asList(TEST_ENTITY1_NAME, "b=c", "3", "3", "3", "1"),
+                Arrays.asList(TEST_ENTITY2_NAME, "b=c", "5", "5", "5", "1")
 
         );
 
