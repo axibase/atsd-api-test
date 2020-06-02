@@ -73,23 +73,12 @@ public class TradeAggregationTest extends SqlTradeTest {
         return new TestConfig(description);
     }
 
-    private class TestConfig extends SqlTestConfig<TestConfig> {
+    private class TestConfig extends TradeTestConfig<TestConfig> {
 
         public TestConfig(String description) {
             super(description);
-            instrument(instrumentCondition());
             setVariable("period", "");
             setVariable("having", "");
-        }
-
-        private TestConfig fields(String fields) {
-            setVariable("fields", fields);
-            return this;
-        }
-
-        private TestConfig instrument(String instrument) {
-            setVariable("instrument", instrument);
-            return this;
         }
 
         private TestConfig period(int count, String unit) {
@@ -101,7 +90,5 @@ public class TradeAggregationTest extends SqlTradeTest {
             setVariable("having", "having " + having);
             return this;
         }
-
-
     }
 }

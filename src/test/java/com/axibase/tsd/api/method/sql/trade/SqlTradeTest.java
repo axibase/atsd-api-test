@@ -62,4 +62,22 @@ public abstract class SqlTradeTest extends SqlTest {
     protected String instrumentCondition() {
         return String.format("exchange='%s' AND class='%s' AND symbol='%s'", exchange(), clazz(), symbol());
     }
+
+    protected class TradeTestConfig<T extends TradeTestConfig> extends SqlTestConfig<T> {
+
+        public TradeTestConfig(String description) {
+            super(description);
+            instrument(instrumentCondition());
+        }
+
+        protected T fields(String fields) {
+            setVariable("fields", fields);
+            return (T) this;
+        }
+
+        protected T instrument(String instrument) {
+            setVariable("instrument", instrument);
+            return (T) this;
+        }
+    }
 }
