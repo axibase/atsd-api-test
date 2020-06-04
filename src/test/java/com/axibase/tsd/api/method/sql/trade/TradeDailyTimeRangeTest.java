@@ -176,6 +176,59 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                         .addExpected("2020-05-19T11:00:00.000000Z", symbol())
                         .addExpected("2020-05-19T09:55:45.000000Z", symbol())
                 ,
+                test("Test 'HH' pattern greater than condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH') > '10'")
+                        .addExpected("2020-05-19T11:00:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:00:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH' pattern greater or equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH') >= '11'")
+                        .addExpected("2020-05-19T11:00:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:00:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH' pattern equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH') = '11'")
+                        .addExpected("2020-05-19T11:00:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:00:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH' pattern less than condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH') < '10'")
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbolTwo())
+
+                ,
+                test("Test 'HH' pattern less or equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH') <= '09'")
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbolTwo())
+                ,
                 // 'HH:mm' pattern tests
                 test("Test 'HH:mm' pattern hour interval forward scan")
                         .setInstrument(classCondition())
@@ -311,6 +364,48 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                         .addExpected("2020-05-19T11:05:00.000000Z", symbol())
                         .addExpected("2020-05-19T11:00:00.000000Z", symbol())
                         .addExpected("2020-05-19T10:59:59.999999Z", symbol())
+                ,
+                test("Test 'HH:mm' pattern greater than condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm') > '11:04'")
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm' pattern greater or equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm') >= '11:05'")
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm' pattern equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm') = '11:05'")
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm' pattern less than condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm') < '09:56'")
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbolTwo())
+
+                ,
+                test("Test 'HH:mm' pattern less or equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm') <= '09:55'")
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbolTwo())
+
                 // 'HH:mm:ss' pattern tests
 
                 ,
@@ -418,7 +513,46 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                         .setOrderBy("datetime DESC")
                         .setTimeRange("date_format(time, 'HH:mm:ss') BETWEEN '10:00:00' EXCL AND '10:00:01' ")
                 // an empty result expected
-
+                ,
+                test("Test 'HH:mm:ss' pattern greater than condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm:ss') > '11:04:59'")
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm:ss' pattern greater or equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm:ss') >= '11:05:00'")
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm:ss' pattern equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm:ss') = '11:05:00'")
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbol())
+                        .addExpected("2020-05-19T11:05:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T11:05:00.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm:ss' pattern less than condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm:ss') < '09:55:46'")
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbolTwo())
+                ,
+                test("Test 'HH:mm:ss' pattern less or equal condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm:ss') <= '09:55:45'")
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbol())
+                        .addExpected("2020-05-19T09:55:45.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T09:55:45.000000Z", symbolTwo())
 
                 // 'HH:mm:ss.SSS' pattern tests
 
@@ -559,6 +693,15 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                         .addExpected("2020-05-19T10:21:49.123000Z", symbolTwo())
                         .addExpected("2020-05-20T10:35:15.123000Z", symbolTwo())
                         .addExpected("2020-05-20T10:43:03.456000Z", symbolTwo())
+                ,
+                test("Test complex condition")
+                        .setInstrument(classCondition())
+                        .setTimeRange("date_format(time, 'HH:mm') BETWEEN '09:00' and '10:10' and date_format(time, 'HH:mm:ss') > '09:55:50' and date_format(time, 'HH:mm:ss') < '12:00:00'")
+                        .addExpected("2020-05-19T10:00:00.000000Z", symbol())
+                        .addExpected("2020-05-20T10:00:00.000000Z", symbol())
+                        .addExpected("2020-05-19T10:00:00.000000Z", symbolTwo())
+                        .addExpected("2020-05-20T10:00:00.000000Z", symbolTwo())
+
         };
         return TestUtil.convertTo2DimArray(data);
     }
