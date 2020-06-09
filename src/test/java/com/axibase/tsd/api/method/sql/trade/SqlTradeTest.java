@@ -3,6 +3,7 @@ package com.axibase.tsd.api.method.sql.trade;
 import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.util.Mocks;
+import com.axibase.tsd.api.util.TradeSender;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -36,6 +37,10 @@ public abstract class SqlTradeTest extends SqlTest {
         return symbolTwo;
     }
 
+    protected void insert(List<Trade> trades) throws Exception {
+        TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+    }
+
     protected Trade trade(long timestamp) {
         return trade(timestamp, BigDecimal.ONE, 1);
     }
@@ -61,6 +66,10 @@ public abstract class SqlTradeTest extends SqlTest {
 
     protected String instrumentCondition() {
         return String.format("exchange='%s' AND class='%s' AND symbol='%s'", exchange(), clazz(), symbol());
+    }
+
+    protected String instrumentTwoCondition() {
+        return String.format("exchange='%s' AND class='%s' AND symbol='%s'", exchange(), clazz(), symbolTwo());
     }
 
     protected class TradeTestConfig<T extends TradeTestConfig> extends SqlTestConfig<T> {
