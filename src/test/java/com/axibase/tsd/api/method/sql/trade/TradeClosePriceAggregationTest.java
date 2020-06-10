@@ -107,6 +107,43 @@ public class TradeClosePriceAggregationTest extends SqlTradeTest {
                         .addExpected("2020-03-22T10:00:00.000000Z", "11")
                         .addExpected("2020-03-22T00:00:00.000000Z", "9")
                 ,
+                test("Test 1 hour interval both instruments")
+                        .instrument(classCondition())
+                        .fields("datetime, close()")
+                        .period(1, "hour")
+                        .addExpected("2020-03-22T15:00:00.000000Z", "12")
+                        .addExpected("2020-03-22T11:00:00.000000Z", "11")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "10")
+                        .addExpected("2020-03-22T00:00:00.000000Z", "9")
+                        .addExpected("2020-03-23T15:00:00.000000Z", "8")
+                        .addExpected("2020-03-23T11:00:00.000000Z", "7")
+                        .addExpected("2020-03-23T10:00:00.000000Z", "6")
+                        .addExpected("2020-03-22T23:00:00.000000Z", "5")
+                        .addExpected("2020-03-22T15:00:00.000000Z", "4")
+                        .addExpected("2020-03-22T11:00:00.000000Z", "3")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "2")
+                ,
+                test("Test 1 hour interval first instrument")
+                        .instrument(instrumentCondition())
+                        .fields("datetime, close()")
+                        .period(1, "hour")
+                        .addExpected("2020-03-23T15:00:00.000000Z", "8")
+                        .addExpected("2020-03-23T11:00:00.000000Z", "7")
+                        .addExpected("2020-03-23T10:00:00.000000Z", "6")
+                        .addExpected("2020-03-22T23:00:00.000000Z", "5")
+                        .addExpected("2020-03-22T15:00:00.000000Z", "4")
+                        .addExpected("2020-03-22T11:00:00.000000Z", "3")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "2")
+                ,
+                test("Test 1 hour interval second instrument")
+                        .instrument(instrumentTwoCondition())
+                        .fields("datetime, close()")
+                        .period(1, "hour")
+                        .addExpected("2020-03-22T15:00:00.000000Z", "12")
+                        .addExpected("2020-03-22T11:00:00.000000Z", "11")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "10")
+                        .addExpected("2020-03-22T00:00:00.000000Z", "9")
+                ,
 
         };
         return TestUtil.convertTo2DimArray(data);
