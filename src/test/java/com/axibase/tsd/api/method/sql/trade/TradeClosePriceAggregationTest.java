@@ -14,26 +14,29 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Util.getUnixTime;
 
 public class TradeClosePriceAggregationTest extends SqlTradeTest {
-    private static final String QUERY = "select {fields} from atsd_trade where {instrument} " +
+    private static final String QUERY = "select {fields} from atsd_trade where {instrument} {where} " +
             " and datetime between '2020-03-22T00:00:00Z' and '2020-03-24T00:00:00Z'" +
-            "group by exchange, class, symbol {period} {orderBy}";
+            " group by exchange, class, symbol {period} " +
+            " WITH TIMEZONE = 'UTC' " +
+            " {orderBy}";
+
 
     @BeforeClass
     public void prepareData() throws Exception {
         List<Trade> trades = new ArrayList<>();
-        trades.add(trade(getUnixTime("2020-03-22T10:00:01Z"), new BigDecimal("1"), 1));
-        trades.add(trade(getUnixTime("2020-03-22T10:20:15Z"), new BigDecimal("2"), 1));
-        trades.add(trade(getUnixTime("2020-03-22T11:20:15Z"), new BigDecimal("3"), 1));
-        trades.add(trade(getUnixTime("2020-03-22T15:20:15Z"), new BigDecimal("4"), 1));
-        trades.add(trade(getUnixTime("2020-03-22T23:59:59.999999Z"), new BigDecimal("5"), 1));
-        trades.add(trade(getUnixTime("2020-03-23T10:20:15Z"), new BigDecimal("6"), 1));
-        trades.add(trade(getUnixTime("2020-03-23T11:20:15Z"), new BigDecimal("7"), 1));
-        trades.add(trade(getUnixTime("2020-03-23T15:20:15Z"), new BigDecimal("8"), 1));
+        trades.add(trade(getUnixTime("2020-03-22T10:00:01Z"), new BigDecimal("1"), 12).setSide(Trade.Side.BUY));
+        trades.add(trade(getUnixTime("2020-03-22T10:20:15Z"), new BigDecimal("2"), 11).setSide(Trade.Side.SELL));
+        trades.add(trade(getUnixTime("2020-03-22T11:20:15Z"), new BigDecimal("3"), 10).setSide(Trade.Side.BUY));
+        trades.add(trade(getUnixTime("2020-03-22T15:20:15Z"), new BigDecimal("4"), 9).setSide(Trade.Side.SELL));
+        trades.add(trade(getUnixTime("2020-03-22T23:59:59.999999Z"), new BigDecimal("5"), 8).setSide(Trade.Side.BUY));
+        trades.add(trade(getUnixTime("2020-03-23T10:20:15Z"), new BigDecimal("6"), 7));
+        trades.add(trade(getUnixTime("2020-03-23T11:20:15Z"), new BigDecimal("7"), 6).setSide(Trade.Side.BUY));
+        trades.add(trade(getUnixTime("2020-03-23T15:20:15Z"), new BigDecimal("8"), 5).setSide(Trade.Side.SELL));
 
-        trades.add(trade(getUnixTime("2020-03-22T00:00:00Z"), new BigDecimal("9"), 1).setSymbol(symbolTwo()));
-        trades.add(trade(getUnixTime("2020-03-22T10:20:15Z"), new BigDecimal("10"), 1).setSymbol(symbolTwo()));
-        trades.add(trade(getUnixTime("2020-03-22T11:20:15Z"), new BigDecimal("11"), 1).setSymbol(symbolTwo()));
-        trades.add(trade(getUnixTime("2020-03-22T15:20:15Z"), new BigDecimal("12"), 1).setSymbol(symbolTwo()));
+        trades.add(trade(getUnixTime("2020-03-22T00:00:00Z"), new BigDecimal("9"), 4).setSymbol(symbolTwo()).setSide(Trade.Side.BUY));
+        trades.add(trade(getUnixTime("2020-03-22T10:20:15Z"), new BigDecimal("10"), 3).setSymbol(symbolTwo()));
+        trades.add(trade(getUnixTime("2020-03-22T11:20:15Z"), new BigDecimal("11"), 2).setSymbol(symbolTwo()).setSide(Trade.Side.BUY));
+        trades.add(trade(getUnixTime("2020-03-22T15:20:15Z"), new BigDecimal("12"), 1).setSymbol(symbolTwo()).setSide(Trade.Side.SELL));
 
         insert(trades);
     }
@@ -144,7 +147,32 @@ public class TradeClosePriceAggregationTest extends SqlTradeTest {
                         .addExpected("2020-03-22T10:00:00.000000Z", "10")
                         .addExpected("2020-03-22T00:00:00.000000Z", "9")
                 ,
-
+                test("Test daily both instruments with time range")
+                        .instrument(classCondition())
+                        .where("date_format(time, 'HH:mm') between '10:00' and '11:00'")
+                        .fields("datetime, close()")
+                        .period(1, "day")
+                        .addExpected("2020-03-22T00:00:00.000000Z", "10")
+                        .addExpected("2020-03-23T00:00:00.000000Z", "6")
+                        .addExpected("2020-03-22T00:00:00.000000Z", "2")
+                ,
+                test("Test hourly both instruments with time range")
+                        .instrument(classCondition())
+                        .where("date_format(time, 'HH:mm') between '10:00' and '11:00'")
+                        .fields("datetime, close()")
+                        .period(1, "hour")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "10")
+                        .addExpected("2020-03-23T10:00:00.000000Z", "6")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "2")
+                ,
+                test("Test daily both instruments with filters")
+                        .instrument(classCondition())
+                        .where("side = 'BUY' and quantity < 8")
+                        .fields("datetime, close()")
+                        .period(1, "day")
+                        .addExpected("2020-03-22T00:00:00.000000Z", "11")
+                        .addExpected("2020-03-23T00:00:00.000000Z", "7")
+                ,
         };
         return TestUtil.convertTo2DimArray(data);
     }
@@ -159,6 +187,7 @@ public class TradeClosePriceAggregationTest extends SqlTradeTest {
             super(description);
             setVariable("period", "");
             setVariable("orderBy", "");
+            setVariable("where", "");
         }
 
         private TestConfig period(int count, String unit) {
@@ -168,6 +197,11 @@ public class TradeClosePriceAggregationTest extends SqlTradeTest {
 
         private TestConfig orderBy(String orderBy) {
             setVariable("orderBy", orderBy);
+            return this;
+        }
+
+        private TestConfig where(String where) {
+            setVariable("where", " and " + where);
             return this;
         }
     }
