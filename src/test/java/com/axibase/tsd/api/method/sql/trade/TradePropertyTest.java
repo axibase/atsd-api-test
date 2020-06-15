@@ -24,14 +24,18 @@ public class TradePropertyTest extends SqlTradeTest {
         Trade trade = fromISOString("2020-06-15T10:21:49.123456Z");
         insert(trade);
         Checker.check(new EntityCheck(entity));
-        Property property = new Property(SECURITY_DEFINITIONS, entity.getName());
+        Property property = new Property();
+        property.setType(SECURITY_DEFINITIONS);
+        property.setEntity(entity.getName());
         property.setDate("2020-06-14T10:21:49.123Z");
         Map<String, String> tags = new HashMap<>();
         tags.put("roundlot", "10");
         tags.put("product", "5");
         property.setTags(tags);
         PropertyMethod.insertPropertyCheck(property);
-        property = new Property(SECURITY_DEFINITIONS, entity.getName());
+        property = new Property();
+        property.setType(SECURITY_DEFINITIONS);
+        property.setEntity(entity.getName());
         property.setDate("2020-06-15T10:21:49.123Z");
         property.setKey(Collections.singletonMap("a", "b"));
         tags = new HashMap<>();
@@ -41,7 +45,9 @@ public class TradePropertyTest extends SqlTradeTest {
         property.setTags(tags);
         PropertyMethod.insertPropertyCheck(property);
 
-        property = new Property(STATISTICS, entity.getName());
+        property = new Property();
+        property.setType(STATISTICS);
+        property.setEntity(entity.getName());
         property.setDate("2020-06-15T20:21:49.123Z");
         tags = new HashMap<>();
         tags.put("numoffers", "1234");
@@ -49,7 +55,9 @@ public class TradePropertyTest extends SqlTradeTest {
         tags.put("bid", "196.04");
         property.setTags(tags);
         PropertyMethod.insertPropertyCheck(property);
-        property = new Property(STATISTICS, entity.getName());
+        property = new Property();
+        property.setType(STATISTICS);
+        property.setEntity(entity.getName());
         property.setKey(Collections.singletonMap("c", "d"));
         property.setDate("2020-06-15T20:25:49.123Z");
         tags = new HashMap<>();
