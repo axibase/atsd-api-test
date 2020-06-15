@@ -1,5 +1,7 @@
 package com.axibase.tsd.api.method.sql.trade;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.financial.Trade;
@@ -21,6 +23,7 @@ public class TradePropertyTest extends SqlTradeTest {
         entity.setName(entity());
         Trade trade = fromISOString("2020-06-15T10:21:49.123456Z");
         insert(trade);
+        Checker.check(new EntityCheck(entity));
         Property property = new Property(SECURITY_DEFINITIONS, entity.getName());
         property.setDate("2020-06-14T10:21:49.123Z");
         Map<String, String> tags = new HashMap<>();
