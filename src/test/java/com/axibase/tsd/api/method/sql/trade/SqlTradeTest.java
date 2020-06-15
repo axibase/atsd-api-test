@@ -41,6 +41,10 @@ public abstract class SqlTradeTest extends SqlTest {
         TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
 
+    protected void insert(Trade... trades) throws Exception {
+        TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+    }
+
     protected Trade trade(long timestamp) {
         return trade(timestamp, BigDecimal.ONE, 1);
     }
