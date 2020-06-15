@@ -19,9 +19,9 @@ public class TradePropertyTest extends SqlTradeTest {
 
     @BeforeClass
     public void prepareData() throws Exception {
+        Entity entity = new Entity(entity());
         Trade trade = fromISOString("2020-06-15T10:21:49.123456Z");
         insert(trade);
-        Entity entity = new Entity(entity());
         EntityCheck entityCheck = new EntityCheck(entity);
         Checker.check(entityCheck);
         Property property = new Property(SECURITY_DEFINITIONS, entity.getName());
