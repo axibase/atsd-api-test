@@ -20,6 +20,7 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 public class SqlMethod extends BaseMethod {
     private static final String METHOD_SQL_API = "/api/sql";
+    private static final String METHOD_SQL_SERIES_API = "/api/sql/series";
     private static final Logger logger = LoggerFactory.getLogger(SqlMethod.class);
 
     /**
@@ -54,6 +55,16 @@ public class SqlMethod extends BaseMethod {
 
     public static Response executeSqlRequest(Function<WebTarget, Response> sqlFunction) {
         return executeRootRequest(webTarget -> sqlFunction.apply(webTarget.path(METHOD_SQL_API)));
+    }
+
+    public static Response executeSqlSeriesRequest(Function<WebTarget, Response> sqlFunction) {
+        return executeRootRequest(webTarget -> sqlFunction.apply(webTarget.path(METHOD_SQL_SERIES_API)));
+    }
+
+    public static Response querySeriesResponse(String sql) {
+        Response response = executeSqlSeriesRequest(webTarget -> webTarget.request().post(Entity.text(sql)));
+        response.bufferEntity();
+        return response;
     }
 
     public static StringTable queryTable(String sqlQuery, Integer limit) {
