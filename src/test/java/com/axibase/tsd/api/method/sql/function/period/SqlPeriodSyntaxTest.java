@@ -45,9 +45,9 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -67,8 +67,8 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:00.500Z", "1.0"),
-                Arrays.asList("2016-06-19T11:00:05.500Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:00.500Z", "1"),
+                Arrays.asList("2016-06-19T11:00:05.500Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -88,9 +88,9 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:02.500Z", "1.0"),//<-EXTEND BY NEXT
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:02.500Z", "1"),//<-EXTEND BY NEXT
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -110,9 +110,9 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -133,9 +133,9 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:03.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:03.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:05.500Z", "0.0"),//<-INTERPOLATED BY VALUE 0
-                Arrays.asList("2016-06-19T11:00:08.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:08.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -156,10 +156,10 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:00.500Z", "1.0"),//<-EXTEND BY NEXT
-                Arrays.asList("2016-06-19T11:00:03.000Z", "1.0"),
-                Arrays.asList("2016-06-19T11:00:08.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:10.500Z", "2.0")//<-EXTEND BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:00.500Z", "1"),//<-EXTEND BY NEXT
+                Arrays.asList("2016-06-19T11:00:03.000Z", "1"),
+                Arrays.asList("2016-06-19T11:00:08.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:10.500Z", "2")//<-EXTEND BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -179,9 +179,9 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:03.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:03.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:05.500Z", "0.0"),
-                Arrays.asList("2016-06-19T11:00:08.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:08.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -201,10 +201,10 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:02.500Z", "1.0"),//<-EXTEND BY NEXT
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:02.500Z", "1"),//<-EXTEND BY NEXT
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -224,10 +224,10 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T11:00:02.500Z", "1.0"),//<-EXTEND BY NEXT
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:02.500Z", "1"),//<-EXTEND BY NEXT
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0")
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -247,13 +247,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T10:59:57.500Z", "0.0"),//<-EXTENDED BY NEXT
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
+                Arrays.asList("2016-06-19T10:59:57.500Z", "0"),//<-EXTENDED BY NEXT
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
                 Arrays.asList("2016-06-19T11:00:02.500Z", "0.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:12.500Z", "2")//<-EXTENDED BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -272,13 +272,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T10:59:57.500Z", "0.0"),//<-EXTENDED BY NEXT
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
+                Arrays.asList("2016-06-19T10:59:57.500Z", "0"),//<-EXTENDED BY NEXT
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
                 Arrays.asList("2016-06-19T11:00:02.500Z", "0.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:12.500Z", "2")//<-EXTENDED BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -298,13 +298,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T10:59:57.500Z", "0.0"),//<-EXTENDED BY NEXT
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
+                Arrays.asList("2016-06-19T10:59:57.500Z", "0"),//<-EXTENDED BY NEXT
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
                 Arrays.asList("2016-06-19T11:00:02.500Z", "0.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:12.500Z", "2")//<-EXTENDED BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -324,13 +324,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T10:59:57.500Z", "0.0"),//<-EXTENDED BY NEXT
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
+                Arrays.asList("2016-06-19T10:59:57.500Z", "0"),//<-EXTENDED BY NEXT
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
                 Arrays.asList("2016-06-19T11:00:02.500Z", "0.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:12.500Z", "2")//<-EXTENDED BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -351,13 +351,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T10:59:57.500Z", "0.0"),//<-EXTENDED BY NEXT
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
+                Arrays.asList("2016-06-19T10:59:57.500Z", "0"),//<-EXTENDED BY NEXT
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
                 Arrays.asList("2016-06-19T11:00:02.500Z", "0.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:12.500Z", "2")//<-EXTENDED BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -376,13 +376,13 @@ public class SqlPeriodSyntaxTest extends SqlTest {
                 .readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-19T10:59:57.500Z", "0.0"),//<-EXTENDED BY NEXT
-                Arrays.asList("2016-06-19T11:00:00.000Z", "0.0"),
+                Arrays.asList("2016-06-19T10:59:57.500Z", "0"),//<-EXTENDED BY NEXT
+                Arrays.asList("2016-06-19T11:00:00.000Z", "0"),
                 Arrays.asList("2016-06-19T11:00:02.500Z", "0.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:05.000Z", "1.0"),
+                Arrays.asList("2016-06-19T11:00:05.000Z", "1"),
                 Arrays.asList("2016-06-19T11:00:07.500Z", "1.5"),//<-INTERPOLATED BY LINEAR
-                Arrays.asList("2016-06-19T11:00:10.000Z", "2.0"),
-                Arrays.asList("2016-06-19T11:00:12.500Z", "2.0")//<-EXTENDED BY PREVIOUS
+                Arrays.asList("2016-06-19T11:00:10.000Z", "2"),
+                Arrays.asList("2016-06-19T11:00:12.500Z", "2")//<-EXTENDED BY PREVIOUS
         );
 
         assertTableRowsExist(expectedRows, resultTable);

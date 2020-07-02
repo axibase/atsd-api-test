@@ -18,7 +18,11 @@ public class TradeCheck extends AbstractCheck {
 
     @Override
     public boolean isChecked() {
-        StringTable result = SqlMethod.queryTable(sql);
-        return result.getRows().size() > 0 && result.getValueAt(0, 0).equals(String.valueOf(trade.getNumber()));
+        try {
+            StringTable result = SqlMethod.queryTable(sql);
+            return result.getRows().size() > 0 && result.getValueAt(0, 0).equals(String.valueOf(trade.getNumber()));
+        } catch (IllegalStateException e) { // instrument has not been created yet
+            return false;
+        }
     }
 }

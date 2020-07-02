@@ -2,6 +2,7 @@ package com.axibase.tsd.api.util;
 
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.client.Entity;
 import java.math.BigDecimal;
@@ -63,5 +64,21 @@ public class Mocks {
         Series resultSeries = new Series(entity(), metric(), TAGS);
         resultSeries.addSamples(SAMPLE);
         return resultSeries;
+    }
+
+    public static String tradeExchange() {
+        return normalizeTradeName(NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_EXCHANGE));
+    }
+
+    public static String tradeClass() {
+        return normalizeTradeName(NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_CLASS));
+    }
+
+    public static String tradeSymbol() {
+        return normalizeTradeName(NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_SYMBOL));
+    }
+
+    private static String normalizeTradeName(String value) {
+        return StringUtils.replace(value, ":", "_");
     }
 }

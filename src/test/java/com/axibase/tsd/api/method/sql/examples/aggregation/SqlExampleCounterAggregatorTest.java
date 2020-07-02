@@ -44,8 +44,8 @@ public class SqlExampleCounterAggregatorTest extends SqlTest {
                 "GROUP BY period(1 second)", TEST_METRIC_NAME);
 
         String[][] expectedRows = {
-                {"2015-09-30T09:00:05.000Z", "3", "3.0", "1.0", "2.0", "4.0", "1.0"},
-                {"2015-09-30T09:00:06.000Z", "5", "3.0", "3.0", "3.0", "1.0", "1.0"}
+                {"2015-09-30T09:00:05.000Z", "3", "3", "1", "2", "4.0", "1.0"},
+                {"2015-09-30T09:00:06.000Z", "5", "3", "3", "3", "1.0", "1.0"}
         };
         assertSqlQueryRows(expectedRows, sqlQuery);
     }

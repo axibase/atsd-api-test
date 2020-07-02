@@ -3,15 +3,14 @@ package com.axibase.tsd.api.method.sql;
 import com.axibase.tsd.api.model.sql.ColumnMetaData;
 import com.axibase.tsd.api.model.sql.StringTable;
 import com.axibase.tsd.api.util.Util;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Matcher;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.axibase.tsd.api.util.TestUtil.twoDArrayToList;
@@ -115,20 +114,30 @@ public abstract class SqlTest extends SqlMethod {
     }
 
     public void assertSqlQueryRows(String message, List<List<String>> expectedRows, String sqlQuery) {
-        StringTable resultTable = queryTable(sqlQuery);
-        // Some series may be not returned immediately after insert.
-        // If expected result is not empty, but actual is empty, wait 100ms and try again
-        // See #5057
-        if (expectedRows.size() > 0) {
-            for (int timeout = 100; timeout <= 1600 && resultTable.getRows().size() == 0; timeout *= 2) {
-                try {
-                    Thread.sleep(timeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        StringTable resultTable;
+        try {
+            resultTable = queryTable(sqlQuery);
+            // Some series may be not returned immediately after insert.
+            // If expected result is not empty, but actual is empty, wait 100ms and try again
+            // See #5057
+            if (expectedRows.size() > 0) {
+                for (int timeout = 100; timeout <= 1600 && resultTable.getRows().size() == 0; timeout *= 2) {
+                    try {
+                        Thread.sleep(timeout);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    resultTable = queryTable(sqlQuery);
                 }
-                resultTable = queryTable(sqlQuery);
             }
+        } catch (Exception e) {
+            if (StringUtils.isNotBlank(message)) {
+                String error = String.format("%s%nTest in error", message);
+                throw new RuntimeException(error, e);
+            }
+            throw e;
         }
+
         assertTableRowsExist(String.format("%s%nWrong result of the following SQL query: %n\t%s", message, sqlQuery), expectedRows,
                 resultTable
         );
@@ -301,6 +310,31 @@ public abstract class SqlTest extends SqlMethod {
             } catch (JSONException e2) {
                 return null;
             }
+        }
+    }
+
+    @RequiredArgsConstructor
+    public static class SqlTestConfig<T extends SqlTestConfig> {
+        @Getter
+        private final String description;
+        private Map<String, String> queryVariables = new HashMap<>();
+        @Getter
+        private List<List<String>> expected = new ArrayList<>();
+
+        public void setVariable(String key, String value) {
+            queryVariables.put(key, value);
+        }
+
+        public String composeQuery(String template) {
+            for (Map.Entry<String, String> entry : queryVariables.entrySet()) {
+                template = template.replace("{" + entry.getKey() + "}", entry.getValue());
+            }
+            return template;
+        }
+
+        public T addExpected(String... row) {
+            expected.add(Arrays.asList(row));
+            return (T) this;
         }
     }
 }

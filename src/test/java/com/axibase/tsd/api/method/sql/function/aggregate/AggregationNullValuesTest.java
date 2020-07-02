@@ -44,8 +44,8 @@ public class AggregationNullValuesTest extends SqlTest {
                 SECOND_METRIC);
 
         String[][] expectedRows = {
-                {"null", "NaN"},
-                {FIRST_ENTITY, "NaN"}
+                {"null", "null"},
+                {FIRST_ENTITY, "null"}
         };
 
         assertSqlQueryRows("Wrong result in JOIN query with null values", expectedRows, sqlQuery);

@@ -63,8 +63,8 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "3.0")
+                Arrays.asList(TEST_ENTITY1_NAME, "2"),
+                Arrays.asList(TEST_ENTITY2_NAME, "3")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -81,8 +81,8 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY2_NAME, "3.0"),
-                Arrays.asList(TEST_ENTITY1_NAME, "2.0")
+                Arrays.asList(TEST_ENTITY2_NAME, "3"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -99,8 +99,8 @@ public class SqlClauseOrderByAggregatedColumnAliasTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "3.0")
+                Arrays.asList(TEST_ENTITY1_NAME, "2"),
+                Arrays.asList(TEST_ENTITY2_NAME, "3")
         );
 
         assertTableRowsExist(expectedRows, resultTable);

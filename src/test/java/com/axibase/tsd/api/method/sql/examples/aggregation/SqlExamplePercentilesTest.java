@@ -62,7 +62,7 @@ public class SqlExamplePercentilesTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList("11.172749999999999", "11.3232", "11.3232", "11.408225", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435")
+                Arrays.asList("11.17275", "11.3232", "11.3232", "11.408225", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435", "11.435")
         );
 
         assertTableRowsExist(expectedRows, resultTable);

@@ -438,7 +438,7 @@ public class MetaDataTest extends SqlMetaTest {
         };
 
         String[] expectedTypes = {
-                "double"
+                "decimal"
         };
 
         assertSqlMetaNamesAndTypes("Wrong /api/sql/meta metadata value expression",

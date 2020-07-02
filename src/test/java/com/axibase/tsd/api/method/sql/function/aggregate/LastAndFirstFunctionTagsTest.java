@@ -44,7 +44,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
                 "SELECT LAST(entity.tags.literal_tag) FROM \"%s\"",
                 TEST_METRIC);
 
-        String[][] expectedRows = {{"NaN"}};
+        String[][] expectedRows = {{"null"}};
 
         assertSqlQueryRows("Wrong result for LAST function with literal tag value", expectedRows, sqlQuery);
     }
@@ -74,8 +74,8 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
                 TEST_METRIC);
 
         String[][] expectedRows = {
-                {"NaN", "123", "2"},
-                {"NaN", "123", "3"}
+                {"null", "123", "2"},
+                {"null", "123", "3"}
         };
 
         assertSqlQueryRows("Wrong result for LAST function with numeric tag value", expectedRows, sqlQuery);
@@ -88,7 +88,7 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
                 "SELECT FIRST(entity.tags.literal_tag) FROM \"%s\"",
                 TEST_METRIC);
 
-        String[][] expectedRows = {{"NaN"}};
+        String[][] expectedRows = {{"null"}};
 
         assertSqlQueryRows("Wrong result for FIRST function with literal tag value", expectedRows, sqlQuery);
     }
@@ -118,8 +118,8 @@ public class LastAndFirstFunctionTagsTest extends SqlTest {
                 TEST_METRIC);
 
         String[][] expectedRows = {
-                {"NaN", "123", "2"},
-                {"NaN", "123", "3"}
+                {"null", "123", "2"},
+                {"null", "123", "3"}
         };
 
         assertSqlQueryRows("Wrong result for LAST function with numeric tag value", expectedRows, sqlQuery);

@@ -55,7 +55,7 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList(
                         TEST_ENTITY1_NAME,
-                        "2.0",
+                        "2",
                         formatDate(
                                 Util.parseDate("2016-06-17T19:16:02.000Z"),
                                 "yyyy-MM-dd HH:mm:ss"
@@ -63,7 +63,7 @@ public class SqlExampleAggregateMaxValueTimeTest extends SqlTest {
                 ),
                 Arrays.asList(
                         TEST_ENTITY2_NAME,
-                        "4.0",
+                        "4",
                         formatDate(
                                 Util.parseDate("2016-06-17T19:16:04.000Z"),
                                 "yyyy-MM-dd HH:mm:ss"

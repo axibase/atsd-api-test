@@ -58,9 +58,9 @@ public class SqlExampleOrderByValueTest extends SqlTest {
         Response response = queryResponse(sqlQuery);
         StringTable resultTable = response.readEntity(StringTable.class);
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY3_NAME, "5.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "3.0"),
-                Arrays.asList(TEST_ENTITY1_NAME, "1.0")
+                Arrays.asList(TEST_ENTITY3_NAME, "5"),
+                Arrays.asList(TEST_ENTITY2_NAME, "3"),
+                Arrays.asList(TEST_ENTITY1_NAME, "1")
         );
         assertTableRowsExist(expectedRows, resultTable);
     }

@@ -58,7 +58,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.399999999999999"),
+                Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.4"),
                 Arrays.asList("2016-08-15T07:25:02.000Z", TEST_ENTITY_NAME, "5.4", "12.2", "17.6")
         );
 
@@ -80,7 +80,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.399999999999999", "14.399999999999999"),
+                Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.4", "14.4"),
                 Arrays.asList("2016-08-15T07:25:02.000Z", TEST_ENTITY_NAME, "5.4", "12.2", "17.6", "17.6")
         );
 
@@ -102,7 +102,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.399999999999999", "14.399999999999999"),
+                Arrays.asList("2016-08-15T07:24:46.000Z", TEST_ENTITY_NAME, "4.3", "10.1", "14.4", "14.4"),
                 Arrays.asList("2016-08-15T07:25:02.000Z", TEST_ENTITY_NAME, "5.4", "12.2", "17.6", "17.6")
         );
 
@@ -124,7 +124,7 @@ public class SqlExampleComputedColumnsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.singletonList(
-                Arrays.asList(TEST_ENTITY_NAME, "4.3", "5.4", "1.1000000000000005")
+                Arrays.asList(TEST_ENTITY_NAME, "4.3", "5.4", "1.1")
         );
 
         assertTableRowsExist(expectedRows, resultTable);

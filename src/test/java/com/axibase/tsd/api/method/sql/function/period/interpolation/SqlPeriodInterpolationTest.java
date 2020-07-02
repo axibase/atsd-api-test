@@ -47,8 +47,8 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                 //<-missing period
-                Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.000Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
@@ -70,8 +70,8 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                 Arrays.asList("2016-06-03T09:30:00.000Z", "0.0"),//<-constant
-                Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.000Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
@@ -93,8 +93,8 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                 Arrays.asList("2016-06-03T09:30:00.000Z", "-1.0"),//<-constant
-                Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.000Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
@@ -116,8 +116,8 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                 Arrays.asList("2016-06-03T09:30:00.000Z", "8.1"),//<-previous value
-                Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.000Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
@@ -139,8 +139,8 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
                 Arrays.asList("2016-06-03T09:30:00.000Z", "7.05"),//<-interpolated
-                Arrays.asList("2016-06-03T09:35:00.000Z", "6.0"),
-                Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:35:00.000Z", "6"),
+                Arrays.asList("2016-06-03T09:40:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
@@ -160,12 +160,12 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
         );
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-06-03T09:36:00.000Z", "6.0"),
+                Arrays.asList("2016-06-03T09:36:00.000Z", "6"),
                 Arrays.asList("2016-06-03T09:37:00.000Z", "8.6"),//<-interpolated
                 Arrays.asList("2016-06-03T09:38:00.000Z", "11.2"),//<-interpolated
                 Arrays.asList("2016-06-03T09:39:00.000Z", "13.8"),//<-interpolated
                 Arrays.asList("2016-06-03T09:40:00.000Z", "16.4"),//<-interpolated
-                Arrays.asList("2016-06-03T09:41:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:41:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)
@@ -185,7 +185,7 @@ public class SqlPeriodInterpolationTest extends SqlMethod {
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-06-03T09:25:00.000Z", "8.1"),
-                Arrays.asList("2016-06-03T09:40:00.000Z", "19.0")
+                Arrays.asList("2016-06-03T09:40:00.000Z", "19")
         );
 
         List<List<String>> resultRows = queryResponse(sqlQuery)

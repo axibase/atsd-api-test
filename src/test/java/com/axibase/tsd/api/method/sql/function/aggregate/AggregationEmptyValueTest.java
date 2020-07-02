@@ -92,26 +92,26 @@ public class AggregationEmptyValueTest extends SqlTest {
     @DataProvider(name = "aggregationFunctionFormats")
     Object[][] provideAgregationFunctionFormat() {
         return new Object[][]{
-                {"min(%s)"},
-                {"max(%s)"},
-                {"avg(%s)"},
-                {"sum(%s)"},
-                {"last(%s)"},
-                {"first(%s)"},
-                {"stddev(%s)"},
-                {"delta(%s)"},
-                {"counter(%s)"},
-                {"correl(%1$s,%1$s)"},
-                {"median(%s)"},
-                {"percentile(90,%s)"},
-                {"wavg(%s)"},
-                {"wtavg(%s)"},
+                {"min(%s)", "null"},
+                {"max(%s)", "null"},
+                {"avg(%s)", "null"},
+                {"sum(%s)", "null"},
+                {"last(%s)", "null"},
+                {"first(%s)", "null"},
+                {"stddev(%s)", "null"},
+                {"delta(%s)", "NaN"},
+                {"counter(%s)", "NaN"},
+                {"correl(%1$s,%1$s)", "NaN"},
+                {"median(%s)", "null"},
+                {"percentile(90,%s)", "null"},
+                {"wavg(%s)", "NaN"},
+                {"wtavg(%s)", "NaN"},
         };
     }
 
     @Issue("4000")
     @Test(dataProvider = "aggregationFunctionFormats")
-    public void testAggregationNaN(String functionFormat) {
+    public void testAggregationNaN(String functionFormat, String expected) {
         String functionWithArgument = String.format(functionFormat, "value");
 
         String sqlQuery = String.format(
@@ -122,14 +122,14 @@ public class AggregationEmptyValueTest extends SqlTest {
                 METRIC_NAME2
         );
 
-        String[][] expectedRows = {{"NaN"}};
+        String[][] expectedRows = {{expected}};
 
         assertSqlQueryRows("Incorrect result for one of aggregation functions with NaN", expectedRows, sqlQuery);
     }
 
     @Issue("4000")
     @Test(dataProvider = "aggregationFunctionFormats")
-    public void testAggregationNull(String functionFormat) {
+    public void testAggregationNull(String functionFormat, String expected) {
         String functionWithArgument = String.format(functionFormat, "text");
 
         String sqlQuery = String.format(
@@ -140,7 +140,7 @@ public class AggregationEmptyValueTest extends SqlTest {
                 METRIC_NAME2
         );
 
-        String[][] expectedRows = {{"NaN"}};
+        String[][] expectedRows = {{expected}};
 
         assertSqlQueryRows("Incorrect result for one of aggregation functions with null", expectedRows, sqlQuery);
     }

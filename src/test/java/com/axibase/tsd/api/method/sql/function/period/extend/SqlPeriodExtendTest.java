@@ -58,8 +58,8 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-07-14T15:00:05.000Z", "1.0"), //<--interpolated by NEXT value
-                Arrays.asList("2016-07-14T15:00:06.000Z", "1.0")
+                Arrays.asList("2016-07-14T15:00:05.000Z", "1"), //<--interpolated by NEXT value
+                Arrays.asList("2016-07-14T15:00:06.000Z", "1")
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -78,8 +78,8 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList("2016-07-14T15:00:09.000Z", "2.0") //<--interpolated by PREVIOUS value
+                Arrays.asList("2016-07-14T15:00:08.000Z", "2"),
+                Arrays.asList("2016-07-14T15:00:09.000Z", "2") //<--interpolated by PREVIOUS value
         );
 
         assertTableRowsExist(expectedRows, resultTable);
@@ -99,11 +99,11 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-07-14T15:00:05.000Z", "1.0"), //<--interpolated by NEXT value
-                Arrays.asList("2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList("2016-07-14T15:00:05.000Z", "1"), //<--interpolated by NEXT value
+                Arrays.asList("2016-07-14T15:00:06.000Z", "1"),
                 // Missing period
-                Arrays.asList("2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList("2016-07-14T15:00:09.000Z", "2.0") //<--interpolated by NEXT value
+                Arrays.asList("2016-07-14T15:00:08.000Z", "2"),
+                Arrays.asList("2016-07-14T15:00:09.000Z", "2") //<--interpolated by NEXT value
 
         );
 
@@ -125,9 +125,9 @@ public class SqlPeriodExtendTest extends SqlTest {
 
         List<List<String>> expectedRows = Arrays.asList(
                 Arrays.asList("2016-07-14T15:00:05.000Z", "0.0"), //<--interpolated by VALUE 0
-                Arrays.asList("2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList("2016-07-14T15:00:06.000Z", "1"),
                 Arrays.asList("2016-07-14T15:00:07.000Z", "0.0"),//<--value interpolated
-                Arrays.asList("2016-07-14T15:00:08.000Z", "2.0"),
+                Arrays.asList("2016-07-14T15:00:08.000Z", "2"),
                 Arrays.asList("2016-07-14T15:00:09.000Z", "0.0") //<--interpolated by VALUE 0
 
         );
@@ -148,11 +148,11 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-07-14T15:00:05.000Z", "1.0"), //<--interpolated by NEXT
-                Arrays.asList("2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList("2016-07-14T15:00:05.000Z", "1"), //<--interpolated by NEXT
+                Arrays.asList("2016-07-14T15:00:06.000Z", "1"),
                 Arrays.asList("2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList("2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList("2016-07-14T15:00:09.000Z", "2.0") //<--interpolated by PREVIOUS
+                Arrays.asList("2016-07-14T15:00:08.000Z", "2"),
+                Arrays.asList("2016-07-14T15:00:09.000Z", "2") //<--interpolated by PREVIOUS
 
         );
 
@@ -173,9 +173,9 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList("2016-07-14T15:00:06.000Z", "1.0"),
+                Arrays.asList("2016-07-14T15:00:06.000Z", "1"),
                 Arrays.asList("2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList("2016-07-14T15:00:08.000Z", "2.0")
+                Arrays.asList("2016-07-14T15:00:08.000Z", "2")
 
         );
 
@@ -197,10 +197,10 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3"),
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2")
 
         );
 
@@ -222,12 +222,12 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:05.000Z", "3.0"),//<--interpolated by NEXT
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:05.000Z", "3"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3"),
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0")
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2")
 
         );
 
@@ -250,12 +250,12 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3"),
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:07.000Z", "3.0"),//<--interpolated by PREVIOUS
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:08.000Z", "3.0")//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:07.000Z", "3"),//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:08.000Z", "3")//<--interpolated by PREVIOUS
 
         );
 
@@ -277,14 +277,14 @@ public class SqlPeriodExtendTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Arrays.asList(
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1.0"),//<--interpolated by NEXT
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:05.000Z", "3.0"),//<--interpolated by NEXT
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3.0"),
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:05.000Z", "1"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:05.000Z", "3"),//<--interpolated by NEXT
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:06.000Z", "1"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:06.000Z", "3"),
                 Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:07.000Z", "1.5"),//<--interpolated by LINEAR
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:07.000Z", "3.0"),//<--interpolated by PREVIOUS
-                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2.0"),
-                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:08.000Z", "3.0")//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:07.000Z", "3"),//<--interpolated by PREVIOUS
+                Arrays.asList(TEST_ENTITY1_NAME, "2016-07-14T15:00:08.000Z", "2"),
+                Arrays.asList(TEST_ENTITY2_NAME, "2016-07-14T15:00:08.000Z", "3")//<--interpolated by PREVIOUS
 
         );
 
