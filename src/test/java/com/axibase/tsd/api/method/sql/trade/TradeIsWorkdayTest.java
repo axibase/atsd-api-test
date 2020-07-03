@@ -18,6 +18,8 @@ public class TradeIsWorkdayTest extends SqlTradeTest {
         trades.add(fromISOString("2020-04-16T23:00:00Z").setPrice(new BigDecimal("2"))); // Holiday
         trades.add(fromISOString("2020-04-17T23:00:00Z").setPrice(new BigDecimal("3"))); // Workday
         trades.add(fromISOString("2020-04-18T23:00:00Z")); // Saturday
+        trades.add(fromISOString("2018-12-28T10:00:00Z")); // Workday
+        trades.add(fromISOString("2018-12-29T10:00:00Z")); // Working saturday in Russia
         insert(trades);
     }
 
@@ -50,6 +52,17 @@ public class TradeIsWorkdayTest extends SqlTradeTest {
                         .sql("select datetime, close() from atsd_trade where {instrument} and {time} and is_workday(time, 'usa', 'Europe/Moscow') group by exchange, class, symbol, period(1 day)")
                         .addExpected("2020-04-16T00:00:00.000000Z", "2"),
 
+                test("Test working saturday")
+                        .sql("select datetime from atsd_trade where {instrument} and {time} and is_workday(datetime) WITH TIMEZONE = 'Europe/Moscow', WORKDAY_CALENDAR = 'rus'")
+                        .time(" time between '2018-12-28T00:00:00Z' and '2018-12-30T00:00:00Z' ")
+                        .addExpected("2018-12-28T10:00:00.000000Z")
+                        .addExpected("2018-12-29T10:00:00.000000Z"),
+
+                test("Test saturday")
+                        .sql("select datetime from atsd_trade where {instrument} and {time} and is_workday(datetime) WITH TIMEZONE = 'Europe/Moscow', WORKDAY_CALENDAR = 'usa'")
+                        .time(" time between '2018-12-28T00:00:00Z' and '2018-12-30T00:00:00Z' ")
+                        .addExpected("2018-12-28T10:00:00.000000Z")
+
         };
         return TestUtil.convertTo2DimArray(data);
     }
@@ -63,11 +76,16 @@ public class TradeIsWorkdayTest extends SqlTradeTest {
 
         public TestConfig(String description) {
             super(description);
-            setVariable("time", "time between '2020-04-15T00:00:00Z' and '2020-04-19T00:00:00Z'");
+            time("time between '2020-04-15T00:00:00Z' and '2020-04-19T00:00:00Z'");
         }
 
         public TestConfig sql(String sql) {
             this.sql = sql;
+            return this;
+        }
+
+        public TestConfig time(String time) {
+            setVariable("time", time);
             return this;
         }
 
