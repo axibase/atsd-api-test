@@ -45,11 +45,11 @@ public class TradeIsWorkdayTest extends SqlTradeTest {
                         .addExpected("2020-04-16T23:00:00.000000Z"),
 
                 test("Aggregate query UTC timezone")
-                        .sql("select datetime, open() from atsd_trade where {instrument} and {time} and is_workday(time, 'usa', 'UTC') group by exchange, class, symbol, period(1 day)")
+                        .sql("select datetime, open() from atsd_trade where {instrument} and {time} and is_workday(time, 'usa', 'UTC') group by exchange, class, symbol, period(1 day, 'UTC')")
                         .addExpected("2020-04-17T00:00:00.000000Z", "3"),
 
                 test("Aggregate query Moscow timezone")
-                        .sql("select datetime, close() from atsd_trade where {instrument} and {time} and is_workday(time, 'usa', 'Europe/Moscow') group by exchange, class, symbol, period(1 day)")
+                        .sql("select datetime, close() from atsd_trade where {instrument} and {time} and is_workday(time, 'usa', 'Europe/Moscow') group by exchange, class, symbol, period(1 day, 'UTC')")
                         .addExpected("2020-04-16T00:00:00.000000Z", "2"),
 
                 test("Test working saturday")
