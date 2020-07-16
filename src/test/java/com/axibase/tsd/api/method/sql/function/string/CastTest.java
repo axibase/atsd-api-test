@@ -466,24 +466,6 @@ public class CastTest extends SqlTest {
         assertSqlQueryRows("String function result was not implicitly casted to number", expected, sql);
     }
 
-    @Issue("4020")
-    @Test
-    public void testImplicitCastInMathExpressionsRaisesError() throws Exception {
-        Series series = Mocks.series();
-        SeriesMethod.insertSeriesCheck(series);
-
-        String sql = String.format(
-                "SELECT CONCAT(value, '')+10%n" +
-                "FROM \"%s\"",
-                series.getMetric()
-        );
-
-        assertBadRequest(
-                "Math expression with string variable applied",
-                "Invalid expression: 'concat(value, '') + 10' at line 1 position 7 near \"CONCAT\"", queryResponse(sql)
-        );
-    }
-
     @Issue("4182")
     @Test
     public void testCastIsNullString() {
