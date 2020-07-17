@@ -1,5 +1,7 @@
 package com.axibase.tsd.api.method.sql.trade;
 
+import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.entity.EntityMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.financial.Trade;
@@ -32,6 +34,10 @@ public class TradeAmountFunctionTest extends SqlTradeTest {
         trades.add(fromISOString("2020-06-15T10:21:49.123456Z").setPrice(new BigDecimal("10")).setQuantity(2).setSymbol(symbolThree()));
 
         insert(trades);
+
+        Checker.check(new EntityCheck(entity));
+        Checker.check(new EntityCheck(entityTwo));
+        Checker.check(new EntityCheck(entityThree));
 
         entity.setTags(TestUtil.createTags("lot", "2"));
         entityThree.setTags(TestUtil.createTags("lot", "abc"));

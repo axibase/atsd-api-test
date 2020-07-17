@@ -37,9 +37,6 @@ public class TradeEntityTest extends SqlTradeTest {
         entityTwo.setTags(TestUtil.createTags("a", "15", "b", "def"));
 
         EntityMethod.updateEntity(entityTwo);
-
-        Checker.check(new EntityCheck(entity));
-        Checker.check(new EntityCheck(entityTwo));
     }
 
     @Test(dataProvider = "testData")
