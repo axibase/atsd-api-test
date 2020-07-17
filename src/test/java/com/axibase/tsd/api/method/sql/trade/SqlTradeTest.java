@@ -76,6 +76,14 @@ public abstract class SqlTradeTest extends SqlTest {
         return String.format("exchange='%s' AND class='%s' AND symbol='%s'", exchange(), clazz(), symbolTwo());
     }
 
+    protected String entity() {
+        return symbol() + "_[" + clazz() + "]";
+    }
+
+    protected String entityTwo() {
+        return symbolTwo() + "_[" + clazz() + "]";
+    }
+
     protected class TradeTestConfig<T extends TradeTestConfig> extends SqlTestConfig<T> {
 
         public TradeTestConfig(String description) {

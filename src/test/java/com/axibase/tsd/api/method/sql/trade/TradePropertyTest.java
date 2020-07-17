@@ -69,10 +69,6 @@ public class TradePropertyTest extends SqlTradeTest {
 
     }
 
-    private String entity() {
-        return symbol() + "_[" + clazz() + "]";
-    }
-
     @Test
     public void test() throws Exception {
         String sql = "select sec_def.roundlot, sec_def('product'), stat.numbids, stat('numoffers'), stat.bid " +
