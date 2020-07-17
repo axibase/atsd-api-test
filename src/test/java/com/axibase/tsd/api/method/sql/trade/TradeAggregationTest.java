@@ -2,7 +2,6 @@ package com.axibase.tsd.api.method.sql.trade;
 
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.util.TestUtil;
-import com.axibase.tsd.api.util.TradeSender;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -10,7 +9,6 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.axibase.tsd.api.util.Util.getUnixTime;
 
@@ -30,7 +28,7 @@ public class TradeAggregationTest extends SqlTradeTest {
         trades.add(trade(getUnixTime("2020-03-22T11:01:29Z"), new BigDecimal("127.31"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:49Z"), new BigDecimal("127.10"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:50Z"), new BigDecimal("127.11"), 4137));
-        TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+        insert(trades);
     }
 
     @Test(dataProvider = "testData")

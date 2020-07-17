@@ -20,6 +20,7 @@ public abstract class SqlTradeTest extends SqlTest {
     private final String clazz = Mocks.tradeClass();
     private final String symbol = Mocks.tradeSymbol();
     private final String symbolTwo = Mocks.tradeSymbol();
+    private final String symbolThree = Mocks.tradeSymbol();
 
     protected String exchange() {
         return exchange;
@@ -35,6 +36,10 @@ public abstract class SqlTradeTest extends SqlTest {
 
     protected String symbolTwo() {
         return symbolTwo;
+    }
+
+    protected String symbolThree() {
+        return symbolThree;
     }
 
     protected void insert(List<Trade> trades) throws Exception {
@@ -82,6 +87,10 @@ public abstract class SqlTradeTest extends SqlTest {
 
     protected String entityTwo() {
         return symbolTwo() + "_[" + clazz() + "]";
+    }
+
+    protected String entityThree() {
+        return symbolThree() + "_[" + clazz() + "]";
     }
 
     protected class TradeTestConfig<T extends TradeTestConfig> extends SqlTestConfig<T> {
