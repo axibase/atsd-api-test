@@ -50,7 +50,7 @@ public class TradeAmountFunctionTest extends SqlTradeTest {
     public void test() throws Exception {
         String sql = "select amount() from atsd_trade where " + classCondition() + " group by exchange, class, symbol";
         String[][] expected = new String[][]{
-                {"128.0"}, // (3.5 * 4 + 5 * 10) * 2
+                {"128"}, // (3.5 * 4 + 5 * 10) * 2
                 {"63.44"}, // (10 * 2 + 5.43 * 8) * 1
                 {"NaN"}
         };
