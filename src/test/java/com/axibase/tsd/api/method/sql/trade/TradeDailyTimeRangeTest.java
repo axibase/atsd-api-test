@@ -24,6 +24,12 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                     "WITH TIMEZONE = '{timeZone}' " +
                     "ORDER BY {orderBy}";
 
+        private static final String AGGREGATION_QUERY_TEMPLATE = "SELECT datetime, symbol FROM atsd_trade " +
+                "WHERE {instrument} AND {timeRange} " +
+                "WITH TIMEZONE = '{timeZone}' " +
+                "GROUP BY exchange, class, symbol, period(1 minute) " +
+                "ORDER BY {orderBy}";
+
     @BeforeClass
     public void prepareData() throws Exception {
         List<Trade> trades = new ArrayList<>();
@@ -56,6 +62,28 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
         String sql = testConfig.applyTemplate(QUERY_TEMPLATE);
         assertSqlQueryRows(testConfig.description, testConfig.expected, sql);
     }
+
+        @Test(dataProvider = "testDataAggregation")
+        public void testAggregation(TestConfig testConfig) throws Exception {
+                String sql = testConfig.applyTemplate(AGGREGATION_QUERY_TEMPLATE);
+                assertSqlQueryRows(testConfig.description, testConfig.expected, sql);
+        }
+
+        @DataProvider
+        public Object[][] testDataAggregation() throws Exception {
+                TestConfig[] data = {
+                        test("Test HH:mm same day")
+                                .setInstrument(instrumentCondition())
+                                .setTimeRange("date_format(time, 'HH:mm') BETWEEN '10:20' AND '10:44' EXCL")
+                                .addExpected("2020-05-19T10:21:00.000000Z", symbol())
+                                .addExpected("2020-05-20T10:35:00.000000Z", symbol())
+                                .addExpected("2020-05-20T10:43:00.000000Z", symbol()),
+                        test("Test HH:mm next day")
+                                .setInstrument(instrumentCondition())
+                                .setTimeRange("date_format(time, 'HH:mm') BETWEEN '10:36' AND '10:20' EXCL")
+                };
+                return TestUtil.convertTo2DimArray(data);
+        }
 
     @DataProvider
     public Object[][] testData() {
