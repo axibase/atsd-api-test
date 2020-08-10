@@ -115,10 +115,6 @@ public class InstrumentSearchBase {
                     .collect(Collectors.toList());
             TCPSender.send(entityCommands);
 
-            // Let ATSD apply incoming commands
-            Thread.sleep(1000);
-
-            updateInstrumentIndex();
             return this;
         }
 
@@ -130,6 +126,7 @@ public class InstrumentSearchBase {
                         .setTags(Collections.singletonMap("exchange", entry.getExchange())))
                     .map(query -> new SeriesQueryDataSizeCheck(query, 1))
                     .forEach(check -> Checker.check(check, time, timeUnit));
+            updateInstrumentIndex();
             return this;
         }
 
