@@ -20,6 +20,7 @@ public class TradeSideAndSessionFilterTest extends SqlTradeTest {
         trades.add(trade(getUnixTime("2020-03-22T11:01:05Z")).setNumber(4).setSession(Trade.Session.N));
         trades.add(trade(getUnixTime("2020-03-22T11:01:49Z")).setNumber(5).setSide(Trade.Side.BUY).setSession(Trade.Session.L));
         trades.add(trade(getUnixTime("2020-03-22T11:01:50Z")).setNumber(6));
+        trades.add(trade(getUnixTime("2020-03-22T11:01:50Z")).setNumber(6).setSession(Trade.Session.O));
         insert(trades);
     }
 

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class Trade {
     public enum Side {SELL, BUY}
 
-    public enum Session {S, N, L, E}
+    public enum Session {S, N, L, E, O}
 
     private long number;
     private long timestamp;     // trade time in microseconds truncated to milliseconds = trade time with last 3 digits removed
