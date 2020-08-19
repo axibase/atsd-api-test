@@ -81,6 +81,16 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
                         test("Test HH:mm next day")
                                 .setInstrument(instrumentCondition())
                                 .setTimeRange("date_format(time, 'HH:mm') BETWEEN '10:36' AND '10:20' EXCL")
+                                .addExpected("2020-05-19T09:55:00.000000Z", symbol())
+                                .addExpected("2020-05-19T10:00:00.000000Z", symbol())
+                                .addExpected("2020-05-19T10:59:00.000000Z", symbol())
+                                .addExpected("2020-05-19T11:00:00.000000Z", symbol())
+                                .addExpected("2020-05-19T11:05:00.000000Z", symbol())
+                                .addExpected("2020-05-20T09:55:00.000000Z", symbol())
+                                .addExpected("2020-05-20T10:00:00.000000Z", symbol())
+                                .addExpected("2020-05-20T10:43:00.000000Z", symbol())
+                                .addExpected("2020-05-20T11:00:00.000000Z", symbol())
+                                .addExpected("2020-05-20T11:05:00.000000Z", symbol())
                 };
                 return TestUtil.convertTo2DimArray(data);
         }
