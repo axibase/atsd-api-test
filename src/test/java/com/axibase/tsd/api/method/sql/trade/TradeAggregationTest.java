@@ -60,8 +60,10 @@ public class TradeAggregationTest extends SqlTradeTest {
                         .fields("open(), high(), low(), close(), volume(), close() * count(*) as t")
                         .period(1, "hour")
                         .having("t > 600")
-                        .addExpected("127.2", "127.31", "127.1", "127.11", "16137", "635.55")
-
+                        .addExpected("127.2", "127.31", "127.1", "127.11", "16137", "635.55"),
+                test("Test sum(price*quantity)")
+                        .fields("open(), volume(), sum((quantity*price)), vwap(), sum(quantity)")
+                        .addExpected("126.99", "105466", "1.341158175E7", "127.16497970910056", "105466")
                 ,
         };
         return TestUtil.convertTo2DimArray(data);

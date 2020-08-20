@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 public class Trade {
     public enum Side {SELL, BUY}
 
+    public enum Session {S, N, L, E, O}
+
     private long number;
     private long timestamp;     // trade time in microseconds truncated to milliseconds = trade time with last 3 digits removed
     private long microSeconds;  // (trade time in microseconds - timestamp * 1000) = last 3 digits of trade time
@@ -26,6 +28,7 @@ public class Trade {
     private long quantity;
     private BigDecimal price;
     private Long order;
+    private Session session;
 
     public Trade(String exchange, String clazz, String symbol, long number, long timestamp, BigDecimal price, long quantity) {
         this.number = number;
@@ -56,7 +59,7 @@ public class Trade {
     public String toCsvLine() {
         validate();
         String csvSide = side == null ? null : side.name().substring(0, 1);
-        return Stream.of(number, timestamp, microSeconds, clazz, symbol, exchange, csvSide, quantity, price, order)
+        return Stream.of(number, timestamp, microSeconds, clazz, symbol, exchange, csvSide, quantity, price, order, session)
                 .map(n -> n == null ? "" : n.toString())
                 .collect(Collectors.joining(","));
     }
