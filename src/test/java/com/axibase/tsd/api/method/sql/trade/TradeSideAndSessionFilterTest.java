@@ -20,7 +20,7 @@ public class TradeSideAndSessionFilterTest extends SqlTradeTest {
         trades.add(trade(getUnixTime("2020-03-22T11:01:05Z")).setNumber(4).setSession(Trade.Session.N));
         trades.add(trade(getUnixTime("2020-03-22T11:01:49Z")).setNumber(5).setSide(Trade.Side.BUY).setSession(Trade.Session.L));
         trades.add(trade(getUnixTime("2020-03-22T11:01:50Z")).setNumber(6));
-        trades.add(trade(getUnixTime("2020-03-22T11:01:50Z")).setNumber(6).setSession(Trade.Session.O));
+        trades.add(trade(getUnixTime("2020-03-22T11:01:50Z")).setNumber(7).setSession(Trade.Session.O));
         insert(trades);
     }
 
@@ -30,6 +30,29 @@ public class TradeSideAndSessionFilterTest extends SqlTradeTest {
         String[][] expected = {
                 {"1", "B", "E"},
                 {"2", "S", "S"}
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testSessionNegation() throws Exception {
+        String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and session != 'E'";
+        String[][] expected = {
+                {"2", "S", "S"},
+                {"4", "null", "N"},
+                {"5", "B", "L"},
+                {"7", "null", "O"},
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testSessionNotIn() throws Exception {
+        String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and session not in ('E', 'N')";
+        String[][] expected = {
+                {"2", "S", "S"},
+                {"5", "B", "L"},
+                {"7", "null", "O"},
         };
         assertSqlQueryRows(expected, sql);
     }
