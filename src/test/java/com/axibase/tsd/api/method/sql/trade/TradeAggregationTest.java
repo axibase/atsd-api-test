@@ -19,10 +19,10 @@ public class TradeAggregationTest extends SqlTradeTest {
     @BeforeClass
     public void prepareData() throws Exception {
         List<Trade> trades = new ArrayList<>();
-        trades.add(trade(getUnixTime("2020-03-22T10:00:01Z"), new BigDecimal("126.99"), 22330));
-        trades.add(trade(getUnixTime("2020-03-22T10:00:09Z"), new BigDecimal("127.36"), 22330));
-        trades.add(trade(getUnixTime("2020-03-22T10:00:49Z"), new BigDecimal("127.02"), 22339));
-        trades.add(trade(getUnixTime("2020-03-22T10:00:55Z"), new BigDecimal("127.28"), 22330));
+        trades.add(trade(getUnixTime("2020-03-22T10:01:00Z"), new BigDecimal("126.99"), 22330));
+        trades.add(trade(getUnixTime("2020-03-22T10:09:00Z"), new BigDecimal("127.36"), 22330));
+        trades.add(trade(getUnixTime("2020-03-22T10:49:00Z"), new BigDecimal("127.02"), 22339));
+        trades.add(trade(getUnixTime("2020-03-22T10:55:00Z"), new BigDecimal("127.28"), 22330));
         trades.add(trade(getUnixTime("2020-03-22T11:01:05Z"), new BigDecimal("127.20"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:14Z"), new BigDecimal("127.20"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:29Z"), new BigDecimal("127.31"), 3000));
@@ -73,8 +73,8 @@ public class TradeAggregationTest extends SqlTradeTest {
                 test("Period 40 minutes")
                         .fields("datetime, count(*)")
                         .period(40, "minute")
-                        .addExpected("2020-03-22T10:00:00.000000Z", "4")
-                        .addExpected("2020-03-22T10:40:00.000000Z", "5")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "2")
+                        .addExpected("2020-03-22T10:40:00.000000Z", "7")
         };
         return TestUtil.convertTo2DimArray(data);
     }
