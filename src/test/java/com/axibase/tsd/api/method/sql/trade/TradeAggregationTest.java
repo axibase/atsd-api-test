@@ -14,7 +14,7 @@ import static com.axibase.tsd.api.util.Util.getUnixTime;
 
 public class TradeAggregationTest extends SqlTradeTest {
     private static final String QUERY = "select {fields} from atsd_trade where {instrument} " +
-            "group by exchange, class, symbol {period} {having}";
+            "group by exchange, class, symbol {period} {having}  WITH TIMEZONE = 'UTC'";
 
     @BeforeClass
     public void prepareData() throws Exception {
