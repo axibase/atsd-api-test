@@ -65,6 +65,16 @@ public class TradeAggregationTest extends SqlTradeTest {
                         .fields("open(), volume(), sum((quantity*price)), vwap(), sum(quantity)")
                         .addExpected("126.99", "105466", "1.341158175E7", "127.16497970910056", "105466")
                 ,
+                test("Period greater than 1 hour")
+                        .fields("datetime, count(*)")
+                        .period(2, "hour")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "9")
+                ,
+                test("Period 40 minutes")
+                        .fields("datetime, count(*)")
+                        .period(40, "minute")
+                        .addExpected("2020-03-22T10:00:00.000000Z", "4")
+                        .addExpected("2020-03-22T10:40:00.000000Z", "5")
         };
         return TestUtil.convertTo2DimArray(data);
     }
