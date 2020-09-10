@@ -79,6 +79,6 @@ public class Mocks {
     }
 
     private static String normalizeTradeName(String value) {
-        return StringUtils.replace(value, ":", "_");
+        return StringUtils.upperCase(StringUtils.replace(value, ":", "_"));
     }
 }

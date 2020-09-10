@@ -4,6 +4,7 @@ import com.axibase.tsd.api.method.sql.SqlTest;
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.util.Mocks;
 import com.axibase.tsd.api.util.TradeSender;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -82,15 +83,15 @@ public abstract class SqlTradeTest extends SqlTest {
     }
 
     protected String entity() {
-        return symbol() + "_[" + clazz() + "]";
+        return StringUtils.lowerCase(symbol() + "_[" + clazz() + "]");
     }
 
     protected String entityTwo() {
-        return symbolTwo() + "_[" + clazz() + "]";
+        return StringUtils.lowerCase(symbolTwo() + "_[" + clazz() + "]");
     }
 
     protected String entityThree() {
-        return symbolThree() + "_[" + clazz() + "]";
+        return StringUtils.lowerCase(symbolThree() + "_[" + clazz() + "]");
     }
 
     protected class TradeTestConfig<T extends TradeTestConfig> extends SqlTestConfig<T> {
