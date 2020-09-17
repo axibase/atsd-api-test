@@ -14,7 +14,7 @@ import static com.axibase.tsd.api.util.Util.getUnixTime;
 
 public class TradeInstrumentOrConditionTest extends SqlTradeTest {
     private static final String QUERY = "select exchange, class, symbol from atsd_trade where {where} " +
-            "and datetime between '2020-03-22T09:00:00Z' and '2020-03-22T10:00:02Z' {groupBy}";
+            "and datetime between '2020-03-22T09:00:00Z' and '2020-03-22T10:00:02Z' {groupBy} order by exchange, class, symbol";
     private final String classTwo = Mocks.tradeClass();
     private final String exchangeTwo = Mocks.tradeExchange();
 
