@@ -336,5 +336,10 @@ public abstract class SqlTest extends SqlMethod {
             expected.add(Arrays.asList(row));
             return (T) this;
         }
+
+        @Override
+        public String toString() {
+            return " " + description + " ";
+        }
     }
 }

@@ -760,16 +760,21 @@ public class TradeDailyTimeRangeTest extends SqlTradeTest {
         private List<List<String>> expected = new ArrayList<>();
 
         private String applyTemplate(String template) {
-            return template
-                    .replace("{instrument}", instrument)
-                    .replace("{timeRange}", timeRange)
-                    .replace("{orderBy}", orderBy)
-                    .replace("{timeZone}", timeZone);
+                return template
+                        .replace("{instrument}", instrument)
+                        .replace("{timeRange}", timeRange)
+                        .replace("{orderBy}", orderBy)
+                        .replace("{timeZone}", timeZone);
         }
 
         private TestConfig addExpected(String... row) {
-            expected.add(Arrays.stream(row).map(String::toUpperCase).collect(Collectors.toList()));
-            return this;
+                expected.add(Arrays.stream(row).map(String::toUpperCase).collect(Collectors.toList()));
+                return this;
+        }
+
+            @Override
+            public String toString() {
+                    return " " + description + " ";
         }
     }
 }
