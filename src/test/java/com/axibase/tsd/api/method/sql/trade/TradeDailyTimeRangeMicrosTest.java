@@ -45,7 +45,13 @@ public class TradeDailyTimeRangeMicrosTest extends SqlTradeTest {
                         .addExpected("2020-05-19T10:00:00.000001Z")
                         .addExpected("2020-05-19T10:59:59.999999Z")
                         .addExpected("2020-05-19T11:00:00.000000Z")
+                        .addExpected("2020-05-19T11:00:00.000001Z")
                 ,
+                test("HH:mm:ss.SSS end time exclusive")
+                        .timeRange("date_format(time, 'HH:mm:ss.SSS') BETWEEN '10:00:00.000' AND '11:00:00.000' EXCL")
+                        .addExpected("2020-05-19T10:00:00.000000Z")
+                        .addExpected("2020-05-19T10:00:00.000001Z")
+                        .addExpected("2020-05-19T10:59:59.999999Z")
         };
         return TestUtil.convertTo2DimArray(data);
     }
