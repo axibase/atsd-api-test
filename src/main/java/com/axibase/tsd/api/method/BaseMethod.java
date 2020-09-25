@@ -162,7 +162,7 @@ public abstract class BaseMethod {
         try {
             client = pool.borrowObject(DEFAULT_BORROW_MAX_TIME_MS);
         } catch (Exception e) {
-            throw new NotCheckedException("Could not borrow tcp client from pool");
+            throw new NotCheckedException("Could not borrow HTTP client from pool: " + e.getMessage());
         }
 
         try {
