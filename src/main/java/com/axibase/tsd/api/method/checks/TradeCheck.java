@@ -6,14 +6,14 @@ import com.axibase.tsd.api.model.sql.StringTable;
 
 public class TradeCheck extends AbstractCheck {
     public static final String SQL_PATTERN = "select trade_num from atsd_trade where exchange='%s' and class='%s' and symbol='%s' " +
-            "and trade_num = %d and time between %d and %d incl";
+            "and trade_num = %d and time between %d and %d";
     private Trade trade;
     private String sql;
 
     public TradeCheck(Trade trade) {
         this.trade = trade;
         this.sql = String.format(SQL_PATTERN, trade.getExchange(), trade.getClazz(), trade.getSymbol(),
-                trade.getNumber(), trade.getTimestamp(), trade.getTimestamp());
+                trade.getNumber(), trade.getTimestamp(), trade.getTimestamp() + 1);
     }
 
     @Override
