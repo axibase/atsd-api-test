@@ -34,5 +34,6 @@ public enum AggregationType {
     THRESHOLD_PERCENT,
     MIN_VALUE_TIME,
     MAX_VALUE_TIME,
-    DETAIL
+    DETAIL,
+    OHLCV
 }

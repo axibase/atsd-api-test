@@ -3,6 +3,8 @@ package com.axibase.tsd.api.method;
 import com.axibase.tsd.api.Config;
 import com.axibase.tsd.api.util.NotCheckedException;
 import com.axibase.tsd.logging.LoggingFilter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
@@ -141,6 +143,10 @@ public abstract class BaseMethod {
             logger.warn("Could not read response: {}", e.getMessage());
             return "";
         }
+    }
+
+    public static JsonNode responseAsTree(Response response) throws JsonProcessingException {
+        return jacksonMapper.readTree(responseAsString(response));
     }
 
     public static Response executeRootRequest(Function<WebTarget, Response> requestFunction) {
