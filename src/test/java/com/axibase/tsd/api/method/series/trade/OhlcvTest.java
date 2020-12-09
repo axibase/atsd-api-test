@@ -222,7 +222,7 @@ public class OhlcvTest {
         private final List<MultiValueSample> samples;
 
         @RequiredArgsConstructor
-        private class MultiValueSample {
+        private static class MultiValueSample {
             private final String date;
             private final String values;
         }
