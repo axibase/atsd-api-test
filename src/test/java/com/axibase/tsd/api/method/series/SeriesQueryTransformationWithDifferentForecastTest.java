@@ -41,8 +41,6 @@ import static org.testng.Assert.assertEquals;
  *
  * Methods generateAggregationSet(), generateGroupingSet(), and generateForecastingSet() create test set of queries
  */
-
-
 public class SeriesQueryTransformationWithDifferentForecastTest extends SeriesMethod {
 
     /**
