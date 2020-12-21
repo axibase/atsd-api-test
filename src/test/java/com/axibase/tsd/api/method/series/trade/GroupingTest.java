@@ -42,7 +42,6 @@ public class GroupingTest {
     private final String symbol = Mocks.tradeSymbol();
     private final String entity = TradeUtil.tradeEntity(symbol, clazz);
 
-
     @BeforeClass
     public void insertTrades() throws Exception {
         List<Trade> trades = new ArrayList<>();

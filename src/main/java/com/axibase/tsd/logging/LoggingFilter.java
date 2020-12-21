@@ -12,6 +12,7 @@ import org.glassfish.jersey.message.internal.HeaderUtils;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class LoggingFilter implements ClientResponseFilter {
                     final byte[] entity = new byte[MAX_ENTITY_SIZE + 1];
                     final int entitySize = readNBytes(entityStream, entity, entity.length);
                     entityStream.reset();
-                    appendPrettyPrintedJson(entity, entitySize, builder);
+                    appendPrettyPrintedJson(responseContext.getMediaType(), entity, entitySize, builder);
                     if (entitySize > MAX_ENTITY_SIZE) {
                         builder.append("...more...");
                     }
@@ -79,14 +80,16 @@ public class LoggingFilter implements ClientResponseFilter {
         }
     }
 
-    private static void appendPrettyPrintedJson(byte[] entity, int entitySize, StringBuilder builder) {
+    private static void appendPrettyPrintedJson(MediaType mediaType, byte[] entity, int entitySize, StringBuilder builder) {
         if (entitySize <= MAX_ENTITY_SIZE) {
             try {
                 String entityBody = prettyEntityStream(entity, entitySize);
                 builder.append(entityBody);
                 return;
             } catch (IOException e) {
-                log.debug("Failed to get entity by MessageBodyReader.", e);
+                if (mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE)) {
+                    log.debug("Failed to get entity by MessageBodyReader.", e);
+                }
             }
         }
         builder.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE)));
