@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.series.trade;
+package com.axibase.tsd.api.method.series.trade.ohlcv;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.model.financial.Trade;
@@ -49,7 +49,6 @@ public class GetOhlcvCsvTest {
         final String date3 = "2020-11-25T14:02:00Z";
         final String period = "1 minute";
         final String tz = "Europe/Moscow";
-        final String header = "datetime,open,high,low,close,volume";
 
         /* OHLCV for the minute 1. */
         final BigDecimal open1 = BigDecimal.valueOf(23);

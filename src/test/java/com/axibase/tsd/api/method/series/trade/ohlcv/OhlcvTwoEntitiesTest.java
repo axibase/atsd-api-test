@@ -1,4 +1,4 @@
-package com.axibase.tsd.api.method.series.trade;
+package com.axibase.tsd.api.method.series.trade.ohlcv;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
