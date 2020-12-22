@@ -44,10 +44,16 @@ public class OhlcvTwoEntitiesTest {
     @BeforeClass
     public void insertTrades() throws Exception {
         Trade[] trades = {
-            new Trade(exchange, clazz, symbolA, 1, getUnixTime("2020-12-01T11:00:00Z"), BigDecimal.TEN, 1),
-            new Trade(exchange, clazz, symbolB, 2, getUnixTime("2020-12-01T11:10:00Z"), BigDecimal.TEN, 1),
+                trade(symbolA, 1, getUnixTime("2020-12-01T11:00:00Z")),
+                trade(symbolB, 2, getUnixTime("2020-12-01T11:10:00Z"))
         };
         TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+    }
+
+    private Trade trade(String symbol, int tradeNum, long unixTime) {
+        Trade trade = new Trade(exchange, clazz, symbol, tradeNum, unixTime, BigDecimal.TEN, 1);
+        trade.setSide(Trade.Side.BUY);
+        return trade;
     }
 
     @DataProvider

@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.axibase.tsd.api.model.TimeUnit.MINUTE;
 import static com.axibase.tsd.api.util.Util.getUnixTime;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Test OHLCV calculations, and response format.
@@ -48,6 +50,14 @@ public class OhlcvTest {
      * each response must contain identical series for each entity.*/
     private final String[] entities = {entityA, entityB};
 
+    /** Periods of test data. */
+    private final String time00 = "2020-12-01T11:00:00Z"; // first period start
+    private final String time10 = "2020-12-01T11:10:00Z";
+    private final String time20 = "2020-12-01T11:20:00Z";
+    private final String time30 = "2020-12-01T11:30:00Z";
+    private final String time40 = "2020-12-01T11:40:00Z"; // last period end
+    private final String time50 = "2020-12-01T11:50:00Z";
+
     /** These trade data are repeated in each 10-minute interval.
      * (Each 10 minutes trade numbers are incremented by +100.)
      * Frequency - 2 trades (one BUY and one SELL) each minute.
@@ -62,10 +72,10 @@ public class OhlcvTest {
     @BeforeClass
     public void insertTrades() throws Exception {
         List<Trade> trades = new ArrayList<>();
-        addTrades(trades, "2020-12-01T11:00:00Z", 0, Trade.Side.BUY, Trade.Side.SELL);
-        addTrades(trades, "2020-12-01T11:10:00Z", 100, null, null);
-        addTrades(trades, "2020-12-01T11:20:00Z", 200, Trade.Side.BUY, null);
-        addTrades(trades, "2020-12-01T11:30:00Z", 300, null, Trade.Side.SELL);
+        addTrades(trades, time00, 0, Trade.Side.BUY, Trade.Side.SELL);
+        addTrades(trades, time10, 100, null, null);
+        addTrades(trades, time20, 200, Trade.Side.BUY, null);
+        addTrades(trades, time30, 300, null, Trade.Side.SELL);
         TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
     }
 
@@ -77,82 +87,115 @@ public class OhlcvTest {
         final String ohlcvSell =      "[4, 7, 2, 5, 11]";
 
         List<TestCase> testCases = new ArrayList<>();
-        SeriesQuery query;
 
-        testCases.add(new TestCase(
-                buildBaseQuery(),
-                2,
-                null,
-                new String[]{"2020-12-01T11:00:00Z", "2020-12-01T11:20:00Z", "2020-12-01T11:30:00Z"},
-                new String[]{ohlcvBothSides, ohlcvBuy, ohlcvSell}
-        ));
+        {
+            SeriesQuery query = buildBaseQuery();
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy))
+                    .series(new Series(entityA, "S").sample(time00, ohlcvSell).sample(time30, ohlcvSell))
+                    .series(new Series(entityB, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy))
+                    .series(new Series(entityB, "S").sample(time00, ohlcvSell).sample(time30, ohlcvSell));
+            testCases.add(testCase);
+        }
 
-        query = buildBaseQuery();
-        query.addTag("side", "B");
-        testCases.add(new TestCase(
-                query,
-                2,
-                "B",
-                new String[]{"2020-12-01T11:00:00Z", "2020-12-01T11:20:00Z"},
-                new String[]{ohlcvBuy, ohlcvBuy}
-        ));
+        {
+            SeriesQuery query = buildBaseQuery();
+            query.addTag("side", "*");
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy))
+                    .series(new Series(entityA, "S").sample(time00, ohlcvSell).sample(time30, ohlcvSell))
+                    .series(new Series(entityB, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy))
+                    .series(new Series(entityB, "S").sample(time00, ohlcvSell).sample(time30, ohlcvSell));
+            testCases.add(testCase);
+        }
 
-        query = buildBaseQuery();
-        query.addTag("side", "S");
-        testCases.add(new TestCase(
-                query,
-                2,
-                "S",
-                new String[]{"2020-12-01T11:00:00Z", "2020-12-01T11:30:00Z"},
-                new String[]{ohlcvSell, ohlcvSell}
-        ));
+        {
+            SeriesQuery query = buildBaseQuery();
+            query.addTag("side", "B");
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy))
+                    .series(new Series(entityB, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy));
+            testCases.add(testCase);
+        }
 
-        query = buildBaseQuery();
-        query.addTag("side", "*");
-        testCases.add(new TestCase(
-                query,
-                2,
-                null,
-                new String[]{"2020-12-01T11:00:00Z", "2020-12-01T11:20:00Z", "2020-12-01T11:30:00Z"},
-                new String[]{ohlcvBothSides, ohlcvBuy, ohlcvSell}
-        ));
+        {
+            SeriesQuery query = buildBaseQuery();
+            query.addTag("side", "S");
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "S").sample(time00, ohlcvSell).sample(time30, ohlcvSell))
+                    .series(new Series(entityB, "S").sample(time00, ohlcvSell).sample(time30, ohlcvSell));
+            testCases.add(testCase);
+        }
 
-        query = buildBaseQuery();
-        query.setStartDate("2020-12-01T11:40:00Z");
-        query.setEndDate("2020-12-01T11:50:00Z");
-        testCases.add(new TestCase(query, 1, null, new String[0], new String[0] ));
-
-        query = buildBaseQuery();
-        query.setStartDate("2020-12-01T11:30:00Z");
-        query.setEndDate("2020-12-01T11:50:00Z");
-        testCases.add(new TestCase(query, 2, null,
-                new String[]{"2020-12-01T11:30:00Z"}, new String[]{ohlcvSell} ));
+        {
+            SeriesQuery query = buildBaseQuery();
+            query.setStartDate(time30).setEndDate(time50);
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "S").sample(time30, ohlcvSell))
+                    .series(new Series(entityB, "S").sample(time30, ohlcvSell));
+            testCases.add(testCase);
+        }
 
         return TestUtil.convertTo2DimArray(testCases);
     }
 
     @Test(dataProvider = "testCases")
     public void test(TestCase testCase) throws JsonProcessingException, JSONException {
-        JsonNode responseArray = getResponseAsTree(testCase.query, testCase.seriesCount);
+        JsonNode responseArray = getResponseAsTree(testCase.query, testCase.seriesList.size());
         for (JsonNode seriesNode : responseArray) {
-            // check side tag in response
-            if (testCase.sideTag != null) {
-                JsonNode tagsNode = seriesNode.get("tags");
-                Assert.assertNotNull(tagsNode, "Response has no tags, but the 'side' tag expected in response.");
-                JsonNode sideTag = tagsNode.get("side");
-                Assert.assertNotNull(tagsNode, "The 'side' tag expected in response.");
-                Assert.assertEquals(sideTag.asText(), testCase.sideTag);
-            }
+            String entity = getEntity(seriesNode);
+            String side = getSide(seriesNode);
+            checkOhlcvAggregation(seriesNode);
 
-            // check data array
+            Series expectedSeries = pull(entity, side, testCase.seriesList);
+            String explanation = String.format("Expect series with entity {} and side {}.", entity, side);
+            assertNotNull(expectedSeries, explanation);
+
             JsonNode dataArray = seriesNode.get("data");
-            List<TestCase.MultiValueSample> expectedSamples = testCase.samples;
-            Assert.assertEquals(dataArray.size(), expectedSamples.size(), "Unexpected samples count in response.");
+            assertNotNull(dataArray, "There are no 'data' array in response.");
+            List<MultiValueSample> expectedSamples = expectedSeries.samples;
             int samplesCount = expectedSamples.size();
+            assertEquals(dataArray.size(), samplesCount, "Unexpected samples count in response.");
             for (int i = 0; i < samplesCount; i++) {
                 assertSample(dataArray.get(i), expectedSamples.get(i));
             }
         }
+    }
+
+    private Series pull(String entity, String side, List<Series> seriesList) {
+        Series found = null;
+        for (Series series : seriesList) {
+            if (series.entity.equals(entity) && Objects.equals(side, series.side)) {
+                found = series;
+                break;
+            }
+        }
+        if (found != null) {
+            seriesList.remove(found);
+        }
+        return found;
+    }
+
+    private void checkOhlcvAggregation(JsonNode seriesNode) {
+        JsonNode aggregateNode = seriesNode.get("aggregate");
+        assertNotNull(aggregateNode, "Response has no 'aggregate' field, but the 'OHLCV' aggregation expected.");
+        JsonNode typeNode = aggregateNode.get("type");
+        assertNotNull(aggregateNode, "Response has no aggregation 'type', but the 'OHLCV' type expected.");
+        assertEquals(typeNode.asText(), "OHLCV", "Unexpected aggregation type.");
+    }
+
+    private String getSide(JsonNode seriesNode) {
+        JsonNode tagsNode = seriesNode.get("tags");
+        Assert.assertNotNull(tagsNode, "Response has no tags, but the 'side' tag expected in response.");
+        JsonNode sideNode = tagsNode.get("side");
+        Assert.assertNotNull(sideNode, "The 'side' tag expected in response.");
+        return sideNode.asText();
+    }
+
+    private String getEntity(JsonNode seriesNode) {
+        JsonNode entityNode = seriesNode.get("entity");
+        Assert.assertNotNull(entityNode, "Response has no tags, but the 'side' tag expected in response.");
+        return entityNode.asText();
     }
 
     private JsonNode getResponseAsTree(SeriesQuery query, int expectedSeriesCount) throws JsonProcessingException {
@@ -163,7 +206,7 @@ public class OhlcvTest {
         return responseArray;
     }
 
-    private void assertSample(JsonNode actualSample, TestCase.MultiValueSample expectedSample) throws JSONException {
+    private void assertSample(JsonNode actualSample, MultiValueSample expectedSample) throws JSONException {
         long expectedTime = getUnixTime(expectedSample.date);
         long actualTime = actualSample.get("t").asLong();
         Assert.assertEquals(actualTime, expectedTime, "Different actual and expected sample timestamps.");
@@ -180,8 +223,8 @@ public class OhlcvTest {
         return new SeriesQuery()
                 .setMetric(metric)
                 .setEntities(entities)
-                .setStartDate("2020-12-01T11:00:00Z")
-                .setEndDate("2020-12-01T11:40:00Z")
+                .setStartDate(time00)
+                .setEndDate(time40)
                 .setAggregate(aggregate)
                 .setTags(tags)
                 .setTimeFormat("milliseconds");
@@ -215,27 +258,32 @@ public class OhlcvTest {
         }
     }
 
+    @RequiredArgsConstructor
+    private static class MultiValueSample {
+        private final String date;
+        private final String values;
+    }
+
+    @RequiredArgsConstructor
+    private static class Series {
+        private final String entity;
+        private final String side;
+        private List<MultiValueSample> samples = new ArrayList<>();
+
+        Series sample(String date, String values) {
+            samples.add(new MultiValueSample(date, values));
+            return this;
+        }
+    }
+
+    @RequiredArgsConstructor
     private static class TestCase {
         private final SeriesQuery query;
-        private final int seriesCount;
-        private final String sideTag;
-        private final List<MultiValueSample> samples;
+        private List<Series> seriesList = new LinkedList<>();
 
-        @RequiredArgsConstructor
-        private static class MultiValueSample {
-            private final String date;
-            private final String values;
-        }
-
-        public TestCase(SeriesQuery query, int seriesCount, String sideTag, String[] dates, String[] values) {
-            this.query = query;
-            this.seriesCount = seriesCount;
-            this.sideTag = sideTag;
-            int count = dates.length;
-            this.samples = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
-                samples.add(new MultiValueSample(dates[i], values[i]));
-            }
+        TestCase series(Series series) {
+            seriesList.add(series);
+            return this;
         }
     }
 }
