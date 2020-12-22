@@ -37,7 +37,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * Test OHLCV calculations, and response format.
  */
-public class OhlcvTest {
+public class OhlcvAggregationTest {
     private final String metric = TradeUtil.tradePriceMetric();
     private final String exchange = Mocks.tradeExchange();
     private final String clazz = Mocks.tradeClass();
@@ -85,10 +85,12 @@ public class OhlcvTest {
         final String ohlcvBothSides = "[7, 9, 1, 5, 23]";
         final String ohlcvBuy =       "[7, 9, 1, 6, 12]";
         final String ohlcvSell =      "[4, 7, 2, 5, 11]";
+        final String ohlcvBuyTotal =  "[7, 9, 1, 6, 24]";
+        final String ohlcvSellTotal = "[4, 7, 2, 5, 22]";
 
         List<TestCase> testCases = new ArrayList<>();
 
-        {
+        {   // 10-minutes aggregate, without 'side' tag, for whole selection interval
             SeriesQuery query = buildBaseQuery();
             TestCase testCase = new TestCase(query)
                     .series(new Series(entityA, "B").sample(time00, ohlcvBuy).sample(time20, ohlcvBuy))
@@ -98,7 +100,7 @@ public class OhlcvTest {
             testCases.add(testCase);
         }
 
-        {
+        {   // 10-minute aggregate, with `side = *`, for whole selection interval
             SeriesQuery query = buildBaseQuery();
             query.addTag("side", "*");
             TestCase testCase = new TestCase(query)
@@ -109,7 +111,7 @@ public class OhlcvTest {
             testCases.add(testCase);
         }
 
-        {
+        {   // 10-minute aggregate, with 'side = B', for whole selection interval
             SeriesQuery query = buildBaseQuery();
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
@@ -118,7 +120,7 @@ public class OhlcvTest {
             testCases.add(testCase);
         }
 
-        {
+        {   // 10-minute aggregate, with 'side = S', for whole selection interval
             SeriesQuery query = buildBaseQuery();
             query.addTag("side", "S");
             TestCase testCase = new TestCase(query)
@@ -127,12 +129,34 @@ public class OhlcvTest {
             testCases.add(testCase);
         }
 
-        {
+        {   // 10-minutes aggregate, without 'side' tag, for shortened selection interval
             SeriesQuery query = buildBaseQuery();
             query.setStartDate(time30).setEndDate(time50);
             TestCase testCase = new TestCase(query)
                     .series(new Series(entityA, "S").sample(time30, ohlcvSell))
                     .series(new Series(entityB, "S").sample(time30, ohlcvSell));
+            testCases.add(testCase);
+        }
+
+        {   // aggregation without period, without 'side' tag, for whole selection interval
+            SeriesQuery query = buildBaseQuery();
+            query.setAggregate(new Aggregate(AggregationType.OHLCV));
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "B").sample(time00, ohlcvBuyTotal))
+                    .series(new Series(entityA, "S").sample(time00, ohlcvSellTotal))
+                    .series(new Series(entityB, "B").sample(time00, ohlcvBuyTotal))
+                    .series(new Series(entityB, "S").sample(time00, ohlcvSellTotal));
+            testCases.add(testCase);
+        }
+
+        {   // aggregation without period, with 'side = S', for shortened selection interval
+            SeriesQuery query = buildBaseQuery();
+            query.setAggregate(new Aggregate(AggregationType.OHLCV));
+            query.addTag("side", "S");
+            query.setStartDate(time20);
+            TestCase testCase = new TestCase(query)
+                    .series(new Series(entityA, "S").sample(time20, ohlcvSell))
+                    .series(new Series(entityB, "S").sample(time20, ohlcvSell));
             testCases.add(testCase);
         }
 
