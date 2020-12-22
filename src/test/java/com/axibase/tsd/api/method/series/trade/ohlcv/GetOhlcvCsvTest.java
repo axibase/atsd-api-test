@@ -32,7 +32,7 @@ public class GetOhlcvCsvTest {
     @BeforeClass
     public void insertTrades() throws Exception {
         List<Trade> trades = new ArrayList<>();
-        try (Scanner scanner = new Scanner(GetOhlcvCsvTest.class.getResourceAsStream("trade_times.csv"))){
+        try (Scanner scanner = new Scanner(GetOhlcvCsvTest.class.getResourceAsStream("trades.csv"))){
             int lineNumber = 1;
             while (scanner.hasNextLine()) {
                 String[] values = scanner.nextLine().split(",");
