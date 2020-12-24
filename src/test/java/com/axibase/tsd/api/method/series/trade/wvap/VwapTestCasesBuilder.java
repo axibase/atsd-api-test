@@ -139,13 +139,39 @@ public class VwapTestCasesBuilder {
             testCases.add(testCase);
         }
 
-//        {   // 10-minutes DETAIL group, 10-minute aggregate, for entity A, without 'side' tag, for whole selection interval
-//            SeriesQuery query = dp.entityAQuery(groupDetail10, aggregateVwap10);
-//            TestCase testCase = new TestCase(query)
-//                    .series(new ExpectedSeries(dp.entityA, null, AggregationType.VWAP, GroupType.DETAIL)
-//                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
-//            testCases.add(testCase);
-//        }
+        {   // 10-minutes DETAIL group, 10-minute aggregate, for entity A, without 'side' tag, for whole selection interval
+            SeriesQuery query = dp.entityAQuery(groupDetail10, aggregateVwap10);
+            TestCase testCase = new TestCase(query)
+                    .series(new ExpectedSeries(dp.entityA, null, AggregationType.VWAP, GroupType.DETAIL)
+                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
+            testCases.add(testCase);
+        }
+
+        {   // 10-minutes DETAIL group, 10-minute aggregate, for entity A, 'side = B', for whole selection interval
+            SeriesQuery query = dp.entityAQuery(groupDetail10, aggregateVwap10);
+            query.addTag("side", "B");
+            TestCase testCase = new TestCase(query)
+                    .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, GroupType.DETAIL)
+                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy));
+            testCases.add(testCase);
+        }
+
+        {   // DETAIL grouping without period, 10-minute aggregate, for entity A, without 'side' tag, for whole selection interval
+            SeriesQuery query = dp.entityAQuery(groupDetail, aggregateVwap10);
+            TestCase testCase = new TestCase(query)
+                    .series(new ExpectedSeries(dp.entityA, null, AggregationType.VWAP, GroupType.DETAIL)
+                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
+            testCases.add(testCase);
+        }
+
+        {   // DETAIL grouping without period, 10-minute aggregate, for entity A, 'side = B', for whole selection interval
+            SeriesQuery query = dp.entityAQuery(groupDetail, aggregateVwap10);
+            query.addTag("side", "B");
+            TestCase testCase = new TestCase(query)
+                    .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, GroupType.DETAIL)
+                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy));
+            testCases.add(testCase);
+        }
 
         return TestUtil.convertTo2DimArray(testCases);
     }
