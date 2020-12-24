@@ -65,7 +65,8 @@ public class GroupingTest {
         Aggregate aggregateCount = new Aggregate(AggregationType.COUNT, period);
         SeriesQuery[] testCases = {
                 buildQuery(groupCountPerMinute, null, Arrays.asList(Transformation.GROUP)),
-                buildQuery(groupCount, aggregateSum, Arrays.asList(Transformation.GROUP, Transformation.AGGREGATE)),
+                /** Disable this case because grouping without period behaves differently for 'trade' and 'd' tables. */
+                //buildQuery(groupCount, aggregateSum, Arrays.asList(Transformation.GROUP, Transformation.AGGREGATE)),
                 buildQuery(groupCountPerMinute, aggregateSum, Arrays.asList(Transformation.GROUP, Transformation.AGGREGATE)),
                 buildQuery(groupSumPerMinute, aggregateCount, Arrays.asList(Transformation.AGGREGATE, Transformation.GROUP))
         };

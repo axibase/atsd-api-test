@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Accessors(chain = true)
@@ -122,9 +124,9 @@ public class Sample {
         return Util.fromMillis(this.unixTime);
     }
 
-    @JsonIgnore
     /** Return timestamp translated to epoch milliseconds.
      * Use the {@link #rawDate} if the {@link #unixTime} is null.*/
+    @JsonIgnore
     public long getEpochMillis() {
         if (this.unixTime == null) {
             return Util.getUnixTime(this.rawDate);
@@ -153,14 +155,26 @@ public class Sample {
      * Compare values and deviations using {@link BigDecimal#compareTo(BigDecimal)}.
      */
     public boolean theSame(Sample sample) {
-        return  (this.getEpochMillis() == sample.getEpochMillis()) &&
-                !(this.value == null ^ sample.value == null) &&
-                (this.value == null || this.value.compareTo(sample.value) == 0) &&
-                !(this.deviation == null ^ sample.deviation == null) &&
-                (this.deviation == null || this.deviation.compareTo(sample.deviation) == 0) &&
-                !(this.text == null ^ sample.text == null) &&
-                (this.text == null || this.text.equals(sample.text)) &&
-                !(this.version == null ^ sample.version == null) &&
-                (this.version == null || this.version.equals(sample.version));
+        return  theSame(sample, MathContext.UNLIMITED);
+    }
+
+    /**
+     * Calculate epoch time from the samples time fields, and compare calculated epochs.
+     * Round samples values with specified context, before comparison.
+     * Compare values and deviations using {@link BigDecimal#compareTo(BigDecimal)}.
+     */
+    public boolean theSame(Sample other, MathContext roundingContext) {
+        if ((this.getEpochMillis() != other.getEpochMillis()) ||
+            (this.value == null ^ other.value == null))
+            return false;
+        if (this.value != null && this.value.compareTo(other.value) != 0) {
+            BigDecimal thisRounded = this.value.round(roundingContext);
+            BigDecimal otherRounded = other.value.round(roundingContext);
+            if (thisRounded.compareTo(otherRounded) != 0) return false;
+        }
+        return  !(this.deviation == null ^ other.deviation == null) &&
+                (this.deviation == null || this.deviation.compareTo(other.deviation) == 0) &&
+                Objects.equals(this.text, other.text) &&
+                Objects.equals(this.version, other.version);
     }
 }

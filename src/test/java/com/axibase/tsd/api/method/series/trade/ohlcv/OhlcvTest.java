@@ -2,6 +2,7 @@ package com.axibase.tsd.api.method.series.trade.ohlcv;
 
 import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
+import com.axibase.tsd.api.method.series.trade.SyntheticDataProvider;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,7 +27,7 @@ import static org.testng.Assert.assertNotNull;
  * Test OHLCV aggregation, grouping, and response format.
  */
 public class OhlcvTest {
-    private final OhlcvSyntheticDataProvider dataProvider = new OhlcvSyntheticDataProvider();
+    private final SyntheticDataProvider dataProvider = new SyntheticDataProvider();
 
     @BeforeClass
     public void insertTrades() throws Exception {

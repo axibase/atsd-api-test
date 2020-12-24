@@ -35,5 +35,6 @@ public enum AggregationType {
     MIN_VALUE_TIME,
     MAX_VALUE_TIME,
     DETAIL,
-    OHLCV
+    OHLCV,
+    VWAP
 }

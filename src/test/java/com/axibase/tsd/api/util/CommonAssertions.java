@@ -11,6 +11,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -180,7 +181,7 @@ public class CommonAssertions {
 
     /**
      * Compare entities, metrics, tags, and data of series.
-     * Use {@link BigDecimal#compareTo(Object)} to compare series values.
+     * Use {@link BigDecimal#compareTo(BigDecimal)} to compare series values.
      */
     private static void assertEqualSeries(Series actual, Series expected, String msg) {
         if (actual.compareTo(expected) != 0) {
@@ -190,10 +191,18 @@ public class CommonAssertions {
     }
 
     /**
-     * For each sample compare its timestamp, value, annotation and version.
-     * Use {@link BigDecimal#compareTo(Object)} to compare sample values.
+     * The same as {@link #assertEqualSamples(List, List, String, MathContext)},
+     * but without rounding.
      */
     private static void assertEqualSamples(List<Sample> actual, List<Sample> expected, String msg) {
+        assertEqualSamples(actual, expected, msg, MathContext.UNLIMITED);
+    }
+
+    /**
+     * For each sample compare its timestamp, value, annotation and version.
+     * Compare sample values rounded in specified context.
+     */
+    public static void assertEqualSamples(List<Sample> actual, List<Sample> expected, String msg, MathContext roundingContext) {
         if (actual.size() != expected.size()) {
             throw new AssertionError(String.format(
                     "%s Actual series size %d differs from expected series size %d.%n",
@@ -205,7 +214,7 @@ public class CommonAssertions {
         while (itActual.hasNext()) {
             Sample actualSample = itActual.next();
             Sample expectedSample = itExpected.next();
-            if (!actualSample.theSame(expectedSample)) {
+            if (!actualSample.theSame(expectedSample, roundingContext)) {
                 throw new AssertionError(String.format(
                         "%s Series differs at sample with index %d.%nActual sample: %s.%nExpected sample: %s.%n",
                         msg, index, actualSample, expectedSample));

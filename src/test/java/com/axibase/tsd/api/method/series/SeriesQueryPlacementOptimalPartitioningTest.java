@@ -22,7 +22,7 @@ import java.util.*;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Take some setting of parameter {@link Group#place}.
+ * Take some setting of parameter {@link Group#getPlace()}.
  * <p>
  * Check that response contains correct data after grouping with placement.
  * <p>
