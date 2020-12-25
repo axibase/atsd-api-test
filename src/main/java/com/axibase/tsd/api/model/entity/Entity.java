@@ -32,6 +32,9 @@ public class Entity {
     @JsonDeserialize(using = DateDeserializer.class)
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private ZonedDateTime createdDate;
+    @JsonDeserialize(using = DateDeserializer.class)
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    private ZonedDateTime versionDate;
     private Map<String, String> tags;
     private Boolean enabled;
     private String timeZoneID;
