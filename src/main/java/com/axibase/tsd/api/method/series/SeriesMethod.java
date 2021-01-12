@@ -11,12 +11,15 @@ import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchQuery;
 import com.axibase.tsd.api.model.series.search.SeriesSearchResult;
+import com.axibase.tsd.api.util.JsonParsingException;
 import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -85,7 +88,28 @@ public class SeriesMethod extends BaseMethod {
     public static<T> Response querySeries(T query, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_SERIES_QUERY, HttpMethod.POST, Entity.json(query));
         response.bufferEntity();
+        exceptionIfNotJson(response);
         return response;
+    }
+
+    /**
+     * Try to parse response string as json and throw an exception if parsing fails.
+     * This check is used here because the Jackson and JSONAssert libraries
+     * happily parse some bad ATSD responses, like following:
+     *
+     * [{"metric":"cpu_usage"}]DATA_API_SERIES_QUERY_PROCESSING_ERRORcom.axibase.Class: Exception
+     *
+     * As alternative implementation we can check that response does not contain the string
+     * "DATA_API_SERIES_QUERY_PROCESSING_ERROR".
+     */
+    private static void exceptionIfNotJson(Response response) {
+        String responseAsString = response.readEntity(String.class);
+        try {
+            JSONValue.parseWithException(responseAsString);
+        } catch (ParseException e) {
+            String message = String.format("%s %n Response: %n%s", e.toString(), responseAsString);
+            throw new JsonParsingException(message);
+        }
     }
 
     public static Response urlQuerySeries(String entity, String metric, OutputFormat format, Map<String, String> parameters) {
