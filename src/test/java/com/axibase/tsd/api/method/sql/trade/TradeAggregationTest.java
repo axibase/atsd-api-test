@@ -13,7 +13,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Util.getUnixTime;
 
 public class TradeAggregationTest extends SqlTradeTest {
-    private static final String QUERY = "select {fields} from atsd_trade where {instrument} " +
+    private static final String QUERY = "select {fields} from atsd_trade where {instrument} {selectionInterval}" +
             "group by exchange, class, symbol {period} {having}  WITH TIMEZONE = 'UTC'";
 
     @BeforeClass
@@ -74,7 +74,12 @@ public class TradeAggregationTest extends SqlTradeTest {
                         .fields("datetime, count(*)")
                         .period(40, "minute")
                         .addExpected("2020-03-22T10:00:00.000000Z", "2")
-                        .addExpected("2020-03-22T10:40:00.000000Z", "7")
+                        .addExpected("2020-03-22T10:40:00.000000Z", "7"),
+                test("Period is greater than selection interval")
+                        .fields("datetime, count(*)")
+                        .period(1, "minute")
+                        .selectionInterval("datetime between '2020-03-22T11:01:00.001Z' and '2020-03-22T11:02:00.000Z'")
+                        .addExpected("2020-03-22T11:01:00.000000Z", "5")
         };
         return TestUtil.convertTo2DimArray(data);
     }
@@ -89,6 +94,7 @@ public class TradeAggregationTest extends SqlTradeTest {
             super(description);
             setVariable("period", "");
             setVariable("having", "");
+            setVariable("selectionInterval", "");
         }
 
         private TestConfig period(int count, String unit) {
@@ -98,6 +104,11 @@ public class TradeAggregationTest extends SqlTradeTest {
 
         private TestConfig having(String having) {
             setVariable("having", "having " + having);
+            return this;
+        }
+
+        private TestConfig selectionInterval(String selectionInterval) {
+            setVariable("selectionInterval", " and " + selectionInterval);
             return this;
         }
     }
