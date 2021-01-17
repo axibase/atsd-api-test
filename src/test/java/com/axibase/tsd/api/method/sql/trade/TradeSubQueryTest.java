@@ -17,6 +17,7 @@ public class TradeSubQueryTest extends SqlTradeTest {
         trades.add(fromISOString("2020-03-22T10:01:00.123456Z").setPrice(new BigDecimal("126.99")).setQuantity(22330).setSide(Trade.Side.BUY));
         trades.add(fromISOString("2020-03-22T10:09:00.654321Z").setPrice(new BigDecimal("127.36")).setQuantity(22330).setSide(Trade.Side.SELL).setSession(Trade.Session.S));
         trades.add(fromISOString("2020-03-22T10:49:00Z").setPrice(new BigDecimal("127.02")).setQuantity(22339).setSession(Trade.Session.N));
+        trades.add(fromISOString("2020-03-22T10:49:00Z").setPrice(new BigDecimal("127.02")).setQuantity(22339).setSession(Trade.Session.N).setSymbol(symbolTwo()));
         insert(trades);
     }
 
@@ -58,5 +59,34 @@ public class TradeSubQueryTest extends SqlTradeTest {
         };
         assertSqlQueryRows("Wrong result in aggregation subquery", expectedRows, sql);
     }
+
+    @Test
+    public void testSubQueryWithAggregationAndAlias() throws Exception {
+        String sql = "select t1.datetime, t1.exchange, t1.class, t1.symbol, t1.cnt from (" +
+                "select datetime, exchange, class, symbol, count(*) as cnt from atsd_trade where " + instrumentCondition() +
+                " group by exchange, class, symbol, period(10 minute)) t1 where t1.cnt > 1";
+
+        String[][] expectedRows = {
+                {"2020-03-22T10:00:00.000000Z", exchange(), clazz(), symbol(), "2"},
+
+        };
+        assertSqlQueryRows("Wrong result in aggregation subquery with alias", expectedRows, sql);
+    }
+
+
+    @Test
+    public void testSubQueryWithAggregationMultipleInstruments() throws Exception {
+        String sql = "select datetime, exchange, class, symbol, cnt from (" +
+                "select datetime, exchange, class, symbol, count(*) as cnt from atsd_trade where " + classCondition() +
+                " group by exchange, class, symbol, period(10 minute)) where cnt < 2";
+
+        String[][] expectedRows = {
+                {"2020-03-22T10:40:00.000000Z", exchange(), clazz(), symbol(), "1"},
+                {"2020-03-22T10:40:00.000000Z", exchange(), clazz(), symbolTwo(), "1"},
+
+        };
+        assertSqlQueryRows("Wrong result in aggregation subquery multiple instruments", expectedRows, sql);
+    }
+
 
 }
