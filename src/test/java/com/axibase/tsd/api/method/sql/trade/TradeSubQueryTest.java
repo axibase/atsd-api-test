@@ -88,5 +88,18 @@ public class TradeSubQueryTest extends SqlTradeTest {
         assertSqlQueryRows("Wrong result in aggregation subquery multiple instruments", expectedRows, sql);
     }
 
+    @Test
+    public void testAggregateOfAggregationSubQuery() throws Exception {
+        String sql = "select sum(cnt) from (" +
+                "select datetime, exchange, class, symbol, count(*) as cnt from atsd_trade where " + instrumentCondition() +
+                " group by exchange, class, symbol, period(10 minute))";
+
+        String[][] expectedRows = {
+                {"3"},
+
+        };
+        assertSqlQueryRows("Wrong result in aggregation subquery", expectedRows, sql);
+    }
+
 
 }

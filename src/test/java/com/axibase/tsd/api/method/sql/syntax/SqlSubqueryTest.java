@@ -472,6 +472,22 @@ public class SqlSubqueryTest extends SqlTest {
         assertSqlQueryRows("Wrong result when using lower-cased column aliases in subquery", expectedRows, sqlQuery);
     }
 
+    @Issue("GH-1052")
+    @Test(description = "Test aggregate of aggregation subquery result")
+    public void testAggregateOfAggregationResult() throws Exception {
+        String sqlQuery = String.format(
+                "select max(av) from (select avg(value) av from \"%s\" group by tags.t1)",
+                METRIC_NAME
+        );
+
+        String[][] expectedRows = {
+                {"1"}
+        };
+
+        assertSqlQueryRows("Wrong result of aggregation subquery", expectedRows, sqlQuery);
+    }
+
+
     @Issue("5139")
     @Test(description = "Test mixed-case column aliases in subquery",
             dataProvider = "sqlSubqueryMixedCaseDataProvider")
@@ -497,6 +513,7 @@ public class SqlSubqueryTest extends SqlTest {
 
         assertSqlQueryRows("Wrong result when using upper-case column aliases in subquery", expectedRows, sqlQuery);
     }
+
 
     @DataProvider
     private static Object[][] sqlSubqueryMixedCaseDataProvider() {
