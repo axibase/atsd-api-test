@@ -47,6 +47,7 @@ public class GetOhlcvCsvTest {
         final String date1 = "2020-11-25T14:00:00Z";
         final String date2 = "2020-11-25T14:01:00Z";
         final String date3 = "2020-11-25T14:02:00Z";
+        final String endDate = "2020-12-31T00:00:00Z";
         final String period = "1 minute";
         final String tz = "Europe/Moscow";
 
@@ -76,12 +77,12 @@ public class GetOhlcvCsvTest {
 
         TestCase[] testCases = {
                 new TestCase(symbol, clazz, exchange, date1, date3, period, tz, false, "", new ResponseLine[]{line1, line2}),
-                new TestCase(symbol, clazz, exchange, date1, null, period, tz, false, "", new ResponseLine[]{line1, line2}),
-                new TestCase(symbol, clazz, "", date1, "", period, "", false, "", new ResponseLine[]{line1, line2}),
+                new TestCase(symbol, clazz, exchange, date1, endDate, period, tz, false, "", new ResponseLine[]{line1, line2}),
+                new TestCase(symbol, clazz, "", date1, endDate, period, "", false, "", new ResponseLine[]{line1, line2}),
                 new TestCase(symbol, clazz, exchange, date1, date2, period, tz, false, "", new ResponseLine[]{line1}),
                 new TestCase(symbol, clazz, exchange, date2, date3, period, tz, false, "", new ResponseLine[]{line2}),
                 new TestCase(symbol, clazz, exchange, date1, date3, null, tz, false, "", new ResponseLine[]{line}),
-                new TestCase(symbol, clazz, null, date1, null, null, null, false, "", new ResponseLine[]{line}),
+                new TestCase(symbol, clazz, null, date1, endDate, null, null, false, "", new ResponseLine[]{line}),
                 new TestCase(null, clazz, exchange, date1, date3, period, tz, true, " 'symbol' ", null),
                 new TestCase(symbol, null, exchange, date1, date3, period, tz, true, " 'class' ", null),
                 new TestCase(symbol, clazz, exchange, null, date3, period, tz, true, " 'startDate' ", null),
