@@ -3,8 +3,12 @@ package com.axibase.tsd.api.method.sql.trade;
 import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.property.PropertyMethod;
+import com.axibase.tsd.api.method.trade.session_summary.TradeSessionSummaryMethod;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.model.financial.Trade;
+import com.axibase.tsd.api.model.financial.TradeSessionStage;
+import com.axibase.tsd.api.model.financial.TradeSessionSummary;
+import com.axibase.tsd.api.model.financial.TradeSessionType;
 import com.axibase.tsd.api.model.property.Property;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -24,6 +28,17 @@ public class TradePropertyTest extends SqlTradeTest {
         Trade trade = fromISOString("2020-06-15T10:21:49.123456Z");
         insert(trade);
         Checker.check(new EntityCheck(entity));
+        trade = fromISOString("2020-06-15T10:21:49.123456Z").setExchange("MOEX");
+        insert(trade);
+        TradeSessionSummary sessionSummary = new TradeSessionSummary(clazz(), symbol(), TradeSessionType.MORNING, TradeSessionStage.N, "2020-09-10T10:15:20Z");
+        sessionSummary.addTag("rptseq", "2");
+        sessionSummary.addTag("offer", "10.5");
+        sessionSummary.addTag("assured", "true");
+        sessionSummary.addTag("action", "test");
+        sessionSummary.addTag("starttime", "10:15:20");
+        sessionSummary.addTag("snapshot_datetime", "2020-09-10T10:15:20Z");
+        TradeSessionSummaryMethod.importStatistics(sessionSummary);
+
         Property property = new Property();
         property.setType(SECURITY_DEFINITIONS);
         property.setEntity(entity.getName());
@@ -73,6 +88,30 @@ public class TradePropertyTest extends SqlTradeTest {
     public void test() throws Exception {
         String sql = "select sec_def.roundlot, sec_def('product'), stat.numbids, stat('numoffers'), stat.bid " +
                 "from atsd_trade where " + instrumentCondition();
+        String[][] expected = new String[][]{
+                {
+                        "10", "5", "5060", "1234", "196.04"
+                }
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testEntityQuery() throws Exception {
+        String sql = "select sec_def.roundlot, sec_def('product'), stat.numbids, stat('numoffers'), stat.bid " +
+                "from atsd_entity where name = '" + entity() + "'";
+        String[][] expected = new String[][]{
+                {
+                        "10", "5", "5060", "1234", "196.04"
+                }
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testSessionSummaryQuery() {
+        String sql = "select sec_def.roundlot, sec_def('product'), stat.numbids, stat('numoffers'), stat.bid " +
+                "from atsd_session_summary where class = '" + clazz() + "' and symbol = '" + symbol() + "'";
         String[][] expected = new String[][]{
                 {
                         "10", "5", "5060", "1234", "196.04"
