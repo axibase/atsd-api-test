@@ -16,8 +16,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-private val symbol = Mocks.tradeSymbol();
-private val clazz = Mocks.tradeClass();
+private val symbol = Mocks.tradeSymbol()
+private val clazz = Mocks.tradeClass()
 private val exchange = Mocks.tradeExchange()
 
 class TradeExportRawTest {
@@ -26,12 +26,12 @@ class TradeExportRawTest {
         TestTrade("2020-12-18T10:41:00Z", 3423404531, 5, exchange = exchange),
         TestTrade("2020-12-18T10:41:02.500Z", 3423404532, 6, exchange = exchange),
         TestTrade("2020-12-18T10:41:02.500500Z", 3423404533, 6, 5, exchange),
-        TestTrade("2020-12-18T10:41:02.500500Z", 4423404533, 7, 2, "quik")
+        TestTrade("2020-12-18T10:41:02.500500Z", 4423404533, 7, 2, Mocks.tradeExchange())
     ).map { it.toTrade() }
 
     @BeforeClass
     fun setup() {
-        TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
+        TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES)
     }
 
     @Test
@@ -57,7 +57,7 @@ class TradeExportRawTest {
         val req = RawTradeRequest(
             "non", "existing",
             "2020-12-18T10:41:00Z", "2020-12-18T10:42:00Z"
-        );
+        )
         assertEquals(HttpStatus.SC_NOT_FOUND, rawResponse(req).status)
     }
 
