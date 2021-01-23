@@ -16,9 +16,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-private const val DEFAULT_EXCHANGE = "moex";
-
-
 private val symbol = Mocks.tradeSymbol();
 private val clazz = Mocks.tradeClass();
 private val exchange = Mocks.tradeExchange()
