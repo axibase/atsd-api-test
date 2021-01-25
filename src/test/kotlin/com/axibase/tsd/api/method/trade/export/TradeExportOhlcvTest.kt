@@ -25,7 +25,7 @@ class TradeExportOhlcvTest {
     @BeforeClass
     fun insertTrades() {
         val trades: MutableList<Trade> = ArrayList()
-        Scanner(TradeExportOhlcvTest::class.java.getResourceAsStream("trades.csv")).use { scanner ->
+        Scanner(TradeExportOhlcvTest::class.java.classLoader.getResourceAsStream("csv/trades.csv")).use { scanner ->
             var lineNumber = 1
             while (scanner.hasNextLine()) {
                 val values = scanner.nextLine().split(",").toTypedArray()

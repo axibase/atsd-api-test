@@ -45,7 +45,7 @@ public class GroupingTest {
     @BeforeClass
     public void insertTrades() throws Exception {
         List<Trade> trades = new ArrayList<>();
-        try (Scanner scanner = new Scanner(GroupingTest.class.getResourceAsStream("ohlcv/trades.csv"))){
+        try (Scanner scanner = new Scanner(GroupingTest.class.getClassLoader().getResourceAsStream("csv/trades.csv"))) {
             int lineNumber = 1;
             while (scanner.hasNextLine()) {
                 String[] values = scanner.nextLine().split(",");

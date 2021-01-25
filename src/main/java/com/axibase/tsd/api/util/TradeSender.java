@@ -5,12 +5,14 @@ import com.axibase.tsd.api.method.checks.TradeCheck;
 import com.axibase.tsd.api.model.financial.Trade;
 import com.axibase.tsd.api.transport.tcp.TCPTradesSender;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+@UtilityClass
 public class TradeSender {
 
     public static TradeBatchChecker send(Collection<Trade> trades) throws IOException {
