@@ -96,4 +96,20 @@ class SqlEntityQueryTest : SqlTest() {
         assertSqlQueryRows("Unexpected result", expectedResult, query)
     }
 
+    @Test
+    fun `test subquery`() {
+        val query = "select class_code from (select tags.class_code as class_code, tags.symbol from atsd_entity where  name like '${prefix}%' and tags.class_code != '')"
+        val expectedResult = arrayOf(arrayOf(classCodeOne), arrayOf(classCodeTwo))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test aggregation subquery`() {
+        val query = "select base_symbol, sum(lot_size), count(*) from " +
+                "(select tags.lot_size as lot_size, SUBSTR(tags.symbol, 1,6) AS base_symbol from atsd_entity where name like '${prefix}%' and tags.class_code != '') " +
+                "group by base_symbol"
+        val expectedResult = arrayOf(arrayOf("symbol", "15", "2"))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
 }
