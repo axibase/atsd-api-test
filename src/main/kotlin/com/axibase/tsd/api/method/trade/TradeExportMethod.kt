@@ -1,52 +1,121 @@
 package com.axibase.tsd.api.method.trade
 
 import com.axibase.tsd.api.method.BaseMethod
+import com.axibase.tsd.api.model.Period
 import org.apache.http.HttpStatus
+import java.lang.IllegalStateException
+import javax.ws.rs.client.WebTarget
 import javax.ws.rs.core.Response
 
-private const val RAW_PATH = "/trades"
+private const val RAW_PATH = "trades"
+private const val OHLCV_PATH = "ohlcv"
 
 class TradeExportMethod : BaseMethod() {
     companion object {
         @JvmStatic
-        fun rawResponse(rawTradeRequest: RawTradeRequest? = null): Response {
-            return executeApiRequest {
-                val tradesTarget = it.path(RAW_PATH)
-                val target = if (rawTradeRequest != null)
-                    tradesTarget.queryParam("symbol", rawTradeRequest.symbol)
-                        .queryParam("class", rawTradeRequest.clazz)
-                        .queryParam("startDate", rawTradeRequest.startDate)
-                        .queryParam("endDate", rawTradeRequest.endDate)
-                        .queryParam("exchange", rawTradeRequest.exchange)
-                        .queryParam("workdayCalendar", rawTradeRequest.workdayCalendar)
-                        .queryParam("timezone", rawTradeRequest.timeZone)
-                else tradesTarget
-                val resp = target.request().get()
-                resp.bufferEntity()
-                resp;
+        fun rawResponse(rawTradeRequest: RawTradeRequest? = null): Response =
+            executeTradeExportRequest(RAW_PATH, rawTradeRequest)
+            { target, request ->
+                fillRequestsParams(target, request)
             }
-        }
 
 
         @JvmStatic
-        fun rawCsv(rawTradeRequest: RawTradeRequest? = null): String {
-            val resp = rawResponse(rawTradeRequest);
-            resp.bufferEntity()
-            if (resp.status == HttpStatus.SC_OK) {
-                return resp.readEntity(String::class.java);
+        fun rawCsv(rawTradeRequest: RawTradeRequest? = null): String = rawResponse(rawTradeRequest).toCsv()
+
+        @JvmStatic
+        fun ohlcvResponse(ohlcvTradeRequest: OhclvTradeRequest? = null): Response =
+            executeTradeExportRequest(OHLCV_PATH, ohlcvTradeRequest)
+            { target, request ->
+                fillRequestsParams(target, request)
+                    .queryParam("period", request.period)
+                    .queryParam("statistics", request.statistics?.toCommaSeparatedList())
             }
-            if (Response.Status.Family.CLIENT_ERROR.equals(resp.statusInfo.family)) {
-                val errorMessage = resp.readEntity(ErrorMessage::class.java)
-                throw IllegalStateException(errorMessage.error)
+
+        @JvmStatic
+        fun ohlcvCsv(ohlcvTradeRequest: OhclvTradeRequest? = null) = ohlcvResponse(ohlcvTradeRequest).toCsv()
+
+
+        private fun <T : TradeRequest> executeTradeExportRequest(
+            path: String, tradeRequest: T?,
+            reqFiller: (WebTarget, T) -> WebTarget
+        ): Response {
+            return executeApiRequest {
+                val ohlcvTarget = it.path(path)
+                val target = if (tradeRequest != null)
+                    reqFiller(ohlcvTarget, tradeRequest)
+                else ohlcvTarget
+                val resp = target.request().get()
+                resp.bufferEntity()
+                resp
             }
-            throw IllegalStateException("Unexpected response: $resp")
+        }
+
+        private fun fillRequestsParams(target: WebTarget, tradeRequest: TradeRequest): WebTarget {
+            return target.queryParam("symbol", tradeRequest.symbol)
+                .queryParam("class", tradeRequest.clazz)
+                .queryParam("startDate", tradeRequest.startDate)
+                .queryParam("endDate", tradeRequest.endDate)
+                .queryParam("exchange", tradeRequest.exchange)
+                .queryParam("workdayCalendar", tradeRequest.workdayCalendar)
+                .queryParam("timezone", tradeRequest.timeZone)
         }
     }
 
     data class ErrorMessage(val error: String? = null)
 }
 
+
+interface TradeRequest {
+    val symbol: String?
+    val clazz: String?
+    val startDate: String?
+    val endDate: String?
+    val timeZone: String?
+    val workdayCalendar: String?
+    val exchange: String?
+}
+
 data class RawTradeRequest(
-    val symbol: String?, val clazz: String?, val startDate: String?, val endDate: String?,
-    val timeZone: String? = null, val workdayCalendar: String? = null, val exchange: String? = null
-)
+    override val symbol: String?, override val clazz: String?,
+    override val startDate: String?,
+    override val endDate: String?,
+    override val timeZone: String? = null,
+    override val workdayCalendar: String? = null,
+    override val exchange: String? = null
+) : TradeRequest
+
+enum class OhclvStatistic {
+    OPEN,
+    HIGH,
+    LOW,
+    CLOSE,
+    VOLUME,
+    COUNT,
+    VWAP,
+    AMOUNT
+}
+
+data class OhclvTradeRequest(
+    override val symbol: String?, override val clazz: String?,
+    override val startDate: String?,
+    override val endDate: String?,
+    override val timeZone: String? = null,
+    override val workdayCalendar: String? = null,
+    override val exchange: String? = null,
+    val period: Period? = null,
+    val statistics: List<OhclvStatistic>? = null
+) : TradeRequest
+
+private fun List<OhclvStatistic>.toCommaSeparatedList(): String = this.joinToString(",") { it.toString() }
+
+private fun Response.toCsv(): String {
+    if (this.status == HttpStatus.SC_OK) {
+        return this.readEntity(String::class.java);
+    }
+    if (Response.Status.Family.CLIENT_ERROR.equals(this.statusInfo.family)) {
+        val errorMessage = this.readEntity(TradeExportMethod.ErrorMessage::class.java)
+        throw IllegalStateException(errorMessage.error)
+    }
+    throw IllegalStateException("Unexpected response: $this")
+}
