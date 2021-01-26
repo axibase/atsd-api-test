@@ -8,7 +8,7 @@ import com.axibase.tsd.api.util.Mocks
 import org.testng.annotations.BeforeClass
 import kotlin.test.Test
 
-private val prefix = Mocks.entity();
+private val prefix = Mocks.entity()
 private val entityOne = prefix + Mocks.entity()
 private val entityTwo = prefix + Mocks.entity()
 private val entityThree = prefix + Mocks.entity()
@@ -20,7 +20,7 @@ class SqlEntityQueryTest : SqlTest() {
     @BeforeClass
     fun setup() {
         run {
-            val entity = Entity(entityOne);
+            val entity = Entity(entityOne)
             entity.label = "entity_query_test_1"
             entity.interpolationMode = InterpolationMode.PREVIOUS
             entity.timeZoneID = "UTC"
@@ -35,13 +35,13 @@ class SqlEntityQueryTest : SqlTest() {
             entity.addTag("class_code", classCodeTwo)
             entity.addTag("symbol", "symbol_$entityTwo")
             entity.addTag("lot_size", "10")
-            entity.setLabel("entity_query_test_2")
+            entity.label = "entity_query_test_2"
             EntityMethod.createOrReplaceEntityCheck(entity)
         }
 
         run {
             val entity = Entity(entityThree)
-            entity.setLabel("entity_query_test_3")
+            entity.label = "entity_query_test_3"
             EntityMethod.createOrReplaceEntityCheck(entity)
         }
     }
