@@ -27,7 +27,7 @@ object CSVMatcher {
             }
 
             override fun describeTo(description: Description) {
-                description.appendText("\"${errors?.joinToString(StringUtils.LF)}\"")
+                description.appendText("\"${errors.joinToString(StringUtils.LF)}\"")
             }
 
             private fun hasMismatchErrors(actualCsv: String?): List<String> {

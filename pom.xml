@@ -277,7 +277,7 @@
                     <parallel>classes</parallel>
                     <threadCount>4</threadCount>
                     <forkCount>0</forkCount>
-
+                    <useSystemClassLoader>false</useSystemClassLoader>
                     <excludes>
                         <exclude>**/MessageQueryStatsTest.java</exclude>
                     </excludes>
