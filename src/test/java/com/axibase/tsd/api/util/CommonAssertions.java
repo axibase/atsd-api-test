@@ -5,6 +5,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import lombok.experimental.UtilityClass;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -20,6 +21,7 @@ import java.util.stream.IntStream;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
+@UtilityClass
 public class CommonAssertions {
     private static final String DEFAULT_ASSERT_CHECK_MESSAGE = "Failed to check condition!";
     private static final String OBJECTS_ASSERTION_TEMPLATE = "%s %nexpected:<%s> but was:<%s>";

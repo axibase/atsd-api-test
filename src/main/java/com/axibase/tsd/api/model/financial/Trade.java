@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,6 +42,20 @@ public class Trade {
         this.quantity = quantity;
         this.price = price;
     }
+
+    public Trade(String exchange, String clazz, String symbol, long number,
+                 String isoTime, BigDecimal price, long quantity) {
+        this.clazz = clazz;
+        this.symbol = symbol;
+        this.exchange = exchange;
+        this.quantity = quantity;
+        this.price = price;
+        this.number = number;
+        final Instant instant = ZonedDateTime.parse(isoTime).toInstant();
+        this.timestamp = instant.toEpochMilli();
+        this.microSeconds = TimeUnit.NANOSECONDS.toMicros(instant.getNano()) % TimeUnit.MILLISECONDS.toMicros(1);
+    }
+
 
     public void validate() {
         checkRequired(number > 0, "Number");

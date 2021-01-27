@@ -99,7 +99,7 @@ public class TestNameGenerator {
 
     private String methodToKeyName(Class<?> clazz, Method method) {
         return (method != null) ?
-                String.format("%s%s", extractBaseName(clazz), camelToLisp(method.getName()))
+                String.format("%s%s", extractBaseName(clazz), camelToLisp(method.getName())).replace(" ", "-")
                 : extractBaseName(clazz);
     }
 

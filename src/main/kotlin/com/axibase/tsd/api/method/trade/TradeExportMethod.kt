@@ -3,7 +3,6 @@ package com.axibase.tsd.api.method.trade
 import com.axibase.tsd.api.method.BaseMethod
 import com.axibase.tsd.api.model.Period
 import org.apache.http.HttpStatus
-import java.lang.IllegalStateException
 import javax.ws.rs.client.WebTarget
 import javax.ws.rs.core.Response
 
@@ -24,7 +23,7 @@ class TradeExportMethod : BaseMethod() {
         fun rawCsv(rawTradeRequest: RawTradeRequest? = null): String = rawResponse(rawTradeRequest).toCsv()
 
         @JvmStatic
-        fun ohlcvResponse(ohlcvTradeRequest: OhclvTradeRequest? = null): Response =
+        fun ohlcvResponse(ohlcvTradeRequest: OhlcvTradeRequest? = null): Response =
             executeTradeExportRequest(OHLCV_PATH, ohlcvTradeRequest)
             { target, request ->
                 fillRequestsParams(target, request)
@@ -33,7 +32,7 @@ class TradeExportMethod : BaseMethod() {
             }
 
         @JvmStatic
-        fun ohlcvCsv(ohlcvTradeRequest: OhclvTradeRequest? = null) = ohlcvResponse(ohlcvTradeRequest).toCsv()
+        fun ohlcvCsv(ohlcvTradeRequest: OhlcvTradeRequest? = null) = ohlcvResponse(ohlcvTradeRequest).toCsv()
 
 
         private fun <T : TradeRequest> executeTradeExportRequest(
@@ -85,7 +84,7 @@ data class RawTradeRequest(
     override val exchange: String? = null
 ) : TradeRequest
 
-enum class OhclvStatistic {
+enum class OhlcvStatistic {
     OPEN,
     HIGH,
     LOW,
@@ -96,7 +95,7 @@ enum class OhclvStatistic {
     AMOUNT
 }
 
-data class OhclvTradeRequest(
+data class OhlcvTradeRequest(
     override val symbol: String?, override val clazz: String?,
     override val startDate: String?,
     override val endDate: String?,
@@ -104,10 +103,10 @@ data class OhclvTradeRequest(
     override val workdayCalendar: String? = null,
     override val exchange: String? = null,
     val period: Period? = null,
-    val statistics: List<OhclvStatistic>? = null
+    val statistics: List<OhlcvStatistic>? = null
 ) : TradeRequest
 
-private fun List<OhclvStatistic>.toCommaSeparatedList(): String = this.joinToString(",") { it.toString() }
+private fun List<OhlcvStatistic>.toCommaSeparatedList(): String = this.joinToString(",") { it.toString() }
 
 private fun Response.toCsv(): String {
     if (this.status == HttpStatus.SC_OK) {

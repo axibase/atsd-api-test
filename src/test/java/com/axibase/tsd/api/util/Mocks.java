@@ -8,10 +8,11 @@ import javax.ws.rs.client.Entity;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Mocks {
     private static final TestNameGenerator NAME_GENERATOR = new TestNameGenerator();
-
+    private static final AtomicLong TRADE_NUM = new AtomicLong(System.nanoTime());
     public static final String ISO_TIME = "2017-08-01T00:00:00.000Z";
     public static final long MILLS_TIME = Util.getUnixTime(ISO_TIME);
     public static final BigDecimal DECIMAL_VALUE = new BigDecimal("123.4567");
@@ -76,6 +77,10 @@ public class Mocks {
 
     public static String tradeSymbol() {
         return normalizeTradeName(NAME_GENERATOR.newTestName(TestNameGenerator.Key.TRADE_SYMBOL));
+    }
+
+    public static long tradeNum() {
+        return TRADE_NUM.incrementAndGet();
     }
 
     private static String normalizeTradeName(String value) {

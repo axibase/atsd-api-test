@@ -7,10 +7,11 @@ import com.axibase.tsd.api.method.trade.TradeExportMethod.Companion.rawResponse
 import com.axibase.tsd.api.model.financial.Trade
 import com.axibase.tsd.api.util.Mocks
 import com.axibase.tsd.api.util.TradeSender
+import com.axibase.tsd.util.CSVMatcher.eqCsv
 import org.apache.http.HttpStatus
+import org.junit.Assert.assertThat
 import org.testng.annotations.BeforeClass
 import java.math.BigDecimal
-import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -104,14 +105,12 @@ class TradeExportRawTest {
             timeZone = "Europe/Moscow",
             exchange = exchange
         )
-        val csv = rawCsv(req)
-        assertEquals(
-            """
+        val csv = rawCsv(req).csv()
+        val expectedCsv = """
             datetime,trade_num,side,quantity,price,order_num,session
             2020-12-18T07:41:00.000000Z,3323404531,,2,2,,
-
-        """.csv(), csv
-        )
+        """.csv()
+        assertThat(csv, eqCsv(expectedCsv))
     }
 
     private data class TestTrade(
@@ -119,12 +118,7 @@ class TradeExportRawTest {
         val exchange: String? = null
     ) {
         fun toTrade(): Trade {
-            val instant = ZonedDateTime.parse(isoTime).toInstant()
-            val millis = instant.toEpochMilli()
-            val micros = TimeUnit.NANOSECONDS.toMicros(instant.nano.toLong()) % TimeUnit.MILLISECONDS.toMicros(1)
-            val trade = Trade(exchange, clazz, symbol, tradeNum, millis, BigDecimal(price.toString()), quantity)
-            trade.microSeconds = micros
-            return trade
+            return Trade(exchange, clazz, symbol, tradeNum, isoTime, BigDecimal(price.toString()), quantity)
         }
     }
 
