@@ -96,6 +96,17 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
         return TestUtil.convertTo2DimArray(data);
     }
 
+    @Test
+    public void testSubQuery() throws Exception {
+        String subQuery = "select datetime, class, symbol, type, stage, rptseq, offer, assured, action, starttime, snapshot_datetime from atsd_session_summary " +
+                "where class= '" + clazz() + "' and symbol = '" + symbol() + "'  WITH TIMEZONE = 'UTC'";
+        String query = "select * from (" + subQuery + ") where stage = 'N'";
+        String[][] expectedRows = {
+                {"2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z"}
+        };
+        assertSqlQueryRows("Wrong result in subquery", expectedRows, query);
+    }
+
     private TestConfig test(String description) {
         return new TestConfig(description);
     }
