@@ -46,6 +46,7 @@ public class TradePropertyTest extends SqlTradeTest {
         Map<String, String> tags = new HashMap<>();
         tags.put("roundlot", "10");
         tags.put("product", "5");
+        tags.put("marketcode", "FOND");
         property.setTags(tags);
         PropertyMethod.insertPropertyCheck(property);
         property = new Property();
@@ -92,6 +93,17 @@ public class TradePropertyTest extends SqlTradeTest {
                 {
                         "10", "5", "5060", "1234", "196.04"
                 }
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testWhereClause() throws Exception {
+        String sql = "SELECT symbol, exchange\n" +
+                " FROM atsd_trade\n" +
+                "WHERE symbol = '" + symbol() + "' AND exchange='MOEX' AND SEC_DEF.marketcode IN ('FOND', 'FNDT')";
+        String[][] expected = new String[][]{
+                {symbol(), "MOEX"}
         };
         assertSqlQueryRows(expected, sql);
     }
