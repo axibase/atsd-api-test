@@ -119,7 +119,7 @@ public class TokenMetricTest extends MetricTest {
                 .addSamples(Mocks.SAMPLE);
         SeriesMethod.insertSeriesCheck(series);
 
-        Response response = queryMetricSeries(metricName, token);
+        Response response = queryMetricSeriesResponse(metricName, token);
         assertTrue(compareJsonString(Util.prettyPrint(Collections.singletonList(new MetricSeriesResponse(series))),
                 response.readEntity(String.class)));
     }

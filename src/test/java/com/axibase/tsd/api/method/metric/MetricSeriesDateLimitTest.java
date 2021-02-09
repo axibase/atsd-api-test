@@ -39,13 +39,14 @@ public class MetricSeriesDateLimitTest {
 
     private static void assertLimitsPreserved(String minDate, String maxDate, String[] expectedDates) {
         MetricSeriesParameters params =
-                new MetricSeriesParameters()
-                        .setMinInsertDate(minDate)
-                        .setMaxInsertDate(maxDate);
+                MetricSeriesParameters.builder()
+                        .minInsertDate(minDate)
+                        .maxInsertDate(maxDate)
+                        .build();
         MetricSeriesResponse[] responseMetrics;
         try {
 
-            responseMetrics = MetricMethod.queryMetricSeries(METRIC_NAME, params)
+            responseMetrics = MetricMethod.queryMetricSeriesResponse(METRIC_NAME, params)
                     .readEntity(MetricSeriesResponse[].class);
         } catch (Exception e) {
             e.printStackTrace();

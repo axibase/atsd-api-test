@@ -13,13 +13,15 @@ import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -100,24 +102,36 @@ public class MetricMethod extends BaseMethod {
         return response.readEntity(Metric.class);
     }
 
-    public static Response queryMetricSeries(String metricName, String token) {
-        return queryMetricSeries(metricName, null, new RequestSenderWithBearerAuthorization(token));
+    public static Response queryMetricSeriesResponse(String metricName, String token) {
+        return queryMetricSeriesResponse(metricName, null, new RequestSenderWithBearerAuthorization(token));
     }
 
-    public static Response queryMetricSeries(String metricName) {
-        return queryMetricSeries(metricName, (MetricSeriesParameters) null);
+    public static Response queryMetricSeriesResponse(String metricName) {
+        return queryMetricSeriesResponse(metricName, (MetricSeriesParameters) null);
     }
 
-    public static Response queryMetricSeries(String metricName,
-                                             MetricSeriesParameters parameters) {
-        return queryMetricSeries(metricName, parameters, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
+    public static Response queryMetricSeriesResponse(String metricName,
+                                                     MetricSeriesParameters parameters) {
+        return queryMetricSeriesResponse(metricName, parameters, RequestSenderWithBasicAuthorization.DEFAULT_BASIC_SENDER);
     }
 
-    public static Response queryMetricSeries(String metricName, MetricSeriesParameters parameters, RequestSenderWithAuthorization sender) {
+    public static Response queryMetricSeriesResponse(String metricName, MetricSeriesParameters parameters, RequestSenderWithAuthorization sender) {
         Response response = sender.executeApiRequest(METHOD_METRIC_SERIES, nameReplacement(metricName),
                 parameters == null ? Collections.EMPTY_MAP : parameters.toParameterMap(), Collections.EMPTY_MAP, HttpMethod.GET);
         response.bufferEntity();
         return response;
+    }
+
+    public static List<MetricSeriesResponse> queryMetricSeries(@NotNull String metricName, MetricSeriesParameters parameters) {
+        return queryMetricSeriesResponse(metricName, parameters)
+                .readEntity(new GenericType<List<MetricSeriesResponse>>() {
+                });
+    }
+
+    public static List<MetricSeriesResponse> queryMetricSeries(@NotNull String metricName) {
+        return queryMetricSeriesResponse(metricName)
+                .readEntity(new GenericType<List<MetricSeriesResponse>>() {
+                });
     }
 
     public static Response deleteMetric(String metricName, RequestSenderWithAuthorization sender) {
