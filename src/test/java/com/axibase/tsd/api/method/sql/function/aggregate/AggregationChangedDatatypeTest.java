@@ -33,7 +33,7 @@ public class AggregationChangedDatatypeTest extends SqlTest {
                 "SELECT SUM(ROUND(value * cast(tags.tag1))) FROM \"%s\"",
                 metric.getName());
 
-        String[][] expectedRows = {{"123.0"}};
+        String[][] expectedRows = {{"123"}};
 
         assertSqlQueryRows(
                 "Error when querying metric with changed data type",
