@@ -84,6 +84,19 @@ public class TradeAggregationTest extends SqlTradeTest {
         return TestUtil.convertTo2DimArray(data);
     }
 
+    @Test
+    public void testGroupByHour() throws Exception {
+        String sql = "SELECT HOUR(time) AS hour_of_day, count(*)\n" +
+                "      FROM atsd_trade\n" +
+                "    WHERE " + instrumentCondition() + "\n" +
+                "    GROUP BY class, HOUR(time)  WITH TIMEZONE = 'UTC'";
+        String[][] expected = new String[][]{
+                {"10", "4"},
+                {"11", "5"},
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
     private TestConfig test(String description) {
         return new TestConfig(description);
     }
