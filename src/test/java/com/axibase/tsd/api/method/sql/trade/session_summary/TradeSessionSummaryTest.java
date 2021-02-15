@@ -107,11 +107,35 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
         assertSqlQueryRows("Wrong result in subquery", expectedRows, query);
     }
 
+    @Test
+    public void testAggregateWithPeriod() throws Exception {
+        String sql = "select datetime, count(*), class from atsd_session_summary " +
+                "where class in ('" + clazz() + "', '" + clazzTwo + "') and symbol in ('" + symbol() + "', '" + symbolTwo() + "')  " +
+                " group by class, period(1 DAY) " +
+                " WITH TIMEZONE = 'UTC'";
+        String[][] expectedRows = {
+                {"2020-09-10T00:00:00.000000Z", "2", clazz()},
+                {"2020-09-10T00:00:00.000000Z", "1", clazzTwo},
+        };
+        assertSqlQueryRows("Wrong result in query with daily period", expectedRows, sql);
+
+        sql = "select datetime, count(*), class from atsd_session_summary " +
+                "where class in ('" + clazz() + "', '" + clazzTwo + "') and symbol in ('" + symbol() + "', '" + symbolTwo() + "')  " +
+                " group by class, period(1 HOUR) " +
+                " WITH TIMEZONE = 'UTC'";
+        String[][] expectedRowsHourly = {
+                {"2020-09-10T10:00:00.000000Z", "1", clazz()},
+                {"2020-09-10T12:00:00.000000Z", "1", clazz()},
+                {"2020-09-10T10:00:00.000000Z", "1", clazzTwo},
+        };
+        assertSqlQueryRows("Wrong result in query with hourly period", expectedRowsHourly, sql);
+    }
+
     private TestConfig test(String description) {
         return new TestConfig(description);
     }
 
-    private class TestConfig extends SqlTestConfig<TestConfig> {
+    private static class TestConfig extends SqlTestConfig<TestConfig> {
 
         public TestConfig(String description) {
             super(description);
