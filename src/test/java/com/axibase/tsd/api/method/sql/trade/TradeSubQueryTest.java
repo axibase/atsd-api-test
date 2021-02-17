@@ -78,7 +78,7 @@ public class TradeSubQueryTest extends SqlTradeTest {
     public void testSubQueryWithAggregationMultipleInstruments() throws Exception {
         String sql = "select datetime, exchange, class, symbol, cnt from (" +
                 "select datetime, exchange, class, symbol, count(*) as cnt from atsd_trade where " + classCondition() +
-                " group by exchange, class, symbol, period(10 minute)) where cnt < 2";
+                " group by exchange, class, symbol, period(10 minute) order by symbol) where cnt < 2";
 
         String[][] expectedRows = {
                 {"2020-03-22T10:40:00.000000Z", exchange(), clazz(), symbol(), "1"},
