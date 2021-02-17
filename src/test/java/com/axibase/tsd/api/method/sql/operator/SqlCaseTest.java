@@ -255,6 +255,20 @@ public class SqlCaseTest extends SqlTest {
                 sqlQuery);
     }
 
+    @Test
+    public void testCaseInAggregationFunctionWithNullBranch() throws Exception {
+        String sqlQuery = String.format(
+                "SELECT SUM(CASE WHEN value < 30 THEN value ELSE NULL END) FROM \"%s\"",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {{"16"}};
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in aggregation function",
+                expectedRows,
+                sqlQuery);
+    }
+
     @Issue("3913")
     @Test
     public void testCaseInCastFunction() throws Exception {
@@ -269,6 +283,20 @@ public class SqlCaseTest extends SqlTest {
 
         assertSqlQueryRows(
                 "Incorrect query result with CASE operator in cast function",
+                expectedRows,
+                sqlQuery);
+    }
+
+    @Test
+    public void testCaseInSubQuery() throws Exception {
+        String sqlQuery = String.format(
+                "select sum(v) from (SELECT CASE WHEN value < 30 THEN value ELSE NULL END as v FROM \"%s\")",
+                TEST_METRIC_NAME);
+
+        String[][] expectedRows = {{"16"}};
+
+        assertSqlQueryRows(
+                "Incorrect query result with CASE operator in aggregation function",
                 expectedRows,
                 sqlQuery);
     }
