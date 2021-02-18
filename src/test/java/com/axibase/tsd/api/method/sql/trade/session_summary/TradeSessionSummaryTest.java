@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TradeSessionSummaryTest extends SqlTradeTest {
-    private static final String QUERY = "select datetime, class, symbol, type, stage, rptseq, offer, assured, action, starttime, snapshot_datetime from atsd_session_summary " +
+    private static final String QUERY = "select datetime, class, symbol, type, stage, rptseq, offer, assured, action, starttime, snapshot_datetime, \"time\", value from atsd_session_summary " +
             "where {where} and time between '{startTime}' and '{endTime}'   WITH TIMEZONE = 'UTC'";
     private final String clazzTwo = Mocks.tradeClass();
 
@@ -31,6 +31,8 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
         sessionSummary.addTag("action", "test");
         sessionSummary.addTag("starttime", "10:15:20");
         sessionSummary.addTag("snapshot_datetime", "2020-09-10T10:15:20Z");
+        sessionSummary.addTag("time", "10:00:00");
+        sessionSummary.addTag("value", "5.5");
 
         list.add(sessionSummary);
 
@@ -41,6 +43,8 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
         sessionSummary.addTag("action", "test2");
         sessionSummary.addTag("starttime", "16:15:20");
         sessionSummary.addTag("snapshot_datetime", "2020-09-10T10:25:20Z");
+        sessionSummary.addTag("time", "12:00:00");
+        sessionSummary.addTag("value", "6.5");
 
         list.add(sessionSummary);
 
@@ -51,6 +55,8 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
         sessionSummary.addTag("action", "test3");
         sessionSummary.addTag("starttime", "17:15:21");
         sessionSummary.addTag("snapshot_datetime", "2020-09-11T10:25:20Z");
+        sessionSummary.addTag("time", "12:30:15");
+        sessionSummary.addTag("value", "7.5");
 
         list.add(sessionSummary);
 
@@ -69,28 +75,28 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
                 test("class='" + clazz() + "' and symbol='" + symbol() + "'")
                         .startTime("2020-09-10T10:00:00Z")
                         .endTime("2020-09-10T11:00:00Z")
-                        .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z")
+                        .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z", "10:00:00", "5.5")
                 ,
                 test("class='" + clazz() + "'")
                         .startTime("2020-09-10T10:00:00Z")
                         .endTime("2020-09-10T13:00:00Z")
-                        .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z")
-                        .addExpected("2020-09-10T12:15:20.000000Z", clazz(), symbol(), "Day", "C", "3", "11.25", "false", "test2", "16:15:20", "2020-09-10T10:25:20.000000Z")
+                        .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z", "10:00:00", "5.5")
+                        .addExpected("2020-09-10T12:15:20.000000Z", clazz(), symbol(), "Day", "C", "3", "11.25", "false", "test2", "16:15:20", "2020-09-10T10:25:20.000000Z", "12:00:00", "6.5")
                 ,
                 test("class='" + clazz() + "' and type='Day'")
                         .startTime("2020-09-10T10:00:00Z")
                         .endTime("2020-09-10T13:00:00Z")
-                        .addExpected("2020-09-10T12:15:20.000000Z", clazz(), symbol(), "Day", "C", "3", "11.25", "false", "test2", "16:15:20", "2020-09-10T10:25:20.000000Z")
+                        .addExpected("2020-09-10T12:15:20.000000Z", clazz(), symbol(), "Day", "C", "3", "11.25", "false", "test2", "16:15:20", "2020-09-10T10:25:20.000000Z", "12:00:00", "6.5")
                 ,
                 test("class='" + clazz() + "' and stage='N'")
                         .startTime("2020-09-10T10:00:00Z")
                         .endTime("2020-09-10T13:00:00Z")
-                        .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z")
+                        .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z", "10:00:00", "5.5")
                 , test("(class='" + clazz() + "' and symbol='" + symbol() + "' or class = '" + clazzTwo + "' and symbol='" + symbolTwo() + "')")
                 .startTime("2020-09-10T10:00:00Z")
                 .endTime("2020-09-10T11:00:00Z")
-                .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z")
-                .addExpected("2020-09-10T10:45:20.000000Z", clazzTwo, symbolTwo(), "Morning", "E", "4", "21.25", "true", "test3", "17:15:21", "2020-09-11T10:25:20.000000Z")
+                .addExpected("2020-09-10T10:15:20.000000Z", clazz(), symbol(), "Morning", "N", "2", "10.5", "true", "test", "10:15:20", "2020-09-10T10:15:20.000000Z", "10:00:00", "5.5")
+                .addExpected("2020-09-10T10:45:20.000000Z", clazzTwo, symbolTwo(), "Morning", "E", "4", "21.25", "true", "test3", "17:15:21", "2020-09-11T10:25:20.000000Z", "12:30:15", "7.5")
 
         };
         return TestUtil.convertTo2DimArray(data);
