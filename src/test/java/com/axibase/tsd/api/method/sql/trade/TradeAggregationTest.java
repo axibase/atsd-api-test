@@ -44,6 +44,10 @@ public class TradeAggregationTest extends SqlTradeTest {
                         .fields("open(), high(), low(), close(), volume()")
                         .addExpected("126.99", "127.36", "126.99", "127.11", "105466")
                 ,
+                test("Test ohlcv aggregation with price argument")
+                        .fields("open(price), high(price), low(price), close(price), volume(price)")
+                        .addExpected("126.99", "127.36", "126.99", "127.11", "105466")
+                ,
                 test("Test ohlcv aggregation with period")
                         .fields("open(), high(), low(), close(), volume()")
                         .period(1, "hour")
@@ -62,8 +66,8 @@ public class TradeAggregationTest extends SqlTradeTest {
                         .having("t > 600")
                         .addExpected("127.2", "127.31", "127.1", "127.11", "16137", "635.55"),
                 test("Test sum(price*quantity)")
-                        .fields("open(), volume(), sum((quantity*price)), vwap(), sum(quantity)")
-                        .addExpected("126.99", "105466", "1.341158175E7", "127.16497970910056", "105466")
+                        .fields("open(), volume(), sum((quantity*price)), vwap(), vwap(price), sum(quantity)")
+                        .addExpected("126.99", "105466", "1.341158175E7", "127.16497970910056", "127.16497970910056", "105466")
                 ,
                 test("Period greater than 1 hour")
                         .fields("datetime, count(*)")
