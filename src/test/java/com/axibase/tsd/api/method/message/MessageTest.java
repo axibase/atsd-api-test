@@ -44,7 +44,6 @@ public class MessageTest extends MessageMethod {
     }
 
     private static void assertEntity(String entityName) {
-        System.out.println("Assert entity called!");
         String errorMessage = String.format("ATSD dos not know entity %s.", entityName);
         Check entityNameCheck = new Check(errorMessage, () -> EntityMethod.entityExist(entityName));
         try {
