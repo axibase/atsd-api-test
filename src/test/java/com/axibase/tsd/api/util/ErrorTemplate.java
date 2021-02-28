@@ -19,7 +19,7 @@ public class ErrorTemplate {
     public static final String SQL_SYNTAX_AMBIGUOUS_COLUMN_TPL = "Column '%s' ambiguously defined at line [0-9]+ position [0-9]+ near \"%s\"";
     public static final String SQL_SYNTAX_COMPARISON_TPL = "Syntax error at line %s position %s: no viable alternative at input '%s'";
 
-    public static final String CANNOT_MODIFY_ENTITY_TPL = "IllegalArgumentException: Can not modify entities for entity group '%s'. Please reset expression field first.";
+    public static final String CANNOT_MODIFY_ENTITY_TPL = "IllegalArgumentException: Cannot modify entities for entity group '%s'. Please reset expression field first.";
 
     public static final String UNKNOWN_ENTITY_FIELD_PREFIX = "com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException:";
     public static final String TAG_VALUE_ARRAY_SUBSTRING = "not deserialize instance";

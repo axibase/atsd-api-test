@@ -43,7 +43,7 @@ public class EntityGroupEntitiesAddTest extends EntityGroupMethod {
 
     @Issue("3041")
     @Test
-    public void testUnableMofifyEntitiesWhileExpressionNotEmpty() throws Exception {
+    public void testUnableModifyEntitiesWhileExpressionNotEmpty() throws Exception {
         EntityGroup entityGroup = new EntityGroup("addentities-entitygroup-4");
         entityGroup.setExpression(SYNTAX_ALLOWED_ENTITYGROUP_EXPRESSION);
         createOrReplaceEntityGroupCheck(entityGroup);
