@@ -128,12 +128,12 @@ public class TradeInstrumentInvalidConditionTest extends SqlTradeTest {
                 },
                 {
                         String.format("select * from atsd_trade where class='a' and is_entity_in_group(concat(symbol, '_[', class, ']'), '%s')", TEST_ENTITY_GROUP2_NAME),
-                        "Mutual exclusive class conditions",
+                        "Mutual exclusive instrument conditions",
                         "Test mutual exclusive condition with entity group expression (class)"
                 },
                 {
                         String.format("select * from atsd_trade where symbol='a' and is_entity_in_group(concat(symbol, '_[', class, ']'), '%s')", TEST_ENTITY_GROUP2_NAME),
-                        "Mutual exclusive symbol conditions",
+                        "Mutual exclusive instrument conditions",
                         "Test mutual exclusive condition with entity group expression (symbol)"
                 }
 
