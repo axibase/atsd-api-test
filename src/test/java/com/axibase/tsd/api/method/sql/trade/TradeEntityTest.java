@@ -58,6 +58,7 @@ public class TradeEntityTest extends SqlTradeTest {
                 test("Test text tag condition").condition("entity.tags.b like 'd%'").addExpected("10"),
                 test("Test entity label condition").condition("entity.label = 'entity2'").addExpected("10"),
                 test("Test complex condition").condition("entity.enabled and entity.tags.a = 10 and entity.tags.b = 'abc'").addExpected("1"),
+                test("Test or condition").condition("(entity.tags.a = 10 or entity.tags.b = 'abc')").addExpected("1"),
                 test("Test columns").condition("entity.enabled").field("entity.enabled, entity.tags.a, entity.tags.b").addExpected("1", "true", "10", "abc")
         };
         return TestUtil.convertTo2DimArray(data);
