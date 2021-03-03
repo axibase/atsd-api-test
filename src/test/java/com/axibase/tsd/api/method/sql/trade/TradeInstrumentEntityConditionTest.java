@@ -63,6 +63,10 @@ public class TradeInstrumentEntityConditionTest extends SqlTradeTest {
                 {"select class, symbol from atsd_trade where symbol LIKE '" + TEST_PREFIX.toUpperCase() + "SYMBOL1%' and is_entity_in_group(to_entity(symbol, class), '" + TEST_ENTITY_GROUP2_NAME + "')",
                         new String[][]{{CLASS_1, SYMBOL_1}}
                 },
+                {"select class, symbol from atsd_trade where class='" + CLASS_1 + "' and is_entity_in_group(to_entity(symbol, class), '" + TEST_ENTITY_GROUP2_NAME + "')",
+                        new String[][]{{CLASS_1, SYMBOL_1}}
+                },
+
         };
     }
 }
