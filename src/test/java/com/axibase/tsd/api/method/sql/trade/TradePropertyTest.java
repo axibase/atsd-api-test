@@ -131,4 +131,15 @@ public class TradePropertyTest extends SqlTradeTest {
         };
         assertSqlQueryRows(expected, sql);
     }
+
+    @Test
+    public void testDateTimeField() {
+        String sql = "select sec_def.datetime, stat.datetime from atsd_trade where " + instrumentCondition();
+        String[][] expected = new String[][]{
+                {
+                        "2020-06-14T10:21:49.123Z", "2020-06-15T20:21:49.123Z"
+                }
+        };
+        assertSqlQueryRows(expected, sql);
+    }
 }
