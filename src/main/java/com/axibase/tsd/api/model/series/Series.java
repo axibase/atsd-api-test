@@ -37,10 +37,14 @@ public class Series implements Comparable<Series> {
     }
 
     public Series(String entity, String metric) {
-        if (null != entity) {
+        this(entity, metric, true);
+    }
+
+    public Series(String entity, String metric, boolean checkThatEntityAndMetricDoNotExistInAtsd) {
+        if (checkThatEntityAndMetricDoNotExistInAtsd && null != entity) {
             Registry.Entity.checkExists(entity);
         }
-        if (null != metric) {
+        if (checkThatEntityAndMetricDoNotExistInAtsd && null != metric) {
             Registry.Metric.checkExists(metric);
         }
         this.entity = entity;

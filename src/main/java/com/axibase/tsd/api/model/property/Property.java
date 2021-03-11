@@ -26,10 +26,14 @@ public class Property {
     private String date;
 
     public Property(String type, String entity) {
-        if (type != null) {
+        this(type, entity, true);
+    }
+
+    public Property(String type, String entity, boolean checkThatTypeAndEntityDoNotExistInAtsd) {
+        if (checkThatTypeAndEntityDoNotExistInAtsd && type != null) {
             Registry.Type.checkExists(type);
         }
-        if (entity != null) {
+        if (checkThatTypeAndEntityDoNotExistInAtsd && entity != null) {
             Registry.Entity.checkExists(entity);
         }
         this.type = type;

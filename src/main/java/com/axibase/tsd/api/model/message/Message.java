@@ -29,7 +29,11 @@ public class Message {
     private Map<String, String> tags = new HashMap<>();
 
     public Message(String entity) {
-        if (entity != null) {
+        this(entity, true);
+    }
+
+    public Message(String entity, boolean checkThatEntityDoesNotExistsInAtsd) {
+        if (checkThatEntityDoesNotExistsInAtsd && entity != null) {
             Registry.Entity.checkExists(entity);
         }
         this.entity = entity;

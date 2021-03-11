@@ -78,7 +78,7 @@ public class MessageSearchByEntityTest {
     }
 
     private static void insertMessage(String entity, String text) throws Exception {
-        Message message = new Message(prefix + entity)
+        Message message = new Message(prefix + entity, false)
                 .setDate(testDate)
                 .setMessage(text);
         PlainCommand command = new MessageCommand(message);
@@ -87,7 +87,7 @@ public class MessageSearchByEntityTest {
     }
 
     private static void insertSeries(String entity, String metric) throws Exception {
-        Series series = new Series(prefix + entity, prefix + metric);
+        Series series = new Series(prefix + entity, prefix + metric, false);
         series.addSamples(Sample.ofDateInteger(testDate, 111)); // doesn't matter
         PlainCommand command = new SeriesCommand(series);
         assertTrue("Fail to send series via TCP command.", TCP.send(command));
@@ -96,7 +96,7 @@ public class MessageSearchByEntityTest {
     }
 
     private static void insertProperty(String entity, String type, String tagName, String tagValue) throws Exception {
-        Property property = new Property(prefix + type, prefix + entity);
+        Property property = new Property(prefix + type, prefix + entity, false);
         property.addTag(prefix + tagName, prefix + tagValue);
         PlainCommand command = new PropertyCommand(property);
         assertTrue("Fail to send property via TCP command.", TCP.send(command));
