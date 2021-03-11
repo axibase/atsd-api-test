@@ -45,6 +45,7 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
         sessionSummary.addTag("snapshot_datetime", "2020-09-10T10:25:20Z");
         sessionSummary.addTag("time", "12:00:00");
         sessionSummary.addTag("value", "6.5");
+        sessionSummary.addTag("iopen", "1298.93");
 
         list.add(sessionSummary);
 
@@ -135,6 +136,16 @@ public class TradeSessionSummaryTest extends SqlTradeTest {
                 {"2020-09-10T10:00:00.000000Z", "1", clazzTwo},
         };
         assertSqlQueryRows("Wrong result in query with hourly period", expectedRowsHourly, sql);
+    }
+
+    @Test
+    public void testColumns() throws Exception {
+        String query = "select class, symbol, iopen from atsd_session_summary where class='" + clazz() + "' and symbol='" + symbol() + "'";
+        String[][] expectedRows = {
+                {clazz(), symbol(), null},
+                {clazz(), symbol(), "1298.93"},
+        };
+        assertSqlQueryRows(expectedRows, query);
     }
 
     private TestConfig test(String description) {
