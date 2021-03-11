@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.message;
 
-import com.axibase.tsd.api.method.checks.AbstractCheck;
+import com.axibase.tsd.api.method.checks.MessageQuerySizeCheck;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.TimeUnit;
 import com.axibase.tsd.api.model.message.Message;
@@ -235,23 +235,4 @@ public class MessageInsertTest extends MessageMethod {
                 response.readEntity(String.class), true);
     }
 
-    private static class MessageQuerySizeCheck extends AbstractCheck {
-        private MessageQuery query;
-        private Integer size;
-
-        private MessageQuerySizeCheck(MessageQuery query, Integer size) {
-            this.query = query;
-            this.size = size;
-        }
-
-        @Override
-        public boolean isChecked() {
-            Response response = queryMessageResponse(query);
-            if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response)) {
-                return false;
-            }
-            List<Message> storedMessageList = response.readEntity(ResponseAsList.ofMessages());
-            return storedMessageList.size() == size;
-        }
-    }
 }

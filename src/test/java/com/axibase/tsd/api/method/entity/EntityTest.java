@@ -1,6 +1,7 @@
 package com.axibase.tsd.api.method.entity;
 
 import com.axibase.tsd.api.Checker;
+import com.axibase.tsd.api.method.checks.Check;
 import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.model.entity.Entity;
 import com.axibase.tsd.api.util.NotCheckedException;
@@ -24,6 +25,19 @@ public class EntityTest extends EntityMethod {
                 entity
         );
         assertEntityExisting(assertMessage, entity);
+    }
+
+    /**
+     * Checks that ATSD knows some entity with given name.
+     */
+    public static void assertEntityNameExist(String entityName) {
+        String errorMessage = String.format("ATSD does not know entity %s.", entityName);
+        Check entityNameCheck = new Check(errorMessage, () -> EntityMethod.entityExist(entityName));
+        try {
+            Checker.check(entityNameCheck);
+        } catch (NotCheckedException e) {
+            fail(errorMessage);
+        }
     }
 
     private static final class DefaultMessagesTemplate {

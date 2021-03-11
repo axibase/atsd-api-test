@@ -15,6 +15,7 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessageQuery {
     private String entity;
+    private String entityExpression;
     private String type;
     private String metric;
     private String startDate;

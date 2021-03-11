@@ -5,7 +5,7 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.method.checks.Check;
 import com.axibase.tsd.api.method.checks.MessageCheck;
-import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.method.entity.EntityTest;
 import com.axibase.tsd.api.model.message.Message;
 import com.axibase.tsd.api.model.message.MessageQuery;
 import com.axibase.tsd.api.util.NotCheckedException;
@@ -14,6 +14,7 @@ import com.axibase.tsd.api.util.Util;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.testng.AssertJUnit.fail;
 
@@ -38,22 +39,12 @@ public class MessageTest extends MessageMethod {
      */
     public static void assertMessageExisting(String assertMessage, Message message, boolean checkThatMessageEntityIsCreated) {
         if (checkThatMessageEntityIsCreated) {
-            assertEntity(message.getEntity());
+            EntityTest.assertEntityNameExist(message.getEntity());
         }
-        assertMessage(assertMessage, message);
+        assertMessageExists(assertMessage, message);
     }
 
-    private static void assertEntity(String entityName) {
-        String errorMessage = String.format("ATSD does not know entity %s.", entityName);
-        Check entityNameCheck = new Check(errorMessage, () -> EntityMethod.entityExist(entityName));
-        try {
-            Checker.check(entityNameCheck);
-        } catch (NotCheckedException e) {
-            fail(errorMessage);
-        }
-    }
-
-    private static void assertMessage(String assertMessage, Message message) {
+    private static void assertMessageExists(String assertMessage, Message message) {
         try {
             Checker.check(new MessageCheck(message));
         } catch (NotCheckedException e) {
@@ -79,6 +70,21 @@ public class MessageTest extends MessageMethod {
                     "Query Response array size is not equal to expected (%s).%n Query: %s",
                     size, query
             );
+            fail(assertMessage);
+        }
+    }
+
+    /**
+     * Try to find provided message in ATSD, and check that found message has the same values of the specified
+     * fields as the provided message.
+     */
+    public static void assertMessageExist(Message message, String... fields) {
+        String assertMessage = String.format("Fail to find in ATSD message: %s", message);
+        try {
+            Check messageCheck = new Check(assertMessage,
+                    () -> MessageMethod.messageExistWithSameFields(message, "entity", "message"));
+            Checker.check(messageCheck, 10, TimeUnit.SECONDS);
+        } catch (NotCheckedException e) {
             fail(assertMessage);
         }
     }

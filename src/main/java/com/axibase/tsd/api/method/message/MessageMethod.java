@@ -98,7 +98,56 @@ public class MessageMethod extends BaseMethod {
         return executeRequest(METHOD_MESSAGE_QUERY, query, sender);
     }
 
+    /**
+     * Build message query for provided message, execute the query,
+     * and check that response json is the same as the message json.
+     * Although the lenient checking (may be) performed,
+     * the method will return false if
+     * some message fields (type, severity, date, etc.) are not specified,
+     * but are set to defaults when stored in ATSD.
+     */
     public static boolean messageExist(final Message message) throws Exception {
+        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(message));
+        final String given = queryMessageAsString(message);
+        return compareJsonString(expected, given);
+    }
+
+    /**
+     * Build message query for provided message, execute the query, parse response as a Message,
+     * and check that parsed message and provided message have the same values of specified fields.
+     */
+    public static boolean messageExistWithSameFields(final Message message, String... fieldNames) {
+        final Message[] actualMessages = queryMessage(message);
+        if (actualMessages.length != 1) return false;
+        Message actualMessage = actualMessages[0];
+        return Arrays.stream(fieldNames)
+                .allMatch(field -> message.getStringField(field).equals(actualMessage.getStringField(field)));
+    }
+
+    /**
+     * Build message query for provided message, execute the query, and read response as a Message[].
+     */
+    public static Message[] queryMessage(final Message message) {
+        return queryMessage(message, Message[].class);
+    }
+
+    /**
+     * Build message query for provided message, execute the query, and read response as a String.
+     */
+    public static String queryMessageAsString(final Message message) {
+        return queryMessage(message, String.class);
+    }
+
+    private static <T> T queryMessage(final Message message, Class<T> returnType) {
+        MessageQuery query = buildQuery(message);
+        Response response = queryMessageResponse(query);
+        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response) && response.getStatus() != NOT_FOUND.getStatusCode()) {
+            throw new IllegalStateException("Fail to execute queryMessageResponse request: " + response.readEntity(String.class));
+        }
+        return response.readEntity(returnType);
+    }
+
+    private static MessageQuery buildQuery(final Message message) {
         MessageQuery query = new MessageQuery();
         query.setEntity(message.getEntity());
         query.setType(message.getType());
@@ -108,14 +157,6 @@ public class MessageMethod extends BaseMethod {
         }
         query.setSeverity(message.getSeverity());
         query.setSource(message.getSource());
-
-        Response response = queryMessageResponse(query);
-        if (Response.Status.Family.SUCCESSFUL != Util.responseFamily(response) && response.getStatus() != NOT_FOUND.getStatusCode()) {
-            throw new IllegalStateException("Fail to execute queryMessageResponse request: " + response.readEntity(String.class));
-        }
-
-        final String expected = jacksonMapper.writeValueAsString(Collections.singletonList(message));
-        final String given = response.readEntity(String.class);
-        return compareJsonString(expected, given);
+        return query;
     }
 }

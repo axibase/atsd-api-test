@@ -65,6 +65,23 @@ public class Message {
         this.tags = new HashMap<>(tags);
     }
 
+    public String getStringField(String fieldName) {
+        switch(fieldName) {
+            case "entity":
+                return entity;
+            case "type":
+                return type;
+            case "source":
+                return source;
+            case "severity":
+                return severity;
+            case "message":
+                return message;
+            default:
+                throw new IllegalArgumentException("There are no String field with name: " + fieldName);
+        }
+    }
+
     @Override
     public String toString() {
         return "Message{" +
