@@ -103,12 +103,12 @@ public class TradeInstrumentInvalidConditionTest extends SqlTradeTest {
                 },
                 {
                         "select * from atsd_trade where symbol LIKE 'non-existent-symbol%'",
-                        "Instrument not found for the following criteria: criteria: [], filters: [SQL expressions: symbol like 'non-existent-symbol%']",
+                        "Instrument not found for the following criteria: [ filters: [SQL expressions: symbol like 'non-existent-symbol%']]",
                         "Test nothing found by symbol like condition"
                 },
                 {
                         "select * from atsd_trade where class LIKE 'non-existent-class%'",
-                        "Instrument not found for the following criteria: criteria: [], filters: [SQL expressions: class like 'non-existent-class%']",
+                        "Instrument not found for the following criteria: [ filters: [SQL expressions: class like 'non-existent-class%']]",
                         "Test nothing found by class like condition"
                 },
                 {
@@ -118,12 +118,12 @@ public class TradeInstrumentInvalidConditionTest extends SqlTradeTest {
                 },
                 {
                         "select * from atsd_trade where symbol like '" + TEST_PREFIX + "symbol1%' and symbol in ('" + TEST_PREFIX + "symbol3')",
-                        "Instrument not found for the following criteria: criteria: [ symbol: [" + TEST_PREFIX + "symbol3]], filters: [SQL expressions: symbol like '" + TEST_PREFIX + "symbol1%']",
+                        "Instrument not found for the following criteria: [ symbol: [" + TEST_PREFIX + "symbol3] filters: [SQL expressions: symbol like '" + TEST_PREFIX + "symbol1%']]",
                         "Test mutual exclusive condition with like expression (symbol)"
                 },
                 {
                         "select * from atsd_trade where class like '" + TEST_PREFIX + "class1%' and class = '" + TEST_PREFIX + "class3'",
-                        "Instrument not found for the following criteria: criteria: [ class: [" + TEST_PREFIX + "class3]], filters: [SQL expressions: class like '" + TEST_PREFIX + "class1%']",
+                        "Instrument not found for the following criteria: [ class: [" + TEST_PREFIX + "class3] filters: [SQL expressions: class like '" + TEST_PREFIX + "class1%']]",
                         "Test mutual exclusive condition with like expression (class)"
                 },
                 {
