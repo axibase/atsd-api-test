@@ -106,14 +106,7 @@ public class Util {
         return map.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
     }
 
-    /** Wrap each value of provided map into list. */
-    public static Map<String, List<String>> wrapValuesInLists(Map<String, String> map) {
-        return map.entrySet().stream().collect(
-                Collectors.toMap(Map.Entry::getKey, entry -> wrapInList(entry.getValue()))
-        );
-    }
-
-    public static ArrayList<String> wrapInList(String value) {
+    public static ArrayList<String> wrapInMutableList(String value) {
         ArrayList<String> list = new ArrayList<>(1);
         list.add(value);
         return list;

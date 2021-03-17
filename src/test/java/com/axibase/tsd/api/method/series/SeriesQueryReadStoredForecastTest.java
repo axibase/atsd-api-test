@@ -144,10 +144,10 @@ public class SeriesQueryReadStoredForecastTest extends SeriesMethod {
     }
 
     Map<String, List<String>> tags(String k1, String v1) {
-        return ImmutableMap.of(k1, Util.wrapInList(v1));
+        return ImmutableMap.of(k1, Util.wrapInMutableList(v1));
     }
 
     Map<String, List<String>> tags(String k1, String v1, String k2, String v2) {
-        return ImmutableMap.of(k1, Util.wrapInList(v1), k2, Util.wrapInList(v2));
+        return ImmutableMap.of(k1, Util.wrapInMutableList(v1), k2, Util.wrapInMutableList(v2));
     }
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
 import static com.axibase.tsd.api.util.Util.MIN_QUERYABLE_DATE;
@@ -75,10 +76,8 @@ public class SeriesQuery {
     public SeriesQuery(Series series) {
         entity = escapeExpression(series.getEntity());
         metric = series.getMetric();
-        tags = new HashMap<>();
-        for (Map.Entry<String, String> keyValue : series.getTags().entrySet()) {
-            tags.put(keyValue.getKey(), Util.wrapInList(escapeExpression(keyValue.getValue())));
-        }
+        tags = series.getTags().entrySet().stream().collect(
+                Collectors.toMap(Map.Entry::getKey, entry -> Util.wrapInMutableList(escapeExpression(entry.getValue()))));
         exactMatch = true;
         if (series.getData().isEmpty()) {
             startDate = MIN_QUERYABLE_DATE;
@@ -107,7 +106,8 @@ public class SeriesQuery {
         this.metric = metric;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.tags = Util.wrapValuesInLists(tags);
+        this.tags = tags.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> Util.wrapInMutableList(entry.getValue())));
     }
 
     private String escapeExpression(String expression) {
