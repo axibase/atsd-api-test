@@ -13,10 +13,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -107,6 +104,19 @@ public class Util {
 
     public static Map<String, Object> toStringObjectMap(Map<String, String> map) {
         return map.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+    }
+
+    /** Wrap each value of provided map into list. */
+    public static Map<String, List<String>> wrapValuesInLists(Map<String, String> map) {
+        return map.entrySet().stream().collect(
+                Collectors.toMap(Map.Entry::getKey, entry -> wrapInList(entry.getValue()))
+        );
+    }
+
+    public static ArrayList<String> wrapInList(String value) {
+        ArrayList<String> list = new ArrayList<>(1);
+        list.add(value);
+        return list;
     }
 
     private static final class AtsdVersionInfo {

@@ -27,7 +27,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
 /**
- * Test of auto aggregation. Applied if flag {@link Forecast#autoAggregate} is true.
+ * Test of auto aggregation.
  * Check that response contains correct forecast series.
  *
  * Method insertSeries() create input series.

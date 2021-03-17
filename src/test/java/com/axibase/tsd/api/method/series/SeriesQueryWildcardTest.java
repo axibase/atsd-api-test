@@ -200,9 +200,7 @@ public class SeriesQueryWildcardTest extends SeriesMethod {
     }
 
     private List<Series> requestSeriesWithTags(SeriesQuery seriesQuery, final String key, final String value) throws Exception {
-        seriesQuery.setTags(Collections.unmodifiableMap(new HashMap<String, String>() {{
-            put(key, value);
-        }}));
+        seriesQuery.addTag(key, value);
         return querySeriesAsList(seriesQuery);
     }
 }

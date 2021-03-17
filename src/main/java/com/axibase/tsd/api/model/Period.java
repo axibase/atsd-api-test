@@ -34,7 +34,7 @@ public class Period {
     }
 
     /**
-     * Create a Period object with count, unit, and timezone fields.
+     * Create a Period object with count, unit, and alignment.
      *
      * @param count           an amount of time units.
      * @param unit            {@link TimeUnit} instance.

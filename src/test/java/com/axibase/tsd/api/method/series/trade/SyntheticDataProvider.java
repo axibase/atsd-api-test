@@ -76,7 +76,7 @@ public class SyntheticDataProvider {
 
     public SeriesQuery aggregateQuery(Aggregate aggregate) {
         List<String> entities = Arrays.asList(this.entities);
-        Map<String, String> tags = new HashMap<>();
+        Map<String, List<String>> tags = new HashMap<>();
         return new SeriesQuery()
                 .setMetric(metric)
                 .setEntities(entities)
@@ -88,7 +88,7 @@ public class SyntheticDataProvider {
     }
 
     public SeriesQuery entityAQuery(Group group, Aggregate aggregate) {
-        Map<String, String> tags = new HashMap<>();
+        Map<String, List<String>> tags = new HashMap<>();
         return new SeriesQuery()
                 .setMetric(metric)
                 .setEntity(entityA)

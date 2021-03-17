@@ -192,15 +192,19 @@ public class TradeSideTest {
 
         @Nullable
         public String side() {
-            Map<String, String> tags = query.getTags();
+            Map<String, List<String>> tags = query.getTags();
             if (tags == null) {
                 return null;
             }
-            String side = tags.get("side");
-            if (side == null || side.equalsIgnoreCase("*")) {
+            List<String> sides = tags.get("side");
+            if (sides == null || sides.isEmpty()) {
                 return null;
             }
-            return side;
+            if (sides.size() > 1) {
+                throw new IllegalArgumentException("A query in this test can not have more than one side.");
+            }
+            String side = sides.get(0);
+            return side.equalsIgnoreCase("*") ? null : side;
         }
 
         public boolean hasNoBuyPrices() {

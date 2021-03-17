@@ -123,7 +123,7 @@ public class InstrumentSearchBase {
                     .limit(1)
                     .map(entry -> new SeriesQuery(makeEntityName(entry.getSymbol(), entry.getClassCode()), TRADE_PRICE_METRIC,
                             IndicesGenerator.startTime, IndicesGenerator.timestamp.get() + 1)
-                        .setTags(Collections.singletonMap("exchange", entry.getExchange())))
+                        .addTag("exchange", entry.getExchange()))
                     .map(query -> new SeriesQueryDataSizeCheck(query, 1))
                     .forEach(check -> Checker.check(check, time, timeUnit));
             updateInstrumentIndex();

@@ -162,10 +162,10 @@ public class SeriesQueryTagExpressionFilterTest extends SeriesMethod {
                 if (!tagValue.equals("null")) {
                     expectedTagsSet.add(tagValue);
                 }
-                query.setTags(Collections.singletonMap("tag", firstValue.get()));
+                query.addTag("tag", firstValue.get());
             }
         } else {
-            query.setTags(Collections.singletonMap("tag", "value1"));
+            query.addTag("tag", "value1");
         }
         query.setTagExpression(filter.getExpression());
         Set<String> actualTagsSet = executeTagsQuery(query);
