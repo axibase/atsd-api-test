@@ -34,13 +34,13 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.aggregateQuery(aggregateVwap10);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy))
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy))
                     .series(new ExpectedSeries(dp.entityA, "S", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapSell).sample(dp.time30, dp.wvapSell))
+                            .sample(dp.time00, dp.vwapSell).sample(dp.time30, dp.vwapSell))
                     .series(new ExpectedSeries(dp.entityB, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy))
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy))
                     .series(new ExpectedSeries(dp.entityB, "S", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapSell).sample(dp.time30, dp.wvapSell));
+                            .sample(dp.time00, dp.vwapSell).sample(dp.time30, dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -48,13 +48,13 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.aggregateQuery(aggregateVwap);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy))
+                            .sample(dp.time00, dp.vwapBuy))
                     .series(new ExpectedSeries(dp.entityA, "S", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapSell))
+                            .sample(dp.time00, dp.vwapSell))
                     .series(new ExpectedSeries(dp.entityB, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy))
+                            .sample(dp.time00, dp.vwapBuy))
                     .series(new ExpectedSeries(dp.entityB, "S", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapSell));
+                            .sample(dp.time00, dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -63,9 +63,9 @@ public class VwapTestCasesBuilder {
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy))
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy))
                     .series(new ExpectedSeries(dp.entityB, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy));
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy));
             testCases.add(testCase);
         }
 
@@ -74,9 +74,9 @@ public class VwapTestCasesBuilder {
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy))
+                            .sample(dp.time00, dp.vwapBuy))
                     .series(new ExpectedSeries(dp.entityB, "B", AggregationType.VWAP, null)
-                            .sample(dp.time00, dp.wvapBuy));
+                            .sample(dp.time00, dp.vwapBuy));
             testCases.add(testCase);
         }
 
@@ -84,7 +84,7 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.entityAQuery(groupVwap10, null);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, null, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
+                            .sample(dp.time00, dp.vwapBothSides).sample(dp.time20, dp.vwapBuy).sample(dp.time30, dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -93,7 +93,7 @@ public class VwapTestCasesBuilder {
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", null, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy));
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy));
             testCases.add(testCase);
         }
 
@@ -101,7 +101,7 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.entityAQuery(groupVwap, null);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, null, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBothSides));
+                            .sample(dp.time00, dp.vwapBothSides));
             testCases.add(testCase);
         }
 
@@ -110,7 +110,7 @@ public class VwapTestCasesBuilder {
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", null, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBuy));
+                            .sample(dp.time00, dp.vwapBuy));
             testCases.add(testCase);
         }
 
@@ -119,7 +119,7 @@ public class VwapTestCasesBuilder {
             query.setEndDate(dp.time30);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, null, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBothSides3periods));
+                            .sample(dp.time00, dp.vwapBothSides3periods));
             testCases.add(testCase);
         }
 
@@ -127,7 +127,7 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.entityAQuery(groupVwap10, aggregateSum10);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, AggregationType.SUM, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
+                            .sample(dp.time00, dp.vwapBothSides).sample(dp.time20, dp.vwapBuy).sample(dp.time30, dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -135,7 +135,7 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.entityAQuery(groupVwap10, aggregateSum);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, AggregationType.SUM, GroupType.VWAP)
-                            .sample(dp.time00, dp.wvapBothSides + dp.wvapBuy + dp.wvapSell));
+                            .sample(dp.time00, dp.vwapBothSides + dp.vwapBuy + dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -143,7 +143,7 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.entityAQuery(groupDetail10, aggregateVwap10);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, AggregationType.VWAP, GroupType.DETAIL)
-                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
+                            .sample(dp.time00, dp.vwapBothSides).sample(dp.time20, dp.vwapBuy).sample(dp.time30, dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -152,7 +152,7 @@ public class VwapTestCasesBuilder {
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, GroupType.DETAIL)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy));
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy));
             testCases.add(testCase);
         }
 
@@ -160,7 +160,7 @@ public class VwapTestCasesBuilder {
             SeriesQuery query = dp.entityAQuery(groupDetail, aggregateVwap10);
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, null, AggregationType.VWAP, GroupType.DETAIL)
-                            .sample(dp.time00, dp.wvapBothSides).sample(dp.time20, dp.wvapBuy).sample(dp.time30, dp.wvapSell));
+                            .sample(dp.time00, dp.vwapBothSides).sample(dp.time20, dp.vwapBuy).sample(dp.time30, dp.vwapSell));
             testCases.add(testCase);
         }
 
@@ -169,7 +169,7 @@ public class VwapTestCasesBuilder {
             query.addTag("side", "B");
             TestCase testCase = new TestCase(query)
                     .series(new ExpectedSeries(dp.entityA, "B", AggregationType.VWAP, GroupType.DETAIL)
-                            .sample(dp.time00, dp.wvapBuy).sample(dp.time20, dp.wvapBuy));
+                            .sample(dp.time00, dp.vwapBuy).sample(dp.time20, dp.vwapBuy));
             testCases.add(testCase);
         }
 

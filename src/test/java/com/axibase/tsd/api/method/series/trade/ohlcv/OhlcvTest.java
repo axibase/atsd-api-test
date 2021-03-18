@@ -1,12 +1,11 @@
 package com.axibase.tsd.api.method.series.trade.ohlcv;
 
-import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.method.series.trade.SyntheticDataProvider;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
+import com.axibase.tsd.api.util.CommonAssertions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -15,7 +14,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
 
@@ -115,10 +113,8 @@ public class OhlcvTest {
     }
 
     private JsonNode getResponseAsTree(SeriesQuery query, int expectedSeriesCount) throws JsonProcessingException {
-        Response response = SeriesMethod.querySeries(query);
-        JsonNode responseArray = BaseMethod.responseAsTree(response);
-        assertEquals(responseArray.getNodeType(), JsonNodeType.ARRAY, "Unexpected response format: array of series is expected.");
-        assertEquals(responseArray.size(), expectedSeriesCount, "Unexpected count of series in response.");
+        JsonNode responseArray = SeriesMethod.getResponseAsTree(query);
+        CommonAssertions.assertArraySize(responseArray, expectedSeriesCount);
         return responseArray;
     }
 

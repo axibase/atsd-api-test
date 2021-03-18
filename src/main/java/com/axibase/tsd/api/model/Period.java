@@ -3,6 +3,7 @@ package com.axibase.tsd.api.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.jetbrains.annotations.Contract;
 
 import java.util.TimeZone;
 
@@ -46,7 +47,24 @@ public class Period {
         this.align = periodAlignment;
     }
 
+    /**
+     * @param period E.g. "1 minute", "2 hour".
+     */
+    @Contract("null -> null; !null -> !null")
+    public static Period from(String period) {
+        if (period == null) return null;
+        String[] parts = period.trim().split(" ");
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Specify period in format: '10 minute'.");
+        }
+        int count = Integer.parseInt(parts[0].trim());
+        TimeUnit unit = TimeUnit.valueOf(parts[1].trim().toUpperCase());
+        return new Period(count, unit);
+    }
 
+    public long toMilliseconds() {
+       return unit.toMilliseconds(count);
+    }
     @Override
     public String toString() {
         if (align != null) {

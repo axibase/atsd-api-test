@@ -5,6 +5,8 @@ import com.axibase.tsd.api.Checker;
 import com.axibase.tsd.api.method.checks.AbstractCheck;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.experimental.UtilityClass;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -272,5 +274,13 @@ public class CommonAssertions {
         return samples.size() == valuesArray.length &&
                 IntStream.range(0, valuesArray.length)
                         .allMatch(i -> valuesArray[i].compareTo(samples.get(i).getValue()) == 0);
+    }
+
+    /**
+     * Assert that provide json node is an array, and it's size is as expected.
+     */
+    public static void assertArraySize(JsonNode actualNode, int expectedArraySize) {
+        assertEquals(actualNode.getNodeType(), JsonNodeType.ARRAY, "Array is expected.");
+        assertEquals(actualNode.size(), expectedArraySize, "Unexpected array size.");
     }
 }

@@ -60,10 +60,10 @@ public class SyntheticDataProvider {
     public final String ohlcvSellTotal =      "[4, 7, 2, 5, 22]"; // for whole data set
 
     /* These are expected VWAP values. */
-    public final double wvapBothSides = 108.0 / 23.0;         // per period and for whole data set
-    public final double wvapBuy = 59.0 / 12.0;                // per period for whole data set
-    public final double wvapSell = 49.0 / 11.0;               // per period for whole data set
-    public final double wvapBothSides3periods = 167.0 / 35.0; // for first 3 periods  - time interval [time00, time30)
+    public final double vwapBothSides = 108.0 / 23.0;         // per period and for whole data set
+    public final double vwapBuy = 59.0 / 12.0;                // per period for whole data set
+    public final double vwapSell = 49.0 / 11.0;               // per period for whole data set
+    public final double vwapBothSides3periods = 167.0 / 35.0; // for first 3 periods  - time interval [time00, time30)
 
     public void insertTrades() throws Exception {
         List<Trade> trades = new ArrayList<>();

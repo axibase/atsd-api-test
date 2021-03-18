@@ -1,5 +1,7 @@
 package com.axibase.tsd.api.model;
 
+import static java.util.concurrent.TimeUnit.*;
+
 public enum TimeUnit {
     NANOSECOND,
     MILLISECOND,
@@ -14,12 +16,12 @@ public enum TimeUnit {
 
     public long toMilliseconds(long count) {
         switch (this) {
-            case NANOSECOND: return java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(count);
+            case NANOSECOND: return NANOSECONDS.toMillis(count);
             case MILLISECOND: return count;
-            case SECOND: return java.util.concurrent.TimeUnit.SECONDS.toMillis(count);
-            case MINUTE: return java.util.concurrent.TimeUnit.MINUTES.toMillis(count);
-            case HOUR: return java.util.concurrent.TimeUnit.HOURS.toMillis(count);
-            case DAY: return java.util.concurrent.TimeUnit.DAYS.toMillis(count);
+            case SECOND: return SECONDS.toMillis(count);
+            case MINUTE: return MINUTES.toMillis(count);
+            case HOUR: return HOURS.toMillis(count);
+            case DAY: return DAYS.toMillis(count);
         }
 
         throw new UnsupportedOperationException(String.format("Time unit %s does not support conversion to milliseconds", this));

@@ -46,7 +46,7 @@ public class VwapTest {
     private void checkSeries(Series actualSeries, List<ExpectedSeries> expectedSeriesList) {
         SeriesSign sign = SeriesSign.of(actualSeries);
         ExpectedSeries expectedSeries = findInList(sign, expectedSeriesList);
-        assertNotNull(expectedSeries, "Expect series with " + sign.toString() + " in response.");
+        assertNotNull(expectedSeries, "Series with unexpected meta data in response: " + sign.toString() );
         CommonAssertions.assertEqualSamples(actualSeries.getData(), expectedSeries.getSamples(), "", roundingContext);
     }
 

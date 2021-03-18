@@ -16,6 +16,8 @@ import com.axibase.tsd.api.util.Util;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithAuthorization;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBasicAuthorization;
 import com.axibase.tsd.api.util.authorization.RequestSenderWithBearerAuthorization;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.json.simple.JSONValue;
@@ -231,7 +233,6 @@ public class SeriesMethod extends BaseMethod {
         return Arrays.asList(response.readEntity(Series[].class));
     }
 
-
     public static Response executeQueryRaw(final List<SeriesQuery> seriesQueries) {
         return executeQueryRaw(seriesQueries, null, null);
     }
@@ -258,5 +259,10 @@ public class SeriesMethod extends BaseMethod {
 
     public static <T> Response deleteSeries(T query, String token) {
         return deleteSeries(query, new RequestSenderWithBearerAuthorization(token));
+    }
+
+    public static JsonNode getResponseAsTree(SeriesQuery query) throws JsonProcessingException {
+        Response response = SeriesMethod.querySeries(query);
+        return BaseMethod.responseAsTree(response);
     }
 }
