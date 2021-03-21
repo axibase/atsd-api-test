@@ -86,12 +86,44 @@ class SqlEntityQueryTest : SqlTest() {
     }
 
     @Test
+    fun `test tag condition in single element`() {
+        val query = "select name from atsd_entity where  tags.class_code in ('$classCodeOne')"
+        val expectedResult = arrayOf(arrayOf(entityOne))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test tag condition not in`() {
+        val query = "select name from atsd_entity where name in ('$entityOne', '$entityTwo', '$entityThree') and tags.class_code not in ('$classCodeOne')"
+        val expectedResult = arrayOf(arrayOf(entityTwo))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test tag condition not like`() {
+        val query = "select name from atsd_entity where name in ('$entityOne', '$entityTwo', '$entityThree') and tags.class_code not like '$classCodeOne'"
+        val expectedResult = arrayOf(arrayOf(entityTwo))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
     fun `test name and tag conditions`() {
         val query = "select name from atsd_entity where " +
                 "name like '%sql-entity-query-test%' " +
                 "and tags.class_code like 'class%' " +
                 "and tags.symbol = 'symbol_$entityTwo' " +
                 "and tags.lot_size > 7"
+        val expectedResult = arrayOf(arrayOf(entityTwo))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test name and tag conditions string comparison`() {
+        val query = "select name from atsd_entity where " +
+                "name like '%sql-entity-query-test%' " +
+                "and tags.class_code like 'class%' " +
+                "and tags.symbol = 'symbol_$entityTwo' " +
+                "and tags.lot_size > '07'"
         val expectedResult = arrayOf(arrayOf(entityTwo))
         assertSqlQueryRows("Unexpected result", expectedResult, query)
     }
