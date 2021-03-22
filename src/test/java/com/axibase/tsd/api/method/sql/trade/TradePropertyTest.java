@@ -24,6 +24,7 @@ public class TradePropertyTest extends SqlTradeTest {
     @BeforeClass
     public void prepareData() throws Exception {
         Entity entity = new Entity();
+        entity.addTag("class_code", clazz());
         entity.setName(entity());
         Trade trade = fromISOString("2020-06-15T10:21:49.123456Z");
         insert(trade);
@@ -104,6 +105,15 @@ public class TradePropertyTest extends SqlTradeTest {
                 "WHERE symbol = '" + symbol() + "' AND exchange='MOEX' AND SEC_DEF.marketcode IN ('FOND', 'FNDT')";
         String[][] expected = new String[][]{
                 {symbol(), "MOEX"}
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testEntityQueryWhereClause() {
+        String sql = "select entity from atsd_entity where tags.class_code = '" + clazz() + "' and SEC_DEF.marketcode = 'FOND'";
+        String[][] expected = new String[][]{
+                {entity()}
         };
         assertSqlQueryRows(expected, sql);
     }
