@@ -4,16 +4,15 @@ import com.axibase.tsd.api.method.BaseMethod;
 import com.axibase.tsd.api.method.series.SeriesMethod;
 import com.axibase.tsd.api.model.Period;
 import com.axibase.tsd.api.model.financial.Trade;
+import com.axibase.tsd.api.model.series.Sample;
+import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
 import com.axibase.tsd.api.model.series.query.transformation.Transformation;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.Aggregate;
 import com.axibase.tsd.api.model.series.query.transformation.aggregate.AggregationType;
 import com.axibase.tsd.api.model.series.query.transformation.group.Group;
 import com.axibase.tsd.api.model.series.query.transformation.group.GroupType;
-import com.axibase.tsd.api.util.Mocks;
-import com.axibase.tsd.api.util.TestUtil;
-import com.axibase.tsd.api.util.TradeSender;
-import com.axibase.tsd.api.util.TradeUtil;
+import com.axibase.tsd.api.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.json.JSONException;
@@ -41,15 +40,22 @@ public class GroupingTest {
     private final String clazz = Mocks.tradeClass();
     private final String symbol = Mocks.tradeSymbol();
     private final String entity = TradeUtil.tradeEntity(symbol, clazz);
+    private int insertedTradesCount;
+    private Trade firstTrade;
+    private Trade lastTrade;
 
     @BeforeClass
     public void insertTrades() throws Exception {
         List<Trade> trades = new ArrayList<>();
         try (Scanner scanner = new Scanner(GroupingTest.class.getClassLoader().getResourceAsStream("csv/trades.csv"))) {
-            int lineNumber = 1;
             while (scanner.hasNextLine()) {
                 String[] values = scanner.nextLine().split(",");
-                trades.add(trade(lineNumber++, values[0], Trade.Side.valueOf(values[1])));
+                String date = values[0];
+                Trade.Side side = Trade.Side.valueOf(values[1]);
+                Trade trade = trade(++insertedTradesCount, date, side);
+                if (firstTrade == null) firstTrade = trade;
+                lastTrade = trade;
+                trades.add(trade);
             }
         }
         TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
@@ -82,6 +88,27 @@ public class GroupingTest {
                 "[{\"d\":\"2020-11-25T14:00:00.000Z\",\"v\":41.0},{\"d\":\"2020-11-25T14:01:00.000Z\",\"v\":70.0}]";
         String actualData = responseArray.get(0).get("data").toString();
         JSONAssert.assertEquals(expectedData, actualData, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testDetailGrouping() {
+        SeriesQuery query = buildQuery(new Group(GroupType.DETAIL), null, null);
+        List<Series> response = SeriesMethod.querySeriesAsList(query);
+        Assert.assertEquals(response.size(), 1);
+        List<Sample> actualSeries = response.get(0).getData();
+        Assert.assertEquals(actualSeries.size(), insertedTradesCount);
+        Sample firstSample = actualSeries.get(0);
+        assertTheSame(firstSample, firstTrade, "Unexpected first sample in response.");
+        Sample lastSample = actualSeries.get(actualSeries.size() - 1);
+        assertTheSame(lastSample, lastTrade, "Unexpected last sample in response.");
+    }
+
+    private void assertTheSame(Sample actual, Trade expected, String assertionMessage) {
+        long actualTime = TimeUtil.epochNano(actual.getRawDate());
+        long expectedTime = expected.epochNano();
+        Assert.assertEquals(actualTime, expectedTime, assertionMessage + " Wrong timestamp.");
+        Assert.assertEquals(actual.getValue().compareTo(expected.getPrice()), 0, assertionMessage + " Wrong price.");
+        Assert.assertEquals(actual.getText(), Long.toString(expected.getNumber()), assertionMessage + " Wrong trade number.");
     }
 
     private Trade trade(int tradeNumber, String date, Trade.Side side) {

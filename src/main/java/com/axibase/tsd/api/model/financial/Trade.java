@@ -22,8 +22,14 @@ public class Trade {
     public enum Session {S, N, L, E, O}
 
     private long number;
-    private long timestamp;     // trade time in microseconds truncated to milliseconds = trade time with last 3 digits removed
-    private long microSeconds;  // (trade time in microseconds - timestamp * 1000) = last 3 digits of trade time
+    /**
+     * Trade time is measured in microseconds.
+     * Trade time = timestamp * 1000 + microSeconds.
+     * timestamp = trade time / 1000 = count of milliseconds in the trade time.
+     * microSeconds = trade time - timestamp * 1000 = last 3 digits of trade time.
+     */
+    private long timestamp;
+    private long microSeconds;
     private String clazz;
     private String symbol;
     private String exchange;
@@ -79,5 +85,10 @@ public class Trade {
         return Stream.of(number, timestamp, microSeconds, clazz, symbol, exchange, csvSide, quantity, price, order, session)
                 .map(n -> n == null ? "" : n.toString())
                 .collect(Collectors.joining(","));
+    }
+
+    /** @return Trade timestamp measured in nanoseconds. */
+    public long epochNano() {
+        return (timestamp * 1000 + microSeconds) * 1000;
     }
 }
