@@ -19,10 +19,10 @@ public class TradeAggregationTest extends SqlTradeTest {
     @BeforeClass
     public void prepareData() throws Exception {
         List<Trade> trades = new ArrayList<>();
-        trades.add(trade(getUnixTime("2020-03-22T10:01:00Z"), new BigDecimal("126.99"), 22330));
+        trades.add(fromISOString("2020-03-22T10:01:00.123456Z").setPrice(new BigDecimal("126.99")).setQuantity(22330));
         trades.add(trade(getUnixTime("2020-03-22T10:09:00Z"), new BigDecimal("127.36"), 22330));
         trades.add(trade(getUnixTime("2020-03-22T10:49:00Z"), new BigDecimal("127.02"), 22339));
-        trades.add(trade(getUnixTime("2020-03-22T10:55:00Z"), new BigDecimal("127.28"), 22330));
+        trades.add(fromISOString("2020-03-22T10:55:00.654321Z").setPrice(new BigDecimal("127.28")).setQuantity(22330));
         trades.add(trade(getUnixTime("2020-03-22T11:01:05Z"), new BigDecimal("127.20"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:14Z"), new BigDecimal("127.20"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:29Z"), new BigDecimal("127.31"), 3000));
@@ -83,9 +83,26 @@ public class TradeAggregationTest extends SqlTradeTest {
                         .fields("datetime, count(*)")
                         .period(1, "minute")
                         .selectionInterval("datetime between '2020-03-22T11:01:00.001Z' and '2020-03-22T11:02:00.000Z'")
-                        .addExpected("2020-03-22T11:01:00.000000Z", "5")
+                        .addExpected("2020-03-22T11:01:00.000000Z", "5"),
+                test("Test min/max time HBase side")
+                        .fields("date_format(min(time)), date_format(max(time))")
+                        .period(1, "hour")
+                        .addExpected("2020-03-22T10:01:00.123456Z", "2020-03-22T10:55:00.654321Z")
+                        .addExpected("2020-03-22T11:01:05.000000Z", "2020-03-22T11:01:50.000000Z")
         };
         return TestUtil.convertTo2DimArray(data);
+    }
+
+    @Test
+    public void testClientSideTimeAggregation() {
+        String sql = "select date_format(min(time)), date_format(max(time)) from atsd_trade\n" +
+                "    WHERE " + instrumentCondition() + "\n" +
+                "    GROUP BY class, period(1 hour)  WITH TIMEZONE = 'UTC'";
+        String[][] expected = new String[][]{
+                {"2020-03-22T10:01:00.123456Z", "2020-03-22T10:55:00.654321Z"},
+                {"2020-03-22T11:01:05.000000Z", "2020-03-22T11:01:50.000000Z"},
+        };
+        assertSqlQueryRows(expected, sql);
     }
 
     @Test
