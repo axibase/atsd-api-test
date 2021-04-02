@@ -118,4 +118,21 @@ public class TradeSubQueryTest extends SqlTradeTest {
     }
 
 
+    @Test
+    public void testNestedSubQuery() {
+        String nested = "SELECT rn FROM (\n" +
+                "SELECT datetime, " +
+                " ROW_NUMBER() AS rn\n" +
+                " FROM atsd_trade\n" +
+                "WHERE " + instrumentCondition() +
+                " WITH ROW_NUMBER(symbol ORDER BY trade_num) >= 0\n" +
+                ") WHERE rn > 1 and rn <= 3";
+        String sql = "SELECT * from (" + nested + ") where rn < 3";
+        String[][] expectedRows = {
+                {"2"},
+        };
+        assertSqlQueryRows("Wrong result in nested subquery", expectedRows, sql);
+    }
+
+
 }
