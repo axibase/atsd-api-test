@@ -88,6 +88,33 @@ public class TradeSessionSummaryDateFormatFilterTest extends SqlTradeTest {
                         .addExpected("2020-04-17T00:00:00.000000Z")
                         .addExpected("2020-04-18T00:00:00.000000Z"),
 
+                test("HH:mm pattern not equal")
+                        .dateFormat("date_format(time, 'HH:mm') != '23:15'")
+                        .addExpected("2020-04-16T00:00:00.000000Z")
+                        .addExpected("2020-04-18T00:00:00.000000Z"),
+
+                test("Minute pattern less than")
+                        .dateFormat("date_format(time, 'mm') < '15'")
+                        .addExpected("2020-04-18T00:00:00.000000Z"),
+                test("Minute pattern less or equal")
+                        .dateFormat("date_format(time, 'mm') <= '15'")
+                        .addExpected("2020-04-17T00:00:00.000000Z")
+                        .addExpected("2020-04-18T00:00:00.000000Z"),
+                test("Minute pattern  equal")
+                        .dateFormat("date_format(time, 'mm') = '15'")
+                        .addExpected("2020-04-17T00:00:00.000000Z"),
+                test("Minute pattern not equal")
+                        .dateFormat("date_format(time, 'mm') != '15'")
+                        .addExpected("2020-04-16T00:00:00.000000Z")
+                        .addExpected("2020-04-18T00:00:00.000000Z"),
+                test("Minute pattern greater than")
+                        .dateFormat("date_format(time, 'mm') > '15'")
+                        .addExpected("2020-04-16T00:00:00.000000Z"),
+                test("Minute pattern greater or equal")
+                        .dateFormat("date_format(time, 'mm') >= '15'")
+                        .addExpected("2020-04-16T00:00:00.000000Z")
+                        .addExpected("2020-04-17T00:00:00.000000Z"),
+
                 test("Day of week pattern")
                         .dateFormat("date_format(time, 'u') = '6'")
                         .addExpected("2020-04-18T00:00:00.000000Z"),
