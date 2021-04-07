@@ -106,6 +106,11 @@ public class TradeDateFormatFilterTest extends SqlTradeTest {
                 test("Day of week pattern")
                         .dateFormat("date_format(time, 'u') = '6'")
                         .addExpected("2020-04-18T00:00:00.000000Z", "3"),
+                test("Day of week pattern numeric comparison")
+                        .dateFormat("date_format(time, 'u') < '10'")
+                        .addExpected("2020-04-16T00:00:00.000000Z", "1")
+                        .addExpected("2020-04-17T00:00:00.000000Z", "2")
+                        .addExpected("2020-04-18T00:00:00.000000Z", "3"),
         };
         return TestUtil.convertTo2DimArray(data);
     }
