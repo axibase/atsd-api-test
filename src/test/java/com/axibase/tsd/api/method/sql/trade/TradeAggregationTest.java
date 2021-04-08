@@ -20,12 +20,12 @@ public class TradeAggregationTest extends SqlTradeTest {
     public void prepareData() throws Exception {
         List<Trade> trades = new ArrayList<>();
         trades.add(fromISOString("2020-03-22T10:01:00.123456Z").setPrice(new BigDecimal("126.99")).setQuantity(22330));
-        trades.add(trade(getUnixTime("2020-03-22T10:09:00Z"), new BigDecimal("127.36"), 22330).setSide(Trade.Side.BUY));
-        trades.add(trade(getUnixTime("2020-03-22T10:49:00Z"), new BigDecimal("127.02"), 22339).setSide(Trade.Side.SELL));
+        trades.add(trade(getUnixTime("2020-03-22T10:09:00Z"), new BigDecimal("127.36"), 22330).setSide(Trade.Side.BUY).setSession(Trade.Session.O));
+        trades.add(trade(getUnixTime("2020-03-22T10:49:00Z"), new BigDecimal("127.02"), 22339).setSide(Trade.Side.SELL).setSession(Trade.Session.O));
         trades.add(fromISOString("2020-03-22T10:55:00.654321Z").setPrice(new BigDecimal("127.28")).setQuantity(22330));
-        trades.add(trade(getUnixTime("2020-03-22T11:01:05Z"), new BigDecimal("127.20"), 3000).setSide(Trade.Side.BUY));
-        trades.add(trade(getUnixTime("2020-03-22T11:01:14Z"), new BigDecimal("127.20"), 3000).setSide(Trade.Side.SELL));
-        trades.add(trade(getUnixTime("2020-03-22T11:01:29Z"), new BigDecimal("127.31"), 3000).setSide(Trade.Side.SELL));
+        trades.add(trade(getUnixTime("2020-03-22T11:01:05Z"), new BigDecimal("127.20"), 3000).setSide(Trade.Side.BUY).setSession(Trade.Session.X));
+        trades.add(trade(getUnixTime("2020-03-22T11:01:14Z"), new BigDecimal("127.20"), 3000).setSide(Trade.Side.SELL).setSession(Trade.Session.X));
+        trades.add(trade(getUnixTime("2020-03-22T11:01:29Z"), new BigDecimal("127.31"), 3000).setSide(Trade.Side.SELL).setSession(Trade.Session.X));
         trades.add(trade(getUnixTime("2020-03-22T11:01:49Z"), new BigDecimal("127.10"), 3000));
         trades.add(trade(getUnixTime("2020-03-22T11:01:50Z"), new BigDecimal("127.11"), 4137));
         insert(trades);
@@ -114,6 +114,32 @@ public class TradeAggregationTest extends SqlTradeTest {
         String[][] expected = new String[][]{
                 {"10", "4"},
                 {"11", "5"},
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testGroupByInstrumentAndSession() {
+        String sql = "select session, count(*), open() from atsd_trade where " + instrumentCondition() +
+                " group by exchange, class, symbol, session order by session";
+        String[][] expected = new String[][]{
+                {null, "4", "126.99"},
+                {"O", "2", "127.36"},
+                {"X", "3", "127.2"}
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
+    @Test
+    public void testGroupByInstrumentAndSessionAndSide() {
+        String sql = "select session, side, count(*), open() from atsd_trade where " + instrumentCondition() +
+                " group by exchange, class, symbol, session, side order by session, side";
+        String[][] expected = new String[][]{
+                {null, null, "4", "126.99"},
+                {"O", "B", "1", "127.36"},
+                {"O", "S", "1", "127.02"},
+                {"X", "B", "1", "127.2"},
+                {"X", "S", "2", "127.2"}
         };
         assertSqlQueryRows(expected, sql);
     }

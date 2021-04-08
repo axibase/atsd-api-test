@@ -19,7 +19,8 @@ import java.util.stream.Stream;
 public class Trade {
     public enum Side {SELL, BUY}
 
-    public enum Session {S, N, L, E, O}
+    public enum Session {S, N, L, E, O, I, D, A, a, b, p, C, M, V, X}
+
 
     private long number;
     /**
