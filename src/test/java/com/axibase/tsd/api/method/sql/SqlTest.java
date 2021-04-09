@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -68,6 +69,11 @@ public abstract class SqlTest extends SqlMethod {
         } else {
             try {
                 switch (dataType) {
+                    case "number":
+                    case "decimal":
+                        BigDecimal actualBigDecimalValue = new BigDecimal(actualValue);
+                        BigDecimal expectedDecimalValue = new BigDecimal(expectedValue);
+                        return expectedDecimalValue.compareTo(actualBigDecimalValue) == 0;
                     case "double": {
                         Double actualDoubleValue = Double.parseDouble(actualValue);
                         Double expectedDoubleValue = Double.parseDouble(expectedValue);
