@@ -27,6 +27,7 @@ class SqlEntityQueryTest : SqlTest() {
             entity.addTag("class_code", classCodeOne)
             entity.addTag("symbol", "symbol_$entityOne")
             entity.addTag("lot_size", "5")
+            entity.addTag("primary", classCodeOne)
             EntityMethod.createOrReplaceEntityCheck(entity)
         }
 
@@ -125,6 +126,13 @@ class SqlEntityQueryTest : SqlTest() {
                 "and tags.symbol = 'symbol_$entityTwo' " +
                 "and tags.lot_size > '07'"
         val expectedResult = arrayOf(arrayOf(entityTwo))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test tags comparison`() {
+        val query = "select name from atsd_entity where tags.class_code = '$classCodeOne' and tags.primary = tags.class_code"
+        val expectedResult = arrayOf(arrayOf(entityOne))
         assertSqlQueryRows("Unexpected result", expectedResult, query)
     }
 
