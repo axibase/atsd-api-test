@@ -60,7 +60,7 @@ class SqlEntityQueryTest : SqlTest() {
                 "PREVIOUS",
                 null,
                 "true",
-                "class_code=class_${entityOne};lot_size=5;symbol=symbol_${entityOne}"
+                "class_code=class_${entityOne};lot_size=5;primary=class_${entityOne};symbol=symbol_${entityOne}"
         ))
         assertSqlQueryRows("Unexpected result", expectedResult, query)
     }
