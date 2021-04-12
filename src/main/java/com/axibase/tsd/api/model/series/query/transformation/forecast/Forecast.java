@@ -31,6 +31,13 @@ public class Forecast {
     /** Optional. Include input series, forecast, and reconstructed series into response? Default - include forecast. */
     private List<SeriesType> include;
 
+    /** Optional.
+     * Remove samples of input series based on their timestamps according to this schedule,
+     * calculate a sequence forecast values,
+     * assign timestamps to forecast using input series period and this schedule.
+     */
+    private TimeFilter timeFilter;
+
     /* Optional. Order in sequence of other transformations. */
     private int order = 0;
 

@@ -8,4 +8,8 @@ public class TimeUtil {
         ZonedDateTime time = ZonedDateTime.parse(isoTime);
         return time.toEpochSecond() * 1_000_000_000L + time.getNano();
     }
+
+    public static long epochMillis(String isoTime) {
+        return ZonedDateTime.parse(isoTime).toInstant().toEpochMilli();
+    }
 }

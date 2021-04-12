@@ -20,10 +20,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.axibase.tsd.api.util.Util.MAX_QUERYABLE_DATE;
@@ -69,6 +66,7 @@ public class SeriesQuery {
     private List<Transformation> transformationOrder;
     private String minInsertDate;
     private String maxInsertDate;
+    private TimeZone timezone;
 
     public SeriesQuery() {
     }

@@ -149,6 +149,14 @@ public class Series implements Comparable<Series> {
         return this;
     }
 
+    public Series addSample(Sample sample) {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
+        data.add(sample);
+        return this;
+    }
+
     public Series addSamples(final List<Sample> samples) {
         if (data == null) {
             data = samples;
