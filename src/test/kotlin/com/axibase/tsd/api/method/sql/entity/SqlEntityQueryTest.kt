@@ -35,9 +35,12 @@ class SqlEntityQueryTest : SqlTest() {
             val entity = Entity(entityTwo)
             entity.addTag("class_code", classCodeTwo)
             entity.addTag("symbol", "symbol_$entityTwo")
-            entity.addTag("lot_size", "10")
+            entity.addTag("lot_size", "5")
             entity.label = "entity_query_test_2"
             EntityMethod.createOrReplaceEntityCheck(entity)
+            Thread.sleep(2000)
+            entity.addTag("lot_size", "10")
+            EntityMethod.updateEntity(entity)
         }
 
         run {
@@ -149,6 +152,14 @@ class SqlEntityQueryTest : SqlTest() {
                 "(select tags.lot_size as lot_size, SUBSTR(tags.symbol, 1,6) AS base_symbol from atsd_entity where name like '${prefix}%' and tags.class_code != '') " +
                 "group by base_symbol"
         val expectedResult = arrayOf(arrayOf("symbol", "15", "2"))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test entity_tag function with version parameter`() {
+        val versions = EntityMethod.getEntityVersions(entityTwo, null, null)
+        val query = "select entity_tag(entity, 'lot_size', ${versions.get(0)}), entity_tag(entity, 'lot_size', ${versions.get(1)}), entity_tag(entity, 'lot_size')  from atsd_entity where name = '$entityTwo'"
+        val expectedResult = arrayOf(arrayOf("5", "10", "10"))
         assertSqlQueryRows("Unexpected result", expectedResult, query)
     }
 
