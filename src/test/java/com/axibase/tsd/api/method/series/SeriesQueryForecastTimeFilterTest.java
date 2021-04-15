@@ -47,7 +47,7 @@ public class SeriesQueryForecastTimeFilterTest {
     @BeforeClass
     public void prepareData() throws Exception {
         insertInputSeries();
-        schedule = new TimeFilter().setFrom("10:00").setTo("18:00").setCalendar("rus");
+        schedule = new TimeFilter().setFrom("10:00").setTo("18:00");
         forecastSettings = buildForecastSettings();
         query = buildQuery();
     }
@@ -96,12 +96,8 @@ public class SeriesQueryForecastTimeFilterTest {
     @Test(dataProvider="testData")
     public void test(Horizon horizonSettings, boolean applySchedule, boolean workingDaysOnly, int expectedReconstructedLength, int expectedForecastLength) {
         forecastSettings.setHorizon(horizonSettings);
-        if (applySchedule) {
-            schedule.setWorkingDaysOnly(workingDaysOnly);
-            forecastSettings.setTimeFilter(schedule);
-        } else {
-            forecastSettings.setTimeFilter(null);
-        }
+        schedule.setCalendar(workingDaysOnly ? "rus" : null);
+        forecastSettings.setTimeFilter(applySchedule ? schedule : null);
         List<Series> seriesList = querySeriesAsList(query);
         Assert.assertEquals(seriesList.size(), 2);
         for (Series series : seriesList) {

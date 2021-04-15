@@ -12,6 +12,5 @@ import lombok.experimental.Accessors;
 public class TimeFilter {
     private String from;
     private String to;
-    private boolean workingDaysOnly;
     private String calendar;
 }
