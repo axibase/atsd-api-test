@@ -13,7 +13,7 @@ import java.util.List;
 import static com.axibase.tsd.api.util.Util.getUnixTime;
 
 public class TradeAggregationTest extends SqlTradeTest {
-    private static final String QUERY = "select {fields} from atsd_trade where {instrument} {selectionInterval}" +
+    private static final String QUERY = "select {fields} from atsd_trade where {instrument} {selectionInterval} {filter} " +
             "group by exchange, class, symbol {period} {having}  WITH TIMEZONE = 'UTC'";
 
     @BeforeClass
@@ -68,6 +68,11 @@ public class TradeAggregationTest extends SqlTradeTest {
                 test("Test sum(price*quantity)")
                         .fields("open(), volume(), sum((quantity*price)), vwap(), vwap(price), sum(quantity)")
                         .addExpected("126.99", "105466", "1.341158175E7", "127.16497970910056", "127.16497970910056", "105466")
+                ,
+                test("Test sum(price*quantity) with side filter")
+                        .fields("open(), volume(), sum((quantity*price)), vwap(), vwap(price), sum(quantity)")
+                        .filter("side = 'S'")
+                        .addExpected("127.02", "28339", "3601029.78", "127.06975475493137", "127.06975475493137", "28339")
                 ,
                 test("Period greater than 1 hour")
                         .fields("datetime, count(*)")
@@ -154,6 +159,21 @@ public class TradeAggregationTest extends SqlTradeTest {
                 {"S", "3", "127.02"}
         };
         assertSqlQueryRows(expected, sql);
+
+        sql = "select side, count(*), open() from atsd_trade where " + instrumentCondition() +
+                " and side = 'B' group by exchange, class, symbol, side order by side";
+        expected = new String[][]{
+                {"B", "2", "127.36"},
+        };
+        assertSqlQueryRows(expected, sql);
+
+        sql = "select side, count(*), open() from atsd_trade where " + instrumentCondition() +
+                " and side = 'S' group by exchange, class, symbol, side order by side";
+        expected = new String[][]{
+                {"S", "3", "127.02"}
+        };
+        assertSqlQueryRows(expected, sql);
+
     }
 
     @Test
@@ -181,6 +201,7 @@ public class TradeAggregationTest extends SqlTradeTest {
             super(description);
             setVariable("period", "");
             setVariable("having", "");
+            setVariable("filter", "");
             setVariable("selectionInterval", "");
         }
 
@@ -191,6 +212,11 @@ public class TradeAggregationTest extends SqlTradeTest {
 
         private TestConfig having(String having) {
             setVariable("having", "having " + having);
+            return this;
+        }
+
+        private TestConfig filter(String filter) {
+            setVariable("filter", " and " + filter);
             return this;
         }
 
