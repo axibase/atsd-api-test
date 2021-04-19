@@ -59,12 +59,55 @@ public class TradeSideAndSessionFilterTest extends SqlTradeTest {
 
     @Test
     public void testSideFilter() {
-        String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and side = 'S'";
-        String[][] expected = {
-                {"2", "S", "S"},
-                {"3", "S", "null"}
-        };
-        assertSqlQueryRows(expected, sql);
+        {
+            String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and side = 'S'";
+            String[][] expected = {
+                    {"2", "S", "S"},
+                    {"3", "S", "null"}
+            };
+            assertSqlQueryRows(expected, sql);
+        }
+
+        {
+            String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and side = 'B'";
+            String[][] expected = {
+                    {"1", "B", "E"},
+                    {"5", "B", "L"}
+            };
+            assertSqlQueryRows(expected, sql);
+        }
+
+        {
+            String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and side in ('B', 'S')";
+            String[][] expected = {
+                    {"1", "B", "E"},
+                    {"2", "S", "S"},
+                    {"3", "S", "null"},
+                    {"5", "B", "L"}
+            };
+            assertSqlQueryRows(expected, sql);
+        }
+
+        {
+            String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and side is not null";
+            String[][] expected = {
+                    {"1", "B", "E"},
+                    {"2", "S", "S"},
+                    {"3", "S", "null"},
+                    {"5", "B", "L"}
+            };
+            assertSqlQueryRows(expected, sql);
+        }
+
+        {
+            String sql = "select trade_num, side, session from atsd_trade where " + instrumentCondition() + " and side is null";
+            String[][] expected = {
+                    {"4", null, "N"},
+                    {"6", null, null},
+                    {"7", null, "O"}
+            };
+            assertSqlQueryRows(expected, sql);
+        }
     }
 
     @Test
