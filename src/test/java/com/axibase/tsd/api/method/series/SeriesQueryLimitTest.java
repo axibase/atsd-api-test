@@ -3,10 +3,7 @@ package com.axibase.tsd.api.method.series;
 import com.axibase.tsd.api.model.series.Sample;
 import com.axibase.tsd.api.model.series.Series;
 import com.axibase.tsd.api.model.series.query.SeriesQuery;
-import com.axibase.tsd.api.util.CommonAssertions;
-import com.axibase.tsd.api.util.Registry;
-import com.axibase.tsd.api.util.ResponseAsList;
-import com.axibase.tsd.api.util.Util;
+import com.axibase.tsd.api.util.*;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -24,8 +21,9 @@ import static org.testng.AssertJUnit.*;
 
 public class SeriesQueryLimitTest extends SeriesMethod {
 
-    private final static String DEFAULT_QUERY_LIMIT_METRIC = "series-query-limit-metric-1";
-    private final static String DEFAULT_QUERY_LIMIT_ENTITY_PREFIX = "series-query-limit-entity";
+    private final static String DEFAULT_QUERY_LIMIT_METRIC = Mocks.metric();
+    // actual entity names are: prefix0, prefix1, prefix2, ...
+    private final static String DEFAULT_QUERY_LIMIT_ENTITY_PREFIX = Mocks.entity();
     private final static int ENTITY_COUNT = 10;
     private final static int SERIES_WITH_TAGS_COUNT = 9;
     private final static int SAMPLES_COUNT = 10;
