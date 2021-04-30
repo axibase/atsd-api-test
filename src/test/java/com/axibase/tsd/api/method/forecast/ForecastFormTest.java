@@ -58,7 +58,6 @@ public class ForecastFormTest extends ForecastMethod {
                 seriesKey(entityA, tagNameA, tagValueB),
                 seriesKey(entityB)
         ));
-        System.out.println();
         return testCases;
     }
 
