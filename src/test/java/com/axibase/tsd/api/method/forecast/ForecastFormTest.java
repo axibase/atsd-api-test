@@ -159,7 +159,7 @@ public class ForecastFormTest extends ForecastMethod {
 
         /*
            Add the same samples to each of the series.
-           Each series has a sample with value 1 every minute from startDate until endDate.
+           Each series has a sample every minute from startDate until endDate.
          */
         List<Sample> samples = new ArrayList<>();
         long millis = TimeUtil.epochMillis(startDate);
