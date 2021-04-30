@@ -40,7 +40,7 @@ public class ForecastFormTest extends ForecastMethod {
     private final String forecastSettingsName = "forecast-settings-name";
     private final String specialTagName = "forecast-name";
 
-    @DataProvider
+    @DataProvider(parallel = false)
     public Object[][] testCases() {
         Object[][] testCases = new Object[6][];
         addTestCases(testCases, 0, "METRIC_ENTITY_ALL_TAGS", null, Arrays.asList(
@@ -101,7 +101,7 @@ public class ForecastFormTest extends ForecastMethod {
         String producedMetric = storeUnderAnotherMetric ? "mock-" + metric : null;
         Response forecastResponse = sendForecastFormData(formData(metric, grouping, groupingTag, producedMetric));
         int statusCode = forecastResponse.getStatus();
-        assertEquals(caseId + "Test case Forecast request failed with status code " + statusCode, statusCode, Response.Status.OK.getStatusCode());
+        assertEquals(caseId + "Test case Forecast request failed with status code " + statusCode, Response.Status.OK.getStatusCode(), statusCode);
 
         /* Get stored forecasts, and wait a bit if stored forecasts count differs from expected,
            because ATSD may need some time to actually store forecasts.
@@ -109,7 +109,8 @@ public class ForecastFormTest extends ForecastMethod {
            so need check that series in response are not empty.
         */
         List<Series> actualSeriesList = null;
-        for (int i = 0; i < 20; i++) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 40; i++) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -121,8 +122,10 @@ public class ForecastFormTest extends ForecastMethod {
                 break;
             }
         }
-        assertNotNull(actualSeriesList);
-        assertEquals(caseId, expectedSeriesKeys.size(), actualSeriesList.size());
+        long duration = System.currentTimeMillis() - start;
+        String msg =caseId + "Duration: " + duration + "ms. Unexpected series count.";
+        assertNotNull(actualSeriesList, msg);
+        assertEquals(msg, expectedSeriesKeys.size(), actualSeriesList.size());
 
         /* Sort actual series by metric, entity, and tags to be able to compare them with expected in correct order. */
         Collections.sort(actualSeriesList);
@@ -140,7 +143,10 @@ public class ForecastFormTest extends ForecastMethod {
             Series expectedSeries = expectedSeriesList.get(i);
             Series actualSeries = actualSeriesList.get(i);
             // check metric, entity and tags
-            assertTrue(expectedSeries.compareTo(actualSeries) == 0, caseId + seriesIndex);
+            msg = caseId + seriesIndex +
+                    "Expected series key: " + expectedSeries.toString() +
+                    "Actual series: " + actualSeries.toString();
+            assertTrue(expectedSeries.compareTo(actualSeries) == 0, msg);
             assertEquals(caseId + seriesIndex, expectedSeries.getType(), actualSeries.getType());
             if (expectedSeries.getType() == FORECAST) {
                 assertEquals(caseId + seriesIndex, forecastSettingsName, actualSeries.getForecastName());
