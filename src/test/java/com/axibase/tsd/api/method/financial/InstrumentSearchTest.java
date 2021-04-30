@@ -1,9 +1,12 @@
 package com.axibase.tsd.api.method.financial;
 
+import com.axibase.tsd.api.method.entity.EntityMethod;
+import com.axibase.tsd.api.model.entity.Entity;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class InstrumentSearchTest extends InstrumentSearchBase {
@@ -133,5 +136,11 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
         searchAndTest("4Test",
                 entry("descpfx", "TEST", "SharAEEEes4Test Inc.")
         );
+    }
+    
+    @Test
+    public void testFoundByIsin() {
+        EntityMethod.updateEntity(new Entity("share1_[TEST]", Collections.singletonMap("isin", "RU0007661625")));
+        searchAndTest("RU0007661625", entry("share1", "TEST", "First Share"));
     }
 }
