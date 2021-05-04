@@ -87,7 +87,7 @@ public class ForecastFormTest extends ForecastMethod {
                                     * false - store forecasts under original metric in the forecasts table */
                                    boolean storeUnderAnotherMetric,
                                    @NotNull List<SeriesKey> expectedSeriesKeys
-    ) {
+    ) throws Exception {
         String caseId = "Test case " + testCaseId + ". ";
 
         /* In each test case we do forecasts for the same set of series,
@@ -118,7 +118,7 @@ public class ForecastFormTest extends ForecastMethod {
             }
             actualSeriesList = loadStoredForecasts(metric, producedMetric);
             if (expectedSeriesKeys.size() == actualSeriesList.size() &&
-                actualSeriesList.stream().noneMatch(series -> series.getData().isEmpty())) {
+                    actualSeriesList.stream().noneMatch(series -> series.getData().isEmpty())) {
                 break;
             }
         }
@@ -155,7 +155,7 @@ public class ForecastFormTest extends ForecastMethod {
         }
     }
 
-    private void insertSeries(String metric) {
+    private void insertSeries(String metric) throws Exception {
         List<Series> seriesList = Arrays.asList(
                 new Series(entityA, metric, false, tagNameA, tagValueA),
                 new Series(entityA, metric, false, tagNameA, tagValueB),
@@ -177,7 +177,7 @@ public class ForecastFormTest extends ForecastMethod {
         }
         seriesList.forEach(series -> series.addSamples(samples));
 
-        SeriesMethod.insertSeries(seriesList);
+        SeriesMethod.insertSeriesCheck(seriesList);
     }
 
     private MultivaluedMap<String, String> formData(@NotNull String metric,
