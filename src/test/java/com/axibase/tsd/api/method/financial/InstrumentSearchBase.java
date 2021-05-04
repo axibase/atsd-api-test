@@ -137,7 +137,8 @@ public class InstrumentSearchBase {
         }
 
         private static boolean needUpdateEntity(Entry entry) {
-            return !entry.isAssigned() || StringUtils.isNotBlank(entry.getDescription());
+            return !entry.isAssigned() || StringUtils.isNotBlank(entry.getDescription())
+                    || StringUtils.isNotBlank(entry.getIsin());
         }
 
         private static PlainCommand makeEntityCommand(Entry entry) {
