@@ -73,7 +73,6 @@ public class SeriesExportTest extends ExportMethod {
                 .setStartTime(startA)
                 .setEndTime(endB)
                 .setExportFormat("CSV")
-                .setTimeZone("UTC")
                 .setDateFormat("ISO8601_SECONDS");
         if (aggregationFunction != null) {
             exportForm.setAggregateInterval("1-MINUTE").setAggregations(new String[]{aggregationFunction});
@@ -95,9 +94,8 @@ public class SeriesExportTest extends ExportMethod {
         /* Check csv header. */
         Set<String> headerNames = parser.getHeaderNames().stream().map(String::toLowerCase).collect(Collectors.toSet());
         Set<String> expectedHeaderNames = Arrays.stream(new String[]{
-                "timestamp", "metric", "entity", tagName.toLowerCase()})
+                "timestamp", "metric", "entity", tagName, valueColumnName})
                 .collect(Collectors.toSet());
-        expectedHeaderNames.add(valueColumnName);
 
         Assert.assertEquals(headerNames, expectedHeaderNames);
 
