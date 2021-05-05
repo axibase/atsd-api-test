@@ -23,6 +23,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Insert several time series, and export them with and without aggregation.
+ */
 public class SeriesExportTest extends ExportMethod {
     private static final String startA = "2021-04-01T10:00:00Z";
     private static final String endA = "2021-04-01T11:00:00Z";
