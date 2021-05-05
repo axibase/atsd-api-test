@@ -80,7 +80,7 @@ public class ForecastFormTest extends ForecastMethod {
     }
 
     // Ignore because this test is unstable, and fails unexpectedly.
-    // @Test(dataProvider = "testCases")
+    @Test(enabled = false, dataProvider = "testCases")
     public void testFormSubmission(int testCaseId,
                                    @NotNull String grouping,
                                    @Nullable String groupingTag,
