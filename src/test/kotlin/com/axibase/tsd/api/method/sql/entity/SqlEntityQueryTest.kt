@@ -4,8 +4,10 @@ import com.axibase.tsd.api.method.entity.EntityMethod
 import com.axibase.tsd.api.method.sql.SqlTest
 import com.axibase.tsd.api.model.common.InterpolationMode
 import com.axibase.tsd.api.model.entity.Entity
+import com.axibase.tsd.api.util.DateProcessorManager
 import com.axibase.tsd.api.util.Mocks
 import org.testng.annotations.BeforeClass
+import java.time.ZoneId
 import kotlin.test.Test
 
 private val prefix = Mocks.entity()
@@ -158,8 +160,26 @@ class SqlEntityQueryTest : SqlTest() {
     @Test
     fun `test entity_tag function with version parameter`() {
         val versions = EntityMethod.getEntityVersions(entityTwo, null, null)
-        val query = "select entity_tag(entity, 'lot_size', ${versions.get(0)}), entity_tag(entity, 'lot_size', ${versions.get(1)}), entity_tag(entity, 'lot_size')  from atsd_entity where name = '$entityTwo'"
+        val query = "select entity_tag(entity, 'lot_size', ${versions[0]}), entity_tag(entity, 'lot_size', ${versions[1]}), entity_tag(entity, 'lot_size')  from atsd_entity where name = '$entityTwo'"
         val expectedResult = arrayOf(arrayOf("5", "10", "10"))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test WITH VERSION option`() {
+        val versions = EntityMethod.getEntityVersions(entityTwo, null, null)
+        val version = DateProcessorManager.ISO.print(versions[0], ZoneId.of("UTC"));
+        val query = "select tags.lot_size, entity_tag(entity, 'lot_size'), entity_tag(entity, 'lot_size', ${versions[1]})   from atsd_entity where name = '$entityTwo' WITH VERSION = '$version'"
+        val expectedResult = arrayOf(arrayOf("5", "5", "10"))
+        assertSqlQueryRows("Unexpected result", expectedResult, query)
+    }
+
+    @Test
+    fun `test WITH VERSION option end time`() {
+        val versions = EntityMethod.getEntityVersions(entityTwo, null, null)
+        val seconds = (System.currentTimeMillis() - versions[0]) / 1000
+        val query = "select tags.lot_size, entity_tag(entity, 'lot_size'), entity_tag(entity, 'lot_size', ${versions[1]})   from atsd_entity where name = '$entityTwo' WITH VERSION = now - $seconds * SECOND"
+        val expectedResult = arrayOf(arrayOf("5", "5", "10"))
         assertSqlQueryRows("Unexpected result", expectedResult, query)
     }
 
