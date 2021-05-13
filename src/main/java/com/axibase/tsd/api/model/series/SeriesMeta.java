@@ -5,6 +5,7 @@ import com.axibase.tsd.api.model.metric.Metric;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class SeriesMeta {
     private List<SeriesMetaInfo> series;
 
     @JsonIgnore
-    private Map<String, Object> extraFields;
+    private Map<String, Object> extraFields = new HashMap<>();
 
     @JsonAnyGetter
     public Object getField(String name) {

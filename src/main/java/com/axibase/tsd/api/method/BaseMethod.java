@@ -176,7 +176,6 @@ public abstract class BaseMethod {
         } finally {
             pool.returnObject(client);
         }
-
     }
 
     private static class HttpClient {

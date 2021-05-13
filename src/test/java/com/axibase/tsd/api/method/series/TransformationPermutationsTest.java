@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Take series transformations {@link Transformation#values()} except for {@link Transformation#FORECAST} and {@link Transformation#EVALUATE}.
@@ -102,7 +103,7 @@ public class TransformationPermutationsTest extends SeriesMethod {
         int totalSamplesCount = days * 24 * 60 * 2;
         for (int i = 0; i < totalSamplesCount; i++) {
             String time = TestUtil.addTimeUnitsInTimezone(startDate, ZoneId.of("Etc/UTC"), TimeUnit.SECOND, 30 * i);
-            Sample sample = Sample.ofDateInteger(time, 101);
+            Sample sample = Sample.ofDateInteger(time, 101 + i);
             series1.addSamples(sample);
             series2.addSamples(sample);
             series3.addSamples(sample);
@@ -187,6 +188,10 @@ public class TransformationPermutationsTest extends SeriesMethod {
         List<Series> seriesList = querySeriesAsList(testQuery);
         int expectedSeriesCount = countExpectedSeries(permutation);
         assertEquals(seriesList.size(), expectedSeriesCount);
+        for (Series series : seriesList) {
+            List<Sample> data = series.getData();
+            assertTrue(data.size() > 0);
+        }
     }
 
     private int countExpectedSeries(List<Transformation> permutation) {

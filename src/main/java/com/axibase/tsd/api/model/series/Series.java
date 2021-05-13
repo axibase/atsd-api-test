@@ -41,10 +41,10 @@ public class Series implements Comparable<Series> {
     }
 
     public Series(String entity, String metric, boolean checkThatEntityAndMetricDoNotExistInAtsd) {
-        if (checkThatEntityAndMetricDoNotExistInAtsd && null != entity) {
+        if (checkThatEntityAndMetricDoNotExistInAtsd && entity != null) {
             Registry.Entity.checkExists(entity);
         }
-        if (checkThatEntityAndMetricDoNotExistInAtsd && null != metric) {
+        if (checkThatEntityAndMetricDoNotExistInAtsd && metric != null) {
             Registry.Metric.checkExists(metric);
         }
         this.entity = entity;
@@ -69,7 +69,11 @@ public class Series implements Comparable<Series> {
     }
 
     public Series(String entity, String metric, String... tags) {
-        this(entity, metric);
+        this(entity, metric, true, tags);
+    }
+
+    public Series(String entity, String metric, boolean checkThatEntityAndMetricDoNotExistInAtsd, String... tags) {
+        this(entity, metric, checkThatEntityAndMetricDoNotExistInAtsd);
 
         /* Tag name-value pairs */
         if (tags.length % 2 != 0) {
@@ -224,8 +228,10 @@ public class Series implements Comparable<Series> {
         if (another.tags ==null || another.tags.isEmpty()) {
             return 1;
         }
-        Iterator<Map.Entry<String, String>> thisIt = this.tags.entrySet().iterator();
-        Iterator<Map.Entry<String, String>> anotherIt = another.tags.entrySet().iterator();
+        TreeMap<String, String> thisTags = new TreeMap<>(this.tags);
+        TreeMap anotherTags = new TreeMap(another.tags);
+        Iterator<Map.Entry<String, String>> thisIt = thisTags.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> anotherIt = anotherTags.entrySet().iterator();
         while (thisIt.hasNext()) {
             if (!anotherIt.hasNext()) {
                 return 1;

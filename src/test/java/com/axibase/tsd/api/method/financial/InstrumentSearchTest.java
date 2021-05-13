@@ -10,8 +10,8 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
     @BeforeClass
     public void prepareTestData() throws IOException {
         tradesBundle()
-                .trade("share1", "TEST", "First Share")
-                .trade("share2", "TEST", "Second Share")
+                .trade("share1", "TEST", "First Share", "RU0007661625")
+                .trade("share2", "TEST", "Second Share", "RU0007661624")
                 .trade("share10", "TEST", "")
                 .trade("share3", "TQBR", "Primary Share")
                 .trade("share2", "TQBR", "Primary Share Two")
@@ -23,6 +23,9 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
                 .trade("PRIM", "TEST", "ПАО 'Пример'")
                 .trade("PRIS", "TEST", "ОАО Пример и Примерчики")
                 .trade("TEST_ETF", "TEST", "THE ISH TEST")
+                .trade("ru000a0zzwr6", "TEST", "Isin named")
+                .trade("MOEX", "TEST", "", "RU000A0JR4A1")
+                .trade("MOEX", "TEST2", "", "RU000A0JR4A1")
                 .insert()
                 .waitUntilTradesInsertedAtMost(5, TimeUnit.MINUTES);
     }
@@ -132,6 +135,31 @@ public class InstrumentSearchTest extends InstrumentSearchBase {
         );
         searchAndTest("4Test",
                 entry("descpfx", "TEST", "SharAEEEes4Test Inc.")
+        );
+    }
+
+    @Test
+    public void testFoundByIsin() {
+        searchAndTest("RU0007661625", entry("share1", "TEST", "First Share"));
+    }
+
+    @Test
+    public void testNonValidIsin() {
+        // It's non-valid ISIN and should not be used as cache key
+        searchAndTest("RU0007661624");
+    }
+
+    @Test
+    public void testIsinInSymbolName() {
+        searchAndTest("RU000A0ZZWR6",
+                entry("ru000a0zzwr6", "TEST", "Isin named"));
+    }
+
+    @Test
+    void testMultipleIsinBindings() {
+        searchAndTest("RU000A0JR4A1",
+                entry("MOEX", "TEST", ""),
+                entry("MOEX", "TEST2", "")
         );
     }
 }
