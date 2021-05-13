@@ -82,20 +82,26 @@ public class InstrumentSearchBase {
             private final String symbol;
             private final String exchange = DEFAULT_EXCHANGE;
             private final String description;
+            private final String isin;
             private final boolean assigned;
         }
+
         private final List<Entry> items = new ArrayList<>();
 
         public TradeBundle trade(String symbol, String classCode, String description) {
-            return trade(symbol, classCode, description, true);
+            return trade(symbol, classCode, description, null, true);
+        }
+
+        public TradeBundle trade(String symbol, String classCode, String description, String isin) {
+            return trade(symbol, classCode, description, isin, true);
         }
 
         public TradeBundle tradeUnassigned(String symbol, String classCode, String description) {
-            return trade(symbol, classCode, description, false);
+            return trade(symbol, classCode, description, null, false);
         }
 
-        private TradeBundle trade(String symbol, String classCode, String description, boolean assigned) {
-            items.add(new Entry(classCode, symbol, description, assigned));
+        private TradeBundle trade(String symbol, String classCode, String description, String isin, boolean assigned) {
+            items.add(new Entry(classCode, symbol, description, isin, assigned));
             return this;
         }
 
@@ -123,7 +129,7 @@ public class InstrumentSearchBase {
                     .limit(1)
                     .map(entry -> new SeriesQuery(makeEntityName(entry.getSymbol(), entry.getClassCode()), TRADE_PRICE_METRIC,
                             IndicesGenerator.startTime, IndicesGenerator.timestamp.get() + 1)
-                        .addTag("exchange", entry.getExchange()))
+                            .addTag("exchange", entry.getExchange()))
                     .map(query -> new SeriesQueryDataSizeCheck(query, 1))
                     .forEach(check -> Checker.check(check, time, timeUnit));
             updateInstrumentIndex();
@@ -131,7 +137,8 @@ public class InstrumentSearchBase {
         }
 
         private static boolean needUpdateEntity(Entry entry) {
-            return !entry.isAssigned() || StringUtils.isNotBlank(entry.getDescription());
+            return !entry.isAssigned() || StringUtils.isNotBlank(entry.getDescription())
+                    || StringUtils.isNotBlank(entry.getIsin());
         }
 
         private static PlainCommand makeEntityCommand(Entry entry) {
@@ -140,6 +147,9 @@ public class InstrumentSearchBase {
             entityTags.put("short_name", entry.getDescription());
             entityTags.put("symbol", entry.getSymbol().toUpperCase());
             entityTags.put("class_code", entry.getClassCode().toUpperCase());
+            if (entry.getIsin() != null) {
+                entityTags.put("isin", entry.getIsin().toUpperCase());
+            }
 
             Entity entity = new Entity();
             entity.setName(makeEntityName(entry.getSymbol(), entry.getClassCode()));

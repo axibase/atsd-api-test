@@ -16,16 +16,21 @@ import static com.axibase.tsd.api.method.series.SeriesMethod.querySeries;
 
 public class SeriesCheck extends AbstractCheck {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesCheck.class);
-    private static final String ERROR_MESSAGE = "Failed to check series list insert.";
-    private List<Series> seriesList;
+    private static final String ERROR_MESSAGE_TEMPLATE =
+            "%nFailed to check that series list was correctly inserted " +
+            "[1. Series Query, 2. Expected Response, 3. Actual Response]: %n" +
+            " 1. Series Query %n%s%n 2. Expected Response %n%s%n 3. Actual Response %n%s%n";
+    private String errorMessage;
+    private final List<Series> seriesList;
 
     public SeriesCheck(List<Series> seriesList) {
         this.seriesList = seriesList;
+        this.errorMessage = "";
     }
 
     @Override
     public String getErrorMessage() {
-        return ERROR_MESSAGE;
+        return errorMessage;
     }
 
     @Override
@@ -48,6 +53,10 @@ public class SeriesCheck extends AbstractCheck {
         Response response = querySeries(seriesQueryList);
         String expected = BaseMethod.getJacksonMapper().writeValueAsString(transformedSeriesList);
         String actual = response.readEntity(String.class);
-        return compareJsonString(expected, actual);
+        boolean areEqual = compareJsonString(expected, actual);
+        if (!areEqual) {
+            errorMessage = String.format(ERROR_MESSAGE_TEMPLATE, seriesQueryList, expected, actual);
+        }
+        return areEqual;
     }
 }
