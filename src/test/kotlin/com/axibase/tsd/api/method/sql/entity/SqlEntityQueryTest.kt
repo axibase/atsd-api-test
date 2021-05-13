@@ -163,6 +163,11 @@ class SqlEntityQueryTest : SqlTest() {
         val query = "select entity_tag(entity, 'lot_size', ${versions[0]}), entity_tag(entity, 'lot_size', ${versions[1]}), entity_tag(entity, 'lot_size')  from atsd_entity where name = '$entityTwo'"
         val expectedResult = arrayOf(arrayOf("5", "10", "10"))
         assertSqlQueryRows("Unexpected result", expectedResult, query)
+
+        val versionAsIsoStringOne = DateProcessorManager.ISO.print(versions[0], ZoneId.of("UTC"));
+        val versionAsIsoStringTwo = DateProcessorManager.ISO.print(versions[1], ZoneId.of("UTC"));
+        val sql = "select entity_tag(entity, 'lot_size', '$versionAsIsoStringOne'), entity_tag(entity, 'lot_size', '$versionAsIsoStringTwo'), entity_tag(entity, 'lot_size')  from atsd_entity where name = '$entityTwo'"
+        assertSqlQueryRows("Unexpected result", expectedResult, sql)
     }
 
     @Test
