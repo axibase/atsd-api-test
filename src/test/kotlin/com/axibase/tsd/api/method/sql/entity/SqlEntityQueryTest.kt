@@ -21,8 +21,10 @@ class SqlEntityQueryTest : SqlTest() {
 
     @BeforeClass
     fun setup() {
+        val entityOneBean = Entity(entityOne)
+        val entityTwoBean = Entity(entityTwo)
         run {
-            val entity = Entity(entityOne)
+            val entity = entityOneBean
             entity.label = "entity_query_test_1"
             entity.interpolationMode = InterpolationMode.PREVIOUS
             entity.timeZoneID = "UTC"
@@ -34,7 +36,7 @@ class SqlEntityQueryTest : SqlTest() {
         }
 
         run {
-            val entity = Entity(entityTwo)
+            val entity = entityTwoBean
             entity.addTag("class_code", classCodeTwo)
             entity.addTag("symbol", "symbol_$entityTwo")
             entity.addTag("lot_size", "5")
@@ -44,13 +46,13 @@ class SqlEntityQueryTest : SqlTest() {
 
         Thread.sleep(2000)
         run {
-            val entity = Entity(entityTwo)
+            val entity = entityTwoBean
             entity.addTag("lot_size", "10")
             EntityMethod.updateEntity(entity)
         }
 
         run {
-            val entity = Entity(entityOne)
+            val entity = entityOneBean
             entity.addTag("class_code", classCodeOne)
             EntityMethod.updateEntity(entity)
         }
