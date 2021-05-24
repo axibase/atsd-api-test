@@ -5,20 +5,19 @@ import com.axibase.tsd.api.method.checks.EntityCheck;
 import com.axibase.tsd.api.method.property.PropertyMethod;
 import com.axibase.tsd.api.method.trade.session_summary.TradeSessionSummaryMethod;
 import com.axibase.tsd.api.model.entity.Entity;
-import com.axibase.tsd.api.model.financial.Trade;
-import com.axibase.tsd.api.model.financial.TradeSessionStage;
-import com.axibase.tsd.api.model.financial.TradeSessionSummary;
-import com.axibase.tsd.api.model.financial.TradeSessionType;
+import com.axibase.tsd.api.model.financial.*;
 import com.axibase.tsd.api.model.property.Property;
+import com.axibase.tsd.api.util.InstrumentStatisticsSender;
+import com.axibase.tsd.api.util.Util;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class TradePropertyTest extends SqlTradeTest {
-    public static final String STATISTICS = "statistics";
     public static final String SECURITY_DEFINITIONS = "security_definitions";
 
     @BeforeClass
@@ -62,27 +61,19 @@ public class TradePropertyTest extends SqlTradeTest {
         property.setTags(tags);
         PropertyMethod.insertPropertyCheck(property);
 
-        property = new Property();
-        property.setType(STATISTICS);
-        property.setEntity(entity.getName());
-        property.setDate("2020-06-15T20:21:49.123Z");
-        tags = new HashMap<>();
-        tags.put("numoffers", "1234");
-        tags.put("numbids", "5060");
-        tags.put("bid", "196.04");
-        property.setTags(tags);
-        PropertyMethod.insertPropertyCheck(property);
-        property = new Property();
-        property.setType(STATISTICS);
-        property.setEntity(entity.getName());
-        property.setKey(Collections.singletonMap("c", "d"));
-        property.setDate("2020-06-15T20:25:49.123Z");
-        tags = new HashMap<>();
-        tags.put("numoffers", "0");
-        tags.put("numbids", "0");
-        tags.put("bid", "0");
-        property.setTags(tags);
-        PropertyMethod.insertPropertyCheck(property);
+        InstrumentStatistics instrumentStatistics =
+                new InstrumentStatistics()
+                        .setClazz(clazz())
+                        .setSymbol(symbol())
+                        .setTimestamp(Util.getUnixTime("2020-06-15T20:21:49.123Z"))
+                        .setMicros(456)
+                        .addValue("2", "1234") // numoffers
+                        .addValue("5", "5060") // numbids
+                        .addValue("10", "196.04") // bid
+                ;
+        InstrumentStatisticsSender
+                .send(instrumentStatistics)
+                .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
 
     }
 
@@ -147,7 +138,7 @@ public class TradePropertyTest extends SqlTradeTest {
         String sql = "select sec_def.datetime, stat.datetime from atsd_trade where " + instrumentCondition();
         String[][] expected = new String[][]{
                 {
-                        "2020-06-14T10:21:49.123Z", "2020-06-15T20:21:49.123Z"
+                        "2020-06-14T10:21:49.123000Z", "2020-06-15T20:21:49.123456Z"
                 }
         };
         assertSqlQueryRows(expected, sql);

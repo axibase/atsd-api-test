@@ -30,6 +30,7 @@ public class Config {
     private final String loggerLevel;
     private final boolean checkLoggingEnable;
     private final int tradesTcpPort;
+    private final int instrumentStatisticsTcpPort;
 
     public static Config getInstance() {
         return ConfigInstanceHolder.INSTANCE;
@@ -50,7 +51,8 @@ public class Config {
         serverName = load("serverName", clientProperties, null);
         httpPort = Integer.parseInt(load("httpPort", clientProperties, null));
         tcpPort = Integer.parseInt(load("tcpPort", clientProperties, null));
-        tradesTcpPort = Integer.parseInt(load("tradesTcpPort", clientProperties, null));
+        tradesTcpPort = Integer.parseInt(load("tradesTcpPort", clientProperties, "8085"));
+        instrumentStatisticsTcpPort = Integer.parseInt(load("instrumentStatisticsTcpPort", clientProperties, "8091"));
         apiPath = load("apiPath", clientProperties, null);
         loggerLevel = load("loggerLevel", clientProperties, "debug");
         checkLoggingEnable = Boolean.valueOf(load("isCheckLoggingEnable", clientProperties, "false"));

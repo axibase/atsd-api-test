@@ -5,8 +5,10 @@ import com.axibase.tsd.api.model.command.PlainCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.*;
-import java.net.InetSocketAddress;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -14,19 +16,10 @@ import java.util.Collections;
 
 
 @Slf4j
-public class TCPSender {
+public class TCPSender extends TCPSenderBase {
     private static final String DEBUG_PREFIX = "debug ";
-    private static final String LINE_SEPARATOR = "\n";
-    private static final int TIMEOUT_MILLIS = 30_000;
 
     private TCPSender() {
-    }
-
-    private static Socket createSocket(String host, int port) throws IOException {
-        final Socket socket = new Socket();
-        socket.setSoTimeout(TIMEOUT_MILLIS);
-        socket.connect(new InetSocketAddress(host, port), TIMEOUT_MILLIS);
-        return socket;
     }
 
     private static String send(String command, boolean isDebugMode) throws IOException {
