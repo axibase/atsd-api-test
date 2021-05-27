@@ -25,9 +25,22 @@ public class TradePropertyTest extends SqlTradeTest {
         Entity entity = new Entity();
         entity.addTag("class_code", clazz());
         entity.setName(entity());
+        Entity entityTwo = new Entity();
+        entityTwo.addTag("class_code", clazz());
+        entityTwo.setName(entityTwo());
+        Entity entityThree = new Entity();
+        entityThree.addTag("class_code", clazz());
+        entityThree.setName(entityThree());
+
         Trade trade = fromISOString("2020-06-15T10:21:49.123456Z");
-        insert(trade);
+        Trade tradeTwo = fromISOString("2020-06-15T10:21:49.123456Z").setSymbol(symbolTwo());
+        Trade tradeThree = fromISOString("2020-06-15T10:21:49.123456Z").setSymbol(symbolThree());
+        insert(trade, tradeTwo, tradeThree);
         Checker.check(new EntityCheck(entity));
+        Checker.check(new EntityCheck(entityTwo));
+        Checker.check(new EntityCheck(entityThree));
+
+
         trade = fromISOString("2020-06-15T10:21:49.123456Z").setExchange("MOEX");
         insert(trade);
         TradeSessionSummary sessionSummary = new TradeSessionSummary(clazz(), symbol(), TradeSessionType.MORNING, TradeSessionStage.N, "2020-09-10T10:15:20Z");
@@ -71,8 +84,37 @@ public class TradePropertyTest extends SqlTradeTest {
                         .addValue("5", "5060") // numbids
                         .addValue("10", "196.04") // bid
                 ;
+        InstrumentStatistics instrumentStatisticsTwo =
+                new InstrumentStatistics()
+                        .setClazz(clazz())
+                        .setSymbol(symbolTwo())
+                        .setTimestamp(Util.getUnixTime("2020-06-14T20:21:49.123Z"))
+                        .setMicros(456)
+                        .addValue("31", "10")    // auctvolume
+                        .addValue("41", "10.23") // auctvalue
+                        .addValue("44", "1.2") // prevprice
+                        .addValue("37", "true") // assured
+                        .addValue("32", "20210501") //prevdate
+                        .addValue("35", "11:12:13") //plannedtime
+                        .addValue("66", "2020-06-14T20:21:49.654321Z") //snapshot_start_datetime
+                ;
+        InstrumentStatistics instrumentStatisticsThree =
+                new InstrumentStatistics()
+                        .setClazz(clazz())
+                        .setSymbol(symbolThree())
+                        .setTimestamp(Util.getUnixTime("2020-06-16T20:21:49.123Z"))
+                        .setMicros(456)
+                        .addValue("31", "2")    // auctvolume
+                        .addValue("41", "1.2") // auctvalue
+                        .addValue("44", "2.5") // prevprice
+                        .addValue("37", "false") // assured
+                        .addValue("32", "20210502") //prevdate
+                        .addValue("35", "14:15:16") // plannedtime
+                        .addValue("66", "2020-06-16T20:21:49.123456Z") //snapshot_start_datetime
+                ;
+
         InstrumentStatisticsSender
-                .send(instrumentStatistics)
+                .send(instrumentStatistics, instrumentStatisticsTwo, instrumentStatisticsThree)
                 .waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES);
 
     }
@@ -143,4 +185,23 @@ public class TradePropertyTest extends SqlTradeTest {
         };
         assertSqlQueryRows(expected, sql);
     }
+
+    @Test
+    public void testEntityQueryStatFields() {
+        String sql = "select stat.auctvolume, stat('auctvolume'), stat.auctvalue, stat('auctvalue'), " +
+                "stat.prevprice, stat('prevprice'), stat.assured, stat('assured'), stat.prevdate, stat('prevdate'), " +
+                "stat.plannedtime, stat('plannedtime'), stat.snapshot_start_datetime, stat('snapshot_start_datetime'), " +
+                "ROUND(stat.auctvalue,0) AS auctvalue, 100*(stat.auctvalue/stat.prevprice-1) AS auct_to_prev " +
+                "from atsd_entity where name in ('" + entityTwo() + "', '" + entityThree() + "') order by stat.auctvolume";
+        String[][] expected = new String[][]{
+                {
+                        "2", "2", "1.2", "1.2", "2.5", "2.5", "false", "false", "20210502", "20210502", "14:15:16", "14:15:16", "2020-06-16T20:21:49.123456Z", "2020-06-16T20:21:49.123456Z", "1", "-52.0"
+                },
+                {
+                        "10", "10", "10.23", "10.23", "1.2", "1.2", "true", "true", "20210501", "20210501", "11:12:13", "11:12:13", "2020-06-14T20:21:49.654321Z", "2020-06-14T20:21:49.654321Z", "10", "752.5"
+                }
+        };
+        assertSqlQueryRows(expected, sql);
+    }
+
 }
