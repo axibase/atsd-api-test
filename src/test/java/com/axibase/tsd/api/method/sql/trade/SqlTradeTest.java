@@ -82,6 +82,10 @@ public abstract class SqlTradeTest extends SqlTest {
         return String.format("exchange='%s' AND class='%s' AND symbol='%s'", exchange(), clazz(), symbolTwo());
     }
 
+    protected String instrumentThreeCondition() {
+        return String.format("exchange='%s' AND class='%s' AND symbol='%s'", exchange(), clazz(), symbolThree());
+    }
+
     protected String entity() {
         return StringUtils.lowerCase(symbol() + "_[" + clazz() + "]");
     }
