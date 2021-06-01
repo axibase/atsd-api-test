@@ -11,6 +11,7 @@ import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ public class SqlEntityTagsTest extends SqlTest {
                 new Entity(
                         TEST_ENTITY_NAME,
                         new HashMap<String, String>() {{
+                            put("step", "0.5");
                             put("tag1", "val1");
                             put("tag2", "val2");
                             put("tag3", "v3");
@@ -144,6 +146,23 @@ public class SqlEntityTagsTest extends SqlTest {
         StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
 
         List<List<String>> expectedRows = Collections.emptyList();
+
+        assertTableRowsExist(expectedRows, resultTable);
+    }
+
+    @Test
+    public void testReservedKeywords() {
+        String sqlQuery = String.format(
+                "SELECT entity.tags.step, entity.tags.\"step\"  %nFROM \"%s\" %nWHERE datetime='2016-06-19T11:00:00.000Z' AND " +
+                        "entity.tags.tag1 LIKE 'val%%' %nAND entity = '%s'",
+                TEST_METRIC_NAME, TEST_ENTITY_NAME
+        );
+
+        StringTable resultTable = queryResponse(sqlQuery).readEntity(StringTable.class);
+
+        List<List<String>> expectedRows = Collections.singletonList(
+                Arrays.asList("0.5", "0.5")
+        );
 
         assertTableRowsExist(expectedRows, resultTable);
     }
