@@ -39,15 +39,22 @@ fun insertTrades(csvFilePath: String,
 }
 
 
-fun checkLine(lineIndex: Int, actualLine: String, expectedLine: ResponseLine) {
-    val actualFields = actualLine.split(",").toTypedArray()
-    Assert.assertEquals(actualFields.size, 6, "Unexpected count of fields in line $lineIndex: $actualLine")
+fun checkLine(lineIndex: Int, actualString: String, expectedLine: ResponseLine) {
+    val actualLine = parseResponseLine(actualString)
     Assert.assertEquals(
-        Util.getUnixTime(actualFields[0]), expectedLine.dateMillis,
-        "Line $lineIndex. Expected line $expectedLine. Unexpected timestamp.")
-    Assert.assertEquals(BigDecimal(actualFields[1]), expectedLine.open, "Line index $lineIndex. Expected line $expectedLine. Unexpected OPEN value.")
-    Assert.assertEquals(BigDecimal(actualFields[2]), expectedLine.high, "Line index $lineIndex. Expected line $expectedLine. Unexpected HIGH value.")
-    Assert.assertEquals(BigDecimal(actualFields[3]), expectedLine.low, "Line index $lineIndex. Expected line $expectedLine. Unexpected LOW value.")
-    Assert.assertEquals(BigDecimal(actualFields[4]), expectedLine.close, "Line index $lineIndex. Expected line $expectedLine. Unexpected CLOSE value.")
-    Assert.assertEquals(actualFields[5].toInt(), expectedLine.volume, "Line index $lineIndex. Expected line $expectedLine. Unexpected VOLUME value.")
+        actualLine,
+        expectedLine,
+        "Line index $lineIndex. Expected line $expectedLine. Actual line: $actualLine"
+    )
+}
+
+fun parseResponseLine(line: String): ResponseLine {
+    val fields = line.split(",").toTypedArray()
+    return ResponseLine(
+        dateMillis = Util.getUnixTime(fields[0]),
+        open = BigDecimal(fields[1]),
+        high = BigDecimal(fields[2]),
+        low = BigDecimal(fields[3]),
+        close = BigDecimal(fields[4]),
+        volume = fields[5].toInt())
 }
