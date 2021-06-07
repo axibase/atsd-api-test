@@ -1,12 +1,13 @@
 package com.axibase.tsd.api.method.trade.export
 
 import com.axibase.tsd.api.method.entity.EntityMethod
-import com.axibase.tsd.api.method.trade.OhlcvStatistic
-import com.axibase.tsd.api.method.trade.OhlcvStatistic.*
-import com.axibase.tsd.api.method.trade.OhlcvTradeRequest
 import com.axibase.tsd.api.method.trade.TradeExportMethod.Companion.ohlcvCsv
 import com.axibase.tsd.api.model.Period
 import com.axibase.tsd.api.model.financial.Trade
+import com.axibase.tsd.api.model.trade.ohlcv.OhlcvStatistic
+import com.axibase.tsd.api.model.trade.ohlcv.OhlcvStatistic.*
+import com.axibase.tsd.api.model.trade.ohlcv.OhlcvTradeRequest
+import com.axibase.tsd.api.model.trade.ohlcv.ResponseLine
 import com.axibase.tsd.api.util.Mocks
 import com.axibase.tsd.api.util.TestUtil
 import com.axibase.tsd.api.util.TradeSender
@@ -21,7 +22,6 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
-import kotlin.streams.toList
 import kotlin.test.fail
 
 
@@ -32,14 +32,13 @@ private val symbol = Mocks.tradeSymbol()
 class TradeExportOhlcvTest {
     @BeforeClass
     fun insertTrades() {
-        val trades = TradeExportOhlcvTest::class.java.classLoader
-            .getResourceAsStream("csv/trades.csv")
-            .bufferedReader().lines()
-            .map {
-                val values = it.split(",").toTypedArray()
+        insertTrades(
+            "csv/trades.csv",
+            {list ->
+                val values = list.toTypedArray()
                 trade(Mocks.tradeNum(), values[0], Trade.Side.valueOf(values[1]), values[2])
-            }.toList()
-        TradeSender.send(trades).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES)
+            }
+        )
         EntityMethod.updateEntity("${symbol}_[$clazz]", mapOf("tags" to mapOf("lot" to "10")))
     }
 
@@ -136,13 +135,13 @@ class TradeExportOhlcvTest {
     @Test(dataProvider = "successCases")
     fun testSuccessCase(testCase: SuccessCase) {
         val csv = ohlcvCsv(testCase.request)
-        val actualLines = csv.trim().split("(\\r)?\\n".toRegex());
-        val expectedLines = testCase.responseLines;
+        val actualLines = csv.trim().split("(\\r)?\\n".toRegex())
+        val expectedLines = testCase.responseLines
         assertEquals(actualLines.size, expectedLines.size + 1, "Unexpected lines count in response.")
         val header = "datetime,open,high,low,close,volume"
         assertEquals(actualLines[0], header, "Unexpected header line in response.")
         for (i in expectedLines.indices) {
-            checkLine(actualLines[i + 1], expectedLines[i])
+            checkLine(i, actualLines[i + 1], expectedLines[i])
         }
     }
 
@@ -254,32 +253,11 @@ class TradeExportOhlcvTest {
         assertThat("Only one record should be find for this millisecond", csv, eqCsv(expectedCsv))
     }
 
-
-    private fun checkLine(actualLine: String, expectedLine: ResponseLine) {
-        val actualFields = actualLine.split(",").toTypedArray()
-        assertEquals(actualFields.size, 6, "Unexpected count of fields in line: $actualLine")
-        assertEquals(Util.getUnixTime(actualFields[0]), expectedLine.dateMillis, "Unexpected timestamp.")
-        assertEquals(BigDecimal(actualFields[1]), expectedLine.open, "Unexpected OPEN value.")
-        assertEquals(BigDecimal(actualFields[2]), expectedLine.high, "Unexpected HIGH value.")
-        assertEquals(BigDecimal(actualFields[3]), expectedLine.low, "Unexpected LOW value.")
-        assertEquals(BigDecimal(actualFields[4]), expectedLine.close, "Unexpected CLOSE value.")
-        assertEquals(actualFields[5].toInt(), expectedLine.volume, "Unexpected VOLUME value.")
-    }
-
     private fun trade(tradeNumber: Long, date: String, side: Trade.Side, price: String): Trade {
         val trade = Trade(exchange, clazz, symbol, tradeNumber, date, BigDecimal(price), 1)
         trade.side = side
         return trade
     }
-
-    data class ResponseLine(
-        val dateMillis: Long = 0,
-        val open: BigDecimal? = null,
-        val high: BigDecimal? = null,
-        val low: BigDecimal? = null,
-        val close: BigDecimal? = null,
-        val volume: Int? = 0
-    )
 
     data class SuccessCase(
         /* Request parameters. */

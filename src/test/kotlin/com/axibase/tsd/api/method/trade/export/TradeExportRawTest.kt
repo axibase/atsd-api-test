@@ -1,6 +1,6 @@
 package com.axibase.tsd.api.method.trade.export
 
-import com.axibase.tsd.api.method.trade.RawTradeRequest
+import com.axibase.tsd.api.model.trade.ohlcv.RawTradeRequest
 import com.axibase.tsd.api.method.trade.TradeExportMethod
 import com.axibase.tsd.api.method.trade.TradeExportMethod.Companion.rawCsv
 import com.axibase.tsd.api.method.trade.TradeExportMethod.Companion.rawResponse

@@ -1,7 +1,7 @@
 package com.axibase.tsd.api.method.trade
 
 import com.axibase.tsd.api.method.BaseMethod
-import com.axibase.tsd.api.model.Period
+import com.axibase.tsd.api.model.trade.ohlcv.*
 import org.apache.http.HttpStatus
 import javax.ws.rs.client.WebTarget
 import javax.ws.rs.core.Response
@@ -34,8 +34,19 @@ class TradeExportMethod : BaseMethod() {
         @JvmStatic
         fun ohlcvCsv(ohlcvTradeRequest: OhlcvTradeRequest? = null) = ohlcvResponse(ohlcvTradeRequest).toCsv()
 
+        @JvmStatic
+        fun barResponse(type: BarsRequestType, barsRequest: BarsRequest): Response =
+            executeTradeExportRequest(type.path, barsRequest, { target, request ->
+                val statRequest = request.statisticsRequest
+                barsRequest.addQueryParameter(
+                    fillRequestsParams(target, statRequest.baseTradeRequest)
+                        .queryParam("statistics", statRequest.statistics?.toCommaSeparatedList()))
+            })
 
-        private fun <T : TradeRequest> executeTradeExportRequest(
+        @JvmStatic
+        fun barCsv(type: BarsRequestType, barsRequest: BarsRequest) = barResponse(type, barsRequest).toCsv()
+
+        private fun <T> executeTradeExportRequest(
             path: String, tradeRequest: T?,
             reqFiller: (WebTarget, T) -> WebTarget
         ): Response {
@@ -63,48 +74,6 @@ class TradeExportMethod : BaseMethod() {
 
     data class ErrorMessage(val error: String? = null)
 }
-
-
-interface TradeRequest {
-    val symbol: String?
-    val clazz: String?
-    val startDate: String?
-    val endDate: String?
-    val timeZone: String?
-    val workdayCalendar: String?
-    val exchange: String?
-}
-
-data class RawTradeRequest(
-    override val symbol: String?, override val clazz: String?,
-    override val startDate: String?,
-    override val endDate: String?,
-    override val timeZone: String? = null,
-    override val workdayCalendar: String? = null,
-    override val exchange: String? = null
-) : TradeRequest
-
-enum class OhlcvStatistic {
-    OPEN,
-    HIGH,
-    LOW,
-    CLOSE,
-    VOLUME,
-    COUNT,
-    VWAP,
-    AMOUNT
-}
-
-data class OhlcvTradeRequest(
-    override val symbol: String?, override val clazz: String?,
-    override val startDate: String?,
-    override val endDate: String?,
-    override val timeZone: String? = null,
-    override val workdayCalendar: String? = null,
-    override val exchange: String? = null,
-    val period: Period? = null,
-    val statistics: List<OhlcvStatistic>? = null
-) : TradeRequest
 
 private fun List<OhlcvStatistic>.toCommaSeparatedList(): String = this.joinToString(",") { it.toString() }
 
