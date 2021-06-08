@@ -79,8 +79,7 @@ public class ForecastFormTest extends ForecastMethod {
         testCases[id] = new Object[] {id, grouping, groupingTag, false, expectedSeriesKeys};
     }
 
-    // Ignore because this test is unstable, and fails unexpectedly.
-    @Test(enabled = false, dataProvider = "testCases")
+    @Test(enabled = true, dataProvider = "testCases")
     public void testFormSubmission(int testCaseId,
                                    @NotNull String grouping,
                                    @Nullable String groupingTag,
@@ -206,6 +205,8 @@ public class ForecastFormTest extends ForecastMethod {
         formData.add("settings.name", forecastSettingsName);
         formData.add("settings.storeInterval.intervalCount", "60");   // forecast horizon
         formData.add("settings.storeInterval.intervalUnit", "MINUTE");
+        formData.add("settings.retentionInterval.intervalCount", "1000");
+        formData.add("settings.retentionInterval.intervalUnit", "YEAR");
         formData.add("settings.producedMetric", producedMetric);
         formData.add("forecast", "Run");
         return formData;
