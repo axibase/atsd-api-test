@@ -30,7 +30,7 @@ jobs:
         echo "ATSD_HOST=$ATSD_HOST" >> $GITHUB_ENV
         while [[ $(curl --user $ATSD_LOGIN:$ATSD_PASSWORD --write-out %{http_code} --silent --output /dev/null http://$ATSD_HOST:8088/version) != 200 ]]; do  echo "waiting to start $name server ..."; sleep 3; done
     - name: Cache Maven packages
-      uses: actions/cache@v2
+      uses: axibase/cache@v2
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
