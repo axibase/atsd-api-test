@@ -24,7 +24,7 @@ jobs:
         java-version: 1.8
     - name: Install ATSD in docker container
       run: |
-        [[ ! -z ${{ secrets.DOCKER_TOKEN }} ]] && echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
+        [[ ! -z "${{ secrets.DOCKER_TOKEN }}" ]] && echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
         docker run -d --name="atsd-api-test" -e axiname="$ATSD_LOGIN" -e axipass="$ATSD_PASSWORD" -e timezone="Asia/Kathmandu" axibase/atsd:api_test
         export ATSD_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atsd-api-test)
         echo "ATSD_HOST=$ATSD_HOST" >> $GITHUB_ENV
