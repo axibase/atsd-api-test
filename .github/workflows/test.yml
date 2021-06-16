@@ -1,0 +1,41 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: ATSD API Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      ATSD_LOGIN: axibase
+      ATSD_PASSWORD: axibase
+
+    steps:
+    - uses: axibase/checkout@v2
+    - name: Set up JDK for Java 8
+      uses: axibase/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Install ATSD in docker container
+      run: |
+        [[ ! -z ${{ secrets.DOCKER_TOKEN }} ]] && echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
+        docker run -d --name="atsd-api-test" -e axiname="$ATSD_LOGIN" -e axipass="$ATSD_PASSWORD" -e timezone="Asia/Kathmandu" axibase/atsd:api_test
+        export ATSD_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atsd-api-test)
+        echo "ATSD_HOST=$ATSD_HOST" >> $GITHUB_ENV
+        while [[ $(curl --user $ATSD_LOGIN:$ATSD_PASSWORD --write-out %{http_code} --silent --output /dev/null http://$ATSD_HOST:8088/version) != 200 ]]; do  echo "waiting to start $name server ..."; sleep 3; done
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Run tests
+      run: |
+        echo $(curl --user $ATSD_LOGIN:$ATSD_PASSWORD http://$ATSD_HOST:8088/version)
+        mvn clean test -Dmaven.test.failure.ignore=false -DserverName=$ATSD_HOST -Dlogin=$ATSD_LOGIN -Dpassword=$ATSD_PASSWORD -DloggerLevel=info
