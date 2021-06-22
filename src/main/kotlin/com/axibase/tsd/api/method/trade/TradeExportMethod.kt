@@ -28,7 +28,7 @@ class TradeExportMethod : BaseMethod() {
             { target, request ->
                 fillRequestsParams(target, request)
                     .queryParam("period", request.period)
-                    .queryParam("statistics", request.statistics?.toCommaSeparatedList())
+                    .queryParam("fields", request.fields?.toCommaSeparatedList())
             }
 
         @JvmStatic
@@ -40,7 +40,7 @@ class TradeExportMethod : BaseMethod() {
                 val statRequest = request.statisticsRequest
                 barsRequest.addQueryParameter(
                     fillRequestsParams(target, statRequest.baseTradeRequest)
-                        .queryParam("statistics", statRequest.statistics?.toCommaSeparatedList()))
+                        .queryParam("fields", statRequest.fields?.toCommaSeparatedList()))
             })
 
         @JvmStatic

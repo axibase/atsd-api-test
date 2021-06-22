@@ -42,12 +42,12 @@ data class OhlcvTradeRequest(
     override val workdayCalendar: String? = null,
     override val exchange: String? = null,
     val period: Period? = null,
-    val statistics: List<OhlcvStatistic>? = null
+    val fields: List<OhlcvStatistic>? = null
 ) : TradeRequest
 
 class StatisticsRequest(
     val baseTradeRequest: TradeRequest,
-    val statistics: List<OhlcvStatistic>? = null
+    val fields: List<OhlcvStatistic>? = null
 )
 
 interface BarsRequest {

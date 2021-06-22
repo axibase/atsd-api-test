@@ -170,7 +170,7 @@ class TradeExportOhlcvTest {
         TradeSender.send(trade).waitUntilTradesInsertedAtMost(1, TimeUnit.MINUTES)
         val req = OhlcvTradeRequest(
             trade.symbol, trade.clazz, "2020-11-25T14:00:00Z",
-            "2020-11-25T15:00:00Z", statistics = listOf(AMOUNT)
+            "2020-11-25T15:00:00Z", fields = listOf(AMOUNT)
         )
         try {
             ohlcvCsv(req)
@@ -243,7 +243,7 @@ class TradeExportOhlcvTest {
          */
         val req = OhlcvTradeRequest(
             symbol, clazz, "2020-11-25T14:00:43.914314Z", "2020-11-25T14:00:43.914315Z",
-            statistics = listOf(COUNT), exchange = exchange
+                fields = listOf(COUNT), exchange = exchange
         )
         val csv = ohlcvCsv(req)
         val expectedCsv = """
@@ -268,13 +268,13 @@ class TradeExportOhlcvTest {
     )
 
     data class StatisticCase(
-        val statistics: List<OhlcvStatistic>,
+        val fields: List<OhlcvStatistic>,
         val csv: String,
         val period: Period? = null
     ) {
         fun req(): OhlcvTradeRequest = OhlcvTradeRequest(
             symbol, clazz, "2020-11-25T14:00:00Z", "2020-11-25T15:00:00Z",
-            period = period, statistics = statistics
+            period = period, fields = fields
         )
     }
 
