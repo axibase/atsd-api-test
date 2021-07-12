@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/axibase/atsd-api-test.svg?branch=master)](https://travis-ci.org/axibase/atsd-api-test)
+[![Test](https://github.com/axibase/atsd-api-test/workflows/ATSD%20API%20Test/badge.svg)](https://github.com/axibase/atsd-api-test/actions)
+
 
 # Running Tests
 
