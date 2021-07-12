@@ -13,7 +13,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -63,7 +63,7 @@ public class VersionedSeriesExportTest extends ExportMethod {
      2021-04-01 10:02:00	2		            tag-value-c
      2021-04-01 10:03:00	1	single version	tag-value-c
      */
-    @BeforeTest
+    @BeforeClass
     public void insertSeries() throws Exception {
         // turn on versioning for the metric
         Metric metricObj = new Metric(metric);
@@ -335,7 +335,7 @@ public class VersionedSeriesExportTest extends ExportMethod {
             Assert.assertNotNull(tag, "Response row does not contain tag " + tagName + ": " + record);
             if (currentTag == null || !currentTag.equals(tag)) {
                 currentTag = tag;
-                currentSeries = new Series(entity, metric, tagName, tag);
+                currentSeries = new Series(entity, metric, false, tagName, tag);
                 result.add(currentSeries);
             }
             Sample sample = Sample.ofDateInteger(record.get("Timestamp"), Integer.parseInt(record.get("Value")));
