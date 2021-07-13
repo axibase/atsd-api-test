@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -189,6 +190,12 @@ public class Series implements Comparable<Series> {
             result.add(seriesCommand);
         }
         return result;
+    }
+
+    @Nullable
+    public String getTag(String tagName) {
+        if (tags == null) return null;
+        return tags.get(tagName);
     }
 
     @Override
